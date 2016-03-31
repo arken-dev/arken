@@ -7,14 +7,14 @@ TEMPLATE = lib
 CONFIG += plugin
 CONFIG += no_plugin_name_prefix
 
-DESTDIR = ../../../clib
-TARGET = extensions
+DESTDIR = ../../../../clib/oberon
+TARGET = base
 
 INCLUDEPATH += .
-INCLUDEPATH += ../../../include
+INCLUDEPATH += ../../../../include
 
 # Input
 SOURCES += *.cpp
-SOURCES += ../../../src/oberon/os.cpp
+SOURCES += ../../../../src/oberon/os.cpp
 
-win32:LIBS += ../../../vendors/lua51.dll
+win32:LIBS += ../../../../vendors/lua51.dll
