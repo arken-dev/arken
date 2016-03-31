@@ -1,5 +1,6 @@
 #include <QDateTime>
 #include <QThread>
+#include <QUuid>
 #include <os.h>
 
 double os::microtime()
@@ -10,4 +11,10 @@ double os::microtime()
 void os::sleep(double secs)
 {
   QThread::msleep(secs*1000);
+}
+
+char * os::uuid()
+{
+  QUuid uuid = QUuid::createUuid();
+  return uuid.toByteArray().mid(1, 36).data();
 }

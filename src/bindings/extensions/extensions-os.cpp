@@ -13,10 +13,16 @@ static int lua_extensions_os_sleep( lua_State *L ) {
   return 0;
 }
 
+static int lua_extensions_os_uuid( lua_State *L ) {
+  lua_pushlstring( L, os::uuid(), 37 );
+  return 1;
+}
+
 int luaopen_extensions_os( lua_State *L ) {
   static const luaL_reg Map[] = {
     {"microtime",  lua_extensions_os_microtime},
     {"sleep",      lua_extensions_os_sleep},
+    {"uuid",       lua_extensions_os_uuid},
     {NULL, NULL}
   };
   luaL_register(L, "os", Map);
