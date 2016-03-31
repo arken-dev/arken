@@ -220,9 +220,6 @@ int main(int argc, char * argv[])
   if(!file.exists()) {
     rv = oberonTaskLoad(L, oberonPath);
   }
-  if(rv) {
-      return rv;
-  } else {
-      return app.exec();
-  }
+
+  return rv;
 }
