@@ -3,5 +3,4 @@
 ######################################################################
 
 TEMPLATE = subdirs
-SUBDIRS = src/bin \
-          src/bindings
+SUBDIRS = oberon
