@@ -1,5 +1,5 @@
 #include <luajit-2.0/lua.hpp>
-#include <Oberon>
+#include <oberon/base>
 
 static int lua_extensions_os_microtime( lua_State *L ) {
   double result = os::microtime();

@@ -1,7 +1,7 @@
 #include <QDateTime>
 #include <QThread>
 #include <QUuid>
-#include <Oberon>
+#include <oberon/base>
 
 double os::microtime()
 {
