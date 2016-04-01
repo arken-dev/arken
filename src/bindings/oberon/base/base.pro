@@ -19,6 +19,9 @@ SOURCES += *.cpp
 SOURCES += ../../../../src/oberon/os.cpp
 SOURCES += ../../../../src/oberon/string.cpp
 SOURCES += ../../../../src/oberon/algorithms/string/*.c
+SOURCES += ../../../../src/oberon/curl/curl-read.c
 
 
+unix:LIBS += -lcurl
 win32:LIBS += ../../../../vendors/lua51.dll
+win32:LIBS += ../../../../vendors/libcurl.dll

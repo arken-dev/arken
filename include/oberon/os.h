@@ -3,5 +3,6 @@ namespace oberon {
     double microtime();
     void   sleep(double secs);
     char * uuid();
+    char * read(const char * path);
   }
 }

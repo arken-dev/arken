@@ -1,4 +1,5 @@
 #include <string.h>
+#include <stdlib.h>
 
 char *
 oberon_algorithms_string_insert(const char * string, size_t len, const char * ba)

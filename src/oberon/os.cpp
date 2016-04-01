@@ -1,7 +1,9 @@
 #include <QDateTime>
 #include <QThread>
 #include <QUuid>
+
 #include <oberon/base>
+#include <oberon/curl/curl-read.hpp>
 
 double os::microtime()
 {
@@ -17,4 +19,9 @@ char * os::uuid()
 {
   QUuid uuid = QUuid::createUuid();
   return uuid.toByteArray().mid(1, 36).data();
+}
+
+char * os::read(const char * path)
+{
+  return oberon_curl_read(path);
 }
