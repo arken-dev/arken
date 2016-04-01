@@ -2,6 +2,14 @@
 #include <oberon/base>
 #include <stdlib.h>
 
+static int lua_oberon_string_ends_with( lua_State *L ) {
+  const char *string = luaL_checkstring(L, 1);
+  const char *str    = luaL_checkstring(L, 2);
+  int result         = string::endsWith(string, str);
+  lua_pushboolean(L, result);
+  return 1;
+}
+
 static int lua_oberon_string_insert( lua_State *L ) {
   const char *string = luaL_checkstring(L, 1);
   int len            = luaL_checkinteger(L, 2);
@@ -14,7 +22,8 @@ static int lua_oberon_string_insert( lua_State *L ) {
 
 int luaopen_oberon_string( lua_State *L ) {
   static const luaL_reg Map[] = {
-    {"insert", lua_oberon_string_insert},
+    {"endsWith", lua_oberon_string_ends_with},
+    {"insert",   lua_oberon_string_insert},
     {NULL, NULL}
   };
   luaL_register(L, "string", Map);
