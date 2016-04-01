@@ -16,6 +16,8 @@ DESTDIR = ../../../bin
 
 INCLUDEPATH += .
 INCLUDEPATH += ../../../include
+INCLUDEPATH += ../../../vendors/include
+
 
 QMAKE_RPATHDIR=../../../vendors
 

@@ -12,6 +12,7 @@ TARGET = base
 
 INCLUDEPATH += .
 INCLUDEPATH += ../../../../include
+INCLUDEPATH += ../../../../vendors/include
 
 # Input
 SOURCES += *.cpp
