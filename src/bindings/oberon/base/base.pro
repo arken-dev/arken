@@ -17,5 +17,8 @@ INCLUDEPATH += ../../../../vendors/include
 # Input
 SOURCES += *.cpp
 SOURCES += ../../../../src/oberon/os.cpp
+SOURCES += ../../../../src/oberon/string.cpp
+SOURCES += ../../../../src/oberon/algorithms/string/*.c
+
 
 win32:LIBS += ../../../../vendors/lua51.dll
