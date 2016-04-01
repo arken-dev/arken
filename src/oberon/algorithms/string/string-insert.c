@@ -6,7 +6,7 @@ oberon_algorithms_string_insert(const char * string, size_t len, const char * ba
   size_t string_len = strlen(string);
   size_t ba_len     = strlen(ba);
   int size          = string_len + ba_len;
-  char * result     = malloc((size + 1) * sizeof(char));
+  char * result     = (char *) malloc((size + 1) * sizeof(char));
   size_t p, i, j;
 
   for(p=0, i=0; i < len; p++, i++){
