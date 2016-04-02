@@ -4,4 +4,5 @@
 
 TEMPLATE = subdirs
 SUBDIRS = src/bin \
-          src/bindings
+          src/bindings \
+          src/shared

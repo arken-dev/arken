@@ -4,6 +4,8 @@
 TEMPLATE = lib
 INCLUDEPATH += .
 INCLUDEPATH += ../../include
+INCLUDEPATH += ../../vendors/include
+
 TARGET = oberon
 DESTDIR = ../../shared
 
@@ -11,3 +13,7 @@ DESTDIR = ../../shared
 SOURCES += ../../src/oberon/*.cpp
 SOURCES += ../../src/oberon/curl/*.c
 SOURCES += ../../src/oberon/algorithms/string/*.c
+
+unix:LIBS += -lcurl
+win32:LIBS += ../../vendors/lua51.dll
+win32:LIBS += ../../vendors/libcurl.dll
