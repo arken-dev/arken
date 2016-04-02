@@ -9,3 +9,5 @@ DESTDIR = ../../shared
 
 # Input
 SOURCES += ../../src/oberon/*.cpp
+SOURCES += ../../src/oberon/curl/*.c
+SOURCES += ../../src/oberon/algorithms/string/*.c
