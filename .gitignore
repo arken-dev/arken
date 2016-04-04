@@ -3,9 +3,13 @@
 shared/*
 clib/*
 
+bin/miranda
+bin/miranda.exe
 bin/oberon
 bin/oberon.exe
 
 Makefile
 Makefile.*
 *.o
+
+moc_*

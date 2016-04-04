@@ -3,4 +3,5 @@
 ######################################################################
 
 TEMPLATE = subdirs
-SUBDIRS = oberon
+SUBDIRS = oberon \
+          miranda

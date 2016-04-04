@@ -14,7 +14,7 @@ static int lua_oberon_os_sleep( lua_State *L ) {
 }
 
 static int lua_oberon_os_uuid( lua_State *L ) {
-  lua_pushlstring( L, os::uuid(), 37 );
+  lua_pushstring( L, os::uuid() );
   return 1;
 }
 
