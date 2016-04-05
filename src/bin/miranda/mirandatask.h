@@ -28,6 +28,7 @@ protected:
   lua_State  * m_State;
   qintptr      m_descriptor;
   void run();
+  void parseRequest(QTcpSocket &socket);
 
 };
 

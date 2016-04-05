@@ -1,3 +1,4 @@
+#include <luajit-2.0/lua.hpp>
 #include "mirandatask.h"
 #include <iostream>
 #include <QThread>
@@ -47,8 +48,18 @@ void MirandaTask::run()
   QByteArray buffer;
 
   // socket
-  socket.setSocketDescriptor(m_descriptor);
   connect(&socket, SIGNAL(disconnected()), this, SLOT(disconnected()));
+  socket.setSocketDescriptor(m_descriptor);
+
+  /*
+  if ( socket.waitForConnected(-1) ) {
+    qDebug() << "connect !!!";
+  }
+  */
+
+  if ( socket.waitForReadyRead(-1) ) {
+    this->parseRequest(socket);
+  }
 
   // lua
   lua_settop(m_State, 0);
@@ -85,6 +96,49 @@ void MirandaTask::disconnected()
 {
   stack->push(this);
 }
+
+void MirandaTask::parseRequest(QTcpSocket &socket)
+{
+  int index = 0;
+  int last  = 0;
+  int nrec = 0;
+  int method = 0;
+  int tmp = 0;
+  QByteArray row;
+  QByteArray buffer = socket.readAll();
+  nrec = buffer.count("\r\n") + 1;
+
+  //lua table
+  lua_createtable(m_State, 0, nrec);
+
+  //row
+  last   = buffer.indexOf("\r\n", index);
+  row    = buffer.mid(index, last-index);
+  index  = last + 2;
+  method = row.indexOf(' ');
+
+  //Method
+  lua_pushstring(m_State, "Method");
+  lua_pushstring(m_State, row.mid(0, method));
+  lua_settable(m_State, -3);
+
+  //Query-String
+  lua_pushstring(m_State, "Query-String");
+  lua_pushstring(m_State, row.mid(method+3, row.lastIndexOf(' ')-(method+3)));
+  lua_settable(m_State, -3);
+
+  while( index < buffer.size() ) {
+    last = buffer.indexOf("\r\n", index);
+    row = buffer.mid(index, last-index);
+    index = last + 2;
+    tmp = row.indexOf(":");
+    lua_pushstring(m_State, row.mid(0, tmp));
+    lua_pushstring(m_State, row.mid(tmp+2, row.size()));
+    lua_settable(m_State, -3);
+  }
+  lua_setglobal(m_State, "request");
+}
+
 
 QByteArray MirandaTask::httpStatus(int code)
 {
