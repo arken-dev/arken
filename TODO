@@ -3,3 +3,10 @@ src/oberon => OThread and OByteArray
 extensions => string
 ---
 lib => *
+---
+template
+post
+multipart
+---
+shared memory
+background threads
