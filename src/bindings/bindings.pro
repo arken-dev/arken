@@ -3,4 +3,18 @@
 ######################################################################
 
 TEMPLATE = subdirs
-SUBDIRS = oberon
+SUBDIRS = oberon \
+          QByteArrayList \
+          QDateTime      \
+          QDir           \
+          QDirIterator   \
+          QFile          \
+          QFileInfo      \
+          QFileInfoList  \
+          QImage         \
+          QPixmap        \
+          QRegExp        \
+          QSqlDatabase   \
+          QSqlQuery      \
+          QString        \
+          QStringList
