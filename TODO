@@ -1,0 +1,5 @@
+bindins => qt, pgsql (OThread, OByteArray)
+src/oberon => OThread and OByteArray
+extensions => string
+---
+lib => *
