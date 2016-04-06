@@ -8,8 +8,11 @@ MirandaServer::MirandaServer(QCoreApplication *app)
   pool  = new QThreadPool(this);
   pool->setMaxThreadCount(15);
 
-  oberonPath = app->applicationDirPath().toLocal8Bit();
-  oberonPath.truncate( oberonPath.lastIndexOf('/') );
+  m_oberonPath = app->applicationDirPath().toLocal8Bit();
+  m_oberonPath.truncate( m_oberonPath.lastIndexOf('/') );
+
+  m_profilePath = m_oberonPath;
+  m_profilePath.append("/profile.lua");
 
   if(this->listen(QHostAddress::Any, 3000)) {
     qDebug() << "start miranda ...";
@@ -23,7 +26,7 @@ void MirandaServer::incomingConnection(qintptr descriptor)
   MirandaTask * task;
   if( stack->isEmpty() ) {
     qDebug() << "stack is empty";
-    task = new MirandaTask(oberonPath, stack);
+    task = new MirandaTask(m_oberonPath, stack);
     task->setAutoDelete(false);
   } else {
     task = stack->pop();

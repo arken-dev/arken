@@ -17,11 +17,14 @@ class MirandaServer : public QTcpServer
 public:
   explicit MirandaServer(QCoreApplication *app);
   void incomingConnection(qintptr descriptor);
+  QByteArray oberonPath();
+  QByteArray profilePath();
 
 private:
-  QThreadPool  * pool;
+  QThreadPool  *          pool;
   QStack<MirandaTask *> * stack;
-  QByteArray oberonPath;
+  QByteArray              m_oberonPath;
+  QByteArray              m_profilePath;
 
 };
 
