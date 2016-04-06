@@ -2,15 +2,18 @@
 #include "mirandatask.h"
 #include <iostream>
 #include <QThread>
+#include <QMutex>
 
 /**
  * PROCEDURAL STACK LUA CODE
  */
 QStack<lua_State *> * stack = new QStack<lua_State *>;
+QMutex mutex;
 
 lua_State * stack_pop(QByteArray &oberonPath, QByteArray &profilePath)
 {
   lua_State * m_State;
+  QMutexLocker ml(&mutex);
 
   if( stack->isEmpty() ) {
 
@@ -44,6 +47,7 @@ lua_State * stack_pop(QByteArray &oberonPath, QByteArray &profilePath)
 
 void stack_push(lua_State * m_State)
 {
+  QMutexLocker ml(&mutex);
   stack->push(m_State);
 }
 
