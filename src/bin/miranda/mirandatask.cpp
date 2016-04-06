@@ -12,8 +12,9 @@ QMutex mutex;
 
 lua_State * stack_pop(QByteArray &oberonPath, QByteArray &profilePath)
 {
-  lua_State * m_State;
+
   QMutexLocker ml(&mutex);
+  lua_State * m_State;
 
   if( stack->isEmpty() ) {
 
@@ -92,7 +93,6 @@ void MirandaTask::run()
   socket.write(buffer);
   socket.flush();
   socket.close();
-
 }
 
 QByteArray MirandaTask::processRequest(lua_State * m_State)
@@ -129,28 +129,17 @@ QByteArray MirandaTask::processRequest(lua_State * m_State)
   buffer.append(QByteArray::number((int)len, 10));
   buffer.append("\r\n\r\n");
   buffer.append(result, len);
-  /*
-  buffer.append("HTTP/1.1 200 OK\r\n");
-  buffer.append("Content-Type: text/html; charset=utf-8\r\n");
-  buffer.append("Content-Length: 11\r\n\r\n");
-  buffer.append("hello world\r\n");
-  */
+
   return buffer;
-}
-
-
-void MirandaTask::disconnected()
-{
-
 }
 
 void MirandaTask::parseRequest(lua_State * m_State, QByteArray &buffer)
 {
-  int index = 0;
-  int last  = 0;
-  int nrec = 0;
+  int index  = 0;
+  int last   = 0;
+  int nrec   = 0;
   int method = 0;
-  int tmp = 0;
+  int tmp    = 0;
   QByteArray row;
   nrec = buffer.count("\r\n") + 1;
 
@@ -184,7 +173,6 @@ void MirandaTask::parseRequest(lua_State * m_State, QByteArray &buffer)
   }
   lua_setglobal(m_State, "request");
 }
-
 
 QByteArray MirandaTask::httpStatus(int code)
 {

@@ -1,7 +1,6 @@
 #include "mirandaserver.h"
 #include "mirandatask.h"
 
-
 MirandaServer::MirandaServer(QCoreApplication *app)
 {
   m_pool = new QThreadPool(this);

@@ -5,9 +5,8 @@
 
 #include <QRunnable>
 #include <QTcpSocket>
-#include <QHash>
-#include <QStack>
 #include <QObject>
+#include <QStack>
 #include <QByteArray>
 #include "mirandaserver.h"
 
@@ -20,9 +19,6 @@ class MirandaTask : public QObject, public QRunnable
 public:
   MirandaTask(MirandaServer * server, qintptr descriptor);
   QByteArray httpStatus(int code);
-
-public slots:
-  void disconnected();
 
 protected:
   QByteArray   m_oberonPath;

@@ -5,9 +5,6 @@
 #include <QDebug>
 #include <QThreadPool>
 #include <QTcpServer>
-#include <QTcpSocket>
-#include <QHash>
-#include <QStack>
 #include <MirandaTask>
 #include <QCoreApplication>
 
@@ -23,9 +20,9 @@ public:
   QByteArray profilePath();
 
 private:
-  QThreadPool  *          m_pool;
-  QByteArray              m_oberonPath;
-  QByteArray              m_profilePath;
+  QThreadPool * m_pool;
+  QByteArray    m_oberonPath;
+  QByteArray    m_profilePath;
 
 };
 
