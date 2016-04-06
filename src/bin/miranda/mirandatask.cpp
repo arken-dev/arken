@@ -3,11 +3,10 @@
 #include <iostream>
 #include <QThread>
 
-MirandaTask::MirandaTask(MirandaServer * server, QStack<MirandaTask *> * value)
+MirandaTask::MirandaTask(MirandaServer * server, qintptr descriptor)
 {
-  int rv;
-  stack   = value;
 
+  m_descriptor  = descriptor;
   m_oberonPath  = server->oberonPath();
   m_profilePath = server->profilePath();
 
@@ -19,7 +18,7 @@ MirandaTask::MirandaTask(MirandaServer * server, QStack<MirandaTask *> * value)
   lua_setglobal(m_State, "OBERON_PATH");
 
 
-  rv = luaL_loadfile(m_State, m_profilePath);
+  int rv = luaL_loadfile(m_State, m_profilePath);
   if (rv) {
     fprintf(stderr, "%s\n", lua_tostring(m_State, -1));
   }
@@ -100,7 +99,7 @@ void MirandaTask::run()
 
 void MirandaTask::disconnected()
 {
-  stack->push(this);
+
 }
 
 void MirandaTask::parseRequest(QTcpSocket &socket)

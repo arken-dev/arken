@@ -23,17 +23,7 @@ MirandaServer::MirandaServer(QCoreApplication *app)
 
 void MirandaServer::incomingConnection(qintptr descriptor)
 {
-  MirandaTask * task;
-  if( stack->isEmpty() ) {
-    qDebug() << "stack is empty";
-    task = new MirandaTask(this, stack);
-    task->setAutoDelete(false);
-  } else {
-    task = stack->pop();
-  }
-
-  task->setDescriptor(descriptor);
-  m_pool->start(task);
+  m_pool->start(new MirandaTask(this, descriptor));
 }
 
 QByteArray MirandaServer::oberonPath()
