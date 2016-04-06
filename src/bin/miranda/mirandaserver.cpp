@@ -26,7 +26,7 @@ void MirandaServer::incomingConnection(qintptr descriptor)
   MirandaTask * task;
   if( stack->isEmpty() ) {
     qDebug() << "stack is empty";
-    task = new MirandaTask(m_oberonPath, stack);
+    task = new MirandaTask(this, stack);
     task->setAutoDelete(false);
   } else {
     task = stack->pop();
@@ -34,4 +34,14 @@ void MirandaServer::incomingConnection(qintptr descriptor)
 
   task->setDescriptor(descriptor);
   pool->start(task);
+}
+
+QByteArray MirandaServer::oberonPath()
+{
+  return m_oberonPath;
+}
+
+QByteArray MirandaServer::profilePath()
+{
+  return m_profilePath;
 }

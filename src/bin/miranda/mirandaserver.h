@@ -11,6 +11,8 @@
 #include <MirandaTask>
 #include <QCoreApplication>
 
+class MirandaTask;
+
 class MirandaServer : public QTcpServer
 {
   Q_OBJECT

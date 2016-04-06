@@ -9,13 +9,16 @@
 #include <QStack>
 #include <QObject>
 #include <QByteArray>
+#include "mirandaserver.h"
+
+class MirandaServer;
 
 class MirandaTask : public QObject, public QRunnable
 {
   Q_OBJECT
 
 public:
-  MirandaTask(QByteArray oberonPath, QStack<MirandaTask *> * stack);
+  MirandaTask(MirandaServer * server, QStack<MirandaTask *> * stack);
   void setDescriptor(qintptr descriptor);
   QByteArray httpStatus(int code);
 
@@ -24,7 +27,8 @@ public slots:
 
 protected:
   QStack<MirandaTask *> * stack;
-  QByteArray   oberonPath;
+  QByteArray   m_oberonPath;
+  QByteArray   m_profilePath;
   lua_State  * m_State;
   qintptr      m_descriptor;
   void run();

@@ -3,23 +3,23 @@
 #include <iostream>
 #include <QThread>
 
-MirandaTask::MirandaTask(QByteArray oberonPath, QStack<MirandaTask *> * value)
+MirandaTask::MirandaTask(MirandaServer * server, QStack<MirandaTask *> * value)
 {
   int rv;
   stack   = value;
+
+  m_oberonPath  = server->oberonPath();
+  m_profilePath = server->profilePath();
+
+
+  //lua state
   m_State = luaL_newstate();
   luaL_openlibs(m_State);
-
-  lua_pushstring(m_State, oberonPath.data());
+  lua_pushstring(m_State, m_oberonPath.data());
   lua_setglobal(m_State, "OBERON_PATH");
 
-  // profile
-  QByteArray profile;
 
-  profile = oberonPath;
-  profile.append("/profile.lua");
-
-  rv = luaL_loadfile(m_State, profile);
+  rv = luaL_loadfile(m_State, m_profilePath);
   if (rv) {
     fprintf(stderr, "%s\n", lua_tostring(m_State, -1));
   }
@@ -60,6 +60,7 @@ void MirandaTask::run()
   if ( socket.waitForReadyRead(-1) ) {
     this->parseRequest(socket);
   }
+  */
 
   // lua
   lua_settop(m_State, 0);
@@ -86,11 +87,12 @@ void MirandaTask::run()
   buffer.append(QByteArray::number((int)len, 10));
   buffer.append("\r\n\r\n");
   buffer.append(result, len);
-  */
+  /*
   buffer.append("HTTP/1.1 200 OK\r\n");
   buffer.append("Content-Type: text/html; charset=utf-8\r\n");
   buffer.append("Content-Length: 11\r\n\r\n");
   buffer.append("hello world\r\n");
+  */
   socket.write(buffer);
   socket.flush();
   socket.close();
