@@ -56,7 +56,7 @@ void MirandaTask::run()
     qDebug() << "connect !!!";
   }
   */
-
+  /*
   if ( socket.waitForReadyRead(-1) ) {
     this->parseRequest(socket);
   }
@@ -86,7 +86,11 @@ void MirandaTask::run()
   buffer.append(QByteArray::number((int)len, 10));
   buffer.append("\r\n\r\n");
   buffer.append(result, len);
-
+  */
+  buffer.append("HTTP/1.1 200 OK\r\n");
+  buffer.append("Content-Type: text/html; charset=utf-8\r\n");
+  buffer.append("Content-Length: 11\r\n\r\n");
+  buffer.append("hello world\r\n");
   socket.write(buffer);
   socket.flush();
   socket.close();
