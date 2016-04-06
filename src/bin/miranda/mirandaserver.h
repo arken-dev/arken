@@ -24,7 +24,6 @@ public:
 
 private:
   QThreadPool  *          m_pool;
-  QStack<MirandaTask *> * stack;
   QByteArray              m_oberonPath;
   QByteArray              m_profilePath;
 

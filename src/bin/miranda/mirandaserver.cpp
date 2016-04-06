@@ -4,7 +4,6 @@
 
 MirandaServer::MirandaServer(QCoreApplication *app)
 {
-  stack  = new QStack<MirandaTask *>;
   m_pool = new QThreadPool(this);
   m_pool->setMaxThreadCount(15);
 
