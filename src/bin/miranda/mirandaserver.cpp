@@ -4,9 +4,9 @@
 
 MirandaServer::MirandaServer(QCoreApplication *app)
 {
-  stack = new QStack<MirandaTask *>;
-  pool  = new QThreadPool(this);
-  pool->setMaxThreadCount(15);
+  stack  = new QStack<MirandaTask *>;
+  m_pool = new QThreadPool(this);
+  m_pool->setMaxThreadCount(15);
 
   m_oberonPath = app->applicationDirPath().toLocal8Bit();
   m_oberonPath.truncate( m_oberonPath.lastIndexOf('/') );
@@ -33,7 +33,7 @@ void MirandaServer::incomingConnection(qintptr descriptor)
   }
 
   task->setDescriptor(descriptor);
-  pool->start(task);
+  m_pool->start(task);
 }
 
 QByteArray MirandaServer::oberonPath()

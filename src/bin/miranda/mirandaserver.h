@@ -23,7 +23,7 @@ public:
   QByteArray profilePath();
 
 private:
-  QThreadPool  *          pool;
+  QThreadPool  *          m_pool;
   QStack<MirandaTask *> * stack;
   QByteArray              m_oberonPath;
   QByteArray              m_profilePath;
