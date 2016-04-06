@@ -25,13 +25,11 @@ public slots:
   void disconnected();
 
 protected:
-  QStack<MirandaTask *> * stack;
   QByteArray   m_oberonPath;
   QByteArray   m_profilePath;
-  lua_State  * m_State;
   qintptr      m_descriptor;
   void run();
-  void parseRequest(QTcpSocket &socket);
+  void parseRequest(lua_State * mState, QTcpSocket &socket);
 
 };
 

@@ -3,6 +3,8 @@
 #include <iostream>
 #include <QThread>
 
+//QStack<lua_State *> * stack
+
 MirandaTask::MirandaTask(MirandaServer * server, qintptr descriptor)
 {
 
@@ -10,9 +12,18 @@ MirandaTask::MirandaTask(MirandaServer * server, qintptr descriptor)
   m_oberonPath  = server->oberonPath();
   m_profilePath = server->profilePath();
 
+}
+
+void MirandaTask::run()
+{
+  int code;
+  size_t len;
+  const char * result;
+  QTcpSocket socket;
+  QByteArray buffer;
 
   //lua state
-  m_State = luaL_newstate();
+  lua_State * m_State = luaL_newstate();
   luaL_openlibs(m_State);
   lua_pushstring(m_State, m_oberonPath.data());
   lua_setglobal(m_State, "OBERON_PATH");
@@ -31,15 +42,7 @@ MirandaTask::MirandaTask(MirandaServer * server, qintptr descriptor)
   luaL_loadfile(m_State, "process_http.lua" );
   lua_pcall(m_State, 0, 0, 0);
   qDebug() << "constructor MirandaTask";
-}
 
-void MirandaTask::run()
-{
-  int code;
-  size_t len;
-  const char * result;
-  QTcpSocket socket;
-  QByteArray buffer;
 
   // socket
   connect(&socket, SIGNAL(disconnected()), this, SLOT(disconnected()));
@@ -97,7 +100,7 @@ void MirandaTask::disconnected()
 
 }
 
-void MirandaTask::parseRequest(QTcpSocket &socket)
+void MirandaTask::parseRequest(lua_State * m_State, QTcpSocket &socket)
 {
   int index = 0;
   int last  = 0;
