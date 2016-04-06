@@ -16,9 +16,6 @@ MirandaTask::MirandaTask(MirandaServer * server, qintptr descriptor)
 
 void MirandaTask::run()
 {
-  int code;
-  size_t len;
-  const char * result;
   QTcpSocket socket;
   QByteArray buffer;
 
@@ -56,8 +53,20 @@ void MirandaTask::run()
 
 
   // Parse Request
-
   this->parseRequest(m_State, buffer);
+
+  // Process Request
+  this->processRequest(m_State, socket);
+}
+
+void MirandaTask::processRequest(lua_State * m_State, QTcpSocket &socket)
+{
+
+  int code;
+  size_t len;
+  const char * result;
+
+  QByteArray buffer;
 
   // Process Request
   lua_settop(m_State, 0);
@@ -70,7 +79,6 @@ void MirandaTask::run()
     result = luaL_checklstring( m_State, 3, &len );
   }
 
-  buffer.clear();
   buffer.append(httpStatus(code));
   buffer.append("\r\n");
 
@@ -95,6 +103,7 @@ void MirandaTask::run()
   socket.flush();
   socket.close();
 }
+
 
 void MirandaTask::disconnected()
 {
