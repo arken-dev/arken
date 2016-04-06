@@ -3,7 +3,49 @@
 #include <iostream>
 #include <QThread>
 
-//QStack<lua_State *> * stack
+/**
+ * PROCEDURAL STACK LUA CODE
+ */
+QStack<lua_State *> * stack = new QStack<lua_State *>;
+
+lua_State * stack_pop(QByteArray &oberonPath, QByteArray &profilePath)
+{
+  lua_State * m_State;
+
+  if( stack->isEmpty() ) {
+
+    int rv;
+    m_State = luaL_newstate();
+
+    luaL_openlibs(m_State);
+    lua_pushstring(m_State, oberonPath);
+    lua_setglobal(m_State, "OBERON_PATH");
+
+    rv = luaL_loadfile(m_State, profilePath);
+    if (rv) {
+      fprintf(stderr, "%s\n", lua_tostring(m_State, -1));
+    }
+
+    rv = lua_pcall(m_State, 0, 0, lua_gettop(m_State) - 1);
+    if (rv) {
+      fprintf(stderr, "%s\n", lua_tostring(m_State, -1));
+    }
+
+    luaL_loadfile(m_State, "process_http.lua" );
+    lua_pcall(m_State, 0, 0, 0);
+    qDebug() << "create Lua State";
+
+  } else {
+    m_State = stack->pop();
+  }
+
+  return m_State;
+}
+
+void stack_push(lua_State * m_State)
+{
+  stack->push(m_State);
+}
 
 MirandaTask::MirandaTask(MirandaServer * server, qintptr descriptor)
 {
@@ -30,36 +72,26 @@ void MirandaTask::run()
     buffer = socket.readAll();
   }
 
-  //lua state
-  lua_State * m_State = luaL_newstate();
-  luaL_openlibs(m_State);
-  lua_pushstring(m_State, m_oberonPath.data());
-  lua_setglobal(m_State, "OBERON_PATH");
-
-
-  int rv = luaL_loadfile(m_State, m_profilePath);
-  if (rv) {
-    fprintf(stderr, "%s\n", lua_tostring(m_State, -1));
-  }
-
-  rv = lua_pcall(m_State, 0, 0, lua_gettop(m_State) - 1);
-  if (rv) {
-    fprintf(stderr, "%s\n", lua_tostring(m_State, -1));
-  }
-
-  luaL_loadfile(m_State, "process_http.lua" );
-  lua_pcall(m_State, 0, 0, 0);
-  qDebug() << "constructor MirandaTask";
-
+  // stack pop lua state
+  lua_State * m_State = stack_pop(m_oberonPath, m_profilePath);
 
   // Parse Request
   this->parseRequest(m_State, buffer);
 
   // Process Request
-  this->processRequest(m_State, socket);
+  buffer = this->processRequest(m_State);
+
+  // stack push lua state
+  stack_push(m_State);
+
+  //socket
+  socket.write(buffer);
+  socket.flush();
+  socket.close();
+
 }
 
-void MirandaTask::processRequest(lua_State * m_State, QTcpSocket &socket)
+QByteArray MirandaTask::processRequest(lua_State * m_State)
 {
 
   int code;
@@ -99,9 +131,7 @@ void MirandaTask::processRequest(lua_State * m_State, QTcpSocket &socket)
   buffer.append("Content-Length: 11\r\n\r\n");
   buffer.append("hello world\r\n");
   */
-  socket.write(buffer);
-  socket.flush();
-  socket.close();
+  return buffer;
 }
 
 

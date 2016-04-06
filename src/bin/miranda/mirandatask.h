@@ -30,7 +30,7 @@ protected:
   qintptr      m_descriptor;
   void run();
   void parseRequest(lua_State * mState, QByteArray &buffer);
-  void processRequest(lua_State * mState, QTcpSocket &socket);
+  QByteArray processRequest(lua_State * mState);
 };
 
 #endif // MIRANDATASK_H
