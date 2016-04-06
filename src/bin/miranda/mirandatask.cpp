@@ -22,6 +22,17 @@ void MirandaTask::run()
   QTcpSocket socket;
   QByteArray buffer;
 
+  // socket
+  socket.setSocketDescriptor(m_descriptor);
+
+  //if ( socket.waitForConnected(-1) ) {
+  //  qDebug() << "connect !!!";
+  //}
+
+  if ( socket.waitForReadyRead(-1) ) {
+    buffer = socket.readAll();
+  }
+
   //lua state
   lua_State * m_State = luaL_newstate();
   luaL_openlibs(m_State);
@@ -44,22 +55,11 @@ void MirandaTask::run()
   qDebug() << "constructor MirandaTask";
 
 
-  // socket
-  connect(&socket, SIGNAL(disconnected()), this, SLOT(disconnected()));
-  socket.setSocketDescriptor(m_descriptor);
+  // Parse Request
 
-  /*
-  if ( socket.waitForConnected(-1) ) {
-    qDebug() << "connect !!!";
-  }
-  */
-  /*
-  if ( socket.waitForReadyRead(-1) ) {
-    this->parseRequest(socket);
-  }
-  */
+  this->parseRequest(m_State, buffer);
 
-  // lua
+  // Process Request
   lua_settop(m_State, 0);
   lua_getglobal(m_State, "process_http");
   if( lua_pcall(m_State, 0, 3, 0 ) ) {
@@ -70,6 +70,7 @@ void MirandaTask::run()
     result = luaL_checklstring( m_State, 3, &len );
   }
 
+  buffer.clear();
   buffer.append(httpStatus(code));
   buffer.append("\r\n");
 
@@ -100,7 +101,7 @@ void MirandaTask::disconnected()
 
 }
 
-void MirandaTask::parseRequest(lua_State * m_State, QTcpSocket &socket)
+void MirandaTask::parseRequest(lua_State * m_State, QByteArray &buffer)
 {
   int index = 0;
   int last  = 0;
@@ -108,7 +109,6 @@ void MirandaTask::parseRequest(lua_State * m_State, QTcpSocket &socket)
   int method = 0;
   int tmp = 0;
   QByteArray row;
-  QByteArray buffer = socket.readAll();
   nrec = buffer.count("\r\n") + 1;
 
   //lua table

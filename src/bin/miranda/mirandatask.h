@@ -29,7 +29,7 @@ protected:
   QByteArray   m_profilePath;
   qintptr      m_descriptor;
   void run();
-  void parseRequest(lua_State * mState, QTcpSocket &socket);
+  void parseRequest(lua_State * mState, QByteArray &buffer);
 
 };
 
