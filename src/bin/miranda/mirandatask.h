@@ -19,7 +19,6 @@ class MirandaTask : public QObject, public QRunnable
 
 public:
   MirandaTask(MirandaServer * server, qintptr descriptor);
-  void setDescriptor(qintptr descriptor);
   QByteArray httpStatus(int code);
 
 public slots:

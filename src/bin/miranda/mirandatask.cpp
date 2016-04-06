@@ -33,11 +33,6 @@ MirandaTask::MirandaTask(MirandaServer * server, qintptr descriptor)
   qDebug() << "constructor MirandaTask";
 }
 
-void MirandaTask::setDescriptor(qintptr descriptor)
-{
-  m_descriptor = descriptor;
-}
-
 void MirandaTask::run()
 {
   int code;
