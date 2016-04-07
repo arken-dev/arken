@@ -4,9 +4,6 @@
 
 MirandaServer::MirandaServer(QCoreApplication *app)
 {
-  m_pool = new QThreadPool(this);
-  m_pool->setMaxThreadCount(15);
-
   m_oberonPath = app->applicationDirPath().toLocal8Bit();
   m_oberonPath.truncate( m_oberonPath.lastIndexOf('/') );
 
@@ -14,6 +11,12 @@ MirandaServer::MirandaServer(QCoreApplication *app)
   m_profilePath.append("/profile.lua");
 
   MirandaState::init(m_oberonPath, m_profilePath);
+}
+
+void MirandaServer::start()
+{
+  m_pool = new QThreadPool(this);
+  m_pool->setMaxThreadCount(15);
 
   if(this->listen(QHostAddress::Any, 3000)) {
     qDebug() << "start miranda ...";
@@ -25,14 +28,4 @@ MirandaServer::MirandaServer(QCoreApplication *app)
 void MirandaServer::incomingConnection(qintptr descriptor)
 {
   m_pool->start(new MirandaTask(descriptor));
-}
-
-QByteArray MirandaServer::oberonPath()
-{
-  return m_oberonPath;
-}
-
-QByteArray MirandaServer::profilePath()
-{
-  return m_profilePath;
 }

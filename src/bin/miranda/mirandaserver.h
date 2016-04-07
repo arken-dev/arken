@@ -16,8 +16,7 @@ class MirandaServer : public QTcpServer
 public:
   explicit MirandaServer(QCoreApplication *app);
   void incomingConnection(qintptr descriptor);
-  QByteArray oberonPath();
-  QByteArray profilePath();
+  void start();
 
 private:
   QThreadPool * m_pool;
