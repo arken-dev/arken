@@ -19,8 +19,10 @@ unix:LIBS += /usr/lib/x86_64-linux-gnu/libluajit-5.1.so
 # Input
 SOURCES += main.cpp \
     mirandaserver.cpp \
-    mirandatask.cpp
+    mirandatask.cpp \
+    mirandastate.cpp
 
 HEADERS += \
     mirandaserver.h \
-    mirandatask.h
+    mirandatask.h \
+    mirandastate.h

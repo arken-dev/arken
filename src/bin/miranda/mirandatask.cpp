@@ -4,61 +4,9 @@
 #include <QThread>
 #include <QMutex>
 
-/**
- * PROCEDURAL STACK LUA CODE
- */
-QStack<lua_State *> * stack = new QStack<lua_State *>;
-QMutex mutex;
-
-lua_State * stack_pop(QByteArray &oberonPath, QByteArray &profilePath)
+MirandaTask::MirandaTask(qintptr descriptor)
 {
-
-  QMutexLocker ml(&mutex);
-  lua_State * m_State;
-
-  if( stack->isEmpty() ) {
-
-    int rv;
-    m_State = luaL_newstate();
-
-    luaL_openlibs(m_State);
-    lua_pushstring(m_State, oberonPath);
-    lua_setglobal(m_State, "OBERON_PATH");
-
-    rv = luaL_loadfile(m_State, profilePath);
-    if (rv) {
-      fprintf(stderr, "%s\n", lua_tostring(m_State, -1));
-    }
-
-    rv = lua_pcall(m_State, 0, 0, lua_gettop(m_State) - 1);
-    if (rv) {
-      fprintf(stderr, "%s\n", lua_tostring(m_State, -1));
-    }
-
-    luaL_loadfile(m_State, "process_http.lua" );
-    lua_pcall(m_State, 0, 0, 0);
-    qDebug() << "create Lua State";
-
-  } else {
-    m_State = stack->pop();
-  }
-
-  return m_State;
-}
-
-void stack_push(lua_State * m_State)
-{
-  QMutexLocker ml(&mutex);
-  stack->push(m_State);
-}
-
-MirandaTask::MirandaTask(MirandaServer * server, qintptr descriptor)
-{
-
   m_descriptor  = descriptor;
-  m_oberonPath  = server->oberonPath();
-  m_profilePath = server->profilePath();
-
 }
 
 void MirandaTask::run()
@@ -78,16 +26,16 @@ void MirandaTask::run()
   }
 
   // stack pop lua state
-  lua_State * m_State = stack_pop(m_oberonPath, m_profilePath);
+  MirandaState * state = MirandaState::pop();
 
   // Parse Request
-  this->parseRequest(m_State, buffer);
+  this->parseRequest(state, buffer);
 
   // Process Request
-  buffer = this->processRequest(m_State);
+  buffer = this->processRequest(state);
 
   // stack push lua state
-  stack_push(m_State);
+  MirandaState::push(state);
 
   //socket
   socket.write(buffer);
@@ -95,13 +43,13 @@ void MirandaTask::run()
   socket.close();
 }
 
-QByteArray MirandaTask::processRequest(lua_State * m_State)
+QByteArray MirandaTask::processRequest(MirandaState * state)
 {
-
   int code;
   size_t len;
   const char * result;
 
+  lua_State * m_State = state->instance();
   QByteArray buffer;
 
   // Process Request
@@ -133,13 +81,14 @@ QByteArray MirandaTask::processRequest(lua_State * m_State)
   return buffer;
 }
 
-void MirandaTask::parseRequest(lua_State * m_State, QByteArray &buffer)
+void MirandaTask::parseRequest(MirandaState *state, QByteArray &buffer)
 {
   int index  = 0;
   int last   = 0;
   int nrec   = 0;
   int method = 0;
   int tmp    = 0;
+  lua_State * m_State = state->instance();
   QByteArray row;
   nrec = buffer.count("\r\n") + 1;
 

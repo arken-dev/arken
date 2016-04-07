@@ -9,6 +9,7 @@
 #include <QStack>
 #include <QByteArray>
 #include "mirandaserver.h"
+#include "mirandastate.h"
 
 class MirandaServer;
 
@@ -17,16 +18,14 @@ class MirandaTask : public QObject, public QRunnable
   Q_OBJECT
 
 public:
-  MirandaTask(MirandaServer * server, qintptr descriptor);
+  MirandaTask(qintptr descriptor);
   QByteArray httpStatus(int code);
 
 protected:
-  QByteArray   m_oberonPath;
-  QByteArray   m_profilePath;
   qintptr      m_descriptor;
   void run();
-  void parseRequest(lua_State * mState, QByteArray &buffer);
-  QByteArray processRequest(lua_State * mState);
+  void parseRequest(MirandaState * state, QByteArray &buffer);
+  QByteArray processRequest(MirandaState * state);
 };
 
 #endif // MIRANDATASK_H

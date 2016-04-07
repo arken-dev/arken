@@ -1,5 +1,6 @@
 #include "mirandaserver.h"
 #include "mirandatask.h"
+#include "mirandastate.h"
 
 MirandaServer::MirandaServer(QCoreApplication *app)
 {
@@ -12,6 +13,8 @@ MirandaServer::MirandaServer(QCoreApplication *app)
   m_profilePath = m_oberonPath;
   m_profilePath.append("/profile.lua");
 
+  MirandaState::init(m_oberonPath, m_profilePath);
+
   if(this->listen(QHostAddress::Any, 3000)) {
     qDebug() << "start miranda ...";
   } else {
@@ -21,7 +24,7 @@ MirandaServer::MirandaServer(QCoreApplication *app)
 
 void MirandaServer::incomingConnection(qintptr descriptor)
 {
-  m_pool->start(new MirandaTask(this, descriptor));
+  m_pool->start(new MirandaTask(descriptor));
 }
 
 QByteArray MirandaServer::oberonPath()
