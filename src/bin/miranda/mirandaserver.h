@@ -12,7 +12,7 @@ class MirandaTask;
 
 class MirandaServer : public QTcpServer
 {
-  Q_OBJECT
+
 public:
   explicit MirandaServer(QCoreApplication *app);
   void incomingConnection(qintptr descriptor);

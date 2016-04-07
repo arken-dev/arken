@@ -15,7 +15,6 @@ class MirandaServer;
 
 class MirandaTask : public QObject, public QRunnable
 {
-  Q_OBJECT
 
 public:
   MirandaTask(qintptr descriptor);
