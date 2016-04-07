@@ -12,7 +12,8 @@ miranda_server_reload(lua_State *) {
 static int
 miranda_server_clear(lua_State *) {
   MirandaState::clear();
-  return 1;
+  qDebug() << "clear...";
+  return 0;
 }
 
 
@@ -36,6 +37,7 @@ static QMutex     mutex;
 MirandaState::MirandaState()
 {
   int rv;
+  m_lastReload = QDateTime::currentMSecsSinceEpoch();
   m_State = luaL_newstate();
 
   luaL_openlibs(m_State);
@@ -60,6 +62,11 @@ MirandaState::MirandaState()
   qDebug() << "create Lua State";
 }
 
+MirandaState::~MirandaState()
+{
+  lua_close(m_State);
+}
+
 void MirandaState::init(QByteArray oberonPath, QByteArray profilePath)
 {
   static_oberonPath  = oberonPath;
@@ -76,6 +83,10 @@ MirandaState * MirandaState::pop()
     state = new MirandaState();
   } else {
     state = stack->pop();
+    if( static_lastReload > state->m_lastReload ) {
+      delete state;
+      state = new MirandaState();
+    }
   }
 
   return state;

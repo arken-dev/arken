@@ -14,6 +14,7 @@ class MirandaState
 public:
 
   MirandaState();
+  ~MirandaState();
 
   static void init(QByteArray oberonPath, QByteArray profilePath);
   static MirandaState * pop();
@@ -24,6 +25,7 @@ public:
 
 private:
   lua_State * m_State;
+  qint64      m_lastReload;
 };
 
 #endif // MIRANDASTATE_H
