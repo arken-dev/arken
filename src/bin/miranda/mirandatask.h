@@ -21,7 +21,7 @@ public:
   QByteArray httpStatus(int code);
 
 protected:
-  qintptr      m_descriptor;
+  qintptr m_descriptor;
   void run();
   void parseRequest(MirandaState * state, QByteArray &buffer);
   void processRequest(MirandaState * state, QByteArray &buffer);
