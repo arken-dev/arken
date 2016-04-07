@@ -2,6 +2,31 @@
 #include <QDebug>
 #include <QStack>
 
+static int
+miranda_server_reload(lua_State *) {
+  MirandaState::reload();
+  qDebug() << "reload...";
+  return 0;
+}
+
+static int
+miranda_server_clear(lua_State *) {
+  MirandaState::clear();
+  return 1;
+}
+
+
+static void
+miranda_server_register(lua_State * L) {
+  static const         luaL_reg Map[] = {
+    {"reload",  miranda_server_reload},
+    {"clear",   miranda_server_clear},
+    {NULL, NULL}
+  };
+
+  luaL_register(L, "server", Map);
+}
+
 static QByteArray static_oberonPath  = "";
 static QByteArray static_profilePath = "";
 static qint64     static_lastReload  = 0;
@@ -14,6 +39,9 @@ MirandaState::MirandaState()
   m_State = luaL_newstate();
 
   luaL_openlibs(m_State);
+
+  miranda_server_register(m_State);
+
   lua_pushstring(m_State, static_oberonPath);
   lua_setglobal(m_State, "OBERON_PATH");
 
@@ -67,7 +95,7 @@ void MirandaState::reload()
 void MirandaState::clear()
 {
   QMutexLocker ml(&mutex);
-
+  static_lastReload = QDateTime::currentMSecsSinceEpoch();
   while( !stack->isEmpty() ) {
     delete stack->pop();
   }
