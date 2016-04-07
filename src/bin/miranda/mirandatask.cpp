@@ -11,6 +11,7 @@ MirandaTask::MirandaTask(qintptr descriptor)
 
 void MirandaTask::run()
 {
+  MirandaState * state;
   QTcpSocket socket;
   QByteArray buffer;
 
@@ -26,13 +27,13 @@ void MirandaTask::run()
   }
 
   // stack pop lua state
-  MirandaState * state = MirandaState::pop();
+  state = MirandaState::pop();
 
   // Parse Request
   this->parseRequest(state, buffer);
 
   // Process Request
-  buffer = this->processRequest(state);
+  this->processRequest(state, buffer);
 
   // stack push lua state
   MirandaState::push(state);
@@ -43,14 +44,15 @@ void MirandaTask::run()
   socket.close();
 }
 
-QByteArray MirandaTask::processRequest(MirandaState * state)
+void MirandaTask::processRequest(MirandaState * state, QByteArray &buffer)
 {
   int code;
   size_t len;
   const char * result;
+  lua_State * m_State;
 
-  lua_State * m_State = state->instance();
-  QByteArray buffer;
+  m_State = state->instance();
+  buffer.clear();
 
   // Process Request
   lua_settop(m_State, 0);
@@ -77,8 +79,6 @@ QByteArray MirandaTask::processRequest(MirandaState * state)
   buffer.append(QByteArray::number((int)len, 10));
   buffer.append("\r\n\r\n");
   buffer.append(result, len);
-
-  return buffer;
 }
 
 void MirandaTask::parseRequest(MirandaState *state, QByteArray &buffer)
@@ -88,8 +88,11 @@ void MirandaTask::parseRequest(MirandaState *state, QByteArray &buffer)
   int nrec   = 0;
   int method = 0;
   int tmp    = 0;
-  lua_State * m_State = state->instance();
   QByteArray row;
+  lua_State * m_State;
+
+  m_State = state->instance();
+
   nrec = buffer.count("\r\n") + 1;
 
   //lua table

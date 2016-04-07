@@ -24,7 +24,7 @@ protected:
   qintptr      m_descriptor;
   void run();
   void parseRequest(MirandaState * state, QByteArray &buffer);
-  QByteArray processRequest(MirandaState * state);
+  void processRequest(MirandaState * state, QByteArray &buffer);
 };
 
 #endif // MIRANDATASK_H
