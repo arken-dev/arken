@@ -3,7 +3,8 @@
 ######################################################################
 
 TEMPLATE = subdirs
-SUBDIRS = oberon \
+SUBDIRS = oberon         \
+          pgsql          \
           QByteArrayList \
           QDateTime      \
           QDir           \
