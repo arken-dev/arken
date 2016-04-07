@@ -115,10 +115,10 @@ void MirandaTask::parseRequest(MirandaState *state, QByteArray &buffer)
   lua_settable(L, -3);
 
   while( index < buffer.size() ) {
-    last = buffer.indexOf("\r\n", index);
-    row = buffer.mid(index, last-index);
+    last  = buffer.indexOf("\r\n", index);
+    row   = buffer.mid(index, last-index);
     index = last + 2;
-    tmp = row.indexOf(":");
+    tmp   = row.indexOf(":");
     lua_pushstring(L, row.mid(0, tmp));
     lua_pushstring(L, row.mid(tmp+2, row.size()));
     lua_settable(L, -3);
