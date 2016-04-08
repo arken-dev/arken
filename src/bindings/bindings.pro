@@ -4,7 +4,6 @@
 
 TEMPLATE = subdirs
 SUBDIRS = oberon         \
-          pgsql          \
           QByteArrayList \
           QDateTime      \
           QDir           \
@@ -19,3 +18,5 @@ SUBDIRS = oberon         \
           QSqlQuery      \
           QString        \
           QStringList
+
+unix:SUBDIRS += pgsql
