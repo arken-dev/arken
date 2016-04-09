@@ -29,6 +29,7 @@ private:
   static QByteArray m_oberonPath;
   static QByteArray m_profilePath;
   static QMutex     m_mutex;
+  static QStack<MirandaState *> * m_stack;
 };
 
 #endif // MIRANDASTATE_H
