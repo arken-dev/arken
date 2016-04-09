@@ -32,7 +32,6 @@ miranda_server_register(lua_State * L) {
 }
 
 
-static QByteArray static_profilePath = "";
 static qint64     static_lastReload  = 0;
 static QStack<MirandaState *> * stack   = new QStack<MirandaState *>;
 static QMutex     mutex;
