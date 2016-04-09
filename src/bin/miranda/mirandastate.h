@@ -26,6 +26,7 @@ public:
 private:
   lua_State * m_State;
   qint64      m_lastReload;
+  static qint64     s_lastReload;
   static QByteArray s_oberonPath;
   static QByteArray s_profilePath;
   static QMutex     s_mutex;
