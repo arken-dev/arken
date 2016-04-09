@@ -28,7 +28,7 @@ private:
   qint64      m_lastReload;
   static QByteArray m_oberonPath;
   static QByteArray m_profilePath;
-
+  static QMutex     m_mutex;
 };
 
 #endif // MIRANDASTATE_H
