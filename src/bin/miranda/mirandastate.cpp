@@ -2,7 +2,7 @@
 #include <QDebug>
 #include <QStack>
 
-qint64     MirandaState::s_lastReload  = 0;
+qint64     MirandaState::s_version     = 0;
 QByteArray MirandaState::s_oberonPath  = "";
 QByteArray MirandaState::s_profilePath = "";
 QMutex     MirandaState::s_mutex;
@@ -12,20 +12,28 @@ QStack<MirandaState *> * MirandaState::s_stack = new QStack<MirandaState *>;
 static int
 miranda_server_reload(lua_State *) {
   MirandaState::reload();
-  qDebug() << "reload...";
+  qDebug() << "reload: " << MirandaState::version() ;
   return 0;
 }
 
 static int
 miranda_server_clear(lua_State *) {
   MirandaState::clear();
-  qDebug() << "clear...";
+  qDebug() << "clear: " << MirandaState::version() ;
   return 0;
 }
+
+static int
+miranda_server_version(lua_State *L) {
+  lua_pushnumber(L, MirandaState::version());
+  return 1;
+}
+
 
 static void
 miranda_server_register(lua_State * L) {
   static const         luaL_reg Map[] = {
+    {"version", miranda_server_version},
     {"reload",  miranda_server_reload},
     {"clear",   miranda_server_clear},
     {NULL, NULL}
@@ -38,7 +46,7 @@ miranda_server_register(lua_State * L) {
 MirandaState::MirandaState()
 {
   int rv;
-  m_lastReload = QDateTime::currentMSecsSinceEpoch();
+  m_version = s_version;
   m_State = luaL_newstate();
 
   luaL_openlibs(m_State);
@@ -72,7 +80,6 @@ void MirandaState::init(QByteArray oberonPath, QByteArray profilePath)
 {
   s_oberonPath  = oberonPath;
   s_profilePath = profilePath;
-  s_lastReload  = QDateTime::currentMSecsSinceEpoch();
 }
 
 MirandaState * MirandaState::pop()
@@ -84,7 +91,7 @@ MirandaState * MirandaState::pop()
     state = new MirandaState();
   } else {
     state = s_stack->pop();
-    if( s_lastReload > state->m_lastReload ) {
+    if( s_version != state->m_version ) {
       delete state;
       state = new MirandaState();
     }
@@ -101,13 +108,13 @@ void MirandaState::push(MirandaState * state)
 
 void MirandaState::reload()
 {
-  s_lastReload = QDateTime::currentMSecsSinceEpoch();
+  s_version++;
 }
 
 void MirandaState::clear()
 {
   QMutexLocker ml(&s_mutex);
-  s_lastReload = QDateTime::currentMSecsSinceEpoch();
+  s_version++;
   while( !s_stack->isEmpty() ) {
     delete s_stack->pop();
   }
@@ -116,4 +123,9 @@ void MirandaState::clear()
 lua_State * MirandaState::instance()
 {
   return m_State;
+}
+
+int MirandaState::version()
+{
+  return s_version;
 }

@@ -21,12 +21,13 @@ public:
   static void push(MirandaState *);
   static void reload();
   static void clear();
+  static int  version();
   lua_State * instance();
 
 private:
   lua_State * m_State;
-  qint64      m_lastReload;
-  static qint64     s_lastReload;
+  qint64      m_version;
+  static qint64     s_version;
   static QByteArray s_oberonPath;
   static QByteArray s_profilePath;
   static QMutex     s_mutex;
