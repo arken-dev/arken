@@ -17,12 +17,12 @@ win32:LIBS += ../../../vendors/lua51.dll
 unix:LIBS += /usr/lib/x86_64-linux-gnu/libluajit-5.1.so
 
 # Input
-SOURCES += main.cpp \
+SOURCES += main.cpp   \
     mirandaserver.cpp \
-    mirandatask.cpp \
-    mirandastate.cpp
+    mirandatask.cpp   \
+    mirandastate.cpp  \
+    miranda_server_register.cpp
 
-HEADERS += \
-    mirandaserver.h \
-    mirandatask.h \
+HEADERS += mirandaserver.h \
+    mirandatask.h          \
     mirandastate.h
