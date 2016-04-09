@@ -26,10 +26,10 @@ public:
 private:
   lua_State * m_State;
   qint64      m_lastReload;
-  static QByteArray m_oberonPath;
-  static QByteArray m_profilePath;
-  static QMutex     m_mutex;
-  static QStack<MirandaState *> * m_stack;
+  static QByteArray s_oberonPath;
+  static QByteArray s_profilePath;
+  static QMutex     s_mutex;
+  static QStack<MirandaState *> * s_stack;
 };
 
 #endif // MIRANDASTATE_H

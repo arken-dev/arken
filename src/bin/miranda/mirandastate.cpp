@@ -2,11 +2,11 @@
 #include <QDebug>
 #include <QStack>
 
-QByteArray MirandaState::m_oberonPath  = "";
-QByteArray MirandaState::m_profilePath = "";
-QMutex     MirandaState::m_mutex;
+QByteArray MirandaState::s_oberonPath  = "";
+QByteArray MirandaState::s_profilePath = "";
+QMutex     MirandaState::s_mutex;
 
-QStack<MirandaState *> * MirandaState::m_stack = new QStack<MirandaState *>;
+QStack<MirandaState *> * MirandaState::s_stack = new QStack<MirandaState *>;
 
 static int
 miranda_server_reload(lua_State *) {
@@ -22,7 +22,6 @@ miranda_server_clear(lua_State *) {
   return 0;
 }
 
-
 static void
 miranda_server_register(lua_State * L) {
   static const         luaL_reg Map[] = {
@@ -33,7 +32,6 @@ miranda_server_register(lua_State * L) {
 
   luaL_register(L, "server", Map);
 }
-
 
 static qint64     static_lastReload  = 0;
 
@@ -47,10 +45,10 @@ MirandaState::MirandaState()
 
   miranda_server_register(m_State);
 
-  lua_pushstring(m_State, m_oberonPath);
+  lua_pushstring(m_State, s_oberonPath);
   lua_setglobal(m_State, "OBERON_PATH");
 
-  rv = luaL_loadfile(m_State, m_profilePath);
+  rv = luaL_loadfile(m_State, s_profilePath);
   if (rv) {
     fprintf(stderr, "%s\n", lua_tostring(m_State, -1));
   }
@@ -72,20 +70,20 @@ MirandaState::~MirandaState()
 
 void MirandaState::init(QByteArray oberonPath, QByteArray profilePath)
 {
-  m_oberonPath  = oberonPath;
-  m_profilePath = profilePath;
+  s_oberonPath  = oberonPath;
+  s_profilePath = profilePath;
   static_lastReload  = QDateTime::currentMSecsSinceEpoch();
 }
 
 MirandaState * MirandaState::pop()
 {
-  QMutexLocker ml(&m_mutex);
+  QMutexLocker ml(&s_mutex);
   MirandaState * state;
 
-  if( m_stack->isEmpty() ) {
+  if( s_stack->isEmpty() ) {
     state = new MirandaState();
   } else {
-    state = m_stack->pop();
+    state = s_stack->pop();
     if( static_lastReload > state->m_lastReload ) {
       delete state;
       state = new MirandaState();
@@ -97,8 +95,8 @@ MirandaState * MirandaState::pop()
 
 void MirandaState::push(MirandaState * state)
 {
-  QMutexLocker ml(&m_mutex);
-  m_stack->push(state);
+  QMutexLocker ml(&s_mutex);
+  s_stack->push(state);
 }
 
 void MirandaState::reload()
@@ -108,10 +106,10 @@ void MirandaState::reload()
 
 void MirandaState::clear()
 {
-  QMutexLocker ml(&m_mutex);
+  QMutexLocker ml(&s_mutex);
   static_lastReload = QDateTime::currentMSecsSinceEpoch();
-  while( !m_stack->isEmpty() ) {
-    delete m_stack->pop();
+  while( !s_stack->isEmpty() ) {
+    delete s_stack->pop();
   }
 }
 
