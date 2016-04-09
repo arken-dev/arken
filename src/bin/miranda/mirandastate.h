@@ -26,6 +26,9 @@ public:
 private:
   lua_State * m_State;
   qint64      m_lastReload;
+  static QByteArray m_oberonPath;
+  static QByteArray m_profilePath;
+
 };
 
 #endif // MIRANDASTATE_H

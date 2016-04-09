@@ -2,6 +2,9 @@
 #include <QDebug>
 #include <QStack>
 
+QByteArray MirandaState::m_oberonPath  = "";
+QByteArray MirandaState::m_profilePath = "";
+
 static int
 miranda_server_reload(lua_State *) {
   MirandaState::reload();
@@ -28,7 +31,7 @@ miranda_server_register(lua_State * L) {
   luaL_register(L, "server", Map);
 }
 
-static QByteArray static_oberonPath  = "";
+
 static QByteArray static_profilePath = "";
 static qint64     static_lastReload  = 0;
 static QStack<MirandaState *> * stack   = new QStack<MirandaState *>;
@@ -44,10 +47,10 @@ MirandaState::MirandaState()
 
   miranda_server_register(m_State);
 
-  lua_pushstring(m_State, static_oberonPath);
+  lua_pushstring(m_State, m_oberonPath);
   lua_setglobal(m_State, "OBERON_PATH");
 
-  rv = luaL_loadfile(m_State, static_profilePath);
+  rv = luaL_loadfile(m_State, m_profilePath);
   if (rv) {
     fprintf(stderr, "%s\n", lua_tostring(m_State, -1));
   }
@@ -69,8 +72,8 @@ MirandaState::~MirandaState()
 
 void MirandaState::init(QByteArray oberonPath, QByteArray profilePath)
 {
-  static_oberonPath  = oberonPath;
-  static_profilePath = profilePath;
+  m_oberonPath  = oberonPath;
+  m_profilePath = profilePath;
   static_lastReload  = QDateTime::currentMSecsSinceEpoch();
 }
 
