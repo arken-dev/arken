@@ -4,6 +4,7 @@
 
 TEMPLATE = subdirs
 SUBDIRS = oberon         \
+          OThread        \
           QByteArrayList \
           QDateTime      \
           QDir           \
