@@ -13,3 +13,5 @@ Makefile.*
 *.o
 
 moc_*
+
+*.swp
