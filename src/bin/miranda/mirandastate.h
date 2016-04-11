@@ -7,6 +7,7 @@
 #include <QDateTime>
 #include <QMutex>
 #include <QStack>
+#include <QHash>
 
 class MirandaState
 {
@@ -22,6 +23,9 @@ public:
   static void reload();
   static void clear();
   static int  version();
+  static void insert(const char * key, const char * value);
+  static const char * value(const char * key);
+
   lua_State * instance();
 
 private:
@@ -32,6 +36,8 @@ private:
   static QByteArray s_profilePath;
   static QMutex     s_mutex;
   static QStack<MirandaState *> * s_stack;
+  static QHash<QByteArray, const char *>  * s_cache;
+
 };
 
 #endif // MIRANDASTATE_H

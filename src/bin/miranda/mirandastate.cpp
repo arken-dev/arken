@@ -8,8 +8,10 @@ QByteArray MirandaState::s_profilePath = "";
 QMutex     MirandaState::s_mutex;
 
 QStack<MirandaState *> * MirandaState::s_stack = new QStack<MirandaState *>;
+QHash<QByteArray, const char *>  * MirandaState::s_cache = new QHash<QByteArray, const char *>;
 
 void miranda_server_register(lua_State * L);
+void miranda_cache_register(lua_State * L);
 
 MirandaState::MirandaState()
 {
@@ -20,6 +22,7 @@ MirandaState::MirandaState()
   luaL_openlibs(m_State);
 
   miranda_server_register(m_State);
+  miranda_cache_register(m_State);
 
   lua_pushstring(m_State, s_oberonPath);
   lua_setglobal(m_State, "OBERON_PATH");
@@ -96,4 +99,16 @@ lua_State * MirandaState::instance()
 int MirandaState::version()
 {
   return s_version;
+}
+
+const char * MirandaState::value(const char * key)
+{
+  QMutexLocker ml(&s_mutex);
+  return s_cache->value(key);
+}
+
+void MirandaState::insert(const char * key, const char * value)
+{
+  QMutexLocker ml(&s_mutex);
+  s_cache->insert(key, value);
 }
