@@ -8,7 +8,7 @@ QByteArray MirandaState::s_profilePath = "";
 QMutex     MirandaState::s_mutex;
 
 QStack<MirandaState *> * MirandaState::s_stack = new QStack<MirandaState *>;
-QHash<QByteArray, const char *>  * MirandaState::s_cache = new QHash<QByteArray, const char *>;
+QHash<QByteArray, QByteArray> * MirandaState::s_cache = new QHash<QByteArray, QByteArray>;
 
 void miranda_server_register(lua_State * L);
 void miranda_cache_register(lua_State * L);

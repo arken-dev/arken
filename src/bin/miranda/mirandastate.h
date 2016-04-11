@@ -36,7 +36,7 @@ private:
   static QByteArray s_profilePath;
   static QMutex     s_mutex;
   static QStack<MirandaState *> * s_stack;
-  static QHash<QByteArray, const char *>  * s_cache;
+  static QHash<QByteArray, QByteArray> * s_cache;
 
 };
 
