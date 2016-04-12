@@ -13,8 +13,8 @@ INCLUDEPATH += ../../../vendors/include
 TARGET = OThread
 DESTDIR = ../../../clib/
 
-win32:LIBS += ../../../vendors/lua51.dll
+unix:LIBS  += ../../../shared/liboberon.so
+win32:LIBS += ../../../vendors/liboberon.dll
 
 # Input
 SOURCES += OThread.cpp
-SOURCES += ../../../src/oberon/othread.cpp
