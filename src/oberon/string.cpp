@@ -22,7 +22,7 @@ bool string::endsWith(const char * string, const char * str)
 
 char * string::mid(const char * string, size_t string_len, int pos, int len = -1)
 {
-  return oberon_mid(string, string_len, pos, len);
+  return oberon_string_mid(string, string_len, pos, len);
 }
 
 char * string::repeated(char *string, int times)

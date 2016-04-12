@@ -1,6 +1,6 @@
 #include <stdlib.h>
 
-char * oberon_mid(char * string, size_t string_len, int pos, int len)
+char * oberon_string_mid(char * string, size_t string_len, int pos, int len)
 {
   int i, j = 0;
   char * result = malloc(len * sizeof(char));
