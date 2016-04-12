@@ -7,5 +7,6 @@ namespace oberon {
     bool   endsWith(const char * string, const char * ba);
     char * mid(const char * string, size_t string_len, int pos, int len);
     char * repeated(char *buffer, int times);
+    char * right(char *buffer, int len);
   }
 }

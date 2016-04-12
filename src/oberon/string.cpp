@@ -4,6 +4,7 @@
 #include <oberon/string/oberon_string_endsWith.hpp>
 #include <oberon/string/oberon_string_mid.hpp>
 #include <oberon/string/oberon_string_repeated.hpp>
+#include <oberon/string/oberon_string_right.hpp>
 
 char * string::append(const char * string, const char * str)
 {
@@ -28,4 +29,9 @@ char * string::mid(const char * string, size_t string_len, int pos, int len = -1
 char * string::repeated(char *string, int times)
 {
   return oberon_string_repeated(string, times);
+}
+
+char * string::right(char *string, int len)
+{
+  return oberon_string_right(string, len);
 }
