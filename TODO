@@ -1,18 +1,16 @@
-1) bindings
-  - OByteArray
-2) algoritimos
+* algoritimos
   - string copiar todos do projeto antigo
   - criar equivalente em string:endsWith() para todos
   - criar bindings para string:*
   - extender OByteArray
-3) criar sistema de template
+* criar sistema de template
   - copiar utilizando <% %>
-4) lib
+* lib
   - copiar do projeto antigo 
-5) http parser
+* http parser
   - post
   - multipart
-6) miranda
+* miranda
   - background threads
-7) puck
-8) coverage
+* puck
+* coverage
