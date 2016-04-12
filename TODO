@@ -1,12 +1,16 @@
-bindins => qt, pgsql (OThread, OByteArray)
-src/oberon => OThread and OByteArray
-extensions => string
----
-lib => *
----
-template
-post
-multipart
----
-shared memory
-background threads
+1) bindings
+  - OByteArray
+2) algoritimos
+  - string copiar todos do projeto antigo
+  - criar equivalente em string:endsWith() para todos
+  - criar bindings para string:*
+  - extender OByteArray
+3) criar sistema de template
+  - copiar utilizando <% %>
+4) lib
+  - copiar do projeto antigo 
+5) http parser
+  - post
+  - mutipart
+6) miranda
+  - background threads
