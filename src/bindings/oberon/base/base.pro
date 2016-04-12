@@ -18,7 +18,7 @@ INCLUDEPATH += ../../../../vendors/include
 SOURCES += *.cpp
 SOURCES += ../../../../src/oberon/os.cpp
 SOURCES += ../../../../src/oberon/string.cpp
-SOURCES += ../../../../src/oberon/algorithms/string/*.c
+SOURCES += ../../../../src/oberon/string/*.c
 SOURCES += ../../../../src/oberon/curl/curl-read.c
 
 unix:LIBS += -lcurl

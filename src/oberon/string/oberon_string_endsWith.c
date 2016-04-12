@@ -1,6 +1,6 @@
 #include <string.h>
 
-int oberon_algorithms_string_ends_with(const char *string, const char *str)
+int oberon_string_endsWith(const char *string, const char *str)
 {
    int string_len = strlen(string);
    int str_len    = strlen(str);
