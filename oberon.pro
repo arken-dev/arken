@@ -3,6 +3,6 @@
 ######################################################################
 
 TEMPLATE = subdirs
-SUBDIRS = src/bin \
-          src/bindings \
-          src/shared
+SUBDIRS = src/oberon \
+          src/bin \
+          src/bindings
