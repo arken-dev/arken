@@ -29,11 +29,29 @@ static int lua_oberon_string_insert( lua_State *L ) {
   return 1;
 }
 
+static int lua_oberon_string_mid( lua_State *L ) {
+  size_t string_len;
+  char *string = (char *) luaL_checklstring(L, 1, &string_len);
+  int pos      =  luaL_checkinteger(L, 2);
+  int len;
+  if(lua_gettop(L) == 3) { /* número de argumentos */
+    len =  luaL_checkinteger(L, 3);
+  } else {
+    len = string_len;
+  }
+  char *result = string::mid(string, string_len, pos, len);
+  lua_pushstring(L, result);  /* push result */
+  free(result);
+  return 1;
+}
+
+
 int luaopen_oberon_string( lua_State *L ) {
   static const luaL_reg Map[] = {
     {"append",   lua_oberon_string_append},
     {"endsWith", lua_oberon_string_endsWith},
     {"insert",   lua_oberon_string_insert},
+    {"mid",      lua_oberon_string_mid},
     {NULL, NULL}
   };
   luaL_register(L, "string", Map);
