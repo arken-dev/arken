@@ -3,6 +3,7 @@
 
 #include <luajit-2.0/lua.hpp>
 
+#include <QCoreApplication>
 #include <QByteArray>
 #include <QDateTime>
 #include <QMutex>
@@ -17,7 +18,7 @@ public:
   MirandaState();
   ~MirandaState();
 
-  static void init(QByteArray oberonPath, QByteArray profilePath);
+  static void init(QCoreApplication *app);
   static MirandaState * pop();
   static void push(MirandaState *);
   static void reload();

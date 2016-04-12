@@ -20,8 +20,6 @@ public:
 
 private:
   QThreadPool * m_pool;
-  QByteArray    m_oberonPath;
-  QByteArray    m_profilePath;
 
 };
 

@@ -47,10 +47,13 @@ MirandaState::~MirandaState()
   lua_close(m_State);
 }
 
-void MirandaState::init(QByteArray oberonPath, QByteArray profilePath)
+void MirandaState::init(QCoreApplication *app)
 {
-  s_oberonPath  = oberonPath;
-  s_profilePath = profilePath;
+  s_oberonPath = app->applicationDirPath().toLocal8Bit();
+  s_oberonPath.truncate( s_oberonPath.lastIndexOf('/') );
+
+  s_profilePath = s_oberonPath;
+  s_profilePath.append("/profile.lua");
 }
 
 MirandaState * MirandaState::pop()
