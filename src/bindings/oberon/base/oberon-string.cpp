@@ -45,6 +45,14 @@ static int lua_oberon_string_mid( lua_State *L ) {
   return 1;
 }
 
+static int lua_oberon_string_repeated( lua_State *L ) {
+  char * string = (char *) luaL_checkstring(L, 1);
+  int    times  =  luaL_checkinteger(L, 2);
+  char * result = string::repeated(string, times);
+  lua_pushstring(L, result);  /* push result */
+  free(result);
+  return 1;
+}
 
 int luaopen_oberon_string( lua_State *L ) {
   static const luaL_reg Map[] = {
@@ -52,6 +60,7 @@ int luaopen_oberon_string( lua_State *L ) {
     {"endsWith", lua_oberon_string_endsWith},
     {"insert",   lua_oberon_string_insert},
     {"mid",      lua_oberon_string_mid},
+    {"repeated", lua_oberon_string_repeated},
     {NULL, NULL}
   };
   luaL_register(L, "string", Map);
