@@ -1,5 +1,4 @@
 #include <oberon/base>
-#include <string.h>
 #include <oberon/algorithms/string/string-insert.hpp>
 #include <oberon/algorithms/string/string-ends-with.hpp>
 
