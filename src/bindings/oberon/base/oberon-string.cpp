@@ -63,14 +63,23 @@ static int lua_oberon_string_right( lua_State *L ) {
   return 1;
 }
 
+static int lua_oberon_string_simplified( lua_State *L ) {
+  char * string = (char *) luaL_checkstring(L, 1);
+  char * result = string::simplified(string);
+  lua_pushstring(L, result);  /* push result */
+  free(result);
+  return 1;
+}
+
 int luaopen_oberon_string( lua_State *L ) {
   static const luaL_reg Map[] = {
-    {"append",   lua_oberon_string_append},
-    {"endsWith", lua_oberon_string_endsWith},
-    {"insert",   lua_oberon_string_insert},
-    {"mid",      lua_oberon_string_mid},
-    {"repeated", lua_oberon_string_repeated},
-    {"right",    lua_oberon_string_right},
+    {"append",     lua_oberon_string_append},
+    {"endsWith",   lua_oberon_string_endsWith},
+    {"insert",     lua_oberon_string_insert},
+    {"mid",        lua_oberon_string_mid},
+    {"repeated",   lua_oberon_string_repeated},
+    {"right",      lua_oberon_string_right},
+    {"simplified", lua_oberon_string_simplified},
     {NULL, NULL}
   };
   luaL_register(L, "string", Map);
