@@ -11,5 +11,6 @@ namespace oberon {
     char * simplified(char *buffer);
     bool   startsWith(const char *string, const char *str);
     char * trimmed(const char *string);
+    char * truncate(const char *string, int pos);
   }
 }

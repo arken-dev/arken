@@ -87,6 +87,14 @@ static int lua_oberon_string_trimmed( lua_State *L ) {
   return 1;
 }
 
+static int lua_oberon_string_truncate( lua_State *L ) {
+  const char *string = luaL_checkstring(L, 1);
+  int        pos     = luaL_checkinteger(L, 2);
+  char      * result = string::truncate(string, pos);
+  lua_pushstring(L, result);
+  return 1;
+}
+
 int luaopen_oberon_string( lua_State *L ) {
   static const luaL_reg Map[] = {
     {"append",     lua_oberon_string_append},
@@ -98,6 +106,7 @@ int luaopen_oberon_string( lua_State *L ) {
     {"simplified", lua_oberon_string_simplified},
     {"startsWith", lua_oberon_string_startsWith},
     {"trimmed",    lua_oberon_string_trimmed},
+    {"truncate",   lua_oberon_string_truncate},
     {NULL, NULL}
   };
   luaL_register(L, "string", Map);

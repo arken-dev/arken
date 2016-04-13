@@ -21,8 +21,8 @@ SOURCES += ../../src/oberon/string/oberon_string_right.c
 SOURCES += ../../src/oberon/string/oberon_string_simplified.c
 SOURCES += ../../src/oberon/string/oberon_string_startsWith.c
 SOURCES += ../../src/oberon/string/oberon_string_trimmed.c
+SOURCES += ../../src/oberon/string/oberon_string_truncate.c
 SOURCES += ../../src/oberon/string/oberon_string_underscore.c
-
 
 unix:LIBS += -lcurl
 win32:LIBS += ../../vendors/lua51.dll

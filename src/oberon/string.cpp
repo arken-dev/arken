@@ -8,6 +8,7 @@
 #include <oberon/string/oberon_string_simplified.hpp>
 #include <oberon/string/oberon_string_startsWith.hpp>
 #include <oberon/string/oberon_string_trimmed.hpp>
+#include <oberon/string/oberon_string_truncate.hpp>
 
 char * string::append(const char * string, const char * str)
 {
@@ -52,4 +53,9 @@ bool string::startsWith(const char *string, const char *str)
 char * string::trimmed(const char *string)
 {
   return oberon_string_trimmed(string);
+}
+
+char * string::truncate(const char *string, int pos)
+{
+  return oberon_string_truncate(string, pos);
 }
