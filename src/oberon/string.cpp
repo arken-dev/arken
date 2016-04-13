@@ -6,6 +6,7 @@
 #include <oberon/string/oberon_string_repeated.hpp>
 #include <oberon/string/oberon_string_right.hpp>
 #include <oberon/string/oberon_string_simplified.hpp>
+#include <oberon/string/oberon_string_startsWith.hpp>
 
 char * string::append(const char * string, const char * str)
 {
@@ -40,4 +41,9 @@ char * string::right(char *string, int len)
 char * string::simplified(char *string)
 {
   return oberon_string_simplified(string);
+}
+
+bool string::startsWith(const char *string, const char *str)
+{
+  return oberon_string_startsWith(string, str);
 }

@@ -71,6 +71,14 @@ static int lua_oberon_string_simplified( lua_State *L ) {
   return 1;
 }
 
+static int lua_oberon_string_startsWith( lua_State *L ) {
+  const char * string = luaL_checkstring(L, 1);
+  const char * ba     = luaL_checkstring(L, 2);
+  int  result         = string::startsWith(string, ba);
+  lua_pushboolean(L, result);  /* push result */
+  return 1;
+}
+
 int luaopen_oberon_string( lua_State *L ) {
   static const luaL_reg Map[] = {
     {"append",     lua_oberon_string_append},
@@ -80,6 +88,7 @@ int luaopen_oberon_string( lua_State *L ) {
     {"repeated",   lua_oberon_string_repeated},
     {"right",      lua_oberon_string_right},
     {"simplified", lua_oberon_string_simplified},
+    {"startsWith", lua_oberon_string_startsWith},
     {NULL, NULL}
   };
   luaL_register(L, "string", Map);

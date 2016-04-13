@@ -9,5 +9,6 @@ namespace oberon {
     char * repeated(char *buffer, int times);
     char * right(char *buffer, int len);
     char * simplified(char *buffer);
+    bool   startsWith(const char *string, const char *str);
   }
 }
