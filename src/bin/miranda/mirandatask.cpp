@@ -113,7 +113,11 @@ void MirandaTask::parseRequest(MirandaState *state, QByteArray &buffer)
 
   //Path
   lua_pushstring(L, "Path");
-  lua_pushstring(L, row.mid(method+1, query-method-1));
+  if( row.contains("?") ) {
+    lua_pushstring(L, row.mid(method+1, query-method-1));
+  } else {
+    lua_pushstring(L, row.mid(method+1, row.lastIndexOf(' ')-method-1));
+  }
   lua_settable(L, -3);
 
   //Query-String
