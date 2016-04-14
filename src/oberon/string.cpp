@@ -9,6 +9,7 @@
 #include <oberon/string/oberon_string_startsWith.hpp>
 #include <oberon/string/oberon_string_trimmed.hpp>
 #include <oberon/string/oberon_string_truncate.hpp>
+#include <oberon/string/oberon_string_underscore.hpp>
 
 char * string::append(const char * string, const char * str)
 {
@@ -58,4 +59,9 @@ char * string::trimmed(const char *string)
 char * string::truncate(const char *string, int pos)
 {
   return oberon_string_truncate(string, pos);
+}
+
+char * string::underscore(const char *string)
+{
+  return oberon_string_underscore(string);
 }

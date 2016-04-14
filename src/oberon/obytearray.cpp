@@ -7,7 +7,7 @@
 
 OByteArray OByteArray::underscore(void)
 {
-  return OByteArray(oberon_string_underscore(this->data(), this->size()));
+  return OByteArray(oberon_string_underscore(this->data()));
 }
 
 OByteArray OByteArray::simplified(void)

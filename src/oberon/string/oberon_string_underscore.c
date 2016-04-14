@@ -36,9 +36,10 @@ inline int oberon_string_underscore_len(const char *buffer, int len)
   return j;
 }
 
-const char *
-oberon_string_underscore(const char *buffer, int len)
+char *
+oberon_string_underscore(const char *buffer)
 {
+  int len = strlen(buffer);
   int i, j = 0, flag = 1;
   char * res = (char *) malloc(oberon_string_underscore_len(buffer,len) * sizeof(char));
   for(i = 0; i < len; i++) {

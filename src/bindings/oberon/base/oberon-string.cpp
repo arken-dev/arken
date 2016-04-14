@@ -95,6 +95,13 @@ static int lua_oberon_string_truncate( lua_State *L ) {
   return 1;
 }
 
+static int lua_oberon_string_underscore( lua_State *L ) {
+  const char *string = luaL_checkstring(L, 1);
+  char      * result = string::underscore(string);
+  lua_pushstring(L, result);
+  return 1;
+}
+
 int luaopen_oberon_string( lua_State *L ) {
   static const luaL_reg Map[] = {
     {"append",     lua_oberon_string_append},
@@ -107,6 +114,7 @@ int luaopen_oberon_string( lua_State *L ) {
     {"startsWith", lua_oberon_string_startsWith},
     {"trimmed",    lua_oberon_string_trimmed},
     {"truncate",   lua_oberon_string_truncate},
+    {"underscore", lua_oberon_string_underscore},
     {NULL, NULL}
   };
   luaL_register(L, "string", Map);

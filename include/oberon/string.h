@@ -12,5 +12,6 @@ namespace oberon {
     bool   startsWith(const char *string, const char *str);
     char * trimmed(const char *string);
     char * truncate(const char *string, int pos);
+    char * underscore(const char *string);
   }
 }
