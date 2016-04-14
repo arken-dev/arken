@@ -18,16 +18,12 @@ INCLUDEPATH += ../../../../vendors/include
 SOURCES += *.cpp
 SOURCES += ../../../../src/oberon/os.cpp
 SOURCES += ../../../../src/oberon/string.cpp
-SOURCES += ../../../../src/oberon/string/oberon_string_append.c
-SOURCES += ../../../../src/oberon/string/oberon_string_endsWith.c
-SOURCES += ../../../../src/oberon/string/oberon_string_insert.c
-SOURCES += ../../../../src/oberon/string/oberon_string_underscore.c
-SOURCES += ../../../../src/oberon/string/oberon_string_mid.c
-SOURCES += ../../../../src/oberon/string/oberon_string_repeated.c
-SOURCES += ../../../../src/oberon/string/oberon_string_right.c
-
 SOURCES += ../../../../src/oberon/curl/curl-read.c
 
 unix:LIBS += -lcurl
+
+unix:LIBS += ../../../../shared/liboberon.so
+win32:LIBS += ../../../../shared/oberon.dll
+
 win32:LIBS += ../../../../vendors/lua51.dll
 win32:LIBS += ../../../../vendors/libcurl.dll
