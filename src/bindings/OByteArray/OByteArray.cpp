@@ -100,8 +100,50 @@ lua_OByteArrayInstanceMethodUnderscore( lua_State *L ) {
   return 1;
 }
 
+static int
+lua_OByteArrayInstanceMethodLastIndexOf( lua_State *L ) {
+  OByteArray *udata  = checkOByteArray( L );
+  const char *str    = lua_tostring(L, 2);
+  lua_pushnumber(L, udata->lastIndexOf(str[0]));
+  return 1;
+}
+
+static int
+lua_OByteArrayInstanceMethodMid( lua_State *L ) {
+  OByteArray *udata  = checkOByteArray( L );
+  int pos =  luaL_checkinteger(L, 2);
+  int len;
+  if(lua_gettop(L) == 3) {
+    len =  luaL_checkinteger(L, 3);
+  } else {
+    len = udata->size();
+  }
+
+  lua_pushstring(L, udata->mid(pos, len));
+  return 1;
+}
+
+static int
+lua_OByteArrayInstanceMethodSize( lua_State *L ) {
+  OByteArray *udata  = checkOByteArray( L );
+  lua_pushnumber(L, udata->size());
+  return 1;
+}
+
+static int
+lua_OByteArrayInstanceMethodRight( lua_State *L ) {
+  OByteArray *udata  = checkOByteArray( L );
+  int len =  luaL_checkinteger(L, 2);
+  lua_pushstring(L, udata->right(len));
+  return 1;
+}
+
 static const
 luaL_reg OByteArrayInstanceMethods[] = {
+  {"right", lua_OByteArrayInstanceMethodRight},
+  {"size", lua_OByteArrayInstanceMethodSize},
+  {"mid", lua_OByteArrayInstanceMethodMid},
+  {"lastIndexOf", lua_OByteArrayInstanceMethodLastIndexOf},
   {"toUpper", lua_OByteArrayInstanceMethodToUpper},
   {"append", lua_OByteArrayInstanceMethodAppend},
   {"trimmed", lua_OByteArrayInstanceMethodTrimmed},
