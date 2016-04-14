@@ -88,6 +88,7 @@ void MirandaTask::parseRequest(MirandaState *state, QByteArray &buffer)
   int nrec   = 0;
   int method = 0;
   int tmp    = 0;
+  int query  = 0;
   QByteArray row;
   lua_State * L;
 
@@ -103,15 +104,21 @@ void MirandaTask::parseRequest(MirandaState *state, QByteArray &buffer)
   row    = buffer.mid(index, last-index);
   index  = last + 2;
   method = row.indexOf(' ');
+  query  = row.indexOf('?');
 
   //Method
   lua_pushstring(L, "Method");
   lua_pushstring(L, row.mid(0, method));
   lua_settable(L, -3);
 
+  //Path
+  lua_pushstring(L, "Path");
+  lua_pushstring(L, row.mid(method+1, query-method-1));
+  lua_settable(L, -3);
+
   //Query-String
   lua_pushstring(L, "Query-String");
-  lua_pushstring(L, row.mid(method+3, row.lastIndexOf(' ')-(method+3)));
+  lua_pushstring(L, row.mid(query+1, row.lastIndexOf(' ')-query-1));
   lua_settable(L, -3);
 
   while( index < buffer.size() ) {
