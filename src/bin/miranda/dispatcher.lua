@@ -1,6 +1,6 @@
 require "QDir"
 flag = ""
-process_http = function()
+dispatcher = function()
   if request['Query-String'] == 'reload' then
     server.reload()
   end

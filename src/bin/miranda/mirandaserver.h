@@ -7,6 +7,8 @@
 #include <QTcpServer>
 #include <MirandaTask>
 #include <QCoreApplication>
+#include <QDir>
+#include <QFileInfo>
 
 class MirandaTask;
 

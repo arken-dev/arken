@@ -56,7 +56,7 @@ void MirandaTask::processRequest(MirandaState * state, QByteArray &buffer)
 
   // Process Request
   lua_settop(L, 0);
-  lua_getglobal(L, "process_http");
+  lua_getglobal(L, "dispatcher");
   if( lua_pcall(L, 0, 3, 0 ) ) {
     code   = 500;
     result = luaL_checklstring( L , -1, &len );

@@ -32,12 +32,12 @@ MirandaState::MirandaState()
     fprintf(stderr, "%s\n", lua_tostring(m_State, -1));
   }
 
-  rv = lua_pcall(m_State, 0, 0, lua_gettop(m_State) - 1);
+  rv = lua_pcall(m_State, 0, 0, 0);
   if (rv) {
     fprintf(stderr, "%s\n", lua_tostring(m_State, -1));
   }
 
-  luaL_loadfile(m_State, "process_http.lua" );
+  luaL_loadfile(m_State, "dispatcher.lua" );
   lua_pcall(m_State, 0, 0, 0);
   qDebug() << "create Lua State";
 }

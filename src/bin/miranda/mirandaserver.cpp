@@ -4,6 +4,22 @@
 
 MirandaServer::MirandaServer(QCoreApplication *app)
 {
+
+  QFileInfo dispatcher = QFileInfo("dispatcher.lua");
+
+  if( dispatcher.exists() ) {
+    qDebug() << "dispatcher in local dir ...";
+  } else {
+    dispatcher = QFileInfo(app->arguments().at(1));
+    if( dispatcher.exists() ) {
+      qDebug() << "work dir is: " << dispatcher.absoluteDir().absolutePath();
+      QDir::setCurrent( dispatcher.absoluteDir().absolutePath() );
+    } else {
+      qDebug() << "file dispatcher.lua not found exit... ";
+      throw;
+    }
+  }
+
   MirandaState::init(app);
 }
 
