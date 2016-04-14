@@ -1,3 +1,6 @@
+#include <stdlib.h>
+#include <string.h>
+
 #include <QDateTime>
 #include <QThread>
 #include <QUuid>
@@ -26,13 +29,19 @@ char * os::uuid()
 char * os::read(const char * path)
 {
   char * result;
-
   if (oberon_string_startsWith(path, "http://")) {
     result = oberon_curl_read(path);
   } else {
     QFile file(path);
+    QByteArray data;
+    int size;
+
     file.open(QIODevice::ReadOnly);
-    result = file.readAll().data();
+    data = file.readAll();
+    size = data.size() + 1;
+    result = (char *) malloc( size * sizeof(char) );
+    strcpy(result, data);
+    result[size] = '\0';
   }
 
   return result;
