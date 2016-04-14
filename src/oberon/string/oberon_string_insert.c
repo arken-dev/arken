@@ -2,7 +2,7 @@
 #include <stdlib.h>
 
 char *
-oberon_algorithms_string_insert(const char * string, size_t len, const char * ba)
+oberon_string_insert(const char * string, size_t len, const char * ba)
 {
   size_t string_len = strlen(string);
   size_t ba_len     = strlen(ba);

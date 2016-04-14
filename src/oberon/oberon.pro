@@ -12,7 +12,17 @@ DESTDIR = ../../shared
 # Input
 SOURCES += ../../src/oberon/*.cpp
 SOURCES += ../../src/oberon/curl/*.c
-SOURCES += ../../src/oberon/algorithms/string/*.c
+SOURCES += ../../src/oberon/string/oberon_string_append.c
+SOURCES += ../../src/oberon/string/oberon_string_endsWith.c
+SOURCES += ../../src/oberon/string/oberon_string_insert.c
+SOURCES += ../../src/oberon/string/oberon_string_mid.c
+SOURCES += ../../src/oberon/string/oberon_string_repeated.c
+SOURCES += ../../src/oberon/string/oberon_string_right.c
+SOURCES += ../../src/oberon/string/oberon_string_simplified.c
+SOURCES += ../../src/oberon/string/oberon_string_startsWith.c
+SOURCES += ../../src/oberon/string/oberon_string_trimmed.c
+SOURCES += ../../src/oberon/string/oberon_string_truncate.c
+SOURCES += ../../src/oberon/string/oberon_string_underscore.c
 
 unix:LIBS += -lcurl
 win32:LIBS += ../../vendors/lua51.dll

@@ -10,6 +10,9 @@ bin/oberon.exe
 
 Makefile
 Makefile.*
+*.Debug
+*.Release
+
 *.o
 
 moc_*

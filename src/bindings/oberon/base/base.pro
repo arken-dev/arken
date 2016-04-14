@@ -18,7 +18,14 @@ INCLUDEPATH += ../../../../vendors/include
 SOURCES += *.cpp
 SOURCES += ../../../../src/oberon/os.cpp
 SOURCES += ../../../../src/oberon/string.cpp
-SOURCES += ../../../../src/oberon/algorithms/string/*.c
+SOURCES += ../../../../src/oberon/string/oberon_string_append.c
+SOURCES += ../../../../src/oberon/string/oberon_string_endsWith.c
+SOURCES += ../../../../src/oberon/string/oberon_string_insert.c
+SOURCES += ../../../../src/oberon/string/oberon_string_underscore.c
+SOURCES += ../../../../src/oberon/string/oberon_string_mid.c
+SOURCES += ../../../../src/oberon/string/oberon_string_repeated.c
+SOURCES += ../../../../src/oberon/string/oberon_string_right.c
+
 SOURCES += ../../../../src/oberon/curl/curl-read.c
 
 unix:LIBS += -lcurl
