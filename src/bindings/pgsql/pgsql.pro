@@ -13,6 +13,8 @@ TARGET = pgsql
 DESTDIR = ../../../clib/
 
 win32:LIBS += ../../../vendors/lua51.dll
+LIBS += "-L/usr/lib/x86_64-linux-gnu"
+LIBS += "-lpq"
 
 # Input
 HEADERS += pgsql.h
