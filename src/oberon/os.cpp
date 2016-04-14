@@ -1,9 +1,11 @@
 #include <QDateTime>
 #include <QThread>
 #include <QUuid>
+#include <QFile>
 
 #include <oberon/base>
 #include <oberon/curl/curl-read.hpp>
+#include <oberon/string/oberon_string_startsWith.hpp>
 
 double os::microtime()
 {
@@ -23,5 +25,15 @@ char * os::uuid()
 
 char * os::read(const char * path)
 {
-  return oberon_curl_read(path);
+  char * result;
+
+  if (oberon_string_startsWith(path, "http://")) {
+    result = oberon_curl_read(path);
+  } else {
+    QFile file(path);
+    file.open(QIODevice::ReadOnly);
+    result = file.readAll().data();
+  }
+
+  return result;
 }
