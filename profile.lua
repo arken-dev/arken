@@ -41,3 +41,15 @@ require "QDateTime"
 
 require "Class"
 require "Object"
+
+-------------------------------------------------------------------------------
+-- LOCAL PROFILE
+-------------------------------------------------------------------------------
+
+if OBERON_PATH ~= QDir.currentPath() then
+  local profile = QDir.currentPath() .. '/profile.lua'
+  if QFile.exists(profile) then
+    print('local profile...')
+    print(loadfile(profile)())
+  end
+end
