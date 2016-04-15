@@ -1,4 +1,3 @@
-* dispatcher without OByteArray
 * reload controllers and views
 * http parser
   - query string
