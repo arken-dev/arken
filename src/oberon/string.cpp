@@ -71,4 +71,3 @@ char * string::underscore(const char *string)
 {
   return oberon_string_underscore(string);
 }
-
