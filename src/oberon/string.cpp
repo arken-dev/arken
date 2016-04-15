@@ -4,6 +4,7 @@
 #include <oberon/string/oberon_string_endsWith.hpp>
 #include <oberon/string/oberon_string_mid.hpp>
 #include <oberon/string/oberon_string_repeated.hpp>
+#include <oberon/string/oberon_string_replace.hpp>
 #include <oberon/string/oberon_string_right.hpp>
 #include <oberon/string/oberon_string_simplified.hpp>
 #include <oberon/string/oberon_string_startsWith.hpp>
@@ -36,6 +37,11 @@ char * string::repeated(char *string, int times)
   return oberon_string_repeated(string, times);
 }
 
+char * string::replace(const char *string, const char before, const char * after)
+{
+  return oberon_string_replace(string, before, after);
+}
+
 char * string::right(char *string, int len)
 {
   return oberon_string_right(string, len);
@@ -65,3 +71,4 @@ char * string::underscore(const char *string)
 {
   return oberon_string_underscore(string);
 }
+

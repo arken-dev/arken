@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string.h>
 
 char * oberon_string_trimmed(const char *string)
 {

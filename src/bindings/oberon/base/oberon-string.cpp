@@ -45,6 +45,16 @@ static int lua_oberon_string_mid( lua_State *L ) {
   return 1;
 }
 
+static int lua_oberon_string_replace( lua_State *L ) {
+  const char * string = luaL_checkstring(L, 1);
+  const char * before = luaL_checkstring(L, 2);
+  const char * after  = luaL_checkstring(L, 3);
+  char * result       = string::replace(string, before[0], after);
+  lua_pushstring(L, result);  /* push result */
+  free(result);
+  return 1;
+}
+
 static int lua_oberon_string_repeated( lua_State *L ) {
   char * string = (char *) luaL_checkstring(L, 1);
   int    times  =  luaL_checkinteger(L, 2);
@@ -109,6 +119,7 @@ int luaopen_oberon_string( lua_State *L ) {
     {"insert",     lua_oberon_string_insert},
     {"mid",        lua_oberon_string_mid},
     {"repeated",   lua_oberon_string_repeated},
+    {"replace",    lua_oberon_string_replace},
     {"right",      lua_oberon_string_right},
     {"simplified", lua_oberon_string_simplified},
     {"startsWith", lua_oberon_string_startsWith},
