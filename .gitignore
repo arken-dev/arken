@@ -3,10 +3,7 @@
 shared/*
 clib/*
 
-bin/miranda
-bin/miranda.exe
-bin/oberon
-bin/oberon.exe
+bin/*
 
 Makefile
 Makefile.*
