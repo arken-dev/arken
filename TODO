@@ -1,10 +1,12 @@
-* lib
-  - copiar do projeto antigo 
+* dispatcher without OByteArray
+* reload controllers and views
 * http parser
+  - query string
   - post
   - multipart
 * miranda
   - background threads
+* test
 * puck
 * coverage
 ---
