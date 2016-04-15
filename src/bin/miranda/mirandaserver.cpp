@@ -10,7 +10,12 @@ MirandaServer::MirandaServer(QCoreApplication *app)
   if( dispatch.exists() ) {
     qDebug() << "dispatch in local dir ...";
   } else {
-    dispatch = QFileInfo(app->arguments().at(1));
+    if( app->arguments().size() == 1 ) {
+      qDebug() << "where the dispatch.lua file ???";
+      throw;
+    }
+    QString file_name = app->arguments().at(1);
+    dispatch = QFileInfo(file_name);
     if( dispatch.exists() ) {
       qDebug() << "work dir is: " << dispatch.absoluteDir().absolutePath();
       QDir::setCurrent( dispatch.absoluteDir().absolutePath() );
