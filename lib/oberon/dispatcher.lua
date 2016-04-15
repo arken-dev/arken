@@ -32,4 +32,10 @@ M.dispatch = function()
   end
 end
 
+M.test = function()
+  return 200,
+    {'Content-Type: text/html; charset=utf-8'},
+    "<html><body><h1>DISPATCHER TEST IS WORKS ...</h1></body></html>"
+end
+
 return M
