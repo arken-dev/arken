@@ -55,8 +55,9 @@ void MirandaTask::processRequest(MirandaState * state, QByteArray &buffer)
   buffer.clear();
 
   // Process Request
+  // TODO return is not validate
   lua_settop(L, 0);
-  lua_getglobal(L, "dispatcher");
+  lua_getglobal(L, "dispatch");
   if( lua_pcall(L, 0, 3, 0 ) ) {
     code   = 500;
     result = luaL_checklstring( L , -1, &len );

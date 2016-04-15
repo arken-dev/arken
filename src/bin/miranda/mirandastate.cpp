@@ -37,7 +37,7 @@ MirandaState::MirandaState()
     fprintf(stderr, "%s\n", lua_tostring(m_State, -1));
   }
 
-  luaL_loadfile(m_State, "dispatcher.lua" );
+  luaL_loadfile(m_State, "dispatch.lua" );
   lua_pcall(m_State, 0, 0, 0);
   qDebug() << "create Lua State";
 }
