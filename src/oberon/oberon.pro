@@ -16,6 +16,7 @@ SOURCES += ../../src/oberon/string/oberon_string_append.c
 SOURCES += ../../src/oberon/string/oberon_string_contains.c
 SOURCES += ../../src/oberon/string/oberon_string_endsWith.c
 SOURCES += ../../src/oberon/string/oberon_string_insert.c
+SOURCES += ../../src/oberon/string/oberon_string_lastIndexOf.c
 SOURCES += ../../src/oberon/string/oberon_string_mid.c
 SOURCES += ../../src/oberon/string/oberon_string_repeated.c
 SOURCES += ../../src/oberon/string/oberon_string_replace.c
