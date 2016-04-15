@@ -4,10 +4,10 @@ require 'OByteArray'
 local M = {}
 
 M.parse_path = function()
-  local path = OByteArray.new(request['Path'])
+  local path = request['Path']
   local last = path:lastIndexOf('/')
   local controller = path:mid(1, last-1)
-  local action     = path:right(path:size() - last - 1)
+  local action     = path:right(path:len() - last - 1)
   if controller == '' then
     controller = 'index'
   end
