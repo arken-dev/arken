@@ -10,7 +10,7 @@ int oberon_string_lastIndexOf(const char * string, const char * str)
 
   result = -1;
 
-  for(i = (string_len - str_len); i > 0; i--) {
+  for(i = (string_len - str_len); i >= 0; i--) {
     c = 0;
     for(j = 0 ; j < str_len; j++) {
       if( string[i+j] != str[j] ) {
