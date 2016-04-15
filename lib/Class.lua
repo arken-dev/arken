@@ -22,7 +22,9 @@ function Class.new(className, inheritedBy, params)
 
     if inheritedBy then
       class.superclass = inheritedBy
-      class.inherit(class)
+      if class.inherit then
+        class.inherit(class, params)
+      end
     else
       class.superclass = Class
     end
