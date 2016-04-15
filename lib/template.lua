@@ -81,4 +81,8 @@ function M.execute(file_name, data)
   return M.cache[file_name](data)
 end
 
+function M.reload()
+  M.cache = {}
+end
+
 return M
