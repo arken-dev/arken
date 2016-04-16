@@ -20,5 +20,3 @@ SUBDIRS = oberon         \
           QSqlQuery      \
           QString        \
           QStringList
-
-unix:SUBDIRS += pgsql

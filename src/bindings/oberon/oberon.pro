@@ -4,5 +4,6 @@
 
 TEMPLATE = subdirs
 SUBDIRS = base  \
-          pgsql \
           http
+
+unix:SUBDIRS += pgsql
