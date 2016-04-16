@@ -2,9 +2,10 @@
 #include <string.h>
 
 #include <QDateTime>
+#include <QFile>
+#include <QHostInfo>
 #include <QThread>
 #include <QUuid>
-#include <QFile>
 
 #include <oberon/base>
 #include <oberon/http.h>
@@ -12,6 +13,12 @@
 int os::cores()
 {
   return QThread::idealThreadCount();
+}
+
+char * os::hostname()
+{
+  QString result = QHostInfo::localHostName();
+  return result.toLocal8Bit().data();
 }
 
 double os::microtime()

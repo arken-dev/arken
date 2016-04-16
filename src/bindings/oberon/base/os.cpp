@@ -6,6 +6,11 @@ static int lua_oberon_os_cores( lua_State *L ) {
   return 1;
 }
 
+static int lua_oberon_os_hostname( lua_State *L ) {
+  lua_pushstring( L, os::hostname() );
+  return 1;
+}
+
 static int lua_oberon_os_microtime( lua_State *L ) {
   lua_pushnumber( L, os::microtime() );
   return 1;
@@ -36,6 +41,7 @@ static int lua_oberon_os_read( lua_State *L ) {
 int luaopen_oberon_os( lua_State *L ) {
   static const luaL_reg Map[] = {
     {"cores",      lua_oberon_os_cores},
+    {"hostname",   lua_oberon_os_hostname},
     {"microtime",  lua_oberon_os_microtime},
     {"name",       lua_oberon_os_name},
     {"read",       lua_oberon_os_read},
