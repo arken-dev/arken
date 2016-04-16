@@ -7,8 +7,7 @@ static int lua_oberon_os_cores( lua_State *L ) {
 }
 
 static int lua_oberon_os_microtime( lua_State *L ) {
-  double result = os::microtime();
-  lua_pushnumber( L, result );
+  lua_pushnumber( L, os::microtime() );
   return 1;
 }
 
