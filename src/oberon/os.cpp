@@ -14,6 +14,31 @@ double os::microtime()
   return QDateTime::currentMSecsSinceEpoch() / 1000.0;
 }
 
+char * os::name()
+{
+  QString result;
+  #if defined(Q_OS_ANDROID)
+  result = QLatin1String("android");
+  #elif defined(Q_OS_BLACKBERRY)
+  result = QLatin1String("blackberry");
+  #elif defined(Q_OS_IOS)
+  result = QLatin1String("ios");
+  #elif defined(Q_OS_MAC)
+  result = QLatin1String("osx");
+  #elif defined(Q_OS_WINCE)
+  result = QLatin1String("wince");
+  #elif defined(Q_OS_WIN)
+  result = QLatin1String("windows");
+  #elif defined(Q_OS_LINUX)
+  result = QLatin1String("linux");
+  #elif defined(Q_OS_UNIX)
+  result = QLatin1String("unix");
+  #else
+  result = QLatin1String("unknown");
+  #endif
+  return result.toLocal8Bit().data();
+}
+
 void os::sleep(double secs)
 {
   QThread::msleep(secs*1000);
