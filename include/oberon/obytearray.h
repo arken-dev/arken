@@ -2,6 +2,7 @@
 #define _OBYTE_ARRAY_HEADER_
 
 #include <QtCore>
+#include <oberon/base>
 
 class OByteArray : public QByteArray
 {

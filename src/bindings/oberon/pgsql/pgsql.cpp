@@ -35,10 +35,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /** private helper functions **/
 
 /* server NOTICE message handler */
-static void pg_notice(void *arg, const char *message) {
-#ifdef DEBUG
+static void pg_notice(void *, const char *message) {
 	fprintf(stderr, "debug.notice [%s]\n", message);
-#endif
 }
 
 /* check and return pointer */
@@ -191,7 +189,8 @@ static const luaL_Reg R_res_methods[] = {
 };
 
 /* open the library - used by require() */
-LUALIB_API int luaopen_pgsql(lua_State *L) {
+extern "C" {
+LUALIB_API int luaopen_oberon_pgsql(lua_State *L) {
 	/* register the base functions and module tags */
 	luaL_register(L, "pg", R_pg_functions);
 	lua_pushliteral(L,"version");			/** version */
@@ -216,7 +215,7 @@ LUALIB_API int luaopen_pgsql(lua_State *L) {
 	/* return the library handle */
 	return 1;
 }
-
+}
 
 /** exported functions **/
 
@@ -246,7 +245,7 @@ LUALIB_API int L_con_escape(lua_State *L) {
 	const char *src; char *dst;
 	/* con_t *con = luaL_checkconn(L, 1); */
 	src = luaL_checklstring(L, 2, &len);
-	dst = calloc(len * 2 + 1, sizeof(char));
+	dst = (char *) calloc(len * 2 + 1, sizeof(char));
 	/* PQescapeStringConn(con->ptr, dst, src, len, NULL); */
 	PQescapeString(dst, src, len);
 	lua_pushstring(L, dst);
@@ -259,7 +258,7 @@ LUALIB_API int L_con_exec(lua_State *L) {
 	PGresult *rs = NULL;
 	const char **param = NULL;
 	int param_count;
-	char *bool_t[2] = {"FALSE", "TRUE"};
+	char *bool_t[2] = {(char*)"FALSE", (char*)"TRUE"};
 	con_t *con = luaL_checkconn(L, 1);
 	const char *sql = luaL_checkstring(L, 2);
 	int i;
@@ -283,7 +282,7 @@ LUALIB_API int L_con_exec(lua_State *L) {
 				param_count = luaL_getn(L, 3);
 			}
 			/* clear-allocate params for PQexecParams */
-			if (param_count > 0) param = calloc(param_count, sizeof(char *));
+			if (param_count > 0) param = (const char **) calloc(param_count, sizeof(char *));
 			/* load params from Lua table into C array */
 			for (i = 0; i < param_count; i++) {
 				lua_rawgeti(L, 3, i + 1);

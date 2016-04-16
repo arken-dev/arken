@@ -3,4 +3,6 @@
 ######################################################################
 
 TEMPLATE = subdirs
-SUBDIRS = base
+SUBDIRS = base  \
+          pgsql \
+          http

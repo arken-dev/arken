@@ -7,8 +7,7 @@
 #include <QFile>
 
 #include <oberon/base>
-#include <oberon/curl/curl-read.hpp>
-#include <oberon/string/oberon_string_startsWith.hpp>
+#include <oberon/http.h>
 
 double os::microtime()
 {
@@ -29,8 +28,8 @@ char * os::uuid()
 char * os::read(const char * path)
 {
   char * result;
-  if (oberon_string_startsWith(path, "http://")) {
-    result = oberon_curl_read(path);
+  if (string::startsWith(path, "http://")) {
+    result = http::read(path);
   } else {
     QFile file(path);
     QByteArray data;

@@ -3,11 +3,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include "oberon/string/oberon_string_underscore.hpp"
 
 OByteArray OByteArray::underscore(void)
 {
-  return OByteArray(oberon_string_underscore(this->data()));
+  return OByteArray(string::underscore(this->data()));
 }
 
 OByteArray OByteArray::simplified(void)
