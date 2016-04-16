@@ -15,3 +15,5 @@ Makefile.*
 moc_*
 
 *.swp
+
+profile.d/*

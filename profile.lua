@@ -43,6 +43,19 @@ require "Class"
 require "Object"
 
 -------------------------------------------------------------------------------
+-- PROFILE.D
+-------------------------------------------------------------------------------
+
+iterator = QDirIterator.new(OBERON_PATH .. '/profile.d')
+while(iterator:hasNext()) do
+  iterator:next()
+  local fileInfo = iterator:fileInfo()
+  if(fileInfo:suffix() == 'lua') then
+    loadfile(fileInfo:filePath())()
+  end
+end
+
+-------------------------------------------------------------------------------
 -- LOCAL PROFILE
 -------------------------------------------------------------------------------
 
