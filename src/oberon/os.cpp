@@ -9,6 +9,11 @@
 #include <oberon/base>
 #include <oberon/http.h>
 
+int os::cores()
+{
+  return QThread::idealThreadCount();
+}
+
 double os::microtime()
 {
   return QDateTime::currentMSecsSinceEpoch() / 1000.0;
