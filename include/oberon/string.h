@@ -10,6 +10,7 @@ namespace oberon {
     char * insert(const char * string, int len, const char * ba);
     bool   endsWith(const char * string, const char * ba);
     int    lastIndexOf(const char * string, const char * str);
+    char * left(const char *string, int len);
     char * mid(const char * string, int pos, int len);
     char * repeated(const char *buffer, int times);
     char * replace(const char * string, const char before, const char * after);

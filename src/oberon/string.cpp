@@ -136,6 +136,24 @@ int string::lastIndexOf(const char * string, const char * str)
   return result;
 }
 
+char * string::left(const char * string, int len)
+{
+  int i;
+  int string_len = strlen(string);
+  char * result  = new char[len+1];
+
+  if( len > string_len ) {
+    len = string_len;
+  }
+
+  for(i=0; i < len; i++) {
+    result[i] = string[i];
+  }
+  result[i] = '\0';
+
+  return result;
+}
+
 char * string::mid(const char * string, int pos, int len = -1)
 {
   int i, j = 0;

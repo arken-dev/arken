@@ -53,6 +53,15 @@ static int lua_oberon_string_lastIndexOf( lua_State *L ) {
   return 1;
 }
 
+static int lua_oberon_string_left( lua_State *L ) {
+  const char * string = luaL_checkstring(L, 1);
+  int    len    =  luaL_checkinteger(L, 2);
+  char * result = string::left(string, len);
+  lua_pushstring(L, result);
+  delete[] result;
+  return 1;
+}
+
 static int lua_oberon_string_mid( lua_State *L ) {
   const char *string = luaL_checkstring(L, 1);
   int pos      =  luaL_checkinteger(L, 2);
@@ -144,6 +153,7 @@ int luaopen_oberon_string( lua_State *L ) {
     {"endsWith",    lua_oberon_string_endsWith},
     {"indexOf",     lua_oberon_string_indexOf},
     {"insert",      lua_oberon_string_insert},
+    {"left",        lua_oberon_string_left},
     {"lastIndexOf", lua_oberon_string_lastIndexOf},
     {"mid",         lua_oberon_string_mid},
     {"repeated",    lua_oberon_string_repeated},
