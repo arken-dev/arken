@@ -192,6 +192,14 @@ registerQDirClassMethods( lua_State *L ) {
  */
 
 static int
+lua_QDirInstanceMethodAbsolutePath( lua_State *L ) {
+  QDir *dir   = checkQDir( L );
+  lua_pushstring(L, dir->absolutePath().toLocal8Bit());
+  return 1;
+}
+
+
+static int
 lua_QDirInstanceMethodIsRelative( lua_State *L) {
   QDir *dir = checkQDir( L );
   lua_pushboolean( L, dir->isRelative() );
@@ -416,6 +424,7 @@ lua_QDirInstanceMethodEntryInfoList( lua_State *L ) {
 
 static const
 luaL_reg QDirMethods[] = {
+  {"absolutePath", lua_QDirInstanceMethodAbsolutePath},
   {"searchPaths", lua_QDirInstanceMethodSearchPaths},
   {"entryInfoList", lua_QDirInstanceMethodEntryInfoList},
   {"entryList", lua_QDirInstanceMethodEntryList},
