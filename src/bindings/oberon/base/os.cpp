@@ -1,5 +1,5 @@
 #include <luajit-2.0/lua.hpp>
-#include <oberon/base>
+#include <oberon/helper>
 
 static int lua_oberon_os_cores( lua_State *L ) {
   lua_pushnumber( L, os::cores() );

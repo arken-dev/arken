@@ -1,6 +1,5 @@
 #include <luajit-2.0/lua.hpp>
-#include <oberon/base>
-#include <stdlib.h>
+#include <oberon/helper>
 
 static int lua_oberon_string_append( lua_State *L ) {
   const char *string = luaL_checkstring(L, 1);

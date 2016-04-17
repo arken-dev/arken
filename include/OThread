@@ -1,1 +1,1 @@
-#include "oberon/othread.h"
+#include "oberon/classes/OThread.h"

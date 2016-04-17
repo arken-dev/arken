@@ -1,4 +1,0 @@
-#include <oberon/os.h>
-#include <oberon/string.h>
-
-using namespace oberon;

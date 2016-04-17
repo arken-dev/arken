@@ -3,7 +3,6 @@
 ######################################################################
 
 TEMPLATE = subdirs
-SUBDIRS = base  \
-          http
-
-unix:SUBDIRS += pgsql
+SUBDIRS = base    \
+          classes \
+          modules

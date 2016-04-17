@@ -11,11 +11,11 @@ TARGET = oberon
 DESTDIR = ../../shared
 
 # Input
-SOURCES += http.cpp       \
-           obytearray.cpp \
-           os.cpp         \
-           othread.cpp    \
-           string.cpp
+SOURCES += base/os.cpp            \
+           base/string.cpp        \
+           classes/OByteArray.cpp \
+           classes/OThread.cpp    \
+           modules/http.cpp
 
 unix:LIBS += -lcurl
 win32:LIBS += ../../vendors/lua51.dll

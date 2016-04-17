@@ -4,19 +4,4 @@
 
 TEMPLATE = subdirs
 SUBDIRS = oberon         \
-          OByteArray     \
-          OThread        \
-          QByteArrayList \
-          QDateTime      \
-          QDir           \
-          QDirIterator   \
-          QFile          \
-          QFileInfo      \
-          QFileInfoList  \
-          QImage         \
-          QPixmap        \
-          QRegExp        \
-          QSqlDatabase   \
-          QSqlQuery      \
-          QString        \
-          QStringList
+          qt

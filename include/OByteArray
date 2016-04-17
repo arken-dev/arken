@@ -1,1 +1,1 @@
-#include "oberon/obytearray.h"
+#include "oberon/classes/OByteArray.h"

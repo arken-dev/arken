@@ -7,7 +7,7 @@ package.path  = package.path  .. ";" .. OBERON_PATH .. "/tasks/?.lua"
 -- Base
 -------------------------------------------------------------------------------
 
-require 'oberon.base'
+require 'oberon.helper'
 require 'toboolean'
 
 -------------------------------------------------------------------------------
