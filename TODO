@@ -6,6 +6,8 @@
   - background threads
 ---
 * test
+  - colorize
+  - absolute file path
 * coverage
 ---
 * report
