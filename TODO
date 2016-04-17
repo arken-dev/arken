@@ -1,6 +1,5 @@
 * test
   - colorize
-  - absolute file path
 * http parser
   - query string
   - post
