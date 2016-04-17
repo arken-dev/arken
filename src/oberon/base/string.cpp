@@ -20,6 +20,17 @@ char * string::append(const char * string, const char * ba)
   return result;
 }
 
+char * string::capitalize(const char * string)
+{
+  int len = strlen(string);
+  char * result  = new char[len + 1];
+
+  strcpy(result, string);
+  result[0] = toupper(string[0]);
+
+  return result;
+}
+
 bool string::contains(const char * string, const char * str)
 {
   int length = strlen(string);

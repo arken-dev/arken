@@ -5,6 +5,7 @@
 namespace oberon {
   namespace string {
     char * append(const char * string, const char * str);
+    char * capitalize(const char * string);
     bool   contains(const char * string, const char * str);
     int    indexOf(const char * string, const char * str);
     char * insert(const char * string, int len, const char * ba);
