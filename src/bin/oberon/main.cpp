@@ -2,6 +2,8 @@
 #include <iostream>
 #include <QtCore>
 #include <QCoreApplication>
+#include <oberon/helper>
+#include <OByteArray>
 
 void oberonPopulateArg(lua_State *L, int argc, char * argv[])
 {
@@ -18,21 +20,24 @@ void oberonPopulateArg(lua_State *L, int argc, char * argv[])
 }
 
 void oberonResolvPath(lua_State *L, QCoreApplication &app,
-  QByteArray &oberonPath)
+  OByteArray &oberonPath)
 {
   QString dirPath;
 
   dirPath = app.applicationDirPath();
   dirPath.truncate( dirPath.lastIndexOf('/') );
   oberonPath = dirPath.toLocal8Bit();
+  if( strcmp(os::name(), "windows") == 0 ) {
+    oberonPath = oberonPath.capitalize();
+  }
   lua_pushstring(L, oberonPath);
   lua_setglobal(L, "OBERON_PATH");
 }
 
-int oberonProfileLoad(lua_State *L, QByteArray &oberonPath)
+int oberonProfileLoad(lua_State *L, OByteArray &oberonPath)
 {
   int rv;
-  QByteArray profile;
+  OByteArray profile;
 
   profile = oberonPath;
   profile.append("/profile.lua");
@@ -71,10 +76,10 @@ int oberonFileLoad(lua_State *L, QFile &file)
   return rv;
 }
 
-int oberonTaskLoad(lua_State *L, QByteArray &oberonPath)
+int oberonTaskLoad(lua_State *L, OByteArray &oberonPath)
 {
   int rv;
-  QByteArray task;
+  OByteArray task;
 
   task = oberonPath;
   task.append("/lib/task.lua");
@@ -94,14 +99,14 @@ int oberonTaskLoad(lua_State *L, QByteArray &oberonPath)
   return rv;
 }
 
-void oberonConsolePrintAround(QByteArray &buffer)
+void oberonConsolePrintAround(OByteArray &buffer)
 {
   buffer.remove(0, 1);
   buffer.prepend("print(");
   buffer.append(")");
 }
 
-bool oberonConsoleIncrementLevel(QByteArray &row)
+bool oberonConsoleIncrementLevel(OByteArray &row)
 {
   /* if */
   if(row.startsWith("if ") or row.contains(" if ")) {
@@ -126,7 +131,7 @@ bool oberonConsoleIncrementLevel(QByteArray &row)
   return false;
 }
 
-bool oberonConsoleDecrementLevel(QByteArray &row)
+bool oberonConsoleDecrementLevel(OByteArray &row)
 {
   /* end */
   if(row.startsWith("end") or row.contains(" end ")) {
@@ -146,8 +151,8 @@ int oberonConsoleLoad(lua_State *L)
   int rv = 0;
   int level = 0;
   std::string line;
-  QByteArray  row;
-  QByteArray  buffer;
+  OByteArray  row;
+  OByteArray  buffer;
 
   while(true) {
     std::cout << "oberon" << level << "> ";
@@ -193,8 +198,8 @@ int oberonConsoleLoad(lua_State *L)
 int main(int argc, char * argv[])
 {
   int rv = 0;
-  QByteArray oberonPath;
-  QByteArray task;
+  OByteArray oberonPath;
+  OByteArray task;
   QFile      file(argv[1]);
   QCoreApplication app(argc, argv);
   lua_State *L = lua_open();

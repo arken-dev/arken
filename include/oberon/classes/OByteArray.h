@@ -15,8 +15,9 @@ class OByteArray : public QByteArray
 
   public:
 
-  OByteArray(const char *data, int size) : QByteArray(data, size) { }
+  OByteArray() : QByteArray() { }
   OByteArray(const char *data) : QByteArray(data) { }
+  OByteArray(const char *data, int size) : QByteArray(data, size) { }
 
   OByteArray capitalize(void);
   OByteArray underscore(void);
@@ -25,7 +26,8 @@ class OByteArray : public QByteArray
   OByteArray toUpper(void);
   OByteArray &append(const char *s);
   OByteArray &append(const QByteArray &a);
-
+  OByteArray &operator=(const OByteArray &a);
+  OByteArray &operator=(const char * a);
 };
 
 #endif

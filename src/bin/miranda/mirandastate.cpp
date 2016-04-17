@@ -3,12 +3,12 @@
 #include <QStack>
 
 qint64     MirandaState::s_version     = 0;
-QByteArray MirandaState::s_oberonPath  = "";
-QByteArray MirandaState::s_profilePath = "";
+OByteArray MirandaState::s_oberonPath  = "";
+OByteArray MirandaState::s_profilePath = "";
 QMutex     MirandaState::s_mutex;
 
 QStack<MirandaState *> * MirandaState::s_stack = new QStack<MirandaState *>;
-QHash<QByteArray, QByteArray> * MirandaState::s_cache = new QHash<QByteArray, QByteArray>;
+QHash<OByteArray, OByteArray> * MirandaState::s_cache = new QHash<OByteArray, OByteArray>;
 
 void miranda_server_register(lua_State * L);
 void miranda_cache_register(lua_State * L);
@@ -23,6 +23,10 @@ MirandaState::MirandaState()
 
   miranda_server_register(m_State);
   miranda_cache_register(m_State);
+
+  if( strcmp(os::name(), "windows") == 0 ) {
+    s_oberonPath = s_oberonPath.capitalize();
+  }
 
   lua_pushstring(m_State, s_oberonPath);
   lua_setglobal(m_State, "OBERON_PATH");

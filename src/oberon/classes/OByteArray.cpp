@@ -37,3 +37,15 @@ OByteArray& OByteArray::append(const QByteArray &a)
   QByteArray::append(a);
   return *this;
 }
+
+OByteArray & OByteArray::operator=(const OByteArray &a)
+{
+  QByteArray::operator=(a);
+  return *this;
+}
+
+OByteArray & OByteArray::operator=(const char * a)
+{
+  QByteArray::operator=(a);
+  return *this;
+}

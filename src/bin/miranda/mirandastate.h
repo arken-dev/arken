@@ -4,11 +4,12 @@
 #include <luajit-2.0/lua.hpp>
 
 #include <QCoreApplication>
-#include <QByteArray>
 #include <QDateTime>
 #include <QMutex>
 #include <QStack>
 #include <QHash>
+#include <oberon/helper>
+#include <OByteArray>
 
 class MirandaState
 {
@@ -33,11 +34,11 @@ private:
   lua_State * m_State;
   qint64      m_version;
   static qint64     s_version;
-  static QByteArray s_oberonPath;
-  static QByteArray s_profilePath;
+  static OByteArray s_oberonPath;
+  static OByteArray s_profilePath;
   static QMutex     s_mutex;
   static QStack<MirandaState *> * s_stack;
-  static QHash<QByteArray, QByteArray> * s_cache;
+  static QHash<OByteArray, OByteArray> * s_cache;
 
 };
 
