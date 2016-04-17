@@ -1,14 +1,10 @@
+* test
+  - colorize
+  - absolute file path
 * http parser
   - query string
   - post
   - multipart
+* coverage
 * miranda
   - background threads
----
-* test
-  - colorize
-  - absolute file path
-* coverage
----
-* report
-* fusion
