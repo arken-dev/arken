@@ -1,6 +1,11 @@
 #include <QtCore>
 #include <OByteArray>
 
+OByteArray OByteArray::capitalize(void)
+{
+  return OByteArray(string::capitalize(this->data()));
+}
+
 OByteArray OByteArray::underscore(void)
 {
   return OByteArray(string::underscore(this->data()));
