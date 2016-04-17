@@ -12,7 +12,11 @@ colorize.white     = '0;37'
 
 colorize.format = function(text, color)
   color = colorize[color]
-  return string.char(27)..'[' .. color .. 'm' .. text .. string.char(27) ..'[0m'
+  if os.name() == 'windows' then
+    return text
+  else
+    return string.char(27)..'[' .. color .. 'm' .. text .. string.char(27) ..'[0m'
+  end
 end
 
 return colorize
