@@ -256,11 +256,10 @@ char * string::simplified(const char *string)
     }
   }
 
-  if(string[j] <= ' ') {
-    res[j-1] = '\0';
-  } else {
-    res[j] = '\0';
+  while(res[j] <= ' ') {
+    --j;
   }
+  res[j+1] = '\0';
 
   return res;
 }
