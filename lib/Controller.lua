@@ -25,11 +25,35 @@ function Controller:render_html(params)
   else
     file = prefix .. "/" .. params.template
   end
-  --if not (os.getenv('OBERON_ENV') == 'production') then
-  --  template.cache = {}
-  --end
+
+  if self.layout then
+    self._yield = file
+    file = "app/views/layouts/" .. self.layout .. ".html"
+  end
 
   return 200, {'Content-Type: text/html'}, template.execute(file, self)
+end
+
+function Controller:partial(params)
+  local prefix = "app/views"
+  local view   = nil
+  local file   = nil
+
+  if params.template == nil then
+    if params.view == nil then
+      file = prefix .. "/" .. self.controller_name .. "/_" .. self.action_name .. ".html"
+    else
+      file = prefix .. "/" .. self.controller_name .. "/_" .. params.view .. ".html"
+    end
+  else
+    file = prefix .. "/_" .. params.template
+  end
+
+  return template.execute(file, self)
+end
+
+function Controller:yield()
+  return template.execute(self._yield, self)
 end
 
 -------------------------------------------------------------------------------

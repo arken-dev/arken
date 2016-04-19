@@ -10,8 +10,9 @@ QMutex     MirandaState::s_mutex;
 QStack<MirandaState *> * MirandaState::s_stack = new QStack<MirandaState *>;
 QHash<OByteArray, OByteArray> * MirandaState::s_cache = new QHash<OByteArray, OByteArray>;
 
-void miranda_server_register(lua_State * L);
 void miranda_cache_register(lua_State * L);
+void miranda_server_register(lua_State * L);
+void miranda_request_register(lua_State * L);
 
 MirandaState::MirandaState()
 {
@@ -21,8 +22,9 @@ MirandaState::MirandaState()
 
   luaL_openlibs(m_State);
 
-  miranda_server_register(m_State);
   miranda_cache_register(m_State);
+  miranda_server_register(m_State);
+  miranda_request_register(m_State);
 
   if( strcmp(os::name(), "windows") == 0 ) {
     s_oberonPath = s_oberonPath.capitalize();

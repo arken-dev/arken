@@ -3,6 +3,7 @@
 #include <iostream>
 #include <QThread>
 #include <QMutex>
+#include <OHttpRequest>
 
 MirandaTask::MirandaTask(qintptr descriptor)
 {
@@ -25,12 +26,13 @@ void MirandaTask::run()
   if ( socket.waitForReadyRead(-1) ) {
     buffer = socket.readAll();
   }
+  //std::cout << buffer.data();
 
   // stack pop lua state
   state = MirandaState::pop();
 
   // Parse Request
-  this->parseRequest(state, buffer);
+  //this->parseRequest(state, buffer);
 
   // Process Request
   this->processRequest(state, buffer);
@@ -52,6 +54,14 @@ void MirandaTask::processRequest(MirandaState * state, QByteArray &buffer)
   lua_State * L;
 
   L = state->instance();
+
+
+  //request
+  OHttpRequest **ptr = (OHttpRequest **)lua_newuserdata(L, sizeof(OHttpRequest*));
+  *ptr = new OHttpRequest(buffer);
+  lua_setglobal(L, "__http_request");
+
+  //return
   buffer.clear();
 
   // Process Request
@@ -80,6 +90,8 @@ void MirandaTask::processRequest(MirandaState * state, QByteArray &buffer)
   buffer.append(QByteArray::number((int)len, 10));
   buffer.append("\r\n\r\n");
   buffer.append(result, len);
+
+  delete *ptr;
 }
 
 void MirandaTask::parseRequest(MirandaState *state, QByteArray &buffer)

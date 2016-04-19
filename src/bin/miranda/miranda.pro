@@ -24,8 +24,9 @@ SOURCES += main.cpp   \
     mirandaserver.cpp \
     mirandatask.cpp   \
     mirandastate.cpp  \
+    miranda_cache_register.cpp  \
     miranda_server_register.cpp \
-    miranda_cache_register.cpp
+    miranda_request_register.cpp
 
 HEADERS += mirandaserver.h \
     mirandatask.h          \

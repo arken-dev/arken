@@ -6,16 +6,19 @@ TEMPLATE = lib
 INCLUDEPATH += .
 INCLUDEPATH += ../../include
 INCLUDEPATH += ../../vendors/include
+INCLUDEPATH += ../vendors/mongrel2
 
 TARGET = oberon
 DESTDIR = ../../shared
 
 # Input
-SOURCES += base/os.cpp            \
-           base/string.cpp        \
-           classes/OByteArray.cpp \
-           classes/OThread.cpp    \
-           modules/http.cpp
+SOURCES += base/os.cpp             \
+           base/string.cpp         \
+           classes/OByteArray.cpp  \
+           classes/OThread.cpp     \
+           classes/OHttpRequest.cpp \
+           modules/http.cpp        \
+           ../vendors/mongrel2/http11/http11_parser.c
 
 unix:LIBS += -lcurl
 win32:LIBS += ../../vendors/lua51.dll

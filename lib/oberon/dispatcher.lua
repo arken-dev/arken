@@ -1,10 +1,17 @@
 require 'Controller'
 require 'OByteArray'
 
+local url = require 'url'
+
+request.params = function()
+  return url.parseQuery(request.queryString())
+end
+
+
 local M = {}
 
 M.parse_path = function()
-  local path = request['Path']
+  local path = request:requestPath()
   local last = path:lastIndexOf('/')
   local controller = path:mid(1, last-1)
   local action     = path:right(path:len() - last - 1)
@@ -28,7 +35,7 @@ M.dispatch = function()
   if object[action_name .. "Action"] then
     return object:execute(action_name .. "Action")
   else
-    return 200, {}, "action: \"" .. action_name .. "\" not found"
+    return 200, {}, "action: \"" .. action_name .. "Action\" not found"
   end
 end
 
