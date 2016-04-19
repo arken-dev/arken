@@ -1,6 +1,3 @@
-* http parser
-  - post
-  - multipart
 * miranda
   - background threads
 * coverage
