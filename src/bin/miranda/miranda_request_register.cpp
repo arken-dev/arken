@@ -5,7 +5,7 @@ static int
 lua_OHttpRequestInstanceMethodField( lua_State *L ) {
   lua_getglobal( L, "__http_request");
   OHttpRequest *req = *(OHttpRequest **) lua_touserdata(L, -1);
-  const char  *field = luaL_checkstring(L, 2);
+  const char  *field = luaL_checkstring(L, 1);
   lua_pushstring(L, req->field(field));
   return 1;
 }
