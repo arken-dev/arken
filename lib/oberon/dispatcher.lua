@@ -4,7 +4,11 @@ require 'OByteArray'
 local url = require 'url'
 
 request.params = function()
+  if request.requestMethod() == 'POST' then
+   return url.parseQuery(request.headerDone())
+  else
   return url.parseQuery(request.queryString())
+  end
 end
 
 
