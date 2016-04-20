@@ -22,4 +22,8 @@
 
 local M = {}
 
+M.test = function()
+  return "helper !!! works !!! yes !!!"
+end
+
 return M
