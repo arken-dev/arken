@@ -33,7 +33,7 @@ void MirandaServer::start()
   m_pool = new QThreadPool(this);
   m_pool->setMaxThreadCount(15);
 
-  if(this->listen(QHostAddress::Any, 3000)) {
+  if(this->listen(QHostAddress::Any, 2345)) {
     qDebug() << "start miranda ...";
   } else {
     qDebug() << "fail start miranda ...";
