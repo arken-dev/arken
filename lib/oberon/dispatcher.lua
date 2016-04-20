@@ -1,7 +1,8 @@
 require 'Controller'
 require 'OByteArray'
 
-local url = require 'url'
+local url    = require 'url'
+local cookie = require 'oberon.cookie'
 
 request.params = function()
   if request.requestMethod() == 'POST' then
@@ -9,6 +10,10 @@ request.params = function()
   else
   return url.parseQuery(request.queryString())
   end
+end
+
+request.cookies = function()
+  return cookie.parse(request.field("Cookie"))
 end
 
 local M = {}
