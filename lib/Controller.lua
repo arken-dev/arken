@@ -48,8 +48,8 @@ function Controller:partial(params)
   else
     file = prefix .. "/_" .. params.template
   end
-
-  return template.execute(file, self)
+  local context = params.context or self
+  return template.execute(file, context)
 end
 
 function Controller:yield()
