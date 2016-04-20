@@ -11,7 +11,6 @@ request.params = function()
   end
 end
 
-
 local M = {}
 
 M.parse_path = function()
@@ -32,7 +31,18 @@ M.require_controller_name = function(controller_name)
   return require(controller_name .. "_controller")
 end
 
-M.dispatch = function()
+M.dispatchLocal = function(file_name)
+  print("dispatcher: " .. file_name)
+  local list     = require 'oberon.mime-type'
+  local fileInfo = QFileInfo.new(file_name)
+  local suffix   = fileInfo:suffix()
+  local mimetype = tostring(list[suffix])
+  local header   = "Content-type: " .. mimetype
+  local file     = io.open(file_name, "rb")
+  return 200, {header}, file:read("*all")
+end
+
+M.dispatchController = function()
   controller_name, action_name = M.parse_path()
   local class  = M.require_controller_name(controller_name)
   local object = class.new{controller_name = controller_name, action_name = action_name}
@@ -40,6 +50,15 @@ M.dispatch = function()
     return object:execute(action_name .. "Action")
   else
     return 200, {}, "action: \"" .. action_name .. "Action\" not found"
+  end
+end
+
+M.dispatch = function()
+  local file_name = "public" .. request.requestPath()
+  if file_name ~= "public/" and QFile.exists(file_name) then
+    return M.dispatchLocal(file_name)
+  else
+    return M.dispatchController()
   end
 end
 
