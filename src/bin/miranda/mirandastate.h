@@ -34,6 +34,7 @@ public:
   static void servicesReload();
   static void servicesAppend(MirandaService *service);
   static void createService(QByteArray fileName);
+  static void createTask(QByteArray fileName, const char * uuid);
 
   lua_State * instance();
 

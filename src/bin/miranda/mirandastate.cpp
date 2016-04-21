@@ -70,6 +70,11 @@ void MirandaState::createService(QByteArray fileName)
   servicesAppend(new MirandaService(s_oberonPath, fileName));
 }
 
+void MirandaState::createTask(QByteArray fileName, const char * uuid)
+{
+  servicesAppend(new MirandaService(s_oberonPath, fileName, uuid));
+}
+
 void MirandaState::servicesAppend(MirandaService *t)
 {
   int i;

@@ -14,12 +14,25 @@ MirandaService::MirandaService(QByteArray oberonPath, QByteArray fileName)
   m_oberonPath = oberonPath;
   m_fileName   = fileName;
   m_shutdown   = false;
+  m_service    = true;
   m_luaState   = NULL;
+  m_uuid       = NULL;
 }
+
+MirandaService::MirandaService(QByteArray oberonPath, QByteArray fileName, const char * uuid)
+{
+  m_oberonPath = oberonPath;
+  m_fileName   = fileName;
+  m_shutdown   = false;
+  m_service    = false;
+  m_luaState   = NULL;
+  m_uuid       = uuid;
+}
+
 
 MirandaService::~MirandaService()
 {
-  qDebug() << "service shutdown..." << m_fileName;
+  qDebug() << "destructor service ..." << m_fileName;
 }
 
 bool MirandaService::loop(int secs)
@@ -53,8 +66,6 @@ bool MirandaService::isShutdown()
 
 void MirandaService::run() {
 
-  QThread::msleep(1000);
-
   int rv;
   QByteArray profile, name;
   QVariant value;
@@ -65,6 +76,10 @@ void MirandaService::run() {
   /* OBERON_PATH */
   lua_pushstring(m_luaState, m_oberonPath);
   lua_setglobal(m_luaState, "OBERON_PATH");
+
+  /* OBERON_TASK */
+  lua_pushstring(m_luaState, m_uuid);
+  lua_setglobal(m_luaState, "OBERON_TASK");
 
   /* PROFILE */
   profile = m_oberonPath;
@@ -107,7 +122,7 @@ void MirandaService::run() {
 
   lua_close(m_luaState);
 
-  if( QFile::exists( m_fileName ) ) {
+  if( m_service && QFile::exists( m_fileName ) ) {
     MirandaState::createService(m_fileName);
   }
 }
