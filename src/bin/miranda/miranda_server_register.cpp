@@ -1,5 +1,6 @@
 #include <luajit-2.0/lua.hpp>
 #include <QDebug>
+#include <QThread>
 #include "mirandastate.h"
 
 static int

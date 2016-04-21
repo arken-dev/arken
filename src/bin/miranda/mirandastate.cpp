@@ -7,7 +7,8 @@ OByteArray MirandaState::s_oberonPath  = "";
 OByteArray MirandaState::s_profilePath = "";
 QMutex     MirandaState::s_mutex;
 
-QStack<MirandaState *> * MirandaState::s_stack = new QStack<MirandaState *>;
+QStack<MirandaState *> * MirandaState::s_stack   = new QStack<MirandaState *>;
+QList<MirandaService*> * MirandaState::s_service = new QList<MirandaService *>;
 QHash<OByteArray, OByteArray> * MirandaState::s_cache = new QHash<OByteArray, OByteArray>;
 
 void miranda_cache_register(lua_State * L);
@@ -60,6 +61,51 @@ void MirandaState::init(QCoreApplication *app)
 
   s_profilePath = s_oberonPath;
   s_profilePath.append("/profile.lua");
+
+  servicesLoad();
+}
+
+void MirandaState::createService(QByteArray fileName)
+{
+  servicesAppend(new MirandaService(s_oberonPath, fileName));
+}
+
+void MirandaState::servicesAppend(MirandaService *t)
+{
+  int i;
+
+  t->start();
+
+  QMutexLocker ml(&s_mutex);
+
+  for(i = 0; i < s_service->size(); i++) {
+    MirandaService * service = s_service->at(i);
+    if( ! service->isRunning() ) {
+      s_service->removeOne(service);
+      delete service;
+    }
+  }
+
+  s_service->append(t);
+
+}
+
+void MirandaState::servicesLoad()
+{
+  QString dir("app/services");
+  if( QFile::exists(dir) ) {
+    QDirIterator iterator(dir);
+    while(iterator.hasNext()) {
+      iterator.next();
+      QFileInfo fileInfo = iterator.fileInfo();
+      if( fileInfo.suffix() == "lua" ) {
+        qDebug() << "load: " << fileInfo.filePath();
+        MirandaState::createService(fileInfo.filePath().toLocal8Bit());
+      }
+    }
+  } else {
+    qDebug() << "services dir not exists";
+  }
 }
 
 MirandaState * MirandaState::pop()
@@ -89,6 +135,22 @@ void MirandaState::push(MirandaState * state)
 void MirandaState::reload()
 {
   s_version++;
+  servicesReload();
+}
+
+// TODO check if new service is created
+// before new reload
+void MirandaState::servicesReload()
+{
+  int i;
+
+  QMutexLocker ml(&s_mutex);
+
+  for(i = 0; i < s_service->size(); i++) {
+    MirandaService * service = s_service->at(i);
+    service->shutdown();
+  }
+
 }
 
 void MirandaState::clear()

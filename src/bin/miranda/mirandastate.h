@@ -8,8 +8,11 @@
 #include <QMutex>
 #include <QStack>
 #include <QHash>
+
 #include <oberon/helper>
 #include <OByteArray>
+
+#include "mirandaservice.h"
 
 class MirandaState
 {
@@ -27,6 +30,10 @@ public:
   static int  version();
   static void insert(const char * key, const char * value);
   static const char * value(const char * key);
+  static void servicesLoad();
+  static void servicesReload();
+  static void servicesAppend(MirandaService *service);
+  static void createService(QByteArray fileName);
 
   lua_State * instance();
 
@@ -38,6 +45,7 @@ private:
   static OByteArray s_profilePath;
   static QMutex     s_mutex;
   static QStack<MirandaState *> * s_stack;
+  static QList<MirandaService*> * s_service;
   static QHash<OByteArray, OByteArray> * s_cache;
 
 };
