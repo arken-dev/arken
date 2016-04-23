@@ -90,7 +90,7 @@ function TestTask:notify(params)
       print("")
       rodape = "\n"
       for i, v in pairs(count) do
-        if rodape:trimmed():len() > 0 then
+        if rodape:len() > 0 then
           rodape = rodape .. ', '
         end
         rodape = rodape .. v .. " " .. i
