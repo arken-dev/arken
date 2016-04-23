@@ -223,6 +223,7 @@ function TestTask:coverage(params)
   tpl = OBERON_PATH .. "/lib/oberon/coverage/templates/index.html"
   local data     = {files = files, color_coverage = color_coverage,
     count = count, coverage = (total/count), sort = sort, time = (os.microtime() - t)}
+  table.sort(data.files, sort)
   local buffer   = template.execute(tpl, data)
   local file     = io.open((dir .. "/" .. 'index.html'), "w")
   file:write(buffer)

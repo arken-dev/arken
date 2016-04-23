@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
     <style type="text/css">
       table {
-        font-family : monaco, courier new ;
+        font-family : courier new ;
         font-size: 10pt ;
         font-style: bold;
         margin: 0px auto;
@@ -13,17 +13,20 @@
   </head>
   <body>
     <table width='90%'>
-    <% count = 1 -%>
-    <% table.sort(self.files, self.sort) -%>
+    <tr>
+      <td colspan='3' align='right'>
+        <%= QDateTime.currentDateTime():toString("yyyy/MM/dd hh:mm:ss") -%>&nbsp;
+        </td>
+      </tr>
+    </tr>
     <% for i, row in ipairs(self.files) do -%>
     <tr bgcolor='<%= self.color_coverage(row.data.analyze.coverage) -%>'>
-       <td align='right'> <%= count -%></td>
+       <td align='right'> <%= i -%></td>
        <td>
          <a href='<%= row.file_name:replace("/", "-")  -%>.html'><%= row.file_name -%></a>
        </td>
        <td align='right'><%= string.format("%.4f", row.data.analyze.coverage) -%>%</td>
     </tr>
-    <% count = count + 1 %>
     <% end -%>
     <tr>
       <td></td>
