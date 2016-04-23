@@ -1,0 +1,32 @@
+local coverage = require 'oberon.coverage'
+local should   = require 'test.should'
+local test   = {}
+
+coverage.start()
+require 'specs.coverage.1-example'
+coverage.stop()
+
+test['should return the table type of name file'] = function()
+  local result = coverage.dump()
+  should.be_type(result['@./specs/coverage/1-example.lua'], 'table')
+end
+
+test['should return flag 1 for line 1'] = function()
+  local analyze = coverage.analyze('./specs/coverage/1-example.lua')
+  should.be_equal(analyze[1].line, 'flag = true')
+  should.be_equal(analyze[2].flag, 1)
+end
+
+test['should return flag -1 for line 5'] = function()
+  local analyze = coverage.analyze('./specs/coverage/1-example.lua')
+  should.be_equal(analyze[5].line, 'else')
+  should.be_equal(analyze[5].flag, -1)
+end
+
+test['should return flag nil for line 6'] = function()
+  local analyze = coverage.analyze('./specs/coverage/1-example.lua')
+  should.be_equal(analyze[6].line, "  var = 'false..'")
+  should.be_equal(analyze[6].flag, nil)
+end
+
+return test

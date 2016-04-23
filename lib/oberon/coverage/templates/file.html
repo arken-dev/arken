@@ -1,0 +1,27 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
+    <style type="text/css">
+      table {
+        font-family : monaco, courier new ;
+        font-size: 10pt ;
+        font-style: bold;
+        margin: 0px auto;
+      }
+    </style>
+    <title><%= self.file_name -%></title>
+  </head>
+  <body>
+    <table width='90%'>
+      <% for i, line in ipairs(self.analyze) do -%>
+      <tr bgcolor='<%= self.color(line.flag) -%>'>
+        <td><%= i -%></td>
+        <td><%= tostring(line.line):gsub(" ", "&nbsp;") -%></td>
+      </tr>
+      <% end -%>
+      <tr>
+        <tr><td colspan='2' align='right'>coverage: <%= string.format("%.4f", self.analyze.coverage) -%>%</td>
+      <tr>
+    </table>
+  </body>
+</html>

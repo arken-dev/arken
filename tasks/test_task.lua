@@ -111,4 +111,122 @@ function TestTask:notify(params)
   end
 end
 
+function TestTask:coverage(params)
+  local template = require 'template'
+  local coverage = require 'oberon.coverage'
+  local iterator = QDirIterator.new('./specs', {"Subdirectories"})
+  local files = {}
+  while(iterator:hasNext()) do
+    iterator:next()
+    local fileInfo = iterator:fileInfo()
+    if fileInfo:filePath():endsWith("_spec.lua") then
+      table.insert(files, fileInfo:filePath())
+    end
+  end
+  t = os.microtime()
+
+  count = {}
+  count.ok      = 0
+  count.err     = 0
+  count.fail    = 0
+  count.pending = 0
+
+  color         = {}
+  color.ok      = 'green'
+  color.fail    = 'red'
+  color.err     = 'red_light'
+  color.pending = 'yellow'
+
+  coverage.start()
+  results = test.execute(files)
+  coverage.stop()
+
+  print("\n")
+  for file_name, result in pairs(results) do
+    print(file_name)
+    for description, result in pairs(result) do
+      if result.status ~= 'ok' then
+      --print(result.status)
+      count[result.status] = count[result.status] + 1
+      print(colorize.format(description, color[result.status]))
+      if result.msg:len() > 0  then
+        print(result.msg)
+      end
+      end
+    end
+    print("")
+    buffer = ""
+    for i, v in pairs(count) do
+      if buffer:len() > 0 then
+        buffer = buffer .. ', '
+      end
+      buffer = buffer .. v .. " " .. i
+    end
+    buffer = buffer .. "\n"
+    buffer = buffer .. 'Time: ' .. tostring((os.microtime() - t))
+    print(buffer)
+  end
+
+  print("\n\ngenerate coverage...")
+
+  local color = function(value)
+    if value == nil then
+      return "#ffd4d4"
+    end
+    if value >= 1 then
+      return "#d4dbff"
+    end
+    if value == -1 then
+      return "#ffffff"
+    end
+
+    return 'yellow'
+  end
+
+  local function color_coverage(value)
+    if value < 100 then
+      return "#ffd4d4"
+    else
+      return "#d4dbff"
+    end
+  end
+
+  local function calc_coverage(dump)
+    local total = #dump
+    local uncoverage = 0
+    for i, lines in ipairs(dump) do
+      uncoverage = uncoverage + 1
+    end
+  end
+  local function sort (a, b)
+    return tostring(a.file_name) < tostring(b.file_name)
+  end
+  local dump  = coverage.dump()
+  local dir   = 'coverage'
+  local tpl   = OBERON_PATH .. "/lib/oberon/coverage/templates/file.html"
+  local files = {}
+  local count = 0
+  local total = 0
+  for file_name, result in pairs(dump) do
+    if file_name:startsWith("@app/models") then
+      local analyze = coverage.analyze(file_name)
+      local data    = {analyze = analyze, file_name = file_name, color = color}
+      local buffer  = template.execute(tpl, data)
+      local file    = io.open((dir .. "/" .. file_name:replace("/", "-") .. '.html'), "w")
+      count = count + 1
+      total = total + analyze.coverage
+      table.insert(files, {file_name = file_name, data = data})
+      file:write(buffer)
+      file:close()
+    end
+  end
+  tpl = OBERON_PATH .. "/lib/oberon/coverage/templates/index.html"
+  local data     = {files = files, color_coverage = color_coverage,
+    count = count, coverage = (total/count), sort = sort, time = (os.microtime() - t)}
+  local buffer   = template.execute(tpl, data)
+  local file     = io.open((dir .. "/" .. 'index.html'), "w")
+  file:write(buffer)
+  file:close()
+end
+
 return TestTask

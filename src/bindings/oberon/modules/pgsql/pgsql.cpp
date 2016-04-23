@@ -36,7 +36,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /* server NOTICE message handler */
 static void pg_notice(void *, const char *message) {
-	fprintf(stderr, "debug.notice [%s]\n", message);
+	//fprintf(stderr, "debug.notice [%s]\n", message);
 }
 
 /* check and return pointer */

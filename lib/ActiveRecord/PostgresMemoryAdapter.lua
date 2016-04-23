@@ -1,4 +1,4 @@
-require 'pgsql'
+require 'oberon.pgsql'
 
 ActiveRecord_PostgresMemoryAdapter = Class.new(
   "ActiveRecord.PostgresMemoryAdapter",
@@ -137,7 +137,7 @@ function ActiveRecord_PostgresMemoryAdapter:loadTable()
   end
 end
 
-ActiveRecord_PostgresMemoryAdapter:contract('loadTable')
+--ActiveRecord_PostgresMemoryAdapter:contract('loadTable')
 
 --------------------------------------------------------------------------------
 -- LOAD SEQUENCE
@@ -185,9 +185,12 @@ end
 
 function ActiveRecord_PostgresMemoryAdapter:parser_fetch(res)
   res.new_record = false
+  -- disable convert value in driver
+--[[
   for column, properties in pairs(self:columns()) do
     res[column] = self:parser_value(properties.format, res[column])
   end
+  ]]
   local key = self.table_name .. '_' .. tostring(res[self.primary_key])
   self.indexes[self.table_name][key] = true
   self._cache[self.table_name][key] = res
