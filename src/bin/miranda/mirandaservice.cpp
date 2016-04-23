@@ -9,23 +9,19 @@ void miranda_cache_register(lua_State * L);
 void miranda_server_register(lua_State * L);
 void miranda_service_register(lua_State * L);
 
-MirandaService::MirandaService(QByteArray oberonPath, QByteArray fileName)
+MirandaService::MirandaService(QByteArray fileName)
 {
-  m_oberonPath = oberonPath;
   m_fileName   = fileName;
   m_shutdown   = false;
   m_service    = true;
-  m_luaState   = NULL;
   m_uuid       = NULL;
 }
 
-MirandaService::MirandaService(QByteArray oberonPath, QByteArray fileName, const char * uuid)
+MirandaService::MirandaService(QByteArray fileName, QByteArray uuid)
 {
-  m_oberonPath = oberonPath;
   m_fileName   = fileName;
   m_shutdown   = false;
   m_service    = false;
-  m_luaState   = NULL;
   m_uuid       = uuid;
 }
 
@@ -67,60 +63,44 @@ bool MirandaService::isShutdown()
 void MirandaService::run() {
 
   int rv;
-  QByteArray profile, name;
-  QVariant value;
+  MirandaState * state;
+  lua_State * luaState;
 
-  m_luaState = lua_open();
-  luaL_openlibs(m_luaState);
-
-  /* OBERON_PATH */
-  lua_pushstring(m_luaState, m_oberonPath);
-  lua_setglobal(m_luaState, "OBERON_PATH");
+  state = MirandaState::pop();
+  luaState = state->instance();
 
   /* OBERON_TASK */
-  lua_pushstring(m_luaState, m_uuid);
-  lua_setglobal(m_luaState, "OBERON_TASK");
-
-  /* PROFILE */
-  profile = m_oberonPath;
-  profile.append("/profile.lua");
-
-  //loadfile
-  rv = luaL_loadfile(m_luaState, profile);
-  if (rv) {
-    fprintf(stderr, "%s\n", lua_tostring(m_luaState, -1));
-    return;
-  }
-
-  rv = lua_pcall(m_luaState, 0, 0, lua_gettop(m_luaState) - 1);
-  if (rv) {
-    fprintf(stderr, "%s\n", lua_tostring(m_luaState, -1));
-    return;
-  }
+  lua_pushstring(luaState, m_uuid);
+  lua_setglobal(luaState, "OBERON_TASK");
 
   //allocate
-  MirandaService **ptr = (MirandaService **)lua_newuserdata(m_luaState, sizeof(MirandaService*));
+  MirandaService **ptr = (MirandaService **)lua_newuserdata(luaState, sizeof(MirandaService*));
   *ptr = this;
-  lua_setglobal(m_luaState, "__miranda_service");
-
-  miranda_cache_register(m_luaState);
-  miranda_server_register(m_luaState);
-  miranda_service_register(m_luaState);
+  lua_setglobal(luaState, "__miranda_service");
 
   //call
-  rv = luaL_loadfile(m_luaState, m_fileName.data());
+  rv = luaL_loadfile(luaState, m_fileName.data());
   if (rv) {
-    fprintf(stderr, "%s\n", lua_tostring(m_luaState, -1));
+    fprintf(stderr, "%s\n", lua_tostring(luaState, -1));
     return;
   }
 
-  rv = lua_pcall(m_luaState, 0, 0, lua_gettop(m_luaState) - 1);
+  rv = lua_pcall(luaState, 0, 0, lua_gettop(luaState) - 1);
   if (rv) {
-    fprintf(stderr, "%s\n", lua_tostring(m_luaState, -1));
+    fprintf(stderr, "%s\n", lua_tostring(luaState, -1));
     return;
   }
 
-  lua_close(m_luaState);
+  // clear OBERON_TASK
+  lua_pushnil(luaState);
+  lua_setglobal(luaState, "OBERON_TASK");
+
+  // clear this
+  lua_pushnil(luaState);
+  lua_setglobal(luaState, "__miranda_service");
+
+  // stack push lua state
+  MirandaState::push(state);
 
   if( m_service && QFile::exists( m_fileName ) ) {
     MirandaState::createService(m_fileName);

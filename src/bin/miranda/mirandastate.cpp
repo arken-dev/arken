@@ -14,6 +14,7 @@ QHash<OByteArray, OByteArray> * MirandaState::s_cache = new QHash<OByteArray, OB
 void miranda_cache_register(lua_State * L);
 void miranda_server_register(lua_State * L);
 void miranda_request_register(lua_State * L);
+void miranda_service_register(lua_State * L);
 
 MirandaState::MirandaState()
 {
@@ -26,6 +27,7 @@ MirandaState::MirandaState()
   miranda_cache_register(m_State);
   miranda_server_register(m_State);
   miranda_request_register(m_State);
+  miranda_service_register(m_State);
 
   if( strcmp(os::name(), "windows") == 0 ) {
     s_oberonPath = s_oberonPath.capitalize();
@@ -67,12 +69,12 @@ void MirandaState::init(QCoreApplication *app)
 
 void MirandaState::createService(QByteArray fileName)
 {
-  servicesAppend(new MirandaService(s_oberonPath, fileName));
+  servicesAppend(new MirandaService(fileName));
 }
 
 void MirandaState::createTask(QByteArray fileName, const char * uuid)
 {
-  servicesAppend(new MirandaService(s_oberonPath, fileName, uuid));
+  servicesAppend(new MirandaService(fileName, uuid));
 }
 
 void MirandaState::servicesAppend(MirandaService *t)
