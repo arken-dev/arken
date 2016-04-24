@@ -4,7 +4,7 @@
 static int
 lua_OHttpRequestInstanceMethodField( lua_State *L ) {
   lua_getglobal( L, "__http_request");
-  OHttpRequest *req = *(OHttpRequest **) lua_touserdata(L, -1);
+  OHttpRequest *req = (OHttpRequest *) lua_touserdata(L, -1);
   const char  *field = luaL_checkstring(L, 1);
   lua_pushstring(L, req->field(field));
   return 1;
@@ -13,7 +13,7 @@ lua_OHttpRequestInstanceMethodField( lua_State *L ) {
 static int
 lua_OHttpRequestInstanceMethodFragment( lua_State *L ) {
   lua_getglobal( L, "__http_request");
-  OHttpRequest *req = *(OHttpRequest **) lua_touserdata(L, -1);
+  OHttpRequest *req = (OHttpRequest *) lua_touserdata(L, -1);
   if( req->fragment() == NULL ) {
     lua_pushnil(L);
   } else {
@@ -25,7 +25,7 @@ lua_OHttpRequestInstanceMethodFragment( lua_State *L ) {
 static int
 lua_OHttpRequestInstanceMethodHttpVersion( lua_State *L ) {
   lua_getglobal( L, "__http_request");
-  OHttpRequest *req = *(OHttpRequest **) lua_touserdata(L, -1);
+  OHttpRequest *req = (OHttpRequest *) lua_touserdata(L, -1);
   lua_pushstring(L, req->httpVersion());
   return 1;
 }
@@ -33,7 +33,7 @@ lua_OHttpRequestInstanceMethodHttpVersion( lua_State *L ) {
 static int
 lua_OHttpRequestInstanceMethodRequestUri( lua_State *L ) {
   lua_getglobal( L, "__http_request");
-  OHttpRequest *req = *(OHttpRequest **) lua_touserdata(L, -1);
+  OHttpRequest *req = (OHttpRequest *) lua_touserdata(L, -1);
   lua_pushstring(L, req->requestUri());
   return 1;
 }
@@ -41,7 +41,7 @@ lua_OHttpRequestInstanceMethodRequestUri( lua_State *L ) {
 static int
 lua_OHttpRequestInstanceMethodRequestPath( lua_State *L ) {
   lua_getglobal( L, "__http_request");
-  OHttpRequest *req = *(OHttpRequest **) lua_touserdata(L, -1);
+  OHttpRequest *req = (OHttpRequest *) lua_touserdata(L, -1);
   lua_pushstring(L, req->requestPath());
   return 1;
 }
@@ -49,7 +49,7 @@ lua_OHttpRequestInstanceMethodRequestPath( lua_State *L ) {
 static int
 lua_OHttpRequestInstanceMethodRequestMethod( lua_State *L ) {
   lua_getglobal( L, "__http_request");
-  OHttpRequest *req = *(OHttpRequest **) lua_touserdata(L, -1);
+  OHttpRequest *req = (OHttpRequest *) lua_touserdata(L, -1);
   lua_pushstring(L, req->requestMethod());
   return 1;
 }
@@ -57,7 +57,7 @@ lua_OHttpRequestInstanceMethodRequestMethod( lua_State *L ) {
 static int
 lua_OHttpRequestInstanceMethodQueryString( lua_State *L ) {
   lua_getglobal( L, "__http_request");
-  OHttpRequest *req = *(OHttpRequest **) lua_touserdata(L, -1);
+  OHttpRequest *req = (OHttpRequest *) lua_touserdata(L, -1);
   lua_pushstring(L, req->queryString());
   return 1;
 }
@@ -65,7 +65,7 @@ lua_OHttpRequestInstanceMethodQueryString( lua_State *L ) {
 static int
 lua_OHttpRequestInstanceMethodHeaderDone( lua_State *L ) {
   lua_getglobal( L, "__http_request");
-  OHttpRequest *req = *(OHttpRequest **) lua_touserdata(L, -1);
+  OHttpRequest *req = (OHttpRequest *) lua_touserdata(L, -1);
   lua_pushstring(L, req->headerDone());
   return 1;
 }

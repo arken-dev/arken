@@ -57,8 +57,8 @@ void MirandaTask::processRequest(MirandaState * state, QByteArray &buffer)
 
 
   //request
-  OHttpRequest **ptr = (OHttpRequest **)lua_newuserdata(L, sizeof(OHttpRequest*));
-  *ptr = new OHttpRequest(buffer);
+  OHttpRequest * http_request = new OHttpRequest(buffer);
+  lua_pushlightuserdata(L, http_request);
   lua_setglobal(L, "__http_request");
 
   //return
@@ -91,7 +91,7 @@ void MirandaTask::processRequest(MirandaState * state, QByteArray &buffer)
   buffer.append("\r\n\r\n");
   buffer.append(result, len);
 
-  delete *ptr;
+  delete http_request;
 }
 
 void MirandaTask::parseRequest(MirandaState *state, QByteArray &buffer)
