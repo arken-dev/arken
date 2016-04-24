@@ -2,6 +2,7 @@
 #include <QDebug>
 #include <QStack>
 
+int        MirandaState::s_gc          = 0;
 qint64     MirandaState::s_version     = 0;
 OByteArray MirandaState::s_oberonPath  = "";
 OByteArray MirandaState::s_profilePath = "";
@@ -20,6 +21,7 @@ MirandaState::MirandaState()
 {
   int rv;
   m_version = s_version;
+  m_gc      = s_gc;
   m_State = luaL_newstate();
 
   luaL_openlibs(m_State);
@@ -115,6 +117,28 @@ void MirandaState::servicesLoad()
   }
 }
 
+int MirandaState::gc()
+{
+  int i = 0;
+  MirandaState * state;
+
+  s_gc ++;
+  state = takeFirst();
+
+  while( state->m_gc != s_gc ) {
+    lua_gc(state->instance(), LUA_GCCOLLECT, 0);
+    state->m_gc = s_gc;
+    push(state);
+    i++;
+
+    state = takeFirst();
+  }
+
+  push(state);
+
+  return i;
+}
+
 MirandaState * MirandaState::pop()
 {
   QMutexLocker ml(&s_mutex);
@@ -132,6 +156,18 @@ MirandaState * MirandaState::pop()
 
   return state;
 }
+
+MirandaState * MirandaState::takeFirst()
+{
+  QMutexLocker ml(&s_mutex);
+
+  if( s_stack->isEmpty() ) {
+    return new MirandaState();
+  }
+
+  return s_stack->takeFirst();
+}
+
 
 void MirandaState::push(MirandaState * state)
 {

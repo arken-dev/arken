@@ -4,6 +4,13 @@
 #include "mirandastate.h"
 
 static int
+miranda_server_gc(lua_State *L) {
+  qDebug() << "gc...";
+  lua_pushinteger(L, MirandaState::gc());
+  return 1;
+}
+
+static int
 miranda_server_reload(lua_State *) {
   MirandaState::reload();
   qDebug() << "reload: " << MirandaState::version() ;
@@ -41,6 +48,7 @@ miranda_server_service(lua_State *L) {
 void
 miranda_server_register(lua_State * L) {
   static const         luaL_reg Map[] = {
+    {"gc",      miranda_server_gc},
     {"version", miranda_server_version},
     {"reload",  miranda_server_reload},
     {"clear",   miranda_server_clear},
