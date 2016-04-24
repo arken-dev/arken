@@ -4,7 +4,7 @@
 static int
 miranda_service_loop(lua_State * L) {
   lua_getglobal( L, "__miranda_service");
-  MirandaService *service = *(MirandaService **) lua_touserdata(L, -1);
+  MirandaService *service = (MirandaService *) lua_touserdata(L, -1);
   int secs;
   if(lua_gettop(L) == 1 ) {
     secs = 1;

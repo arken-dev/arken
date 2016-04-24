@@ -74,8 +74,7 @@ void MirandaService::run() {
   lua_setglobal(luaState, "OBERON_TASK");
 
   //allocate
-  MirandaService **ptr = (MirandaService **)lua_newuserdata(luaState, sizeof(MirandaService*));
-  *ptr = this;
+  lua_pushlightuserdata(luaState, this);
   lua_setglobal(luaState, "__miranda_service");
 
   //call
