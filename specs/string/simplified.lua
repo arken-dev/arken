@@ -47,4 +47,10 @@ test['should remove tab throughout the string'] = function()
   should.be_equal( str1:simplified(), str2 )
 end
 
+test['should apply sequential methodo'] = function()
+  str1 = "　this　is　a　test　"
+  str2 = "this is a test"
+  should.be_equal( str1:simplified():simplified(), str2 )
+end
+
 return test
