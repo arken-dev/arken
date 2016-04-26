@@ -34,11 +34,9 @@ end
 test['should remove blank, break line and tab throughout the string'] = function()
   local str1 = " \n\t this \t\n is \t\n a \t\n test \t\n "
   local str2 = "this is a test"
-  should.be_equal( str1:simplified():len(), 14)
   should.be_equal( str1:simplified(), str2 )
   local str1 = "\n \tthis\t \nis\t \na\t \ntest\t \n"
   local str2 = "this is a test"
-  should.be_equal( str1:simplified():len(), 14)
   should.be_equal( str1:simplified(), str2 )
 end
 
