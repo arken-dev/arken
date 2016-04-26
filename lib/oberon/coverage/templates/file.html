@@ -14,14 +14,14 @@
   </head>
   <body>
     <table width='90%'>
-      <% for i, line in ipairs(self.analyze) do -%>
+      <% for i, line in ipairs(self.lines) do -%>
       <tr bgcolor='<%= helper.color(line.flag) -%>'>
         <td><%= i -%></td>
-        <td><%= tostring(line.line):gsub(" ", "&nbsp;") -%></td>
+        <td><%= helper.spacing(line.src) -%></td>
       </tr>
       <% end -%>
       <tr>
-        <tr><td colspan='2' align='right'>coverage: <%= string.format("%.4f", self.analyze.coverage) -%>%</td>
+        <tr><td colspan='2' align='right'>coverage: <%= helper.number_format(self.coverage) -%>%</td>
       <tr>
     </table>
   </body>

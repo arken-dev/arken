@@ -39,4 +39,20 @@ M.sort = function(tbl)
   return tbl
 end
 
+M.spacing = function(str)
+  return tostring(str):gsub(" ", "&nbsp;")
+end
+
+M.number_format = function(value)
+  return string.format("%.4f", value)
+end
+
+M.datetime = function()
+  return QDateTime.currentDateTime():toString("yyyy/MM/dd hh:mm:ss")
+end
+
+M.parameterize = function(value)
+  return tostring(value):replace("/", "-")
+end
+
 return M

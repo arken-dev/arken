@@ -166,28 +166,22 @@ function TestTask:coverage(params)
   end
 
   print("\n\ngenerate coverage...")
-
   local dump  = coverage.dump()
   local dir   = 'coverage'
   local tpl   = OBERON_PATH .. "/lib/oberon/coverage/templates/file.html"
   local files = {}
-  local count = 0
-  local total = 0
   for file_name, result in pairs(dump) do
     if file_name:startsWith("@app/models") then
-      local analyze = coverage.analyze(file_name)
-      local data    = {analyze = analyze, file_name = file_name}
+      local data    = coverage.analyze(file_name)
       local buffer  = template.execute(tpl, data)
-      local file    = io.open((dir .. "/" .. file_name:replace("/", "-") .. '.html'), "w")
-      count = count + 1
-      total = total + analyze.coverage
-      table.insert(files, {file_name = file_name, data = data})
+      local file    = io.open((dir .. "/" .. data.file_name:replace("/", "-") .. '.html'), "w")
+      table.insert(files, data)
       file:write(buffer)
       file:close()
     end
   end
   tpl = OBERON_PATH .. "/lib/oberon/coverage/templates/index.html"
-  local data     = {files = files, count = count, coverage = (total/count), time = (os.microtime() - t)}
+  local data     = {files = files, time = (os.microtime() - t)}
   local buffer   = template.execute(tpl, data)
   local file     = io.open((dir .. "/" .. 'index.html'), "w")
   file:write(buffer)

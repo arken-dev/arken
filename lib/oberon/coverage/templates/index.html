@@ -16,23 +16,24 @@
     <table width='90%'>
     <tr>
       <td colspan='3' align='right'>
-        <%= QDateTime.currentDateTime():toString("yyyy/MM/dd hh:mm:ss") -%>&nbsp;
-        </td>
-      </tr>
+        <%= helper.datetime() -%>&nbsp;
+      </td>
     </tr>
+    <% local coverage = 0 -%>
     <% for i, row in ipairs(helper.sort(self.files)) do -%>
-    <tr bgcolor='<%= helper.color_coverage(row.data.analyze.coverage) -%>'>
+    <tr bgcolor='<%= helper.color_coverage(row.coverage) -%>'>
+       <% coverage = coverage + row.coverage -%>
        <td align='right'> <%= i -%></td>
        <td>
-         <a href='<%= row.file_name:replace("/", "-")  -%>.html'><%= row.file_name -%></a>
+         <a href='<%= helper.parameterize(row.file_name) -%>.html'><%= row.file_name -%></a>
        </td>
-       <td align='right'><%= string.format("%.4f", row.data.analyze.coverage) -%>%</td>
+       <td align='right'><%= helper.number_format(row.coverage) -%>%</td>
     </tr>
     <% end -%>
     <tr>
       <td></td>
-      <td align='right'><%= self.count -%> files (<%= string.format("%.2f", self.time) -%> secs) </td>
-      <td align='right'><%= string.format("%.4f", self.coverage) -%>%</td>
+      <td align='right'><%= #self.files -%> files (<%= helper.number_format(self.time) -%> secs) </td>
+      <td align='right'><%= helper.number_format(coverage/#self.files) -%>%</td>
     </tr>
     </table>
   </body>

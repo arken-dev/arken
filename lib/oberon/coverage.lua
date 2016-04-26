@@ -83,25 +83,27 @@ M.line = function(line, flag)
 end
 
 M.analyze = function(file_name)
-  file_name = file_name:replace('@', '')
-  local analyze = {}
-  local count   = 1
-  local flag
-  local uncoverage = 0
-  for line in io.lines(file_name) do
-    flag = result['@' .. file_name][count]
+  local data  = {}
+  local lines = {}
+  local count = 1
+  local uncov = 0
+
+  for line in io.lines(file_name:replace('@', '')) do
+    flag = result[file_name][count]
     flag = M.line(line, flag)
     if flag == nil then
-      uncoverage = uncoverage + 1
+      uncov = uncov + 1
     end
-    analyze[count] = { line = line, flag = flag }
-    -- use for debug
-    -- print(tostring(flag) .. ')' .. line)
+    lines[count] = { src = line, flag = flag }
     count = count + 1
   end
-  analyze.coverage = 100 - ((100 * uncoverage) / count)
+
+  data.lines     = lines
+  data.file_name = file_name
+  data.coverage  = 100 - ((100 * uncov) / count)
   M.flag = nil
-  return analyze
+
+  return data
 end
 
 return M
