@@ -310,14 +310,18 @@ char * string::trimmed(const char *string)
     --len;
   }
 
-  result = new char[len - i];
-
-  while(i < len) {
-    result[j] = string[i];
-    i++;
-    j++;
+  if( (len - i) <= 0 ) {
+    result = new char[1];
+    result[0] = '\0';
+  } else {
+    result = new char[(len - i) + 1];
+    while(i < len) {
+      result[j] = string[i];
+      i++;
+      j++;
+    }
+    result[j+1] = '\0';
   }
-  result[j] = '\0';
 
   return result;
 }
