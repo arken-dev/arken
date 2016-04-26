@@ -300,13 +300,13 @@ char * string::trimmed(const char *string)
   int len;
   char * result;
 
-  len = strlen(string);
+  len = strlen(string) - 1;
 
   while(string[i] <= ' ') {
     i++;
   }
 
-  while(string[len - 1] <= ' ') {
+  while(string[len] <= ' ') {
     --len;
   }
 
@@ -314,7 +314,7 @@ char * string::trimmed(const char *string)
     result = new char[1];
     result[0] = '\0';
   } else {
-    result = new char[(len - i) + 1];
+    result = new char[(len) + 1];
     while(i < len) {
       result[j] = string[i];
       i++;
