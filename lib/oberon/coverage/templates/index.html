@@ -1,3 +1,4 @@
+<% local helper = require "oberon.coverage.helper" -%>
 <html>
   <head>
     <title>coverage</title>
@@ -19,8 +20,8 @@
         </td>
       </tr>
     </tr>
-    <% for i, row in ipairs(self.files) do -%>
-    <tr bgcolor='<%= self.color_coverage(row.data.analyze.coverage) -%>'>
+    <% for i, row in ipairs(helper.sort(self.files)) do -%>
+    <tr bgcolor='<%= helper.color_coverage(row.data.analyze.coverage) -%>'>
        <td align='right'> <%= i -%></td>
        <td>
          <a href='<%= row.file_name:replace("/", "-")  -%>.html'><%= row.file_name -%></a>

@@ -167,38 +167,6 @@ function TestTask:coverage(params)
 
   print("\n\ngenerate coverage...")
 
-  local color = function(value)
-    if value == nil then
-      return "#ffd4d4"
-    end
-    if value >= 1 then
-      return "#d4dbff"
-    end
-    if value == -1 then
-      return "#ffffff"
-    end
-
-    return 'yellow'
-  end
-
-  local function color_coverage(value)
-    if value < 100 then
-      return "#ffd4d4"
-    else
-      return "#d4dbff"
-    end
-  end
-
-  local function calc_coverage(dump)
-    local total = #dump
-    local uncoverage = 0
-    for i, lines in ipairs(dump) do
-      uncoverage = uncoverage + 1
-    end
-  end
-  local function sort (a, b)
-    return tostring(a.file_name) < tostring(b.file_name)
-  end
   local dump  = coverage.dump()
   local dir   = 'coverage'
   local tpl   = OBERON_PATH .. "/lib/oberon/coverage/templates/file.html"
@@ -208,7 +176,7 @@ function TestTask:coverage(params)
   for file_name, result in pairs(dump) do
     if file_name:startsWith("@app/models") then
       local analyze = coverage.analyze(file_name)
-      local data    = {analyze = analyze, file_name = file_name, color = color}
+      local data    = {analyze = analyze, file_name = file_name}
       local buffer  = template.execute(tpl, data)
       local file    = io.open((dir .. "/" .. file_name:replace("/", "-") .. '.html'), "w")
       count = count + 1
@@ -219,9 +187,7 @@ function TestTask:coverage(params)
     end
   end
   tpl = OBERON_PATH .. "/lib/oberon/coverage/templates/index.html"
-  local data     = {files = files, color_coverage = color_coverage,
-    count = count, coverage = (total/count), sort = sort, time = (os.microtime() - t)}
-  table.sort(data.files, sort)
+  local data     = {files = files, count = count, coverage = (total/count), time = (os.microtime() - t)}
   local buffer   = template.execute(tpl, data)
   local file     = io.open((dir .. "/" .. 'index.html'), "w")
   file:write(buffer)
