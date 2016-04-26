@@ -246,33 +246,48 @@ char * string::simplified(const char *string)
   int i = 0;
   int j = 0;
   int f = 0;
-  int len = strlen(string);
-  char swap;
-  char * res = new char[len + 1];
+  int len;
+  char * result;
 
-  while(i < len) {
-    if (string[i] <= ' ') {
-      if(f) {
-        res[j] = ' ';
+  len = strlen(string) - 1;
+
+  while(string[i] <= ' ') {
+    i++;
+  }
+
+  while(string[len] <= ' ') {
+    --len;
+  }
+
+  if( (len - i) <= 0 ) {
+    result = new char[1];
+    result[0] = '\0';
+  } else {
+    result = new char[(len) + 1];
+    while(i < len) {
+      if( string[i] <= ' ' ) {
+        if( f ) {
+          i++;
+        } else {
+          f = 1;
+          result[j] = ' ';
+          i++;
+          j++;
+        }
+      } else {
+        result[j] = string[i];
+        i++;
+        j++;
         f = 0;
-        ++j;
       }
-      ++i;
-    } else {
-      swap = string[i];
-      res[j] = swap;
-      ++i;
-      ++j;
-      f = 1;
     }
+    if( ! string[i] <= ' ' ) {
+      result[j] = string[i];
+    }
+    result[j+1] = '\0';
   }
 
-  while(res[j] <= ' ') {
-    --j;
-  }
-  res[j+1] = '\0';
-
-  return res;
+  return result;
 }
 
 bool string::startsWith(const char *string, const char *str)
