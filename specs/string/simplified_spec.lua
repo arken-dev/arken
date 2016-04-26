@@ -52,4 +52,12 @@ test['should apply sequential methodo'] = function()
   should.be_equal( str1:simplified():simplified(), str2 )
 end
 
+test['should return empty string for many invalid chars'] = function()
+  local str = "   "
+  should.be_equal( str:simplified(), "" )
+
+  str = "\n\r "
+  should.be_equal( str:simplified(), "" )
+end
+
 return test
