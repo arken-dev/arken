@@ -1,17 +1,22 @@
 local should = require "test.should"
 local test   = {}
 
-test['should before string'] = function()
-  str1 = "this is a test"
-  str2 = "this is"
-  should.be_equal( str1:truncate(7), str2 )
+test['should change spaces to underscore'] = function()
+  local str1 = "this is a test"
+  local str2 = "this_is_a_test"
+  should.be_equal( str1:underscore(), str2 )
 end
 
-test['should before string with new line'] = function()
-  str1 = "\nthis is a test"
-  str2 = "\nthis is"
-  should.be_equal( str1:truncate(8), str2 )
+test['should change upcar case to underscore and lower case'] = function()
+  local str1 = "ThisIsATest"
+  local str2 = "this_is_a_test"
+  should.be_equal( str1:underscore(), str2 )
 end
 
+test['should change upper case and spaces to one underscore and lower case'] = function()
+  local str1 = "This Is A Test"
+  local str2 = "this_is_a_test"
+  should.be_equal( str1:underscore(), str2 )
+end
 
 return test
