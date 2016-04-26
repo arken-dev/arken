@@ -10,7 +10,7 @@ function string:escape()
 end
 
 function TestTask:console(params)
-  t = QDateTime.currentMSecsSinceEpoch()
+  t = os.microtime()
 
   count = {}
   count.ok      = 0
@@ -27,8 +27,6 @@ function TestTask:console(params)
   results = test.execute(arg)
 
   for file_name, result in pairs(results) do
-
-
     print(file_name)
     for description, result in pairs(result) do
       --print(result.status)
@@ -47,7 +45,7 @@ function TestTask:console(params)
       buffer = buffer .. v .. " " .. i
     end
     buffer = buffer .. "\n"
-    buffer = buffer .. 'Time: ' .. tostring((QDateTime.currentMSecsSinceEpoch() - t)/ 1000.0)
+    buffer = buffer .. 'Time: ' .. tostring((os.microtime() - t))
     print(buffer)
   end
 
