@@ -18,10 +18,16 @@ end
 
 local M = {}
 
-M.parse_path = function()
-  local path = request:requestPath()
-  local last = path:lastIndexOf('/')
-  local controller = path:mid(1, last-1)
+M.prefix = nil
+
+M.parse_path  = function()
+  local path  = request:requestPath()
+  local last  = path:lastIndexOf('/')
+  local start = 1
+  if M.prefix then
+    start = start + #M.prefix
+  end
+  local controller = path:mid(start, last-start)
   local action     = path:right(path:len() - last - 1)
   if controller == '' then
     controller = 'index'
