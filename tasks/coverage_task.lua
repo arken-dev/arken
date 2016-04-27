@@ -134,6 +134,7 @@ function CoverageTask:tree(params)
     coverage.stop()
 
     if #tests > 0 then
+      print("\n")
       print(fileName)
       for file_name, result in pairs(results) do
         print(file_name)
