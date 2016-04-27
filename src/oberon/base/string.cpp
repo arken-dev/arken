@@ -169,11 +169,11 @@ char * string::mid(const char * string, int pos, int len = -1)
 {
   int i, j = 0;
   int string_len = strlen(string);
-  char * result  = new char[len + 1];
+  char * result;
   if ( len < 0 ) {
     len = string_len;
   }
-
+  result = new char[len + 1];
   for(i = 0; i < len; i++, j++) {
     result[j] = string[pos+i];
   }

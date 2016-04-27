@@ -88,6 +88,10 @@ M.analyze = function(file_name)
   local count = 1
   local uncov = 0
 
+  if result[file_name] == nil then
+    result[file_name] = {}
+  end
+
   for line in io.lines(file_name:replace('@', '')) do
     flag = result[file_name][count]
     flag = M.line(line, flag)
