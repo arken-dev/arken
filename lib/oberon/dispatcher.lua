@@ -25,7 +25,7 @@ M.parse_path  = function()
   local last  = path:lastIndexOf('/')
   local start = 1
   if M.prefix then
-    start = start + #M.prefix
+    start = start + #M.prefix + 1
   end
   local controller = path:mid(start, last-start)
   local action     = path:right(path:len() - last - 1)
