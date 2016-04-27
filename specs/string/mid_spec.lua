@@ -19,4 +19,10 @@ test['should end of string'] = function()
   should.be_equal( str1:mid(10, 4), str2 )
 end
 
+test['should return init after end string'] = function()
+  str1 = "this is a test"
+  str2 = "is a test"
+  should.be_equal( str1:mid(5, -1), str2 )
+end
+
 return test
