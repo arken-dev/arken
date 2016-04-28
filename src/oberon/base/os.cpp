@@ -77,7 +77,7 @@ char * os::read(const char * path)
     size = data.size() + 1;
     result = (char *) malloc( size * sizeof(char) );
     strcpy(result, data);
-    result[size] = '\0';
+    result[data.size()] = '\0';
   }
 
   return result;

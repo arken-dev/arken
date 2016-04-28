@@ -22,7 +22,7 @@ function M.compile(file_name)
       flag = true
       i = i + 3
     elseif data:sub(i, i+1) == '<%'  then
-      buffer = buffer .. "]] "
+      buffer = buffer .. "]]\n"
       i = i + 2
     elseif data:sub(i, i+2) == '-%>'  then
       if flag then
