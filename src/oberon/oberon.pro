@@ -9,17 +9,17 @@ INCLUDEPATH += ../../vendors/include
 INCLUDEPATH += ../vendors/mongrel2
 
 TARGET = oberon
-DESTDIR = ../../shared
+DESTDIR = ../../vendors
 
 # Input
-SOURCES += base/os.cpp             \
-           base/string.cpp         \
-           classes/OByteArray.cpp  \
-           classes/OThread.cpp     \
+SOURCES += base/os.cpp              \
+           base/string.cpp          \
+           classes/OByteArray.cpp   \
+           classes/OThread.cpp      \
            classes/OHttpRequest.cpp \
-           modules/http.cpp        \
+           modules/http.cpp         \
            ../vendors/mongrel2/http11/http11_parser.c
 
-unix:LIBS += -lcurl
+unix:LIBS  += -lcurl
 win32:LIBS += ../../vendors/lua51.dll
 win32:LIBS += ../../vendors/libcurl.dll
