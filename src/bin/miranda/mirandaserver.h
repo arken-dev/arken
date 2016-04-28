@@ -5,10 +5,10 @@
 #include <QDebug>
 #include <QThreadPool>
 #include <QTcpServer>
-#include <MirandaTask>
 #include <QCoreApplication>
 #include <QDir>
 #include <QFileInfo>
+#include "mirandatask.h"
 
 class MirandaTask;
 
