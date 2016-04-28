@@ -10,12 +10,10 @@ function M.compile(file_name)
   local i    = 0
   local j    = 0
 
-  local buffer =
-[[
-return function(self)
-  local __buffer = ''
-   __buffer = __buffer .. [[
-]]
+  local buffer ="\n"
+  buffer = buffer .. "return function(self)\n"
+  buffer = buffer .. "  local __buffer = ''\n"
+  buffer = buffer .. "   __buffer = __buffer .. [[\n"
 
   while i < len do
 
