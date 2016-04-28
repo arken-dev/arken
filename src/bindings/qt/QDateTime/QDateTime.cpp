@@ -19,7 +19,7 @@ static int
 lua_QDateTimeClassMethodCurrentMSecsSinceEpoch( lua_State *L )
 {
   qint64 mSecs  = QDateTime::currentMSecsSinceEpoch();
-  lua_pushinteger(L, mSecs);
+  lua_pushnumber(L, mSecs);
   return 1;
 }
 
