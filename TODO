@@ -1,0 +1,15 @@
+- logs
+- bindings for qt core QDateTime, QByteArray etc
+- extensions for core class inspired in Active Support
+- migrate
+---
+- QSqlDatabase adapter sqlite, postgres and mysql
+- code revision
+- code doc
+- routers
+---
+- site
+- social contract
+- doc
+- videos
+- roadmap
