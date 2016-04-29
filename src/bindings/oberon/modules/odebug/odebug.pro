@@ -17,8 +17,8 @@ INCLUDEPATH += ../../../../../vendors/include
 # Input
 SOURCES += odebug.cpp
 
-unix:LIBS += ../../../../../shared/liboberon.so
-win32:LIBS += ../../../../../shared/oberon.dll
+unix:LIBS += ../../../../../vendors/liboberon.so
+win32:LIBS += ../../../../../vendors/oberon.dll
 
 unix:LIBS += -lcurl
 win32:LIBS += ../../../../../vendors/lua51.dll

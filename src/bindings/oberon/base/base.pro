@@ -21,8 +21,8 @@ SOURCES += string.cpp
 
 unix:LIBS += -lcurl
 
-unix:LIBS += ../../../../shared/liboberon.so
-win32:LIBS += ../../../../shared/oberon.dll
+unix:LIBS += ../../../../vendors/liboberon.so
+win32:LIBS += ../../../../vendors/oberon.dll
 
 win32:LIBS += ../../../../vendors/lua51.dll
 win32:LIBS += ../../../../vendors/libcurl.dll

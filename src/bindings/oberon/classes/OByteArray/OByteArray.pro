@@ -12,8 +12,8 @@ INCLUDEPATH += ../../../../../vendors/include
 TARGET = OByteArray
 DESTDIR = ../../../../../clib
 
-unix:LIBS  += ../../../../../shared/liboberon.so
-win32:LIBS += ../../../../../shared/oberon.dll
+unix:LIBS  += ../../../../../vendors/liboberon.so
+win32:LIBS += ../../../../../vendors/oberon.dll
 win32:LIBS += ../../../../../vendors/lua51.dll
 
 # Input
