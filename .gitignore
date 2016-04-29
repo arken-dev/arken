@@ -17,3 +17,4 @@ moc_*
 *.swp
 
 profile.d/*
+vendors/*oberon*
