@@ -2,6 +2,7 @@ local M = {}
 
 M.cache  = {}
 M.source = {}
+M.time   = 0
 
 function M.compile(file_name)
   local data = os.read(file_name)
@@ -75,10 +76,14 @@ function M.build(file_name)
 end
 
 function M.execute(file_name, data, helper)
+  local buffer = nil
+  local time   = os.microtime()
   if not M.cache[file_name] then
     M.cache[file_name] = M.build(file_name)()
   end
-  return M.cache[file_name](data, helper)
+  buffer = M.cache[file_name](data, helper)
+  M.time = M.time + (os.microtime() - time)
+  return buffer
 end
 
 function M.reload()

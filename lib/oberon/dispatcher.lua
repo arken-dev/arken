@@ -1,8 +1,12 @@
 require 'Controller'
 require 'OByteArray'
+require 'OHttpRequest'
+require 'ActiveRecord'
+require 'require-development'
 
-local url    = require 'url'
-local cookie = require 'oberon.cookie'
+local template = require 'template'
+local url      = require 'url'
+local cookie   = require 'oberon.cookie'
 
 request.params = function()
   if request.requestMethod() == 'POST' then
@@ -43,7 +47,6 @@ M.require_controller_name = function(controller_name)
 end
 
 M.dispatchLocal = function(file_name)
-  print("dispatcher: " .. file_name)
   local list     = require 'oberon.mime-type'
   local fileInfo = QFileInfo.new(file_name)
   local suffix   = fileInfo:suffix()
@@ -65,12 +68,43 @@ M.dispatchController = function()
 end
 
 M.dispatch = function()
-  local file_name = "public" .. request.requestPath()
-  if file_name ~= "public/" and QFile.exists(file_name) then
-    return M.dispatchLocal(file_name)
+  ActiveRecord.time = 0
+  template.time = 0
+  local time   = os.microtime()
+  local reload = 0
+  local code, headers, body
+  if OBERON_ENV == 'development' then
+    local file_name = "public" .. request.requestPath()
+    if file_name ~= "public/" and QFile.exists(file_name) then
+      return M.dispatchLocal(file_name)
+    else
+      reload = os.microtime()
+      package.reload()
+      reload = os.microtime() - reload
+      template.reload()
+      code, headers, body = M.dispatchController()
+    end
   else
-    return M.dispatchController()
+    code, headers, body = M.dispatchController()
   end
+  time = (os.microtime() - time)
+  M.log(code, time, reload)
+  return code, headers, body
+end
+
+M.log = function(code, time, reload)
+  local msg = "Completed in %.4f ms (Reload: %.4f, View: %.4f, DB: %.4f) | %i OK [%s]"
+  local log = string.format(msg, time, reload, template.time, ActiveRecord.time, code, request:requestUri())
+  M.reset()
+  print(log)
+end
+
+M.reset = function()
+  ActiveRecord.clear()
+  ActiveRecord.time = 0
+  template.time     = 0
+
+  return true
 end
 
 M.test = function()

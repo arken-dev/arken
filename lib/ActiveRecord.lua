@@ -1,5 +1,7 @@
 ActiveRecord = Class.new("ActiveRecord")
 
+ActiveRecord.time = 0
+
 -------------------------------------------------------------------------------
 -- ActiveRecord#inherit
 -------------------------------------------------------------------------------
@@ -126,6 +128,15 @@ ActiveRecord.inherit = function(class)
 
   function class.rollback()
     class.adapter():rollback()
+  end
+
+  ------------------------------------------------------------------------------
+  -- ActiveRecord#clear
+  ------------------------------------------------------------------------------
+  -- clear all cache
+  function class.clear()
+    ActiveRecord_Adapter._cache = {}
+    ActiveRecord_Adapter.cache = {}
   end
 
 end

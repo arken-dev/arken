@@ -23,8 +23,12 @@ end
 --------------------------------------------------------------------------------
 
 function ActiveRecord_PostgresAdapter:execute(sql)
-  -- print(sql)
-  return assert(self:connect():exec(sql))
+  local time = os.microtime()
+  local result = assert(self:connect():exec(sql))
+  time = os.microtime() - time
+  print(string.format(sql .. " (%.4f) secs", time))
+  ActiveRecord.time = ActiveRecord.time + time
+  return result
 end
 
 --------------------------------------------------------------------------------
