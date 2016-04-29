@@ -20,12 +20,11 @@ INCLUDEPATH += ../../../vendors/include
 
 
 QMAKE_RPATHDIR += ../vendors
-QMAKE_RPATHDIR += ../shared
 
 win32:LIBS += ../../../vendors/lua51.dll
-win32:LIBS += ../../../shared/oberon.dll
+win32:LIBS += ../../../vendors/oberon.dll
 unix:LIBS += /usr/lib/x86_64-linux-gnu/libluajit-5.1.so
-unix:LIBS += ../../../shared/liboberon.so
+unix:LIBS += ../../../vendors/liboberon.so
 
 # Input
 SOURCES += main.cpp
