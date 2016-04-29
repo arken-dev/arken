@@ -22,8 +22,8 @@
 
 local M = {}
 
-M.test = function()
-  return "helper !!! works !!! yes !!!"
+M.hello = function()
+  return "hello world !!!"
 end
 
 return M

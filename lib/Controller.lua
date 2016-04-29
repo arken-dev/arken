@@ -2,6 +2,7 @@ require "Class"
 template = require "template"
 
 Controller = Class.new("Controller")
+local helpers = {}
 
 function Controller:render(params)
   return self['render_' .. params.output](self, params)
@@ -10,6 +11,39 @@ end
 -------------------------------------------------------------------------------
 -- RENDER HTML
 -------------------------------------------------------------------------------
+
+function Controller:resolvHelper()
+  local prefix = "app.helpers."
+
+  local helper = require("template.helper")
+  helper.__index = helper
+
+  local file   = prefix .. "default"
+  if QFile.exists(file:replace('.', '/') .. '.lua')  then
+    local tmp = require(file)
+    tmp.__index = tmp
+    setmetatable(tmp, helper)
+    helper = tmp
+  end
+
+  local file = prefix .. self.controller_name
+  if QFile.exists(file:replace('.', '/') .. '.lua')  then
+    local tmp = require(file)
+    tmp.__index = tmp
+    setmetatable(tmp, helper)
+    helper = tmp
+  end
+
+  return helper
+end
+
+function Controller:helper()
+  if helpers[self.controller_name] == nil or OBERON_ENV ~= 'production' then
+    helpers[self.controller_name] = self:resolvHelper()
+  end
+
+  return helpers[self.controller_name]
+end
 
 function Controller:render_html(params)
   local prefix = "app/views"
@@ -30,8 +64,12 @@ function Controller:render_html(params)
     self._yield = file
     file = "app/views/layouts/" .. self.layout .. ".html"
   end
-
-  return 200, {'Content-Type: text/html'}, template.execute(file, self)
+  local flag, result = pcall(template.execute, file, self, self:helper())
+  if flag then
+    return 200, {'Content-Type: text/html'}, result
+  else
+    return 500, {'Content-Type: text/plain'}, file .. '\n\n' .. result .. '\n\n' .. template.debug(file)
+  end
 end
 
 function Controller:partial(params)
@@ -49,11 +87,21 @@ function Controller:partial(params)
     file = prefix .. "/_" .. params.template
   end
   local context = params.context or self
-  return template.execute(file, context)
+  local flag, result = pcall(template.execute, file, context, self:helper())
+  if flag then
+    return result
+  else
+    error(file .. '\n\n' .. result .. '\n\n' .. template.debug(file))
+  end
 end
 
 function Controller:yield()
-  return template.execute(self._yield, self)
+  local flag, result = pcall(template.execute, self._yield, self, self:helper())
+  if flag then
+    return result
+  else
+    error(self._yield .. '\n\n' .. result .. '\n\n' .. template.debug(self._yield))
+  end
 end
 
 -------------------------------------------------------------------------------
