@@ -94,6 +94,13 @@ lua_OByteArrayInstanceMethodAppend( lua_State *L ) {
 }
 
 static int
+lua_OByteArrayInstanceMethodCamelcase( lua_State *L ) {
+  OByteArray *udata  = checkOByteArray( L );
+  lua_pushstring(L, udata->camelcase());
+  return 1;
+}
+
+static int
 lua_OByteArrayInstanceMethodCapitalize( lua_State *L ) {
   OByteArray *udata  = checkOByteArray( L );
   lua_pushstring(L, udata->capitalize());
@@ -147,6 +154,7 @@ lua_OByteArrayInstanceMethodRight( lua_State *L ) {
 
 static const
 luaL_reg OByteArrayInstanceMethods[] = {
+  {"camelcase", lua_OByteArrayInstanceMethodCamelcase},
   {"capitalize", lua_OByteArrayInstanceMethodCapitalize},
   {"right", lua_OByteArrayInstanceMethodRight},
   {"size", lua_OByteArrayInstanceMethodSize},

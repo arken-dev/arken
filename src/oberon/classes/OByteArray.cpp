@@ -1,6 +1,11 @@
 #include <QtCore>
 #include <OByteArray>
 
+OByteArray OByteArray::camelcase(void)
+{
+  return OByteArray(string::camelcase(this->data()));
+}
+
 OByteArray OByteArray::capitalize(void)
 {
   return OByteArray(string::capitalize(this->data()));

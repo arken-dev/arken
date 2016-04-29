@@ -10,6 +10,14 @@ static int lua_oberon_string_append( lua_State *L ) {
   return 1;
 }
 
+static int lua_oberon_string_camelcase( lua_State *L ) {
+  const char *string = luaL_checkstring(L, 1);
+  char *result = string::camelcase(string);
+  lua_pushstring(L, result);
+  delete[] result;
+  return 1;
+}
+
 static int lua_oberon_string_capitalize( lua_State *L ) {
   const char *string = luaL_checkstring(L, 1);
   char *result = string::capitalize(string);
@@ -156,6 +164,7 @@ static int lua_oberon_string_underscore( lua_State *L ) {
 int luaopen_oberon_string( lua_State *L ) {
   static const luaL_reg Map[] = {
     {"append",      lua_oberon_string_append},
+    {"camelcase",   lua_oberon_string_camelcase},
     {"capitalize",  lua_oberon_string_capitalize},
     {"contains",    lua_oberon_string_contains},
     {"endsWith",    lua_oberon_string_endsWith},

@@ -20,6 +20,46 @@ char * string::append(const char * string, const char * ba)
   return result;
 }
 
+static bool inline string_camelcase_special_char(char chr)
+{
+  if(chr == '/' || chr == '_' || chr == '.' || chr == ' ') {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+char * string::camelcase(const char * string)
+{
+  int i, j;
+  bool flag;
+  int string_len;
+  char * result;
+
+  flag = true;
+  string_len = strlen(string);
+  result     = new char[string_len+1];
+
+  for(i = 0, j = 0; i < string_len; i++) {
+    if( string_camelcase_special_char(string[i]) ) {
+      flag = true;
+      i++;
+    }
+
+    if( flag ) {
+      result[j] = toupper(string[i]);
+      flag = false;
+    } else {
+      result[j] = string[i];
+    }
+
+    j++;
+  }
+  result[j] = '\0';
+
+  return result;
+}
+
 char * string::capitalize(const char * string)
 {
   int len = strlen(string);
