@@ -22,7 +22,7 @@ char * string::append(const char * string, const char * ba)
 
 static bool inline string_camelcase_special_char(char chr)
 {
-  if(chr == '/' || chr == '_' || chr == '.' || chr == ' ') {
+  if(chr == '_' || chr == ' ') {
     return true;
   } else {
     return false;
@@ -44,6 +44,13 @@ char * string::camelcase(const char * string)
     if( string_camelcase_special_char(string[i]) ) {
       flag = true;
       i++;
+    }
+
+    if( string[i] == '/' ) {
+      flag = true;
+      result[j] = '.';
+      i++;
+      j++;
     }
 
     if( flag ) {

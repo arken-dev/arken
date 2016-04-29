@@ -1,3 +1,5 @@
+require 'ActiveRecord.Adapter'
+
 ActiveRecord = Class.new("ActiveRecord")
 
 ActiveRecord.time = 0

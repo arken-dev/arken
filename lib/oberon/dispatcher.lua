@@ -43,7 +43,7 @@ M.parse_path  = function()
 end
 
 M.require_controller_name = function(controller_name)
-  return require(controller_name .. "_controller")
+  return require(controller_name:camelcase() .. "Controller")
 end
 
 M.dispatchLocal = function(file_name)
