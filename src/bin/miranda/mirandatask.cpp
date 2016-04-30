@@ -55,7 +55,6 @@ void MirandaTask::processRequest(MirandaState * state, QByteArray &buffer)
 
   L = state->instance();
 
-
   //request
   OHttpRequest * http_request = new OHttpRequest(buffer);
   lua_pushlightuserdata(L, http_request);
@@ -69,11 +68,9 @@ void MirandaTask::processRequest(MirandaState * state, QByteArray &buffer)
   lua_settop(L, 0);
   lua_getglobal(L, "dispatch");
   if( lua_pcall(L, 0, 3, 0 ) ) {
-    code   = 500;
-    result = luaL_checklstring( L , -1, &len );
+    code = -1;
   } else {
-    code   = lua_tointeger( L, 1 );
-    result = luaL_checklstring( L, 3, &len );
+    code = lua_tointeger( L, 1 );
   }
 
   buffer.append(httpStatus(code));
@@ -86,10 +83,20 @@ void MirandaTask::processRequest(MirandaState * state, QByteArray &buffer)
     }
   }
 
-  buffer.append("Content-Length:");
-  buffer.append(QByteArray::number((int)len, 10));
-  buffer.append("\r\n\r\n");
-  buffer.append(result, len);
+  if( ! lua_isnil(L, 3) ) {
+   if( code < 0 ) {
+      code = 500;
+      result = luaL_checklstring( L , -1, &len );
+    } else {
+      result = luaL_checklstring( L, 3, &len );
+    }
+    buffer.append("Content-Length:");
+    buffer.append(QByteArray::number((int)len, 10));
+    buffer.append("\r\n\r\n");
+    buffer.append(result, len);
+  } else {
+    buffer.append("\r\n");
+  }
 
   delete http_request;
 }
@@ -154,7 +161,7 @@ QByteArray MirandaTask::httpStatus(int code)
 {
   static QHash<int, QByteArray> list = {
     {200, "HTTP/1.1 200 OK"},
-    {301, "HTTP/1.1 301 Moved Permanently"}
+    {301, "HTTP/1.1 301 Moved Permanently"},
     {404, "HTTP/1.1 404 Not Found"},
     {500, "HTTP/1.1 500 Internal Server Error"},
     {502, "HTTP/1.1 502 Bad Gateway"}
