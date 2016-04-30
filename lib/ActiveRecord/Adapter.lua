@@ -80,7 +80,7 @@ end
 -- WHERE
 --------------------------------------------------------------------------------
 
-function ActiveRecord_Adapter:where(values)
+function ActiveRecord_Adapter:where(values, flag)
   local result = ""
   local col = ''
   for index, value in pairs(values) do
@@ -94,6 +94,9 @@ function ActiveRecord_Adapter:where(values)
       col = col .. index .. self.finders[type(value)](value)
     end
   end
+  if flag and #col == 0 then
+    error "parameters for find empty"
+  end
   result = result .. col
   if values.order then
     result = result .. ' ORDER BY ' .. values.order
@@ -105,8 +108,8 @@ end
 -- SELECT
 --------------------------------------------------------------------------------
 
-function ActiveRecord_Adapter:select(params)
-  return 'SELECT * FROM ' .. self.table_name .. " " .. self:where(params)
+function ActiveRecord_Adapter:select(params, flag)
+  return 'SELECT * FROM ' .. self.table_name .. " " .. self:where(params, flag)
 end
 
 --------------------------------------------------------------------------------

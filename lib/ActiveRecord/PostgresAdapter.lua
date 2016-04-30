@@ -149,7 +149,7 @@ function ActiveRecord_PostgresAdapter:find(params)
       self.cache[key] = tmp
       return tmp
     end
-    local sql = self:select(params)
+    local sql = self:select(params, true)
     if self.cache[sql] then
       return self.cache[sql]
     else
