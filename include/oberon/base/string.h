@@ -14,6 +14,7 @@ namespace oberon {
     int    lastIndexOf(const char * string, const char * str);
     char * left(const char *string, int len);
     char * mid(const char * string, int pos, int len);
+    char * normalize(const char * string);
     char * repeated(const char *buffer, int times);
     char * replace(const char * string, const char before, const char * after);
     char * right(const char *buffer, int len);

@@ -230,6 +230,50 @@ char * string::mid(const char * string, int pos, int len = -1)
   return result;
 }
 
+static bool inline string_normalize_special_char(char chr)
+{
+  if(chr == '[' || chr == ']') {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+char * string::normalize(const char *string)
+{
+  int i, j;
+  bool flag;
+  int string_len;
+  char * result;
+
+  flag = true;
+  string_len = strlen(string);
+  result     = new char[string_len+1];
+
+  for(i = 0, j = 0; i < string_len; i++) {
+    if( string_normalize_special_char(string[i]) ) {
+      if(flag) {
+        result[j] = '_';
+        flag = false;
+        j++;
+      }
+    } else {
+      result[j] = string[i];
+      j++;
+      flag = true;
+    }
+  }
+
+
+  if( result[j-1] == '_' ) {
+    result[j-1] = '\0';
+  } else {
+    result[j] = '\0';
+  }
+
+  return result;
+}
+
 char * string::repeated(const char *string, int times)
 {
   int len = strlen(string);

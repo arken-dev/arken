@@ -92,6 +92,14 @@ static int lua_oberon_string_mid( lua_State *L ) {
   return 1;
 }
 
+static int lua_oberon_string_normalize( lua_State *L ) {
+  const char * string = luaL_checkstring(L, 1);
+  char * result       = string::normalize(string);
+  lua_pushstring(L, result);  /* push result */
+  delete[] result;
+  return 1;
+}
+
 static int lua_oberon_string_replace( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   const char * before = luaL_checkstring(L, 2);
@@ -173,6 +181,7 @@ int luaopen_oberon_string( lua_State *L ) {
     {"left",        lua_oberon_string_left},
     {"lastIndexOf", lua_oberon_string_lastIndexOf},
     {"mid",         lua_oberon_string_mid},
+    {"normalize",   lua_oberon_string_normalize},
     {"repeated",    lua_oberon_string_repeated},
     {"replace",     lua_oberon_string_replace},
     {"right",       lua_oberon_string_right},
