@@ -46,11 +46,25 @@ function Controller:helper()
 end
 
 function Controller:url(params)
-  local result = '/' .. self.controller_name .. '/'
-  if params.action then
-    result = result .. params.action
-  else
-    result = result .. 'index'
+  local controller = params.controller or self.controller_name
+  local action     = params.action or 'index'
+  local result = '/' .. controller .. '/' .. action
+
+  params.action = nil
+  params.controller = nil
+
+  local query = true
+  local open  = false
+  for k, v in pairs(params) do
+    if query then
+      result = result .. '?'
+      query  = false
+    end
+    if open then
+      result = result .. '&'
+    end
+    result = result .. k .. '=' .. v
+    open = true
   end
 
   return result
