@@ -89,10 +89,10 @@ void MirandaTask::processRequest(MirandaState * state, QByteArray &buffer)
       result = luaL_checklstring( L , -1, &len );
     } else {
       result = luaL_checklstring( L, 3, &len );
+      buffer.append("Content-Length:");
+      buffer.append(QByteArray::number((int)len, 10));
+      buffer.append("\r\n\r\n");
     }
-    buffer.append("Content-Length:");
-    buffer.append(QByteArray::number((int)len, 10));
-    buffer.append("\r\n\r\n");
     buffer.append(result, len);
   } else {
     buffer.append("\r\n");
