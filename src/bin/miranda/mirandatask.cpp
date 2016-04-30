@@ -162,6 +162,7 @@ QByteArray MirandaTask::httpStatus(int code)
   static QHash<int, QByteArray> list = {
     {200, "HTTP/1.1 200 OK"},
     {301, "HTTP/1.1 301 Moved Permanently"},
+    {302, "HTTP/1.1 302 Moved Temporary"},
     {404, "HTTP/1.1 404 Not Found"},
     {500, "HTTP/1.1 500 Internal Server Error"},
     {502, "HTTP/1.1 502 Bad Gateway"}
