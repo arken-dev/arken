@@ -56,6 +56,12 @@ function Controller:url(params)
   return result
 end
 
+function Controller:redirect(params)
+  local url  = self:url(params)
+  local host = request.field("Host")
+  return 301, ("Location: http://" .. host .. url)
+end
+
 function Controller:render_html(params)
   local prefix = "app/views"
   local view   = nil
