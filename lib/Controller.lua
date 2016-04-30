@@ -45,6 +45,17 @@ function Controller:helper()
   return helpers[self.controller_name]
 end
 
+function Controller:url(params)
+  local result = '/' .. self.controller_name .. '/'
+  if params.action then
+    result = result .. params.action
+  else
+    result = result .. 'index'
+  end
+
+  return result
+end
+
 function Controller:render_html(params)
   local prefix = "app/views"
   local view   = nil
