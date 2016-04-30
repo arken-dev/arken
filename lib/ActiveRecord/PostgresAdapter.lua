@@ -360,6 +360,17 @@ function ActiveRecord_PostgresAdapter:rollback()
 end
 
 --------------------------------------------------------------------------------
+-- POPULATE
+--------------------------------------------------------------------------------
+function ActiveRecord_PostgresAdapter:populate(record, params)
+  for column, properties in pairs(self:columns()) do
+    if params[column] then
+      record[column] = self:parser_value(properties.format, params[column])
+    end
+  end
+end
+
+--------------------------------------------------------------------------------
 -- READ
 --------------------------------------------------------------------------------
 
@@ -399,7 +410,11 @@ function ActiveRecord_PostgresAdapter.read_value_date(value)
 end
 
 function ActiveRecord_PostgresAdapter.read_value_number(value)
-  return tonumber(value)
+  if tostring(value):contains(',') then
+    return tonumber(value:replace('.', ''):replace(',', '.'))
+  else
+    return tonumber(value)
+  end
 end
 
 function ActiveRecord_PostgresAdapter.read_value_boolean(value)

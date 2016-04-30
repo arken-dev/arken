@@ -202,4 +202,12 @@ function ActiveRecord_Adapter:rollback()
   error('not implemeted')
 end
 
+--------------------------------------------------------------------------------
+-- POPULATE
+--------------------------------------------------------------------------------
+
+function ActiveRecord_Adapter:populate()
+  error('not implemeted')
+end
+
 return ActiveRecord_Adapter

@@ -214,4 +214,12 @@ function ActiveRecord:read(column)
   return self.adapter():read(self, column)
 end
 
+-------------------------------------------------------------------------------
+-- ActiveRecord#populate()
+-------------------------------------------------------------------------------
+
+function ActiveRecord:populate(params)
+  return self.adapter():populate(self, params)
+end
+
 return ActiveRecord
