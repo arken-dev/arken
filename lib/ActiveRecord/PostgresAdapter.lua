@@ -39,6 +39,12 @@ function ActiveRecord_PostgresAdapter:insert(record)
   local sql = 'INSERT INTO'
   local col = ''
   local val = ''
+  if self:columns().created_at then
+    record.created_at = QDateTime.currentDateTime():toString()
+  end
+  if self:columns().updated_at then
+    record.updated_at = record.created_at
+  end
   for column, value in pairs(record) do
     if not self:isReserved(column) then
     --for column, properties in pairs(self:columns(table)) do
@@ -84,6 +90,10 @@ function ActiveRecord_PostgresAdapter:update(record)
   local col = ''
   local key = self.table_name .. '_' .. tostring(record.id)
   local record_cache = self._cache[key]
+
+  if self:columns().updated_at then
+    record.updated_at = QDateTime.currentDateTime():toString()
+  end
 
   for column, properties in pairs(self:columns()) do
     local value = record[column]
