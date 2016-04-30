@@ -81,9 +81,12 @@ end
 --------------------------------------------------------------------------------
 
 function ActiveRecord_Adapter:where(values)
-  local result = "WHERE "
+  local result = ""
   local col = ''
   for index, value in pairs(values) do
+    if #result == 0 then
+     result = "WHERE "
+    end
     if ActiveRecord_Adapter.reserved[index] == nil then
       if #col > 0 then
         col = col .. ' AND '
