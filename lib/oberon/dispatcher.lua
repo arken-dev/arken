@@ -88,6 +88,9 @@ M.dispatch = function()
     code, headers, body = M.dispatchController()
   end
   time = (os.microtime() - time)
+  if body == nil then
+    error "body empty, render ?"
+  end
   M.log(code, time, reload)
   return code, headers, body
 end
