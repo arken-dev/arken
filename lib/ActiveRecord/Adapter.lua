@@ -83,6 +83,10 @@ end
 function ActiveRecord_Adapter:where(values, flag)
   local result = ""
   local col = ''
+  local order = values.order
+
+  values.order = nil
+
   for index, value in pairs(values) do
     if #result == 0 then
      result = "WHERE "
@@ -98,8 +102,8 @@ function ActiveRecord_Adapter:where(values, flag)
     error "parameters for find empty"
   end
   result = result .. col
-  if values.order then
-    result = result .. ' ORDER BY ' .. values.order
+  if order then
+    result = result .. ' ORDER BY ' .. order
   end
   return result
 end
