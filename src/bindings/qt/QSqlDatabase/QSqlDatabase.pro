@@ -10,7 +10,7 @@ INCLUDEPATH += .
 INCLUDEPATH += ../../../../include
 INCLUDEPATH += ../../../../vendors/include
 
-TARGET = QQSqlDatabase
+TARGET = QSqlDatabase
 DESTDIR = ../../../../clib
 
 win32:LIBS += ../../../../vendors/lua51.dll
