@@ -80,6 +80,7 @@ LUALIB_API int L_con_gc(lua_State *L);
 LUALIB_API int L_res_count(lua_State *L);
 /* rs:fetch - traditional 'fetch' interface */
 LUALIB_API int L_res_fetch(lua_State *L);
+int L_res_seek(lua_State *L);
 /* rs:cols generator */
 LUALIB_API int L_res_cols(lua_State *L);
 /* rs:cols iterator */

@@ -182,8 +182,9 @@ static const luaL_Reg R_con_methods[] = {
 static const luaL_Reg R_res_methods[] = {
 	{"count", L_res_count},
 	{"fetch", L_res_fetch},
-	{"cols", L_res_cols},
-	{"rows", L_res_rows},
+	{"seek",  L_res_seek},
+	{"cols",  L_res_cols},
+	{"rows",  L_res_rows},
 	{"clear", L_res_clear},
 	{NULL, NULL}
 };
@@ -416,6 +417,20 @@ LUALIB_API int L_res_fetch(lua_State *L) {
 		return 0;
 	}
 }
+
+int L_res_seek(lua_State *L) {
+  rs_t *rs = luaL_checkresult(L, 1);
+  int  row = luaL_checkint(L, 2);
+  int rows = PQntuples(rs->ptr);
+  if (row < rows) {
+    lua_pushpgrow_assoc(L, rs->ptr, row);
+    return 1;
+  } else {
+    /* no more values to return */
+    return 0;
+  }
+}
+
 
 /* rs:cols generator */
 LUALIB_API int L_res_cols(lua_State *L) {
