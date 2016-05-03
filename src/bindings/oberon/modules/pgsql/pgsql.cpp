@@ -57,6 +57,13 @@ static rs_t *luaL_checkresult(lua_State* L, int i) {
    	return lua_toresult(L, i);
 }
 
+/* check and return result object parameter */
+static rs_t *luaL_checkarray(lua_State* L, int i) {
+	luaL_checkudata(L, i, "PgSQL.Array");
+   	return lua_toresult(L, i);
+}
+
+
 /* push a connection object on the stack */
 static void lua_pushconn(lua_State *L, PGconn *con) {
 	con_t *p = lua_newconn(L);
@@ -74,6 +81,21 @@ static void lua_pushconn(lua_State *L, PGconn *con) {
 static void lua_pushresult(lua_State *L, PGresult *rs) {
 	rs_t *p = lua_newresult(L);
 	luaL_getmetatable(L, TYPE_RESULT);
+	lua_setmetatable(L, -2);
+	p->ptr = rs;
+	p->open = 1;
+	p->row = 0;
+#ifdef DEBUG
+	fprintf(stderr, "debug.lua_pushresult ptr [%p]\n", (void *)p->ptr);
+	fprintf(stderr, "debug.lua_pushresult open [%d]\n", p->open);
+	fprintf(stderr, "debug.lua_pushresult row [%d]\n", p->row);
+#endif
+}
+
+/* push a result object on the stack */
+static void lua_pusharray(lua_State *L, PGresult *rs) {
+	rs_t *p = lua_newresult(L);
+	luaL_getmetatable(L, "PgSQL.Array");
 	lua_setmetatable(L, -2);
 	p->ptr = rs;
 	p->open = 1;
@@ -172,7 +194,8 @@ static const luaL_Reg R_pg_functions[] = {
 /* connection objects methods */
 static const luaL_Reg R_con_methods[] = {
 	{"escape", L_con_escape},
-	{"exec", L_con_exec},
+	{"exec",   L_con_exec},
+	{"query",  L_con_query},
 	{"notifywait", L_con_notifywait},
 	{"close", L_con_close},
 	{NULL, NULL}
@@ -186,6 +209,13 @@ static const luaL_Reg R_res_methods[] = {
 	{"cols",  L_res_cols},
 	{"rows",  L_res_rows},
 	{"clear", L_res_clear},
+	{NULL, NULL}
+};
+
+/* result object methods */
+static const luaL_Reg R_res_array[] = {
+	{"__len",   L_res_len},
+	{"__index", L_res_index},
 	{NULL, NULL}
 };
 
@@ -205,6 +235,7 @@ LUALIB_API int luaopen_oberon_pgsql(lua_State *L) {
 	lua_pushcfunction(L, L_con_gc);
 	lua_setfield(L, -2, "__gc");
 	lua_pop(L, 1);
+
 	/* register the result object type */
 	luaL_newmetatable(L, TYPE_RESULT);
 	lua_pushvalue(L, -1);
@@ -213,6 +244,17 @@ LUALIB_API int luaopen_oberon_pgsql(lua_State *L) {
 	lua_pushcfunction(L, L_res_gc);
 	lua_setfield(L, -2, "__gc");
 	lua_pop(L, 1);
+
+	/* register the result object type */
+	luaL_newmetatable(L, "PgSQL.Array");
+	lua_pushvalue(L, -1);
+	lua_setfield(L, -2, "__index");
+	luaL_register(L, NULL, R_res_array);
+	lua_pushcfunction(L, L_array_gc);
+	lua_setfield(L, -2, "__gc");
+	lua_pop(L, 1);
+
+
 	/* return the library handle */
 	return 1;
 }
@@ -252,6 +294,73 @@ LUALIB_API int L_con_escape(lua_State *L) {
 	lua_pushstring(L, dst);
 	free(dst);
 	return 1;
+}
+
+/* con:exec - execute a sql command, with or without parameters */
+int L_con_query(lua_State *L) {
+	PGresult *rs = NULL;
+	const char **param = NULL;
+	int param_count;
+	char *bool_t[2] = {(char*)"FALSE", (char*)"TRUE"};
+	con_t *con = luaL_checkconn(L, 1);
+	const char *sql = luaL_checkstring(L, 2);
+	int i;
+#ifdef DEBUG
+	fprintf(stderr, "debug.lua_con_exec ptr [%p]\n", (void *)con->ptr);
+	fprintf(stderr, "debug.lua_con_exec open [%d]\n", con->open);
+	fprintf(stderr, "debug.lua_con_exec sql [%s]\n", sql);
+#endif
+	if (PQstatus(con->ptr) == CONNECTION_OK) {
+		if (lua_gettop(L) == 2) {
+			/* no parameters, just an 'ol fashioned query */
+			rs = PQexec(con->ptr, sql);
+		} else {
+			/* parameterized query */
+			luaL_checktype(L, 3, LUA_TTABLE);
+			if (lua_gettop(L) >= 4) {
+				/* parameter count given, use it */
+				param_count = luaL_checkinteger(L, 4);
+			} else {
+				/* parameter count not given, trust in the force (luaL_getn) */
+				param_count = luaL_getn(L, 3);
+			}
+			/* clear-allocate params for PQexecParams */
+			if (param_count > 0) param = (const char **) calloc(param_count, sizeof(char *));
+			/* load params from Lua table into C array */
+			for (i = 0; i < param_count; i++) {
+				lua_rawgeti(L, 3, i + 1);
+				if (lua_type(L, -1) == LUA_TBOOLEAN) {
+					/* convert boolean into "TRUE" or "FALSE" */
+					param[i] = bool_t[lua_toboolean(L, -1)];
+				} else {
+					param[i] = lua_tostring(L, -1);
+				}
+			}
+			rs = PQexecParams(con->ptr, sql, param_count, NULL, param, NULL, NULL, 0);
+			if (param) {
+				lua_pop(L, param_count);	
+				free(param);
+			}
+		}
+		if (rs) {
+			ExecStatusType status = PQresultStatus(rs);
+			if (status == PGRES_COMMAND_OK || status == PGRES_TUPLES_OK) {
+				lua_pusharray(L, rs);
+				lua_pushnil(L);
+			} else {
+				lua_pushnil(L);
+				lua_pushstring(L, PQresultErrorMessage(rs));
+				PQclear(rs);
+  	 		}
+		} else {
+  			lua_pushnil(L);
+   		 	lua_pushliteral(L, "FATAL error");
+  		}
+	} else {
+		lua_pushnil(L);
+		lua_pushliteral(L, "Connection Failure");
+	}
+	return 2;
 }
 
 /* con:exec - execute a sql command, with or without parameters */
@@ -389,6 +498,22 @@ LUALIB_API int L_con_gc(lua_State *L) {
 /** PgSQL.Result object **/
 
 /* rs:count - the number of rows returned OR affected by the sql command */
+LUALIB_API int L_res_len(lua_State *L) {
+	int n;
+	rs_t *rs = luaL_checkarray(L, 1);
+	if (PQresultStatus(rs->ptr) == PGRES_TUPLES_OK) {
+		lua_pushinteger(L, PQntuples(rs->ptr));
+	} else if (PQresultStatus(rs->ptr) == PGRES_COMMAND_OK) {
+		lua_pushstring(L, PQcmdTuples(rs->ptr));
+		n = lua_tonumber(L, -1);
+		lua_pop(L, 1);
+		lua_pushinteger(L, n);
+	}
+	return 1;
+}
+
+
+/* rs:count - the number of rows returned OR affected by the sql command */
 LUALIB_API int L_res_count(lua_State *L) {
 	int n;
 	rs_t *rs = luaL_checkresult(L, 1);
@@ -431,6 +556,18 @@ int L_res_seek(lua_State *L) {
   }
 }
 
+int L_res_index(lua_State *L) {
+  rs_t *rs = luaL_checkarray(L, 1);
+  int  row = luaL_checkint(L, 2);
+  int rows = PQntuples(rs->ptr);
+  if (row < rows) {
+    lua_pushpgrow_assoc(L, rs->ptr, row);
+    return 1;
+  } else {
+    /* no more values to return */
+    return 0;
+  }
+}
 
 /* rs:cols generator */
 LUALIB_API int L_res_cols(lua_State *L) {
@@ -505,6 +642,22 @@ LUALIB_API int L_res_clear(lua_State *L) {
 LUALIB_API int L_res_gc(lua_State *L) {
 	if (lua_isuserdata(L, 1)) {
 		rs_t *rs = luaL_checkresult(L, 1);
+#ifdef DEBUG
+		fprintf(stderr, "debug.lua_rs_gc ptr [%p]\n", (void *)rs->ptr);
+		fprintf(stderr, "debug.lua_rs_gc open [%d]\n", rs->open);
+#endif
+		if (rs->open) {
+			rs->open = false;
+			PQclear(rs->ptr);
+		}
+	}
+	return 0;
+}
+
+/* result object garbage collector */
+LUALIB_API int L_array_gc(lua_State *L) {
+	if (lua_isuserdata(L, 1)) {
+		rs_t *rs = luaL_checkarray(L, 1);
 #ifdef DEBUG
 		fprintf(stderr, "debug.lua_rs_gc ptr [%p]\n", (void *)rs->ptr);
 		fprintf(stderr, "debug.lua_rs_gc open [%d]\n", rs->open);

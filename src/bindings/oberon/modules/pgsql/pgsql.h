@@ -66,6 +66,7 @@ LUALIB_API int L_connect(lua_State *L);
 LUALIB_API int L_con_escape(lua_State *L);
 /* con:exec - execute a sql command, with or without parameters */
 LUALIB_API int L_con_exec(lua_State *L);
+LUALIB_API int L_con_query(lua_State *L);
 /* con:notifywait - wait for any NOTIFY message from server */
 LUALIB_API int L_con_notifywait(lua_State *L);
 /* con:close - close the connection and free the client resources */
@@ -78,9 +79,11 @@ LUALIB_API int L_con_gc(lua_State *L);
 
 /* rs:count - the number of rows returned OR affected by the sql command */
 LUALIB_API int L_res_count(lua_State *L);
+LUALIB_API int L_res_len(lua_State *L);
 /* rs:fetch - traditional 'fetch' interface */
 LUALIB_API int L_res_fetch(lua_State *L);
 int L_res_seek(lua_State *L);
+int L_res_index(lua_State *L);
 /* rs:cols generator */
 LUALIB_API int L_res_cols(lua_State *L);
 /* rs:cols iterator */
@@ -93,3 +96,4 @@ LUALIB_API int L_res_row_iter (lua_State *L);
 LUALIB_API int L_res_clear(lua_State *L);
 /* result object garbage collector */
 LUALIB_API int L_res_gc(lua_State *L);
+LUALIB_API int L_array_gc(lua_State *L);

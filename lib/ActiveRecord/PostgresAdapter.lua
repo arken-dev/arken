@@ -32,6 +32,19 @@ function ActiveRecord_PostgresAdapter:execute(sql)
 end
 
 --------------------------------------------------------------------------------
+-- QUERY
+--------------------------------------------------------------------------------
+
+function ActiveRecord_PostgresAdapter:query(sql)
+  local time = os.microtime()
+  local result = assert(self:connect():query(sql))
+  time = os.microtime() - time
+  print(string.format(sql .. " (%.4f) secs", time))
+  ActiveRecord.time = ActiveRecord.time + time
+  return result
+end
+
+--------------------------------------------------------------------------------
 -- INSERT
 --------------------------------------------------------------------------------
 
