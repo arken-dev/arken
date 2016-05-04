@@ -94,8 +94,13 @@ function Controller:render_html(params)
 
   if self.layout then
     self._yield = file
-    file = "app/views/layouts/" .. self.layout .. ".html"
+    if request.field("Accept") == "text/javascript" then
+      file = "app/views/layouts/" .. self.layout .. ".js"
+    else
+      file = "app/views/layouts/" .. self.layout .. ".html"
+    end
   end
+
   local flag, result = pcall(template.execute, file, self, self:helper())
   if flag then
     return 200, {'Content-Type: text/html'}, result

@@ -1,4 +1,5 @@
 TEMPLATE = subdirs
 
-SUBDIRS = http
+SUBDIRS = http \
+          odebug
 unix:SUBDIRS += pgsql
