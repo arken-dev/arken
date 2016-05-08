@@ -2,6 +2,7 @@ package.msecs = QDateTime.currentMSecsSinceEpoch()
 package.temp  = {}
 package.last  = ""
 package.mixed = {}
+package.cache = {}
 
 package.requireReload = function(path, mixin)
   if package.loaded[path] then
@@ -41,14 +42,22 @@ package.isPathUpdated = function(path)
 end
 
 package.pathToFilename = function(path)
-  for str in string.gmatch(package.path, "([^;]+)") do
-    local file_name = tostring(str:gsub("?", path:replace('.', '/')))
-    if QFileInfo.exists(file_name) then
-      return file_name
+
+  if package.cache[path] == nil or not QFile.exists(package.cache[path]) then
+    for str in string.gmatch(package.path, "([^;]+)") do
+      local file_name = tostring(str:gsub("?", path:replace('.', '/')))
+      if QFileInfo.exists(file_name) then
+        package.cache[path] = file_name
+        break
+      end
     end
   end
 
-  return nil
+  if package.cache[path] == nil then
+    package.cache[path] = false
+  end
+
+  return package.cache[path]
 end
 
 package.isFilenameUpdated = function(file_name)
@@ -81,7 +90,9 @@ end
 package.reload = function()
   package.temp = {}
   for path, table in pairs(package.loaded) do
-    package.requireReload(path)
+    if package.cache[path] ~= false then
+      package.requireReload(path)
+    end
   end
   package.msecs = QDateTime.currentMSecsSinceEpoch()
 end
