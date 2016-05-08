@@ -2,11 +2,11 @@ package.msecs = QDateTime.currentMSecsSinceEpoch()
 package.temp  = {}
 package.last  = ""
 package.mixed = {}
--- require_old   = require
-require_reload = function(path, mixin)
+
+package.requireReload = function(path, mixin)
   if package.loaded[path] then
     if package.isPathUpdated(path) then
-      return package._reload(path)
+      return package.reloadPath(path)
     end
   else
     if mixin then
@@ -20,14 +20,14 @@ require_reload = function(path, mixin)
 end
 
 package.isPathUpdated = function(path)
-  local filename = package.path_to_filename(path)
+  local filename = package.pathToFilename(path)
   if filename then
     if package.isFilenameUpdated(filename) then
       return true
     else
       if type(package.mixed[path]) == 'table' then
         for _, mixin_path in ipairs(package.mixed[path]) do
-          local file_mixin = package.path_to_filename(mixin_path)
+          local file_mixin = package.pathToFilename(mixin_path)
           if file_mixin then
             if package.isFilenameUpdated(file_mixin) then
               return true
@@ -40,7 +40,7 @@ package.isPathUpdated = function(path)
   return false
 end
 
-package.path_to_filename = function(path)
+package.pathToFilename = function(path)
   for str in string.gmatch(package.path, "([^;]+)") do
     local file_name = tostring(str:gsub("?", path:replace('.', '/')))
     if QFileInfo.exists(file_name) then
@@ -56,10 +56,10 @@ package.isFilenameUpdated = function(file_name)
   return fileInfo:lastModified():toMSecsSinceEpoch() > package.msecs
 end
 
-package._reload = function(path)
+package.reloadPath = function(path)
   if not package.isReloaded(path) then
     print('reload: ' .. path)
-    local filename = package.path_to_filename(path)
+    local filename = package.pathToFilename(path)
     if filename then
       package.loaded[path] = loadfile(filename)()
     end
@@ -81,7 +81,7 @@ end
 package.reload = function()
   package.temp = {}
   for path, table in pairs(package.loaded) do
-    require_reload(path)
+    package.requireReload(path)
   end
   package.msecs = QDateTime.currentMSecsSinceEpoch()
 end
