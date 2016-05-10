@@ -1,5 +1,6 @@
 local M = {}
 
+M.msecs  = QDateTime.currentMSecsSinceEpoch()
 M.cache  = {}
 M.source = {}
 M.time   = 0
@@ -87,7 +88,16 @@ function M.execute(file_name, data, helper)
 end
 
 function M.reload()
-  M.cache = {}
+  -- M.cache = {}
+  for file_name, source in pairs(M.source) do
+    local fileInfo = QFileInfo.new(file_name)
+    if fileInfo:lastModified():toMSecsSinceEpoch() > M.msecs then
+      print("reload: " .. file_name)
+      M.cache[file_name] = M.build(file_name)()
+    end
+  end
+
+  M.msecs  = QDateTime.currentMSecsSinceEpoch()
 end
 
 function M.debug(file_name)
