@@ -70,17 +70,15 @@ end
 M.dispatch = function()
   ActiveRecord.time = 0
   template.time = 0
-  local time   = os.microtime()
-  local reload = 0
+  local time    = os.microtime()
+  local reload  = 0
   local code, headers, body
   if OBERON_ENV == 'development' then
     local file_name = "public" .. request.requestPath()
     if file_name ~= "public/" and QFile.exists(file_name) then
       return M.dispatchLocal(file_name)
     else
-      reload = os.microtime()
-      package.reload()
-      reload = os.microtime() - reload
+      reload = package.reload()
       template.reload()
       code, headers, body = M.dispatchController()
     end

@@ -54,6 +54,7 @@ package.reloadPath = function(path)
 end
 
 package.reload = function()
+  local init = QDateTime.currentMSecsSinceEpoch()
   for path, table in pairs(package.loaded) do
     if package.cache[path] ~= false then
       if package.mixed[path] then
@@ -67,4 +68,5 @@ package.reload = function()
     end
   end
   package.msecs = QDateTime.currentMSecsSinceEpoch()
+  return (package.msecs - init) / 1000.0
 end
