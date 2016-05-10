@@ -2,7 +2,6 @@ require 'Controller'
 require 'OByteArray'
 require 'OHttpRequest'
 require 'ActiveRecord'
-require 'require-development'
 
 local template = require 'template'
 local url      = require 'url'

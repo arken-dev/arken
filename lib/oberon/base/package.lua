@@ -1,3 +1,7 @@
+require "QDateTime"
+require "QFileInfo"
+require "QFile"
+
 package.msecs = QDateTime.currentMSecsSinceEpoch()
 package.mixed = {}
 package.cache = {}

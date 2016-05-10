@@ -52,7 +52,6 @@ function TestTask:console(params)
 end
 
 function TestTask:notify(params)
-  require 'require-development'
   while true do
     t = QDateTime.currentMSecsSinceEpoch()
     package.reload()
