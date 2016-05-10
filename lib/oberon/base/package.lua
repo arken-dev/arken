@@ -9,6 +9,13 @@ package.cache = {}
 package.requireReload = function(path)
   if package.loaded[path] then
     if package.isPathUpdated(path) then
+      if package.mixed[path] then
+        local class = package.mixed[path]
+        print('reload: ' .. path)
+        package.loaded[path]  = nil
+        package.loaded[class] = nil
+        path = class
+      end
       return package.reloadPath(path)
     end
   end
@@ -61,13 +68,6 @@ package.reload = function()
   local init = QDateTime.currentMSecsSinceEpoch()
   for path, table in pairs(package.loaded) do
     if package.cache[path] ~= false then
-      if package.mixed[path] then
-        local class = package.mixed[path]
-        print('reload: ' .. path)
-        package.loaded[path]  = nil
-        package.loaded[class] = nil
-        path = class
-      end
       package.requireReload(path)
     end
   end
