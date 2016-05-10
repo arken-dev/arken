@@ -56,13 +56,9 @@ function Class.new(className, inheritedBy, params)
     return obj
   end
 
-  function class.mixin(file_or_module)
-    local M;
-    if(type(file_or_module) == 'string') then
-      M = require(file_or_module, true)
-    else
-      M = file_or_module
-    end
+  function class.mixin(path)
+    package.mixed[path] = class.class_name
+    local M = require(path, true)
     for key, value in pairs(M) do
       class[key] = value
     end
