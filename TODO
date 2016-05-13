@@ -1,3 +1,5 @@
+- review spec/string/*
+---
 - logs
 - bindings for qt core QDateTime, QByteArray etc
 - extensions for core class inspired in Active Support
