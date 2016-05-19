@@ -68,6 +68,10 @@ function M.compile(file_name)
   buffer = buffer .. "  return __buffer \n"
   buffer = buffer .. "end"
 
+  return M.filter(file_name, buffer)
+end
+
+function M.filter(file_name, buffer)
   return buffer
 end
 
