@@ -15,7 +15,7 @@ function CoverageTask:linear(params)
   while(iterator:hasNext()) do
     iterator:next()
     local fileInfo = iterator:fileInfo()
-    if fileInfo:filePath():endsWith("_spec.lua") then
+    if fileInfo:filePath():endsWith(".lua") then
       table.insert(files, fileInfo:filePath())
     end
   end
