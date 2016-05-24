@@ -40,18 +40,6 @@ test['should remove blank, break line and tab throughout the string'] = function
   should.be_equal( str1:simplified(), str2 )
 end
 
-test['should remove tab throughout the string'] = function()
-  local str1 = "　this　is　a　test　"
-  local str2 = "this is a test"
-  should.be_equal( str1:simplified(), str2 )
-end
-
-test['should apply sequential methodo'] = function()
-  local str1 = "　this　is　a　test　"
-  local str2 = "this is a test"
-  should.be_equal( str1:simplified():simplified(), str2 )
-end
-
 test['should return empty string for many invalid chars'] = function()
   local str = "   "
   should.be_equal( str:simplified(), "" )

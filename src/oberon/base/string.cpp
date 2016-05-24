@@ -332,6 +332,15 @@ char * string::right(const char *string, int len)
   return result;
 }
 
+static inline bool simplified_special_char(const char chr)
+{
+  if( chr >= 0 and chr <= 32 ) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 char * string::simplified(const char *string)
 {
   int i = 0;
@@ -340,14 +349,14 @@ char * string::simplified(const char *string)
   int len;
   char * result;
 
-  len = strlen(string) - 1;
+  len = strlen(string);
 
-  while(string[i] <= ' ') {
+  while(simplified_special_char(string[i])) {
     i++;
   }
 
-  while(string[len] <= ' ') {
-    --len;
+  while(simplified_special_char(string[len])) {
+    len--;
   }
 
   if( (len - i) <= 0 ) {
@@ -355,8 +364,8 @@ char * string::simplified(const char *string)
     result[0] = '\0';
   } else {
     result = new char[(len) + 1];
-    while(i < len) {
-      if( string[i] <= ' ' ) {
+    while(i <= len) {
+      if( simplified_special_char(string[i]) ) {
         if( f ) {
           i++;
         } else {
@@ -372,10 +381,8 @@ char * string::simplified(const char *string)
         f = 0;
       }
     }
-    if( ! string[i] <= ' ' ) {
-      result[j] = string[i];
-    }
-    result[j+1] = '\0';
+
+    result[j] = '\0';
   }
 
   return result;
