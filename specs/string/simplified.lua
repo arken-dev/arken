@@ -48,4 +48,10 @@ test['should return empty string for many invalid chars'] = function()
   should.be_equal( str:simplified(), "" )
 end
 
+test['should remove special char with utf-8 chars'] = function()
+  local str1 = " \n\tnão\n\t "
+  local str2 = "não"
+  should.be_equal( str1:simplified(), str2 )
+end
+
 return test
