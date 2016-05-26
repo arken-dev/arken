@@ -406,6 +406,15 @@ bool string::startsWith(const char *string, const char *str)
   return true;
 }
 
+static inline bool trimmed_special_char(const char chr)
+{
+  if( chr >= 0 and chr <= 32 ) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 char * string::trimmed(const char *string)
 {
   int i = 0;
@@ -413,14 +422,14 @@ char * string::trimmed(const char *string)
   int len;
   char * result;
 
-  len = strlen(string) - 1;
+  len = strlen(string);
 
-  while(string[i] <= ' ') {
+  while(trimmed_special_char(string[i])) {
     i++;
   }
 
-  while(string[len] <= ' ') {
-    --len;
+  while(trimmed_special_char(string[len])) {
+    len--;
   }
 
   if( (len - i) <= 0 ) {
@@ -428,16 +437,18 @@ char * string::trimmed(const char *string)
     result[0] = '\0';
   } else {
     result = new char[(len) + 1];
-    while(i < len) {
+    while(i <= len) {
       result[j] = string[i];
       i++;
       j++;
     }
-    result[j+1] = '\0';
+
+    result[j] = '\0';
   }
 
   return result;
 }
+
 
 char * string::truncate(const char *string, int pos)
 {
