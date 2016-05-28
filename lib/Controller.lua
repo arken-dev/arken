@@ -46,13 +46,18 @@ function Controller:helper()
 end
 
 function Controller:url(params)
+  local dispatcher = require 'oberon.dispatcher'
   local controller = params.controller or self.controller_name
   local action     = params.action or 'index'
-  local result = '/' .. controller .. '/' .. action
+
+  if dispatcher.prefix then
+    controller = dispatcher.prefix .. '/' .. controller
+  end
 
   params.action = nil
   params.controller = nil
 
+  local result = '/' .. controller .. '/' .. action
   local query = true
   local open  = false
   for k, v in pairs(params) do
