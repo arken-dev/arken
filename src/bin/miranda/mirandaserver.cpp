@@ -1,9 +1,30 @@
 #include "mirandaserver.h"
 #include "mirandatask.h"
 #include "mirandastate.h"
+#include <QFile>
+#include <QJsonObject>
 
 MirandaServer::MirandaServer(QCoreApplication *app)
 {
+  QFile config("config/miranda.json");
+  if( config.exists() ) {
+    config.open(QIODevice::ReadOnly);
+    QJsonParseError * error = new QJsonParseError();
+    QJsonDocument json = QJsonDocument::fromJson(config.readAll(), error);
+    if( error->error != 0 ) {
+      qDebug() << error->errorString();
+      throw;
+    }
+    QJsonObject object = json.object();
+    m_port =    object.value("port").toInt();
+    m_address = object.value("address").toString();
+  } else {
+    qDebug() << "config/miranda.json file not exists";
+    m_port = 2345;
+    m_address = "localhost";
+  }
+  qDebug() << "using address " << m_address;
+  qDebug() << "port " << m_port;
 
   QFileInfo dispatch = QFileInfo("dispatch.lua");
 
@@ -33,7 +54,7 @@ void MirandaServer::start()
   m_pool = new QThreadPool(this);
   m_pool->setMaxThreadCount(15);
 
-  if(this->listen(QHostAddress::Any, 2345)) {
+  if(this->listen(QHostAddress(m_address), m_port)) {
     qDebug() << "start miranda ...";
   } else {
     qDebug() << "fail start miranda ...";
