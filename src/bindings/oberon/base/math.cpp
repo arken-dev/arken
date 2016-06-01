@@ -5,7 +5,7 @@
 
 static int lua_oberon_math_round( lua_State *L ) {
   double number    = luaL_checknumber(L, 1);
-  int    precision = luaL_checkint(L, 2); 
+  int    precision = luaL_checkint(L, 2);
   double result    = math::round(number, precision);
   lua_pushnumber(L, result);
   return 1;
@@ -13,7 +13,7 @@ static int lua_oberon_math_round( lua_State *L ) {
 
 static int lua_oberon_math_truncate( lua_State *L ) {
   double number    = luaL_checknumber(L, 1);
-  int    precision = luaL_checkint(L, 2); 
+  int    precision = luaL_checkint(L, 2);
   double result    = math::truncate(number, precision);
   lua_pushnumber(L, result);
   return 1;
