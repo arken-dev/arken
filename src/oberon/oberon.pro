@@ -12,7 +12,8 @@ TARGET = oberon
 DESTDIR = ../../vendors
 
 # Input
-SOURCES += base/os.cpp              \
+SOURCES += base/math.cpp            \
+           base/os.cpp              \
            base/string.cpp          \
            classes/OByteArray.cpp   \
            classes/OThread.cpp      \
