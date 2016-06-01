@@ -16,6 +16,7 @@ INCLUDEPATH += ../../../../vendors/include
 
 # Input
 SOURCES += helper.cpp
+SOURCES += math.cpp
 SOURCES += os.cpp
 SOURCES += string.cpp
 
