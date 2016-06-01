@@ -3,6 +3,7 @@
 #include "mirandastate.h"
 #include <QFile>
 #include <QJsonObject>
+#include <iostream>
 
 MirandaServer::MirandaServer(QCoreApplication *app)
 {
@@ -23,14 +24,10 @@ MirandaServer::MirandaServer(QCoreApplication *app)
     m_port = 2345;
     m_address = "localhost";
   }
-  qDebug() << "using address " << m_address;
-  qDebug() << "port " << m_port;
 
   QFileInfo dispatch = QFileInfo("dispatch.lua");
 
-  if( dispatch.exists() ) {
-    qDebug() << "dispatch in local dir ...";
-  } else {
+  if( ! dispatch.exists() ) {
     if( app->arguments().size() == 1 ) {
       qDebug() << "where the dispatch.lua file ???";
       throw;
@@ -55,7 +52,7 @@ void MirandaServer::start()
   m_pool->setMaxThreadCount(15);
 
   if(this->listen(QHostAddress(m_address), m_port)) {
-    qDebug() << "start miranda ...";
+    qDebug() << QString("start miranda %1:%2 ...").arg(m_address).arg(m_port).toLocal8Bit().data();
   } else {
     qDebug() << "fail start miranda ...";
   }
