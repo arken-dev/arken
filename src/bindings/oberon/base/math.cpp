@@ -1,6 +1,5 @@
 #include <luajit-2.0/lua.hpp>
 #include <oberon/helper>
-#include <iostream>
 #include <cmath>
 
 static int lua_oberon_math_round( lua_State *L ) {
