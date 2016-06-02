@@ -2,6 +2,7 @@ namespace oberon {
   namespace math {
     int    abs(int number);
     double acos(double number);
+    double asin(double number);
     double ceil(double number);
     double floor(double number);
     double round(double number, int precision);

@@ -3,6 +3,7 @@
 
 int    (*cabs)  (int)    = &abs;
 double (*cacos) (double) = &acos;
+double (*casin) (double) = &asin;
 double (*cceil) (double) = &ceil;
 double (*cfloor)(double) = &floor;
 
@@ -14,6 +15,11 @@ int math::abs(int number)
 double math::acos(double number)
 {
   return cacos(number);
+}
+
+double math::asin(double number)
+{
+  return casin(number);
 }
 
 double math::ceil(double number)
