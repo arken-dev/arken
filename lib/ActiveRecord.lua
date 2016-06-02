@@ -113,8 +113,7 @@ ActiveRecord.inherit = function(class)
 
   class.loadConfig = function()
     local JSON   = require 'JSON'
-    local file   = io.open("config/active_record.json")
-    local raw    = file:read("*a")
+    local raw    = os.read("config/active_record.json")
     local env    = OBERON_ENV or 'development'
     local config = JSON:decode(raw)
     if type(config) == 'table' then
