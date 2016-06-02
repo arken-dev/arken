@@ -1,13 +1,13 @@
 #include <cmath>
 #include <oberon/helper>
 
-int    (*cabs)  (int)    = &abs;
-double (*cacos) (double) = &acos;
-double (*casin) (double) = &asin;
-double (*catan) (double) = &atan;
+int    (*cabs)   (int)    = &abs;
+double (*cacos)  (double) = &acos;
+double (*casin)  (double) = &asin;
+double (*catan)  (double) = &atan;
 double (*catan2) (double, double) = &atan2;
-double (*cceil) (double) = &ceil;
-double (*cfloor)(double) = &floor;
+double (*cceil)  (double) = &ceil;
+double (*cfloor) (double) = &floor;
 
 int math::abs(int number)
 {
