@@ -4,6 +4,7 @@
 int    (*cabs)  (int)    = &abs;
 double (*cacos) (double) = &acos;
 double (*casin) (double) = &asin;
+double (*catan) (double) = &atan;
 double (*cceil) (double) = &ceil;
 double (*cfloor)(double) = &floor;
 
@@ -20,6 +21,11 @@ double math::acos(double number)
 double math::asin(double number)
 {
   return casin(number);
+}
+
+double math::atan(double number)
+{
+  return catan(number);
 }
 
 double math::ceil(double number)
