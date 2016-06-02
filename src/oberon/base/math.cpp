@@ -1,8 +1,14 @@
 #include <cmath>
 #include <oberon/helper>
 
+int    (*cabs)  (int)    = &abs;
 double (*cceil) (double) = &ceil;
 double (*cfloor)(double) = &floor;
+
+int math::abs(int number)
+{
+  return cabs(number);
+}
 
 double math::ceil(double number)
 {
