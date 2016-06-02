@@ -5,6 +5,7 @@ int    (*cabs)  (int)    = &abs;
 double (*cacos) (double) = &acos;
 double (*casin) (double) = &asin;
 double (*catan) (double) = &atan;
+double (*catan2) (double, double) = &atan2;
 double (*cceil) (double) = &ceil;
 double (*cfloor)(double) = &floor;
 
@@ -26,6 +27,11 @@ double math::asin(double number)
 double math::atan(double number)
 {
   return catan(number);
+}
+
+double math::atan2(double x, double y)
+{
+  return catan2(x, y);
 }
 
 double math::ceil(double number)

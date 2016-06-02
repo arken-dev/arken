@@ -4,6 +4,7 @@ namespace oberon {
     double acos(double number);
     double asin(double number);
     double atan(double number);
+    double atan2(double x, double y);
     double ceil(double number);
     double floor(double number);
     double round(double number, int precision);
