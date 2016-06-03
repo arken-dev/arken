@@ -151,7 +151,7 @@ end
 -------------------------------------------------------------------------------
 
 function Controller:render_text(params)
-  return 200, {['Content-Type'] = 'text/plain'}, params.value
+  return 200, {'Content-Type: text/plain'}, params.value
 end
 
 -------------------------------------------------------------------------------
