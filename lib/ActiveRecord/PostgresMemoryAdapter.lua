@@ -62,6 +62,13 @@ end
 function ActiveRecord_PostgresMemoryAdapter:retrieveFromCache(params)
   local key = nil
   local result = {}
+  local order  = params.order
+  if order then
+    params.order = nil
+    if self:columns()[order] == nil then
+      error('order ' .. order .. ' is not attribute in ' .. self.table_name)
+    end
+  end
 
   if params[self.primary_key] then
     key = self.table_name .. '_' .. tostring(params[self.primary_key])
@@ -88,6 +95,12 @@ function ActiveRecord_PostgresMemoryAdapter:retrieveFromCache(params)
         table.insert(result, record)
       end
     end
+  end
+
+  if order then
+    table.sort(result, function(rec1, rec2)
+      return tostring(rec1[order]) < tostring(rec2[order])
+    end)
   end
 
   return result
