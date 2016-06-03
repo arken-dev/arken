@@ -4,5 +4,4 @@
 
 TEMPLATE = subdirs
 SUBDIRS = oberon \
-          miranda \
-          puck
+          miranda
