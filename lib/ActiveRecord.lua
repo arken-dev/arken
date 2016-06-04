@@ -55,12 +55,7 @@ ActiveRecord.inherit = function(class)
   -----------------------------------------------------------------------------
 
   class.find = function(params)
-    local record = class.adapter():find(params)
-    if record == nil then
-      return nil
-    else
-      return class.new(record)
-    end
+    return class.adapter():find(params)
   end
 
   -----------------------------------------------------------------------------
@@ -98,12 +93,13 @@ ActiveRecord.inherit = function(class)
     local config  = class.loadConfig()
     local adapter = adapter_name or config.adapter
     return require(adapter).new{
-      table_name  = class.table_name,
-      primary_key = class.primary_key,
-      user        = config.user,
-      password    = config.password,
-      database    = config.database,
-      host        = config.host
+      record_class = class,
+      table_name   = class.table_name,
+      primary_key  = class.primary_key,
+      user         = config.user,
+      password     = config.password,
+      database     = config.database,
+      host         = config.host
     }
   end
 

@@ -336,7 +336,7 @@ function ActiveRecord_PostgresAdapter:parser_fetch(res)
   for column, properties in pairs(self:columns()) do
     res[column] = self:parser_value(properties.format, res[column])
   end
-  return res
+  return self.record_class.new(res)
 end
 
 function ActiveRecord_PostgresAdapter:parser_value(format, value)
