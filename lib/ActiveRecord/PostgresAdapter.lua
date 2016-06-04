@@ -306,6 +306,10 @@ function ActiveRecord_PostgresAdapter:parser_format(format_type)
     return 'bytea'
   end
 
+  if format_type == 'tsvector' then
+    return 'string'
+  end
+
   error('format_type: ' .. format_type ..' not resolved')
 end
 
