@@ -24,6 +24,7 @@ private:
   QThreadPool * m_pool;
   quint16       m_port;
   QString       m_address;
+  int           m_maxThreadCount;
 
 };
 

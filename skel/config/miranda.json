@@ -1,4 +1,5 @@
 {
   "address" : "localhost",
-  "port"    : 2345
+  "port"    : 2345,
+  "threads" : 4
 }
