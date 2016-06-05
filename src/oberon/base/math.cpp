@@ -51,6 +51,11 @@ double math::floor(double number)
   return std::floor(number);
 }
 
+double math::fmod(double number, double denom)
+{
+  return std::fmod(number, denom);
+}
+
 double math::round(double number, int precision)
 {
   double dprecision = std::pow(10, precision);

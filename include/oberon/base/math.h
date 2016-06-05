@@ -10,6 +10,7 @@ namespace oberon {
     double cosh(double number);
     double exp(double number);
     double floor(double number);
+    double fmod(double number, double denom);
     double round(double number, int precision);
     double truncate(double number, int precision);
   }
