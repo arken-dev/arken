@@ -31,6 +31,11 @@ double math::ceil(double number)
   return std::ceil(number);
 }
 
+double math::cos(double number)
+{
+  return std::cos(number);
+}
+
 double math::floor(double number)
 {
   return std::floor(number);
