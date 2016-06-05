@@ -41,6 +41,11 @@ double math::cosh(double number)
   return std::cosh(number);
 }
 
+double math::exp(double number)
+{
+  return std::exp(number);
+}
+
 double math::floor(double number)
 {
   return std::floor(number);
