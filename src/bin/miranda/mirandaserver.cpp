@@ -19,10 +19,12 @@ MirandaServer::MirandaServer(QCoreApplication *app)
     QJsonObject object = json.object();
     m_port =    object.value("port").toInt();
     m_address = object.value("address").toString();
+    m_maxThreadCount = object.value("threads").toInt();
   } else {
     qDebug() << "config/miranda.json file not exists";
     m_port = 2345;
     m_address = "localhost";
+    m_maxThreadCount = 15;
   }
 
   QFileInfo dispatch = QFileInfo("dispatch.lua");
@@ -49,10 +51,10 @@ MirandaServer::MirandaServer(QCoreApplication *app)
 void MirandaServer::start()
 {
   m_pool = new QThreadPool(this);
-  m_pool->setMaxThreadCount(15);
+  m_pool->setMaxThreadCount(m_maxThreadCount);
 
   if(this->listen(QHostAddress(m_address), m_port)) {
-    qDebug() << QString("start miranda %1:%2 ...").arg(m_address).arg(m_port).toLocal8Bit().data();
+    qDebug() << QString("start miranda %1:%2 (%3) threads...").arg(m_address).arg(m_port).arg(m_maxThreadCount).toLocal8Bit().data();
   } else {
     qDebug() << "fail start miranda ...";
   }

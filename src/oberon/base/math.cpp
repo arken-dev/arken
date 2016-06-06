@@ -31,9 +31,29 @@ double math::ceil(double number)
   return std::ceil(number);
 }
 
+double math::cos(double number)
+{
+  return std::cos(number);
+}
+
+double math::cosh(double number)
+{
+  return std::cosh(number);
+}
+
+double math::exp(double number)
+{
+  return std::exp(number);
+}
+
 double math::floor(double number)
 {
   return std::floor(number);
+}
+
+double math::fmod(double number, double denom)
+{
+  return std::fmod(number, denom);
 }
 
 double math::round(double number, int precision)
