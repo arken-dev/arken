@@ -11,6 +11,9 @@ function Class.new(className, inheritedBy, params)
   -- recreate empty class
   if Class.classes[className] then
     class = Class.classes[className]
+    if inheritedBy then
+      setmetatable(Class.classes[className], inheritedBy)
+    end
     for key, value in pairs(class) do
       class[key] = nil
     end
