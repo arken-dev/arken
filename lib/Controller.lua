@@ -29,8 +29,25 @@ function Controller:resolvHelper()
   local file = prefix .. self.controller_name
   if QFile.exists(file:replace('.', '/') .. '.lua')  then
     local tmp = require(file)
+    tmp.controller_path = self.controller_path
+    tmp.controller_name = self.controller_name
+    tmp.action_name     = self.action_name
     tmp.__index = tmp
     setmetatable(tmp, helper)
+    helper = tmp
+  else
+    local tmp = {}
+    tmp.teste = "teste..."
+    for i, v in pairs(helper) do
+      tmp[i] = v
+    end
+    tmp.controller_path = self.controller_path
+    tmp.controller_name = self.controller_name
+    tmp.action_name     = self.action_name
+--[[
+    tmp.__index = tmp
+    setmetatable(tmp, helper)
+]]
     helper = tmp
   end
 
@@ -102,7 +119,7 @@ function Controller:render_html(params)
     if flag then
       self._yield = result
     else
-      error(file .. '\n\n' .. result .. '\n\n' .. template.debug(self._yield))
+      self._yield = (file .. '\n\n' .. result .. '\n\n' .. template.debug(self._yield))
     end
 
     if request.field("Accept") == "text/javascript" then
