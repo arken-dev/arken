@@ -32,13 +32,14 @@ M.parse_path  = function()
   end
   local controller = path:mid(start, last-start)
   local action     = path:right(path:len() - last - 1)
+  local path       = path:mid(0, path:len() - action:len())
   if controller == '' then
     controller = 'index'
   end
   if last == 0 or action == '' then
     action = "index"
   end
-  return controller, action
+  return controller, action, path
 end
 
 M.require_controller_name = function(controller_name)
@@ -56,9 +57,9 @@ M.dispatchLocal = function(file_name)
 end
 
 M.dispatchController = function()
-  controller_name, action_name = M.parse_path()
+  controller_name, action_name, controller_path = M.parse_path()
   local class  = M.require_controller_name(controller_name)
-  local object = class.new{controller_name = controller_name, action_name = action_name}
+  local object = class.new{controller_name = controller_name, action_name = action_name, controller_path = controller_path}
   if object[action_name .. "Action"] then
     return object:execute(action_name .. "Action")
   else
