@@ -28,12 +28,13 @@ jQuery(function (jQuery) {
             var method  = el.attr('method') || el.attr('data-method') || 'GET';
             var update  = el.attr('data-update');
             var url     = el.attr('action') || el.attr('href');
-
+            /*
             if (el.attr('data-confirm')) {
                if (!confirm(el.attr('data-confirm'))) {
                    return false;
                }
             }
+            */
 
             // TODO: should let the developer know no url was found
             if (url !== undefined) {
@@ -43,10 +44,7 @@ jQuery(function (jQuery) {
                         data: data,
                         type: method.toUpperCase(),
                         beforeSend: function (xhr) {
-                            //transactions
-                            //jQuery(window.top.document).contents().find("#form_permissao").focus();
-                            jQuery("#modalTransaction").show();
-                            //alert('before send'); //debug
+                            //jQuery("#modalTransaction").show();
                             xhr.setRequestHeader("Accept", "text/javascript");
                             el.trigger('ajax:loading', xhr);
                         },
@@ -66,8 +64,7 @@ jQuery(function (jQuery) {
                             if(objContext != null) {
                               objContext.style.backgroundColor ='#f4f5f7';
                             }
-                            jQuery("#modalTransaction").hide();
-                            //jQuery(window.top.document).contents().find("#form_permissao").blur();
+                            //jQuery("#modalTransaction").hide();
                         },
                         error: function (xhr, status, error) {
                             jQuery('#processar_pagamento_loading').hide();
@@ -85,7 +82,7 @@ jQuery(function (jQuery) {
 
 
     /**
-     *  confirmation handler
+     *  condition handler
      */
     jQuery('a[data-condition],input[data-condition],form[data-condition]').live('click', function () {
         var el = jQuery(this);
