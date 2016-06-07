@@ -7,6 +7,13 @@ M.parse = function(buffer)
   local pos      = 0
   local len      = buffer:len()
   local index    = buffer:find(";")
+  if index == nil and len > 0 then
+    local equal    = buffer:find("=")
+    local key      = buffer:sub(0, equal-1)
+    local value    = OByteArray.new(buffer:sub(equal+1, buffer:len())):trimmed()
+    result[key] = value
+    return result
+  end
   while(index ~= nil) do
     local fragment = buffer:sub(0, index)
     local equal    = fragment:find("=")
