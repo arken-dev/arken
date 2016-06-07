@@ -63,6 +63,10 @@ function Controller:helper()
 end
 
 function Controller:url(params)
+  if type(params) == 'string' then
+    return params
+  end
+
   local dispatcher = require 'oberon.dispatcher'
   local controller = params.controller or self.controller_name
   local action     = params.action or 'index'
@@ -185,10 +189,14 @@ end
 -------------------------------------------------------------------------------
 
 function Object:execute(method, params)
+  local code, headers, data
   self:prepare(params)
-  self:validate(params)
+  code, headers, data = self:validate(params)
+  if code ~= nil then
+    return code, headers, data
+  end
   self:before(params)
-  local code, headers, data = self[method](self, params)
+  code, headers, data = self[method](self, params)
   self:after(params)
   return code, headers, data
 end
