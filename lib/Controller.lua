@@ -115,7 +115,7 @@ function Controller:render_html(params)
       file = prefix .. "/" .. self.controller_name .. "/" .. params.view .. ".html"
     end
   else
-    file = prefix .. "/" .. params.template
+    file = prefix .. "/" .. params.template .. ".html"
   end
 
   if self.layout then
