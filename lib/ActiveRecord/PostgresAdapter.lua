@@ -146,38 +146,26 @@ end
 --------------------------------------------------------------------------------
 
 function ActiveRecord_PostgresAdapter:find(params)
-  local key = nil
-  if params.id then
-    key = self.table_name .. '_' .. tostring(params.id)
+
+  if params[self.primary_key] then
+    local key = self.table_name .. tostring(params[self.primary_key])
+    if self.cache[key] then
+      return self.cache[key]
+    end
   end
-  if key and self.cache[key] then
-    return self.cache[key]
+
+  local sql  = self:select(params, true)
+  local data = self:fetch(sql)
+  if data == nil then
+    return nil
   else
-    if self._cache[key] then
-      local record = self._cache[key]
-      local tmp    = {}
-      for k,v in pairs(record) do
-        tmp[k] = v
-      end
-      self.cache[key] = tmp
-      return tmp
-    end
-    local sql = self:select(params, true)
-    if self.cache[sql] then
-      return self.cache[sql]
-    else
-      local data = self:fetch(sql)
-      if data == nil then
-        return nil
-      end
-      data.new_record = false
-      key = self.table_name .. '_' .. tostring(data.id)
-      self._cache[key] = data
-      -- print('cache' .. key)
-      -- self.cache[sql] = data
-      return data
-    end
+    data.new_record = false
+    data = self.record_class.new(data)
+    local key = self.table_name .. tostring(data[self.primary_key])
+    self.cache[key] = data
+    return data
   end
+
 end
 
 --------------------------------------------------------------------------------
