@@ -37,7 +37,7 @@ end
 -- REQUIRE
 -------------------------------------------------------------------------------
 
-result, module = pcall(require, name .. "_task")
+result, module = pcall(require, name:camelcase() .. "Task")
 if result == false then
   print(name .. " not work" .. module)
   os.exit()
