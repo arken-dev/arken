@@ -3,8 +3,9 @@
 #include <oberon/modules/md5.h>
 
 static int lua_oberon_md5_hash( lua_State *L ) {
-  const char *path = luaL_checkstring(L, 1);
-  lua_pushstring( L, md5::hash(path) );
+  size_t size;
+  const char *path = luaL_checklstring(L, 1, &size);
+  lua_pushstring( L, md5::hash(path, size) );
   return 1;
 }
 
