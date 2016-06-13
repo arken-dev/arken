@@ -1,6 +1,14 @@
 #include <luajit-2.0/lua.hpp>
 #include <oberon/helper>
 
+static int lua_oberon_os_compare( lua_State *L ) {
+  const char * path1 = luaL_checkstring(L, 1);
+  const char * path2 = luaL_checkstring(L, 2);
+
+  lua_pushboolean( L, os::compare(path1, path2) );
+  return 1;
+}
+
 static int lua_oberon_os_cores( lua_State *L ) {
   lua_pushnumber( L, os::cores() );
   return 1;
@@ -42,6 +50,7 @@ static int lua_oberon_os_read( lua_State *L ) {
 
 int luaopen_oberon_os( lua_State *L ) {
   static const luaL_reg Map[] = {
+    {"compare",    lua_oberon_os_compare},
     {"cores",      lua_oberon_os_cores},
     {"hostname",   lua_oberon_os_hostname},
     {"microtime",  lua_oberon_os_microtime},

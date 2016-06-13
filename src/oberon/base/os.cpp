@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 #include <QDateTime>
 #include <QFile>
@@ -9,6 +10,30 @@
 
 #include <oberon/helper>
 #include <oberon/modules/http.h>
+#include <iostream>
+#include <oberon/md5>
+
+bool os::compare(const char * path1, const char * path2)
+{
+  size_t size1;
+  size_t size2;
+
+  const char * buffer1;
+  const char * buffer2;
+
+  buffer1 = os::read(path1, &size1);
+  buffer2 = os::read(path2, &size2);
+
+  if( size1 != size2 ) {
+    return false;
+  }
+
+  if( memcmp(buffer1, buffer2, size1) == 0 ) {
+    return true;
+  } else {
+    return false;
+  }
+}
 
 int os::cores()
 {
@@ -81,7 +106,9 @@ char * os::read(const char * path, size_t * size)
     if( size != 0 ) {
       *size = raw.size();
     }
-    result = raw.data();
+    result = new char[raw.size() + 1];
+    memcpy( result, raw.data(), raw.size() );
+    result[raw.size()] = '\0';
   }
 
   return result;

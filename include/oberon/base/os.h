@@ -2,6 +2,7 @@
 
 namespace oberon {
   namespace os {
+    bool     compare(const char * path1, const char * path2);
     int      cores();
     char   * hostname();
     double   microtime();
