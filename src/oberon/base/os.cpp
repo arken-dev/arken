@@ -64,20 +64,24 @@ char * os::uuid()
 
 char * os::read(const char * path)
 {
+  return os::read(path, 0);
+}
+
+char * os::read(const char * path, size_t * size)
+{
   char * result;
   if (string::startsWith(path, "http://")) {
     result = http::read(path);
   } else {
     QFile file(path);
-    QByteArray data;
-    int size;
+    QByteArray raw;
 
     file.open(QIODevice::ReadOnly);
-    data = file.readAll();
-    size = data.size() + 1;
-    result = (char *) malloc( size * sizeof(char) );
-    strcpy(result, data);
-    result[data.size()] = '\0';
+    raw = file.readAll();
+    if( size != 0 ) {
+      *size = raw.size();
+    }
+    result = raw.data();
   }
 
   return result;

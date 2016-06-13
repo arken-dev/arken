@@ -33,8 +33,10 @@ static int lua_oberon_os_uuid( lua_State *L ) {
 }
 
 static int lua_oberon_os_read( lua_State *L ) {
-  const char *path = luaL_checkstring(L, 1);
-  lua_pushstring( L, os::read(path) );
+  size_t size;
+  const char * path = luaL_checkstring(L, 1);
+  const char * raw  = os::read(path, &size);
+  lua_pushlstring( L, raw, size );
   return 1;
 }
 
