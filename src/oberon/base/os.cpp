@@ -35,6 +35,14 @@ bool os::compare(const char * path1, const char * path2)
   }
 }
 
+bool os::copy(const char * source, const char * destination, bool force)
+{
+  if( force && QFile::exists(destination) ) {
+    QFile::remove(destination);
+  }
+  return QFile::copy(source, destination);
+}
+
 int os::cores()
 {
   return QThread::idealThreadCount();

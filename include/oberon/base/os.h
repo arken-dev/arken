@@ -3,6 +3,7 @@
 namespace oberon {
   namespace os {
     bool     compare(const char * path1, const char * path2);
+    bool     copy(const char * source, const char * destination, bool force);
     int      cores();
     bool     exists(const char * path);
     char   * hostname();

@@ -9,6 +9,18 @@ static int lua_oberon_os_compare( lua_State *L ) {
   return 1;
 }
 
+static int lua_oberon_os_compare( lua_State *L ) {
+  const char * source      = luaL_checkstring(L, 1);
+  const char * destination = luaL_checkstring(L, 2);
+  bool force = false;
+  if( lua_gettop(L) == 3) { /* número de argumentos */
+    force = lua_toboolean(3);
+  }
+
+  lua_pushboolean( L, os::copy(path1, path2, force) );
+  return 1;
+}
+
 static int lua_oberon_os_cores( lua_State *L ) {
   lua_pushnumber( L, os::cores() );
   return 1;
