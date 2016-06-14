@@ -11,8 +11,3 @@ absolute_file_path
 makeabsolute ?
 mkdir
 setcurrent
-
-currentPath
-tempPath
-homePath
-rootPath
