@@ -37,6 +37,18 @@ static int lua_oberon_os_hostname( lua_State *L ) {
   return 1;
 }
 
+static int lua_oberon_os_link( lua_State *L ) {
+  const char * source      = luaL_checkstring(L, 1);
+  const char * destination = luaL_checkstring(L, 2);
+  bool force = false;
+  if( lua_gettop(L) == 3) { /* número de argumentos */
+    force = lua_toboolean(L, 3);
+  }
+
+  lua_pushboolean( L, os::link(source, destination, force) );
+  return 1;
+}
+
 static int lua_oberon_os_microtime( lua_State *L ) {
   lua_pushnumber( L, os::microtime() );
   return 1;
@@ -73,6 +85,7 @@ int luaopen_oberon_os( lua_State *L ) {
     {"cores",      lua_oberon_os_cores},
     {"exists",     lua_oberon_os_exists},
     {"hostname",   lua_oberon_os_hostname},
+    {"link",       lua_oberon_os_link},
     {"microtime",  lua_oberon_os_microtime},
     {"name",       lua_oberon_os_name},
     {"read",       lua_oberon_os_read},

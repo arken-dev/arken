@@ -7,6 +7,7 @@ namespace oberon {
     int      cores();
     bool     exists(const char * path);
     char   * hostname();
+    bool     link(const char * source, const char * destination, bool force);
     double   microtime();
     char   * name();
     void     sleep(double secs);

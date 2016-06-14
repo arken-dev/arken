@@ -59,6 +59,14 @@ char * os::hostname()
   return result.toLocal8Bit().data();
 }
 
+bool os::link(const char * source, const char * destination, bool force = false)
+{
+  if( force && QFile::exists(destination) ) {
+    QFile::remove(destination);
+  }
+  return QFile::link(source, destination);
+}
+
 double os::microtime()
 {
   return QDateTime::currentMSecsSinceEpoch() / 1000.0;
