@@ -1,6 +1,12 @@
 #include <luajit-2.0/lua.hpp>
 #include <oberon/helper>
 
+static int lua_oberon_os_abspath( lua_State *L ) {
+  const char * path = luaL_checkstring(L, 1);
+  lua_pushstring( L, os::abspath(path) );
+  return 1;
+}
+
 static int lua_oberon_os_atime( lua_State *L ) {
   const char * path = luaL_checkstring(L, 1);
   lua_pushnumber( L, os::atime(path) );
@@ -35,6 +41,12 @@ static int lua_oberon_os_cores( lua_State *L ) {
 static int lua_oberon_os_ctime( lua_State *L ) {
   const char * path = luaL_checkstring(L, 1);
   lua_pushnumber( L, os::ctime(path) );
+  return 1;
+}
+
+static int lua_oberon_os_dirpath( lua_State *L ) {
+  const char * path = luaL_checkstring(L, 1);
+  lua_pushstring( L, os::dirpath(path) );
   return 1;
 }
 
@@ -142,11 +154,13 @@ static int lua_oberon_os_root( lua_State *L ) {
 
 int luaopen_oberon_os( lua_State *L ) {
   static const luaL_reg Map[] = {
+    {"abspath",    lua_oberon_os_abspath},
     {"atime",      lua_oberon_os_atime},
     {"compare",    lua_oberon_os_compare},
     {"copy",       lua_oberon_os_copy},
     {"cores",      lua_oberon_os_cores},
     {"ctime",      lua_oberon_os_ctime},
+    {"dirpath",    lua_oberon_os_dirpath},
     {"exists",     lua_oberon_os_exists},
     {"home",       lua_oberon_os_home},
     {"hostname",   lua_oberon_os_hostname},

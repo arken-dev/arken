@@ -15,6 +15,12 @@
 #include <iostream>
 #include <oberon/md5>
 
+char * os::abspath(const char * path)
+{
+  QFileInfo info(path);
+  return info.absoluteFilePath().toLocal8Bit().data();
+}
+
 uint os::atime(const char * path)
 {
   return QFileInfo(path).lastRead().toTime_t();
@@ -58,6 +64,12 @@ int os::cores()
 uint os::ctime(const char * path)
 {
   return QFileInfo(path).lastModified().toTime_t();
+}
+
+char * os::dirpath(const char * path)
+{
+  QFileInfo info(path);
+  return info.absolutePath().toLocal8Bit().data();
 }
 
 bool os::exists(const char * path)
