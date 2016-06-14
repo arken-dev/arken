@@ -44,6 +44,11 @@ static int lua_oberon_os_exists( lua_State *L ) {
   return 1;
 }
 
+static int lua_oberon_os_home( lua_State *L ) {
+  lua_pushstring( L, os::home() );
+  return 1;
+}
+
 static int lua_oberon_os_hostname( lua_State *L ) {
   lua_pushstring( L, os::hostname() );
   return 1;
@@ -71,6 +76,11 @@ static int lua_oberon_os_name( lua_State *L ) {
   return 1;
 }
 
+static int lua_oberon_os_pwd( lua_State *L ) {
+  lua_pushstring( L, os::pwd() );
+  return 1;
+}
+
 static int lua_oberon_os_sleep( lua_State *L ) {
   double secs = luaL_checknumber(L, 1);
   os::sleep( secs );
@@ -80,6 +90,11 @@ static int lua_oberon_os_sleep( lua_State *L ) {
 static int lua_oberon_os_target( lua_State *L ) {
   const char * path = luaL_checkstring(L, 1);
   lua_pushstring( L, os::target(path) );
+  return 1;
+}
+
+static int lua_oberon_os_temp( lua_State *L ) {
+  lua_pushstring( L, os::temp() );
   return 1;
 }
 
@@ -96,6 +111,11 @@ static int lua_oberon_os_read( lua_State *L ) {
   return 1;
 }
 
+static int lua_oberon_os_root( lua_State *L ) {
+  lua_pushstring( L, os::root() );
+  return 1;
+}
+
 int luaopen_oberon_os( lua_State *L ) {
   static const luaL_reg Map[] = {
     {"atime",      lua_oberon_os_atime},
@@ -104,14 +124,18 @@ int luaopen_oberon_os( lua_State *L ) {
     {"cores",      lua_oberon_os_cores},
     {"ctime",      lua_oberon_os_ctime},
     {"exists",     lua_oberon_os_exists},
+    {"home",       lua_oberon_os_home},
     {"hostname",   lua_oberon_os_hostname},
     {"link",       lua_oberon_os_link},
     {"microtime",  lua_oberon_os_microtime},
     {"name",       lua_oberon_os_name},
+    {"pwd",        lua_oberon_os_pwd},
     {"read",       lua_oberon_os_read},
     {"target",     lua_oberon_os_target},
+    {"temp",       lua_oberon_os_temp},
     {"sleep",      lua_oberon_os_sleep},
     {"uuid",       lua_oberon_os_uuid},
+    {"root",       lua_oberon_os_root},
     {NULL, NULL}
   };
   luaL_register(L, "os", Map);

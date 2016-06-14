@@ -9,14 +9,18 @@ namespace oberon {
     int      cores();
     uint     ctime(const char * path);
     bool     exists(const char * path);
+    char   * home();
     char   * hostname();
     bool     link(const char * source, const char * destination, bool force);
     double   microtime();
     char   * name();
+    char   * pwd();
     void     sleep(double secs);
     char   * target(const char * path);
+    char   * temp();
     char   * uuid();
     char   * read(const char * path);
     char   * read(const char * path, size_t * size);
+    char   * root();
   }
 }

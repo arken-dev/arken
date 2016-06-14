@@ -3,6 +3,7 @@
 #include <stdio.h>
 
 #include <QDateTime>
+#include <QDir>
 #include <QFile>
 #include <QFileInfo>
 #include <QHostInfo>
@@ -64,6 +65,11 @@ bool os::exists(const char * path)
   return QFile::exists(path);
 }
 
+char * os::home()
+{
+  return QDir::homePath().toLocal8Bit().data();
+}
+
 char * os::hostname()
 {
   QString result = QHostInfo::localHostName();
@@ -108,6 +114,11 @@ char * os::name()
   return result.toLocal8Bit().data();
 }
 
+char * os::pwd()
+{
+  return QDir::currentPath().toLocal8Bit().data();
+}
+
 void os::sleep(double secs)
 {
   QThread::msleep(secs*1000);
@@ -116,6 +127,11 @@ void os::sleep(double secs)
 char * os::target(const char * path)
 {
   return QFile::symLinkTarget(path).toLocal8Bit().data();
+}
+
+char * os::temp()
+{
+  return QDir::tempPath().toLocal8Bit().data();
 }
 
 char * os::uuid()
@@ -150,3 +166,10 @@ char * os::read(const char * path, size_t * size)
 
   return result;
 }
+
+char * os::root()
+{
+  return QDir::rootPath().toLocal8Bit().data();
+}
+
+
