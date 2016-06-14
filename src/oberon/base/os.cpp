@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <fstream>
 
 #include <QDateTime>
 #include <QDir>
@@ -168,6 +169,21 @@ char * os::target(const char * path)
 char * os::temp()
 {
   return QDir::tempPath().toLocal8Bit().data();
+}
+
+bool os::touch(const char * path)
+{
+  bool flag;
+  std::fstream fs;
+
+  flag = false;
+  fs.open(path, std::ios::out);
+  if( fs.is_open() ) {
+    flag = true;
+  }
+
+  fs.close();
+  return flag;
 }
 
 char * os::uuid()

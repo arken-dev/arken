@@ -134,6 +134,12 @@ static int lua_oberon_os_temp( lua_State *L ) {
   return 1;
 }
 
+static int lua_oberon_os_touch( lua_State *L ) {
+  const char * path = luaL_checkstring(L, 1);
+  lua_pushboolean( L, os::touch(path) );
+  return 1;
+}
+
 static int lua_oberon_os_uuid( lua_State *L ) {
   lua_pushstring( L, os::uuid() );
   return 1;
@@ -175,6 +181,7 @@ int luaopen_oberon_os( lua_State *L ) {
     {"read",       lua_oberon_os_read},
     {"target",     lua_oberon_os_target},
     {"temp",       lua_oberon_os_temp},
+    {"touch",      lua_oberon_os_touch},
     {"sleep",      lua_oberon_os_sleep},
     {"uuid",       lua_oberon_os_uuid},
     {"root",       lua_oberon_os_root},
