@@ -10,8 +10,3 @@ absolute_path
 absolute_file_path
 makeabsolute ?
 setcurrent
-
-mkdir
-mkpath
-rmdir
-rmpath
