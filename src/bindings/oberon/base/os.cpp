@@ -26,6 +26,12 @@ static int lua_oberon_os_cores( lua_State *L ) {
   return 1;
 }
 
+static int lua_oberon_os_ctime( lua_State *L ) {
+  const char * path = luaL_checkstring(L, 1);
+  lua_pushnumber( L, os::ctime(path) );
+  return 1;
+}
+
 static int lua_oberon_os_exists( lua_State *L ) {
   const char * path = luaL_checkstring(L, 1);
   lua_pushboolean( L, os::exists(path) );
@@ -89,6 +95,7 @@ int luaopen_oberon_os( lua_State *L ) {
     {"compare",    lua_oberon_os_compare},
     {"copy",       lua_oberon_os_copy},
     {"cores",      lua_oberon_os_cores},
+    {"ctime",      lua_oberon_os_ctime},
     {"exists",     lua_oberon_os_exists},
     {"hostname",   lua_oberon_os_hostname},
     {"link",       lua_oberon_os_link},

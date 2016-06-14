@@ -4,6 +4,7 @@
 
 #include <QDateTime>
 #include <QFile>
+#include <QFileInfo>
 #include <QHostInfo>
 #include <QThread>
 #include <QUuid>
@@ -46,6 +47,11 @@ bool os::copy(const char * source, const char * destination, bool force = false)
 int os::cores()
 {
   return QThread::idealThreadCount();
+}
+
+uint os::ctime(const char * path)
+{
+  return QFileInfo(path).lastModified().toTime_t();
 }
 
 bool os::exists(const char * path)
