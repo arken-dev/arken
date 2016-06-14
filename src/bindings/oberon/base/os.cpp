@@ -65,6 +65,12 @@ static int lua_oberon_os_sleep( lua_State *L ) {
   return 0;
 }
 
+static int lua_oberon_os_target( lua_State *L ) {
+  const char * path = luaL_checkstring(L, 1);
+  lua_pushstring( L, os::target(path) );
+  return 1;
+}
+
 static int lua_oberon_os_uuid( lua_State *L ) {
   lua_pushstring( L, os::uuid() );
   return 1;
@@ -89,6 +95,7 @@ int luaopen_oberon_os( lua_State *L ) {
     {"microtime",  lua_oberon_os_microtime},
     {"name",       lua_oberon_os_name},
     {"read",       lua_oberon_os_read},
+    {"target",     lua_oberon_os_target},
     {"sleep",      lua_oberon_os_sleep},
     {"uuid",       lua_oberon_os_uuid},
     {NULL, NULL}

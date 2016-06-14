@@ -102,6 +102,11 @@ void os::sleep(double secs)
   QThread::msleep(secs*1000);
 }
 
+char * os::target(const char * path)
+{
+  return QFile::symLinkTarget(path).toLocal8Bit().data();
+}
+
 char * os::uuid()
 {
   QUuid uuid = QUuid::createUuid();

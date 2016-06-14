@@ -11,6 +11,7 @@ namespace oberon {
     double   microtime();
     char   * name();
     void     sleep(double secs);
+    char   * target(const char * path);
     char   * uuid();
     char   * read(const char * path);
     char   * read(const char * path, size_t * size);
