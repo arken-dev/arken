@@ -6,7 +6,6 @@ apt-get install libcurl4-nss-dev
 apt-get install libpq-dev
 
 touch
-absolute_path
-absolute_file_path
-makeabsolute ?
 setcurrent
+absolutePath
+absoluteDir
