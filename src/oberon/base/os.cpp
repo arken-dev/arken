@@ -14,6 +14,11 @@
 #include <iostream>
 #include <oberon/md5>
 
+uint os::atime(const char * path)
+{
+  return QFileInfo(path).lastRead().toTime_t();
+}
+
 bool os::compare(const char * path1, const char * path2)
 {
   size_t size1;
