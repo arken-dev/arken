@@ -9,5 +9,9 @@ touch
 absolute_path
 absolute_file_path
 makeabsolute ?
-mkdir
 setcurrent
+
+mkdir
+mkpath
+rmdir
+rmpath
