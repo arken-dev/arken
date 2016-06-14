@@ -4,6 +4,7 @@ namespace oberon {
   namespace os {
     bool     compare(const char * path1, const char * path2);
     int      cores();
+    bool     exists(const char * path);
     char   * hostname();
     double   microtime();
     char   * name();

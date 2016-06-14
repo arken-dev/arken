@@ -40,6 +40,11 @@ int os::cores()
   return QThread::idealThreadCount();
 }
 
+bool os::exists(const char * path)
+{
+  return QFile::exists(path);
+}
+
 char * os::hostname()
 {
   QString result = QHostInfo::localHostName();
