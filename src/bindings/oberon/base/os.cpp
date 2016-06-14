@@ -9,15 +9,15 @@ static int lua_oberon_os_compare( lua_State *L ) {
   return 1;
 }
 
-static int lua_oberon_os_compare( lua_State *L ) {
+static int lua_oberon_os_copy( lua_State *L ) {
   const char * source      = luaL_checkstring(L, 1);
   const char * destination = luaL_checkstring(L, 2);
   bool force = false;
   if( lua_gettop(L) == 3) { /* número de argumentos */
-    force = lua_toboolean(3);
+    force = lua_toboolean(L, 3);
   }
 
-  lua_pushboolean( L, os::copy(path1, path2, force) );
+  lua_pushboolean( L, os::copy(source, destination, force) );
   return 1;
 }
 
@@ -69,6 +69,7 @@ static int lua_oberon_os_read( lua_State *L ) {
 int luaopen_oberon_os( lua_State *L ) {
   static const luaL_reg Map[] = {
     {"compare",    lua_oberon_os_compare},
+    {"copy",       lua_oberon_os_copy},
     {"cores",      lua_oberon_os_cores},
     {"exists",     lua_oberon_os_exists},
     {"hostname",   lua_oberon_os_hostname},
