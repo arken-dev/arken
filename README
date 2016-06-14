@@ -4,3 +4,16 @@ apt-get install libgl1-mesa-dev
 apt-get install libluajit-5.1-dev
 apt-get install libcurl4-nss-dev
 apt-get install libpq-dev
+
+atime
+ctime
+touch
+absolute_path
+absolute_file_path
+makeabsolute ?
+mkdir
+currentdir => currentPath
+tempPath
+homePath
+rootPath
+setcurrent
