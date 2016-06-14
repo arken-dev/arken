@@ -8,6 +8,7 @@ namespace oberon {
     bool     compare(const char * path1, const char * path2);
     bool     copy(const char * source, const char * destination, bool force);
     int      cores();
+    bool     chdir(const char * dirpath);
     uint     ctime(const char * path);
     char   * dirpath(const char * path);
     bool     exists(const char * path);

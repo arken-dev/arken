@@ -62,6 +62,11 @@ int os::cores()
   return QThread::idealThreadCount();
 }
 
+bool os::chdir(const char * dirpath)
+{
+  return QDir::setCurrent( dirpath );
+}
+
 uint os::ctime(const char * path)
 {
   return QFileInfo(path).lastModified().toTime_t();
