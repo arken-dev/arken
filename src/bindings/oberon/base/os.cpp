@@ -71,6 +71,18 @@ static int lua_oberon_os_microtime( lua_State *L ) {
   return 1;
 }
 
+static int lua_oberon_os_mkdir( lua_State *L ) {
+  const char * dirname = luaL_checkstring(L, 1);
+  lua_pushboolean( L, os::mkdir(dirname) );
+  return 1;
+}
+
+static int lua_oberon_os_mkpath( lua_State *L ) {
+  const char * dirpath = luaL_checkstring(L, 1);
+  lua_pushboolean( L, os::mkpath(dirpath) );
+  return 1;
+}
+
 static int lua_oberon_os_name( lua_State *L ) {
   lua_pushstring( L, os::name() );
   return 1;
@@ -78,6 +90,18 @@ static int lua_oberon_os_name( lua_State *L ) {
 
 static int lua_oberon_os_pwd( lua_State *L ) {
   lua_pushstring( L, os::pwd() );
+  return 1;
+}
+
+static int lua_oberon_os_rmdir( lua_State *L ) {
+  const char * dirname = luaL_checkstring(L, 1);
+  lua_pushboolean( L, os::rmdir(dirname) );
+  return 1;
+}
+
+static int lua_oberon_os_rmpath( lua_State *L ) {
+  const char * dirpath = luaL_checkstring(L, 1);
+  lua_pushboolean( L, os::rmpath(dirpath) );
   return 1;
 }
 
@@ -128,8 +152,12 @@ int luaopen_oberon_os( lua_State *L ) {
     {"hostname",   lua_oberon_os_hostname},
     {"link",       lua_oberon_os_link},
     {"microtime",  lua_oberon_os_microtime},
+    {"mkdir",      lua_oberon_os_mkdir},
+    {"mkpath",     lua_oberon_os_mkpath},
     {"name",       lua_oberon_os_name},
     {"pwd",        lua_oberon_os_pwd},
+    {"rmdir",      lua_oberon_os_rmdir},
+    {"rmpath",     lua_oberon_os_rmpath},
     {"read",       lua_oberon_os_read},
     {"target",     lua_oberon_os_target},
     {"temp",       lua_oberon_os_temp},

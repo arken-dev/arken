@@ -89,6 +89,18 @@ double os::microtime()
   return QDateTime::currentMSecsSinceEpoch() / 1000.0;
 }
 
+bool os::mkdir(const char * dirname)
+{
+  QDir dir;
+  return dir.mkdir(dirname);
+}
+
+bool os::mkpath(const char * dirpath)
+{
+  QDir dir;
+  return dir.mkpath(dirpath);
+}
+
 char * os::name()
 {
   QString result;
@@ -117,6 +129,18 @@ char * os::name()
 char * os::pwd()
 {
   return QDir::currentPath().toLocal8Bit().data();
+}
+
+bool os::rmdir(const char * dirname)
+{
+  QDir dir;
+  return dir.rmdir(dirname);
+}
+
+bool os::rmpath(const char * dirpath)
+{
+  QDir dir;
+  return dir.rmpath(dirpath);
 }
 
 void os::sleep(double secs)

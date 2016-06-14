@@ -13,8 +13,12 @@ namespace oberon {
     char   * hostname();
     bool     link(const char * source, const char * destination, bool force);
     double   microtime();
+    bool     mkdir(const char * dirname);
+    bool     mkpath(const char * dirpath);
     char   * name();
     char   * pwd();
+    bool     rmdir(const char * dirname);
+    bool     rmpath(const char * dirpath);
     void     sleep(double secs);
     char   * target(const char * path);
     char   * temp();
