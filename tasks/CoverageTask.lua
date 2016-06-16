@@ -117,8 +117,10 @@ function CoverageTask:tree(params)
   end
 
   for _, fileName in pairs(models) do
-    dirName  = fileName:gsub(".lua", ""):gsub("app", "specs")
-    iterator = QDirIterator.new(dirName, {"Subdirectories"})
+    dirName   = fileName:gsub(".lua", ""):gsub("app", "specs")
+    modelName = dirName:gsub("./specs/models/", ""):gsub("/", ".")
+    package.loaded[modelName] = nil
+    iterator  = QDirIterator.new(dirName, {"Subdirectories"})
     local tests  = {}
     while(iterator:hasNext()) do
       iterator:next()
