@@ -136,6 +136,23 @@ ActiveRecord.inherit = function(class)
     ActiveRecord_Adapter.cache = {}
   end
 
+  ------------------------------------------------------------------------------
+  -- ActiveRecord#where
+  ------------------------------------------------------------------------------
+  function class.where(params)
+    return class.adapter():where(sql)
+  end
+
+  ------------------------------------------------------------------------------
+  -- ActiveRecord#query
+  ------------------------------------------------------------------------------
+  function class.query(name, params)
+    local query = (class.query_prefix or '') .. 'query/' .. class.table_name
+          query = query .. '/' .. name .. '.sql'
+    local sql   = os.read(query) .. class.where(params)
+    return class.adapter():query(sql)
+  end
+
 end
 
 -------------------------------------------------------------------------------
