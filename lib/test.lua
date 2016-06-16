@@ -29,7 +29,6 @@ function test.process(file_name)
       if status then
         status, message = pcall(func)
       end
-      status, message = pcall(after)
       -- require( 'oberon.record' ).cache = {}
       if status == false then
         if type(message) == 'table' then
@@ -48,6 +47,7 @@ function test.process(file_name)
         results[description] = {status = "ok", msg = ''}
         io.write(colorize.format('.', 'green'))
       end
+      status, message = pcall(after)
       if status == false then
         results['after'] = {status = 'err', msg = message}
         io.write(colorize.format('.', 'red'))
