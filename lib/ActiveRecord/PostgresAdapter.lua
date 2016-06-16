@@ -5,17 +5,18 @@ ActiveRecord_PostgresAdapter = Class.new("ActiveRecord_PostgresAdapter", "Active
 ------------------------------------------------------------------------------
 -- CONNECT
 -------------------------------------------------------------------------------
+local instanceConnection = nil
 
 function ActiveRecord_PostgresAdapter:connect()
-  if self.instanceConnection == nil then
+  if instanceConnection == nil then
     local config = ""
     local config = config .. ' dbname=' .. self.database
           config = config .. ' user=' .. self.user
           config = config .. ' password=' .. self.password
           config = config .. ' host=' .. self.host
-    self.instanceConnection = pg.connect(config)
+    instanceConnection = pg.connect(config)
   end
-  return self.instanceConnection
+  return instanceConnection
 end
 
 --------------------------------------------------------------------------------
