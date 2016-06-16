@@ -13,8 +13,8 @@ function test.process(file_name)
     results[1] = {['file not load'] = specs, status = 'err', msg = specs}
     return results
   end
-  local before    = specs.before or function() end
-  local after     = specs.after or function() end
+  local before    = specs.before    or function() end
+  local after     = specs.after     or function() end
   local beforeAll = specs.beforeAll or function() end
   local afterAll  = specs.beforeAll or function() end
   specs.before    = nil
@@ -26,10 +26,10 @@ function test.process(file_name)
     local status, message
     if type(func) == 'function' then
       status, message = pcall(before)
-      -- before()
       if status then
         status, message = pcall(func)
       end
+      status, message = pcall(after)
       -- require( 'oberon.record' ).cache = {}
       if status == false then
         if type(message) == 'table' then
@@ -48,7 +48,6 @@ function test.process(file_name)
         results[description] = {status = "ok", msg = ''}
         io.write(colorize.format('.', 'green'))
       end
-      status, message = pcall(after)
       if status == false then
         results['after'] = {status = 'err', msg = message}
         io.write(colorize.format('.', 'red'))
