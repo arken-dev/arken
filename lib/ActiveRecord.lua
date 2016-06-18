@@ -14,8 +14,9 @@ ActiveRecord.inherit = function(class)
   -- DEFAULT PROPERTIES
   -----------------------------------------------------------------------------
 
-  class.primary_key  = 'id'
-  class.table_name   = class.class_name:underscore()
+  class.primary_key      = 'id'
+  class.table_name       = class.class_name:underscore()
+  class.adapter_instance = class.class_name .. 'AdapterInstance'
 
   ------------------------------------------------------------------------------
   -- RELACIONAMENTOS
@@ -79,10 +80,11 @@ ActiveRecord.inherit = function(class)
   -----------------------------------------------------------------------------
 
   class.adapter = function()
-    if class.instanceAdapter == nil then
-      class.instanceAdapter = class.loadAdapter()
+    local adapter_instance = class.adapter_instance
+    if class[adapter_instance] == nil then
+      class[adapter_instance] = class.loadAdapter()
     end
-    return class.instanceAdapter
+    return class[adapter_instance]
   end
 
   -----------------------------------------------------------------------------
