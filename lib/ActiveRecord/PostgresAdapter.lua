@@ -3,8 +3,15 @@ require 'oberon.pgsql'
 ActiveRecord_PostgresAdapter = Class.new("ActiveRecord_PostgresAdapter", "ActiveRecord.Adapter")
 
 ------------------------------------------------------------------------------
+-- CACHE
+-------------------------------------------------------------------------------
+
+ActiveRecord_PostgresAdapter.cache = {}
+
+------------------------------------------------------------------------------
 -- CONNECT
 -------------------------------------------------------------------------------
+
 local instanceConnection = nil
 
 function ActiveRecord_PostgresAdapter:connect()
@@ -103,7 +110,6 @@ function ActiveRecord_PostgresAdapter:update(record)
   local sql = 'UPDATE ' .. self.table_name .. ' SET '
   local col = ''
   local key = self.table_name .. '_' .. tostring(record.id)
-  local record_cache = self._cache[key]
 
   if self:columns().updated_at then
     record.updated_at = QDateTime.currentDateTime():toString()
@@ -111,7 +117,7 @@ function ActiveRecord_PostgresAdapter:update(record)
 
   for column, properties in pairs(self:columns()) do
     local value = record[column]
-    if column ~= self.primary_key then -- and record[column] ~= record_cache[column] then
+    if column ~= self.primary_key then
       if #col > 0 then
         col = col .. ', '
       end
