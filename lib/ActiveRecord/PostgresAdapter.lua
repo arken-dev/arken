@@ -369,10 +369,17 @@ function ActiveRecord_PostgresAdapter:begin()
 end
 
 --------------------------------------------------------------------------------
--- BEGIN
+-- ROLLBACK
 --------------------------------------------------------------------------------
 function ActiveRecord_PostgresAdapter:rollback()
   return self:execute("ROLLBACK")
+end
+
+--------------------------------------------------------------------------------
+-- COMMIT
+--------------------------------------------------------------------------------
+function ActiveRecord_PostgresAdapter:commit()
+  return self:execute("COMMIT")
 end
 
 --------------------------------------------------------------------------------
