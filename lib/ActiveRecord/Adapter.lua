@@ -1,8 +1,5 @@
 ActiveRecord_Adapter = Class.new("ActiveRecord_Adapter")
 
-ActiveRecord_Adapter._cache = {}
-ActiveRecord_Adapter.cache = {}
-
 ActiveRecord_Adapter.reserved = {'new_record', 'class'}
 
 --------------------------------------------------------------------------------
@@ -123,8 +120,6 @@ end
 function ActiveRecord_Adapter:delete(record)
   local values = {[self.primary_key] = record[self.primary_key]}
   local sql = 'DELETE FROM ' .. self.table_name .. " " .. self:where(values)
-  self.cache[record:cacheKey()] = nil
-  self._cache[record:cacheKey()] = nil
   return self:execute(sql)
 end
 
