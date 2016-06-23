@@ -260,4 +260,12 @@ function ActiveRecord:populate(params)
   return self.adapter():populate(self, params)
 end
 
+-------------------------------------------------------------------------------
+-- ActiveRecord#validate()
+-------------------------------------------------------------------------------
+
+function ActiveRecord:validate(params)
+  return self.adapter():validate(self, params)
+end
+
 return ActiveRecord

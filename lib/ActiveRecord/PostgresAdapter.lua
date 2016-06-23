@@ -124,13 +124,16 @@ function ActiveRecord_PostgresAdapter:update(record)
       col = col .. '"' .. column ..'"' .. " = " .. self:escape(value)
     end
   end
+  local result = false
   if col:len() > 0 then
     local where = ' WHERE ' .. self.primary_key .. " = " .. self:escape(record[self.primary_key])
     sql = sql .. col .. where
-    return self:execute(sql)
+    result = self:execute(sql)
   else
-    return true
+    result = true
   end
+  self.errors = {}
+  return result
 end
 
 --------------------------------------------------------------------------------
@@ -143,7 +146,7 @@ function ActiveRecord_PostgresAdapter:create(record)
   local row    = cursor:fetch({}, 'a')
   record.id    = tonumber(row[self.primary_key])
   record.new_record = false
-
+  self.errors = {}
   self.cache[record:cacheKey()] = record
   return record
 end
