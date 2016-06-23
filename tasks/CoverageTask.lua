@@ -1,4 +1,4 @@
-OBERON_ENV='test'
+OBERON_ENV = os.getenv("OBERON_ENV") or "test"
 
 local colorize = require 'colorize'
 local test     = require 'test'
