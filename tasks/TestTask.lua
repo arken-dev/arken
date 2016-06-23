@@ -54,10 +54,12 @@ function TestTask:console(params)
 end
 
 function TestTask:notify(params)
+  local time = os.microtime()
+  local file = arg[2]
   while true do
     t = QDateTime.currentMSecsSinceEpoch()
     package.reload()
-    results = test.execute(arg)
+    results = test.execute({file})
 
     buffer = ""
     titulo = ""
@@ -100,13 +102,13 @@ function TestTask:notify(params)
       icon = "error"
       --buffer = buffer:replace('\n\n', '')
       print("notify-send -t 10000 " .. "'" .. titulo .. "' '\"" .. buffer:escape() .. "\"")
-
       os.execute("notify-send -t 10000 " .. "'" .. titulo .. "' \"" .. buffer:escape() .. "\"")
     end
-
-    -- sleep for break
-    os.sleep(0.25)
-    os.execute('inotifywait -e create -e modify app/models/*.lua lib/*.lua lib/**/*.lua specs/*/*/*.lua')
+    while os.ctime(file) <= time  do
+      os.sleep(0.15)
+    end
+    os.sleep(0.10)
+    time = os.ctime(file)
   end
 end
 
