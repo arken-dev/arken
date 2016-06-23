@@ -92,7 +92,12 @@ function ActiveRecord_PostgresMemoryAdapter:retrieveFromCache(params)
       end
 
       if flag then
-        table.insert(result, record)
+        local key = record:cacheKey()
+        if self:getCache()[key] == self:_getCache()[key] then
+          table.insert(result, self:cloneByCache(key))
+        else
+          table.insert(result, self:getCache()[key])
+        end
       end
     end
   end
