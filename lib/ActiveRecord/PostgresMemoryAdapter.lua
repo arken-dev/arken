@@ -51,7 +51,7 @@ function ActiveRecord_PostgresMemoryAdapter:cloneByCache(key)
   for k,v in pairs(record) do
     tmp[k] = v
   end
-  self.cache[self.table_name][key] = tmp
+  self.cache[self.table_name][key] = self.record_class.new(tmp)
   return tmp
 end
 
@@ -206,7 +206,7 @@ function ActiveRecord_PostgresMemoryAdapter:parser_fetch(res)
   ]]
   local key = self.table_name .. '_' .. tostring(res[self.primary_key])
   self.indexes[self.table_name][key] = true
-  self._cache[self.table_name][key] = res
+  self._cache[self.table_name][key] = self.record_class.new(res)
   return res
 end
 
