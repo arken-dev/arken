@@ -242,8 +242,10 @@ end
 -------------------------------------------------------------------------------
 
 function ActiveRecord_PostgresMemoryAdapter:initialize()
-  self:loadTable()
-  self:loadSequence()
+  if self.table_name ~= 'active_record' then
+    self:loadTable()
+    self:loadSequence()
+  end
 end
 
 return ActiveRecord_PostgresMemoryAdapter
