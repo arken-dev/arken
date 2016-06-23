@@ -378,6 +378,7 @@ end
 -- ROLLBACK
 --------------------------------------------------------------------------------
 function ActiveRecord_PostgresAdapter:rollback()
+  ActiveRecord_PostgresAdapter.cache = {}
   return self:execute("ROLLBACK")
 end
 
