@@ -17,7 +17,6 @@ ActiveRecord_PostgresMemoryAdapter.indexes   = {}
 function ActiveRecord_PostgresMemoryAdapter:create(record)
   record.id    = self:nextSequence()
   record.new_record = false
-  print("aqui" .. self.table_name)
   self:getCache()[record:cacheKey()] = record
   self:getIndex()[record:cacheKey()] = record
   return record
@@ -76,13 +75,13 @@ function ActiveRecord_PostgresMemoryAdapter:retrieveFromCache(params)
     if self:getCache()[key] == self:_getCache()[key] then
       table.insert(result, self:cloneByCache(key))
     else
-      table.insert(result, self.cache[self.table_name][key])
+      table.insert(result, self:getCache()[key])
     end
     return result
   end
 
   for key, _ in pairs(self:getIndex()) do
-    local record = self.cache[self.table_name][key]
+    local record = self:getCache()[key]
     if record then -- record pode ter sido excluida
       local flag = true
       for k,v in pairs(params) do
@@ -285,12 +284,14 @@ end
 --------------------------------------------------------------------------------
 
 function ActiveRecord_PostgresMemoryAdapter:rollback()
-  for key, record in pairs(self:getCache()) do
-    if self._cache[self.table_name][key] then
-      self.cache[self.table_name][key] = nil
-    else
-      self.cache[self.table_name][key] = nil
-      self.indexes[self.table_name][key] = nil
+  for table_name, records in pairs(self.cache) do
+    for key, record in pairs(records) do
+      if self._cache[table_name][key] then
+        self.cache[table_name][key] = nil
+      else
+        self.cache[table_name][key] = nil
+        self.indexes[table_name][key] = nil
+      end
     end
   end
 end
