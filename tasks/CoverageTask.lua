@@ -1,3 +1,5 @@
+OBERON_ENV='test'
+
 local colorize = require 'colorize'
 local test     = require 'test'
 local template = require 'template'
