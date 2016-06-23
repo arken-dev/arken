@@ -223,10 +223,6 @@ end
 --------------------------------------------------------------------------------
 
 function ActiveRecord_PostgresMemoryAdapter:rollback()
-  --for k, v in pairs(self.indexes) do
-  --  print('k ' .. k)
-  --end
-
   for key, record in pairs(self.cache[self.table_name]) do
     if self._cache[self.table_name][key] then
       self.cache[self.table_name][key] = nil
@@ -242,7 +238,10 @@ end
 -------------------------------------------------------------------------------
 
 function ActiveRecord_PostgresMemoryAdapter:initialize()
-  if self.table_name ~= 'active_record' then
+  if self.table_name == 'active_record' then
+    self._cache[self.table_name] = {}
+    self.cache[self.table_name]  = {}
+  else
     self:loadTable()
     self:loadSequence()
   end
