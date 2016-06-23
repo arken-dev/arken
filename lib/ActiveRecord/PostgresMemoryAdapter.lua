@@ -17,8 +17,9 @@ ActiveRecord_PostgresMemoryAdapter.indexes   = {}
 function ActiveRecord_PostgresMemoryAdapter:create(record)
   record.id    = self:nextSequence()
   record.new_record = false
-  self.cache[self.table_name][record:cacheKey()] = record
-  self.indexes[self.table_name][record:cacheKey()] = true
+  print("aqui" .. self.table_name)
+  self:getCache()[record:cacheKey()] = record
+  self:getIndex()[record:cacheKey()] = record
   return record
 end
 
@@ -46,7 +47,7 @@ end
 --------------------------------------------------------------------------------
 
 function ActiveRecord_PostgresMemoryAdapter:cloneByCache(key)
-  local record = self._cache[self.table_name][key]
+  local record = self:_getCache()[key]
   local tmp    = {}
   for k,v in pairs(record) do
     tmp[k] = v
@@ -72,7 +73,7 @@ function ActiveRecord_PostgresMemoryAdapter:retrieveFromCache(params)
 
   if params[self.primary_key] then
     key = self.table_name .. '_' .. tostring(params[self.primary_key])
-    if self.cache[self.table_name][key] == self._cache[self.table_name][key] then
+    if self:getCache()[key] == self:_getCache()[key] then
       table.insert(result, self:cloneByCache(key))
     else
       table.insert(result, self.cache[self.table_name][key])
@@ -80,7 +81,7 @@ function ActiveRecord_PostgresMemoryAdapter:retrieveFromCache(params)
     return result
   end
 
-  for key, _ in pairs(self.indexes[self.table_name]) do
+  for key, _ in pairs(self:getIndex()) do
     local record = self.cache[self.table_name][key]
     if record then -- record pode ter sido excluida
       local flag = true
@@ -127,6 +128,12 @@ end
 --------------------------------------------------------------------------------
 
 function ActiveRecord_PostgresMemoryAdapter:loadTable()
+  if self.table_name == 'active_record' then
+    self.indexes[self.table_name] = {}
+    self.cache[self.table_name]   = {}
+    self._cache[self.table_name]  = {}
+  end
+
   if self.indexes[self.table_name] == nil then
     print('indexes: ' .. self.table_name)
     self.indexes[self.table_name] = {}
@@ -157,15 +164,19 @@ end
 --------------------------------------------------------------------------------
 
 function ActiveRecord_PostgresMemoryAdapter:loadSequence()
-  local seq  = self.table_name .. '_' .. self.primary_key .. '_seq'
-  local sql  = 'SELECT * FROM ' .. seq
-  local res  = self:execute(sql)
-  local data = res:fetch(sql)
-
-  print('load sequence' .. self.table_name)
-  print(sql)
-  self.sequences[seq] = tonumber(data.last_value)
+  local seq   = self.table_name .. '_' .. self.primary_key .. '_seq'
+  if self.table_name == 'active_record' then
+    self.sequences[seq] = 1
+  else
+    local sql  = 'SELECT * FROM ' .. seq
+    local res  = self:execute(sql)
+    local data = res:fetch(sql)
+    print('load sequence' .. self.table_name)
+    print(sql)
+    self.sequences[seq] = tonumber(data.last_value)
+  end
 end
+
 
 --------------------------------------------------------------------------------
 -- NEXT SEQUENCE
@@ -173,7 +184,7 @@ end
 
 function ActiveRecord_PostgresMemoryAdapter:nextSequence()
   local seq   = self.table_name .. '_' .. self.primary_key .. '_seq'
-  local value = self.sequences[seq]
+  local value = self:getSequence()
   self.sequences[seq] = value + 1
   return self.sequences[seq]
 end
@@ -219,11 +230,62 @@ function ActiveRecord_PostgresMemoryAdapter:begin()
 end
 
 --------------------------------------------------------------------------------
+-- getSequence
+--------------------------------------------------------------------------------
+
+function ActiveRecord_PostgresMemoryAdapter:getSequence()
+  local seq = self.table_name .. '_' .. self.primary_key .. '_seq'
+  if self.sequences[seq] == nil then
+    self:loadSequence()
+  end
+
+  return self.sequences[seq]
+end
+
+--------------------------------------------------------------------------------
+-- getCache
+--------------------------------------------------------------------------------
+
+function ActiveRecord_PostgresMemoryAdapter:getCache()
+  if self.cache[self.table_name] == nil then
+    self:loadTable()
+  end
+
+  return self.cache[self.table_name]
+end
+
+--------------------------------------------------------------------------------
+-- _getCache
+--------------------------------------------------------------------------------
+
+function ActiveRecord_PostgresMemoryAdapter:_getCache()
+  if self._cache[self.table_name] == nil then
+    self:loadTable()
+  end
+
+  return self._cache[self.table_name]
+end
+
+
+--------------------------------------------------------------------------------
+-- getIndex
+--------------------------------------------------------------------------------
+
+function ActiveRecord_PostgresMemoryAdapter:getIndex()
+  if self.indexes[self.table_name] == nil then
+    self:loadTable()
+  end
+
+  return self.indexes[self.table_name]
+end
+
+
+--------------------------------------------------------------------------------
 -- BEGIN
 --------------------------------------------------------------------------------
 
 function ActiveRecord_PostgresMemoryAdapter:rollback()
-  for key, record in pairs(self.cache[self.table_name]) do
+  for key, record in pairs(self:getCache()) do
     if self._cache[self.table_name][key] then
       self.cache[self.table_name][key] = nil
     else
@@ -238,13 +300,8 @@ end
 -------------------------------------------------------------------------------
 
 function ActiveRecord_PostgresMemoryAdapter:initialize()
-  if self.table_name == 'active_record' then
-    self._cache[self.table_name] = {}
-    self.cache[self.table_name]  = {}
-  else
-    self:loadTable()
-    self:loadSequence()
-  end
+  self:loadTable()
+  self:loadSequence()
 end
 
 return ActiveRecord_PostgresMemoryAdapter
