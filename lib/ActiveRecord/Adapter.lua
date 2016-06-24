@@ -245,7 +245,7 @@ function ActiveRecord_Adapter:bang(record)
   if flag then
     local errors = record.errors
     record.errors = {}
-    error("errors !!!")
+    error(errors)
   end
 end
 
