@@ -15,7 +15,8 @@ ActiveRecord_PostgresMemoryAdapter.indexes   = {}
 --------------------------------------------------------------------------------
 
 function ActiveRecord_PostgresMemoryAdapter:create(record)
-  record.id    = self:nextSequence()
+  self:bang(record)
+  record.id = self:nextSequence()
   record.new_record = false
   self:getCache()[record:cacheKey()] = record
   self:getIndex()[record:cacheKey()] = record
@@ -27,6 +28,7 @@ end
 --------------------------------------------------------------------------------
 
 function ActiveRecord_PostgresMemoryAdapter:update(record)
+  self:bang(record)
   if self.cache[self.table_name][record:cacheKey()] == false then
     error{"record is deleted"}
   end
@@ -38,6 +40,7 @@ end
 --------------------------------------------------------------------------------
 
 function ActiveRecord_PostgresMemoryAdapter:delete(record)
+  self:bang(record)
   self.cache[self.table_name][record:cacheKey()] = false
 end
 
