@@ -67,37 +67,54 @@ void MirandaTask::processRequest(MirandaState * state, QByteArray &buffer)
   // TODO return is not validate
   lua_settop(L, 0);
   lua_getglobal(L, "dispatch");
-  if( lua_pcall(L, 0, 3, 0 ) ) {
-    code = -1;
+
+  /* error */
+  if( lua_pcall(L, 0, 3, 0 ) != 0 ) {
+    code = 500;
+    buffer.append(httpStatus(code));
+    buffer.append("\r\n");
+
+    if (lua_istable( L, -1 )) {
+
+    }
+
+    if (lua_isstring( L, -1 )) {
+      result = lua_tolstring( L, -1, &len );
+      buffer.append("Content-Length:");
+      buffer.append(QByteArray::number(((int)len), 10));
+      buffer.append("\r\n\r\n");
+      buffer.append(result, len);
+    }
+
   } else {
+
     code = lua_tointeger( L, 1 );
-  }
 
-  buffer.append(httpStatus(code));
-  buffer.append("\r\n");
+    buffer.append(httpStatus(code));
+    buffer.append("\r\n");
 
-  if (lua_istable( L, 2 )) {
-    for (lua_pushnil( L ); lua_next( L, 2 ); lua_pop( L, 1 )) {
-      buffer.append(lua_tostring( L, -1 ));
+    if (lua_istable( L, 2 )) {
+      for (lua_pushnil( L ); lua_next( L, 2 ); lua_pop( L, 1 )) {
+        buffer.append(lua_tostring( L, -1 ));
+        buffer.append("\r\n");
+      }
+    }
+
+    if( ! lua_isnil(L, 3) ) {
+     if( code < 0 ) {
+        code = 500;
+        result = luaL_checklstring( L , -1, &len );
+      } else {
+        result = luaL_checklstring( L, 3, &len );
+        buffer.append("Content-Length:");
+        buffer.append(QByteArray::number((int)len, 10));
+        buffer.append("\r\n\r\n");
+      }
+      buffer.append(result, len);
+    } else {
       buffer.append("\r\n");
     }
   }
-
-  if( ! lua_isnil(L, 3) ) {
-   if( code < 0 ) {
-      code = 500;
-      result = luaL_checklstring( L , -1, &len );
-    } else {
-      result = luaL_checklstring( L, 3, &len );
-      buffer.append("Content-Length:");
-      buffer.append(QByteArray::number((int)len, 10));
-      buffer.append("\r\n\r\n");
-    }
-    buffer.append(result, len);
-  } else {
-    buffer.append("\r\n");
-  }
-
   delete http_request;
 }
 
