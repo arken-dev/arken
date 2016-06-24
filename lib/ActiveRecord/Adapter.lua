@@ -280,9 +280,16 @@ end
 function ActiveRecord_Adapter:validateUnique(record, params)
   local value  = record[params.column]
   if value ~= nil then
-    local result = self:find{ [params.column] = value }
-    if result ~= nil then
+    local result = self:all{ [params.column] = value }
+    if record[self.primary_key] == nil and #result > 0 then
       record.errors[params.column] = params.message
+    else
+      for _, res in ipairs(result) do
+        if record[self.primary_key] ~= res[self.primary_key] then
+          record.errors[params.column] = params.message
+          break
+        end
+      end
     end
   end
 end
