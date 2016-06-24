@@ -61,7 +61,7 @@ M.line = function(line, flag)
     M.flag = true
   end
 
-  if line:endsWith("{") then
+  if line:contains("{") and not line:contains("}") then
     M.flag = true
   end
 
