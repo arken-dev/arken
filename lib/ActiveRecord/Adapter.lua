@@ -262,4 +262,18 @@ function ActiveRecord_Adapter:validatePresence(record, params)
 end
 
 
+function ActiveRecord_Adapter:validateLength(record, params)
+  if type(record[params.column]) == 'string' then
+    local length = #record[params.column]
+    if params.min and length < params.min then
+      record.errors[params.column] = params.message
+    end
+    if params.max and length > params.max then
+      record.errors[params.column] = params.message
+    end
+  else
+    record.errors[params.column] = params.message
+  end
+end
+
 return ActiveRecord_Adapter

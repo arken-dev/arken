@@ -49,4 +49,28 @@ function should.not_equal(val1, val2)
   end
 end
 
+function should.be_nil(value)
+  if value == nil then
+    return true
+  else
+    local message = 'expected nil value'
+    error({code = 2000, msg = message, kind = 'test'})
+  end
+end
+
+function should.be_contains(value, contains)
+  if type(value) == 'string' then
+    if value:contains(contains) then
+      return true
+    else
+      local message = string.format('%s not contains %s', value, contains)
+      error({code = 2000, msg = message, kind = 'test'})
+    end
+  else
+    local message = 'value is not string'
+    error({code = 2000, msg = message, kind = 'test'})
+  end
+end
+
+
 return should
