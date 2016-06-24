@@ -243,7 +243,9 @@ function ActiveRecord_Adapter:bang(record)
     break
   end
   if flag then
-    error(record.errors)
+    local errors = record.errors
+    record.errors = {}
+    error(errors)
   end
 end
 
@@ -261,7 +263,6 @@ function ActiveRecord_Adapter:validatePresence(record, params)
   end
 end
 
-
 function ActiveRecord_Adapter:validateLength(record, params)
   if type(record[params.column]) == 'string' then
     local length = #record[params.column]
@@ -273,6 +274,16 @@ function ActiveRecord_Adapter:validateLength(record, params)
     end
   else
     record.errors[params.column] = params.message
+  end
+end
+
+function ActiveRecord_Adapter:validateUnique(record, params)
+  local value  = record[params.column]
+  if value ~= nil then
+    local result = self:find{ [params.column] = value }
+    if result ~= nil then
+      record.errors[params.column] = params.message
+    end
   end
 end
 

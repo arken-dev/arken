@@ -16,6 +16,12 @@ ActiveRecord_PostgresMemoryAdapter.indexes   = {}
 
 function ActiveRecord_PostgresMemoryAdapter:create(record)
   self:bang(record)
+  if self:columns().created_at then
+    record.created_at = QDateTime.currentDateTime():toString()
+  end
+  if self:columns().updated_at then
+    record.updated_at = record.created_at
+  end
   record.id = self:nextSequence()
   record.new_record = false
   self:getCache()[record:cacheKey()] = record
