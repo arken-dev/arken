@@ -21,7 +21,7 @@ function M.compile(file_name)
   while i < len do
 
     if data:sub(i, i+2) == '<%=' then
-      buffer = buffer .. "]] .. "
+      buffer = buffer .. "]] .. tostring("
       flag = true
       i = i + 3
     elseif data:sub(i, i+1) == '<%'  then
@@ -29,7 +29,7 @@ function M.compile(file_name)
       i = i + 2
     elseif data:sub(i, i+2) == '-%>'  then
       if flag then
-        buffer = buffer .. " .. [["
+        buffer = buffer .. ") .. [["
         flag   = false
       else
         buffer = buffer .. "\n __buffer = __buffer .. [["
@@ -37,7 +37,7 @@ function M.compile(file_name)
       i = i + 2
     elseif data:sub(i, i+1) == '%>'  then
       if flag then
-        buffer = buffer .. " .. [[\n"
+        buffer = buffer .. ") .. [[\n"
         flag   = false
       else
         buffer = buffer .. "\n __buffer = __buffer .. [["
