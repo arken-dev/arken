@@ -123,7 +123,6 @@ function ActiveRecord_Adapter:delete(record)
   local values = {[self.primary_key] = record[self.primary_key]}
   local sql = 'DELETE FROM ' .. self.table_name .. " " .. self:where(values)
   local result = self:execute(sql)
-  self.errors = {}
   return result
 end
 

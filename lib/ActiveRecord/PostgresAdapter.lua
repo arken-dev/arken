@@ -133,7 +133,6 @@ function ActiveRecord_PostgresAdapter:update(record)
   else
     result = true
   end
-  self.errors = {}
   return result
 end
 
@@ -147,7 +146,6 @@ function ActiveRecord_PostgresAdapter:create(record)
   local row    = cursor:fetch({}, 'a')
   record.id    = tonumber(row[self.primary_key])
   record.new_record = false
-  self.errors = {}
   self.cache[record:cacheKey()] = record
   return record
 end
