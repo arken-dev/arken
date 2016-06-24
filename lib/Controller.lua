@@ -188,7 +188,7 @@ end
 -- EXECUTE
 -------------------------------------------------------------------------------
 
-function Object:execute(method, params)
+function Controller:execute(method, params)
   local code, headers, data
   self:prepare(params)
   code, headers, data = self:validate(params)
@@ -199,6 +199,28 @@ function Object:execute(method, params)
   code, headers, data = self[method](self, params)
   self:after(params)
   return code, headers, data
+end
+
+function Controller:pexecute(method, params)
+  local status, code_or_errors, headers, data = pcall(self.execute, self, method, params)
+  if status then
+    return code_or_errors, headers, data
+  else
+    return self:rescue(code_or_errors)
+  end
+end
+
+function Controller:rescue(errors)
+  local body = ""
+  if type(errors) == 'string' then
+    body = errors
+  end
+  if type(errors) == 'table' then
+    for key, value in pairs(errors) do
+      body = body .. value .. '\n'
+    end
+  end
+  return 500, {}, body
 end
 
 return Controller

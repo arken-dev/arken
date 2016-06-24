@@ -61,7 +61,7 @@ M.dispatchController = function()
   local class  = M.require_controller_name(controller_name)
   local object = class.new{controller_name = controller_name, action_name = action_name, controller_path = controller_path}
   if object[action_name .. "Action"] then
-    return object:execute(action_name .. "Action")
+    return object:pexecute(action_name .. "Action")
   else
     return 200, {}, "action: \"" .. action_name .. "Action\" not found"
   end
