@@ -1,6 +1,6 @@
 ActiveRecord_Adapter = Class.new("ActiveRecord_Adapter")
 
-ActiveRecord_Adapter.reserved = {'new_record', 'class'}
+ActiveRecord_Adapter.reserved = {'new_record', 'class', 'errors'}
 
 ActiveRecord_Adapter.errors = {}
 
@@ -234,17 +234,33 @@ function ActiveRecord_Adapter:populate()
 end
 
 --------------------------------------------------------------------------------
+-- BANG !
+--------------------------------------------------------------------------------
+
+function ActiveRecord_Adapter:bang(record)
+  local flag = false
+  for k, v in pairs(record.errors) do
+    flag = true
+    break
+  end
+  if flag then
+    error(record.errors)
+  end
+end
+
+--------------------------------------------------------------------------------
 -- VALIDATE
 --------------------------------------------------------------------------------
 
 function ActiveRecord_Adapter:validate(record, params)
-  self["validate" .. params[1]:capitalize()](record, params)
+  self["validate" .. params[1]:capitalize()](self, record, params)
 end
 
 function ActiveRecord_Adapter:validatePresence(record, params)
-  if tostring(record[params.column]) == '' then
-    self.errors[params.column] = params.message
+  if record[params.column] == nil then
+    record.errors[params.column] = params.message
   end
 end
+
 
 return ActiveRecord_Adapter

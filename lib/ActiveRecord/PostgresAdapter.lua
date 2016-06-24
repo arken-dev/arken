@@ -57,6 +57,7 @@ end
 --------------------------------------------------------------------------------
 
 function ActiveRecord_PostgresAdapter:insert(record)
+  self:bang(record)
   local sql = 'INSERT INTO'
   local col = ''
   local val = ''

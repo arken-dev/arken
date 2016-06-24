@@ -186,6 +186,7 @@ end
 -------------------------------------------------------------------------------
 
 function ActiveRecord:initialize()
+  self.errors = {}
   if self.new_record == nil then
     self.adapter():defaultValues(self)
   end
