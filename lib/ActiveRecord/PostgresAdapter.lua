@@ -108,6 +108,7 @@ end
 --------------------------------------------------------------------------------
 
 function ActiveRecord_PostgresAdapter:update(record)
+  self:bang(record)
   local sql = 'UPDATE ' .. self.table_name .. ' SET '
   local col = ''
   local key = self.table_name .. '_' .. tostring(record.id)
