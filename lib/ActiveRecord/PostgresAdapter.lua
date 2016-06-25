@@ -183,7 +183,7 @@ function ActiveRecord_PostgresAdapter:find(params)
   else
     data.new_record = false
     data = self.record_class.new(data)
-    local key = self.table_name .. tostring(data[self.primary_key])
+    local key = self.table_name .. '_' .. tostring(data[self.primary_key])
     self.cache[key] = data
     return data
   end
