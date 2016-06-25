@@ -152,13 +152,25 @@ function ActiveRecord_PostgresAdapter:create(record)
 end
 
 --------------------------------------------------------------------------------
+-- DELETE
+--------------------------------------------------------------------------------
+
+function ActiveRecord_Adapter:delete(record)
+  local values = {[self.primary_key] = record[self.primary_key]}
+  local sql = 'DELETE FROM ' .. self.table_name .. " " .. self:where(values)
+  local result = self:execute(sql)
+  self.cache[record:cacheKey()] = false
+  return result
+end
+
+--------------------------------------------------------------------------------
 -- FIND
 --------------------------------------------------------------------------------
 
 function ActiveRecord_PostgresAdapter:find(params)
 
   if params[self.primary_key] then
-    local key = self.table_name .. tostring(params[self.primary_key])
+    local key = self.table_name .. '_' .. tostring(params[self.primary_key])
     if self.cache[key] then
       return self.cache[key]
     end
