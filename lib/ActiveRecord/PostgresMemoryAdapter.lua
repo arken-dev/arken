@@ -81,10 +81,12 @@ function ActiveRecord_PostgresMemoryAdapter:retrieveFromCache(params)
 
   if params[self.primary_key] then
     key = self.table_name .. '_' .. tostring(params[self.primary_key])
-    if self:getCache()[key] == self:_getCache()[key] then
-      table.insert(result, self:cloneByCache(key))
-    else
-      table.insert(result, self:getCache()[key])
+    if self:getCache()[key] then -- record pode ter sido excluida
+      if self:getCache()[key] == self:_getCache()[key] then
+        table.insert(result, self:cloneByCache(key))
+      else
+        table.insert(result, self:getCache()[key])
+      end
     end
     return result
   end
