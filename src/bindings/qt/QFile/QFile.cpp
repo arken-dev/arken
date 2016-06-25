@@ -1,5 +1,6 @@
 #include <luajit-2.0/lua.hpp>
 #include <QtCore>
+#include <QIODevice>
 
 /**
  * CheckUserData
@@ -180,6 +181,59 @@ lua_QFileInstanceMethodLink( lua_State *L ) {
   return 1;
 }
 
+static QIODevice::OpenModeFlag getFlag(const char * strflag) {
+  if( strcmp(strflag, "ReadOnly") == 0 ) {
+    return QIODevice::ReadOnly;
+  }
+
+  if( strcmp(strflag,"WriteOnly") == 0 ) {
+    return QIODevice::WriteOnly;
+  }
+
+  if( strcmp(strflag, "ReadWrite") == 0 ) {
+    return QIODevice::ReadWrite;
+  }
+
+  if( strcmp(strflag, "Append") == 0 ) {
+    return QIODevice::Append;
+  }
+
+  if( strcmp(strflag, "Truncate") == 0 ) {
+    return QIODevice::Truncate;
+  }
+
+  return QIODevice::NotOpen;
+}
+
+
+static int
+lua_QFileInstanceMethodOpen( lua_State *L ) {
+
+  QFile *file;
+  QIODevice::OpenMode flags;
+  int i;
+
+  file = checkQFile( L );
+
+  if(lua_istable(L, 2)) {
+    for(i=1; i <= 3; ++i) {
+      lua_rawgeti(L, 2, i);
+      if(lua_isstring(L, -1)) {
+        if(flags) {
+          flags = flags | getFlag(lua_tostring(L, -1));
+        } else {
+          flags = getFlag(lua_tostring(L, -1));
+        }
+      } else {
+        break;
+      }
+    }
+  }
+
+  lua_pushboolean(L, file->open(flags));
+  return 1;
+}
+
 static int
 lua_QFileInstanceMethodRemove( lua_State *L ) {
   QFile *file;
@@ -236,6 +290,22 @@ lua_QFileInstanceMethodSymLinkTarget( lua_State *L ) {
   return 1;
 }
 
+static int
+lua_QFileInstanceMethodWrite( lua_State *L ) {
+  QFile *file;
+  qint64 size;
+  size_t length;
+  const char * buffer;
+
+  file = checkQFile( L );
+  buffer = luaL_checklstring(L, 2, &length);
+
+  size = file->write(buffer, length);
+
+  lua_pushnumber( L , size );
+  return 1;
+}
+
 static const
 luaL_reg QFileInstanceMethods[] = {
   {"__gc", lua_QFileInstanceMethodDestruct},
@@ -244,10 +314,12 @@ luaL_reg QFileInstanceMethods[] = {
   {"fileName", lua_QFileInstanceMethodFileName},
   {"exists", lua_QFileInstanceMethodExists},
   {"link", lua_QFileInstanceMethodLink},
+  {"open", lua_QFileInstanceMethodOpen},
   {"remove", lua_QFileInstanceMethodRemove},
   {"rename", lua_QFileInstanceMethodRename},
   {"setFileName", lua_QFileInstanceMethodSetFileName},
   {"symLinkTarget", lua_QFileInstanceMethodSymLinkTarget},
+  {"write", lua_QFileInstanceMethodWrite},
   {NULL, NULL}
 };
 
