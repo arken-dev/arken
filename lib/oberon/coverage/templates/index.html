@@ -32,7 +32,10 @@
     <% end -%>
     <tr>
       <td></td>
-      <td align='right'><%= #self.files -%> files (<%= helper.number_format(self.time) -%> secs) </td>
+      <td align='right'>
+        <%= #self.files -%> files (<%= helper.number_format(self.time) -%> secs)
+        <%= self.total -%> total tests
+      </td>
       <td align='right'><%= helper.number_format(coverage/#self.files) -%>%</td>
     </tr>
     </table>

@@ -14,6 +14,7 @@ local CoverageTask = Class.new("CoverageTask")
 function CoverageTask:linear(params)
   local iterator = QDirIterator.new('./specs', {"Subdirectories"})
   local files = {}
+  local total = 0
   while(iterator:hasNext()) do
     iterator:next()
     local fileInfo = iterator:fileInfo()
@@ -43,6 +44,7 @@ function CoverageTask:linear(params)
   for file_name, result in pairs(results) do
     print(file_name)
     for description, result in pairs(result) do
+      total = total + 1
       if result.status ~= 'ok' then
       --print(result.status)
       count[result.status] = count[result.status] + 1
@@ -81,7 +83,7 @@ function CoverageTask:linear(params)
     end
   end
   tpl = OBERON_PATH .. "/lib/oberon/coverage/templates/index.html"
-  local data     = {files = files, time = (os.microtime() - t)}
+  local data     = {files = files, time = (os.microtime() - t), total = total}
   local buffer   = template.execute(tpl, data)
   local file     = io.open((dir .. "/" .. 'index.html'), "w")
   file:write(buffer)
@@ -93,7 +95,8 @@ end
 -------------------------------------------------------------------------------
 
 function CoverageTask:tree(params)
-  count = {}
+
+  local count = {}
   count.ok      = 0
   count.err     = 0
   count.fail    = 0
@@ -104,6 +107,8 @@ function CoverageTask:tree(params)
   color.fail    = 'red'
   color.err     = 'red_light'
   color.pending = 'yellow'
+
+  local total = 0
 
   local iterator = QDirIterator.new('./app/models', {"Subdirectories"})
   local time   = os.microtime()
@@ -143,6 +148,7 @@ function CoverageTask:tree(params)
       for file_name, result in pairs(results) do
         print(file_name)
         for description, result in pairs(result) do
+          total = total + 1
           if result.status ~= 'ok' then
             --print(result.status)
             count[result.status] = count[result.status] + 1
@@ -177,7 +183,7 @@ function CoverageTask:tree(params)
 
   print("\n\ngenerate coverage...")
   tpl = OBERON_PATH .. "/lib/oberon/coverage/templates/index.html"
-  local data     = {files = files, time = (os.microtime() - time)}
+  local data     = {files = files, time = (os.microtime() - time), total = total}
   local buffer   = template.execute(tpl, data)
   local file     = io.open((dir .. "/" .. 'index.html'), "w")
   file:write(buffer)
