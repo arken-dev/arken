@@ -279,7 +279,7 @@ end
 
 function ActiveRecord_Adapter:validateUnique(record, params)
   local value  = record[params.column]
-  if value ~= nil then
+  if value ~= nil and value ~= '' then
     local result = self:all{ [params.column] = value }
     if record[self.primary_key] == nil and #result > 0 then
       record.errors[params.column] = params.message
