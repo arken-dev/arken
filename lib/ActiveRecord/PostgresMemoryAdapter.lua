@@ -45,7 +45,7 @@ end
 -- UPDATE
 --------------------------------------------------------------------------------
 
-function ActiveRecord_PostgresMemoryAdapter:delete(record)
+function ActiveRecord_PostgresMemoryAdapter:destroy(record)
   self:bang(record)
   self.cache[self.table_name][record:cacheKey()] = false
 end

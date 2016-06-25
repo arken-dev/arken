@@ -119,7 +119,7 @@ end
 -- DELETE
 --------------------------------------------------------------------------------
 
-function ActiveRecord_Adapter:delete(record)
+function ActiveRecord_Adapter:destroy(record)
   local values = {[self.primary_key] = record[self.primary_key]}
   local sql = 'DELETE FROM ' .. self.table_name .. " " .. self:where(values)
   local result = self:execute(sql)

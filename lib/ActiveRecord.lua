@@ -222,11 +222,11 @@ function ActiveRecord:save()
 end
 
 -------------------------------------------------------------------------------
--- ActiveRecord#delete
+-- ActiveRecord#destroy
 -------------------------------------------------------------------------------
 
-function ActiveRecord:delete()
-  return self.adapter():delete(self)
+function ActiveRecord:destroy()
+  return self.adapter():destroy(self)
 end
 
 -------------------------------------------------------------------------------
