@@ -258,8 +258,19 @@ const char * OHttpRequest::field(const char * field)
 QByteArray OHttpRequest::toJson()
 {
   QJsonObject json;
-  json["queryString"] = m_queryString; 
+  json["fragment"]      = m_fragment;
+  json["requestPath"]   = m_requestPath;
+  json["queryString"]   = m_queryString;
+  json["requestMethod"] = m_requestMethod;
+  json["requestUri"]    = m_requestUri;
+  json["httpVersion"]   = m_httpVersion;
+  json["headerDone"]    = m_headerDone;
 
+  QList<QByteArray> list = m_fields.keys();
+  for (int i = 0; i < list.size(); ++i) {
+    QByteArray key = list.at(i);
+    json[key] = m_fields[key].data();
+  }
   QJsonDocument document(json);
   return document.toJson(); 
 }
