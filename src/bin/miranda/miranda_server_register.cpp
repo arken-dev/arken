@@ -1,4 +1,5 @@
 #include <luajit-2.0/lua.hpp>
+#include <OByteArray>
 #include <QDebug>
 #include <QThread>
 #include <oberon/helper>
@@ -36,6 +37,9 @@ static int
 miranda_server_task(lua_State *L) {
   const char * file_name = luaL_checkstring(L, 1);
   const char * uuid = os::uuid();
+  if ( lua_isstring(L, 2) ) {
+    MirandaState::insert(uuid, lua_tostring(L, 2));
+  }
   MirandaState::createTask( file_name, uuid );
   lua_pushstring(L, uuid);
   delete[] uuid;
