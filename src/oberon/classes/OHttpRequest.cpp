@@ -257,7 +257,10 @@ const char * OHttpRequest::field(const char * field)
 
 char * OHttpRequest::data()
 {
-  return m_data.data();
+  char * result = new char[m_data.size() + 1];
+  strcpy(result, m_data.data());
+  result[m_data.size()] = '\0';
+  return result;
 }
 
 QByteArray OHttpRequest::toJson()

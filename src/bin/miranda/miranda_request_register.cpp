@@ -2,6 +2,16 @@
 #include <OHttpRequest>
 
 static int
+lua_OHttpRequestInstanceMethodData( lua_State *L ) {
+  lua_getglobal( L, "__http_request");
+  OHttpRequest *req = (OHttpRequest *) lua_touserdata(L, -1);
+  char * data = req->data();
+  lua_pushstring(L, data);
+  delete[] data;
+  return 1;
+}
+
+static int
 lua_OHttpRequestInstanceMethodField( lua_State *L ) {
   lua_getglobal( L, "__http_request");
   OHttpRequest *req = (OHttpRequest *) lua_touserdata(L, -1);
@@ -73,6 +83,7 @@ lua_OHttpRequestInstanceMethodHeaderDone( lua_State *L ) {
 void
 miranda_request_register(lua_State * L) {
   static const 	luaL_reg Map[] = {
+    {"data", lua_OHttpRequestInstanceMethodData},
     {"field", lua_OHttpRequestInstanceMethodField},
     {"fragment", lua_OHttpRequestInstanceMethodFragment},
     {"headerDone", lua_OHttpRequestInstanceMethodHeaderDone},
