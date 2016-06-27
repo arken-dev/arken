@@ -4,6 +4,17 @@ ActiveRecord_Adapter.reserved = {'new_record', 'class', 'errors'}
 
 ActiveRecord_Adapter.errors = {}
 
+local format = {}
+format.boolean = function(value)
+  return "'".. tostring(value) .. "'"
+end
+format.number = function(value)
+  return tostring(value):replace('.', ''):replace(',', '.')
+end
+format.string = function(value)
+  return "'".. value .. "'"
+end
+
 --------------------------------------------------------------------------------
 -- FINDERS
 --------------------------------------------------------------------------------
@@ -85,25 +96,35 @@ function ActiveRecord_Adapter:where(values, flag)
   local order = values.order
 
   values.order = nil
-
-  for index, value in pairs(values) do
-    if #result == 0 then
-     result = "WHERE "
+  if values.where then
+    local where = values.where
+    values.where = nil
+    for index, value in pairs(values) do
+      where = string.swap(where, '$' .. index, format[type(value)](value))
     end
-    if ActiveRecord_Adapter.reserved[index] == nil then
-      if #col > 0 then
-        col = col .. ' AND '
+    print(where)
+    result = where
+  else
+    for index, value in pairs(values) do
+      if ActiveRecord_Adapter.reserved[index] == nil then
+        if #col > 0 then
+          col = col .. ' AND '
+        end
+        col = col .. index .. self.finders[type(value)](value)
       end
-      col = col .. index .. self.finders[type(value)](value)
     end
+    if flag and #col == 0 then
+      error "parameters for find empty"
+    end
+    result = result .. col
   end
-  if flag and #col == 0 then
-    error "parameters for find empty"
+  if #result > 0 then
+    result = " WHERE " .. result
   end
-  result = result .. col
   if order then
     result = result .. ' ORDER BY ' .. order
   end
+
   return result
 end
 

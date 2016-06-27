@@ -158,7 +158,7 @@ ActiveRecord.inherit = function(class)
   -- ActiveRecord#where
   ------------------------------------------------------------------------------
   function class.where(params)
-    return class.adapter():where(sql)
+    error('not implemented')
   end
 
   ------------------------------------------------------------------------------
@@ -173,9 +173,10 @@ ActiveRecord.inherit = function(class)
   -- ActiveRecord#query
   ------------------------------------------------------------------------------
   function class.query(name, params)
-    local query = (class.query_prefix or '') .. 'query/' .. class.table_name
-          query = query .. '/' .. name .. '.sql'
-    local sql   = os.read(query) .. class.where(params)
+    local query  = (class.query_prefix or '') .. 'query/' .. class.table_name
+          query  = query .. '/' .. name .. '.sql'
+    local values = class.where(params)
+    local sql    = os.read(query) .. class.adapter():where(values)
     return class.adapter():query(sql)
   end
 
