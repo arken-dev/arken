@@ -181,7 +181,7 @@ end
 -------------------------------------------------------------------------------
 
 function Controller:render_text(params)
-  local code = params.code or code
+  local code = params.code or 200
   return code, {'Content-Type: text/plain'}, params.value
 end
 
