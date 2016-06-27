@@ -2,8 +2,10 @@ extern "C" {
   #include <http11/http11_parser.h>
 }
 
-#include "OHttpRequest"
 #include <iostream>
+#include <QJsonObject>
+#include <QJsonDocument>
+#include <OHttpRequest>
 
 static void
 http_field_cb(void *data, const char *field, size_t flen, const char *value, size_t vlen)
@@ -251,4 +253,13 @@ const char * OHttpRequest::fragment()
 const char * OHttpRequest::field(const char * field)
 {
   return m_fields.value(QByteArray(field));
+}
+
+QByteArray OHttpRequest::toJson()
+{
+  QJsonObject json;
+  json["queryString"] = m_queryString; 
+
+  QJsonDocument document(json);
+  return document.toJson(); 
 }

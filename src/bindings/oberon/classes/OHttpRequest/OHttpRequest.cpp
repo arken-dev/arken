@@ -104,6 +104,13 @@ lua_OHttpRequestInstanceMethodHeaderDone( lua_State *L ) {
 }
 
 static int
+lua_OHttpRequestInstanceMethodToJson( lua_State *L ) {
+  OHttpRequest *udata = checkOHttpRequest( L );
+  lua_pushstring(L, udata->toJson());
+  return 1;
+}
+
+static int
 lua_OHttpRequestInstanceMethodDestruct( lua_State *L ) {
   OHttpRequest *udata = checkOHttpRequest( L );
   delete udata;
@@ -120,6 +127,7 @@ luaL_reg OHttpRequestInstanceMethods[] = {
   {"requestMethod", lua_OHttpRequestInstanceMethodRequestMethod},
   {"requestPath", lua_OHttpRequestInstanceMethodRequestPath},
   {"queryString", lua_OHttpRequestInstanceMethodQueryString},
+  {"toJson", lua_OHttpRequestInstanceMethodToJson},
   {"__gc", lua_OHttpRequestInstanceMethodDestruct},
   {NULL, NULL}
 };
