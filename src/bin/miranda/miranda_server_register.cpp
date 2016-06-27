@@ -1,7 +1,9 @@
 #include <luajit-2.0/lua.hpp>
 #include <QDebug>
 #include <QThread>
+#include <oberon/helper>
 #include "mirandastate.h"
+
 
 static int
 miranda_server_gc(lua_State *L) {
@@ -33,9 +35,11 @@ miranda_server_version(lua_State *L) {
 static int
 miranda_server_task(lua_State *L) {
   const char * file_name = luaL_checkstring(L, 1);
-  const char * uuid = luaL_checkstring(L, 2);
+  const char * uuid = os::uuid();
   MirandaState::createTask( file_name, uuid );
-  return 0;
+  lua_pushstring(L, uuid);
+  delete[] uuid;
+  return 1;
 }
 
 static int
