@@ -36,6 +36,7 @@ class OHttpRequest
   const char * httpVersion();
   const char * headerDone();
   const char * field(const char *);
+  char * data();
   QByteArray toJson();
 
 };

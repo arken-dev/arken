@@ -255,6 +255,11 @@ const char * OHttpRequest::field(const char * field)
   return m_fields.value(QByteArray(field));
 }
 
+char * OHttpRequest::data()
+{
+  return m_data.data();
+}
+
 QByteArray OHttpRequest::toJson()
 {
   QJsonObject json;

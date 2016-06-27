@@ -43,6 +43,13 @@ registerOHttpRequestClassMethods( lua_State *L ) {
  */
 
 static int
+lua_OHttpRequestInstanceMethodData( lua_State *L ) {
+  OHttpRequest *udata = checkOHttpRequest( L );
+  lua_pushstring(L, udata->data());
+  return 1;
+}
+
+static int
 lua_OHttpRequestInstanceMethodField( lua_State *L ) {
   OHttpRequest *udata = checkOHttpRequest( L );
   const char  *field = luaL_checkstring(L, 2);
@@ -119,6 +126,7 @@ lua_OHttpRequestInstanceMethodDestruct( lua_State *L ) {
 
 static const
 luaL_reg OHttpRequestInstanceMethods[] = {
+  {"data", lua_OHttpRequestInstanceMethodData},
   {"field", lua_OHttpRequestInstanceMethodField},
   {"fragment", lua_OHttpRequestInstanceMethodFragment},
   {"headerDone", lua_OHttpRequestInstanceMethodHeaderDone},
