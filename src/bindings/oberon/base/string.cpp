@@ -144,6 +144,16 @@ static int lua_oberon_string_startsWith( lua_State *L ) {
   return 1;
 }
 
+static int lua_oberon_string_swap( lua_State *L ) {
+  const char * string = luaL_checkstring(L, 1);
+  const char * before = luaL_checkstring(L, 2);
+  const char * after  = luaL_checkstring(L, 3);
+  char * result       = string::swap(string, before, after);
+  lua_pushstring(L, result);  /* push result */
+  return 1;
+}
+
+
 static int lua_oberon_string_trimmed( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   char * result       = string::trimmed(string);
@@ -187,6 +197,7 @@ int luaopen_oberon_string( lua_State *L ) {
     {"right",       lua_oberon_string_right},
     {"simplified",  lua_oberon_string_simplified},
     {"startsWith",  lua_oberon_string_startsWith},
+    {"swap",        lua_oberon_string_swap},
     {"trimmed",     lua_oberon_string_trimmed},
     {"truncate",    lua_oberon_string_truncate},
     {"underscore",  lua_oberon_string_underscore},

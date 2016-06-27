@@ -20,6 +20,7 @@ namespace oberon {
     char * right(const char *buffer, int len);
     char * simplified(const char *buffer);
     bool   startsWith(const char *string, const char *str);
+    char * swap(const char * string, const char * before, const char * after);
     char * trimmed(const char *string);
     char * truncate(const char *string, int pos);
     char * underscore(const char *string);
