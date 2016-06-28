@@ -50,6 +50,7 @@ function Controller:resolvHelper()
 ]]
     helper = tmp
   end
+  helper.controller = self
 
   return helper
 end
