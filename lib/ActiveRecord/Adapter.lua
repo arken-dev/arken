@@ -102,7 +102,6 @@ function ActiveRecord_Adapter:where(values, flag)
     for index, value in pairs(values) do
       where = string.swap(where, '$' .. index, format[type(value)](value))
     end
-    print(where)
     result = where
   else
     for index, value in pairs(values) do
