@@ -292,6 +292,10 @@ function ActiveRecord_PostgresAdapter:parser_format(format_type)
     return 'number'
   end
 
+  if format_type == 'smallint' then
+    return 'number'
+  end
+
   if format_type == 'integer' then
     return 'number'
   end
