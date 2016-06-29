@@ -59,7 +59,7 @@ package.reloadPath = function(path)
     print('reload: ' .. path)
     local filename = package.pathToFilename(path)
     if filename then
-      package.loaded[path] = loadfile(filename)()
+      package.loaded[path] = assert(loadfile(filename))()
     end
   return package.loaded[path]
 end
