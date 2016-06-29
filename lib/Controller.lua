@@ -104,6 +104,40 @@ function Controller:redirect(params)
   return 302, {header}, nil
 end
 
+function Controller:render_js(params)
+  local prefix = "app/views"
+  local view   = nil
+  local file   = nil
+
+  if params.template == nil then
+    if params.view == nil then
+      file = prefix .. "/" .. self.controller_name .. "/" .. self.action_name .. ".js"
+    else
+      file = prefix .. "/" .. self.controller_name .. "/" .. params.view .. ".js"
+    end
+  else
+    file = prefix .. "/" .. params.template .. ".js"
+  end
+
+  if self.layout then
+    local flag, result = pcall(template.execute, file, self, self:helper())
+    if flag then
+      self._yield = result
+    else
+      self._yield = (file .. '\n\n' .. result .. '\n\n' .. template.debug(self._yield))
+    end
+
+    file = "app/views/layouts/" .. self.layout .. "_ajax.js"
+  end
+
+  local flag, result = pcall(template.execute, file, self, self:helper())
+  if flag then
+    return 200, {'Content-Type: text/javascript'}, result
+  else
+    return 500, {'Content-Type: text/plain'}, file .. '\n\n' .. result .. '\n\n' .. template.debug(file)
+  end
+end
+
 function Controller:render_html(params)
   local prefix = "app/views"
   local view   = nil
