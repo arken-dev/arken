@@ -46,8 +46,13 @@ ActiveRecord.inherit = function(class)
 
   class.hasMany = function(params)
     class[params.name] = function(self)
-      local  record = require(params.record)
-      return record.all{[params.foreign_key] = self[record.primary_key], order = params.order}
+      local record     = require(params.record)
+      local conditions = params.conditions or {}
+      conditions[params.foreign_key] = self[record.primary_key]
+      if params.order then
+        conditions.order = params.order
+      end
+      return record.all(conditions)
     end
   end
 
