@@ -70,6 +70,16 @@ lua_OByteArrayInstanceMethodToUpper( lua_State *L ) {
 }
 
 static int
+lua_OByteArrayInstanceMethodReplace( lua_State *L ) {
+  OByteArray * udata  = checkOByteArray( L );
+  const char * before = lua_tostring(L, 2);
+  const char * after  = lua_tostring(L, 3);
+  udata->replace(before, after);
+  lua_pushstring(L, udata->data());
+  return 1;
+}
+
+static int
 lua_OByteArrayInstanceMethodTrimmed( lua_State *L ) {
   OByteArray *udata  = checkOByteArray( L );
   lua_pushstring(L, udata->trimmed());
@@ -163,6 +173,7 @@ luaL_reg OByteArrayInstanceMethods[] = {
   {"toUpper", lua_OByteArrayInstanceMethodToUpper},
   {"append", lua_OByteArrayInstanceMethodAppend},
   {"trimmed", lua_OByteArrayInstanceMethodTrimmed},
+  {"replace", lua_OByteArrayInstanceMethodReplace},
   {"simplified", lua_OByteArrayInstanceMethodSimplified},
   {"underscore", lua_OByteArrayInstanceMethodUnderscore},
   {"__concat", lua_OByteArrayInstanceMethodConcat},
