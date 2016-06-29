@@ -320,11 +320,11 @@ end
 -------------------------------------------------------------------------------
 
 function ActiveRecord_Adapter:sql(name, params)
-  local binding = params.binding
   local table   = self.record_class.table_name
   local query   = (self.record_class.query_prefix or '') .. 'query/' .. table
     query  = query .. '/' .. name .. '.sql'
   local values  = self.record_class.where(params)
+  local binding = values.binding
   local sql     = os.read(query)
   local where   = self.record_class.adapter():where(values)
 
