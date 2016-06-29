@@ -72,7 +72,7 @@ ActiveRecord.inherit = function(class)
   -----------------------------------------------------------------------------
 
   class.all = function(params)
-    return class.adapter():all(params)
+    return class.adapter():all(params or {})
   end
 
   -----------------------------------------------------------------------------

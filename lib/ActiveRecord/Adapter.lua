@@ -14,6 +14,9 @@ end
 format.string = function(value)
   return "'".. value .. "'"
 end
+format.table = function(value)
+  return table.concat(value, ',')
+end
 
 --------------------------------------------------------------------------------
 -- FINDERS

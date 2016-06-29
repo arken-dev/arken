@@ -1,6 +1,6 @@
 require 'oberon.pgsql'
 
-ActiveRecord_PostgresAdapter = Class.new("ActiveRecord_PostgresAdapter", "ActiveRecord.Adapter")
+ActiveRecord_PostgresAdapter = Class.new("ActiveRecord.PostgresAdapter", "ActiveRecord.Adapter")
 
 ------------------------------------------------------------------------------
 -- CACHE
@@ -468,6 +468,14 @@ end
 
 function ActiveRecord_PostgresAdapter.read_value_boolean(value)
   return toboolean(value)
+end
+
+function ActiveRecord_PostgresAdapter.read_value_boolean(value)
+  return toboolean(value)
+end
+
+function ActiveRecord_PostgresAdapter.read_value_table(value)
+  return table.concat(value, ',')
 end
 
 return ActiveRecord_PostgresAdapter
