@@ -63,7 +63,7 @@ M.dispatchController = function()
   if object[action_name .. "Action"] then
     return object:pexecute(action_name .. "Action")
   else
-    return 200, {}, "action: \"" .. action_name .. "Action\" not found"
+    return 500, {}, "action: \"" .. action_name .. "Action\" not found"
   end
 end
 
