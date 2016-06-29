@@ -173,10 +173,7 @@ ActiveRecord.inherit = function(class)
   -- ActiveRecord#query
   ------------------------------------------------------------------------------
   function class.query(name, params)
-    local query  = (class.query_prefix or '') .. 'query/' .. class.table_name
-          query  = query .. '/' .. name .. '.sql'
-    local values = class.where(params)
-    local sql    = os.read(query) .. class.adapter():where(values)
+    local sql = class.adapter():sql(name, params)
     return class.adapter():query(sql)
   end
 

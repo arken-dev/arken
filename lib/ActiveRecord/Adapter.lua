@@ -92,10 +92,11 @@ end
 
 function ActiveRecord_Adapter:where(values, flag)
   local result = ""
-  local col = ''
-  local order = values.order
+  local col    = ""
+  local order  = values.order
 
-  values.order = nil
+  values.binding = nil
+  values.order   = nil
   if values.where then
     local where = values.where
     values.where = nil
@@ -312,6 +313,28 @@ function ActiveRecord_Adapter:validateUnique(record, params)
       end
     end
   end
+end
+
+-------------------------------------------------------------------------------
+-- LOAD
+-------------------------------------------------------------------------------
+
+function ActiveRecord_Adapter:sql(name, params)
+  local binding = params.binding
+  local table   = self.record_class.table_name
+  local query   = (self.record_class.query_prefix or '') .. 'query/' .. table
+    query  = query .. '/' .. name .. '.sql'
+  local values  = self.record_class.where(params)
+  local sql     = os.read(query)
+  local where   = self.record_class.adapter():where(values)
+
+  if binding then
+    for index, value in pairs(binding) do
+      sql = string.swap(sql, '$' .. index, format[type(value)](value))
+    end
+  end
+
+  return (sql .. where)
 end
 
 return ActiveRecord_Adapter
