@@ -154,7 +154,13 @@ function Controller:render_html(params)
   end
 
   if self.layout then
-    local flag, result = pcall(template.execute, file, self, self:helper())
+    local flag, result
+    if params.value then
+      flag   = true
+      result = params.value
+    else
+      flag, result = pcall(template.execute, file, self, self:helper())
+    end
     if flag then
       self._yield = result
     else
