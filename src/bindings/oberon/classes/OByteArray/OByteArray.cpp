@@ -98,9 +98,19 @@ lua_OByteArrayInstanceMethodAppend( lua_State *L ) {
   OByteArray *udata  = checkOByteArray( L );
   const char *str    = lua_tostring(L, 2);
   udata->append(str);
-  luaL_getmetatable(L, "OByteArray.metatable");
-  lua_setmetatable(L, -2);
-  return 1;
+  //luaL_getmetatable(L, "OByteArray.metatable");
+  //lua_setmetatable(L, -2);
+  return 0;
+}
+
+static int
+lua_OByteArrayInstanceMethodPrepend( lua_State *L ) {
+  OByteArray *udata  = checkOByteArray( L );
+  const char *str    = lua_tostring(L, 2);
+  udata->prepend(str);
+  //luaL_getmetatable(L, "OByteArray.metatable");
+  //lua_setmetatable(L, -2);
+  return 0;
 }
 
 static int
@@ -171,6 +181,7 @@ luaL_reg OByteArrayInstanceMethods[] = {
   {"mid", lua_OByteArrayInstanceMethodMid},
   {"lastIndexOf", lua_OByteArrayInstanceMethodLastIndexOf},
   {"toUpper", lua_OByteArrayInstanceMethodToUpper},
+  {"prepend", lua_OByteArrayInstanceMethodPrepend},
   {"append", lua_OByteArrayInstanceMethodAppend},
   {"trimmed", lua_OByteArrayInstanceMethodTrimmed},
   {"replace", lua_OByteArrayInstanceMethodReplace},
