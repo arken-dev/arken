@@ -98,9 +98,8 @@ lua_OByteArrayInstanceMethodAppend( lua_State *L ) {
   OByteArray *udata  = checkOByteArray( L );
   const char *str    = lua_tostring(L, 2);
   udata->append(str);
-  //luaL_getmetatable(L, "OByteArray.metatable");
-  //lua_setmetatable(L, -2);
-  return 0;
+  lua_pushvalue(L, -2);
+  return 1;
 }
 
 static int
@@ -108,9 +107,8 @@ lua_OByteArrayInstanceMethodPrepend( lua_State *L ) {
   OByteArray *udata  = checkOByteArray( L );
   const char *str    = lua_tostring(L, 2);
   udata->prepend(str);
-  //luaL_getmetatable(L, "OByteArray.metatable");
-  //lua_setmetatable(L, -2);
-  return 0;
+  lua_pushvalue(L, -2);
+  return 1;
 }
 
 static int
