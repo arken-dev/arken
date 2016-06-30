@@ -97,6 +97,7 @@ function ActiveRecord_Adapter:where(values, flag)
   local result = ""
   local col    = ""
   local order  = values.order
+  local limit  = values.limit
 
   values.binding = nil
   values.order   = nil
@@ -126,6 +127,9 @@ function ActiveRecord_Adapter:where(values, flag)
   end
   if order then
     result = result .. ' ORDER BY ' .. order
+  end
+  if limit then
+    result = result .. ' LIMIT ' .. limit
   end
 
   return result
