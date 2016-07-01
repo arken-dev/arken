@@ -156,6 +156,7 @@ static int lua_oberon_os_read( lua_State *L ) {
   const char * path = luaL_checkstring(L, 1);
   const char * raw  = os::read(path, &size);
   lua_pushlstring( L, raw, size );
+  delete[] raw;
   return 1;
 }
 
