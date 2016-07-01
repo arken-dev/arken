@@ -150,6 +150,7 @@ static int lua_oberon_string_swap( lua_State *L ) {
   const char * after  = luaL_checkstring(L, 3);
   char * result       = string::swap(string, before, after);
   lua_pushstring(L, result);  /* push result */
+  delete[] result;
   return 1;
 }
 
