@@ -99,7 +99,8 @@ void MirandaService::run() {
   lua_setglobal(luaState, "__miranda_service");
 
   // stack push lua state
-  MirandaState::push(state);
+  //MirandaState::push(state);
+  lua_close(luaState);
 
   if( m_service && QFile::exists( m_fileName ) ) {
     MirandaState::createService(m_fileName);

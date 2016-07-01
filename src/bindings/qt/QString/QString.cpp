@@ -63,6 +63,16 @@ lua_QStringInstanceMethodConcat( lua_State *L ) {
 }
 
 static int
+lua_QStringInstanceMethodReplace( lua_State *L ) {
+  QString    * udata  = checkQString( L );
+  const char * before = lua_tostring(L, 2);
+  const char * after  = lua_tostring(L, 3);
+  QString result = udata->replace(QString(before), QString(after));
+  lua_pushstring(L, result.toLocal8Bit());
+  return 1;
+}
+
+static int
 lua_QStringInstanceMethodSplit( lua_State *L ) {
   QString *udata  = checkQString( L );
   if(lua_isuserdata(L, 2)) {
@@ -122,6 +132,7 @@ luaL_reg QStringInstanceMethods[] = {
   {"toUpper", lua_QStringInstanceMethodToUpper},
   {"contains", lua_QStringInstanceMethodContains},
   {"count", lua_QStringInstanceMethodCount},
+  {"replace", lua_QStringInstanceMethodReplace},
   {"split", lua_QStringInstanceMethodSplit},
   {"__concat", lua_QStringInstanceMethodConcat},
   {"__tostring", lua_QStringInstanceMethodToString},
