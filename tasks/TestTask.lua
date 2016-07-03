@@ -112,4 +112,26 @@ function TestTask:notify(params)
   end
 end
 
+function TestTask:create()
+  local template = require 'template'
+
+  print("Digite o nome da classe:")
+  self.class_name = io.read()
+  local path = 'specs/models/' .. self.class_name:replace('.', '/')
+  os.mkpath( path )
+
+  print("Digite o nome do método:")
+  local metodo = io.read()
+  local test   = path .. '/' .. metodo .. '.lua'
+  local file   = QFile.new(test)
+  local tpl    = OBERON_PATH .. "/tasks/templates/test/create/metodo.tpl"
+  local buffer = template.execute(tpl, self)
+  file:open({"WriteOnly"})
+  file:write(buffer)
+  file:close()
+
+  print('mkpath '.. path)
+  print('test create ' .. test)
+end
+
 return TestTask
