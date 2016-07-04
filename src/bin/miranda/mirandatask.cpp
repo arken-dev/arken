@@ -42,7 +42,12 @@ void MirandaTask::run()
 
   //socket
   socket.write(buffer);
-  socket.flush();
+  //socket.flush();
+  int size  = buffer.size();
+  int bytes = socket.waitForBytesWritten();
+  while(bytes <= size) {
+    bytes = socket.waitForBytesWritten();
+  }
   socket.close();
 }
 
