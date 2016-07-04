@@ -41,12 +41,13 @@ void MirandaTask::run()
   MirandaState::push(state);
 
   //socket
-  socket.write(buffer);
-  //socket.flush();
-  int size  = buffer.size();
-  int bytes = socket.waitForBytesWritten();
-  while(bytes <= size) {
-    bytes = socket.waitForBytesWritten();
+  int bytes = 0;
+  socket.write(buffer.data(), buffer.size());
+  socket.flush();
+  while( socket.bytesToWrite() > 0 ) {
+    bytes += socket.write( buffer.data()+bytes, buffer.size()-bytes );
+    socket.flush();
+    socket.waitForBytesWritten();
   }
   socket.close();
 }
