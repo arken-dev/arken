@@ -6,6 +6,9 @@ M.source = {}
 M.time   = 0
 
 function M.compile(file_name)
+  if not os.exists(file_name) then
+    error(string.format("%s not exists", file_name))
+  end
   local data = os.read(file_name)
 
   local len  = data:len()
