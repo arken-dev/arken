@@ -61,7 +61,7 @@ M.line = function(line, flag)
     M.flag = true
   end
 
-  if line:contains("{") and not line:contains("}") then
+  if (line:contains("{") and not line:contains("}")) then
     M.flag = true
   end
 
@@ -74,6 +74,11 @@ M.line = function(line, flag)
     M.flag = false
     --flag = -1
   end
+
+  if line == "}" then
+    flag = -1
+  end
+
 
   if line == '' then
     flag = -1
