@@ -135,7 +135,11 @@ end
 --------------------------------------------------------------------------------
 
 function ActiveRecord_PostgresMemoryAdapter:all(params)
-  return self:retrieveFromCache(params)
+  if isblank(params.where) then
+    return self:retrieveFromCache(params)
+  else
+    return ActiveRecord_PostgresAdapter.all(self, params)
+  end
 end
 
 --------------------------------------------------------------------------------
