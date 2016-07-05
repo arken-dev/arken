@@ -101,6 +101,8 @@ function ActiveRecord_Adapter:where(values, flag)
 
   values.binding = nil
   values.order   = nil
+  values.limit   = nil
+
   if values.where then
     --local where = QString.new(values.where)
     local where = values.where
