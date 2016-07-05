@@ -227,6 +227,22 @@ function Controller:render_text(params)
 end
 
 -------------------------------------------------------------------------------
+-- RENDER JSON
+-------------------------------------------------------------------------------
+
+function Controller:render_json(params)
+  local json = JSON:encode(params.value)
+  if request.params().json_callback then
+    value = string.format('%s(%s)', request.params().json_callback, json)
+  else
+    value = json
+  end
+  return 200, {'Content-Type: application/json'}, value
+end
+
+
+
+-------------------------------------------------------------------------------
 -- EXECUTE
 -------------------------------------------------------------------------------
 
