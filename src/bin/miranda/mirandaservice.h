@@ -2,6 +2,7 @@
 #include <QtCore>
 #include <QThread>
 #include <QMutex>
+#include <oberon/helper>
 
 class MirandaService : public QThread
 {
@@ -10,8 +11,9 @@ class MirandaService : public QThread
   static QMutex s_mutex;
   QByteArray m_fileName;
   QByteArray m_uuid;
-  bool m_shutdown;
-  bool m_service;
+  bool   m_shutdown;
+  bool   m_service;
+  double m_time;
 
   public:
   MirandaService(QByteArray fileName);
@@ -21,5 +23,6 @@ class MirandaService : public QThread
   void shutdown();
   bool isShutdown();
   void run();
+  double time();
 
 };
