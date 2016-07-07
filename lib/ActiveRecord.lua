@@ -163,7 +163,7 @@ ActiveRecord.inherit = function(class)
   -- ActiveRecord#where
   ------------------------------------------------------------------------------
   function class.where(params)
-    error('not implemented')
+    error('where not implemented in ' .. class.class_name)
   end
 
   ------------------------------------------------------------------------------
