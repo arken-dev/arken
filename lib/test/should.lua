@@ -72,5 +72,4 @@ function should.be_contains(value, contains)
   end
 end
 
-
 return should

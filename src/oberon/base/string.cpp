@@ -291,7 +291,7 @@ char * string::repeated(const char *string, int times)
   return result;
 }
 
-char * string::replace(const char *string, const char before, const char * after)
+char * string::replace(const char *string, const char before, const char after)
 {
   int i, j;
   int string_len = strlen(string);
@@ -299,8 +299,8 @@ char * string::replace(const char *string, const char before, const char * after
 
   for(i = 0, j = 0; i < string_len; i++) {
     if( string[i] == before) {
-      if( ! after[0] == '\0' ) {
-        result[j] = after[0];
+      if( ! after == '\0' ) {
+        result[j] = after;
         j++;
       }
     } else {
