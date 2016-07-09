@@ -252,7 +252,7 @@ function ActiveRecord_PostgresAdapter:parser_default(format, value)
 end
 
 function ActiveRecord_PostgresAdapter.parser_string(value)
-  return value
+  return value:swap("::character varying", ""):swap("'", "")
 end
 
 function ActiveRecord_PostgresAdapter.parser_time(value)
