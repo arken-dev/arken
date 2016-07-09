@@ -237,7 +237,7 @@ function Controller:render_json(params)
   else
     value = json
   end
-  return 200, {'Content-Type: application/json'}, value
+  return 200, {'Content-Type: application/json; charset=UTF-8'}, value
 end
 
 
