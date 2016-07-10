@@ -336,6 +336,9 @@ function ActiveRecord_Adapter:sql(name, params)
     query  = query .. '/' .. name .. '.sql'
   local values  = self.record_class.where(params)
   local binding = values.binding
+  if not os.exists(query) then
+    error(query .. ' file not exists')
+  end
   local sql     = os.read(query)
   local where   = self.record_class.adapter():where(values)
 
