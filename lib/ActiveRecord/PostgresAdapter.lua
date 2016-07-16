@@ -410,6 +410,7 @@ end
 --------------------------------------------------------------------------------
 function ActiveRecord_PostgresAdapter:rollback()
   ActiveRecord_PostgresAdapter.cache = {}
+  ActiveRecord_PostgresAdapter.neat  = {}
   return self:execute("ROLLBACK")
 end
 
