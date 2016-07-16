@@ -272,4 +272,12 @@ function ActiveRecord:validate(params)
   return self.adapter():validate(self, params)
 end
 
+-------------------------------------------------------------------------------
+-- ActiveRecord#changes()
+-------------------------------------------------------------------------------
+
+function ActiveRecord:changes()
+  return self.adapter():changes(self)
+end
+
 return ActiveRecord

@@ -7,6 +7,7 @@ ActiveRecord_PostgresAdapter = Class.new("ActiveRecord.PostgresAdapter", "Active
 -------------------------------------------------------------------------------
 
 ActiveRecord_PostgresAdapter.cache = {}
+ActiveRecord_PostgresAdapter.neat  = {}
 
 ------------------------------------------------------------------------------
 -- CONNECT
@@ -188,7 +189,6 @@ function ActiveRecord_PostgresAdapter:find(params)
     data.new_record = false
     data = self.record_class.new(data)
     local key = self.table_name .. '_' .. tostring(data[self.primary_key])
-    self.cache[key] = data
     return data
   end
 
@@ -350,10 +350,18 @@ end
 -------------------------------------------------------------------------------
 
 function ActiveRecord_PostgresAdapter:parser_fetch(res)
+  local neat = {}
+
   res.new_record = false
   for column, properties in pairs(self:columns()) do
-    res[column] = self:parser_value(properties.format, res[column])
+    res[column]  = self:parser_value(properties.format, res[column])
+    neat[column] = res[column]
   end
+
+  local key  = self.table_name .. '_' .. tostring(res[self.primary_key])
+  ActiveRecord_PostgresAdapter.neat[key]  = neat
+  ActiveRecord_PostgresAdapter.cache[key] = res
+
   return self.record_class.new(res)
 end
 
@@ -480,6 +488,24 @@ end
 
 function ActiveRecord_PostgresAdapter.read_value_table(value)
   return table.concat(value, ',')
+end
+
+-------------------------------------------------------------------------------
+-- CHANGES
+-------------------------------------------------------------------------------
+
+function ActiveRecord_PostgresAdapter:changes(record)
+  local changes = {}
+  local key     = record:cacheKey()
+  local neat    = ActiveRecord_PostgresAdapter.neat[key] -- or {}
+
+  for column, properties in pairs(self:columns()) do
+    if record[column] ~= neat[column] then
+      changes[column] = { neat[column], record[column] }
+    end
+  end
+
+  return changes
 end
 
 return ActiveRecord_PostgresAdapter
