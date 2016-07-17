@@ -21,6 +21,7 @@ require 'oberon.helper'
 require 'oberon.base.package'
 require 'toboolean'
 require 'isblank'
+require 'inspect'
 
 -------------------------------------------------------------------------------
 -- String
