@@ -63,7 +63,7 @@ end
 
 function ActiveRecord_PostgresAdapter:insert(record)
   self:bang(record)
-  local sql = 'INSERT INTO'
+  local sql = 'INSERT INTO ' .. self.table_name .. ' '
   local col = ''
   local val = ''
   if self:columns().created_at then
@@ -75,7 +75,7 @@ function ActiveRecord_PostgresAdapter:insert(record)
   for column, value in pairs(record) do
     if not self:isReserved(column) then
     --for column, properties in pairs(self:columns(table)) do
-      if column ~= self.primary_key then
+      if not (column == self.primary_key and not record[self.primary_key] == nil) then
         --local value = record[column]
         if #col > 0 then
           col = col .. ', '
@@ -104,8 +104,7 @@ function ActiveRecord_PostgresAdapter:insert(record)
       end
     end
   end
-
-  return 'INSERT INTO ' .. self.table_name .. ' (' .. col .. ') VALUES (' .. val .. ') RETURNING id'
+  return sql ..  '(' .. col .. ') VALUES (' .. val .. ') ' .. ' RETURNING ' .. record.primary_key
 end
 
 --------------------------------------------------------------------------------
@@ -139,6 +138,12 @@ function ActiveRecord_PostgresAdapter:update(record)
   else
     result = true
   end
+  -- neat
+  local neat = ActiveRecord_PostgresAdapter.neat[record:cacheKey()]
+  for column, properties in pairs(self:columns()) do
+    neat[column] = record[column]
+  end
+
   return result
 end
 
@@ -498,7 +503,7 @@ end
 function ActiveRecord_PostgresAdapter:changes(record)
   local changes = {}
   local key     = record:cacheKey()
-  local neat    = ActiveRecord_PostgresAdapter.neat[key] -- or {}
+  local neat    = ActiveRecord_PostgresAdapter.neat[key]
 
   for column, properties in pairs(self:columns()) do
     if record[column] ~= neat[column] then
