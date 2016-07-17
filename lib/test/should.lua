@@ -72,4 +72,9 @@ function should.be_contains(value, contains)
   end
 end
 
+function should.fail(value)
+  local message = inspect(value)
+  error({code = 2000, msg = message, kind = 'test'})
+end
+
 return should
