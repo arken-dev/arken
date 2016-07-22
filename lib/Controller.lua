@@ -139,6 +139,10 @@ function Controller:render_js(params)
 end
 
 function Controller:render_html(params)
+  if params.value then
+    return 200, {'Content-Type: text/html'}, params.value
+  end
+
   local prefix = "app/views"
   local view   = nil
   local file   = nil
