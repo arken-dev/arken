@@ -139,7 +139,7 @@ function ActiveRecord_PostgresAdapter:update(record)
     result = true
   end
   -- neat
-  local neat = ActiveRecord_PostgresAdapter.neat[record:cacheKey()]
+  local neat = ActiveRecord_PostgresAdapter.neat[record:cacheKey()] or {}
   for column, properties in pairs(self:columns()) do
     neat[column] = record[column]
   end
