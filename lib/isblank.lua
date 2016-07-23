@@ -4,7 +4,7 @@ function isblank(value)
   end
 
   if type(value) == 'string' then
-     return #value == 0
+     return value == ''
   end
 
   if type(value) == 'table' then

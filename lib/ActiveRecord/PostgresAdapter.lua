@@ -75,7 +75,7 @@ function ActiveRecord_PostgresAdapter:insert(record)
   for column, value in pairs(record) do
     if not self:isReserved(column) then
     --for column, properties in pairs(self:columns(table)) do
-      if not (column == self.primary_key and not record[self.primary_key] == nil) then
+      if not (column == self.primary_key and isblank(record[self.primary_key]))  then
         --local value = record[column]
         if #col > 0 then
           col = col .. ', '
