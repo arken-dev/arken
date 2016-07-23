@@ -104,7 +104,7 @@ static int lua_oberon_string_replace( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   const char * before = luaL_checkstring(L, 2);
   const char * after  = luaL_checkstring(L, 3);
-  char * result       = string::replace(string, before[0], after);
+  char * result       = string::replace(string, before[0], after[0]);
   lua_pushstring(L, result);  /* push result */
   delete[] result;
   return 1;

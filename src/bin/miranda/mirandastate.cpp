@@ -81,15 +81,19 @@ void MirandaState::createTask(QByteArray fileName, const char * uuid)
 
 void MirandaState::servicesAppend(MirandaService *t)
 {
-  int i;
-
-  t->start();
+  t->start(); // start thread
 
   QMutexLocker ml(&s_mutex);
 
-  for(i = 0; i < s_service->size(); i++) {
+  double time = os::microtime();
+  double result;
+
+  for(int i = 0; i < s_service->size(); i++) {
     MirandaService * service = s_service->at(i);
-    if( ! service->isRunning() ) {
+    result = time - service->time();
+    //qDebug() << "result " << result << "\n\n\n\n\n";
+    if( service->isFinished() and result > 30 ) {
+      //qDebug() << "excluindo  " << " result is " << result;
       s_service->removeOne(service);
       delete service;
     }
@@ -225,4 +229,10 @@ void MirandaState::insert(const char * key, const char * value)
 {
   QMutexLocker ml(&s_mutex);
   s_cache->insert(key, value);
+}
+
+int MirandaState::remove(const char * key)
+{
+  QMutexLocker ml(&s_mutex);
+  return s_cache->remove(key);
 }

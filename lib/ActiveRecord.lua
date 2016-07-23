@@ -163,7 +163,7 @@ ActiveRecord.inherit = function(class)
   -- ActiveRecord#where
   ------------------------------------------------------------------------------
   function class.where(params)
-    error('not implemented')
+    error('where not implemented in ' .. class.class_name)
   end
 
   ------------------------------------------------------------------------------
@@ -270,6 +270,14 @@ end
 
 function ActiveRecord:validate(params)
   return self.adapter():validate(self, params)
+end
+
+-------------------------------------------------------------------------------
+-- ActiveRecord#changes()
+-------------------------------------------------------------------------------
+
+function ActiveRecord:changes()
+  return self.adapter():changes(self)
 end
 
 return ActiveRecord

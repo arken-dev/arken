@@ -7,6 +7,7 @@ ActiveRecord_PostgresAdapter = Class.new("ActiveRecord.PostgresAdapter", "Active
 -------------------------------------------------------------------------------
 
 ActiveRecord_PostgresAdapter.cache = {}
+ActiveRecord_PostgresAdapter.neat  = {}
 
 ------------------------------------------------------------------------------
 -- CONNECT
@@ -62,7 +63,7 @@ end
 
 function ActiveRecord_PostgresAdapter:insert(record)
   self:bang(record)
-  local sql = 'INSERT INTO'
+  local sql = 'INSERT INTO ' .. self.table_name .. ' '
   local col = ''
   local val = ''
   if self:columns().created_at then
@@ -74,7 +75,7 @@ function ActiveRecord_PostgresAdapter:insert(record)
   for column, value in pairs(record) do
     if not self:isReserved(column) then
     --for column, properties in pairs(self:columns(table)) do
-      if column ~= self.primary_key then
+      if not (column == self.primary_key and not record[self.primary_key] == nil) then
         --local value = record[column]
         if #col > 0 then
           col = col .. ', '
@@ -103,8 +104,7 @@ function ActiveRecord_PostgresAdapter:insert(record)
       end
     end
   end
-
-  return 'INSERT INTO ' .. self.table_name .. ' (' .. col .. ') VALUES (' .. val .. ') RETURNING id'
+  return sql ..  '(' .. col .. ') VALUES (' .. val .. ') ' .. ' RETURNING ' .. record.primary_key
 end
 
 --------------------------------------------------------------------------------
@@ -138,6 +138,12 @@ function ActiveRecord_PostgresAdapter:update(record)
   else
     result = true
   end
+  -- neat
+  local neat = ActiveRecord_PostgresAdapter.neat[record:cacheKey()]
+  for column, properties in pairs(self:columns()) do
+    neat[column] = record[column]
+  end
+
   return result
 end
 
@@ -188,7 +194,6 @@ function ActiveRecord_PostgresAdapter:find(params)
     data.new_record = false
     data = self.record_class.new(data)
     local key = self.table_name .. '_' .. tostring(data[self.primary_key])
-    self.cache[key] = data
     return data
   end
 
@@ -252,7 +257,7 @@ function ActiveRecord_PostgresAdapter:parser_default(format, value)
 end
 
 function ActiveRecord_PostgresAdapter.parser_string(value)
-  return value
+  return value:swap("::character varying", ""):swap("'", "")
 end
 
 function ActiveRecord_PostgresAdapter.parser_time(value)
@@ -350,10 +355,18 @@ end
 -------------------------------------------------------------------------------
 
 function ActiveRecord_PostgresAdapter:parser_fetch(res)
+  local neat = {}
+
   res.new_record = false
   for column, properties in pairs(self:columns()) do
-    res[column] = self:parser_value(properties.format, res[column])
+    res[column]  = self:parser_value(properties.format, res[column])
+    neat[column] = res[column]
   end
+
+  local key  = self.table_name .. '_' .. tostring(res[self.primary_key])
+  ActiveRecord_PostgresAdapter.neat[key]  = neat
+  ActiveRecord_PostgresAdapter.cache[key] = res
+
   return self.record_class.new(res)
 end
 
@@ -402,6 +415,7 @@ end
 --------------------------------------------------------------------------------
 function ActiveRecord_PostgresAdapter:rollback()
   ActiveRecord_PostgresAdapter.cache = {}
+  ActiveRecord_PostgresAdapter.neat  = {}
   return self:execute("ROLLBACK")
 end
 
@@ -480,6 +494,24 @@ end
 
 function ActiveRecord_PostgresAdapter.read_value_table(value)
   return table.concat(value, ',')
+end
+
+-------------------------------------------------------------------------------
+-- CHANGES
+-------------------------------------------------------------------------------
+
+function ActiveRecord_PostgresAdapter:changes(record)
+  local changes = {}
+  local key     = record:cacheKey()
+  local neat    = ActiveRecord_PostgresAdapter.neat[key]
+
+  for column, properties in pairs(self:columns()) do
+    if record[column] ~= neat[column] then
+      changes[column] = { neat[column], record[column] }
+    end
+  end
+
+  return changes
 end
 
 return ActiveRecord_PostgresAdapter

@@ -139,6 +139,10 @@ function Controller:render_js(params)
 end
 
 function Controller:render_html(params)
+  if params.value then
+    return 200, {'Content-Type: text/html'}, params.value
+  end
+
   local prefix = "app/views"
   local view   = nil
   local file   = nil
@@ -225,6 +229,22 @@ function Controller:render_text(params)
   local code = params.code or 200
   return code, {'Content-Type: text/plain'}, params.value
 end
+
+-------------------------------------------------------------------------------
+-- RENDER JSON
+-------------------------------------------------------------------------------
+
+function Controller:render_json(params)
+  local json = JSON:encode(params.value)
+  if request.params().json_callback then
+    value = string.format('%s(%s)', request.params().json_callback, json)
+  else
+    value = json
+  end
+  return 200, {'Content-Type: application/json; charset=UTF-8'}, value
+end
+
+
 
 -------------------------------------------------------------------------------
 -- EXECUTE

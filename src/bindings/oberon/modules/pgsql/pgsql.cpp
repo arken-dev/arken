@@ -558,7 +558,7 @@ int L_res_seek(lua_State *L) {
 
 int L_res_index(lua_State *L) {
   rs_t *rs = luaL_checkarray(L, 1);
-  int  row = luaL_checkint(L, 2);
+  int  row = luaL_checkint(L, 2)-1;
   int rows = PQntuples(rs->ptr);
   if (row < rows) {
     lua_pushpgrow_assoc(L, rs->ptr, row);

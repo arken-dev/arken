@@ -6,8 +6,8 @@ local TestTask = Class.new("TestTask")
 
 function string:escape()
   local tmp = self
-  tmp = tmp:replace("'", "\\'")
-  tmp = tmp:replace('"', '\\"')
+  tmp = tmp:swap("'", "\\'")
+  tmp = tmp:swap('"', '\\"')
   return tmp
 end
 

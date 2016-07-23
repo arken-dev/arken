@@ -69,7 +69,7 @@ function ActiveRecord_Adapter:escape(value)
     return " NULL "
   else
     if(type(value) == 'number') then
-      return tostring(value):replace('.', ''):replace(',', '.')
+      return tostring(value) --:replace('.', ''):replace(',', '.')
     else
       return "'" .. tostring(value) .. "'"
     end
@@ -101,6 +101,8 @@ function ActiveRecord_Adapter:where(values, flag)
 
   values.binding = nil
   values.order   = nil
+  values.limit   = nil
+
   if values.where then
     --local where = QString.new(values.where)
     local where = values.where
@@ -334,6 +336,9 @@ function ActiveRecord_Adapter:sql(name, params)
     query  = query .. '/' .. name .. '.sql'
   local values  = self.record_class.where(params)
   local binding = values.binding
+  if not os.exists(query) then
+    error(query .. ' file not exists')
+  end
   local sql     = os.read(query)
   local where   = self.record_class.adapter():where(values)
 
