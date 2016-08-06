@@ -59,6 +59,12 @@ function Class.new(className, inheritedBy, params)
     return obj
   end
 
+  -- contract
+  function class.contract(name)
+    local contract = require('contract')
+    contract.create(class, name)
+  end
+
   function class.mixin(path)
     package.mixed[path] = class.class_name
     local M = require(path, true)
