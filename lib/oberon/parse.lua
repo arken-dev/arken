@@ -35,7 +35,7 @@ parse.isNumber = function(value)
       value = value:replace('.', ''):replace(',', '.')
     end
 
-    return not tonumber(value) == nil
+    return not (tonumber(value) == nil)
   end
 
   return false
@@ -131,7 +131,5 @@ parse.inspect = function(value)
     return JSON:encode(value)
   end
 end
-
-
 
 return parse
