@@ -19,9 +19,10 @@ OBERON_ENV = os.getenv("OBERON_ENV") or "development"
 
 require 'oberon.helper'
 require 'oberon.base.package'
-require 'toboolean'
-require 'isblank'
-require 'inspect'
+require 'oberon.parse'
+require 'toboolean' -- deprecate ?
+require 'isblank'   -- deprecate ?
+require 'inspect'   -- deprecate ?
 
 -------------------------------------------------------------------------------
 -- String
