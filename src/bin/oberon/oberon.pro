@@ -19,7 +19,7 @@ INCLUDEPATH += ../../../include
 INCLUDEPATH += ../../../vendors/include
 
 
-QMAKE_RPATHDIR += ../vendors
+QMAKE_RPATHDIR += ../../vendors
 
 win32:LIBS += ../../../vendors/lua51.dll
 win32:LIBS += ../../../vendors/oberon.dll
