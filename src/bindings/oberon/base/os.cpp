@@ -111,6 +111,11 @@ static int lua_oberon_os_pwd( lua_State *L ) {
   return 1;
 }
 
+static int lua_oberon_os_pid( lua_State *L ) {
+  lua_pushnumber( L, os::pid() );
+  return 1;
+}
+
 static int lua_oberon_os_rmdir( lua_State *L ) {
   const char * dirname = luaL_checkstring(L, 1);
   lua_pushboolean( L, os::rmdir(dirname) );
@@ -183,6 +188,7 @@ int luaopen_oberon_os( lua_State *L ) {
     {"mkdir",      lua_oberon_os_mkdir},
     {"mkpath",     lua_oberon_os_mkpath},
     {"name",       lua_oberon_os_name},
+    {"pid",        lua_oberon_os_pid},
     {"pwd",        lua_oberon_os_pwd},
     {"rmdir",      lua_oberon_os_rmdir},
     {"rmpath",     lua_oberon_os_rmpath},
