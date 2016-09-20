@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <fstream>
 
+#include <QCoreApplication>
 #include <QDateTime>
 #include <QDir>
 #include <QFile>
@@ -142,6 +143,11 @@ char * os::name()
   result = QLatin1String("unknown");
   #endif
   return result.toLocal8Bit().data();
+}
+
+qint64 os::pid()
+{
+  return QCoreApplication::applicationPid();
 }
 
 char * os::pwd()

@@ -19,6 +19,7 @@ namespace oberon {
     bool     mkdir(const char * dirname);
     bool     mkpath(const char * dirpath);
     char   * name();
+    qint64   pid();
     char   * pwd();
     bool     rmdir(const char * dirname);
     bool     rmpath(const char * dirpath);
