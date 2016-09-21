@@ -157,10 +157,14 @@ static int lua_oberon_os_uuid( lua_State *L ) {
 }
 
 static int lua_oberon_os_read( lua_State *L ) {
-  size_t size;
+  size_t size = -1;
   const char * path = luaL_checkstring(L, 1);
   const char * raw  = os::read(path, &size);
-  lua_pushlstring( L, raw, size );
+  if( size != -1 ) {
+    lua_pushlstring( L, raw, size );
+  } else {
+    lua_pushstring( L, raw );
+  }
   delete[] raw;
   return 1;
 }
