@@ -280,4 +280,17 @@ function ActiveRecord:changes()
   return self.adapter():changes(self)
 end
 
+-------------------------------------------------------------------------------
+-- ActiveRecord#dup()
+-------------------------------------------------------------------------------
+
+function ActiveRecord:dup()
+  local dup = {}
+  for k, v in pairs(self) do
+    dup[k] = v
+  end
+  return dup
+end
+
+
 return ActiveRecord
