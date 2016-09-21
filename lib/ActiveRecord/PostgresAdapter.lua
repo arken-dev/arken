@@ -157,7 +157,10 @@ function ActiveRecord_PostgresAdapter:create(record)
   local row    = cursor:fetch({}, 'a')
   record.id    = tonumber(row[self.primary_key])
   record.new_record = false
-  self.cache[record:cacheKey()] = record
+  local key         = record:cacheKey()
+  self.cache[key]   = record
+  ActiveRecord_PostgresAdapter.neat[key] = record:dup()
+
   return record
 end
 
@@ -503,7 +506,7 @@ end
 function ActiveRecord_PostgresAdapter:changes(record)
   local changes = {}
   local key     = record:cacheKey()
-  local neat    = ActiveRecord_PostgresAdapter.neat[key]
+  local neat    = ActiveRecord_PostgresAdapter.neat[key] or {}
 
   for column, properties in pairs(self:columns()) do
     if record[column] ~= neat[column] then
