@@ -31,6 +31,11 @@ static bool inline string_camelcase_special_char(char chr)
 
 char * string::camelcase(const char * string)
 {
+  return string::camelcase(string, false);
+}
+
+char * string::camelcase(const char * string, bool lcfirst)
+{
   int i, j;
   bool flag;
   int string_len;
@@ -61,6 +66,10 @@ char * string::camelcase(const char * string)
     }
 
     j++;
+  }
+
+  if( lcfirst ) {
+    result[0] = tolower(result[0]);
   }
   result[j] = '\0';
 

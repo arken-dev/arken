@@ -11,8 +11,16 @@ static int lua_oberon_string_append( lua_State *L ) {
 }
 
 static int lua_oberon_string_camelcase( lua_State *L ) {
+  char * result;
   const char *string = luaL_checkstring(L, 1);
-  char *result = string::camelcase(string);
+  bool  flag = false;
+
+  if(lua_gettop(L) == 2) { /* número de argumentos */
+    flag =  lua_toboolean(L, 2);
+  }
+
+  result = string::camelcase(string, flag);
+
   lua_pushstring(L, result);
   delete[] result;
   return 1;
