@@ -372,7 +372,7 @@ char * string::simplified(const char *string)
     result = new char[1];
     result[0] = '\0';
   } else {
-    result = new char[(len) + 1];
+    result = new char[(len) + 2];
     while(i <= len) {
       if( simplified_special_char(string[i]) ) {
         if( f ) {
