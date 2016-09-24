@@ -59,4 +59,9 @@ test['should equal when not special chars'] = function()
   should.be_equal( str:simplified(), str )
 end
 
+test['should equal empty string'] = function()
+  local str = ""
+  should.be_equal( str:simplified(), str )
+end
+
 return test
