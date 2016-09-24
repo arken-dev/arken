@@ -19,7 +19,8 @@ SOURCES += base/math.cpp            \
            classes/OThread.cpp      \
            classes/OHttpRequest.cpp \
            modules/http.cpp         \
-           modules/md5.cpp         \
+           modules/digest.cpp       \
+           modules/sha3.cpp         \
            ../vendors/mongrel2/http11/http11_parser.c
 
 unix:LIBS  += -lcurl

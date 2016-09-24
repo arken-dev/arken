@@ -8,18 +8,14 @@ CONFIG += plugin
 CONFIG += no_plugin_name_prefix
 
 DESTDIR = ../../../../../clib/oberon
-TARGET = md5
+TARGET = digest
 
 INCLUDEPATH += .
 INCLUDEPATH += ../../../../../include
 INCLUDEPATH += ../../../../../vendors/include
 
 # Input
-SOURCES += md5.cpp
+SOURCES += digest.cpp
 
 unix:LIBS += ../../../../../vendors/liboberon.so
 win32:LIBS += ../../../../../vendors/oberon.dll
-
-unix:LIBS += -lcurl
-win32:LIBS += ../../../../../vendors/lua51.dll
-win32:LIBS += ../../../../../vendors/libcurl.dll

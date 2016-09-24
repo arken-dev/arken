@@ -15,7 +15,6 @@
 #include <oberon/helper>
 #include <oberon/modules/http.h>
 #include <iostream>
-#include <oberon/md5>
 
 char * os::abspath(const char * path)
 {
