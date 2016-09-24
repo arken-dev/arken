@@ -54,4 +54,9 @@ test['should remove special char with utf-8 chars'] = function()
   should.be_equal( str1:simplified(), str2 )
 end
 
+test['should equal when not special chars'] = function()
+  local str = "cadastro de Contato_Tipo"
+  should.be_equal( str:simplified(), str )
+end
+
 return test
