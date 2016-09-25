@@ -7,6 +7,7 @@ INCLUDEPATH += .
 INCLUDEPATH += ../../include
 INCLUDEPATH += ../../vendors/include
 INCLUDEPATH += ../vendors/mongrel2
+INCLUDEPATH += ../vendors/ap
 
 TARGET = oberon
 DESTDIR = ../../vendors
@@ -18,10 +19,13 @@ SOURCES += base/math.cpp            \
            classes/OByteArray.cpp   \
            classes/OThread.cpp      \
            classes/OHttpRequest.cpp \
-           modules/http.cpp         \
+           modules/base64.cpp       \
            modules/digest.cpp       \
+           modules/http.cpp         \
            modules/sha3.cpp         \
-           ../vendors/mongrel2/http11/http11_parser.c
+           ../vendors/mongrel2/http11/http11_parser.c \
+           ../vendors/ap/ap_base64.c
+
 
 unix:LIBS  += -lcurl
 win32:LIBS += ../../vendors/lua51.dll
