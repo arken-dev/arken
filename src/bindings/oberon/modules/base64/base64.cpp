@@ -4,7 +4,9 @@
 
 static int lua_oberon_base64_decode( lua_State *L ) {
   const char * data = luaL_checkstring(L, 1);
-  lua_pushstring( L, base64::decode(data) );
+  char * decoded = base64::decode(data);
+  lua_pushstring( L, decoded );
+  delete[] decoded;
   return 1;
 }
 
