@@ -426,6 +426,8 @@ end
 -- COMMIT
 --------------------------------------------------------------------------------
 function ActiveRecord_PostgresAdapter:commit()
+  ActiveRecord_PostgresAdapter.cache = {}
+  ActiveRecord_PostgresAdapter.neat  = {}
   return self:execute("COMMIT")
 end
 
