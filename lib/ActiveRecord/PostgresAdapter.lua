@@ -152,6 +152,7 @@ end
 --------------------------------------------------------------------------------
 
 function ActiveRecord_PostgresAdapter:create(record)
+  record:populate(record) -- TODO otimizar
   local sql    = self:insert(record)
   local status, result = pcall(self.execute, self, sql)
   if status == false then
@@ -395,11 +396,19 @@ function ActiveRecord_PostgresAdapter.parser_value_string(value)
 end
 
 function ActiveRecord_PostgresAdapter.parser_value_time(value)
-  return value
+  if value == '' then
+    return nil
+  else
+    return value
+  end
 end
 
 function ActiveRecord_PostgresAdapter.parser_value_date(value)
-  return value
+  if value == '' then
+    return nil
+  else
+    return value
+  end
 end
 
 function ActiveRecord_PostgresAdapter.parser_value_number(value)
@@ -411,7 +420,11 @@ function ActiveRecord_PostgresAdapter.parser_value_boolean(value)
 end
 
 function ActiveRecord_PostgresAdapter.parser_value_timestamp(value)
-  return value
+  if value == '' then
+    return nil
+  else
+    return value
+  end
 end
 
 --------------------------------------------------------------------------------
