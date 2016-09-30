@@ -153,14 +153,18 @@ end
 
 function ActiveRecord_PostgresAdapter:create(record)
   local sql    = self:insert(record)
-  local cursor = self:execute(sql)
-  local row    = cursor:fetch({}, 'a')
-  record.id    = tonumber(row[self.primary_key])
-  record.new_record = false
-  local key         = record:cacheKey()
-  self.cache[key]   = record
-  ActiveRecord_PostgresAdapter.neat[key] = record:dup()
-
+  local status, result = pcall(self.execute, self, sql)
+  if status == false then
+    error(string.format("error %s, sql %s", result, sql))
+  else
+    local cursor = result
+    local row    = cursor:fetch({}, 'a')
+    record.id    = tonumber(row[self.primary_key])
+    record.new_record = false
+    local key         = record:cacheKey()
+    self.cache[key]   = record
+    ActiveRecord_PostgresAdapter.neat[key] = record:dup()
+  end
   return record
 end
 
@@ -358,19 +362,23 @@ end
 -------------------------------------------------------------------------------
 
 function ActiveRecord_PostgresAdapter:parser_fetch(res)
-  local neat = {}
-
-  res.new_record = false
-  for column, properties in pairs(self:columns()) do
-    res[column]  = self:parser_value(properties.format, res[column])
-    neat[column] = res[column]
-  end
-
   local key  = self.table_name .. '_' .. tostring(res[self.primary_key])
-  ActiveRecord_PostgresAdapter.neat[key]  = neat
-  ActiveRecord_PostgresAdapter.cache[key] = res
+  if ActiveRecord_PostgresAdapter.cache[key] then
+    return ActiveRecord_PostgresAdapter.cache[key]
+  else
+    local neat = {}
 
-  return self.record_class.new(res)
+    res.new_record = false
+    for column, properties in pairs(self:columns()) do
+      res[column]  = self:parser_value(properties.format, res[column])
+      neat[column] = res[column]
+    end
+
+    ActiveRecord_PostgresAdapter.neat[key]  = neat
+    ActiveRecord_PostgresAdapter.cache[key] = res
+
+    return self.record_class.new(res)
+  end
 end
 
 function ActiveRecord_PostgresAdapter:parser_value(format, value)
