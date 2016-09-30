@@ -264,7 +264,7 @@ function ActiveRecord_PostgresAdapter.parser_string(value)
 end
 
 function ActiveRecord_PostgresAdapter.parser_time(value)
-  return value
+  return value:swap("::time without time zone", ""):swap("'", "")
 end
 
 function ActiveRecord_PostgresAdapter.parser_date(value)
