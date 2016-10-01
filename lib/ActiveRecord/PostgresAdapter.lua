@@ -477,6 +477,24 @@ function ActiveRecord_PostgresAdapter:read(record, column)
   end
 end
 
+--------------------------------------------------------------------------------
+-- GET
+--------------------------------------------------------------------------------
+
+function ActiveRecord_PostgresAdapter:get(record, column, default)
+  local value = record[column]
+  column = self:columns()[column]
+  if value == nil or column == nil then
+    return default
+  else
+    return self:read_value(column.format, value)
+  end
+end
+
+--------------------------------------------------------------------------------
+-- READ VALUE
+--------------------------------------------------------------------------------
+
 function ActiveRecord_PostgresAdapter:read_value(format, value)
   if format == nil or value == nil then
     return nil
