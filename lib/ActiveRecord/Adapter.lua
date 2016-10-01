@@ -295,6 +295,12 @@ function ActiveRecord_Adapter:validatePresence(record, params)
   end
 end
 
+function ActiveRecord_Adapter:validateBoolean(record, params)
+  if not parse.isBoolean(record[params.column]) then
+    record.errors[params.column] = params.message
+  end
+end
+
 function ActiveRecord_Adapter:validateLength(record, params)
   if type(record[params.column]) == 'string' then
     local length = #record[params.column]
