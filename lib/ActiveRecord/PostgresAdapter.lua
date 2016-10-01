@@ -464,6 +464,15 @@ function ActiveRecord_PostgresAdapter:populate(record, params)
 end
 
 --------------------------------------------------------------------------------
+-- SET
+--------------------------------------------------------------------------------
+
+function ActiveRecord_PostgresAdapter:set(record, column, value)
+  local properties = self:columns()[column]
+  record[column] = self:parser_value(properties.format, value)
+end
+
+--------------------------------------------------------------------------------
 -- READ
 --------------------------------------------------------------------------------
 

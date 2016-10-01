@@ -264,6 +264,13 @@ function ActiveRecord:get(column, default)
   return self.adapter():get(self, column, default)
 end
 
+-------------------------------------------------------------------------------
+-- ActiveRecord#set()
+-------------------------------------------------------------------------------
+
+function ActiveRecord:set(column, value)
+  return self.adapter():set(self, column, value)
+end
 
 -------------------------------------------------------------------------------
 -- ActiveRecord#populate()
