@@ -22,6 +22,7 @@ SOURCES += base/math.cpp            \
            modules/base64.cpp       \
            modules/digest.cpp       \
            modules/http.cpp         \
+           modules/regex.cpp        \
            modules/sha3.cpp         \
            ../vendors/mongrel2/http11/http11_parser.c \
            ../vendors/ap/ap_base64.c
