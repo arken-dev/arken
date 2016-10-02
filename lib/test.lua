@@ -42,7 +42,9 @@ function test.process(file_name)
             for k, v in pairs(message) do
               text = text .. k .. ': ' .. v .. '\n'
             end
-            text = text .. '\n' .. traceback
+            if traceback then
+              text = text .. '\n' .. traceback
+            end
             results[description] = {status = 'err', msg = text}
             io.write(colorize.format('.', 'red'))
           end
