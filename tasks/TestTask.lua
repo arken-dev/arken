@@ -6,8 +6,11 @@ local TestTask = Class.new("TestTask")
 
 function string:escape()
   local tmp = self
-  tmp = tmp:swap("'", "\\'")
-  tmp = tmp:swap('"', '\\"')
+  tmp = tmp:swap("'", '"')
+  tmp = tmp:swap(">", '')
+  tmp = tmp:swap("<", '')
+--  tmp = tmp:swap("\n", "<br>")
+--  tmp = tmp:swap('"', '\\"')
   return tmp
 end
 
@@ -101,8 +104,8 @@ function TestTask:notify(params)
       print(buffer:replace('\n', '8'))
       icon = "error"
       --buffer = buffer:replace('\n\n', '')
-      print("notify-send -t 10000 " .. "'" .. titulo .. "' '\"" .. buffer:escape() .. "\"")
-      os.execute("notify-send -t 10000 " .. "'" .. titulo .. "' \"" .. buffer:escape() .. "\"")
+      print("notify-send -t 10000 " .. "'" .. titulo .. "' '\'" .. buffer:escape() .. "\'")
+      os.execute("notify-send -t 10000 " .. "'" .. titulo .. "' \'" .. buffer:escape() .. "\'")
     end
     while os.ctime(file) <= time  do
       os.sleep(0.15)

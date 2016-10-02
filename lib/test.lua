@@ -36,7 +36,14 @@ function test.process(file_name)
             results[description] = {status = 'fail', msg = message.msg}
             io.write(colorize.format('.', 'red'))
           else
-            results[description] = {status = 'err', msg = message.msg}
+            local text = ""
+            local traceback = message.traceback
+            message.traceback = nil
+            for k, v in pairs(message) do
+              text = text .. k .. ': ' .. v .. '\n'
+            end
+            text = text .. '\n' .. traceback
+            results[description] = {status = 'err', msg = text}
             io.write(colorize.format('.', 'red'))
           end
         else

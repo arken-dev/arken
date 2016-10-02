@@ -277,6 +277,7 @@ function ActiveRecord_Adapter:bang(record)
   if flag then
     local errors = record.errors
     record.errors = {}
+    errors.traceback = debug.traceback()
     error(errors)
   end
 end
