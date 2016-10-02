@@ -6,11 +6,12 @@ local TestTask = Class.new("TestTask")
 
 function string:escape()
   local tmp = self
-  tmp = tmp:swap("'", '"')
-  tmp = tmp:swap(">", '')
-  tmp = tmp:swap("<", '')
---  tmp = tmp:swap("\n", "<br>")
---  tmp = tmp:swap('"', '\\"')
+  tmp = tmp:swap("&",  "&amp;")
+  tmp = tmp:swap("\"", "&quot;")
+  tmp = tmp:swap("'",  "&#039;")
+  tmp = tmp:swap("<",  "&lt;")
+  tmp = tmp:swap(">",  "&gt;")
+
   return tmp
 end
 
