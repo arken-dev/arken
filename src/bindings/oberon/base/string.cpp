@@ -50,6 +50,14 @@ static int lua_oberon_string_endsWith( lua_State *L ) {
   return 1;
 }
 
+static int lua_oberon_string_escape( lua_State *L ) {
+  const char *string = luaL_checkstring(L, 1);
+  char * result      = string::escape(string);
+  lua_pushstring(L, result);
+  delete[] result;
+  return 1;
+}
+
 static int lua_oberon_string_indexOf( lua_State *L ) {
   const char *string = luaL_checkstring(L, 1);
   const char *str    = luaL_checkstring(L, 2);
@@ -195,6 +203,7 @@ int luaopen_oberon_string( lua_State *L ) {
     {"capitalize",  lua_oberon_string_capitalize},
     {"contains",    lua_oberon_string_contains},
     {"endsWith",    lua_oberon_string_endsWith},
+    {"escape",      lua_oberon_string_escape},
     {"indexOf",     lua_oberon_string_indexOf},
     {"insert",      lua_oberon_string_insert},
     {"left",        lua_oberon_string_left},

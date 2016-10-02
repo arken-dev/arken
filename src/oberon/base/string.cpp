@@ -107,6 +107,37 @@ bool string::contains(const char * string, const char * str)
   return 0;
 }
 
+char * string::escape(const char * string)
+{
+  int i, j;
+  int len   = strlen(string);
+  int count = 0;
+  char * result;
+
+  for(i = 0; i < len; i++) {
+    count++;
+    if (string[i] == 34 || string[i] == 39 || string[i] == 92) {
+      count++;
+    }
+  }
+
+  result = new char[count+1];
+
+  j = 0;
+  for(i = 0; i < len; i++) {
+    if (string[i] == 34 || string[i] == 39 || string[i] == 92) {
+      result[j] = 92;
+      j++;
+    }
+    result[j] = string[i];
+    j++;
+  }
+
+  result[j] = '\0';
+
+  return result;
+}
+
 bool string::endsWith(const char * string, const char * str)
 {
    int string_len = strlen(string);

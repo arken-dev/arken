@@ -9,6 +9,7 @@ namespace oberon {
     char * camelcase(const char * string);
     char * capitalize(const char * string);
     bool   contains(const char * string, const char * str);
+    char * escape(const char * string);
     int    indexOf(const char * string, const char * str);
     char * insert(const char * string, int len, const char * ba);
     bool   endsWith(const char * string, const char * ba);
