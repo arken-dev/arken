@@ -138,6 +138,111 @@ char * string::escape(const char * string)
   return result;
 }
 
+char * string::escapeHtml(const char * string)
+{
+  int i, j;
+  int len   = strlen(string);
+  int count = 0;
+  char * result;
+
+  for(i = 0; i < len; i++) {
+    switch(string[i]) {
+      case 38:
+      count += 4;
+      break;
+      case 34:
+      count += 5;
+      break;
+      case 39:
+      count += 5;
+      break;
+      case 60:
+      count += 3;
+      break;
+      case 62:
+      count += 3;
+      break;
+      default:
+      count++;
+    }
+  }
+
+  result = new char[count+1];
+
+  j = 0;
+  for(i = 0; i < len; i++) {
+    switch(string[i]) {
+      case 38:
+        result[j] = '&';
+        j++;
+        result[j] = 'a';
+        j++;
+        result[j] = 'm';
+        j++;
+        result[j] = 'p';
+        j++;
+        result[j] = ';';
+        j++;
+      break;
+      case 34:
+        result[j] = '&';
+        j++;
+        result[j] = 'q';
+        j++;
+        result[j] = 'u';
+        j++;
+        result[j] = 'o';
+        j++;
+        result[j] = 't';
+        j++;
+        result[j] = ';';
+        j++;
+      break;
+      case 39:
+        result[j] = '&';
+        j++;
+        result[j] = '#';
+        j++;
+        result[j] = '0';
+        j++;
+        result[j] = '3';
+        j++;
+        result[j] = '9';
+        j++;
+        result[j] = ';';
+        j++;
+      break;
+      case 60:
+        result[j] = '&';
+        j++;
+        result[j] = 'l';
+        j++;
+        result[j] = 't';
+        j++;
+        result[j] = ';';
+        j++;
+      break;
+      case 62:
+        result[j] = '&';
+        j++;
+        result[j] = 'g';
+        j++;
+        result[j] = 't';
+        j++;
+        result[j] = ';';
+        j++;
+      break;
+      default:
+        result[j] = string[i];
+        j++;
+    }
+  }
+
+  result[j] = '\0';
+
+  return result;
+}
+
 bool string::endsWith(const char * string, const char * str)
 {
    int string_len = strlen(string);
