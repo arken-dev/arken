@@ -36,7 +36,7 @@ function should.be_equal(val1, val2, message)
     return true
   else
     message = message or tostring(val1) .. ' is not equal to ' .. tostring(val2)
-    error({code = 2000, msg = message, kind = 'test'})
+    error({code = 2000, msg = message, kind = 'test', traceback = debug.traceback()})
   end
 end
 

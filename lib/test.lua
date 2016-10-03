@@ -33,7 +33,7 @@ function test.process(file_name)
       if status == false then
         if type(message) == 'table' then
           if message.kind == 'test' then
-            results[description] = {status = 'fail', msg = message.msg}
+            results[description] = {status = 'fail', msg = message.msg .. '\n' .. tostring(message.traceback)}
             io.write(colorize.format('.', 'red'))
           else
             local text = ""
