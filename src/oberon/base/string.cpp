@@ -148,22 +148,22 @@ char * string::escapeHtml(const char * string)
   for(i = 0; i < len; i++) {
     switch(string[i]) {
       case 38:
-      count += 4;
+        count += 5;
       break;
       case 34:
-      count += 5;
+        count += 6;
       break;
       case 39:
-      count += 5;
+        count += 6;
       break;
       case 60:
-      count += 3;
+        count += 4;
       break;
       case 62:
-      count += 3;
+        count += 4;
       break;
       default:
-      count++;
+        count++;
     }
   }
 
