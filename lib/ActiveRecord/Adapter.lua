@@ -291,7 +291,7 @@ function ActiveRecord_Adapter:validate(record, params)
 end
 
 function ActiveRecord_Adapter:validatePresence(record, params)
-  if record[params.column] == nil then
+  if record[params.column] == nil or record[params.column] == '' then
     record.errors[params.column] = params.message
   end
 end
