@@ -1,6 +1,6 @@
 require 'Controller'
 require 'OByteArray'
-require 'OHttpRequest'
+require 'OHttpParser'
 require 'ActiveRecord'
 
 local template = require 'template'

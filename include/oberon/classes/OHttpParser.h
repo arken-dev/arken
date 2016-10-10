@@ -1,7 +1,7 @@
 #include <QByteArray>
 #include <QHash>
 
-class OHttpRequest
+class OHttpParser
 {
 
   QByteArray m_data;
@@ -16,8 +16,8 @@ class OHttpRequest
   const char * m_headerDone;
 
   public:
-  OHttpRequest(QByteArray data);
-  ~OHttpRequest();
+  OHttpParser(QByteArray data);
+  ~OHttpParser();
 
   void  setField(const char * fragment, const char * value);
   void  setFragment(const char * fragment);

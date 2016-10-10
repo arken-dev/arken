@@ -5,7 +5,7 @@ extern "C" {
 #include <iostream>
 #include <QJsonObject>
 #include <QJsonDocument>
-#include <OHttpRequest>
+#include <OHttpParser>
 
 static void
 http_field_cb(void *data, const char *field, size_t flen, const char *value, size_t vlen)
@@ -24,7 +24,7 @@ http_field_cb(void *data, const char *field, size_t flen, const char *value, siz
   }
   m_value[i] = '\0';
 
-  OHttpRequest * p = (OHttpRequest *) data;
+  OHttpParser * p = (OHttpParser *) data;
   p->setField(m_field, m_value);
   delete[] m_field;
   delete[] m_value;
@@ -41,7 +41,7 @@ on_fragment_cb(void * data, const char * at, size_t length)
   }
   tmp[i] = '\0';
 
-  OHttpRequest * p = (OHttpRequest *) data;
+  OHttpParser * p = (OHttpParser *) data;
   p->setFragment(tmp);
 }
 
@@ -55,7 +55,7 @@ on_header_done_cb(void *data, const char *at, size_t length)
   }
   tmp[i] = '\0';
 
-  OHttpRequest * p = (OHttpRequest *) data;
+  OHttpParser * p = (OHttpParser *) data;
   p->setHeaderDone(tmp);
 }
 
@@ -69,7 +69,7 @@ on_http_version_cb(void *data, const char *at, size_t length)
   }
   tmp[i] = '\0';
 
-  OHttpRequest * p = (OHttpRequest *) data;
+  OHttpParser * p = (OHttpParser *) data;
   p->setHttpVersion(tmp);
 }
 
@@ -83,7 +83,7 @@ on_request_uri_cb(void *data, const char *at, size_t length)
   }
   tmp[i] = '\0';
 
-  OHttpRequest * p = (OHttpRequest *) data;
+  OHttpParser * p = (OHttpParser *) data;
   p->setRequestUri(tmp);
 }
 
@@ -97,7 +97,7 @@ on_request_method_cb(void *data, const char *at, size_t length)
   }
   tmp[i] = '\0';
 
-  OHttpRequest * p = (OHttpRequest *) data;
+  OHttpParser * p = (OHttpParser *) data;
   p->setRequestMethod(tmp);
 }
 
@@ -111,7 +111,7 @@ on_request_path_cb(void *data, const char *at, size_t length)
   }
   tmp[i] = '\0';
 
-  OHttpRequest * p = (OHttpRequest *) data;
+  OHttpParser * p = (OHttpParser *) data;
   p->setRequestPath(tmp);
 }
 
@@ -125,11 +125,11 @@ on_query_string_cb(void *data, const char *at, size_t length)
   }
   tmp[i] = '\0';
 
-  OHttpRequest * p = (OHttpRequest *) data;
+  OHttpParser * p = (OHttpParser *) data;
   p->setQueryString(tmp);
 }
 
-OHttpRequest::OHttpRequest(QByteArray data)
+OHttpParser::OHttpParser(QByteArray data)
 {
   m_data = data;
   http_parser * parser = (http_parser *) malloc(sizeof(http_parser));
@@ -157,7 +157,7 @@ OHttpRequest::OHttpRequest(QByteArray data)
   free(parser);
 }
 
-OHttpRequest::~OHttpRequest()
+OHttpParser::~OHttpParser()
 {
   if(m_fragment != NULL)
     delete m_fragment;
@@ -175,87 +175,87 @@ OHttpRequest::~OHttpRequest()
     delete m_headerDone;
 }
 
-void OHttpRequest::setField(const char * field, const char * value)
+void OHttpParser::setField(const char * field, const char * value)
 {
   m_fields.insert(QByteArray(field), value);
 }
 
-void OHttpRequest::setFragment(const char * fragment)
+void OHttpParser::setFragment(const char * fragment)
 {
   m_fragment = fragment;
 }
 
-void OHttpRequest::setHeaderDone(const char * headerDone)
+void OHttpParser::setHeaderDone(const char * headerDone)
 {
   m_headerDone = headerDone;
 }
 
-void OHttpRequest::setQueryString(const char * queryString)
+void OHttpParser::setQueryString(const char * queryString)
 {
   m_queryString = queryString;
 }
 
-void OHttpRequest::setRequestPath(const char * requestPath)
+void OHttpParser::setRequestPath(const char * requestPath)
 {
   m_requestPath = requestPath;
 }
 
-void OHttpRequest::setRequestMethod(const char * requestMethod)
+void OHttpParser::setRequestMethod(const char * requestMethod)
 {
   m_requestMethod = requestMethod;
 }
 
-void OHttpRequest::setRequestUri(const char * requestUri)
+void OHttpParser::setRequestUri(const char * requestUri)
 {
   m_requestUri = requestUri;
 }
 
-void OHttpRequest::setHttpVersion(const char * httpVersion)
+void OHttpParser::setHttpVersion(const char * httpVersion)
 {
   m_httpVersion = httpVersion;
 }
 
-const char * OHttpRequest::queryString()
+const char * OHttpParser::queryString()
 {
   return m_queryString;
 }
 
-const char * OHttpRequest::requestPath()
+const char * OHttpParser::requestPath()
 {
   return m_requestPath;
 }
 
-const char * OHttpRequest::requestMethod()
+const char * OHttpParser::requestMethod()
 {
   return m_requestMethod;
 }
 
-const char * OHttpRequest::requestUri()
+const char * OHttpParser::requestUri()
 {
   return m_requestUri;
 }
 
-const char * OHttpRequest::httpVersion()
+const char * OHttpParser::httpVersion()
 {
   return m_httpVersion;
 }
 
-const char * OHttpRequest::headerDone()
+const char * OHttpParser::headerDone()
 {
   return m_headerDone;
 }
 
-const char * OHttpRequest::fragment()
+const char * OHttpParser::fragment()
 {
   return m_fragment;
 }
 
-const char * OHttpRequest::field(const char * field)
+const char * OHttpParser::field(const char * field)
 {
   return m_fields.value(QByteArray(field));
 }
 
-char * OHttpRequest::data()
+char * OHttpParser::data()
 {
   char * result = new char[m_data.size() + 1];
   strcpy(result, m_data.data());
@@ -263,7 +263,7 @@ char * OHttpRequest::data()
   return result;
 }
 
-QByteArray OHttpRequest::toJson()
+QByteArray OHttpParser::toJson()
 {
   QJsonObject json;
   json["fragment"]      = m_fragment;

@@ -1,5 +1,6 @@
 TEMPLATE = subdirs
 
-SUBDIRS = OByteArray   \
-          OHttpRequest \
+SUBDIRS = OByteArray  \
+          OHttpClient \
+          OHttpParser \
           OThread

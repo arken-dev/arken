@@ -18,7 +18,8 @@ SOURCES += base/math.cpp            \
            base/string.cpp          \
            classes/OByteArray.cpp   \
            classes/OThread.cpp      \
-           classes/OHttpRequest.cpp \
+           classes/OHttpClient.cpp  \
+           classes/OHttpParser.cpp  \
            modules/base64.cpp       \
            modules/digest.cpp       \
            modules/http.cpp         \
