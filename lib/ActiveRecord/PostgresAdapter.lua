@@ -412,7 +412,12 @@ function ActiveRecord_PostgresAdapter.parser_value_date(value)
 end
 
 function ActiveRecord_PostgresAdapter.parser_value_number(value)
-  return tonumber(value)
+  value = tostring(value)
+  if value:contains(',') then
+    return tonumber(value:replace('.', ''):replace(',', '.'))
+  else
+    return tonumber(value)
+  end
 end
 
 function ActiveRecord_PostgresAdapter.parser_value_boolean(value)
