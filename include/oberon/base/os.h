@@ -1,5 +1,5 @@
-#include <cstring>
-#include <QFileInfo>
+#include <QtCore>
+#include <OStringList>
 
 namespace oberon {
   namespace os {
@@ -12,6 +12,10 @@ namespace oberon {
     uint     ctime(const char * path);
     char   * dirpath(const char * path);
     bool     exists(const char * path);
+    OStringList * glob(const char * dir);
+    OStringList * glob(const char * dir, bool sub);
+    OStringList * glob(const char * dir, const char * regex);
+    OStringList * glob(const char * dir, const char * regex, bool sub);
     char   * home();
     char   * hostname();
     bool     link(const char * source, const char * destination, bool force);

@@ -1,3 +1,6 @@
+#ifndef _OSTRING_LIST_HEADER_
+#define _OSTRING_LIST_HEADER_
+
 class OStringList
 {
   private:
@@ -17,3 +20,5 @@ class OStringList
   const char *at(int pos);
   int size();
 };
+
+#endif

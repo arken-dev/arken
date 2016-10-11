@@ -62,6 +62,34 @@ static int lua_oberon_os_exists( lua_State *L ) {
   return 1;
 }
 
+static int lua_oberon_os_glob( lua_State *L ) {
+  OStringList * list;
+  const char  * path = luaL_checkstring(L, 1);
+
+  if( lua_gettop(L) == 1 ) { /* número de argumentos */
+    list = os::glob( path );
+  }
+
+  if( lua_gettop(L) == 2 ) { /* número de argumentos */
+    if( lua_isboolean(L, 2) ) {
+      list = os::glob( path, lua_toboolean(L, 2) );
+    } else {
+      list = os::glob( path, lua_tostring(L, 2) );
+    }
+  }
+
+  if( lua_gettop(L) == 3 ) { /* número de argumentos */
+    list = os::glob( path, lua_tostring(L, 2), lua_toboolean(L, 3) );
+  }
+
+  OStringList **ptr = (OStringList **)lua_newuserdata(L, sizeof(OStringList*));
+  *ptr = list;
+  luaL_getmetatable(L, "OStringList.metatable");
+  lua_setmetatable(L, -2);
+
+  return 1;
+}
+
 static int lua_oberon_os_home( lua_State *L ) {
   lua_pushstring( L, os::home() );
   return 1;
@@ -185,6 +213,7 @@ int luaopen_oberon_os( lua_State *L ) {
     {"ctime",      lua_oberon_os_ctime},
     {"dirpath",    lua_oberon_os_dirpath},
     {"exists",     lua_oberon_os_exists},
+    {"glob",       lua_oberon_os_glob},
     {"home",       lua_oberon_os_home},
     {"hostname",   lua_oberon_os_hostname},
     {"link",       lua_oberon_os_link},

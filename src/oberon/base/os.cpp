@@ -6,9 +6,11 @@
 #include <QCoreApplication>
 #include <QDateTime>
 #include <QDir>
+#include <QDirIterator>
 #include <QFile>
 #include <QFileInfo>
 #include <QHostInfo>
+#include <QRegExp>
 #include <QThread>
 #include <QUuid>
 
@@ -81,6 +83,58 @@ char * os::dirpath(const char * path)
 bool os::exists(const char * path)
 {
   return QFile::exists(path);
+}
+
+OStringList * os::glob(const char * dir)
+{
+  return os::glob(dir, false);
+}
+
+OStringList * os::glob(const char * dir, bool sub)
+{
+  OStringList * list = new OStringList();
+  QDirIterator::IteratorFlags flags;
+
+  if( sub ) {
+    flags = QDirIterator::Subdirectories;
+  }
+
+  QDirIterator iterator(QString(dir), flags);
+
+  while( iterator.hasNext() ) {
+    iterator.next();
+    list->append( iterator.fileInfo().filePath().toLocal8Bit().data() );
+  }
+
+  return list;
+}
+
+OStringList * os::glob(const char * dir, const char * regex)
+{
+  return os::glob(dir, regex, false);
+}
+
+OStringList * os::glob(const char * dir, const char * regex, bool sub)
+{
+
+  QRegExp qregex(regex);
+  OStringList * list = new OStringList();
+  QDirIterator::IteratorFlags flags;
+
+  if( sub ) {
+    flags = QDirIterator::Subdirectories;
+  }
+
+  QDirIterator iterator(QString(dir), flags);
+
+  while( iterator.hasNext() ) {
+    iterator.next();
+    if( qregex.indexIn(iterator.fileInfo().filePath(), 0) != -1 ) {
+      list->append( iterator.fileInfo().filePath().toLocal8Bit().data() );
+    }
+  }
+
+  return list;
 }
 
 char * os::home()
