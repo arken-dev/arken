@@ -20,6 +20,7 @@ SOURCES += base/math.cpp            \
            classes/OThread.cpp      \
            classes/OHttpClient.cpp  \
            classes/OHttpParser.cpp  \
+           classes/OStringList.cpp  \
            modules/base64.cpp       \
            modules/digest.cpp       \
            modules/http.cpp         \
