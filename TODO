@@ -34,3 +34,5 @@ os include ruby File, FileUtils, Dir, Process
 Date, DaTime, active support
 ---
 regex
+---
+utf8
