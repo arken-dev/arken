@@ -23,5 +23,14 @@ class NameRoutine actionTask ???
 ---
 helper revision
 
-string revision
-https://en.wikipedia.org/wiki/Comparison_of_programming_languages_%28string_functions%29
+-----
+-- FOUNDATION
+----
+
+string include ruby, ActiveSuport, others https://en.wikipedia.org/wiki/Comparison_of_programming_languages_%28string_functions%29
+---
+os include ruby File, FileUtils, Dir, Process
+---
+Date, DaTime, active support
+---
+regex
