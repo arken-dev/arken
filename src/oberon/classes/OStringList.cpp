@@ -99,6 +99,16 @@ const char * OStringList::at(int pos)
   return m_array[pos];
 }
 
+const char * OStringList::first()
+{
+  return m_array[0];
+}
+
+const char * OStringList::last()
+{
+  return m_array[m_size-1];
+}
+
 int OStringList::size()
 {
   return m_size;

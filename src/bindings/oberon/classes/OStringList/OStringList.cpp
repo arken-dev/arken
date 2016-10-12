@@ -54,6 +54,20 @@ lua_OStringListInstanceMethodAt( lua_State *L ) {
 }
 
 static int
+lua_OStringListInstanceMethodFirst( lua_State *L ) {
+  OStringList * udata  = checkOStringList( L );
+  lua_pushstring(L, udata->first());
+  return 1;
+}
+
+static int
+lua_OStringListInstanceMethodLast( lua_State *L ) {
+  OStringList * udata  = checkOStringList( L );
+  lua_pushstring(L, udata->last());
+  return 1;
+}
+
+static int
 lua_OStringListInstanceMethodReplace( lua_State *L ) {
   OStringList * udata  = checkOStringList( L );
   int pos = luaL_checkint(L, 2);
@@ -93,6 +107,8 @@ static const
 luaL_reg OStringListInstanceMethods[] = {
   {"append", lua_OStringListInstanceMethodAppend},
   {"at", lua_OStringListInstanceMethodAt},
+  {"first", lua_OStringListInstanceMethodFirst},
+  {"last", lua_OStringListInstanceMethodLast},
   {"join", lua_OStringListInstanceMethodJoin},
   {"size", lua_OStringListInstanceMethodSize},
   {"replace", lua_OStringListInstanceMethodReplace},
