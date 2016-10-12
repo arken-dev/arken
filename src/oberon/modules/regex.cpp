@@ -2,6 +2,7 @@
 #include <oberon/modules/regex.h>
 #include <QRegExp>
 #include <QString>
+#include <OStringList>
 #include <QByteArray>
 #include <cstring>
 
@@ -10,6 +11,24 @@ bool regex::ematch(const char * string, const char * regex)
   return QRegExp(regex).exactMatch(string);
 }
 
+OStringList * regex::split(const char * string, const char * regex)
+{
+  QRegExp qregex(regex);
+  OStringList *list = new OStringList();
+  QString qstr(string);
+  int older = 0;
+  int poss  = 0;
+  while ((poss = qregex.indexIn(string, poss)) != -1) {
+    list->append(qstr.mid(older, poss-older).replace(qregex, "").toLocal8Bit());
+    older = poss;
+    poss  += qregex.matchedLength();
+  }
+  if( older < qstr.size() ) {
+     list->append(qstr.mid(older, qstr.size() -older).replace(qregex, "").toLocal8Bit());
+  }
+
+  return list;
+}
 
 bool regex::match(const char * string, const char * regex)
 {

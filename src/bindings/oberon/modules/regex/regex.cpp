@@ -10,6 +10,14 @@ static int lua_oberon_regex_match( lua_State *L ) {
   return 1;
 }
 
+static int lua_oberon_regex_ematch( lua_State *L ) {
+  const char * string = luaL_checkstring(L, 1);
+  const char * regex  = luaL_checkstring(L, 2);
+  bool result = regex::ematch(string, regex);
+  lua_pushboolean( L, result );
+  return 1;
+}
+
 static int lua_oberon_regex_replace( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   const char * regex  = luaL_checkstring(L, 2);
@@ -20,11 +28,26 @@ static int lua_oberon_regex_replace( lua_State *L ) {
   return 1;
 }
 
+static int lua_oberon_regex_split( lua_State *L ) {
+  const char  * string = luaL_checkstring(L, 1);
+  const char  * regex  = luaL_checkstring(L, 2);
+  OStringList * list   = regex::split(string, regex);
+  OStringList **ptr = (OStringList **)lua_newuserdata(L, sizeof(OStringList*));
+  *ptr = list;
+  luaL_getmetatable(L, "OStringList.metatable");
+  lua_setmetatable(L, -2);
+
+  return 1;
+}
+
+
 extern "C" {
   int luaopen_oberon_regex( lua_State *L ) {
     static const luaL_reg Map[] = {
+      {"ematch",  lua_oberon_regex_ematch},
       {"match",   lua_oberon_regex_match},
       {"replace", lua_oberon_regex_replace},
+      {"split",   lua_oberon_regex_split},
       {NULL, NULL}
     };
     luaL_register(L, "regex", Map);
