@@ -18,6 +18,7 @@ class OStringList
   OStringList &operator << (const char * value);
   const char *operator[](int pos);
   const char *at(int pos);
+  char * join(const char * separator);
   int size();
 };
 

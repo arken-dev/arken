@@ -103,3 +103,35 @@ int OStringList::size()
 {
   return m_size;
 }
+
+char * OStringList::join(const char * separator)
+{
+  char * result;
+  int size = 0;
+  int tmp_size = 0;
+  int result_size = 0;
+  int size_separator = strlen(separator);
+
+  for( int i = 0; i < m_size; i++ ) {
+    size += strlen(m_array[i]);
+    size += size_separator;
+  }
+
+  result = new char[size + 1];
+   for( int i = 0; i < m_size; i++ ) {
+     tmp_size = strlen(m_array[i]);
+     for( int j = 0; j < tmp_size; j++ ) {
+       result[result_size] = m_array[i][j];
+       result_size ++;
+     }
+     if( i < m_size -1 ) {
+       for( int h = 0; h < size_separator; h++ ) {
+         result[result_size] = separator[h];
+         result_size ++;
+       }
+     }
+  }
+  result[result_size] = '\0';
+
+  return result;
+}
