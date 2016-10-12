@@ -63,10 +63,12 @@ lua_OStringListInstanceMethodReplace( lua_State *L ) {
 }
 
 static int
-lua_OStringListInstanceMethodGet( lua_State *L ) {
-  OStringList * udata  = checkOStringList( L );
-  int pos = luaL_checkint(L, 2);
-  lua_pushstring(L, (*udata)[pos]);
+lua_OStringListInstanceMethodJoin( lua_State *L ) {
+  OStringList * udata     = checkOStringList( L );
+  const char  * separator = luaL_checkstring(L, 2);
+  char * result = udata->join(separator);
+  lua_pushstring(L, result);
+  delete[] result;
   return 1;
 }
 
@@ -89,11 +91,11 @@ lua_OStringListInstanceMethodSize( lua_State *L ) {
 
 static const
 luaL_reg OStringListInstanceMethods[] = {
-  {"replace", lua_OStringListInstanceMethodReplace},
-  {"at", lua_OStringListInstanceMethodAt},
-  {"size", lua_OStringListInstanceMethodSize},
   {"append", lua_OStringListInstanceMethodAppend},
-  {"get", lua_OStringListInstanceMethodGet},
+  {"at", lua_OStringListInstanceMethodAt},
+  {"join", lua_OStringListInstanceMethodJoin},
+  {"size", lua_OStringListInstanceMethodSize},
+  {"replace", lua_OStringListInstanceMethodReplace},
   {"__gc", lua_OStringListInstanceMethodDestruct},
   {NULL, NULL}
 };
