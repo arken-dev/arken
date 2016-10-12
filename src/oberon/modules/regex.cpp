@@ -11,6 +11,16 @@ bool regex::ematch(const char * string, const char * regex)
   return QRegExp(regex).exactMatch(string);
 }
 
+int regex::index(const char * string, const char * regex)
+{
+  return QRegExp(regex).indexIn(string, 0);
+}
+
+int regex::index(const char * string, const char * regex, int offset)
+{
+  return QRegExp(regex).indexIn(string, offset);
+}
+
 OStringList * regex::split(const char * string, const char * regex)
 {
   QRegExp qregex(regex);
