@@ -10,5 +10,6 @@ namespace oberon {
     OStringList * capture(const char * string, const char * regex, int offset);
     bool match(const char * string, const char * regex);
     char * replace(const char * string, const char * regex, const char * after);
+    OStringList * scan(const char * string, const char * regex);
   }
 }

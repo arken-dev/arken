@@ -80,3 +80,33 @@ char * regex::replace(const char * string, const char * regex, const char * afte
   strcpy(result, aft.toLocal8Bit().data());
   return result;
 }
+
+OStringList * regex::scan(const char * string, const char * regex)
+{
+  QRegExp qregex(regex);
+  OStringList *list = new OStringList();
+  QString qstr(string);
+  int older = 0;
+  int poss  = 0;
+  while ((poss = qregex.indexIn(string, poss)) != -1) {
+    QStringList qlist = qregex.capturedTexts();
+    if( qlist.size() > 0 ) {
+       QString value = qlist.at(0);
+       if( ! value.isEmpty() ) {
+         list->append(value.toLocal8Bit());
+       }
+    }
+    older = poss;
+    poss  += qregex.matchedLength();
+  }
+  if( older < qstr.size() ) {
+     QStringList qlist = qregex.capturedTexts();
+     if( qlist.size() > 0 ) {
+       QString value = qlist.at(0);
+       if( ! value.isEmpty() ) {
+         list->append(value.toLocal8Bit());
+       }
+     }
+  }
+  return list;
+}
