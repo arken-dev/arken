@@ -7,32 +7,6 @@
 #include <QByteArray>
 #include <cstring>
 
-OStringList * regex::capture(const char * string, const char * regex)
-{
-  OStringList * list = new OStringList();
-  QRegExp qregex(regex);
-  qregex.indexIn(string, 0);
-  QStringList qlist = qregex.capturedTexts();
-  for(int i; i < qlist.size(); i++) {
-    list->append(qlist[i].toLocal8Bit());
-  }
-
-  return list;
-}
-
-OStringList * regex::capture(const char * string, const char * regex, int offset)
-{
-  OStringList * list = new OStringList();
-  QRegExp qregex(regex);
-  qregex.indexIn(string, offset);
-  QStringList qlist = qregex.capturedTexts();
-  for(int i; i < qlist.size(); i++) {
-    list->append(qlist[i].toLocal8Bit());
-  }
-
-  return list;
-}
-
 bool regex::ematch(const char * string, const char * regex)
 {
   return QRegExp(regex).exactMatch(string);
