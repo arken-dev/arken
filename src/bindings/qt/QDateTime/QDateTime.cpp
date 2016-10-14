@@ -74,7 +74,7 @@ lua_QDateTimeInstanceMethodToString( lua_State *L ) {
   if(lua_isstring(L, 2)) {
     str = luaL_checkstring(L, 2);
   } else {
-    str = "yyyy/MM/dd hh:mm:ss";
+    str = "yyyy/MM/dd hh:mm:ss.zzz";
   }
 
   lua_pushstring(L, dt->toString(str).toLocal8Bit().data());
