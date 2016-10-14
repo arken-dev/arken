@@ -91,6 +91,15 @@ lua_QDateTimeInstanceMethodEqual( lua_State *L ) {
 }
 
 static int
+lua_QDateTimeInstanceMethodLessThan( lua_State *L ) {
+  QDateTime *dt1 = checkQDateTime( L );
+  QDateTime *dt2 = *(QDateTime **) luaL_checkudata(L, 2, "QDateTime.metatable");
+
+  lua_pushboolean(L, dt1->toMSecsSinceEpoch() < dt2->toMSecsSinceEpoch());
+  return 1;
+}
+
+static int
 lua_QDateTimeInstanceMethodAddDays( lua_State *L ) {
   QDateTime *dt   = checkQDateTime( L );
   qint64 days     = luaL_checkinteger(L, 2);
@@ -286,6 +295,7 @@ luaL_reg QDateTimeInstanceMethods[] = {
   {"addMSecs", lua_QDateTimeInstanceMethodAddMSecs},
   {"addDays", lua_QDateTimeInstanceMethodAddDays},
   {"toString", lua_QDateTimeInstanceMethodToString},
+  {"__lt", lua_QDateTimeInstanceMethodLessThan},
   {"__eq", lua_QDateTimeInstanceMethodEqual},
   {"__tostring", lua_QDateTimeInstanceMethodToString},
   {"__gc", lua_QDateTimeInstanceMethodDestruct},
