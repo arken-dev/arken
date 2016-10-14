@@ -4,18 +4,30 @@ ActiveRecord_Adapter.reserved = {'new_record', 'class', 'errors'}
 
 ActiveRecord_Adapter.errors = {}
 
+-------------------------------------------------------------------------------
+-- FORMAT
+-------------------------------------------------------------------------------
+
 local format = {}
+
 format.boolean = function(value)
   return "'".. tostring(value) .. "'"
 end
+
 format.number = function(value)
   return tostring(value):replace('.', ''):replace(',', '.')
 end
+
 format.string = function(value)
   return "'".. value .. "'"
 end
+
 format.table = function(value)
   return table.concat(value, ',')
+end
+
+format.userdata = function(value)
+  return "'" .. value:__tostring() .. "'"
 end
 
 --------------------------------------------------------------------------------
