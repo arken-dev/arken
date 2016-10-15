@@ -86,9 +86,9 @@ function TestTask:notify(params)
         count[result.status] = count[result.status] + 1
         if result.status ~= 'ok' then
           buffer = buffer .. description .. ' '
-          if result.msg and result.msg:len() > 0  then
+          if result.msg and tostring(result.msg):len() > 0  then
             buffer = buffer .. ' ' .. result.status .. '\n'
-            buffer = '\n' .. buffer .. result.msg .. '\n'--print(result.msg)
+            buffer = '\n' .. buffer .. tostring(result.msg) .. '\n'--print(result.msg)
           end
         end
       end
