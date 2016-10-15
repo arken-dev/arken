@@ -1,3 +1,6 @@
+require 'regex'
+require 'OStringList'
+
 -------------------------------------------------------------------------------
 -- TEST MODULE
 -------------------------------------------------------------------------------
@@ -33,7 +36,14 @@ function test.process(file_name)
       if status == false then
         if type(message) == 'table' then
           if message.kind == 'test' then
-            results[description] = {status = 'fail', msg = message.msg .. '\n' .. tostring(message.traceback)}
+            local trace = ""
+            local list  = regex.split(message.traceback, "\n")
+            for i = 1, list:size() do
+              if list:at(i):contains(file_name) then
+                trace = trace .. list:at(i):simplified() .. '\n'
+              end
+            end
+            results[description] = {status = 'fail', msg = message.msg .. '\n' .. tostring(trace)}
             io.write(colorize.format('.', 'red'))
           else
             local text = ""
