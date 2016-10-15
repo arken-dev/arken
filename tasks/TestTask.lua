@@ -38,7 +38,7 @@ function TestTask:console(params)
       --print(result.status)
       count[result.status] = count[result.status] + 1
       print(colorize.format(description, color[result.status]))
-      if result.msg:len() > 0  then
+      if tostring(result.msg):len() > 0  then
         print(result.msg)
       end
     end
