@@ -37,7 +37,9 @@ Contract['create'] = function(table, contract)
     t.errors = {}
     table[prepare](t, params)
     table[validate](t, params)
+    if t.bang then
     t:bang()
+    end
     table[before](t, params)
     local result = table[body](t, params)
     table[after](t, params)

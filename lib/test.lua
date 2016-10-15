@@ -37,7 +37,7 @@ function test.process(file_name)
         if type(message) == 'table' then
           if message.kind == 'test' then
             local trace = ""
-            local list  = regex.split(message.traceback, "\n")
+            local list  = regex.split(tostring(message.traceback), "\n")
             for i = 1, list:size() do
               if list:at(i):contains(file_name) then
                 trace = trace .. list:at(i):simplified() .. '\n'
