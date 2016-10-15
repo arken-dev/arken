@@ -49,11 +49,20 @@ function test.process(file_name)
             local text = ""
             local traceback = message.traceback
             message.traceback = nil
+            local trace = ""
+            local list  = regex.split(traceback, "\n")
+            for i = 1, list:size() do
+              if list:at(i):contains(file_name) then
+                trace = trace .. list:at(i):simplified() .. '\n'
+              end
+            end
+            trace = trace .. '\n\n' .. traceback
+
             for k, v in pairs(message) do
               text = text .. k .. ': ' .. v .. '\n'
             end
-            if traceback then
-              text = text .. '\n' .. traceback
+            if trace then
+              text = text .. '\n' .. trace
             end
             results[description] = {status = 'err', msg = text}
             io.write(colorize.format('.', 'red'))
