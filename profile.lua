@@ -49,15 +49,6 @@ require "QFileInfoList"
 
 require "QDateTime"
 
-if OBERON_ENV == 'test' then
-  QDateTime.currentDateTimeOld = QDateTime.currentDateTime
-  QDateTime.currentDateTime = function()
-    local format = "yyyy/MM/dd hh:mm:ss."
-    local clock  = tostring(os.clock())
-    return QDateTime.currentDateTimeOld():toString(format) .. clock:mid(2, #clock)
-  end
-end
-
 -------------------------------------------------------------------------------
 -- OOP
 -------------------------------------------------------------------------------

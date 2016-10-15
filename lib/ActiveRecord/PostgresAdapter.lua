@@ -67,7 +67,7 @@ function ActiveRecord_PostgresAdapter:insert(record)
   local col = ''
   local val = ''
   if self:columns().created_at then
-    record.created_at = QDateTime.currentDateTime():toString()
+    record.created_at = self:createTimestamp()
   end
   if self:columns().updated_at then
     record.updated_at = record.created_at

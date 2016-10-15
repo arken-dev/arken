@@ -373,4 +373,18 @@ function ActiveRecord_Adapter:sql(name, params)
   return (sql .. where)
 end
 
+-------------------------------------------------------------------------------
+-- CREATE TIMESTAMP
+-------------------------------------------------------------------------------
+
+function ActiveRecord_Adapter:createTimestamp()
+  if OBERON_ENV == 'test' then
+    local format = "yyyy/MM/dd hh:mm:ss."
+    local clock  = tostring(os.clock())
+    return QDateTime.currentDateTime():toString(format) .. clock:mid(2, #clock)
+  else
+    return QDateTime.currentDateTime():toString()
+  end
+end
+
 return ActiveRecord_Adapter
