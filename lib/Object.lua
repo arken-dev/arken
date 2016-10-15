@@ -99,4 +99,22 @@ function Object:isBlank(column)
   end
 end
 
+--------------------------------------------------------------------------------
+-- BANG !
+--------------------------------------------------------------------------------
+
+function Object:bang()
+  local flag = false
+  for k, v in pairs(self.errors) do
+    flag = true
+    break
+  end
+  if flag then
+    local errors  = self.errors
+    self.errors = {}
+    errors.traceback = debug.traceback()
+    error(errors)
+  end
+end
+
 return Object
