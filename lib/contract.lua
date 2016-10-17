@@ -1,12 +1,43 @@
-local Contract = {}
--- deve emitir erro se nao tiver dois parametros
-Contract['create'] = function(table, contract)
+local contract = {}
 
-  local prepare  = contract .. 'Prepare'
-  local validate = contract .. 'Validate'
-  local before   = contract .. 'Before'
-  local body     = contract .. "Body"
-  local after    = contract .. "After"
+contract.clear = function(t)
+  if type(t.errors) == 'table' then
+    for key, _ in pairs(t.errors) do
+      t.errors[key] = nil
+    end
+  end
+end
+
+--------------------------------------------------------------------------------
+-- BANG !
+--------------------------------------------------------------------------------
+
+contract.bang = function(errors)
+  if type(errors) == 'table' then
+    local flag = false
+    for k, v in pairs(errors) do
+      flag = true
+      break
+    end
+    if flag then
+      errors.traceback = debug.traceback()
+      error(errors)
+    end
+  end
+end
+
+--------------------------------------------------------------------------------
+-- CREATE
+--------------------------------------------------------------------------------
+
+-- deve emitir erro se nao tiver dois parametros
+contract['create'] = function(table, name)
+
+  local prepare  = name .. 'Prepare'
+  local validate = name .. 'Validate'
+  local before   = name .. 'Before'
+  local body     = name .. "Body"
+  local after    = name .. "After"
 
   -- check if not exists contract_prepare
   if table[prepare] == nil then
@@ -29,17 +60,15 @@ Contract['create'] = function(table, contract)
   end
 
   -- contract is now "contract_body"
-  func = table[contract]
+  func = table[name]
   table[body] = func
 
   -- contract current
-  table[contract] = function(t, params)
-    t.errors = {}
+  table[name] = function(t, params)
+    contract.clear(t)
     table[prepare](t, params)
-    table[validate](t, params)
-    if t.bang then
-    t:bang()
-    end
+    local errors = table[validate](t, params) or t.errors
+    contract.bang(errors)
     table[before](t, params)
     local result = table[body](t, params)
     table[after](t, params)
@@ -48,4 +77,4 @@ Contract['create'] = function(table, contract)
 
 end
 
-return Contract
+return contract
