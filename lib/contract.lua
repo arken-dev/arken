@@ -1,5 +1,9 @@
 local contract = {}
 
+--------------------------------------------------------------------------------
+-- CLEAR
+--------------------------------------------------------------------------------
+
 contract.clear = function(t)
   if type(t.errors) == 'table' then
     for key, _ in pairs(t.errors) do
@@ -31,7 +35,7 @@ end
 --------------------------------------------------------------------------------
 
 -- deve emitir erro se nao tiver dois parametros
-contract['create'] = function(table, name)
+contract.create = function(table, name)
 
   local prepare  = name .. 'Prepare'
   local validate = name .. 'Validate'
