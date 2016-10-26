@@ -193,11 +193,11 @@ static const luaL_Reg R_pg_functions[] = {
 
 /* connection objects methods */
 static const luaL_Reg R_con_methods[] = {
-	{"escape", L_con_escape},
-	{"exec",   L_con_exec},
-	{"query",  L_con_query},
+	{"escape",     L_con_escape},
+	{"exec",       L_con_exec},
+	{"query",      L_con_query},
 	{"notifywait", L_con_notifywait},
-	{"close", L_con_close},
+	{"close",      L_con_close},
 	{NULL, NULL}
 };
 
@@ -209,6 +209,7 @@ static const luaL_Reg R_res_methods[] = {
 	{"cols",  L_res_cols},
 	{"rows",  L_res_rows},
 	{"clear", L_res_clear},
+	{"at",    L_res_at},
 	{NULL, NULL}
 };
 
@@ -555,6 +556,20 @@ int L_res_seek(lua_State *L) {
     return 0;
   }
 }
+
+int L_res_at(lua_State *L) {
+  rs_t *rs = luaL_checkresult(L, 1);
+  int  row = luaL_checkint(L, 2) - 1;
+  int rows = PQntuples(rs->ptr);
+  if (row < rows) {
+    lua_pushpgrow_assoc(L, rs->ptr, row);
+    return 1;
+  } else {
+    /* no more values to return */
+    return 0;
+  }
+}
+
 
 int L_res_index(lua_State *L) {
   rs_t *rs = luaL_checkarray(L, 1);
