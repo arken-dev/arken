@@ -19,3 +19,5 @@ SOURCES += sha3.cpp
 
 unix:LIBS += ../../../../../vendors/liboberon.so
 win32:LIBS += ../../../../../vendors/oberon.dll
+
+win32:LIBS += ../../../../../vendors/lua51.dll

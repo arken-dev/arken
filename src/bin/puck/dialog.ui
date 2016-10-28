@@ -13,7 +13,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>91</height>
+    <height>90</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -25,7 +25,7 @@
   <property name="minimumSize">
    <size>
     <width>400</width>
-    <height>91</height>
+    <height>90</height>
    </size>
   </property>
   <property name="maximumSize">
@@ -49,7 +49,7 @@
      <x>0</x>
      <y>0</y>
      <width>400</width>
-     <height>91</height>
+     <height>90</height>
     </rect>
    </property>
    <property name="sizePolicy">
@@ -65,10 +65,10 @@ background-color: qlineargradient(spread:pad, x1:1, y1:0.988636, x2:0.943182, y2
    <widget class="QWidget" name="conteudo" native="true">
     <property name="geometry">
      <rect>
-      <x>40</x>
+      <x>25</x>
       <y>0</y>
-      <width>361</width>
-      <height>91</height>
+      <width>375</width>
+      <height>90</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -77,29 +77,34 @@ background-color: qlineargradient(spread:pad, x1:1, y1:0.988636, x2:0.943182, y2
     <widget class="QPushButton" name="pushButton">
      <property name="geometry">
       <rect>
-       <x>320</x>
-       <y>0</y>
-       <width>31</width>
-       <height>31</height>
+       <x>350</x>
+       <y>5</y>
+       <width>16</width>
+       <height>16</height>
       </rect>
      </property>
+     <property name="styleSheet">
+      <string notr="true">image: url(:/images/close.png);
+outline: none;
+border: none;</string>
+     </property>
      <property name="text">
-      <string>x</string>
+      <string/>
      </property>
      <property name="autoDefault">
       <bool>false</bool>
      </property>
      <property name="flat">
-      <bool>true</bool>
+      <bool>false</bool>
      </property>
     </widget>
     <widget class="QLabel" name="notify_label">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>30</y>
-       <width>300</width>
-       <height>51</height>
+       <x>5</x>
+       <y>25</y>
+       <width>360</width>
+       <height>60</height>
       </rect>
      </property>
      <property name="sizePolicy">
@@ -110,13 +115,13 @@ background-color: qlineargradient(spread:pad, x1:1, y1:0.988636, x2:0.943182, y2
      </property>
      <property name="minimumSize">
       <size>
-       <width>300</width>
+       <width>360</width>
        <height>0</height>
       </size>
      </property>
      <property name="maximumSize">
       <size>
-       <width>300</width>
+       <width>350</width>
        <height>16777215</height>
       </size>
      </property>
@@ -128,14 +133,17 @@ background-color: qlineargradient(spread:pad, x1:1, y1:0.988636, x2:0.943182, y2
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
-       <pointsize>11</pointsize>
+       <family>Verdana</family>
+       <pointsize>8</pointsize>
        <weight>50</weight>
        <bold>false</bold>
       </font>
      </property>
      <property name="cursor">
       <cursorShape>ArrowCursor</cursorShape>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
      </property>
      <property name="inputMethodHints">
       <set>Qt::ImhMultiLine</set>
@@ -162,18 +170,24 @@ background-color: qlineargradient(spread:pad, x1:1, y1:0.988636, x2:0.943182, y2
     <widget class="QLabel" name="label">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>10</y>
-       <width>331</width>
-       <height>21</height>
+       <x>5</x>
+       <y>5</y>
+       <width>335</width>
+       <height>15</height>
       </rect>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>335</width>
+       <height>20</height>
+      </size>
      </property>
      <property name="font">
       <font>
-       <family>Arial Black</family>
-       <pointsize>12</pointsize>
-       <weight>50</weight>
-       <bold>false</bold>
+       <family>Verdana</family>
+       <pointsize>8</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
       </font>
      </property>
      <property name="text">

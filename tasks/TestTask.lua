@@ -3,7 +3,7 @@ OBERON_ENV = os.getenv("OBERON_ENV") or "test"
 local colorize = require 'colorize'
 local test     = require 'test'
 local TestTask = Class.new("TestTask")
-
+--[[
 function string:escape()
   local tmp = self
   tmp = tmp:swap("&",  "&amp;")
@@ -14,7 +14,7 @@ function string:escape()
 
   return tmp
 end
-
+]]
 function TestTask:console(params)
   t = os.microtime()
 
@@ -78,35 +78,36 @@ function TestTask:notify(params)
       if titulo:len() > 0 then
         titulo = titulo, ', '
       end
-      titulo = titulo .. file_name
+      titulo = titulo .. file_name:swap('specs/models/', '')
     end
 
     for file_name, result in pairs(results) do
       for description, result in pairs(result) do
         count[result.status] = count[result.status] + 1
         if result.status ~= 'ok' then
-          buffer = buffer .. description .. ' '
+          buffer = buffer .. description .. '\n'
           if result.msg and tostring(result.msg):len() > 0  then
-            buffer = buffer .. ' ' .. result.status .. '\n'
-            buffer = '\n' .. buffer .. tostring(result.msg) .. '\n'--print(result.msg)
+            --buffer = buffer .. ' ' .. result.status .. '\n'
+            buffer = buffer .. '\n' .. tostring(result.msg) .. '\n'--print(result.msg)
           end
         end
       end
       print("")
-      rodape = "\n"
+      rodape = ""
       for i, v in pairs(count) do
-        if rodape:len() > 0 then
+        if rodape:len() > 1 then
           rodape = rodape .. ', '
         end
         rodape = rodape .. v .. " " .. i
       end
-      buffer = buffer .. '\n' .. rodape .. "\n"
-      buffer = buffer .. 'Time: ' .. tostring((QDateTime.currentMSecsSinceEpoch() - t) / 1000.0)
+      buffer = buffer .. '\n' .. rodape
+      buffer = buffer .. '\n\nFinished in ' .. tostring((QDateTime.currentMSecsSinceEpoch() - t) / 1000.0) .. ' seconds'
       print(buffer:replace('\n', '8'))
       icon = "error"
       --buffer = buffer:replace('\n\n', '')
-      print("notify-send -t 10000 " .. "'" .. titulo .. "' '\'" .. buffer:escape() .. "\'")
-      os.execute("notify-send -t 10000 " .. "'" .. titulo .. "' \'" .. buffer:escape() .. "\'")
+      print(titulo .. "' '\'" .. buffer:escapeHtml() .. "\'")
+      --os.execute("notify-send -t 10000 " .. "'" .. titulo .. "' \'" .. buffer:escapeHtml() .. "\'")
+      os.execute("puck -timeout 10 " .. " -titulo '" .. titulo .. "' -texto \'" .. buffer:escapeHtml() .. "\' &")
     end
     while os.ctime(file) <= time  do
       os.sleep(0.15)

@@ -3,5 +3,6 @@
 ######################################################################
 
 TEMPLATE = subdirs
-SUBDIRS = oberon \
-          miranda
+SUBDIRS = oberon  \
+          miranda \
+          puck

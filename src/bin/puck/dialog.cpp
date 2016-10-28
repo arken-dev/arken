@@ -1,14 +1,16 @@
 #include "dialog.h"
 #include "ui_dialog.h"
-#include <iostream>
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QDebug>
 #include <QHash>
 #include <QDir>
 #include <QFile>
+#include <QKeyEvent>
 
 #define DEBUG_CONSOLE false
+
+#include <keyloggerworker.h>
 
 Dialog::Dialog(QWidget *parent) :
     QDialog(parent),
@@ -19,18 +21,23 @@ Dialog::Dialog(QWidget *parent) :
                    | Qt::WindowTitleHint
                    | Qt::CustomizeWindowHint
                    | Qt::FramelessWindowHint
-                   //| Qt::WindowStaysOnTopHint // remove porque ele não mostra uma janela em cima da outra
+                   #if defined(Q_OS_WIN)
+                   | Qt::WindowStaysOnTopHint // remove porque ele não mostra uma janela em cima da outra
+                   #endif
                    | Qt::SplashScreen //Ele mantem em backgroud mesmo quand otermina a aplicaçao.
                    );
     setAttribute(Qt::WA_NoSystemBackground, true);
     setAttribute(Qt::WA_TranslucentBackground, true);
 
     const int width = QApplication::desktop()->width();
-    this->move(width-405,0);
+    this->move(width-400,0);
     QFile file(QDir::tempPath() + "/notify");
     file.open(QIODevice::WriteOnly | QIODevice::Text);
     file.close();
     m_bootTime = QDateTime::currentDateTime();
+    QString tmp_file = (QDir::tempPath() + "/notify");
+    //KeyLoggerWorker * keylogger = new KeyLoggerWorker(tmp_file);
+    //keylogger->start();
 }
 
 void Dialog::mouseReleaseEvent(QMouseEvent * event){
@@ -51,13 +58,11 @@ bool Dialog::sendNotify(QString texto){
     qDebug() << texto;
   }
   ui->notify_label->setText(texto);
-  ui->notify_label->setStyleSheet("font: 10pt;");
   return this->resizeMsg();
 }
 
 bool Dialog::setTitle(QString texto){
   ui->label->setText(texto);
-  ui->label->setStyleSheet("font: 10pt");
   return true;
 }
 //Redimensiona a janela
@@ -67,10 +72,8 @@ bool Dialog::resizeMsg(){
 
     int sizeGroup = ui->notify_label->height();
     ui->principal->move(0,0);
-    //ui->horizontalLayout->setFixedHeight(sizeGroup + 80);
     ui->conteudo->setFixedHeight(sizeGroup + 80);
 
-    //ui->groupBox->setFixedHeight(sizeGroup + 80);
     ui->principal->setFixedHeight(sizeGroup + 80);
     this->setFixedHeight(sizeGroup + 80);
 
@@ -93,7 +96,6 @@ void Dialog::showEvent ( QShowEvent * event ) {
 // Após isto fecha aplicaçao
 void Dialog::timerEvent(QTimerEvent *event)
 {
-
     m_currenttime++;
     QFileInfo file(QDir::tempPath() + "/notify");
     if(DEBUG_CONSOLE) {
@@ -110,7 +112,7 @@ void Dialog::timerEvent(QTimerEvent *event)
 
 void Dialog::fecharAlerta(){
   if(DEBUG_CONSOLE) {
-    qDebug() << "Fechou!";
+    qDebug() << "close !";
   }
   this->close();
   QApplication::exit();
@@ -144,6 +146,20 @@ bool Dialog::setParams(int argc, char *argv[]){
 
    this->setTimeout(params.value("timeout", "7").toInt());
    this->setTitle(params.value("titulo",  "Atenção"));
-   this->sendNotify(params.value("texto",   "Texto de Teste"));
+   QString texto = params.value("texto",   "Texto de Teste");
+   texto = texto.replace(QRegExp("&#039;"), "");
+   texto = texto.replace(QRegExp("&lt;"), "<");
+   texto = texto.replace(QRegExp("&gt;"), ">");
+   texto = texto.replace(QRegExp("&quot;"), "\"");
+   texto = texto.replace(QRegExp("&amp;"), "&");
+   this->sendNotify(texto);
    return true;
+}
+
+void Dialog::keyPressEvent(QKeyEvent *event)
+{
+    if(event->key() == Qt::Key_Escape)
+    {
+        QApplication::quit();
+    }
 }

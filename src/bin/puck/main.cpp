@@ -10,8 +10,5 @@ int main(int argc, char *argv[])
     Dialog w;
     w.setParams(argc, argv);
     w.show();
-    w.focusWidget();
-
-    //qDebug() << "teste";
     return a.exec();
 }

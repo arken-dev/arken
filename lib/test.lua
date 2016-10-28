@@ -1,4 +1,4 @@
-require 'regex'
+require 'oberon.regex'
 require 'OStringList'
 
 -------------------------------------------------------------------------------

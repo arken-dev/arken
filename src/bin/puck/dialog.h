@@ -30,6 +30,7 @@ public:
     int  timeout();
     bool setTitle(QString texto);
     bool setParams(int argc, char *argv[]);
+    void keyPressEvent(QKeyEvent *event);
 private slots:
     bool resizeMsg();
     void on_pushButton_clicked();
