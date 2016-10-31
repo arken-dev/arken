@@ -16,6 +16,9 @@ function test.process(file_name)
     results[1] = {['file not load'] = specs, status = 'err', msg = specs}
     return results
   end
+  if specs == nil then
+    error "empty tests..."
+  end
   local before    = specs.before    or function() end
   local after     = specs.after     or function() end
   local beforeAll = specs.beforeAll or function() end

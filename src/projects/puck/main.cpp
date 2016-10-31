@@ -2,13 +2,17 @@
 #include <iostream>
 #include <QApplication>
 #include <QDebug>
+#include <puck.h>
 
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
+    QApplication app(argc, argv);
+    Puck puck(app);
+    /*
     Dialog w;
     w.setParams(argc, argv);
     w.show();
-    return a.exec();
+    */
+    return app.exec();
 }

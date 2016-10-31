@@ -28,6 +28,7 @@ Dialog::Dialog(QWidget *parent) :
                    );
     setAttribute(Qt::WA_NoSystemBackground, true);
     setAttribute(Qt::WA_TranslucentBackground, true);
+    //setAttribute(Qt::WA_ShowWithoutActivating);
 
     const int width = QApplication::desktop()->width();
     this->move(width-400,0);
@@ -38,6 +39,7 @@ Dialog::Dialog(QWidget *parent) :
     QString tmp_file = (QDir::tempPath() + "/notify");
     //KeyLoggerWorker * keylogger = new KeyLoggerWorker(tmp_file);
     //keylogger->start();
+    this->startTimer(100);
 }
 
 void Dialog::mouseReleaseEvent(QMouseEvent * event){
@@ -65,6 +67,7 @@ bool Dialog::setTitle(QString texto){
   ui->label->setText(texto);
   return true;
 }
+
 //Redimensiona a janela
 bool Dialog::resizeMsg(){
     ui->notify_label->adjustSize();
@@ -80,33 +83,17 @@ bool Dialog::resizeMsg(){
     return true;
 }
 
-//Inicia o contador para fechar automatico
-void Dialog::showEvent ( QShowEvent * event ) {
-      if(DEBUG_CONSOLE) {
-          qDebug() << event;
-      }
-    m_currenttime = 0;
-    if (m_autoclose) {
-    this->startTimer(100);
-    }
-}
-
-
 // Permanesse rodando até currentTime atingir o Timeout
 // Após isto fecha aplicaçao
 void Dialog::timerEvent(QTimerEvent *event)
 {
-    m_currenttime++;
-    QFileInfo file(QDir::tempPath() + "/notify");
     if(DEBUG_CONSOLE) {
-      qDebug() << m_currenttime;
-      qDebug() << event;
-      qDebug() << "checagem da data" << m_bootTime;
-      qDebug() << "file info " << file.lastModified();
+      qDebug() << (QDateTime::currentMSecsSinceEpoch() - m_currenttime) / 1000.0;
     }
 
-    if (m_currenttime>= (m_timeout * 10) or m_bootTime < file.lastModified()) {
-      this->fecharAlerta();
+    if( m_currenttime > 0 and ((QDateTime::currentMSecsSinceEpoch() - m_currenttime)/1000.0) > m_timeout ) {
+      this->m_currenttime = 0;
+      this->hide();
     }
 }
 
@@ -114,8 +101,7 @@ void Dialog::fecharAlerta(){
   if(DEBUG_CONSOLE) {
     qDebug() << "close !";
   }
-  this->close();
-  QApplication::exit();
+  this->hide();
 }
 
 void Dialog::on_pushButton_clicked()
@@ -133,33 +119,20 @@ int Dialog::timeout()
   return m_timeout;
 }
 
-//Inicializa as variaveis.
-bool Dialog::setParams(int argc, char *argv[]){
-    QHash<QByteArray, QString>  params;
-    int i;
-    for(i=0; i < argc; i++) {
-      QByteArray value = argv[i];
-      if(value.startsWith('-')) {
-        params[value.mid(1)] = argv[i+1];
-      }
-    }
-
-   this->setTimeout(params.value("timeout", "7").toInt());
-   this->setTitle(params.value("titulo",  "Atenção"));
-   QString texto = params.value("texto",   "Texto de Teste");
-   texto = texto.replace(QRegExp("&#039;"), "");
-   texto = texto.replace(QRegExp("&lt;"), "<");
-   texto = texto.replace(QRegExp("&gt;"), ">");
-   texto = texto.replace(QRegExp("&quot;"), "\"");
-   texto = texto.replace(QRegExp("&amp;"), "&");
-   this->sendNotify(texto);
-   return true;
-}
-
 void Dialog::keyPressEvent(QKeyEvent *event)
 {
-    if(event->key() == Qt::Key_Escape)
-    {
-        QApplication::quit();
-    }
+  if(event->key() == Qt::Key_Escape)
+  {
+    this->hide();
+  }
+}
+
+void Dialog::send(QString title, QString body)
+{
+  this->hide();
+  ui->label->setText(title);
+  ui->notify_label->setText(body);
+  this->resizeMsg();
+  m_currenttime = QDateTime::currentMSecsSinceEpoch();
+  this->show();
 }

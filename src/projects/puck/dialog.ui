@@ -172,13 +172,13 @@ border: none;</string>
       <rect>
        <x>5</x>
        <y>5</y>
-       <width>335</width>
-       <height>15</height>
+       <width>340</width>
+       <height>16</height>
       </rect>
      </property>
      <property name="maximumSize">
       <size>
-       <width>335</width>
+       <width>340</width>
        <height>20</height>
       </size>
      </property>
