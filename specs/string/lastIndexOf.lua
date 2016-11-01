@@ -1,5 +1,4 @@
-local should = require "test.should"
-local test   = {}
+local test = {}
 
 test['should be 13 for first string'] = function()
   str = "this is a test"
