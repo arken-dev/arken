@@ -1,5 +1,4 @@
-local should = require "test.should"
-local test   = {}
+local test = {}
 
 test['should true for a extension image'] = function()
   str1 = "photo.png"

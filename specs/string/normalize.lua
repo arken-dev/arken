@@ -1,5 +1,4 @@
-local should = require "test.should"
-local test   = {}
+local test = {}
 
 test['should normalize form[descricao] example'] = function()
   local str1 = "form[descricao]"
