@@ -22,7 +22,7 @@ test['deve retornar path /pedido/varejo'] = function()
     "requestUri": "/pedido/varejo?id=1234&descricao=teste"
 }
 ]]
-  should.be_equal(request:toJson(), json)
+  assert(request:toJson() == json)
 end
 
 return test
