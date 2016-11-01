@@ -1,5 +1,4 @@
-local should = require "test.should"
-local test   = {}
+local test = {}
 
 test['should end of string'] = function()
   local str1 = "this is a test"
