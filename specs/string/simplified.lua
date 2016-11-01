@@ -44,10 +44,10 @@ test['should return empty string for many invalid chars'] = function()
   assert( str:simplified() == "" )
 
   str = "\n\r "
-  assert( str:simplified(), == "" )
+  assert( str:simplified() == "" )
 
   str = " "
-  assert( str:simplified(), == "" )
+  assert( str:simplified() == "" )
 end
 
 test['should remove special char with utf-8 chars'] = function()
@@ -58,17 +58,17 @@ end
 
 test['should equal when not special chars'] = function()
   local str = "cadastro de Contato_Tipo"
-  assert( str:simplified(), == str )
+  assert( str:simplified() == str )
 end
 
 test['should equal one char'] = function()
   local str = "a"
-  assert( str:simplified(), == str )
+  assert( str:simplified() == str )
 end
 
 test['should equal empty string'] = function()
   local str = ""
-  assert( str:simplified(), == str )
+  assert( str:simplified() == str )
 end
 
 return test
