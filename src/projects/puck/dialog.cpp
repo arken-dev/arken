@@ -7,6 +7,7 @@
 #include <QDir>
 #include <QFile>
 #include <QKeyEvent>
+#include <QFile>
 
 #define DEBUG_CONSOLE false
 
@@ -33,6 +34,48 @@ Dialog::Dialog(QWidget *parent) :
     const int width = QApplication::desktop()->width();
     this->move(width-400, 0);
     this->startTimer(100);
+
+    QString fileName("");
+
+    if( QFile::exists("config/puck.json") ) {
+      fileName = "config/puck.json";
+    }
+
+    if( QFile::exists("config/puck.json.user") ) {
+      fileName = "config/puck.json.user";
+    }
+
+    QFile config(fileName);
+
+    if( !fileName.isEmpty() && config.exists() ) {
+      config.open(QIODevice::ReadOnly);
+      QJsonParseError * error = new QJsonParseError();
+      QJsonDocument json = QJsonDocument::fromJson(config.readAll(), error);
+      if( error->error != 0 ) {
+        qDebug() << error->errorString();
+        throw;
+      }
+      QJsonObject object = json.object();
+
+      QJsonObject title  = object.value("title").toObject();
+      QString colorTitle = title.value("color").toString();
+      QFont    fontTitle = buildFont(title.value("font").toObject());
+      colorTitle.prepend("background-color: ");
+      colorTitle.append(";");
+      ui->label->setFont(fontTitle);
+      ui->topo->setStyleSheet(colorTitle);
+      ui->label->setStyleSheet(ui->label->styleSheet().append(colorTitle));
+
+      QJsonObject body  = object.value("body").toObject();
+      QString colorBody = body.value("color").toString();
+      QFont    fontBody = buildFont(body.value("font").toObject());
+      colorBody.prepend("background-color: ");
+      colorBody.append(";");
+      ui->notify_label->setFont(fontBody);
+      ui->conteudo->setStyleSheet(colorBody);
+      ui->notify_label->setStyleSheet(ui->notify_label->styleSheet().append(colorBody));
+    }
+
 }
 
 void Dialog::mouseReleaseEvent(QMouseEvent * event){
@@ -119,3 +162,15 @@ void Dialog::send(QString icon, QString title, QString body)
   ui->icon->setPixmap(image.scaled(ui->icon->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
   this->show();
 }
+
+QFont Dialog::buildFont(QJsonObject object)
+{
+  QFont font(object.value("name").toString());
+  font.setPointSize(object.value("size").toInt());
+  font.setBold(object.value("bold").toBool());
+  if( object.value("antialias").toBool() ) {
+    font.setStyleStrategy(QFont::PreferAntialias);
+  }
+  return font;
+}
+

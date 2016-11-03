@@ -3,6 +3,8 @@
 
 #include <QDialog>
 #include <QDateTime>
+#include <QFont>
+#include <QJsonObject>
 
 namespace Ui {
 class Dialog;
@@ -33,6 +35,7 @@ private slots:
 private:
     int  m_timeout = 10;
     Ui::Dialog *ui;
+    QFont buildFont(QJsonObject object);
 };
 
 #endif // DIALOG_H

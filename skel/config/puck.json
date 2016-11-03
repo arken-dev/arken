@@ -1,0 +1,20 @@
+{
+  "title" : {
+    "font": {
+      "name" : "Verdana",
+      "size" : 10,
+      "bold" : true,
+      "antialias": true
+    },
+  "color": "#546e7a"
+  },
+  "body" : {
+    "font": {
+      "name" : "Verdana",
+      "size" : 8,
+      "bold" : false,
+      "antialias": true
+    },
+  "color": "#fbfbfb"
+  }
+}
