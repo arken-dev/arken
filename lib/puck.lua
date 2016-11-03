@@ -3,12 +3,13 @@ OBERON_ENV = os.getenv("OBERON_ENV") or "test"
 local test  = require 'test'
 
 puck = function(file)
-  t = QDateTime.currentMSecsSinceEpoch()
+  local t = QDateTime.currentMSecsSinceEpoch()
   package.reload()
-  results = test.execute({file})
+  local results = test.execute({file})
 
-  buffer = ""
-  titulo = ""
+  local buffer = ""
+  local titulo = ""
+  local icon   = "ok"
 
   count = {}
   count.ok      = 0
@@ -27,13 +28,22 @@ puck = function(file)
     for description, result in pairs(result) do
       count[result.status] = count[result.status] + 1
       if result.status ~= 'ok' then
-        buffer = buffer .. description .. '\n'
+        buffer = buffer .. '<b>' .. description .. '</b>' .. '\n'
         if result.msg and tostring(result.msg):len() > 0  then
           --buffer = buffer .. ' ' .. result.status .. '\n'
-          buffer = buffer .. '\n' .. tostring(result.msg) .. '\n'--print(result.msg)
+          buffer = buffer .. tostring(result.msg) .. '\n\n'--print(result.msg)
         end
       end
     end
+
+    if count.pending > 0 then
+      icon = "warning"
+    end
+
+    if count.err > 0 then
+      icon = "error"
+    end
+
     print("")
     rodape = ""
     for i, v in pairs(count) do
@@ -43,8 +53,8 @@ puck = function(file)
         rodape = rodape .. v .. " " .. i
       end
     end
-    buffer = buffer .. '\n' .. rodape
+    buffer = buffer .. rodape
     buffer = buffer .. '\n\nFinished in ' .. tostring((QDateTime.currentMSecsSinceEpoch() - t) / 1000.0) .. ' seconds'
     print(buffer)
-    return buffer
+    return icon, buffer:swap('\n', '<br>')
 end

@@ -136,10 +136,10 @@ void Puck::run()
   lua_settop(m_luaState, 0);
   lua_getglobal(m_luaState, "puck");
   lua_pushstring(m_luaState, m_file.toLocal8Bit().data());
-  if( lua_pcall(m_luaState, 1, 1, 0 ) != 0 ) {
-    m_dialog->send(m_file, lua_tostring(m_luaState, -1));
+  if( lua_pcall(m_luaState, 1, 2, 0 ) != 0 ) {
+    m_dialog->send("error", m_file, lua_tostring(m_luaState, -1));
   } else {
-    m_dialog->send(m_file, lua_tostring(m_luaState, 1));
+    m_dialog->send(lua_tostring(m_luaState, 1), m_file, lua_tostring(m_luaState, 2));
   }
 
 }

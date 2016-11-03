@@ -18,18 +18,14 @@ signals:
 public:
     bool m_autoclose   = true;
     qint64 m_currenttime = 0;
-    QDateTime m_bootTime;
     explicit Dialog(QWidget *parent = 0);
     ~Dialog();
     void mouseReleaseEvent(QMouseEvent * event);
-    bool sendNotify(QString texto);
     void fecharAlerta();
     void timerEvent(QTimerEvent *event);
-    void setTimeout(int tempo);
-    int  timeout();
-    bool setTitle(QString texto);
     void keyPressEvent(QKeyEvent *event);
-    void send(QString title, QString body);
+    void send(QString icon, QString title, QString body);
+
 private slots:
     bool resizeMsg();
     void on_pushButton_clicked();

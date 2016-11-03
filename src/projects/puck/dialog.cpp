@@ -31,19 +31,13 @@ Dialog::Dialog(QWidget *parent) :
     //setAttribute(Qt::WA_ShowWithoutActivating);
 
     const int width = QApplication::desktop()->width();
-    this->move(width-400,0);
-    QFile file(QDir::tempPath() + "/notify");
-    file.open(QIODevice::WriteOnly | QIODevice::Text);
-    file.close();
-    m_bootTime = QDateTime::currentDateTime();
-    QString tmp_file = (QDir::tempPath() + "/notify");
-    //KeyLoggerWorker * keylogger = new KeyLoggerWorker(tmp_file);
-    //keylogger->start();
+    this->move(width-400, 0);
     this->startTimer(100);
 }
 
 void Dialog::mouseReleaseEvent(QMouseEvent * event){
     if(DEBUG_CONSOLE) {
+      qDebug() << "mouse event";
       qDebug() << event ;
     }
     this->fecharAlerta();
@@ -54,20 +48,6 @@ Dialog::~Dialog()
     delete ui;
 }
 
-//Seta a mensagem no alerta
-bool Dialog::sendNotify(QString texto){
-  if(DEBUG_CONSOLE) {
-    qDebug() << texto;
-  }
-  ui->notify_label->setText(texto);
-  return this->resizeMsg();
-}
-
-bool Dialog::setTitle(QString texto){
-  ui->label->setText(texto);
-  return true;
-}
-
 //Redimensiona a janela
 bool Dialog::resizeMsg(){
     ui->notify_label->adjustSize();
@@ -75,17 +55,17 @@ bool Dialog::resizeMsg(){
 
     int sizeGroup = ui->notify_label->height();
     ui->principal->move(0,0);
-    ui->conteudo->setFixedHeight(sizeGroup + 80);
+    ui->conteudo->setFixedHeight(sizeGroup + 65);
 
-    ui->principal->setFixedHeight(sizeGroup + 80);
-    this->setFixedHeight(sizeGroup + 80);
+    ui->principal->setFixedHeight(sizeGroup + 65);
+    this->setFixedHeight(sizeGroup + 65);
 
     return true;
 }
 
 // Permanesse rodando até currentTime atingir o Timeout
 // Após isto fecha aplicaçao
-void Dialog::timerEvent(QTimerEvent *event)
+void Dialog::timerEvent(QTimerEvent *)
 {
     if(DEBUG_CONSOLE) {
       qDebug() << (QDateTime::currentMSecsSinceEpoch() - m_currenttime) / 1000.0;
@@ -109,16 +89,6 @@ void Dialog::on_pushButton_clicked()
  this->fecharAlerta();
 }
 
-void Dialog::setTimeout(int timeout)
-{
-  m_timeout = timeout;
-}
-
-int Dialog::timeout()
-{
-  return m_timeout;
-}
-
 void Dialog::keyPressEvent(QKeyEvent *event)
 {
   if(event->key() == Qt::Key_Escape)
@@ -127,12 +97,25 @@ void Dialog::keyPressEvent(QKeyEvent *event)
   }
 }
 
-void Dialog::send(QString title, QString body)
+void Dialog::send(QString icon, QString title, QString body)
 {
+  icon.prepend(":/images/");
+  icon.append(".png");
   this->hide();
-  ui->label->setText(title);
+  int index = title.lastIndexOf("/");
+  if( index == -1 ) {
+    title.lastIndexOf("\\");
+  }
+  if( index == -1 ) {
+    index = 0;
+  } else {
+    index++;
+  }
+  ui->label->setText(title.mid(index, title.size()));
   ui->notify_label->setText(body);
   this->resizeMsg();
   m_currenttime = QDateTime::currentMSecsSinceEpoch();
+  QPixmap image = QPixmap(icon);
+  ui->icon->setPixmap(image.scaled(ui->icon->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
   this->show();
 }
