@@ -17,5 +17,6 @@ moc_*
 *.swp
 
 profile.d/*
+config/*
 vendors/*oberon*
 .qmake.stash
