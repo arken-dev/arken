@@ -24,15 +24,19 @@ int oberonFileLoad(lua_State *L, QFile &file)
   return rv;
 }
 
-int oberonTaskLoad(lua_State *L, OByteArray &oberonPath, char * task)
+int oberonTaskLoad(lua_State *L, char * task)
 {
   int rv;
   OByteArray lib;
 
+  lua_settop(L, 0);
+  lua_getglobal(L, "OBERON_PATH");
+
+  lib = lua_tostring(L, 1);
+
   lua_pushstring(L, task);
   lua_setglobal(L, "OBERON_TASK");
 
-  lib = oberonPath;
   lib.append("/lib/task.lua");
 
   rv = luaL_loadfile(L, lib);
@@ -168,7 +172,7 @@ int main(int argc, char * argv[])
   }
 
   if(!file.exists()) {
-    rv = oberonTaskLoad(L, oberonPath, argv[1]);
+    rv = oberonTaskLoad(L, argv[1]);
   }
 
   return rv;
