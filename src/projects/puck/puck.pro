@@ -24,7 +24,7 @@ SOURCES += main.cpp\
 unix:SOURCES += keylogger/linux.c
 win32:SOURCES += keylogger/win32.c
 
-SOURCES += keyloggerworker.cpp
+SOURCES += keyloggerworker.cpp ../oberon/oberon.cpp
 
 HEADERS  += dialog.h puck.h
 

@@ -27,4 +27,4 @@ unix:LIBS += /usr/lib/x86_64-linux-gnu/libluajit-5.1.so
 unix:LIBS += ../../../vendors/liboberon.so
 
 # Input
-SOURCES += main.cpp
+SOURCES += main.cpp oberon.cpp

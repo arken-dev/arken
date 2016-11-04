@@ -7,16 +7,16 @@
 #include <oberon/helper>
 #include <OStringList>
 
-Puck::Puck(QApplication &app, QObject *parent) : QObject(parent)
+Puck::Puck(int argc, char * argv[], const char * path, QObject *parent) : QObject(parent)
 {
-  QStringList arguments = app.arguments();
+  int rv;
 
-  if( arguments.size() == 1 ) {
+  if( argc == 1 ) {
     qDebug() << "invalid file";
     throw;
   }
 
-  m_file = arguments.at(1);
+  m_file = argv[1];
 
   m_watcher = new QFileSystemWatcher ;
   qDebug() << "m_file " << m_file;
@@ -35,59 +35,24 @@ Puck::Puck(QApplication &app, QObject *parent) : QObject(parent)
   //m_dialog->setParams(argc, argv);
 
   // instance
-  m_luaState = lua_open();
-  luaL_openlibs(m_luaState);
+  m_luaState = Oberon::init(argc, argv, path);
 
-  // OBERON_PATH
-  int rv;
-  QString dirPath;
-  OByteArray oberonPath;
-  OByteArray profile;
-  OByteArray puck;
+  lua_settop(m_luaState, 0);
+  lua_getglobal(m_luaState, "OBERON_PATH");
 
-  dirPath = app.applicationDirPath();
-  dirPath.truncate( dirPath.lastIndexOf('/') );
-  oberonPath = dirPath.toLocal8Bit();
-  if( strcmp(os::name(), "windows") == 0 ) {
-    oberonPath = oberonPath.capitalize();
-  }
-  lua_pushstring(m_luaState, oberonPath);
-  lua_setglobal(m_luaState, "OBERON_PATH");
+  QByteArray puck = lua_tostring(m_luaState, 1);
+  puck.append("/lib/puck.lua");
 
-  //profile
-  profile = oberonPath;
-  profile.append("/profile.lua");
-
-  rv = luaL_loadfile(m_luaState, profile);
+  rv = luaL_loadfile(m_luaState, puck);
   if (rv) {
     fprintf(stderr, "%s\n", lua_tostring(m_luaState, -1));
     throw;
-    //return rv;
   }
 
   rv = lua_pcall(m_luaState, 0, 0, lua_gettop(m_luaState) - 1);
   if (rv) {
     fprintf(stderr, "%s\n", lua_tostring(m_luaState, -1));
     throw;
-    //return rv;
-  }
-
-  //puck
-  profile = oberonPath;
-  profile.append("/lib/puck.lua");
-
-  rv = luaL_loadfile(m_luaState, profile);
-  if (rv) {
-    fprintf(stderr, "%s\n", lua_tostring(m_luaState, -1));
-    throw;
-    //return rv;
-  }
-
-  rv = lua_pcall(m_luaState, 0, 0, lua_gettop(m_luaState) - 1);
-  if (rv) {
-    fprintf(stderr, "%s\n", lua_tostring(m_luaState, -1));
-    throw;
-    //return rv;
   }
 
   m_dialog = new Dialog;

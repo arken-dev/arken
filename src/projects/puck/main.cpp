@@ -8,11 +8,6 @@
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
-    Puck puck(app);
-    /*
-    Dialog w;
-    w.setParams(argc, argv);
-    w.show();
-    */
+    Puck puck(argc, argv, app.applicationFilePath().toLocal8Bit().data());
     return app.exec();
 }

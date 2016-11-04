@@ -24,7 +24,7 @@ public slots:
   void showDirectoryModified(const QString &str);
 
 public:
-  Puck(QApplication &app, QObject *parent = 0);
+  Puck(int argc, char * argv[], const char * path, QObject *parent = 0);
   ~Puck();
   QFileSystemWatcher * m_watcher;
   Dialog * m_dialog;

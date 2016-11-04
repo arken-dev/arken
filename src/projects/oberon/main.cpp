@@ -5,58 +5,6 @@
 #include <oberon/helper>
 #include <OByteArray>
 
-void oberonPopulateArg(lua_State *L, int argc, char * argv[])
-{
-  int top, i;
-
-  lua_newtable(L);
-  top = lua_gettop(L);
-  for(i=0; i < argc; i++) {
-    lua_pushinteger(L, i);
-    lua_pushstring(L, argv[i]);
-    lua_settable(L, top);
-  }
-  lua_setglobal( L, "arg");
-}
-
-void oberonResolvPath(lua_State *L, QCoreApplication &app,
-  OByteArray &oberonPath)
-{
-  QString dirPath;
-
-  dirPath = app.applicationDirPath();
-  dirPath.truncate( dirPath.lastIndexOf('/') );
-  oberonPath = dirPath.toLocal8Bit();
-  if( strcmp(os::name(), "windows") == 0 ) {
-    oberonPath = oberonPath.capitalize();
-  }
-  lua_pushstring(L, oberonPath);
-  lua_setglobal(L, "OBERON_PATH");
-}
-
-int oberonProfileLoad(lua_State *L, OByteArray &oberonPath)
-{
-  int rv;
-  OByteArray profile;
-
-  profile = oberonPath;
-  profile.append("/profile.lua");
-
-  rv = luaL_loadfile(L, profile);
-  if (rv) {
-    fprintf(stderr, "%s\n", lua_tostring(L, -1));
-    return rv;
-  }
-
-  rv = lua_pcall(L, 0, 0, lua_gettop(L) - 1);
-  if (rv) {
-    fprintf(stderr, "%s\n", lua_tostring(L, -1));
-    return rv;
-  }
-
-  return rv;
-}
-
 int oberonFileLoad(lua_State *L, QFile &file)
 {
   int rv;
@@ -203,19 +151,13 @@ int main(int argc, char * argv[])
   int rv = 0;
   OByteArray oberonPath;
   OByteArray task;
+  QString    dirPath;
   QFile      file(argv[1]);
   QCoreApplication app(argc, argv);
-  lua_State *L = lua_open();
-  luaL_openlibs(L);
+  lua_State  * L;
+  oberonPath = app.applicationFilePath().toLocal8Bit().data();
 
-  oberonPopulateArg(L, argc, argv);
-
-  oberonResolvPath(L , app, oberonPath);
-
-  rv = oberonProfileLoad(L, oberonPath);
-  if (rv) {
-    return rv;
-  }
+  L = Oberon::init(argc, argv, oberonPath);
 
   if (file.fileName().isEmpty()) {
     rv = oberonConsoleLoad(L);
