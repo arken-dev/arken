@@ -1,5 +1,7 @@
 local BuildTask = Class.new("BuildTask")
 
+BuildTask.help = {}
+
 function BuildTask:clear(params)
   print("clear Makefile, .o")
   iterator = QDirIterator.new(OBERON_PATH, {"Subdirectories"})

@@ -7,6 +7,8 @@ local coverage = require 'oberon.coverage'
 
 local CoverageTask = Class.new("CoverageTask")
 
+CoverageTask.help = {}
+
 -------------------------------------------------------------------------------
 -- LINEAR
 -------------------------------------------------------------------------------
@@ -93,6 +95,10 @@ end
 -------------------------------------------------------------------------------
 -- TREE
 -------------------------------------------------------------------------------
+
+CoverageTask.help.tree = [[
+  Execute coverage tree...
+]]
 
 function CoverageTask:tree(params)
 
