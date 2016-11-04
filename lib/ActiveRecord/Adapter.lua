@@ -381,7 +381,8 @@ function ActiveRecord_Adapter:createTimestamp()
   if OBERON_ENV == 'test' then
     local format = "yyyy/MM/dd hh:mm:ss."
     local clock  = tostring(os.clock())
-    return QDateTime.currentDateTime():toString(format) .. clock:mid(2, #clock)
+    local index  = clock:indexOf('.')
+    return QDateTime.currentDateTime():toString(format) .. clock:mid(index+1, #clock)
   else
     return QDateTime.currentDateTime():toString()
   end

@@ -118,7 +118,7 @@ function ActiveRecord_PostgresAdapter:update(record)
   local key = self.table_name .. '_' .. tostring(record.id)
 
   if self:columns().updated_at then
-    record.updated_at = QDateTime.currentDateTime():toString()
+    record.updated_at = self:createTimestamp()
   end
 
   for column, properties in pairs(self:columns()) do
