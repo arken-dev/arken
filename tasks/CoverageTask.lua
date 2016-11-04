@@ -12,7 +12,7 @@ local CoverageTask = Class.new("CoverageTask")
 -------------------------------------------------------------------------------
 
 function CoverageTask:linear(params)
-  local iterator = QDirIterator.new('./specs', {"Subdirectories"})
+  local iterator = QDirIterator.new('./tests', {"Subdirectories"})
   local files = {}
   local total = 0
   while(iterator:hasNext()) do
@@ -124,8 +124,8 @@ function CoverageTask:tree(params)
   end
 
   for _, fileName in pairs(models) do
-    dirName   = fileName:gsub(".lua", ""):gsub("app", "specs")
-    modelName = dirName:gsub("./specs/models/", ""):gsub("/", ".")
+    dirName   = fileName:gsub(".lua", ""):gsub("app", "tests")
+    modelName = dirName:gsub("./tests/models/", ""):gsub("/", ".")
     package.loaded[modelName] = nil
     iterator  = QDirIterator.new(dirName)
     local tests  = {}
