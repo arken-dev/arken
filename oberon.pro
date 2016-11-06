@@ -5,4 +5,5 @@
 TEMPLATE = subdirs
 SUBDIRS = src/oberon   \
           src/projects \
-          src/bindings
+          src/bindings \
+          src/lua
