@@ -5,7 +5,6 @@
 #include <oberon/helper>
 #include "mirandastate.h"
 
-
 static int
 miranda_server_gc(lua_State *L) {
   qDebug() << "gc...";

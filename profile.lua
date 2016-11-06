@@ -16,6 +16,7 @@ OBERON_ENV = os.getenv("OBERON_ENV") or "development"
 -------------------------------------------------------------------------------
 -- Base
 -------------------------------------------------------------------------------
+require 'json'
 require 'oberon.helper'
 require 'oberon.base.package'
 require 'oberon.parse'
