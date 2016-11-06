@@ -27,7 +27,6 @@ SOURCES += main.cpp    \
     mirandastate.cpp   \
     mirandatask.cpp    \
     miranda_cache_register.cpp     \
-    miranda_json_encode.c          \
     miranda_server_register.cpp    \
     miranda_service_register.cpp   \
     miranda_request_register.cpp   \
