@@ -9,6 +9,9 @@ DESTDIR     = ../../../bin
 INCLUDEPATH += .
 INCLUDEPATH += ../../../include
 INCLUDEPATH += ../../../vendors/include
+INCLUDEPATH += ../../../vendors/include/luajit-2.0
+INCLUDEPATH += ../../lua/json
+
 
 QMAKE_RPATHDIR += ../vendors
 
@@ -23,10 +26,14 @@ SOURCES += main.cpp    \
     mirandaservice.cpp \
     mirandastate.cpp   \
     mirandatask.cpp    \
-    miranda_cache_register.cpp   \
-    miranda_server_register.cpp  \
-    miranda_service_register.cpp \
-    miranda_request_register.cpp
+    miranda_cache_register.cpp     \
+    miranda_json_encode.c          \
+    miranda_server_register.cpp    \
+    miranda_service_register.cpp   \
+    miranda_request_register.cpp   \
+    ../../lua/json/lua_cjson.c \
+    ../../lua/json/strbuf.c    \
+    ../../lua/json/fpconv.c
 
 HEADERS += mirandaserver.h \
     mirandatask.h          \
