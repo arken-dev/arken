@@ -5,6 +5,10 @@
 #include <oberon/helper>
 #include "mirandastate.h"
 
+extern "C" {
+  char * miranda_json_encode(lua_State *l);
+}
+
 static int
 miranda_server_gc(lua_State *L) {
   qDebug() << "gc...";
@@ -36,9 +40,12 @@ static int
 miranda_server_task(lua_State *L) {
   const char * file_name = luaL_checkstring(L, 1);
   const char * uuid = os::uuid();
+  /*
   if ( lua_isstring(L, 2) ) {
     MirandaState::insert(uuid, lua_tostring(L, 2));
   }
+  */
+  MirandaState::insert(uuid, miranda_json_encode(L));
   MirandaState::createTask( file_name, uuid );
   lua_pushstring(L, uuid);
   delete[] uuid;

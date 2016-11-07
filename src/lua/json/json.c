@@ -36,15 +36,7 @@
  *       difficult to know object/array sizes ahead of time.
  */
 
-#include <assert.h>
-#include <string.h>
-#include <math.h>
-#include <limits.h>
-#include <lua.h>
-#include <lauxlib.h>
-
-#include "strbuf.h"
-#include "fpconv.h"
+#include <json.h>
 
 #ifndef CJSON_MODNAME
 #define CJSON_MODNAME   "cjson"
@@ -80,23 +72,6 @@
 #define DEFAULT_DECODE_INVALID_NUMBERS 0
 #endif
 
-typedef enum {
-    T_OBJ_BEGIN,
-    T_OBJ_END,
-    T_ARR_BEGIN,
-    T_ARR_END,
-    T_STRING,
-    T_NUMBER,
-    T_BOOLEAN,
-    T_NULL,
-    T_COLON,
-    T_COMMA,
-    T_END,
-    T_WHITESPACE,
-    T_ERROR,
-    T_UNKNOWN
-} json_token_type_t;
-
 static const char *json_token_type_name[] = {
     "T_OBJ_BEGIN",
     "T_OBJ_END",
@@ -114,45 +89,6 @@ static const char *json_token_type_name[] = {
     "T_UNKNOWN",
     NULL
 };
-
-typedef struct {
-    json_token_type_t ch2token[256];
-    char escape2char[256];  /* Decoding */
-
-    /* encode_buf is only allocated and used when
-     * encode_keep_buffer is set */
-    strbuf_t encode_buf;
-
-    int encode_sparse_convert;
-    int encode_sparse_ratio;
-    int encode_sparse_safe;
-    int encode_max_depth;
-    int encode_invalid_numbers;     /* 2 => Encode as "null" */
-    int encode_number_precision;
-    int encode_keep_buffer;
-
-    int decode_invalid_numbers;
-    int decode_max_depth;
-} json_config_t;
-
-typedef struct {
-    const char *data;
-    const char *ptr;
-    strbuf_t *tmp;    /* Temporary storage for strings */
-    json_config_t *cfg;
-    int current_depth;
-} json_parse_t;
-
-typedef struct {
-    json_token_type_t type;
-    int index;
-    union {
-        const char *string;
-        double number;
-        int boolean;
-    } value;
-    int string_len;
-} json_token_t;
 
 static const char *char2escape[256] = {
     "\\u0000", "\\u0001", "\\u0002", "\\u0003",
@@ -197,12 +133,67 @@ static const char *char2escape[256] = {
 
 json_config_t *json_fetch_config(lua_State *l)
 {
-    json_config_t *cfg;
+    int i;
+    static json_config_t *cfg = NULL;
 
-    cfg = (json_config_t *)lua_touserdata(l, lua_upvalueindex(1));
-    if (!cfg)
-        luaL_error(l, "BUG: Unable to fetch CJSON configuration");
+    if( cfg == NULL ) {
+      cfg = malloc(sizeof(json_config_t));
+      cfg->encode_sparse_convert = DEFAULT_SPARSE_CONVERT;
+      cfg->encode_sparse_ratio = DEFAULT_SPARSE_RATIO;
+      cfg->encode_sparse_safe = DEFAULT_SPARSE_SAFE;
+      cfg->encode_max_depth = DEFAULT_ENCODE_MAX_DEPTH;
+      cfg->decode_max_depth = DEFAULT_DECODE_MAX_DEPTH;
+      cfg->encode_invalid_numbers = DEFAULT_ENCODE_INVALID_NUMBERS;
+      cfg->decode_invalid_numbers = DEFAULT_DECODE_INVALID_NUMBERS;
+      cfg->encode_keep_buffer = DEFAULT_ENCODE_KEEP_BUFFER;
+      cfg->encode_number_precision = DEFAULT_ENCODE_NUMBER_PRECISION;
 
+      strbuf_init(&cfg->encode_buf, 0);
+
+      /* Tag all characters as an error */
+      for (i = 0; i < 256; i++)
+        cfg->ch2token[i] = T_ERROR;
+
+      /* Set tokens that require no further processing */
+      cfg->ch2token['{'] = T_OBJ_BEGIN;
+      cfg->ch2token['}'] = T_OBJ_END;
+      cfg->ch2token['['] = T_ARR_BEGIN;
+      cfg->ch2token[']'] = T_ARR_END;
+      cfg->ch2token[','] = T_COMMA;
+      cfg->ch2token[':'] = T_COLON;
+      cfg->ch2token['\0'] = T_END;
+      cfg->ch2token[' '] = T_WHITESPACE;
+      cfg->ch2token['\t'] = T_WHITESPACE;
+      cfg->ch2token['\n'] = T_WHITESPACE;
+      cfg->ch2token['\r'] = T_WHITESPACE;
+
+      /* Update characters that require further processing */
+      cfg->ch2token['f'] = T_UNKNOWN;     /* false? */
+      cfg->ch2token['i'] = T_UNKNOWN;     /* inf, ininity? */
+      cfg->ch2token['I'] = T_UNKNOWN;
+      cfg->ch2token['n'] = T_UNKNOWN;     /* null, nan? */
+      cfg->ch2token['N'] = T_UNKNOWN;
+      cfg->ch2token['t'] = T_UNKNOWN;     /* true? */
+      cfg->ch2token['"'] = T_UNKNOWN;     /* string? */
+      cfg->ch2token['+'] = T_UNKNOWN;     /* number? */
+      cfg->ch2token['-'] = T_UNKNOWN;
+      for (i = 0; i < 10; i++)
+          cfg->ch2token['0' + i] = T_UNKNOWN;
+
+      /* Lookup table for parsing escape characters */
+      for (i = 0; i < 256; i++)
+          cfg->escape2char[i] = 0;          /* String error */
+      cfg->escape2char['"'] = '"';
+      cfg->escape2char['\\'] = '\\';
+      cfg->escape2char['/'] = '/';
+      cfg->escape2char['b'] = '\b';
+      cfg->escape2char['t'] = '\t';
+      cfg->escape2char['n'] = '\n';
+      cfg->escape2char['f'] = '\f';
+      cfg->escape2char['r'] = '\r';
+      cfg->escape2char['u'] = 'u';          /* Unicode parsing required */
+    }
+    //printf("json cfg %p", cfg);
     return cfg;
 }
 
@@ -464,7 +455,7 @@ static void json_encode_exception(lua_State *l, json_config_t *cfg, strbuf_t *js
  * - String (Lua stack index)
  *
  * Returns nothing. Doesn't remove string from Lua stack */
-static void json_append_string(lua_State *l, strbuf_t *json, int lindex)
+void json_append_string(lua_State *l, strbuf_t *json, int lindex)
 {
     const char *escstr;
     const char *str;
@@ -567,7 +558,7 @@ void json_append_data(lua_State *l, json_config_t *cfg,
  * - lua_State
  * - JSON strbuf
  * - Size of passwd Lua array (top of stack) */
-static void json_append_array(lua_State *l, json_config_t *cfg, int current_depth,
+void json_append_array(lua_State *l, json_config_t *cfg, int current_depth,
                               strbuf_t *json, int array_length)
 {
     int comma, i;
@@ -589,7 +580,7 @@ static void json_append_array(lua_State *l, json_config_t *cfg, int current_dept
     strbuf_append_char(json, ']');
 }
 
-static void json_append_number(lua_State *l, json_config_t *cfg,
+void json_append_number(lua_State *l, json_config_t *cfg,
                                strbuf_t *json, int lindex)
 {
     double num = lua_tonumber(l, lindex);
@@ -627,7 +618,7 @@ static void json_append_number(lua_State *l, json_config_t *cfg,
     strbuf_extend_length(json, len);
 }
 
-static void json_append_object(lua_State *l, json_config_t *cfg,
+void json_append_object(lua_State *l, json_config_t *cfg,
                                int current_depth, strbuf_t *json)
 {
     int comma, keytype;
@@ -745,8 +736,6 @@ static int json_encode(lua_State *l)
 
 /* ===== DECODING ===== */
 
-static void json_process_value(lua_State *l, json_parse_t *json,
-                               json_token_t *token);
 
 static int hexdigit2int(char hex)
 {
@@ -1023,7 +1012,7 @@ static void json_next_number_token(json_parse_t *json, json_token_t *token)
  * T_STRING will return a pointer to the json_parse_t temporary string
  * T_ERROR will leave the json->ptr pointer at the error.
  */
-static void json_next_token(json_parse_t *json, json_token_t *token)
+void json_next_token(json_parse_t *json, json_token_t *token)
 {
     const json_token_type_t *ch2token = json->cfg->ch2token;
     int ch;
@@ -1108,7 +1097,7 @@ static void json_next_token(json_parse_t *json, json_token_t *token)
  * json->tmp struct.
  * json and token should exist on the stack somewhere.
  * luaL_error() will long_jmp and release the stack */
-static void json_throw_parse_error(lua_State *l, json_parse_t *json,
+void json_throw_parse_error(lua_State *l, json_parse_t *json,
                                    const char *exp, json_token_t *token)
 {
     const char *found;
@@ -1233,7 +1222,7 @@ static void json_parse_array_context(lua_State *l, json_parse_t *json)
 }
 
 /* Handle the "value" context */
-static void json_process_value(lua_State *l, json_parse_t *json,
+void json_process_value(lua_State *l, json_parse_t *json,
                                json_token_t *token)
 {
     switch (token->type) {

@@ -14,5 +14,5 @@ TARGET = json
 DESTDIR = ../../../clib/
 
 # Input
-HEADERS += dtoa_config.h fpconv.h strbuf.h
-SOURCES += lua_cjson.c strbuf.c fpconv.c # dtoa.c g_fmt.c 
+HEADERS += json.h dtoa_config.h fpconv.h strbuf.h
+SOURCES += json.c strbuf.c g_fmt.c dtoa.c #fpconv.c

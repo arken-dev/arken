@@ -27,13 +27,18 @@ SOURCES += main.cpp    \
     mirandastate.cpp   \
     mirandatask.cpp    \
     miranda_cache_register.cpp     \
+    miranda_json_encode.c          \
     miranda_server_register.cpp    \
     miranda_service_register.cpp   \
     miranda_request_register.cpp   \
-    ../../lua/json/lua_cjson.c \
-    ../../lua/json/strbuf.c    \
-    ../../lua/json/fpconv.c
+    miranda_task_register.cpp      \
+    ../../lua/json/json.c   \
+    ../../lua/json/strbuf.c \
+    ../../lua/json/g_fmt.c  \
+    ../../lua/json/dtoa.c
 
 HEADERS += mirandaserver.h \
     mirandatask.h          \
-    mirandastate.h
+    mirandastate.h         \
+    ../../lua/json/json.h
+
