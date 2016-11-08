@@ -2,7 +2,7 @@ OBERON_ENV = os.getenv("OBERON_ENV") or "test"
 
 local colorize = require 'colorize'
 local test     = require 'test'
-local TestTask = Class.new("TestTask")
+local Test = Class.new("Test")
 --[[
 function string:escape()
   local tmp = self
@@ -15,7 +15,7 @@ function string:escape()
   return tmp
 end
 ]]
-function TestTask:console(params)
+function Test:console(params)
   t = os.microtime()
 
   count = {}
@@ -57,7 +57,7 @@ function TestTask:console(params)
 
 end
 
-function TestTask:notify(params)
+function Test:notify(params)
   local time = os.microtime()
   local file = arg[2]
   while true do
@@ -117,7 +117,7 @@ function TestTask:notify(params)
   end
 end
 
-function TestTask:create()
+function Test:create()
   local template = require 'template'
 
   print("Digite o nome da classe:")
@@ -139,4 +139,4 @@ function TestTask:create()
   print('test create ' .. test)
 end
 
-return TestTask
+return Test

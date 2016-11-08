@@ -5,4 +5,5 @@
 TEMPLATE = subdirs
 SUBDIRS = oberon  \
           miranda \
+          rhea    \
           puck

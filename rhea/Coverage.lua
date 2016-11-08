@@ -5,15 +5,15 @@ local test     = require 'test'
 local template = require 'template'
 local coverage = require 'oberon.coverage'
 
-local CoverageTask = Class.new("CoverageTask")
+local Coverage = Class.new("Coverage")
 
-CoverageTask.help = {}
+Coverage.help = {}
 
 -------------------------------------------------------------------------------
 -- LINEAR
 -------------------------------------------------------------------------------
 
-function CoverageTask:linear(params)
+function Coverage:linear(params)
   local iterator = QDirIterator.new('./tests', {"Subdirectories"})
   local files = {}
   local total = 0
@@ -96,11 +96,11 @@ end
 -- TREE
 -------------------------------------------------------------------------------
 
-CoverageTask.help.tree = [[
+Coverage.help.tree = [[
   Execute coverage tree...
 ]]
 
-function CoverageTask:tree(params)
+function Coverage:tree(params)
 
   local count = {}
   count.ok      = 0
@@ -197,4 +197,4 @@ function CoverageTask:tree(params)
 
 end
 
-return CoverageTask
+return Coverage

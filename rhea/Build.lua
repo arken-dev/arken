@@ -1,8 +1,12 @@
-local BuildTask = Class.new("BuildTask")
+local Build = Class.new("Build")
 
-BuildTask.help = {}
+Build.help = {}
 
-function BuildTask:clear(params)
+Build.help.clear = [[
+  clear Makefile, clib dir and shared.
+]]
+
+function Build:clear(params)
   print("clear Makefile, .o")
   iterator = QDirIterator.new(OBERON_PATH, {"Subdirectories"})
   while(iterator:hasNext()) do
@@ -42,7 +46,6 @@ function BuildTask:clear(params)
     end
   end
 
-
 end
 
-return BuildTask
+return Build
