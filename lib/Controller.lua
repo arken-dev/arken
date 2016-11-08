@@ -15,7 +15,7 @@ end
 function Controller:resolvHelper()
   local prefix = "app.helpers."
 
-  local helper = require("template.helper")
+  local helper = require("template.Helper")
   helper.__index = helper
 
   local file   = prefix .. "default"
@@ -37,17 +37,11 @@ function Controller:resolvHelper()
     helper = tmp
   else
     local tmp = {}
-    tmp.teste = "teste..."
-    for i, v in pairs(helper) do
-      tmp[i] = v
-    end
     tmp.controller_path = self.controller_path
     tmp.controller_name = self.controller_name
     tmp.action_name     = self.action_name
---[[
     tmp.__index = tmp
     setmetatable(tmp, helper)
-]]
     helper = tmp
   end
   helper.controller = self
