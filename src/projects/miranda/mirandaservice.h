@@ -1,10 +1,11 @@
 #include <luajit-2.0/lua.hpp>
 #include <QtCore>
+#include <QRunnable>
 #include <QThread>
 #include <QMutex>
 #include <oberon/helper>
 
-class MirandaService : public QThread
+class MirandaService : public QThread, public QRunnable
 {
 
   private:

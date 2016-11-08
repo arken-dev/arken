@@ -38,6 +38,7 @@ public:
   static void servicesAppend(MirandaService *service);
   static void createService(QByteArray fileName);
   static void createTask(QByteArray fileName, const char * uuid);
+  static void taskPool(QByteArray fileName, const char * uuid);
   static QHash<OByteArray, OByteArray> * s_cache;
 
   lua_State * instance();
@@ -53,6 +54,7 @@ private:
   static QMutex     s_mutex;
   static QStack<MirandaState *> * s_stack;
   static QList<MirandaService*> * s_service;
+  static QThreadPool * s_pool;
 
 };
 

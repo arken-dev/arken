@@ -53,7 +53,7 @@ miranda_task_value(lua_State *l) {
 }
 
 static int
-miranda_task_create(lua_State *L) {
+miranda_task_start(lua_State *L) {
   const char * file_name = luaL_checkstring(L, 1);
   const char * uuid = os::uuid();
   /*
@@ -69,6 +69,23 @@ miranda_task_create(lua_State *L) {
 }
 
 static int
+miranda_task_pool(lua_State *L) {
+  const char * file_name = luaL_checkstring(L, 1);
+  const char * uuid = os::uuid();
+  /*
+  if ( lua_isstring(L, 2) ) {
+    MirandaState::insert(uuid, lua_tostring(L, 2));
+  }
+  */
+  MirandaState::insert(uuid, miranda_json_encode(L));
+  MirandaState::taskPool( file_name, uuid );
+  lua_pushstring(L, uuid);
+  delete[] uuid;
+  return 1;
+}
+
+
+static int
 miranda_task_insert(lua_State *L) {
   const char * uuid = luaL_checkstring(L, 1);
   MirandaState::insert(uuid, miranda_json_encode(L));
@@ -78,8 +95,9 @@ miranda_task_insert(lua_State *L) {
 void
 miranda_task_register(lua_State * L) {
   static const         luaL_reg Map[] = {
+    {"pool",    miranda_task_pool},
     {"value",   miranda_task_value},
-    {"create",  miranda_task_create},
+    {"start",   miranda_task_start},
     {"insert",  miranda_task_insert},
     {NULL, NULL}
   };

@@ -11,6 +11,8 @@ QMutex     MirandaState::s_mutex;
 QStack<MirandaState *> * MirandaState::s_stack   = new QStack<MirandaState *>;
 QList<MirandaService*> * MirandaState::s_service = new QList<MirandaService *>;
 QHash<OByteArray, OByteArray> * MirandaState::s_cache = new QHash<OByteArray, OByteArray>;
+QThreadPool * MirandaState::s_pool = 0;
+
 
 void miranda_cache_register(lua_State * L);
 void miranda_server_register(lua_State * L);
@@ -79,6 +81,16 @@ void MirandaState::createService(QByteArray fileName)
 void MirandaState::createTask(QByteArray fileName, const char * uuid)
 {
   servicesAppend(new MirandaService(fileName, uuid));
+}
+
+void MirandaState::taskPool(QByteArray fileName, const char * uuid)
+{
+  if( s_pool == 0 ) {
+    s_pool = new QThreadPool;
+    s_pool->setMaxThreadCount(2);
+  }
+
+  s_pool->start(new MirandaService(fileName, uuid));
 }
 
 void MirandaState::servicesAppend(MirandaService *t)
