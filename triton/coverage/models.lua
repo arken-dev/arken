@@ -77,7 +77,8 @@ function triton_run(fileName)
   file:close()
 
   file = io.open((dir .. "/" .. data.file_name:replace("/", "-") .. '.json'), "w")
-  file:write(require('JSON'):encode_pretty(data))
+  --file:write(require('JSON'):encode_pretty(data))
+  file:write(json.encode(data))
   file:close()
 end
 

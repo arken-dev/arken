@@ -32,6 +32,7 @@ SOURCES += main.cpp    \
     miranda_service_register.cpp   \
     miranda_request_register.cpp   \
     miranda_task_register.cpp      \
+    ../../lua/json/json_lock.cpp   \
     ../../lua/json/json.c   \
     ../../lua/json/strbuf.c \
     ../../lua/json/g_fmt.c  \

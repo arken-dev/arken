@@ -15,4 +15,7 @@ DESTDIR = ../../../clib/
 
 # Input
 HEADERS += json.h dtoa_config.h fpconv.h strbuf.h
-SOURCES += json.c strbuf.c g_fmt.c dtoa.c #fpconv.c
+SOURCES += json.c strbuf.c g_fmt.c dtoa.c json_lock.cpp #fpconv.c
+
+win32:LIBS += ../../../vendors/lua51.dll
+unix:LIBS += /usr/lib/x86_64-linux-gnu/libluajit-5.1.so
