@@ -21,6 +21,7 @@
     </tr>
     <% local coverage = 0 -%>
     <% for i, row in ipairs(helper.sort(self.files)) do -%>
+    <% row = json.decode(os.read(row)) -%>
     <tr bgcolor='<%= helper.color_coverage(row.coverage) -%>'>
        <% coverage = coverage + row.coverage -%>
        <td align='right'> <%= i -%></td>

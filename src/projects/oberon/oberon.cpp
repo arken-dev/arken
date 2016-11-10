@@ -7,8 +7,8 @@ void Oberon::args(lua_State * L, int argc, char * argv[])
 
   lua_newtable(L);
   top = lua_gettop(L);
-  for(i=0; i < argc; i++) {
-    lua_pushinteger(L, i);
+  for(i=1; i <= argc; i++) {
+    lua_pushinteger(L, i-1);
     lua_pushstring(L, argv[i]);
     lua_settable(L, top);
   }

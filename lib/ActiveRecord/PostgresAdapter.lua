@@ -36,7 +36,7 @@ function ActiveRecord_PostgresAdapter:execute(sql)
   local result = assert(self:connect():exec(sql))
   time = os.microtime() - time
   if ActiveRecord.debug then
-    print(sql .. string.format(" (%.3f) secs", time))
+    --print(sql .. string.format(" (%.3f) secs", time))
   end
   ActiveRecord.time = ActiveRecord.time + time
   return result
@@ -51,7 +51,7 @@ function ActiveRecord_PostgresAdapter:query(sql)
   local result = assert(self:connect():query(sql))
   time = os.microtime() - time
   if ActiveRecord.debug then
-    print(sql .. string.format(" (%.3f) secs", time))
+    --print(sql .. string.format(" (%.3f) secs", time))
   end
   ActiveRecord.time = ActiveRecord.time + time
   return result
