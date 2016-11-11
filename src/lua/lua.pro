@@ -4,3 +4,4 @@
 
 TEMPLATE = subdirs
 SUBDIRS = json
+unix:SUBDIRS += pgsql

@@ -6,4 +6,3 @@ SUBDIRS = base64 \
           regex  \
           sha3   \
           odebug
-unix:SUBDIRS += pgsql
