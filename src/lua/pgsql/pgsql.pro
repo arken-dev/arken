@@ -6,13 +6,13 @@ CONFIG += plugin
 CONFIG += no_plugin_name_prefix
 
 INCLUDEPATH += .
-INCLUDEPATH += ../../../../../include
-INCLUDEPATH += ../../../../../vendors/include
+INCLUDEPATH += ../../../include
+INCLUDEPATH += ../../../vendors/include
 
 TARGET = pgsql
-DESTDIR = ../../../../../clib/oberon
+DESTDIR = ../../../clib/oberon
 
-win32:LIBS += ../../../../../vendors/lua51.dll
+win32:LIBS += ../../../vendors/lua51.dll
 LIBS += "-L/usr/lib/x86_64-linux-gnu"
 LIBS += "-lpq"
 
