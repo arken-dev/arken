@@ -16,4 +16,4 @@ DESTDIR = ../../../clib
 win32:LIBS += ../../../vendors/lua51.dll
 
 # Input
-SOURCES += lsqlite3.c
+SOURCES += lsqlite3.c ../../vendors/sqlite3/sqlite3.c
