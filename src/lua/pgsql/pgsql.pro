@@ -10,7 +10,7 @@ INCLUDEPATH += ../../../include
 INCLUDEPATH += ../../../vendors/include
 
 TARGET = pgsql
-DESTDIR = ../../../clib/oberon
+DESTDIR = ../../../clib
 
 win32:LIBS += ../../../vendors/lua51.dll
 LIBS += "-L/usr/lib/x86_64-linux-gnu"

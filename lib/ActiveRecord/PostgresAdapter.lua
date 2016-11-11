@@ -1,4 +1,4 @@
-require 'oberon.pgsql'
+require 'pgsql'
 
 ActiveRecord_PostgresAdapter = Class.new("ActiveRecord.PostgresAdapter", "ActiveRecord.Adapter")
 
