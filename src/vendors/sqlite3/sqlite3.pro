@@ -3,11 +3,12 @@
 ######################################################################
 
 TEMPLATE = app
-TARGET = ../../../bin/sqlite3
+TARGET = ../../../../bin/sqlite3
 INCLUDEPATH += .
 
 # Input
 HEADERS += sqlite3.h sqlite3ext.h
 SOURCES += shell.c sqlite3.c
 
-LIBS += -ldl
+unix:LIBS += -ldl
+LIBS += -lpthread
