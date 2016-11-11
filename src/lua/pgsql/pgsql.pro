@@ -7,7 +7,7 @@ CONFIG += no_plugin_name_prefix
 
 INCLUDEPATH += .
 INCLUDEPATH += ../../../include
-INCLUDEPATH += ../../../vendors/include
+INCLUDEPATH += ../../../vendors/include/luajit-2.0
 
 TARGET = pgsql
 DESTDIR = ../../../clib
@@ -18,4 +18,4 @@ LIBS += "-lpq"
 
 # Input
 HEADERS += pgsql.h
-SOURCES += pgsql.cpp
+SOURCES += pgsql.c

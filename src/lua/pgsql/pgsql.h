@@ -1,4 +1,7 @@
-#include <luajit-2.0/lua.hpp>
+#include "lua.h"
+#include "lauxlib.h"
+#include "lualib.h"
+
 #include <postgresql/libpq-fe.h>
 
 #define MYNAME "pgsql"
@@ -49,9 +52,7 @@ struct rs_t {
 /** module registration **/
 
 /* open the library - used by require() */
-extern "C" {
-  LUALIB_API int luaopen_oberon_pgsql(lua_State *L);
-}
+LUALIB_API int luaopen_oberon_pgsql(lua_State *L);
 
 
 /** exported functions **/

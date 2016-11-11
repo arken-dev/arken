@@ -35,8 +35,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /** private helper functions **/
 
 /* server NOTICE message handler */
-static void pg_notice(void *, const char *message) {
-	//fprintf(stderr, "debug.notice [%s]\n", message);
+static void pg_notice(void * value, const char *message) {
+        (void)(value);
+	fprintf(stderr, "debug.notice [%s]\n", message);
 }
 
 /* check and return pointer */
@@ -221,7 +222,6 @@ static const luaL_Reg R_res_array[] = {
 };
 
 /* open the library - used by require() */
-extern "C" {
 LUALIB_API int luaopen_pgsql(lua_State *L) {
 	/* register the base functions and module tags */
 	luaL_register(L, "pg", R_pg_functions);
@@ -258,7 +258,6 @@ LUALIB_API int luaopen_pgsql(lua_State *L) {
 
 	/* return the library handle */
 	return 1;
-}
 }
 
 /** exported functions **/
