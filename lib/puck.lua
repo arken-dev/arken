@@ -36,7 +36,7 @@ puck = function(file)
       end
     end
 
-    if count.pending > 0 then
+    if count.pending > 0 or count.ok == 0 then
       icon = "warning"
     end
 

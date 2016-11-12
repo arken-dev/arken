@@ -1,6 +1,5 @@
 function toboolean(value)
-
-  if value == 'true' or value == 't' or value == true then
+  if value == 'true' or value == 't' or value == true or value == 1 then
     return true
   end
 

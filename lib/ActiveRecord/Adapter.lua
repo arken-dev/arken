@@ -388,4 +388,20 @@ function ActiveRecord_Adapter:createTimestamp()
   end
 end
 
+-------------------------------------------------------------------------------
+-- TABLE EXISTS
+-------------------------------------------------------------------------------
+
+function ActiveRecord_Adapter:tableExists(tableName)
+  error("tableExists not implemented")
+end
+
+-------------------------------------------------------------------------------
+-- PREPARE MIGRATIONS
+-------------------------------------------------------------------------------
+
+function ActiveRecord_Adapter:prepareMigration()
+  error("prepare migrations not implemented")
+end
+
 return ActiveRecord_Adapter

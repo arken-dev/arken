@@ -72,7 +72,7 @@ rhea = function()
     end
   end
 
-  if arg[1] == nil then
+  if arg[0] == nil then
     for _, str in ipairs(path) do
       local list = os.glob(str, "\\.lua$", false)
       for i = 1, list:size() do
@@ -82,13 +82,13 @@ rhea = function()
       end
     end
   else
-    local task   = arg[1]
+    local task   = arg[0]
     local last   = task:lastIndexOf(":")
     local name   = task:left(last):replace(":", ".")
     local action = task:right(task:len() - last - 1)
 
     if last < 0 then
-      name   = arg[1]
+      name   = arg[0]
       action = nil
     end
 

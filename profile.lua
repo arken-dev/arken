@@ -12,6 +12,7 @@ package.cpath = package.cpath .. ";" .. OBERON_PATH .. "/clib/?.dll"
 -------------------------------------------------------------------------------
 
 OBERON_ENV = os.getenv("OBERON_ENV") or "development"
+os.setlocale("C", "numeric")
 
 -------------------------------------------------------------------------------
 -- Base
