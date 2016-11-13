@@ -1,20 +1,25 @@
 local test = {}
 local Person = Class.new("Person", "ActiveRecord")
-local uuid = ""
 
-test.before = function()
-  uuid = os.uuid():replace('-', '_')
-  Person.table_name = 'person_' .. uuid
-  Person[Person.adapter_instance] = nil
-  Person.adapter():execute(string.format([[
-  CREATE TABLE person_%s (
+test.beforeAll = function()
+  local sql = [[
+  CREATE TABLE person (
     id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(250), observation TEXT,
     created_at TEXT, updated_at TEXT
-  )]], uuid))
+  )]]
+  Person.adapter():execute(sql)
+end
+
+test.before = function()
+  ActiveRecord.begin()
 end
 
 test.after = function()
-  Person.adapter():connect():exec(string.format([[DROP TABLE person_%s]], uuid))
+  ActiveRecord.rollback()
+end
+
+test.afterAll = function()
+  Person.adapter():execute("DROP TABLE person")
 end
 
 test.should_return_record_stored = function()
@@ -41,7 +46,7 @@ test.should_return_one_id = function()
   p:save()
   local result = Person.all{ name = "Junior Cigano" }
 
-  assert( p.id == result[1].id, 'id diferentes: ' .. p.id .. ' ' .. result[1].id )
+  assert( p.id == result[1].id, string.format('%i %i', p.id, result[1].id) )
 end
 
 

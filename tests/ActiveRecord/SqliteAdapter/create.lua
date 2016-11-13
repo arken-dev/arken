@@ -2,16 +2,25 @@ local test = {}
 
 local Person = Class.new("Person", "ActiveRecord")
 
-test.before = function()
-  Person.adapter():execute([[
+test.beforeAll = function()
+  local sql = [[
   CREATE TABLE person (
     id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(250), observation TEXT,
     created_at TEXT, updated_at TEXT
-  )]])
+  )]]
+  Person.adapter():execute(sql)
+end
+
+test.before = function()
+  ActiveRecord.begin()
 end
 
 test.after = function()
-  Person.adapter():execute([[DROP TABLE person]])
+  ActiveRecord.rollback()
+end
+
+test.afterAll = function()
+  Person.adapter():execute("DROP TABLE person")
 end
 
 test.should_insert_in_the_database = function()
