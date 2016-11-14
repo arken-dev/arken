@@ -10,7 +10,7 @@
 #include <QString>
 #include <QFileSystemWatcher>
 
-class Puck : public QObject
+class Callisto : public QObject
 {
 
   Q_OBJECT
@@ -24,8 +24,8 @@ public slots:
   void showDirectoryModified(const QString &str);
 
 public:
-  Puck(int argc, char * argv[], const char * path, QObject *parent = 0);
-  ~Puck();
+  Callisto(int argc, char * argv[], const char * path, QObject *parent = 0);
+  ~Callisto();
   QFileSystemWatcher * m_watcher;
   Dialog * m_dialog;
 };

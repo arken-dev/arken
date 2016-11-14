@@ -3,8 +3,8 @@
 ######################################################################
 
 TEMPLATE = subdirs
-SUBDIRS = oberon  \
-          miranda \
-          rhea    \
-          puck    \
+SUBDIRS = oberon   \
+          miranda  \
+          rhea     \
+          callisto \
           triton

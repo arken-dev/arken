@@ -2,7 +2,7 @@ OBERON_ENV = os.getenv("OBERON_ENV") or "test"
 
 local test  = require 'test'
 
-puck = function(file)
+callisto = function(file)
   local t = QDateTime.currentMSecsSinceEpoch()
   package.reload()
   local results = test.execute({file})

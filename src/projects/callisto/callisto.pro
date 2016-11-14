@@ -10,7 +10,7 @@ QT += widgets
 
 TEMPLATE = app
 
-TARGET = puck
+TARGET = callisto
 DESTDIR = ../../../bin
 
 INCLUDEPATH += .
@@ -19,14 +19,14 @@ INCLUDEPATH += ../../../vendors/include
 
 SOURCES += main.cpp\
         dialog.cpp \
-        puck.cpp
+        callisto.cpp
 
 unix:SOURCES += keylogger/linux.c
 win32:SOURCES += keylogger/win32.c
 
 SOURCES += keyloggerworker.cpp ../oberon/oberon.cpp
 
-HEADERS  += dialog.h puck.h
+HEADERS  += dialog.h callisto.h
 
 FORMS    += dialog.ui
 

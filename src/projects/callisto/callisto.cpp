@@ -1,4 +1,4 @@
-#include <puck.h>
+#include <callisto.h>
 #include <dialog.h>
 #include <iostream>
 #include <QDebug>
@@ -7,7 +7,7 @@
 #include <oberon/helper>
 #include <OStringList>
 
-Puck::Puck(int argc, char * argv[], const char * path, QObject *parent) : QObject(parent)
+Callisto::Callisto(int argc, char * argv[], const char * path, QObject *parent) : QObject(parent)
 {
   int rv;
 
@@ -40,10 +40,10 @@ Puck::Puck(int argc, char * argv[], const char * path, QObject *parent) : QObjec
   lua_settop(m_luaState, 0);
   lua_getglobal(m_luaState, "OBERON_PATH");
 
-  QByteArray puck = lua_tostring(m_luaState, 1);
-  puck.append("/lib/puck.lua");
+  QByteArray callisto = lua_tostring(m_luaState, 1);
+  callisto.append("/lib/callisto.lua");
 
-  rv = luaL_loadfile(m_luaState, puck);
+  rv = luaL_loadfile(m_luaState, callisto);
   if (rv) {
     fprintf(stderr, "%s\n", lua_tostring(m_luaState, -1));
     throw;
@@ -61,12 +61,12 @@ Puck::Puck(int argc, char * argv[], const char * path, QObject *parent) : QObjec
 
 }
 
-Puck::~Puck()
+Callisto::~Callisto()
 {
 
 }
 
-void Puck::showFileModified(const QString &str)
+void Callisto::showFileModified(const QString &str)
 {
   qDebug() << "1showFileModified\n";
   qDebug() << str.toLocal8Bit().data();
@@ -86,7 +86,7 @@ void Puck::showFileModified(const QString &str)
   this->run();
 }
 
-void Puck::showDirectoryModified(const QString &str)
+void Callisto::showDirectoryModified(const QString &str)
 {
   qDebug() << "showDirectoryModified\n";
   qDebug() << str.toLocal8Bit().data();
@@ -95,11 +95,11 @@ void Puck::showDirectoryModified(const QString &str)
   m_watcher->addPath(str);
 }
 
-void Puck::run()
+void Callisto::run()
 {
 
   lua_settop(m_luaState, 0);
-  lua_getglobal(m_luaState, "puck");
+  lua_getglobal(m_luaState, "callisto");
   lua_pushstring(m_luaState, m_file.toLocal8Bit().data());
   if( lua_pcall(m_luaState, 1, 2, 0 ) != 0 ) {
     m_dialog->send("error", m_file, lua_tostring(m_luaState, -1));

@@ -37,12 +37,12 @@ Dialog::Dialog(QWidget *parent) :
 
     QString fileName("");
 
-    if( QFile::exists("config/puck.json") ) {
-      fileName = "config/puck.json";
+    if( QFile::exists("config/callisto.json") ) {
+      fileName = "config/callisto.json";
     }
 
-    if( QFile::exists("config/puck.json.user") ) {
-      fileName = "config/puck.json.user";
+    if( QFile::exists("config/callisto.json.user") ) {
+      fileName = "config/callisto.json.user";
     }
 
     QFile config(fileName);
