@@ -42,7 +42,7 @@ function Migrate:run()
       if file_name:endsWith(".sql") then
         print(string.format("%s version ok", version))
         local sql = os.read(file_name)
-        print(sql)
+        --print(sql)
         ActiveRecord.adapter():execute(sql)
         ActiveRecord.adapter():execute(string.format([[INSERT INTO schema_migration VALUES ('%s')]], version))
       end
