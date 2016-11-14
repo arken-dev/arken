@@ -180,7 +180,9 @@ static int lua_oberon_os_touch( lua_State *L ) {
 }
 
 static int lua_oberon_os_uuid( lua_State *L ) {
-  lua_pushstring( L, os::uuid() );
+  char * uuid = os::uuid();
+  lua_pushstring( L, uuid );
+  delete[] uuid;
   return 1;
 }
 

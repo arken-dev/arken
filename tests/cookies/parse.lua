@@ -13,4 +13,10 @@ test['return _session_id'] = function()
   assert(result._session_id == "5c08fc52513b2d562c62a1f7252dc834")
 end
 
+test['return one value _session_id'] = function()
+  local buffer = os.read(OBERON_PATH .. "/tests/cookies/2-example.cookie")
+  local result = cookie.parse(buffer)
+  assert(result._session_id == "fddb48d0a5fed89d837633ce6652a584")
+end
+
 return test
