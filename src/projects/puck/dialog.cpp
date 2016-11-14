@@ -127,11 +127,6 @@ void Dialog::fecharAlerta(){
   this->hide();
 }
 
-void Dialog::on_pushButton_clicked()
-{
- this->fecharAlerta();
-}
-
 void Dialog::keyPressEvent(QKeyEvent *event)
 {
   if(event->key() == Qt::Key_Escape)
