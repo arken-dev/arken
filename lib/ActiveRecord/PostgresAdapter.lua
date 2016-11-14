@@ -72,6 +72,9 @@ function ActiveRecord_PostgresAdapter:insert(record)
   if self:columns().updated_at then
     record.updated_at = record.created_at
   end
+  if self:columns().uuid then
+    record.uuid = os.uuid()
+  end
   for column, value in pairs(record) do
     if not self:isReserved(column) then
     --for column, properties in pairs(self:columns(table)) do
