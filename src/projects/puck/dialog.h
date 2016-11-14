@@ -30,7 +30,6 @@ public:
 
 private slots:
     bool resizeMsg();
-    void on_pushButton_clicked();
 
 private:
     int  m_timeout = 10;
