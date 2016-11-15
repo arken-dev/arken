@@ -66,19 +66,16 @@ M.line = function(line, flag)
   end
 
   if line:endsWith(")") then
-    M.flag = false
-    --flag = -1
+    flag = 1
   end
 
   if line:endsWith("}") then
     M.flag = false
-    --flag = -1
   end
 
   if line == "}" then
     flag = -1
   end
-
 
   if line == '' then
     flag = -1
