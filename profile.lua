@@ -18,7 +18,7 @@ os.setlocale("C", "numeric")
 -------------------------------------------------------------------------------
 -- Base
 -------------------------------------------------------------------------------
-require 'json'
+require 'json_pretty'
 require 'oberon.helper'
 require 'oberon.base.package'
 require 'oberon.parse'

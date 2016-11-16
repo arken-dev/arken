@@ -229,16 +229,12 @@ end
 -------------------------------------------------------------------------------
 
 function Controller:render_json(params)
-  local json = JSON:encode(params.value)
+  local data = json.encode(params.value)
   if request.params().json_callback then
-    value = string.format('%s(%s)', request.params().json_callback, json)
-  else
-    value = json
+    data = string.format('%s(%s)', request.params().json_callback, data)
   end
-  return 200, {'Content-Type: application/json; charset=UTF-8'}, value
+  return 200, {'Content-Type: application/json; charset=UTF-8'}, data
 end
-
-
 
 -------------------------------------------------------------------------------
 -- EXECUTE
