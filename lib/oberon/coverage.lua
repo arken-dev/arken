@@ -65,9 +65,9 @@ M.line = function(line, flag)
     M.flag = true
   end
 
-  if line:endsWith(")") then
-    flag = 1
-  end
+  --if line:endsWith(")") then
+  --  flag = 1
+  --end
 
   if line:endsWith("}") then
     M.flag = false
