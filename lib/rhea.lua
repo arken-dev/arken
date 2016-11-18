@@ -97,12 +97,10 @@ rhea = function()
       local file_name = str .. '/' .. name:camelcase() .. '.lua'
       --print(file_name)
       if os.exists(file_name) then
-        result, module = pcall(loadfile, file_name)
+        result, module = pcall(dofile, file_name)
         if result == false then
           print(name .. " not work" .. module)
           os.exit()
-        else
-          module = module()
         end
       end
     end

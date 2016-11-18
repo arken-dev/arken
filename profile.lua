@@ -77,6 +77,6 @@ end
 if OBERON_PATH ~= QDir.currentPath() then
   local profile = QDir.currentPath() .. '/profile.lua'
   if QFile.exists(profile) then
-    print(loadfile(profile)())
+    print(dofile(profile))
   end
 end
