@@ -76,7 +76,7 @@ rhea = function()
     for _, str in ipairs(path) do
       local list = os.glob(str, "\\.lua$", false)
       for i = 1, list:size() do
-        local module = loadfile(list:at(i))()
+        local module = dofile(list:at(i))
         print(module.class_name:underscore())
         printHelp(module)
       end
