@@ -1,3 +1,4 @@
+curl
 libx11-xcb-dev
 libxcb-composite0-dev
 libxcb-damage0-dev
