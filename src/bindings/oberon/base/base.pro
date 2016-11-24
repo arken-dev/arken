@@ -14,16 +14,17 @@ INCLUDEPATH += .
 INCLUDEPATH += ../../../../include
 INCLUDEPATH += ../../../../vendors/include
 
+#QMAKE_EXTENSION_SHLIB=so
+
 # Input
 SOURCES += helper.cpp
 SOURCES += math.cpp
 SOURCES += os.cpp
 SOURCES += string.cpp
 
+LIBS += -L ../../../../vendors -loberon -llua
+
 unix:LIBS += -lcurl
-
-unix:LIBS += ../../../../vendors/liboberon.so
-win32:LIBS += ../../../../vendors/oberon.dll
-
-win32:LIBS += ../../../../vendors/lua51.dll
 win32:LIBS += ../../../../vendors/libcurl.dll
+
+mac:QMAKE_POST_LINK += install_name_tool -change liblua.so  @executable_path/../vendors/liblua.so ../../../../clib/oberon/helper.dylib;install_name_tool -change liboberon.1.dylib  @executable_path/../vendors/liboberon.1.dylib ../../../../clib/oberon/helper.dylib

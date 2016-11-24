@@ -13,9 +13,9 @@ INCLUDEPATH += ../../../../../vendors/include
 TARGET = OThread
 DESTDIR = ../../../../../clib/
 
-unix:LIBS  += ../../../../../vendors/liboberon.so
-win32:LIBS += ../../../../../vendors/oberon.dll
-win32:LIBS += ../../../../../vendors/lua51.dll
+LIBS += -L ../../../../../vendors -loberon -llua
 
 # Input
 SOURCES += OThread.cpp
+
+mac:QMAKE_POST_LINK += install_name_tool -change liblua.so  @executable_path/../vendors/liblua.so ../../../../../clib/OThread.dylib; install_name_tool -change liboberon.1.dylib  @executable_path/../vendors/liboberon.1.dylib ../../../../../clib/OThread.dylib

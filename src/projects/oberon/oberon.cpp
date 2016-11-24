@@ -66,6 +66,9 @@ lua_State * Oberon::init(int argc, char * argv[], const char * path)
 {
 
   lua_State *L = lua_open();
+  if( L == 0 ) {
+    return 0;
+  }
   luaL_openlibs(L);
 
   Oberon::args(L, argc, argv);

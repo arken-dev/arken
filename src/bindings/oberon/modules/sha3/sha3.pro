@@ -17,7 +17,6 @@ INCLUDEPATH += ../../../../../vendors/include
 # Input
 SOURCES += sha3.cpp
 
-unix:LIBS += ../../../../../vendors/liboberon.so
-win32:LIBS += ../../../../../vendors/oberon.dll
+LIBS += -L ../../../../../vendors -loberon -llua
 
-win32:LIBS += ../../../../../vendors/lua51.dll
+mac:QMAKE_POST_LINK += install_name_tool -change liblua.so  @executable_path/../vendors/liblua.so ../../../../../clib/oberon/sha3.dylib; install_name_tool -change liboberon.1.dylib  @executable_path/../vendors/liboberon.1.dylib ../../../../../clib/oberon/sha3.dylib

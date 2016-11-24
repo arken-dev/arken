@@ -12,7 +12,7 @@ INCLUDEPATH += ../../../vendors/include/luajit-2.0
 TARGET = pgsql
 DESTDIR = ../../../clib
 
-win32:LIBS += ../../../vendors/lua51.dll
+LIBS += -L ../../../vendors -llua
 LIBS += "-L/usr/lib/x86_64-linux-gnu"
 LIBS += "-lpq"
 
