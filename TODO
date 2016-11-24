@@ -1,8 +1,4 @@
-- macos callisto bug
-- api revisão
-- licença
-- tests modulos c
-- coverage lua modules
+- review spec/string/*
 ---
 - logs
 - bindings for qt core QDateTime, QByteArray etc

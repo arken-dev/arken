@@ -18,15 +18,34 @@ Dialog::Dialog(QWidget *parent) :
     ui(new Ui::Dialog)
 {
     ui->setupUi(this);
+    #ifdef Q_OS_MAC
+    setWindowFlags(Qt::SubWindow
+      | Qt::FramelessWindowHint
+      | Qt::WindowSystemMenuHint
+      | Qt::WindowStaysOnTopHint // remove porque ele não mostra uma janela em cima da outra
+    );
+    #endif
+
+    #ifdef Q_OS_LINUX
     setWindowFlags(Qt::Window
-                   | Qt::WindowTitleHint
-                   | Qt::CustomizeWindowHint
-                   | Qt::FramelessWindowHint
-                   #if defined(Q_OS_WIN)
-                   | Qt::WindowStaysOnTopHint // remove porque ele não mostra uma janela em cima da outra
-                   #endif
-                   | Qt::SplashScreen //Ele mantem em backgroud mesmo quand otermina a aplicaçao.
-                   );
+      | Qt::WindowTitleHint
+      | Qt::CustomizeWindowHint
+      | Qt::FramelessWindowHint
+      | Qt::SplashScreen //Ele mantem em backgroud mesmo quand otermina a aplicaçao.
+    );
+    #endif
+
+    #ifdef Q_OS_WIN
+    setWindowFlags(Qt::Window
+      | Qt::WindowTitleHint
+      | Qt::CustomizeWindowHint
+      | Qt::FramelessWindowHint
+      | Qt::WindowStaysOnTopHint // remove porque ele não mostra uma janela em cima da outra
+      | Qt::SplashScreen //Ele mantem em backgroud mesmo quand otermina a aplicaçao.
+    );
+    #endif
+
+
     setAttribute(Qt::WA_NoSystemBackground, true);
     setAttribute(Qt::WA_TranslucentBackground, true);
     //setAttribute(Qt::WA_ShowWithoutActivating);
