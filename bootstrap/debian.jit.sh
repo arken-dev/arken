@@ -1,4 +1,4 @@
-cat boostrap/debian/packages.list | while read LINHA; do
+cat bootstrap/debian/packages.list | while read LINHA; do
   apt-get -y --force-yes install $LINHA
 done
 
