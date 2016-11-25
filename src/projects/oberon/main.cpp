@@ -162,6 +162,10 @@ int main(int argc, char * argv[])
   oberonPath = app.applicationFilePath().toLocal8Bit().data();
 
   L = Oberon::init(argc, argv, oberonPath);
+  if (L == 0) {
+    fprintf(stderr, "failure allocate memory\n");
+    return 1;
+  }
 
   if (file.fileName().isEmpty()) {
     rv = oberonConsoleLoad(L);

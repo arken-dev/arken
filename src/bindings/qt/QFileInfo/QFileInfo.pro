@@ -12,7 +12,9 @@ INCLUDEPATH += ../../../../vendors/include
 TARGET = QFileInfo
 DESTDIR = ../../../../clib
 
-win32:LIBS += ../../../../vendors/lua51.dll
+LIBS += -L ../../../../vendors -llua
 
 # Input
 SOURCES += QFileInfo.cpp
+
+mac:QMAKE_POST_LINK += install_name_tool -change liblua.so  @executable_path/../vendors/liblua.so ../../../../clib/QFileInfo.dylib

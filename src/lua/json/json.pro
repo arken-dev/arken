@@ -17,5 +17,6 @@ DESTDIR = ../../../clib/
 HEADERS += json.h dtoa_config.h fpconv.h strbuf.h
 SOURCES += json.c strbuf.c g_fmt.c dtoa.c json_lock.cpp #fpconv.c
 
-win32:LIBS += ../../../vendors/lua51.dll
-unix:LIBS += /usr/lib/x86_64-linux-gnu/libluajit-5.1.so
+LIBS += -L ../../../vendors -llua
+
+mac:QMAKE_POST_LINK += install_name_tool -change liblua.so  @executable_path/../vendors/liblua.so ../../../clib/json.dylib

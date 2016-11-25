@@ -13,7 +13,9 @@ INCLUDEPATH += ../../../../vendors/include
 TARGET = QSqlDatabase
 DESTDIR = ../../../../clib
 
-win32:LIBS += ../../../../vendors/lua51.dll
+LIBS  += -L ../../../../vendors -llua
 
 # Input
 SOURCES += QSqlDatabase.cpp
+
+mac:QMAKE_POST_LINK += install_name_tool -change liblua.so  @executable_path/../vendors/liblua.so ../../../../clib/QSqlDatabase.dylib

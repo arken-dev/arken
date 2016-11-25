@@ -21,10 +21,9 @@ INCLUDEPATH += ../../../vendors/include
 
 QMAKE_RPATHDIR += ../vendors
 
-win32:LIBS += ../../../vendors/lua51.dll
-win32:LIBS += ../../../vendors/oberon.dll
-unix:LIBS += /usr/lib/x86_64-linux-gnu/libluajit-5.1.so
-unix:LIBS += ../../../vendors/liboberon.so
+LIBS += -L ../../../vendors -llua -loberon
 
 # Input
 SOURCES += main.cpp oberon.cpp
+
+mac:QMAKE_POST_LINK += install_name_tool -change liboberon.1.dylib  @executable_path/../vendors/liboberon.1.dylib ../../../bin/oberon ; install_name_tool -change liblua.so  @executable_path/../vendors/liblua.so ../../../bin/oberon

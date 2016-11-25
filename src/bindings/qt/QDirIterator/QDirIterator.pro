@@ -12,7 +12,9 @@ INCLUDEPATH += ../../../../vendors/include
 TARGET = QDirIterator
 DESTDIR = ../../../../clib
 
-win32:LIBS += ../../../../vendors/lua51.dll
+LIBS += -L ../../../../vendors -llua
 
 # Input
 SOURCES += QDirIterator.cpp
+
+mac:QMAKE_POST_LINK += install_name_tool -change liblua.so  @executable_path/../vendors/liblua.so ../../../../clib/QDirIterator.dylib

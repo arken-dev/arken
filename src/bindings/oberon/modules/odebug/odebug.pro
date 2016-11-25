@@ -17,9 +17,9 @@ INCLUDEPATH += ../../../../../vendors/include
 # Input
 SOURCES += odebug.cpp
 
-unix:LIBS += ../../../../../vendors/liboberon.so
-win32:LIBS += ../../../../../vendors/oberon.dll
+LIBS += -L ../../../../../vendors -loberon -llua
 
 unix:LIBS += -lcurl
-win32:LIBS += ../../../../../vendors/lua51.dll
 win32:LIBS += ../../../../../vendors/libcurl.dll
+
+mac:QMAKE_POST_LINK += install_name_tool -change liblua.so  @executable_path/../vendors/liblua.so ../../../../../clib/oberon/odebug.dylib; install_name_tool -change liboberon.1.dylib  @executable_path/../vendors/liboberon.1.dylib ../../../../../clib/oberon/odebug.dylib

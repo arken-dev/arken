@@ -8,6 +8,8 @@ QT += core
 QT += gui
 QT += widgets
 
+CONFIG -= app_bundle
+
 TEMPLATE = app
 
 TARGET = callisto
@@ -21,23 +23,23 @@ SOURCES += main.cpp\
         dialog.cpp \
         callisto.cpp
 
-unix:SOURCES += keylogger/linux.c
-win32:SOURCES += keylogger/win32.c
+# unix:SOURCES += keylogger/linux.c
+# win32:SOURCES += keylogger/win32.c
+# SOURCES += keyloggerworker.cpp
 
-SOURCES += keyloggerworker.cpp ../oberon/oberon.cpp
+SOURCES += ../oberon/oberon.cpp
 
 HEADERS  += dialog.h callisto.h
 
 FORMS    += dialog.ui
 
-unix:LIBS += -lX11
+#unix:LIBS += -lX11
 
 RESOURCES += \
     rescource.qrc
 
 QMAKE_RPATHDIR += ../vendors
 
-win32:LIBS += ../../../vendors/lua51.dll
-win32:LIBS += ../../../vendors/oberon.dll
-unix:LIBS += /usr/lib/x86_64-linux-gnu/libluajit-5.1.so
-unix:LIBS += ../../../vendors/liboberon.so
+LIBS += -L ../../../vendors -loberon -llua
+
+mac:QMAKE_POST_LINK += install_name_tool -change liboberon.1.dylib  @executable_path/../vendors/liboberon.1.dylib ../../../bin/callisto ; install_name_tool -change liblua.so  @executable_path/../vendors/liblua.so ../../../bin/callisto

@@ -4,4 +4,4 @@
 
 TEMPLATE = subdirs
 SUBDIRS = lsqlite3 json
-unix:SUBDIRS += pgsql
+linux:SUBDIRS += pgsql
