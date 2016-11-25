@@ -1,3 +1,7 @@
+cat boostrap/debian/packages.list | while read LINHA; do
+  apt-get -y --force-yes install $LINHA
+done
+
 cd tmp
 curl http://luajit.org/download/LuaJIT-2.0.4.tar.gz -o tmp.tar.gz
 tar -xzvf tmp.tar.gz
