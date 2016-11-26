@@ -1,3 +1,10 @@
+apt-get install        \
+  build-essential      \
+  libgl1-mesa-dev      \
+  curl                 \
+  libcurl4-openssl-dev \
+  libpq-dev
+
 cd tmp
 curl http://www.lua.org/ftp/lua-5.1.5.tar.gz -o tmp.tar.gz
 tar -xzvf tmp.tar.gz
