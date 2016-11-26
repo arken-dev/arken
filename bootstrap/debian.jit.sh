@@ -1,6 +1,9 @@
-cat bootstrap/debian/packages.list | while read LINHA; do
-  apt-get -y --force-yes install $LINHA
-done
+apt-get install        \
+  build-essential      \
+  libgl1-mesa-dev      \
+  curl                 \
+  libcurl4-openssl-dev \
+  libpq-dev
 
 cd tmp
 curl http://luajit.org/download/LuaJIT-2.0.4.tar.gz -o tmp.tar.gz
