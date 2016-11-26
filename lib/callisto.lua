@@ -13,8 +13,7 @@ callisto = function(file)
 
   count = {}
   count.ok      = 0
-  count.err     = 0
-  count.fail    = 0
+  count.failure = 0
   count.pending = 0
 
   for file_name, result in pairs(results) do
@@ -40,8 +39,8 @@ callisto = function(file)
       icon = "warning"
     end
 
-    if count.err > 0 then
-      icon = "error"
+    if count.failure > 0 then
+      icon = "failure"
     end
 
     print("")

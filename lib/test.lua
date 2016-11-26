@@ -13,7 +13,7 @@ function test.process(file_name)
   local status, specs = pcall(dofile, file_name)
   -- arquivo com erro de sintaxe
   if not status then
-    results[1] = {['file not load'] = specs, status = 'err', msg = specs}
+    results[1] = {['file not load'] = specs, status = 'failure', msg = specs}
     return results
   end
   if specs == nil then
@@ -67,11 +67,11 @@ function test.process(file_name)
             if trace then
               text = text .. '\n' .. trace
             end
-            results[description] = {status = 'err', msg = text}
+            results[description] = {status = 'failure', msg = text}
             io.write(colorize.format('.', 'red'))
           end
         else
-          results[description] = {status = 'err', msg = message}
+          results[description] = {status = 'failure', msg = message}
           io.write(colorize.format('.', 'red'))
         end
       else
@@ -80,7 +80,7 @@ function test.process(file_name)
       end
       status, message = pcall(after)
       if status == false then
-        results['after'] = {status = 'err', msg = message}
+        results['after'] = {status = 'failure', msg = message}
         io.write(colorize.format('.', 'red'))
       end
     else

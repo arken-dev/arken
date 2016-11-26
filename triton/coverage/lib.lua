@@ -60,7 +60,7 @@ function triton_run(fileName)
         triton.appendResult(buffer)
       end
 
-      if result.status == 'err' then
+      if result.status == 'failure' then
         triton.addError()
       end
 

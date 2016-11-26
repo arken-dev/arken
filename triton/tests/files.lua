@@ -27,7 +27,7 @@ function triton_run(file)
 
   count = {}
   count.ok      = 0
-  count.err     = 0
+  count.failure = 0
   count.fail    = 0
   count.pending = 0
 
@@ -53,7 +53,7 @@ function triton_run(file)
         triton.appendResult(buffer)
       end
 
-      if result.status == 'err' then
+      if result.status == 'failure' then
         triton.addError()
       end
 
