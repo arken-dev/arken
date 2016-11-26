@@ -324,6 +324,10 @@ function ActiveRecord_SqliteAdapter:parser_format(format_type)
     return 'boolean'
   end
 
+  if format_type == 'boolean' then
+    return 'boolean'
+  end
+
   if format_type == 'date' then
     return 'date'
   end
