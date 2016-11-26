@@ -4,7 +4,7 @@
 #include <OStringList>
 
 
-QQueue<QByteArray *> * Triton::s_queue = s_queue = new QQueue<QByteArray *>();
+QQueue<QByteArray *> * Triton::s_queue = new QQueue<QByteArray *>();
 QMutex Triton::s_mutex;
 
 int Triton::s_ok      = 0;
@@ -135,9 +135,9 @@ void Triton::appendResult(const char * result)
   s_result->append(result);
 }
 
-void Triton::appendPath(const char * path)
+void Triton::enqueue(const char * path)
 {
-  s_queue->append(new QByteArray(path));
+  s_queue->enqueue(new QByteArray(path));
 }
 
 QByteArray * Triton::result()

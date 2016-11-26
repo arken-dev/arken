@@ -11,7 +11,7 @@ function triton_start()
   local list = os.glob("tests/models", ".*.lua$", true)
   for i = 1, list:size() do
     print(list:at(i))
-    triton.appendPath(list:at(i))
+    triton.enqueue(list:at(i))
   end
 end
 

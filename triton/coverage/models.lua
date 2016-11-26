@@ -19,7 +19,7 @@ function triton_start()
       local filePath = fileInfo:filePath()
       print(filePath)
       table.insert(files, filePath)
-      triton.appendPath(filePath)
+      triton.enqueue(filePath)
     end
   end
 end

@@ -37,7 +37,7 @@ class Triton : public QObject, public QRunnable
   Triton(int argc, char * argv[], const char * path, QByteArray fileName);
   ~Triton();
   void run();
-  static void appendPath(const char * path);
+  static void enqueue(const char * path);
   static void appendResult(const char * result);
   static void addOk();
   static void addError();

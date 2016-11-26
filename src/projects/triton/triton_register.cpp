@@ -50,9 +50,9 @@ triton_appendResult(lua_State *L) {
 }
 
 static int
-triton_appendPath(lua_State *L) {
+triton_enqueue(lua_State *L) {
   const char * path = luaL_checkstring(L, 1);
-  Triton::appendPath(path);
+  Triton::enqueue(path);
   return 0;
 }
 
@@ -73,7 +73,7 @@ triton_register(lua_State * L) {
     {"addError",   triton_addError},
     {"addPending", triton_addPending},
     {"appendResult", triton_appendResult},
-    {"appendPath", triton_appendPath},
+    {"enqueue",    triton_enqueue},
     {"result",     triton_result},
     {NULL, NULL}
   };

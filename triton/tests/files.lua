@@ -10,7 +10,7 @@ local start = os.microtime()
 function triton_start()
   for _, file in ipairs(arg) do
     print(file)
-    triton.appendPath(file)
+    triton.enqueue(file)
   end
 end
 
