@@ -36,11 +36,11 @@ int main(int argc, char * argv[])
   } else {
     fileName.prepend("triton/");
     fileName.append(string::replace(argv[1], '.', '/'));
+    fileName.append(".lua");
     if( ! os::exists(fileName) ) {
       fileName.prepend("/");
       fileName.prepend(oberonPath);
     }
-    fileName.append(".lua");
   }
 
   int rv;
