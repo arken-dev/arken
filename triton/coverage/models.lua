@@ -46,23 +46,16 @@ function triton_run(fileName)
 
   for fileName, result in pairs(results) do
     for description, result in pairs(result) do
-      triton.addOk()
+      triton.count('test')
       if result.status ~= 'ok' then
         local buffer = description .. '\n'
         if result.msg and tostring(result.msg):len() > 0  then
           buffer = buffer .. tostring(result.msg) .. '\n'
         end
-        triton.appendResult(fileName .. '\n')
-        triton.appendResult(buffer)
+        triton.append('message', fileName .. '\n' .. buffer)
       end
 
-      if result.status == 'failure' then
-        triton.addError()
-      end
-
-      if result.status == 'pending' then
-        triton.addPending()
-      end
+      triton.count(result.status)
     end
   end
 
@@ -93,15 +86,18 @@ function triton_stop()
   print('')
   local dir    = 'coverage'
   local tpl    = OBERON_PATH .. "/lib/oberon/coverage/templates/index.html"
-  local data   = {files = files, time = (os.microtime() - start), total = triton.ok()}
+  local data   = {files = files, time = (os.microtime() - start), total = triton.total('tests')}
   local buffer = template.execute(tpl, data)
 
   local file   = io.open((dir .. "/" .. 'index.html'), "w")
   file:write(buffer)
   file:close()
 
-  print('')
-  print(string.format("Results %s", triton.result()))
-  print(string.format("%i tests, %i failures, %i pendings", triton.ok(), triton.failure(), triton.pending() ))
+  local message = triton.result('message')
+  local test    = triton.total('test')
+  local pending = triton.total('pending')
+  local failure = triton.total('failure')
+  print('\n' .. message)
+  print(string.format("%i tests, %i pendings, %i failures", test, failure, pending))
   print(string.format("Finished in %.2f seconds", os.microtime() - start))
 end

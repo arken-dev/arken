@@ -6,50 +6,6 @@
 #include <triton.h>
 
 static int
-triton_ok(lua_State *L) {
-  lua_pushinteger(L, Triton::ok());
-  return 1;
-}
-
-static int
-triton_error(lua_State *L) {
-  lua_pushinteger(L, Triton::error());
-  return 1;
-}
-
-static int
-triton_pending(lua_State *L) {
-  lua_pushinteger(L, Triton::pending());
-  return 1;
-}
-
-static int
-triton_addOk(lua_State *) {
-  Triton::addOk();
-  return 0;
-}
-
-static int
-triton_addError(lua_State *) {
-  Triton::addError();
-  return 0;
-}
-
-static int
-triton_addPending(lua_State *) {
-  Triton::addPending();
-  return 0;
-}
-
-
-static int
-triton_appendResult(lua_State *L) {
-  const char * result = luaL_checkstring(L, 1);
-  Triton::appendResult(result);
-  return 0;
-}
-
-static int
 triton_enqueue(lua_State *L) {
   const char * path = luaL_checkstring(L, 1);
   Triton::enqueue(path);
@@ -57,8 +13,31 @@ triton_enqueue(lua_State *L) {
 }
 
 static int
+triton_count(lua_State *L) {
+  const char * label = luaL_checkstring(L, 1);
+  Triton::count(label);
+  return 0;
+}
+
+static int
+triton_total(lua_State *L) {
+  const char * label = luaL_checkstring(L, 1);
+  lua_pushinteger(L, Triton::total(label));
+  return 1;
+}
+
+static int
+triton_append(lua_State *L) {
+  const char * key    = luaL_checkstring(L, 1);
+  const char * result = luaL_checkstring(L, 2);
+  Triton::append(key, result);
+  return 0;
+}
+
+static int
 triton_result(lua_State *L) {
-  lua_pushstring(L, *Triton::result());
+  const char * key = luaL_checkstring(L, 1);
+  lua_pushstring(L, *Triton::result(key));
   return 1;
 }
 
@@ -66,14 +45,10 @@ triton_result(lua_State *L) {
 void
 triton_register(lua_State * L) {
   static const luaL_reg Map[] = {
-    {"ok",         triton_ok},
-    {"failure",    triton_error},
-    {"pending",    triton_pending},
-    {"addOk",      triton_addOk},
-    {"addError",   triton_addError},
-    {"addPending", triton_addPending},
-    {"appendResult", triton_appendResult},
     {"enqueue",    triton_enqueue},
+    {"count",      triton_count},
+    {"total",      triton_total},
+    {"append",     triton_append},
     {"result",     triton_result},
     {NULL, NULL}
   };

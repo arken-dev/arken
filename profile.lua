@@ -67,7 +67,7 @@ while(iterator:hasNext()) do
   iterator:next()
   local fileInfo = iterator:fileInfo()
   if(fileInfo:suffix() == 'lua') then
-    loadfile(fileInfo:filePath())()
+    dofile(fileInfo:filePath())
   end
 end
 
@@ -78,6 +78,6 @@ end
 if OBERON_PATH ~= QDir.currentPath() then
   local profile = QDir.currentPath() .. '/profile.lua'
   if QFile.exists(profile) then
-    print(dofile(profile))
+    dofile(profile)
   end
 end

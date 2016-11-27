@@ -10,6 +10,7 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QQueue>
+#include <QHash>
 #include <QMutex>
 #include <QRunnable>
 #include <QStringList>
@@ -26,30 +27,22 @@ class Triton : public QObject, public QRunnable
   const char * m_path;
   QByteArray m_fileName;
   lua_State * m_state;
+  static QHash<QByteArray, QByteArray *> * s_result;
+  static QHash<QByteArray, int> * s_total;
   static QQueue<QByteArray *> * s_queue;
   static QMutex s_mutex;
-  static int s_ok;
-  static int s_error;
-  static int s_pending;
-  static QByteArray * s_result;
 
   public:
   Triton(int argc, char * argv[], const char * path, QByteArray fileName);
   ~Triton();
   void run();
-  static void enqueue(const char * path);
-  static void appendResult(const char * result);
-  static void addOk();
-  static void addError();
-  static void addPending();
-  static int  ok();
-  static int  error();
-  static int  pending();
-  static QByteArray * result();
-
-  QByteArray * dequeue();
-
   static void init(QStringList list);
+  static void enqueue(const char * path);
+  static void append(const char * key, const char * result);
+  static void count(const char * label);
+  static int  total(const char * label);
+  static QByteArray * result(char const * key);
+  static QByteArray * dequeue();
 };
 
 #endif // TRITON_H

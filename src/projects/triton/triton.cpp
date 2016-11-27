@@ -3,15 +3,10 @@
 #include <oberon/helper>
 #include <OStringList>
 
-
+QHash<QByteArray, QByteArray *> * Triton::s_result = new QHash<QByteArray, QByteArray *>();
+QHash<QByteArray, int> * Triton::s_total = new QHash<QByteArray, int>();
 QQueue<QByteArray *> * Triton::s_queue = new QQueue<QByteArray *>();
 QMutex Triton::s_mutex;
-
-int Triton::s_ok      = 0;
-int Triton::s_error   = 0;
-int Triton::s_pending = 0;
-QByteArray * Triton::s_result = new QByteArray();
-
 
 Triton::Triton(int argc, char * argv[], const char * path, QByteArray fileName)
 {
@@ -96,43 +91,12 @@ QByteArray * Triton::dequeue()
   }
 }
 
-int Triton::ok()
-{
-  return s_ok;
-}
-
-int Triton::error()
-{
-  return s_error;
-}
-
-int Triton::pending()
-{
-  return s_pending;
-}
-
-void Triton::addOk()
+void Triton::append(const char * key, const char * value)
 {
   QMutexLocker ml(&s_mutex);
-  s_ok++;
-}
-
-void Triton::addError()
-{
-  QMutexLocker ml(&s_mutex);
-  s_error++;
-}
-
-void Triton::addPending()
-{
-  QMutexLocker ml(&s_mutex);
-  s_pending++;
-}
-
-void Triton::appendResult(const char * result)
-{
-  QMutexLocker ml(&s_mutex);
-  s_result->append(result);
+  QByteArray * v = s_result->value(key, new QByteArray);
+  v->append(value);
+  s_result->insert(key, v);
 }
 
 void Triton::enqueue(const char * path)
@@ -140,7 +104,23 @@ void Triton::enqueue(const char * path)
   s_queue->enqueue(new QByteArray(path));
 }
 
-QByteArray * Triton::result()
+QByteArray * Triton::result(const char * key)
 {
-  return s_result;
+  return s_result->value(key, new QByteArray);
+}
+
+void Triton::count(const char * label)
+{
+  int count;
+  QMutexLocker ml(&s_mutex);
+
+  count = s_total->value(label, 0);
+  count++;
+  s_total->insert(label, count);
+}
+
+int Triton::total(const char * label)
+{
+  QMutexLocker ml(&s_mutex);
+  return s_total->value(label);
 }

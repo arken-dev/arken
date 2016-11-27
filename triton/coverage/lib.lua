@@ -56,8 +56,7 @@ function triton_run(fileName)
         if result.msg and tostring(result.msg):len() > 0  then
           buffer = buffer .. tostring(result.msg) .. '\n'
         end
-        triton.appendResult(fileName .. '\n')
-        triton.appendResult(buffer)
+        triton.append('message', fileName .. '\n' .. buffer)
       end
 
       if result.status == 'failure' then
@@ -104,8 +103,11 @@ function triton_stop()
   file:write(buffer)
   file:close()
 
-  print('')
-  print(string.format("Results %s", triton.result()))
-  print(string.format("%i tests, %i failures, %i pendings", triton.ok(), triton.failure(), triton.pending() ))
+  local message = triton.result('message')
+  local test    = triton.total('test')
+  local pending = triton.total('pending')
+  local failure = triton.total('failure')
+  print('\n' .. message)
+  print(string.format("%i tests, %i pendings, %i failures", test, failure, pending))
   print(string.format("Finished in %.2f seconds", os.microtime() - start))
 end

@@ -23,13 +23,6 @@ function triton_run(file)
   local results = test.execute({file})
 
   local titulo = ""
-  local icon   = "ok"
-
-  count = {}
-  count.ok      = 0
-  count.failure = 0
-  count.fail    = 0
-  count.pending = 0
 
   for file_name, result in pairs(results) do
     if titulo:len() > 0 then
@@ -40,27 +33,18 @@ function triton_run(file)
 
   for file_name, result in pairs(results) do
     for description, result in pairs(result) do
-      count[result.status] = count[result.status] + 1
 
-      triton.addOk()
+      triton.count('test')
 
       if result.status ~= 'ok' then
         local buffer = description .. '\n'
         if result.msg and tostring(result.msg):len() > 0  then
           buffer = buffer .. tostring(result.msg) .. '\n'
         end
-        triton.appendResult(file .. '\n')
-        triton.appendResult(buffer)
+        triton.append('message', file .. '\n' .. buffer)
       end
 
-      if result.status == 'failure' then
-        triton.addError()
-      end
-
-      if result.status == 'pending' then
-        triton.addPending()
-      end
-
+      triton.count(result.status)
     end
   end
 end
@@ -70,8 +54,11 @@ end
 -------------------------------------------------------------------------------
 
 function triton_stop()
-  print('')
-  print(string.format("Results %s", triton.result()))
-  print(string.format("%i tests, %i failures, %i pendings", triton.ok(), triton.failure(), triton.pending() ))
+  local message = triton.result('message')
+  local test    = triton.total('test')
+  local pending = triton.total('pending')
+  local failure = triton.total('failure')
+  print('\n' .. message)
+  print(string.format("%i tests, %i pendings, %i failures", test, failure, pending))
   print(string.format("Finished in %.2f seconds", os.microtime() - start))
 end

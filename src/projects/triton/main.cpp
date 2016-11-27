@@ -79,8 +79,16 @@ int main(int argc, char * argv[])
   QThreadPool * pool = new QThreadPool;
   pool->setMaxThreadCount(threads);
 
+  /*
+   * Pre initialize instances
+   */
+  QList<Triton *> list;
   for(int i = 0; i < threads; i++ ) {
-    pool->start(new Triton(argc, argv, path, fileName));
+    list.append(new Triton(argc, argv, path, fileName));
+  }
+
+  for(int i = 0; i < threads; i++ ) {
+    pool->start(list.at(i));
   }
 
   pool->waitForDone();
