@@ -5,7 +5,11 @@ static int
 miranda_cache_insert(lua_State *L) {
   const char * key   = luaL_checkstring(L, 1);
   const char * value = luaL_checkstring(L, 2);
-  MirandaState::insert(key, value);
+  int expires = -1;
+  if(lua_gettop(L) == 3) { /* número de argumentos */
+    expires = lua_tointeger(L, 3);
+  }
+  MirandaState::insert(key, value, expires);
   return 0;
 }
 
@@ -13,7 +17,11 @@ static int
 miranda_cache_value(lua_State *L) {
   const char * key   = luaL_checkstring(L, 1);
   const char * value = MirandaState::value(key);
-  lua_pushstring(L, value);
+  if( value == 0 ) {
+    lua_pushnil(L);
+  } else {
+    lua_pushstring(L, value);
+  }
   return 1;
 }
 

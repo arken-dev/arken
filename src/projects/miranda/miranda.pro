@@ -21,6 +21,7 @@ LIBS += -L ../../../vendors -llua -loberon
 
 # Input
 SOURCES += main.cpp    \
+    mirandacache.cpp   \
     mirandaserver.cpp  \
     mirandaservice.cpp \
     mirandastate.cpp   \

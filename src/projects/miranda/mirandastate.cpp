@@ -1,6 +1,8 @@
 #include "mirandastate.h"
+#include "mirandacache.h"
 #include <QDebug>
 #include <QStack>
+#include <QReadWriteLock>
 
 int        MirandaState::s_gc          = 0;
 qint64     MirandaState::s_version     = 0;
@@ -10,8 +12,9 @@ QMutex     MirandaState::s_mutex;
 
 QStack<MirandaState *> * MirandaState::s_stack   = new QStack<MirandaState *>;
 QList<MirandaService*> * MirandaState::s_service = new QList<MirandaService *>;
-QHash<OByteArray, OByteArray> * MirandaState::s_cache = new QHash<OByteArray, OByteArray>;
+QHash<OByteArray, MirandaCache *> * MirandaState::s_cache = new QHash<OByteArray, MirandaCache *>;
 QThreadPool * MirandaState::s_pool = 0;
+QReadWriteLock lock;
 
 
 void miranda_cache_register(lua_State * L);
@@ -235,18 +238,40 @@ int MirandaState::version()
 
 const char * MirandaState::value(const char * key)
 {
-  QMutexLocker ml(&s_mutex);
-  return s_cache->value(key);
+  lock.lockForRead();
+  MirandaCache * cache = s_cache->value(key, 0);
+  lock.unlock();
+
+  if( cache == 0 ) {
+    return 0;
+  }
+
+  if ( cache->isExpires() ) {
+    lock.lockForWrite();
+    s_cache->remove(key);
+    lock.unlock();
+    return 0;
+  } else {
+    return cache->data();
+  }
+
 }
 
 void MirandaState::insert(const char * key, const char * value)
 {
-  QMutexLocker ml(&s_mutex);
-  s_cache->insert(key, value);
+  insert(key, value, -1);
+}
+
+void MirandaState::insert(const char * key, const char * value, int expires)
+{
+  lock.lockForWrite();
+  s_cache->insert(key, new MirandaCache(value, expires));
+  lock.unlock();
 }
 
 int MirandaState::remove(const char * key)
 {
-  QMutexLocker ml(&s_mutex);
+  lock.lockForWrite();
   return s_cache->remove(key);
+  lock.unlock();
 }

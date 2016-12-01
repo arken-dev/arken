@@ -13,6 +13,7 @@
 #include <OByteArray>
 
 #include "mirandaservice.h"
+#include "mirandacache.h"
 
 class MirandaState
 {
@@ -31,6 +32,7 @@ public:
   static int  version();
   static int  gc();
   static void insert(const char * key, const char * value);
+  static void insert(const char * key, const char * value, int expires);
   static const char * value(const char * key);
   static int remove(const char * key);
   static void servicesLoad();
@@ -39,7 +41,7 @@ public:
   static void createService(QByteArray fileName);
   static void createTask(QByteArray fileName, const char * uuid);
   static void taskPool(QByteArray fileName, const char * uuid);
-  static QHash<OByteArray, OByteArray> * s_cache;
+  static QHash<OByteArray, MirandaCache *> * s_cache;
 
   lua_State * instance();
 
