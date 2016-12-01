@@ -58,14 +58,14 @@ void MirandaServer::start()
   } else {
     qDebug() << "fail start miranda ...";
   }
-  QFile pid("logs/miranda.pid");
-  if ( pid.open(QIODevice::ReadWrite) ) {
-    pid.write(QString::number(os::pid()).toLocal8Bit());
+  QFile log("logs/miranda.pid");
+  if ( log.open(QIODevice::WriteOnly) ) {
+    log.write(QByteArray::number(os::pid()));
+    log.close();
   } else {
     qDebug() << "logs/miranda.pid not open";
     throw;
   }
-  pid.close();
 }
 
 void MirandaServer::incomingConnection(qintptr descriptor)
