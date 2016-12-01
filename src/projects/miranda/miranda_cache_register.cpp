@@ -1,14 +1,22 @@
 #include <luajit-2.0/lua.hpp>
 #include "mirandastate.h"
 
+extern "C" {
+#include <json.h>
+}
+
+char * json_lock_encode(lua_State *l);
+void json_lock_decode(lua_State *l, const char * data);
+
 static int
 miranda_cache_insert(lua_State *L) {
   const char * key   = luaL_checkstring(L, 1);
-  const char * value = luaL_checkstring(L, 2);
   int expires = -1;
   if(lua_gettop(L) == 3) { /* número de argumentos */
     expires = lua_tointeger(L, 3);
+    lua_remove(L, 3);
   }
+  char * value = json_lock_encode(L);
   MirandaState::insert(key, value, expires);
   return 0;
 }
@@ -20,7 +28,7 @@ miranda_cache_value(lua_State *L) {
   if( value == 0 ) {
     lua_pushnil(L);
   } else {
-    lua_pushstring(L, value);
+    json_lock_decode(L, value);
   }
   return 1;
 }
