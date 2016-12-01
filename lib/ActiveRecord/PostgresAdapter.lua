@@ -617,4 +617,19 @@ function ActiveRecord_PostgresAdapter:prepareMigration()
   return list
 end
 
+--------------------------------------------------------------------------------
+-- COUNT
+--------------------------------------------------------------------------------
+
+function ActiveRecord_Adapter:count(params)
+  local sql   = 'SELECT COUNT(*) count_all FROM ' .. self.table_name .. " " .. self:where(params)
+  local res   = self:execute(sql)
+  local count = 0
+  for row in res:rows() do
+    count = row.count_all
+    break
+  end
+  return count
+end
+
 return ActiveRecord_PostgresAdapter

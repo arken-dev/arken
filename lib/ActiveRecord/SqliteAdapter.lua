@@ -611,4 +611,18 @@ function ActiveRecord_SqliteAdapter:prepareMigration()
   return list
 end
 
+--------------------------------------------------------------------------------
+-- COUNT
+--------------------------------------------------------------------------------
+
+function ActiveRecord_Adapter:count(params)
+  local sql = 'SELECT COUNT(*) count_all FROM ' .. self.table_name .. " " .. self:where(params)
+  local count = 0
+  for row in self:connect():nrows(sql) do
+    count = row.count_all
+    break
+  end
+  return count
+end
+
 return ActiveRecord_SqliteAdapter

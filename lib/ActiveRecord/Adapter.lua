@@ -118,7 +118,7 @@ function ActiveRecord_Adapter:where(values, flag)
   if values.where then
     --local where = QString.new(values.where)
     local where = values.where
-    values.where = nil
+    -- values.where = nil
     for index, value in pairs(values) do
       --where:replace('$' .. index, format[type(value)](value))
       where = string.swap(where, '$' .. index, format[type(value)](value))
@@ -168,6 +168,14 @@ function ActiveRecord_Adapter:destroy(record)
   local sql = 'DELETE FROM ' .. self.table_name .. " " .. self:where(values)
   local result = self:execute(sql)
   return result
+end
+
+-------------------------------------------------------------------------------
+-- COUNT
+-------------------------------------------------------------------------------
+
+function ActiveRecord_Adapter:count()
+  error("count not implemented")
 end
 
 --------------------------------------------------------------------------------

@@ -81,6 +81,14 @@ ActiveRecord.inherit = function(class)
   end
 
   -----------------------------------------------------------------------------
+  -- ActiveRecord#count
+  -----------------------------------------------------------------------------
+
+  class.count = function(params)
+    return class.adapter():count(params or {})
+  end
+
+  -----------------------------------------------------------------------------
   -- ActiveRecord#adapter()
   -----------------------------------------------------------------------------
 
@@ -306,6 +314,5 @@ function ActiveRecord:dup()
   end
   return dup
 end
-
 
 return ActiveRecord
