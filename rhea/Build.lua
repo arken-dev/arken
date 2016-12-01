@@ -8,7 +8,7 @@ Build.help.clear = [[
 
 function Build:clear(params)
   print("clear Makefile, .o")
-  iterator = QDirIterator.new(OBERON_PATH, {"Subdirectories"})
+  iterator = QDirIterator.new(OBERON_PATH .. '/src', {"Subdirectories"})
   while(iterator:hasNext()) do
     iterator:next()
     local fileInfo = iterator:fileInfo()
