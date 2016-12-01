@@ -25,10 +25,18 @@ miranda_cache_value(lua_State *L) {
   return 1;
 }
 
+static int
+miranda_cache_remove(lua_State *L) {
+  const char * key = luaL_checkstring(L, 1);
+  lua_pushinteger(L, MirandaState::remove(key));
+  return 0;
+}
+
 void
 miranda_cache_register(lua_State * L) {
   static const luaL_reg Map[] = {
     {"insert", miranda_cache_insert},
+    {"remove",  miranda_cache_remove},
     {"value",  miranda_cache_value},
     {NULL, NULL}
   };
