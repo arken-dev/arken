@@ -40,6 +40,6 @@ RESOURCES += \
 
 QMAKE_RPATHDIR += ../vendors
 
-LIBS += -L ../../../vendors -loberon -llua
+LIBS += -L ../../../vendors -loberon -llua -lcurl
 
 mac:QMAKE_POST_LINK += install_name_tool -change liboberon.1.dylib  @executable_path/../vendors/liboberon.1.dylib ../../../bin/callisto ; install_name_tool -change liblua.so  @executable_path/../vendors/liblua.so ../../../bin/callisto

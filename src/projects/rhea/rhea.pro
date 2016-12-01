@@ -21,7 +21,7 @@ INCLUDEPATH += ../../../vendors/include
 
 QMAKE_RPATHDIR += ../vendors
 
-LIBS += -L ../../../vendors -llua -loberon
+LIBS += -L ../../../vendors -llua -loberon -lcurl
 
 # Input
 SOURCES += main.cpp ../oberon/oberon.cpp

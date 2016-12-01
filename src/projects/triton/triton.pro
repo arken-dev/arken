@@ -21,7 +21,7 @@ INCLUDEPATH += ../../../vendors/include
 
 QMAKE_RPATHDIR += ../vendors
 
-LIBS += -L ../../../vendors -llua -loberon
+LIBS += -L ../../../vendors -llua -loberon -lcurl
 
 # Input
 SOURCES += triton.cpp main.cpp ../oberon/oberon.cpp triton_register.cpp
