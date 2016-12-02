@@ -61,20 +61,23 @@ insert header c and cpp files resume of license
 ]]
 
 function Build:license()
-  local iterator = QDirIterator.new(OBERON_PATH .. '/src', {"Subdirectories"})
-  local license  = os.read(OBERON_PATH .. '/rhea/build/license.header')
-  while(iterator:hasNext()) do
-    iterator:next()
-    local fileInfo = iterator:fileInfo()
-    if(fileInfo:suffix() == 'c' or fileInfo:suffix() == 'cpp' ) then
-      local buffer = os.read(fileInfo:filePath())
-      if not buffer:startsWith(license) then
-        print(fileInfo:filePath())
-        local file = QFile.new(fileInfo:filePath())
-        file:open({"WriteOnly"})
-        file:write(license .. buffer)
-        file:close()
-      end      
+  local dirs = { 'bindings', 'oberon', 'projects' }
+  for _, dir in ipairs(dirs) do
+    local iterator = QDirIterator.new(OBERON_PATH .. '/src/' .. dir, {"Subdirectories"})
+    local license  = os.read(OBERON_PATH .. '/rhea/build/license.header')
+    while(iterator:hasNext()) do
+      iterator:next()
+      local fileInfo = iterator:fileInfo()
+      if(fileInfo:suffix() == 'c' or fileInfo:suffix() == 'cpp' ) then
+        local buffer = os.read(fileInfo:filePath())
+        if not buffer:startsWith(license) then
+          print(fileInfo:filePath())
+          local file = QFile.new(fileInfo:filePath())
+          file:open({"WriteOnly"})
+          file:write(license .. buffer)
+          file:close()
+        end
+      end
     end
   end
 end
