@@ -103,7 +103,11 @@ char * OHttpClient::performGet()
   }
 
   m_chunk.memory[m_chunk.size] = '\0';
-  return m_chunk.memory;
+
+  char * result = (char *) malloc( (m_chunk.size + 1) * sizeof(char) );
+  strcpy(result, m_chunk.memory);
+
+  return result;
 }
 
 char * OHttpClient::performPost()
@@ -139,7 +143,10 @@ char * OHttpClient::performPost()
 
   m_chunk.memory[m_chunk.size] = '\0';
 
-  return m_chunk.memory;
+  char * result = (char *) malloc( (m_chunk.size + 1) * sizeof(char) );
+  strcpy(result, m_chunk.memory);
+
+  return result;
 }
 
 char * OHttpClient::performPut()
@@ -175,7 +182,10 @@ char * OHttpClient::performPut()
 
   m_chunk.memory[m_chunk.size] = '\0';
 
-  return m_chunk.memory;
+  char * result = (char *) malloc( (m_chunk.size + 1) * sizeof(char) );
+  strcpy(result, m_chunk.memory);
+
+  return result;
 }
 
 char * OHttpClient::performDelete()
@@ -208,5 +218,8 @@ char * OHttpClient::performDelete()
 
   m_chunk.memory[m_chunk.size] = '\0';
 
-  return m_chunk.memory;
+  char * result = (char *) malloc( (m_chunk.size + 1) * sizeof(char) );
+  strcpy(result, m_chunk.memory);
+
+  return result;
 }
