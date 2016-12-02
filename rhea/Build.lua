@@ -62,9 +62,9 @@ insert header c and cpp files resume of license
 
 function Build:license()
   local dirs = { 'bindings', 'oberon', 'projects' }
+  local license = os.read(OBERON_PATH .. '/rhea/build/license.header') .. '\n'
   for _, dir in ipairs(dirs) do
     local iterator = QDirIterator.new(OBERON_PATH .. '/src/' .. dir, {"Subdirectories"})
-    local license  = os.read(OBERON_PATH .. '/rhea/build/license.header')
     while(iterator:hasNext()) do
       iterator:next()
       local fileInfo = iterator:fileInfo()
