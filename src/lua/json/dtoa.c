@@ -567,7 +567,7 @@ Balloc
 #else
 		len = (sizeof(Bigint) + (x-1)*sizeof(ULong) + sizeof(double) - 1)
 			/sizeof(double);
-		if (k <= Kmax && pmem_next - private_mem + len <= PRIVATE_mem) {
+		if (k <= Kmax && pmem_next - private_mem + len <= (unsigned int) PRIVATE_mem) {
 			rv = (Bigint*)pmem_next;
 			pmem_next += len;
 			}
@@ -3551,9 +3551,9 @@ fpconv_strtod
 
  static char *
 #ifdef KR_headers
-rv_alloc(i) int i;
+rv_alloc(i) unsigned int i;
 #else
-rv_alloc(int i)
+rv_alloc(unsigned int i)
 #endif
 {
 	int j, k, *r;
@@ -3688,7 +3688,7 @@ dtoa
 	*/
 
 	int bbits, b2, b5, be, dig, i, ieps, ilim, ilim0, ilim1,
-		j, j1, k, k0, k_check, leftright, m2, m5, s2, s5,
+		j, j1=0, k, k0, k_check, leftright, m2, m5, s2, s5,
 		spec_case, try_quick;
 	Long L;
 #ifndef Sudden_Underflow
