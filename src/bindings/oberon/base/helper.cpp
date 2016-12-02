@@ -1,4 +1,4 @@
-#include <luajit-2.0/lua.hpp>
+#include <lua/lua.hpp>
 
 int luaopen_oberon_math( lua_State *L );
 int luaopen_oberon_os( lua_State *L );

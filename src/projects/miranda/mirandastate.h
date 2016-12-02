@@ -1,7 +1,7 @@
 #ifndef MIRANDASTATE_H
 #define MIRANDASTATE_H
 
-#include <luajit-2.0/lua.hpp>
+#include <lua/lua.hpp>
 
 #include <QCoreApplication>
 #include <QDateTime>

@@ -7,7 +7,7 @@ CONFIG += plugin
 CONFIG += no_plugin_name_prefix
 
 INCLUDEPATH += .
-INCLUDEPATH += ../../../vendors/include/luajit-2.0/
+INCLUDEPATH += ../../../vendors/include
 
 TARGET = json
 

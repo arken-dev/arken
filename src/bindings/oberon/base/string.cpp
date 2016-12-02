@@ -1,4 +1,4 @@
-#include <luajit-2.0/lua.hpp>
+#include <lua/lua.hpp>
 #include <oberon/helper>
 
 static int lua_oberon_string_append( lua_State *L ) {

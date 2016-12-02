@@ -1,4 +1,4 @@
-#include <luajit-2.0/lua.hpp>
+#include <lua/lua.hpp>
 
 static int lua_oberon_odebug_info( lua_State *L ) {
   lua_Debug info;

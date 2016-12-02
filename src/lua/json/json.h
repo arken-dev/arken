@@ -2,8 +2,8 @@
 #include <string.h>
 #include <math.h>
 #include <limits.h>
-#include <lua.h>
-#include <lauxlib.h>
+#include <lua/lua.h>
+#include <lua/lauxlib.h>
 #include <stdio.h>
 
 #include "strbuf.h"
