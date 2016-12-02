@@ -11,7 +11,7 @@ char * json_lock_encode(lua_State *l)
 
   QMutexLocker ml(&s_mutex);
 
-  json_config_t *cfg = json_fetch_config(l);
+  json_config_t *cfg = json_fetch_config();
   strbuf_t local_encode_buf;
   strbuf_t *encode_buf;
   char *json;
@@ -49,7 +49,7 @@ void json_lock_decode(lua_State *l, const char * data)
   json_token_t token;
   size_t json_len = strlen(data);
 
-  json.cfg = json_fetch_config(l);
+  json.cfg = json_fetch_config();
   json.data = data; //luaL_checklstring(l, 1, &json_len);
   json.current_depth = 0;
   json.ptr = json.data;
