@@ -1,3 +1,8 @@
+// Copyright 2016 The Oberon Platform Authors.
+// All rights reserved.
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE file.
+
 #include <lua/lua.hpp>
 
 static int lua_oberon_odebug_info( lua_State *L ) {
