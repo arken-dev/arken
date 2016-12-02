@@ -878,7 +878,7 @@ static void db_push_value(lua_State *L, sqlite3_value *value) {
                 if (n == i64)
                     lua_pushnumber(L, n);
                 else
-                    lua_pushlstring(L, sqlite3_value_text(value), sqlite3_value_bytes(value));
+                    lua_pushlstring(L, (signed) sqlite3_value_text(value), sqlite3_value_bytes(value));
             }
             break;
 

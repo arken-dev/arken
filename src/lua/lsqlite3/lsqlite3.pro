@@ -4,6 +4,7 @@
 TEMPLATE = lib
 CONFIG += plugin
 CONFIG += no_plugin_name_prefix
+CONFIG += warn_off
 
 INCLUDEPATH += .
 INCLUDEPATH += ../../../include
