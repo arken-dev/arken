@@ -545,7 +545,7 @@ char * string::swap(const char * original, const char * pattern, const char * re
   const char * patloc;
 
   // find how many times the pattern occurs in the original string
-  for (oriptr = original; patloc = strstr(oriptr, pattern); oriptr = patloc + patlen)
+  for (oriptr = original; (patloc = strstr(oriptr, pattern)); oriptr = patloc + patlen)
   {
     patcnt++;
   }
@@ -560,7 +560,7 @@ char * string::swap(const char * original, const char * pattern, const char * re
       // copy the original string, 
       // replacing all the instances of the pattern
       char * retptr = returned;
-      for (oriptr = original; patloc = strstr(oriptr, pattern); oriptr = patloc + patlen)
+      for (oriptr = original; (patloc = strstr(oriptr, pattern)); oriptr = patloc + patlen)
       {
         size_t const skplen = patloc - oriptr;
         // copy the section until the occurence of the pattern
