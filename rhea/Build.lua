@@ -12,7 +12,7 @@ Build.help.clear = [[
 
 function Build:clear(params)
   print("clear Makefile, .o")
-  local iterator = QDirIterator.new(OBERON_PATH .. '/src', {"Subdirectories"})
+  local iterator = QDirIterator.new(GANYMED_PATH .. '/src', {"Subdirectories"})
   while(iterator:hasNext()) do
     iterator:next()
     local fileInfo = iterator:fileInfo()
@@ -29,7 +29,7 @@ function Build:clear(params)
   end
 
   print("clear clib")
-  iterator = QDirIterator.new(OBERON_PATH .. '/clib', {"Subdirectories"})
+  iterator = QDirIterator.new(GANYMED_PATH .. '/clib', {"Subdirectories"})
   while(iterator:hasNext()) do
     iterator:next()
     local fileInfo = iterator:fileInfo()
@@ -40,7 +40,7 @@ function Build:clear(params)
   end
 
   print("clear chared")
-  iterator = QDirIterator.new(OBERON_PATH .. '/shared', {"Subdirectories"})
+  iterator = QDirIterator.new(GANYMED_PATH .. '/shared', {"Subdirectories"})
   while(iterator:hasNext()) do
     iterator:next()
     local fileInfo = iterator:fileInfo()
@@ -61,10 +61,10 @@ insert header c and cpp files resume of license
 ]]
 
 function Build:license()
-  local dirs = { 'bindings', 'oberon', 'projects' }
-  local license = os.read(OBERON_PATH .. '/rhea/build/license.header') .. '\n'
+  local dirs = { 'bindings', 'ganymed', 'projects' }
+  local license = os.read(GANYMED_PATH .. '/rhea/build/license.header') .. '\n'
   for _, dir in ipairs(dirs) do
-    local iterator = QDirIterator.new(OBERON_PATH .. '/src/' .. dir, {"Subdirectories"})
+    local iterator = QDirIterator.new(GANYMED_PATH .. '/src/' .. dir, {"Subdirectories"})
     while(iterator:hasNext()) do
       iterator:next()
       local fileInfo = iterator:fileInfo()
@@ -78,6 +78,33 @@ function Build:license()
           file:close()
         end
       end
+    end
+  end
+end
+
+-------------------------------------------------------------------------------
+-- LICENSE
+-------------------------------------------------------------------------------
+
+Build.help.charon = [[
+change oberon => charon patterns
+]]
+
+function Build:charon()
+  local iterator = QDirIterator.new(OBERON_PATH, {"Subdirectories"})
+  while(iterator:hasNext()) do
+    iterator:next()
+    local fileInfo = iterator:fileInfo()
+    if(fileInfo:suffix() == 'c' or fileInfo:suffix() == 'cpp' or fileInfo:suffix() == 'pro' or fileInfo:suffix() == 'lua' ) then
+      local buffer = os.read(fileInfo:filePath())
+      buffer = buffer:swap("oberon", "charon")
+      buffer = buffer:swap("Oberon", "Charon")
+      buffer = buffer:swap("OBERON", "CHARON")
+      print(fileInfo:filePath())
+      local file = QFile.new(fileInfo:filePath())
+      file:open({"WriteOnly"})
+      file:write(buffer)
+      file:close()
     end
   end
 end
