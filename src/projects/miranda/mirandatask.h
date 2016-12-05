@@ -1,7 +1,7 @@
 #ifndef MIRANDATASK_H
 #define MIRANDATASK_H
 
-#include <luajit-2.0/lua.hpp>
+#include <lua/lua.hpp>
 
 #include <QRunnable>
 #include <QTcpSocket>

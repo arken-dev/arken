@@ -1,3 +1,8 @@
+// Copyright 2016 The Oberon Platform Authors.
+// All rights reserved.
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE file.
+
 #include <oberon/helper>
 
 char * string::append(const char * string, const char * ba)
@@ -545,7 +550,7 @@ char * string::swap(const char * original, const char * pattern, const char * re
   const char * patloc;
 
   // find how many times the pattern occurs in the original string
-  for (oriptr = original; patloc = strstr(oriptr, pattern); oriptr = patloc + patlen)
+  for (oriptr = original; (patloc = strstr(oriptr, pattern)); oriptr = patloc + patlen)
   {
     patcnt++;
   }
@@ -560,7 +565,7 @@ char * string::swap(const char * original, const char * pattern, const char * re
       // copy the original string, 
       // replacing all the instances of the pattern
       char * retptr = returned;
-      for (oriptr = original; patloc = strstr(oriptr, pattern); oriptr = patloc + patlen)
+      for (oriptr = original; (patloc = strstr(oriptr, pattern)); oriptr = patloc + patlen)
       {
         size_t const skplen = patloc - oriptr;
         // copy the section until the occurence of the pattern

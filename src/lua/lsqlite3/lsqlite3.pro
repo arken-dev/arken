@@ -4,10 +4,11 @@
 TEMPLATE = lib
 CONFIG += plugin
 CONFIG += no_plugin_name_prefix
+CONFIG += warn_off
 
 INCLUDEPATH += .
 INCLUDEPATH += ../../../include
-INCLUDEPATH += ../../../vendors/include/luajit-2.0
+INCLUDEPATH += ../../../vendors/include
 INCLUDEPATH += ../../vendors/sqlite3/
 
 TARGET = lsqlite3

@@ -1,4 +1,9 @@
-#include <luajit-2.0/lua.hpp>
+// Copyright 2016 The Oberon Platform Authors.
+// All rights reserved.
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE file.
+
+#include <lua/lua.hpp>
 #include <oberon/helper>
 
 static int lua_oberon_os_abspath( lua_State *L ) {
@@ -63,7 +68,7 @@ static int lua_oberon_os_exists( lua_State *L ) {
 }
 
 static int lua_oberon_os_glob( lua_State *L ) {
-  OStringList * list;
+  OStringList * list = 0;
   const char  * path = luaL_checkstring(L, 1);
 
   if( lua_gettop(L) == 1 ) { /* número de argumentos */
@@ -190,7 +195,7 @@ static int lua_oberon_os_read( lua_State *L ) {
   size_t size = -1;
   const char * path = luaL_checkstring(L, 1);
   const char * raw  = os::read(path, &size);
-  if( size != -1 ) {
+  if( size != -1u ) {
     lua_pushlstring( L, raw, size );
   } else {
     lua_pushstring( L, raw );

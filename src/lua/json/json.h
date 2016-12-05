@@ -2,8 +2,8 @@
 #include <string.h>
 #include <math.h>
 #include <limits.h>
-#include <lua.h>
-#include <lauxlib.h>
+#include <lua/lua.h>
+#include <lua/lauxlib.h>
 #include <stdio.h>
 
 #include "strbuf.h"
@@ -68,7 +68,7 @@ typedef struct {
     int string_len;
 } json_token_t;
 
-json_config_t *json_fetch_config(lua_State *l);
+json_config_t *json_fetch_config();
 void json_next_token(json_parse_t *json, json_token_t *token);
 void json_append_data(lua_State *l, json_config_t *cfg,
                              int current_depth, strbuf_t *json);

@@ -1,7 +1,7 @@
 #ifndef _PUCK_HEADER_
 #define _PUCK_HEADER_
 
-#include <luajit-2.0/lua.hpp>
+#include <lua/lua.hpp>
 
 #include <dialog.h>
 

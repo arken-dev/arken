@@ -131,7 +131,7 @@ static const char *char2escape[256] = {
 
 /* ===== CONFIGURATION ===== */
 
-json_config_t *json_fetch_config(lua_State *l)
+json_config_t *json_fetch_config()
 {
     int i;
     static json_config_t *cfg = NULL;
@@ -208,7 +208,7 @@ static json_config_t *json_arg_init(lua_State *l, int args)
     while (lua_gettop(l) < args)
         lua_pushnil(l);
 
-    return json_fetch_config(l);
+    return json_fetch_config();
 }
 
 /* Process integer options for configuration functions */
@@ -705,7 +705,7 @@ void json_append_data(lua_State *l, json_config_t *cfg,
 
 static int json_encode(lua_State *l)
 {
-    json_config_t *cfg = json_fetch_config(l);
+    json_config_t *cfg = json_fetch_config();
     strbuf_t local_encode_buf;
     strbuf_t *encode_buf;
     char *json;
@@ -1259,7 +1259,7 @@ static int json_decode(lua_State *l)
 
     luaL_argcheck(l, lua_gettop(l) == 1, 1, "expected 1 argument");
 
-    json.cfg = json_fetch_config(l);
+    json.cfg = json_fetch_config();
     json.data = luaL_checklstring(l, 1, &json_len);
     json.current_depth = 0;
     json.ptr = json.data;

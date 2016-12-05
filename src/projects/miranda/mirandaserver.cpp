@@ -1,3 +1,8 @@
+// Copyright 2016 The Oberon Platform Authors.
+// All rights reserved.
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE file.
+
 #include "mirandaserver.h"
 #include "mirandatask.h"
 #include "mirandastate.h"
@@ -20,11 +25,13 @@ MirandaServer::MirandaServer(QCoreApplication *app)
     m_port =    object.value("port").toInt();
     m_address = object.value("address").toString();
     m_maxThreadCount = object.value("threads").toInt();
+    m_pid = object.value("pid").toString();
   } else {
     qDebug() << "config/miranda.json file not exists";
     m_port = 2345;
     m_address = "localhost";
     m_maxThreadCount = 15;
+    m_pid = "miranda.pid";
   }
 
   QFileInfo dispatch = QFileInfo("dispatch.lua");
@@ -58,12 +65,12 @@ void MirandaServer::start()
   } else {
     qDebug() << "fail start miranda ...";
   }
-  QFile log("logs/miranda.pid");
+  QFile log(m_pid);
   if ( log.open(QIODevice::WriteOnly) ) {
     log.write(QByteArray::number(os::pid()));
     log.close();
   } else {
-    qDebug() << "logs/miranda.pid not open";
+    qDebug() << m_pid << " not open";
     throw;
   }
 }

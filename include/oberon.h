@@ -1,7 +1,7 @@
 #ifndef OBERON_H
 #define OBERON_H
 
-#include <luajit-2.0/lua.hpp>
+#include <lua/lua.hpp>
 
 class Oberon
 {

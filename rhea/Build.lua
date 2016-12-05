@@ -2,13 +2,17 @@ local Build = Class.new("Build")
 
 Build.help = {}
 
+-------------------------------------------------------------------------------
+-- CLEAR
+-------------------------------------------------------------------------------
+
 Build.help.clear = [[
   clear Makefile, clib dir and shared.
 ]]
 
 function Build:clear(params)
   print("clear Makefile, .o")
-  iterator = QDirIterator.new(OBERON_PATH .. '/src', {"Subdirectories"})
+  local iterator = QDirIterator.new(OBERON_PATH .. '/src', {"Subdirectories"})
   while(iterator:hasNext()) do
     iterator:next()
     local fileInfo = iterator:fileInfo()
@@ -46,6 +50,36 @@ function Build:clear(params)
     end
   end
 
+end
+
+-------------------------------------------------------------------------------
+-- LICENSE
+-------------------------------------------------------------------------------
+
+Build.help.license = [[
+insert header c and cpp files resume of license
+]]
+
+function Build:license()
+  local dirs = { 'bindings', 'oberon', 'projects' }
+  local license = os.read(OBERON_PATH .. '/rhea/build/license.header') .. '\n'
+  for _, dir in ipairs(dirs) do
+    local iterator = QDirIterator.new(OBERON_PATH .. '/src/' .. dir, {"Subdirectories"})
+    while(iterator:hasNext()) do
+      iterator:next()
+      local fileInfo = iterator:fileInfo()
+      if(fileInfo:suffix() == 'c' or fileInfo:suffix() == 'cpp' ) then
+        local buffer = os.read(fileInfo:filePath())
+        if not buffer:startsWith(license) then
+          print(fileInfo:filePath())
+          local file = QFile.new(fileInfo:filePath())
+          file:open({"WriteOnly"})
+          file:write(license .. buffer)
+          file:close()
+        end
+      end
+    end
+  end
 end
 
 return Build

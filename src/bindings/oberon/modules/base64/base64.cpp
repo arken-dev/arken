@@ -1,4 +1,9 @@
-#include <luajit-2.0/lua.hpp>
+// Copyright 2016 The Oberon Platform Authors.
+// All rights reserved.
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE file.
+
+#include <lua/lua.hpp>
 #include <oberon/helper>
 #include <oberon/modules/base64.h>
 

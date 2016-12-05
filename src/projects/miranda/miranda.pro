@@ -11,7 +11,6 @@ DESTDIR     = ../../../bin
 INCLUDEPATH += .
 INCLUDEPATH += ../../../include
 INCLUDEPATH += ../../../vendors/include
-INCLUDEPATH += ../../../vendors/include/luajit-2.0
 INCLUDEPATH += ../../lua/json
 
 

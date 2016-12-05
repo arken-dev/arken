@@ -1,5 +1,6 @@
 {
   "address" : "localhost",
   "port"    : 2345,
-  "threads" : 5
+  "threads" : 5,
+  "pid"     : "tmp/pid/miranda.pid"
 }
