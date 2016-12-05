@@ -10,15 +10,12 @@ INCLUDEPATH += .
 INCLUDEPATH += ../../../../../include
 INCLUDEPATH += ../../../../../vendors/include
 
-TARGET = OHttpClient
+TARGET = CThread
 DESTDIR = ../../../../../clib/
 
 LIBS += -L ../../../../../vendors -lcharon -llua
 
-unix:LIBS  += -lcurl
-win32:LIBS += ../../../../../vendors/libcurl.dll
-
 # Input
-SOURCES += OHttpClient.cpp
+SOURCES += CThread.cpp
 
-mac:QMAKE_POST_LINK += install_name_tool -change liblua.so  @executable_path/../vendors/liblua.so ../../../../../clib/OHttpClient.dylib; install_name_tool -change libcharon.1.dylib  @executable_path/../vendors/libcharon.1.dylib ../../../../../clib/OHttpClient.dylib
+mac:QMAKE_POST_LINK += install_name_tool -change liblua.so  @executable_path/../vendors/liblua.so ../../../../../clib/CThread.dylib; install_name_tool -change libcharon.1.dylib  @executable_path/../vendors/libcharon.1.dylib ../../../../../clib/CThread.dylib

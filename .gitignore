@@ -19,5 +19,6 @@ moc_*
 profile.d/*
 config/*
 vendors/*oberon*
+vendors/*charon*
 vendors/liblua*
 .qmake.stash

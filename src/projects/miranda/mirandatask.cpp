@@ -8,7 +8,7 @@
 #include <iostream>
 #include <QThread>
 #include <QMutex>
-#include <OHttpParser>
+#include <CHttpParser>
 
 MirandaTask::MirandaTask(qintptr descriptor)
 {
@@ -67,7 +67,7 @@ void MirandaTask::processRequest(MirandaState * state, QByteArray &buffer)
   L = state->instance();
 
   //request
-  OHttpParser * http_request = new OHttpParser(buffer);
+  CHttpParser * http_request = new CHttpParser(buffer);
   lua_pushlightuserdata(L, http_request);
   lua_setglobal(L, "__http_request");
 

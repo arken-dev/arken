@@ -5,15 +5,15 @@
 
 #include <lua/lua.hpp>
 #include <QtCore>
-#include <OThread>
+#include <CThread>
 
 /**
- * checkOThread
+ * checkCThread
  */
 
-OThread *
-checkOThread( lua_State *L ) {
-  return *(OThread **) luaL_checkudata(L, 1, "OThread.metatable");
+CThread *
+checkCThread( lua_State *L ) {
+  return *(CThread **) luaL_checkudata(L, 1, "CThread.metatable");
 }
 
 /**
@@ -21,7 +21,7 @@ checkOThread( lua_State *L ) {
  */
 
 static int
-lua_OThreadClassMethodNew( lua_State *L ) {
+lua_CThreadClassMethodNew( lua_State *L ) {
 
   /* PATH */
   lua_getglobal(L, "CHARON_PATH");
@@ -29,22 +29,22 @@ lua_OThreadClassMethodNew( lua_State *L ) {
 
   /* Thread */
   const char *str = (char *) lua_tostring(L, 1);
-  OThread   **ptr = (OThread **)lua_newuserdata(L, sizeof(OThread*));
-  *ptr= new OThread(CHARON_PATH, str);
-  luaL_getmetatable(L, "OThread.metatable");
+  CThread   **ptr = (CThread **)lua_newuserdata(L, sizeof(CThread*));
+  *ptr= new CThread(CHARON_PATH, str);
+  luaL_getmetatable(L, "CThread.metatable");
   lua_setmetatable(L, -2);
 
   return 1;
 }
 
-static const luaL_reg OThreadClassMethods[] = {
-  {"new", lua_OThreadClassMethodNew},
+static const luaL_reg CThreadClassMethods[] = {
+  {"new", lua_CThreadClassMethodNew},
   {NULL, NULL}
 };
 
 void static
-registerOThreadClassMethods( lua_State *L ) {
-  luaL_register(L, "OThread", OThreadClassMethods);
+registerCThreadClassMethods( lua_State *L ) {
+  luaL_register(L, "CThread", CThreadClassMethods);
 }
 
 /**
@@ -52,25 +52,25 @@ registerOThreadClassMethods( lua_State *L ) {
  */
 
 static int
-lua_OThreadInstanceMethodDestruct( lua_State *L ) {
-  OThread *thread = checkOThread( L );
+lua_CThreadInstanceMethodDestruct( lua_State *L ) {
+  CThread *thread = checkCThread( L );
   delete thread;
   return 0;
 }
 
 static int
-lua_OThreadInstanceMethodStart( lua_State *L ) {
-  OThread *thread = checkOThread( L );
+lua_CThreadInstanceMethodStart( lua_State *L ) {
+  CThread *thread = checkCThread( L );
   thread->start();
   return 0;
 }
 
 static int
-lua_OThreadInstanceMethodSetProperty( lua_State *L ) {
+lua_CThreadInstanceMethodSetProperty( lua_State *L ) {
   bool result = false;
   bool flag   = true;
 
-  OThread    * thread = checkOThread( L );
+  CThread    * thread = checkCThread( L );
   const char * name   = luaL_checkstring(L, 2);
 
   if(lua_isboolean(L, 3)) {
@@ -94,18 +94,18 @@ lua_OThreadInstanceMethodSetProperty( lua_State *L ) {
 }
 
 static int
-lua_OThreadInstanceMethodWait( lua_State *L ) {
-  OThread *thread = checkOThread( L );
+lua_CThreadInstanceMethodWait( lua_State *L ) {
+  CThread *thread = checkCThread( L );
   bool result  = thread->wait();
   lua_pushboolean(L, result);
   return 1;
 }
 
 static int
-lua_OThreadInstanceMethodProperty( lua_State *L ) {
+lua_CThreadInstanceMethodProperty( lua_State *L ) {
 
   bool flag = true;
-  OThread *thread = checkOThread( L );
+  CThread *thread = checkCThread( L );
   const char *property = lua_tostring(L, 2);
   lua_getglobal(thread->m_luaState, property);
 
@@ -132,28 +132,28 @@ lua_OThreadInstanceMethodProperty( lua_State *L ) {
 }
 
 static const
-luaL_reg OThreadInstanceMethods[] = {
-  {"wait", lua_OThreadInstanceMethodWait},
-  {"setProperty", lua_OThreadInstanceMethodSetProperty},
-  {"property", lua_OThreadInstanceMethodProperty},
-  {"start", lua_OThreadInstanceMethodStart},
-  {"__gc", lua_OThreadInstanceMethodDestruct},
+luaL_reg CThreadInstanceMethods[] = {
+  {"wait", lua_CThreadInstanceMethodWait},
+  {"setProperty", lua_CThreadInstanceMethodSetProperty},
+  {"property", lua_CThreadInstanceMethodProperty},
+  {"start", lua_CThreadInstanceMethodStart},
+  {"__gc", lua_CThreadInstanceMethodDestruct},
   {NULL, NULL}
 };
 
 void static
-registerOThreadInstanceMethods( lua_State *L ) {
-  luaL_newmetatable(L, "OThread.metatable");
-  luaL_register(L, NULL, OThreadInstanceMethods);
+registerCThreadInstanceMethods( lua_State *L ) {
+  luaL_newmetatable(L, "CThread.metatable");
+  luaL_register(L, NULL, CThreadInstanceMethods);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
 
 extern "C" {
   int
-  luaopen_OThread( lua_State *L ) {
-    registerOThreadClassMethods(L);
-    registerOThreadInstanceMethods(L);
+  luaopen_CThread( lua_State *L ) {
+    registerCThreadClassMethods(L);
+    registerCThreadInstanceMethods(L);
     return 1;
   }
 }

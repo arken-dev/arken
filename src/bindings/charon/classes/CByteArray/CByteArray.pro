@@ -15,6 +15,6 @@ DESTDIR = ../../../../../clib
 LIBS += -L ../../../../../vendors -lcharon -llua
 
 # Input
-SOURCES += OByteArray.cpp
+SOURCES += CByteArray.cpp
 
 mac:QMAKE_POST_LINK += install_name_tool -change liblua.so  @executable_path/../vendors/liblua.so ../../../../../clib/OByteArray.dylib; install_name_tool -change libcharon.1.dylib  @executable_path/../vendors/libcharon.1.dylib ../../../../../clib/OByteArray.dylib
