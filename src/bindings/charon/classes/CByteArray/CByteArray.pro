@@ -9,7 +9,7 @@ INCLUDEPATH += .
 INCLUDEPATH += ../../../../../include
 INCLUDEPATH += ../../../../../vendors/include
 
-TARGET = OByteArray
+TARGET = CByteArray
 DESTDIR = ../../../../../clib
 
 LIBS += -L ../../../../../vendors -lcharon -llua

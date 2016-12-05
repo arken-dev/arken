@@ -3,11 +3,11 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#include <charon/classes/OStringList.h>
+#include <charon/classes/CStringList.h>
 #include <iostream>
 #include <cstring>
 
-void OStringList::init()
+void CStringList::init()
 {
   if( m_size == m_resource ) {
     m_resource *= 2;
@@ -32,7 +32,7 @@ void OStringList::init()
   }
 }
 
-OStringList::OStringList()
+CStringList::CStringList()
 {
 
   m_array = 0;
@@ -41,7 +41,7 @@ OStringList::OStringList()
   init();
 }
 
-OStringList::OStringList(int resource)
+CStringList::CStringList(int resource)
 {
   m_array = 0;
   m_size  = 0;
@@ -49,7 +49,7 @@ OStringList::OStringList(int resource)
   init();
 }
 
-OStringList::~OStringList()
+CStringList::~CStringList()
 {
   for(int i = 0; i < m_size; i++) {
     if( m_array[i] != 0 ) {
@@ -59,7 +59,7 @@ OStringList::~OStringList()
   delete[] m_array;
 }
 
-void OStringList::replace(int pos, const char * value)
+void CStringList::replace(int pos, const char * value)
 {
   if( m_array[pos] != 0 ) {
     delete[] m_array[pos];
@@ -70,7 +70,7 @@ void OStringList::replace(int pos, const char * value)
   m_array[pos] = tmp;
 }
 
-OStringList & OStringList::append(const char * value)
+CStringList & CStringList::append(const char * value)
 {
   if( m_size == m_resource ) {
     init();
@@ -82,7 +82,7 @@ OStringList & OStringList::append(const char * value)
   return *this;
 }
 
-OStringList & OStringList::operator<<(const char * value)
+CStringList & CStringList::operator<<(const char * value)
 {
   if( m_size == m_resource ) {
     init();
@@ -94,32 +94,32 @@ OStringList & OStringList::operator<<(const char * value)
   return *this;
 }
 
-const char * OStringList::operator[](int pos)
+const char * CStringList::operator[](int pos)
 {
   return m_array[pos];
 }
 
-const char * OStringList::at(int pos)
+const char * CStringList::at(int pos)
 {
   return m_array[pos];
 }
 
-const char * OStringList::first()
+const char * CStringList::first()
 {
   return m_array[0];
 }
 
-const char * OStringList::last()
+const char * CStringList::last()
 {
   return m_array[m_size-1];
 }
 
-int OStringList::size()
+int CStringList::size()
 {
   return m_size;
 }
 
-char * OStringList::join(const char * separator)
+char * CStringList::join(const char * separator)
 {
   char * result;
   int size = 0;

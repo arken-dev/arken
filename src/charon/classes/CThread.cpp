@@ -3,15 +3,15 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#include "OThread"
+#include "CThread"
 
-OThread::OThread(QByteArray charonPath, QByteArray fileName)
+CThread::CThread(QByteArray charonPath, QByteArray fileName)
 {
   m_charonPath = charonPath;
   m_fileName   = fileName;
 }
 
-void OThread::run() {
+void CThread::run() {
   int rv, i;
   QByteArray profile, name;
   QVariant value;

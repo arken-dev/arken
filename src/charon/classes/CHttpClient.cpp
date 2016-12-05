@@ -3,7 +3,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#include <charon/classes/OHttpClient.h>
+#include <charon/classes/CHttpClient.h>
 #include <curl/curl.h>
 #include <cstdlib>
 #include <cstring>
@@ -28,7 +28,7 @@ WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp)
   return realsize;
 }
 
-OHttpClient::OHttpClient(const char * url)
+CHttpClient::CHttpClient(const char * url)
 {
   m_url = url;
   m_chunk.memory = (char *) malloc(1);  // will be grown as needed by the realloc above
@@ -44,7 +44,7 @@ OHttpClient::OHttpClient(const char * url)
   curl_easy_setopt(m_curl, CURLOPT_URL, url);
 }
 
-OHttpClient::~OHttpClient()
+CHttpClient::~CHttpClient()
 {
   // cleanup curl stuff
   curl_easy_cleanup(m_curl);
@@ -56,33 +56,33 @@ OHttpClient::~OHttpClient()
   curl_global_cleanup();
 }
 
-void OHttpClient::appendHeader(const char * header)
+void CHttpClient::appendHeader(const char * header)
 {
    m_chunk_list = curl_slist_append(m_chunk_list, header);
 }
 
-void OHttpClient::setVerbose(bool verbose)
+void CHttpClient::setVerbose(bool verbose)
 {
   m_verbose = verbose;
   curl_easy_setopt(m_curl, CURLOPT_VERBOSE, verbose);//1L);
 }
 
-bool OHttpClient::verbose()
+bool CHttpClient::verbose()
 {
   return m_verbose;
 }
 
-void OHttpClient::setBody(const char * body)
+void CHttpClient::setBody(const char * body)
 {
    m_body = body;
 }
 
-const char * OHttpClient::body()
+const char * CHttpClient::body()
 {
   return m_body;
 }
 
-char * OHttpClient::performGet()
+char * CHttpClient::performGet()
 {
   CURLcode res;
 
@@ -115,7 +115,7 @@ char * OHttpClient::performGet()
   return result;
 }
 
-char * OHttpClient::performPost()
+char * CHttpClient::performPost()
 {
   CURLcode res;
 
@@ -154,7 +154,7 @@ char * OHttpClient::performPost()
   return result;
 }
 
-char * OHttpClient::performPut()
+char * CHttpClient::performPut()
 {
   CURLcode res;
 
@@ -193,7 +193,7 @@ char * OHttpClient::performPut()
   return result;
 }
 
-char * OHttpClient::performDelete()
+char * CHttpClient::performDelete()
 {
   CURLcode res;
 
