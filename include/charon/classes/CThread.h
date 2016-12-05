@@ -9,6 +9,6 @@ class CThread : public QThread
   QByteArray   m_fileName;
   lua_State  * m_luaState;
 
-  explicit CThread(CByteArray charonPath, CByteArray fileName);
+  explicit CThread(QByteArray charonPath, QByteArray fileName);
   void run();
 };
