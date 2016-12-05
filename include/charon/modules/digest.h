@@ -1,5 +1,11 @@
-namespace oberon {
-  namespace sha3 {
+namespace charon {
+  namespace digest {
+    char * md4(const char * hash);
+    char * md4(const char * hash, int length);
+    char * md5(const char * hash);
+    char * md5(const char * hash, int length);
+    char * sha1(const char * hash);
+    char * sha1(const char * hash, int length);
     char * sha224(const char * hash);
     char * sha224(const char * hash, int length);
     char * sha256(const char * hash);

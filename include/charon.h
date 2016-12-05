@@ -1,9 +1,9 @@
-#ifndef OBERON_H
-#define OBERON_H
+#ifndef CHARON_H
+#define CHARON_H
 
 #include <lua/lua.hpp>
 
-class Oberon
+class Charon
 {
   public:
   static void args(lua_State * L, int argc, char * argv[]);
@@ -11,4 +11,4 @@ class Oberon
   static lua_State * init(int argc, char * argv[], const char * path);
 };
 
-#endif // OBERON_H
+#endif // CHARON_H

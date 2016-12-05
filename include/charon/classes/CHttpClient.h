@@ -1,5 +1,5 @@
-#ifndef _OHTTP_CLIENT_HEADER_
-#define _OHTTP_CLIENT_HEADER_
+#ifndef _CHTTP_CLIENT_HEADER_
+#define _CHTTP_CLIENT_HEADER_
 
 #include <curl/curl.h>
 
@@ -8,11 +8,11 @@ struct MemoryStruct {
   size_t size;
 };
 
-class OHttpClient
+class CHttpClient
 {
   public:
-  OHttpClient(const char * url);
-  ~OHttpClient();
+  CHttpClient(const char * url);
+  ~CHttpClient();
   void appendHeader(const char * header);
   void setVerbose(bool verbose);
   bool verbose();

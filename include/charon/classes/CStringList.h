@@ -1,7 +1,7 @@
-#ifndef _OSTRING_LIST_HEADER_
-#define _OSTRING_LIST_HEADER_
+#ifndef _CSTRING_LIST_HEADER_
+#define _CSTRING_LIST_HEADER_
 
-class OStringList
+class CStringList
 {
   private:
   void init();
@@ -10,12 +10,12 @@ class OStringList
   const char ** m_array;
 
   public:
-  OStringList();
-  OStringList(int resource);
-  ~OStringList();
+  CStringList();
+  CStringList(int resource);
+  ~CStringList();
   void replace(int pos, const char * value);
-  OStringList &append(const char * value);
-  OStringList &operator << (const char * value);
+  CStringList &append(const char * value);
+  CStringList &operator << (const char * value);
   const char *operator[](int pos);
   const char *at(int pos);
   const char *first();

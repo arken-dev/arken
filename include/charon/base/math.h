@@ -1,4 +1,4 @@
-namespace oberon {
+namespace charon {
   namespace math {
     int    abs(int number);
     double acos(double number);

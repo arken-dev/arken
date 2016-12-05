@@ -1,7 +1,7 @@
 #include <QtCore>
-#include <OStringList>
+#include <CStringList>
 
-namespace oberon {
+namespace charon {
   namespace os {
     char   * abspath(const char * path);
     uint     atime(const char * path);

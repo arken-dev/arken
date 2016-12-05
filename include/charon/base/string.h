@@ -2,7 +2,7 @@
 #include <cstring>
 #include <cctype>
 
-namespace oberon {
+namespace charon {
   namespace string {
     char * append(const char * string, const char * str);
     char * camelcase(const char * string, bool lcfirst);

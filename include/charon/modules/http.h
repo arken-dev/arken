@@ -2,7 +2,7 @@
  * Using libcurl for http request
  *  https://curl.haxx.se/libcurl/c/example.html
  */
-namespace oberon {
+namespace charon {
   namespace http {
     char * read(const char * url);
     char * get(const char * url);
