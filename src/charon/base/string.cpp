@@ -370,12 +370,15 @@ char * string::mid(const char * string, int pos, int len = -1)
   if ( len < 0 ) {
     len = string_len;
   }
+  if ( pos > string_len ) {
+    len = 0;
+  }
   result = new char[len + 1];
   for(i = 0; i < len; i++, j++) {
     result[j] = string[pos+i];
   }
 
-  result[j] = '\0';
+  result[len] = '\0';
 
   return result;
 }
