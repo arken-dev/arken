@@ -3,7 +3,7 @@
 #include <QRunnable>
 #include <QThread>
 #include <QMutex>
-#include <oberon/helper>
+#include <charon/helper>
 
 class MirandaService : public QThread, public QRunnable
 {

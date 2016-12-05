@@ -52,7 +52,7 @@ struct rs_t {
 /** module registration **/
 
 /* open the library - used by require() */
-LUALIB_API int luaopen_oberon_pgsql(lua_State *L);
+LUALIB_API int luaopen_charon_pgsql(lua_State *L);
 
 
 /** exported functions **/

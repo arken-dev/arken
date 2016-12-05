@@ -9,7 +9,7 @@
 #include <QStack>
 #include <QHash>
 
-#include <oberon/helper>
+#include <charon/helper>
 #include <OByteArray>
 
 #include "mirandaservice.h"
@@ -51,7 +51,7 @@ private:
   int         m_gc;
   static int        s_gc;
   static qint64     s_version;
-  static OByteArray s_oberonPath;
+  static OByteArray s_charonPath;
   static OByteArray s_profilePath;
   static QMutex     s_mutex;
   static QStack<MirandaState *> * s_stack;
