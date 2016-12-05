@@ -5,10 +5,10 @@
 class CThread : public QThread
 {
   public:
-  QByteArray   m_oberonPath;
+  QByteArray   m_charonPath;
   QByteArray   m_fileName;
   lua_State  * m_luaState;
 
-  explicit CThread(CByteArray oberonPath, CByteArray fileName);
+  explicit CThread(CByteArray charonPath, CByteArray fileName);
   void run();
 };
