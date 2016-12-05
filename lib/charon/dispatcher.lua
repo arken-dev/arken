@@ -1,5 +1,5 @@
 require 'Controller'
-require 'OByteArray'
+require 'CByteArray'
 require 'OHttpParser'
 require 'ActiveRecord'
 

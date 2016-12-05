@@ -8,7 +8,7 @@
 #include <iostream>
 #include <QDebug>
 #include <QThread>
-#include <OByteArray>
+#include <CByteArray>
 #include <charon/helper>
 #include <CStringList>
 

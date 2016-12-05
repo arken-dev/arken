@@ -10,7 +10,7 @@
 #include <QHash>
 
 #include <charon/helper>
-#include <OByteArray>
+#include <CByteArray>
 
 #include "mirandaservice.h"
 #include "mirandacache.h"
@@ -41,7 +41,7 @@ public:
   static void createService(QByteArray fileName);
   static void createTask(QByteArray fileName, const char * uuid);
   static void taskPool(QByteArray fileName, const char * uuid);
-  static QHash<OByteArray, MirandaCache *> * s_cache;
+  static QHash<CByteArray, MirandaCache *> * s_cache;
 
   lua_State * instance();
 
@@ -51,8 +51,8 @@ private:
   int         m_gc;
   static int        s_gc;
   static qint64     s_version;
-  static OByteArray s_charonPath;
-  static OByteArray s_profilePath;
+  static CByteArray s_charonPath;
+  static CByteArray s_profilePath;
   static QMutex     s_mutex;
   static QStack<MirandaState *> * s_stack;
   static QList<MirandaService*> * s_service;

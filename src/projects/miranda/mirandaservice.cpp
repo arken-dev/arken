@@ -7,7 +7,7 @@
 #include "mirandastate.h"
 #include <QDebug>
 #include <QFile>
-#include <OByteArray>
+#include <CByteArray>
 #include <QList>
 
 QMutex MirandaService::s_mutex;
@@ -120,12 +120,12 @@ void MirandaService::run() {
   /*
   //debug cache
   int total = 0;
-  QList<OByteArray> list = MirandaState::s_cache->keys();
+  QList<CByteArray> list = MirandaState::s_cache->keys();
   qDebug() << "TOTAL DE ITENS NO CACHE " << list.size() << "\n\n";
 
   for(int i = 0; i < list.size(); i++ ) {
-    OByteArray key   = list.at(i);
-    OByteArray value = MirandaState::s_cache->value(key);
+    CByteArray key   = list.at(i);
+    CByteArray value = MirandaState::s_cache->value(key);
     qDebug() << "key " << key << '\n';
     total += value.size();
   }

@@ -18,10 +18,10 @@ DESTDIR = ../../vendors
 SOURCES += base/math.cpp            \
            base/os.cpp              \
            base/string.cpp          \
-           classes/OByteArray.cpp   \
-           classes/OThread.cpp      \
-           classes/OHttpClient.cpp  \
-           classes/OHttpParser.cpp  \
+           classes/CByteArray.cpp   \
+           classes/CThread.cpp      \
+           classes/CHttpClient.cpp  \
+           classes/CHttpParser.cpp  \
            classes/CStringList.cpp  \
            modules/base64.cpp       \
            modules/digest.cpp       \

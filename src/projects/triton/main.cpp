@@ -7,7 +7,7 @@
 #include <lua/lua.hpp>
 #include <QtCore>
 #include <QCoreApplication>
-#include <OByteArray>
+#include <CByteArray>
 #include <QDebug>
 #include <QStringList>
 #include <charon/helper>

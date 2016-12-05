@@ -11,13 +11,13 @@
 
 int        MirandaState::s_gc          = 0;
 qint64     MirandaState::s_version     = 0;
-OByteArray MirandaState::s_charonPath  = "";
-OByteArray MirandaState::s_profilePath = "";
+CByteArray MirandaState::s_charonPath  = "";
+CByteArray MirandaState::s_profilePath = "";
 QMutex     MirandaState::s_mutex;
 
 QStack<MirandaState *> * MirandaState::s_stack   = new QStack<MirandaState *>;
 QList<MirandaService*> * MirandaState::s_service = new QList<MirandaService *>;
-QHash<OByteArray, MirandaCache *> * MirandaState::s_cache = new QHash<OByteArray, MirandaCache *>;
+QHash<CByteArray, MirandaCache *> * MirandaState::s_cache = new QHash<CByteArray, MirandaCache *>;
 QThreadPool * MirandaState::s_pool = 0;
 QReadWriteLock lock;
 

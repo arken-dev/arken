@@ -8,7 +8,7 @@
 #include <QtCore>
 #include <QCoreApplication>
 #include <charon/helper>
-#include <OByteArray>
+#include <CByteArray>
 
 int charonFileLoad(lua_State *L, QFile &file)
 {
@@ -32,7 +32,7 @@ int charonFileLoad(lua_State *L, QFile &file)
 int charonTaskLoad(lua_State *L, char * task)
 {
   int rv;
-  OByteArray lib;
+  CByteArray lib;
 
   lua_settop(L, 0);
   lua_getglobal(L, "CHARON_PATH");
@@ -59,14 +59,14 @@ int charonTaskLoad(lua_State *L, char * task)
   return rv;
 }
 
-void charonConsolePrintAround(OByteArray &buffer)
+void charonConsolePrintAround(CByteArray &buffer)
 {
   buffer.remove(0, 1);
   buffer.prepend("print(");
   buffer.append(")");
 }
 
-bool charonConsoleIncrementLevel(OByteArray &row)
+bool charonConsoleIncrementLevel(CByteArray &row)
 {
   /* if */
   if(row.startsWith("if ") or row.contains(" if ")) {
@@ -91,7 +91,7 @@ bool charonConsoleIncrementLevel(OByteArray &row)
   return false;
 }
 
-bool charonConsoleDecrementLevel(OByteArray &row)
+bool charonConsoleDecrementLevel(CByteArray &row)
 {
   /* end */
   if(row.startsWith("end") or row.contains(" end ")) {
@@ -111,8 +111,8 @@ int charonConsoleLoad(lua_State *L)
   int rv = 0;
   int level = 0;
   std::string line;
-  OByteArray  row;
-  OByteArray  buffer;
+  CByteArray  row;
+  CByteArray  buffer;
 
   while(true) {
     std::cout << "charon" << level << "> ";
@@ -158,8 +158,8 @@ int charonConsoleLoad(lua_State *L)
 int main(int argc, char * argv[])
 {
   int rv = 0;
-  OByteArray charonPath;
-  OByteArray task;
+  CByteArray charonPath;
+  CByteArray task;
   QString    dirPath;
   QFile      file(argv[1]);
   QCoreApplication app(argc, argv);

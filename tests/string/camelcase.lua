@@ -19,8 +19,8 @@ test['should upper case in underline and bar'] = function()
 end
 
 test['should keep camelcase chars'] = function()
-  local str1 = "classes/OByteArray"
-  local str2 = "Classes.OByteArray"
+  local str1 = "classes/CByteArray"
+  local str2 = "Classes.CByteArray"
   assert( str1:camelcase() == str2 )
 end
 

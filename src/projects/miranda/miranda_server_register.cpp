@@ -4,7 +4,7 @@
 // license that can be found in the LICENSE file.
 
 #include <lua/lua.hpp>
-#include <OByteArray>
+#include <CByteArray>
 #include <QDebug>
 #include <QThread>
 #include <charon/helper>
