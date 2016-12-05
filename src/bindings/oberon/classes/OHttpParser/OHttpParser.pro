@@ -13,9 +13,9 @@ INCLUDEPATH += ../../../../../vendors/include
 TARGET = OHttpParser
 DESTDIR = ../../../../../clib/
 
-LIBS += -L ../../../../../vendors -loberon -llua
+LIBS += -L ../../../../../vendors -lcharon -llua
 
 # Input
 SOURCES += OHttpParser.cpp
 
-mac:QMAKE_POST_LINK += install_name_tool -change liblua.so  @executable_path/../vendors/liblua.so ../../../../../clib/OHttpParser.dylib; install_name_tool -change liboberon.1.dylib  @executable_path/../vendors/liboberon.1.dylib ../../../../../clib/OHttpParser.dylib
+mac:QMAKE_POST_LINK += install_name_tool -change liblua.so  @executable_path/../vendors/liblua.so ../../../../../clib/OHttpParser.dylib; install_name_tool -change libcharon.1.dylib  @executable_path/../vendors/libcharon.1.dylib ../../../../../clib/OHttpParser.dylib

@@ -1,11 +1,11 @@
-require 'oberon.regex'
+require 'charon.regex'
 require 'OStringList'
 
 -------------------------------------------------------------------------------
--- OBERON_ENV
+-- CHARON_ENV
 -------------------------------------------------------------------------------
 
-OBERON_ENV = os.getenv("OBERON_ENV") or "test"
+CHARON_ENV = os.getenv("CHARON_ENV") or "test"
 
 -------------------------------------------------------------------------------
 -- TEST MODULE
@@ -41,7 +41,7 @@ function test.process(file_name)
       if status then
         status, message = pcall(func)
       end
-      -- require( 'oberon.record' ).cache = {}
+      -- require( 'charon.record' ).cache = {}
       if status == false then
         if type(message) == 'table' then
           if message.kind == 'test' then

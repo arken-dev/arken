@@ -1,4 +1,4 @@
-// Copyright 2016 The Oberon Platform Authors.
+// Copyright 2016 The Charon Platform Authors.
 // All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
@@ -80,9 +80,9 @@ void MirandaService::run() {
   state = MirandaState::pop();
   luaState = state->instance();
 
-  /* OBERON_TASK */
+  /* CHARON_TASK */
   lua_pushstring(luaState, m_uuid);
-  lua_setglobal(luaState, "OBERON_TASK");
+  lua_setglobal(luaState, "CHARON_TASK");
 
   //allocate
   lua_pushlightuserdata(luaState, this);
@@ -101,9 +101,9 @@ void MirandaService::run() {
     return;
   }
 
-  // clear OBERON_TASK
+  // clear CHARON_TASK
   lua_pushboolean(luaState, false);
-  lua_setglobal(luaState, "OBERON_TASK");
+  lua_setglobal(luaState, "CHARON_TASK");
 
   // clear this
   lua_pushnil(luaState);

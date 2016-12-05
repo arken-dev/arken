@@ -4,7 +4,7 @@ require 'OHttpParser'
 require 'ActiveRecord'
 
 local url      = require 'url'
-local cookie   = require 'oberon.cookie'
+local cookie   = require 'charon.cookie'
 local template = require 'template'
 
 request.params = function()
@@ -57,9 +57,9 @@ end
 
 request.session = function()
   local cookies = request.cookies()
-  if cookies.oberon_session_id then
+  if cookies.charon_session_id then
     if request.__session_data == nil then
-      request.__session_id   = cookies.oberon_session_id
+      request.__session_id   = cookies.charon_session_id
       if cache.value(request.__session_id) then
         local data = cache.value(request.__session_id)
         if #data == 0 then
@@ -71,7 +71,7 @@ request.session = function()
     end
   else
     local uuid = os.uuid()
-    request.cookie('oberon_session_id', uuid)
+    request.cookie('charon_session_id', uuid)
     request.__session_id   = uuid
     request.__session_data = {}
   end
@@ -125,7 +125,7 @@ M.require_controller_name = function(controller_name)
 end
 
 M.dispatchLocal = function(file_name)
-  local list     = require 'oberon.mime-type'
+  local list     = require 'charon.mime-type'
   local fileInfo = QFileInfo.new(file_name)
   local suffix   = fileInfo:suffix()
   local mimetype = tostring(list[suffix])
@@ -151,7 +151,7 @@ M.dispatch = function()
   local time    = os.microtime()
   local reload  = 0
   local code, headers, body
-  if OBERON_ENV == 'development' then
+  if CHARON_ENV == 'development' then
     local file_name = "public" .. request.requestPath()
     if file_name ~= "public/" and QFile.exists(file_name) then
       return M.dispatchLocal(file_name)

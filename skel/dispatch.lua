@@ -1,4 +1,4 @@
-local dispatcher = require 'oberon.dispatcher'
+local dispatcher = require 'charon.dispatcher'
 
 function dispatch()
   return dispatcher.dispatch()

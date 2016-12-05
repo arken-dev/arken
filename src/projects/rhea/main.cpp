@@ -1,4 +1,4 @@
-// Copyright 2016 The Oberon Platform Authors.
+// Copyright 2016 The Charon Platform Authors.
 // All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
@@ -8,16 +8,16 @@
 #include <QtCore>
 #include <QCoreApplication>
 #include <OByteArray>
-#include <oberon/helper>
+#include <charon/helper>
 
 int main(int argc, char * argv[])
 {
   QCoreApplication app(argc, argv);
 
-  lua_State * L = Oberon::init(argc, argv, app.applicationFilePath().toLocal8Bit().data());
+  lua_State * L = Charon::init(argc, argv, app.applicationFilePath().toLocal8Bit().data());
 
   lua_settop(L, 0);
-  lua_getglobal(L, "OBERON_PATH");
+  lua_getglobal(L, "CHARON_PATH");
 
   QByteArray rhea = lua_tostring(L, 1);
   rhea.append("/lib/rhea.lua");

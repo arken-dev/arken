@@ -1,4 +1,4 @@
-require 'oberon.odebug'
+require 'charon.odebug'
 local M = {}
 
 local result = {}
@@ -11,7 +11,7 @@ local hook = function()
   local linedefined  = info.currentline
   ]]
 
-  -- odebug is a oberon module return values
+  -- odebug is a charon module return values
   -- whitout values not return table
   local filename, linedefined = odebug.info()
 

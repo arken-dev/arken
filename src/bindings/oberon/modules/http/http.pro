@@ -7,7 +7,7 @@ TEMPLATE = lib
 CONFIG += plugin
 CONFIG += no_plugin_name_prefix
 
-DESTDIR = ../../../../../clib/oberon
+DESTDIR = ../../../../../clib/charon
 TARGET = http
 
 INCLUDEPATH += .
@@ -17,9 +17,9 @@ INCLUDEPATH += ../../../../../vendors/include
 # Input
 SOURCES += http.cpp
 
-LIBS += -L ../../../../../vendors -loberon -llua
+LIBS += -L ../../../../../vendors -lcharon -llua
 
 unix:LIBS  += -lcurl
 win32:LIBS += ../../../../../vendors/libcurl.dll
 
-mac:QMAKE_POST_LINK += install_name_tool -change liblua.so  @executable_path/../vendors/liblua.so ../../../../../clib/oberon/http.dylib; install_name_tool -change liboberon.1.dylib  @executable_path/../vendors/liboberon.1.dylib ../../../../../clib/oberon/http.dylib
+mac:QMAKE_POST_LINK += install_name_tool -change liblua.so  @executable_path/../vendors/liblua.so ../../../../../clib/charon/http.dylib; install_name_tool -change libcharon.1.dylib  @executable_path/../vendors/libcharon.1.dylib ../../../../../clib/charon/http.dylib

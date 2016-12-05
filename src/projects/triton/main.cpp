@@ -1,4 +1,4 @@
-// Copyright 2016 The Oberon Platform Authors.
+// Copyright 2016 The Charon Platform Authors.
 // All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
@@ -10,7 +10,7 @@
 #include <OByteArray>
 #include <QDebug>
 #include <QStringList>
-#include <oberon/helper>
+#include <charon/helper>
 #include <triton.h>
 #include <QJsonObject>
 
@@ -21,13 +21,13 @@ int main(int argc, char * argv[])
   QCoreApplication app(argc, argv);
   QByteArray path  = app.applicationFilePath().toLocal8Bit().data();
 
-  lua_State * L = Oberon::init(argc, argv, path);
+  lua_State * L = Charon::init(argc, argv, path);
   triton_register(L);
 
   lua_settop(L, 0);
-  lua_getglobal(L, "OBERON_PATH");
+  lua_getglobal(L, "CHARON_PATH");
 
-  QByteArray oberonPath = lua_tostring(L, 1);
+  QByteArray charonPath = lua_tostring(L, 1);
 
   if( argc == 1 ) {
     fprintf(stderr, "missing param, see your triton file\n");
@@ -44,7 +44,7 @@ int main(int argc, char * argv[])
     fileName.append(".lua");
     if( ! os::exists(fileName) ) {
       fileName.prepend("/");
-      fileName.prepend(oberonPath);
+      fileName.prepend(charonPath);
     }
   }
 

@@ -386,7 +386,7 @@ end
 -------------------------------------------------------------------------------
 
 function ActiveRecord_Adapter:createTimestamp()
-  if OBERON_ENV == 'test' then
+  if CHARON_ENV == 'test' then
     local format = "yyyy/MM/dd hh:mm:ss."
     local clock  = tostring(os.clock())
     local index  = clock:indexOf('.')

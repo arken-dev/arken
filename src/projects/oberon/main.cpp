@@ -1,4 +1,4 @@
-// Copyright 2016 The Oberon Platform Authors.
+// Copyright 2016 The Charon Platform Authors.
 // All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
@@ -7,10 +7,10 @@
 #include <iostream>
 #include <QtCore>
 #include <QCoreApplication>
-#include <oberon/helper>
+#include <charon/helper>
 #include <OByteArray>
 
-int oberonFileLoad(lua_State *L, QFile &file)
+int charonFileLoad(lua_State *L, QFile &file)
 {
   int rv;
 
@@ -29,18 +29,18 @@ int oberonFileLoad(lua_State *L, QFile &file)
   return rv;
 }
 
-int oberonTaskLoad(lua_State *L, char * task)
+int charonTaskLoad(lua_State *L, char * task)
 {
   int rv;
   OByteArray lib;
 
   lua_settop(L, 0);
-  lua_getglobal(L, "OBERON_PATH");
+  lua_getglobal(L, "CHARON_PATH");
 
   lib = lua_tostring(L, 1);
 
   lua_pushstring(L, task);
-  lua_setglobal(L, "OBERON_TASK");
+  lua_setglobal(L, "CHARON_TASK");
 
   lib.append("/lib/task.lua");
 
@@ -59,14 +59,14 @@ int oberonTaskLoad(lua_State *L, char * task)
   return rv;
 }
 
-void oberonConsolePrintAround(OByteArray &buffer)
+void charonConsolePrintAround(OByteArray &buffer)
 {
   buffer.remove(0, 1);
   buffer.prepend("print(");
   buffer.append(")");
 }
 
-bool oberonConsoleIncrementLevel(OByteArray &row)
+bool charonConsoleIncrementLevel(OByteArray &row)
 {
   /* if */
   if(row.startsWith("if ") or row.contains(" if ")) {
@@ -91,7 +91,7 @@ bool oberonConsoleIncrementLevel(OByteArray &row)
   return false;
 }
 
-bool oberonConsoleDecrementLevel(OByteArray &row)
+bool charonConsoleDecrementLevel(OByteArray &row)
 {
   /* end */
   if(row.startsWith("end") or row.contains(" end ")) {
@@ -106,7 +106,7 @@ bool oberonConsoleDecrementLevel(OByteArray &row)
  2) set up
  3) ctrl + r
 */
-int oberonConsoleLoad(lua_State *L)
+int charonConsoleLoad(lua_State *L)
 {
   int rv = 0;
   int level = 0;
@@ -115,7 +115,7 @@ int oberonConsoleLoad(lua_State *L)
   OByteArray  buffer;
 
   while(true) {
-    std::cout << "oberon" << level << "> ";
+    std::cout << "charon" << level << "> ";
 
     std::getline(std::cin, line);
     row = line.c_str();
@@ -128,15 +128,15 @@ int oberonConsoleLoad(lua_State *L)
     }
 
     if (buffer.startsWith('=')) {
-      oberonConsolePrintAround(buffer);
+      charonConsolePrintAround(buffer);
     }
 
-    if (oberonConsoleIncrementLevel(row)) {
+    if (charonConsoleIncrementLevel(row)) {
       buffer.append("\n");
       level ++ ;
     }
 
-    if (oberonConsoleDecrementLevel(row)) {
+    if (charonConsoleDecrementLevel(row)) {
       level -- ;
     }
 
@@ -158,30 +158,30 @@ int oberonConsoleLoad(lua_State *L)
 int main(int argc, char * argv[])
 {
   int rv = 0;
-  OByteArray oberonPath;
+  OByteArray charonPath;
   OByteArray task;
   QString    dirPath;
   QFile      file(argv[1]);
   QCoreApplication app(argc, argv);
   lua_State  * L;
-  oberonPath = app.applicationFilePath().toLocal8Bit().data();
+  charonPath = app.applicationFilePath().toLocal8Bit().data();
 
-  L = Oberon::init(argc, argv, oberonPath);
+  L = Charon::init(argc, argv, charonPath);
   if (L == 0) {
     fprintf(stderr, "failure allocate memory\n");
     return 1;
   }
 
   if (file.fileName().isEmpty()) {
-    rv = oberonConsoleLoad(L);
+    rv = charonConsoleLoad(L);
   }
 
   if(file.exists()) {
-    rv = oberonFileLoad(L, file);
+    rv = charonFileLoad(L, file);
   }
 
   if(!file.exists()) {
-    rv = oberonTaskLoad(L, argv[1]);
+    rv = charonTaskLoad(L, argv[1]);
   }
 
   return rv;

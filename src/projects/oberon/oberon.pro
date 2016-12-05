@@ -11,7 +11,7 @@ CONFIG -= app_bundle
 
 TEMPLATE = app
 
-TARGET = oberon
+TARGET = charon
 DESTDIR = ../../../bin
 
 INCLUDEPATH += .
@@ -21,9 +21,9 @@ INCLUDEPATH += ../../../vendors/include
 
 QMAKE_RPATHDIR += ../vendors
 
-LIBS += -L ../../../vendors -llua -loberon -lcurl
+LIBS += -L ../../../vendors -llua -lcharon -lcurl
 
 # Input
-SOURCES += main.cpp oberon.cpp
+SOURCES += main.cpp charon.cpp
 
-mac:QMAKE_POST_LINK += install_name_tool -change liboberon.1.dylib  @executable_path/../vendors/liboberon.1.dylib ../../../bin/oberon ; install_name_tool -change liblua.so  @executable_path/../vendors/liblua.so ../../../bin/oberon
+mac:QMAKE_POST_LINK += install_name_tool -change libcharon.1.dylib  @executable_path/../vendors/libcharon.1.dylib ../../../bin/charon ; install_name_tool -change liblua.so  @executable_path/../vendors/liblua.so ../../../bin/charon

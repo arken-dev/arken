@@ -1,4 +1,4 @@
-// Copyright 2016 The Oberon Platform Authors.
+// Copyright 2016 The Charon Platform Authors.
 // All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
@@ -9,7 +9,7 @@
 #include <QDebug>
 #include <QThread>
 #include <OByteArray>
-#include <oberon/helper>
+#include <charon/helper>
 #include <OStringList>
 
 Callisto::Callisto(int argc, char * argv[], const char * path, QObject *parent) : QObject(parent)
@@ -40,10 +40,10 @@ Callisto::Callisto(int argc, char * argv[], const char * path, QObject *parent) 
   //m_dialog->setParams(argc, argv);
 
   // instance
-  m_luaState = Oberon::init(argc, argv, path);
+  m_luaState = Charon::init(argc, argv, path);
 
   lua_settop(m_luaState, 0);
-  lua_getglobal(m_luaState, "OBERON_PATH");
+  lua_getglobal(m_luaState, "CHARON_PATH");
 
   QByteArray callisto = lua_tostring(m_luaState, 1);
   callisto.append("/lib/callisto.lua");

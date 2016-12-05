@@ -7,7 +7,7 @@ TEMPLATE = lib
 CONFIG += plugin
 CONFIG += no_plugin_name_prefix
 
-DESTDIR = ../../../../../clib/oberon
+DESTDIR = ../../../../../clib/charon
 TARGET = regex
 
 INCLUDEPATH += .
@@ -17,6 +17,6 @@ INCLUDEPATH += ../../../../../vendors/include
 # Input
 SOURCES += regex.cpp
 
-LIBS += -L ../../../../../vendors -loberon -llua
+LIBS += -L ../../../../../vendors -lcharon -llua
 
-mac:QMAKE_POST_LINK += install_name_tool -change liblua.so  @executable_path/../vendors/liblua.so ../../../../../clib/oberon/regex.dylib; install_name_tool -change liboberon.1.dylib  @executable_path/../vendors/liboberon.1.dylib ../../../../../clib/oberon/regex.dylib
+mac:QMAKE_POST_LINK += install_name_tool -change liblua.so  @executable_path/../vendors/liblua.so ../../../../../clib/charon/regex.dylib; install_name_tool -change libcharon.1.dylib  @executable_path/../vendors/libcharon.1.dylib ../../../../../clib/charon/regex.dylib

@@ -1,13 +1,13 @@
-// Copyright 2016 The Oberon Platform Authors.
+// Copyright 2016 The Charon Platform Authors.
 // All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
 #include "OThread"
 
-OThread::OThread(QByteArray oberonPath, QByteArray fileName)
+OThread::OThread(QByteArray charonPath, QByteArray fileName)
 {
-  m_oberonPath = oberonPath;
+  m_charonPath = charonPath;
   m_fileName   = fileName;
 }
 
@@ -20,9 +20,9 @@ void OThread::run() {
   m_luaState = lua_open();
   luaL_openlibs(m_luaState);
 
-  /* OBERON_PATH */
-  lua_pushstring(m_luaState, m_oberonPath);
-  lua_setglobal(m_luaState, "OBERON_PATH");
+  /* CHARON_PATH */
+  lua_pushstring(m_luaState, m_charonPath);
+  lua_setglobal(m_luaState, "CHARON_PATH");
 
   /* PROPERTIES */
   QList<QByteArray> list = this->dynamicPropertyNames();
@@ -47,7 +47,7 @@ void OThread::run() {
   }
 
   /* PROFILE */
-  profile = m_oberonPath;
+  profile = m_charonPath;
   profile.append("/profile.lua");
 
   rv = luaL_loadfile(m_luaState, profile);

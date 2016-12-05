@@ -1,4 +1,4 @@
-require 'oberon.regex'
+require 'charon.regex'
 
 local test = {}
 

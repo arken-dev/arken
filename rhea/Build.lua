@@ -87,19 +87,19 @@ end
 -------------------------------------------------------------------------------
 
 Build.help.charon = [[
-change oberon => charon patterns
+change charon => charon patterns
 ]]
 
 function Build:charon()
-  local iterator = QDirIterator.new(OBERON_PATH, {"Subdirectories"})
+  local iterator = QDirIterator.new(CHARON_PATH, {"Subdirectories"})
   while(iterator:hasNext()) do
     iterator:next()
     local fileInfo = iterator:fileInfo()
     if(fileInfo:suffix() == 'c' or fileInfo:suffix() == 'cpp' or fileInfo:suffix() == 'pro' or fileInfo:suffix() == 'lua' ) then
       local buffer = os.read(fileInfo:filePath())
-      buffer = buffer:swap("oberon", "charon")
-      buffer = buffer:swap("Oberon", "Charon")
-      buffer = buffer:swap("OBERON", "CHARON")
+      buffer = buffer:swap("charon", "charon")
+      buffer = buffer:swap("Charon", "Charon")
+      buffer = buffer:swap("CHARON", "CHARON")
       print(fileInfo:filePath())
       local file = QFile.new(fileInfo:filePath())
       file:open({"WriteOnly"})

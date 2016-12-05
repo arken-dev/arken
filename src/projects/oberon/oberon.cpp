@@ -1,11 +1,11 @@
-// Copyright 2016 The Oberon Platform Authors.
+// Copyright 2016 The Charon Platform Authors.
 // All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#include <oberon/helper>
+#include <charon/helper>
 
-void Oberon::args(lua_State * L, int argc, char * argv[])
+void Charon::args(lua_State * L, int argc, char * argv[])
 {
 
   int top, i;
@@ -21,11 +21,11 @@ void Oberon::args(lua_State * L, int argc, char * argv[])
 
 }
 
-void Oberon::profile(lua_State * L, const char * path)
+void Charon::profile(lua_State * L, const char * path)
 {
   int rv, flag = 0, len, i;
   char * profile;
-  char * oberonPath;
+  char * charonPath;
 
   len = strlen(path);
 
@@ -38,18 +38,18 @@ void Oberon::profile(lua_State * L, const char * path)
     }
   }
 
-  oberonPath = string::left(path, i);
+  charonPath = string::left(path, i);
 
   if( strcmp(os::name(), "windows") == 0 ) {
-    oberonPath[0] = toupper(oberonPath[0]);
+    charonPath[0] = toupper(charonPath[0]);
   }
 
-  //OBERON PATH
-  lua_pushstring(L, oberonPath);
-  lua_setglobal(L, "OBERON_PATH");
+  //CHARON PATH
+  lua_pushstring(L, charonPath);
+  lua_setglobal(L, "CHARON_PATH");
 
   //PROFILE
-  profile = string::append(oberonPath, "/profile.lua");
+  profile = string::append(charonPath, "/profile.lua");
 
   rv = luaL_loadfile(L, profile);
   if (rv) {
@@ -63,11 +63,11 @@ void Oberon::profile(lua_State * L, const char * path)
     throw;
   }
 
-  delete[] oberonPath;
+  delete[] charonPath;
   delete[] profile;
 }
 
-lua_State * Oberon::init(int argc, char * argv[], const char * path)
+lua_State * Charon::init(int argc, char * argv[], const char * path)
 {
 
   lua_State *L = lua_open();
@@ -76,8 +76,8 @@ lua_State * Oberon::init(int argc, char * argv[], const char * path)
   }
   luaL_openlibs(L);
 
-  Oberon::args(L, argc, argv);
-  Oberon::profile(L, path);
+  Charon::args(L, argc, argv);
+  Charon::profile(L, path);
 
   return L;
 }

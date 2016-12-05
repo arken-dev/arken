@@ -1,9 +1,9 @@
-// Copyright 2016 The Oberon Platform Authors.
+// Copyright 2016 The Charon Platform Authors.
 // All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#include <oberon/helper>
+#include <charon/helper>
 
 char * string::append(const char * string, const char * ba)
 {
@@ -663,7 +663,7 @@ char * string::truncate(const char *string, int pos)
   return result;
 }
 
-static inline int oberon_string_underscore_special_char(const char *string, int i)
+static inline int charon_string_underscore_special_char(const char *string, int i)
 {
   if(string[i] == '/' || string[i] == '_' || string[i] == '.' || string[i] == ' ') {
     return 1;
@@ -672,7 +672,7 @@ static inline int oberon_string_underscore_special_char(const char *string, int 
   }
 }
 
-static inline int oberon_string_underscore_len(const char *string, int len)
+static inline int charon_string_underscore_len(const char *string, int len)
 {
   int i, j = 0, flag = 1;
   for(i = 0; i < len; i++) {
@@ -682,7 +682,7 @@ static inline int oberon_string_underscore_len(const char *string, int len)
       }
       j++;
     } else {
-      if(oberon_string_underscore_special_char(string, i)) {
+      if(charon_string_underscore_special_char(string, i)) {
         if(flag == 0) {
           j++;
           flag = 1;
@@ -701,7 +701,7 @@ char * string::underscore(const char *string)
 {
   int len = strlen(string);
   int i, j = 0, flag = 1;
-  char * res = new char[oberon_string_underscore_len(string,len)];
+  char * res = new char[charon_string_underscore_len(string,len)];
   for(i = 0; i < len; i++) {
     if(isupper(string[i])) {
       if(flag == 0) {
@@ -712,7 +712,7 @@ char * string::underscore(const char *string)
       flag = 0;
       j++;
     } else {
-      if(oberon_string_underscore_special_char(string, i)) {
+      if(charon_string_underscore_special_char(string, i)) {
         if(flag == 0) {
           res[j] = '_';
           j++;

@@ -1,4 +1,4 @@
-local coverage = require 'oberon.coverage'
+local coverage = require 'charon.coverage'
 local should   = require 'test.should'
 local test   = {}
 

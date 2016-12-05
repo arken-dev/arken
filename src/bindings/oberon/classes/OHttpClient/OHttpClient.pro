@@ -13,7 +13,7 @@ INCLUDEPATH += ../../../../../vendors/include
 TARGET = OHttpClient
 DESTDIR = ../../../../../clib/
 
-LIBS += -L ../../../../../vendors -loberon -llua
+LIBS += -L ../../../../../vendors -lcharon -llua
 
 unix:LIBS  += -lcurl
 win32:LIBS += ../../../../../vendors/libcurl.dll
@@ -21,4 +21,4 @@ win32:LIBS += ../../../../../vendors/libcurl.dll
 # Input
 SOURCES += OHttpClient.cpp
 
-mac:QMAKE_POST_LINK += install_name_tool -change liblua.so  @executable_path/../vendors/liblua.so ../../../../../clib/OHttpClient.dylib; install_name_tool -change liboberon.1.dylib  @executable_path/../vendors/liboberon.1.dylib ../../../../../clib/OHttpClient.dylib
+mac:QMAKE_POST_LINK += install_name_tool -change liblua.so  @executable_path/../vendors/liblua.so ../../../../../clib/OHttpClient.dylib; install_name_tool -change libcharon.1.dylib  @executable_path/../vendors/libcharon.1.dylib ../../../../../clib/OHttpClient.dylib

@@ -1,4 +1,4 @@
-// Copyright 2016 The Oberon Platform Authors.
+// Copyright 2016 The Charon Platform Authors.
 // All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
@@ -24,13 +24,13 @@ static int
 lua_OThreadClassMethodNew( lua_State *L ) {
 
   /* PATH */
-  lua_getglobal(L, "OBERON_PATH");
-  const char * OBERON_PATH = lua_tostring(L, -1);
+  lua_getglobal(L, "CHARON_PATH");
+  const char * CHARON_PATH = lua_tostring(L, -1);
 
   /* Thread */
   const char *str = (char *) lua_tostring(L, 1);
   OThread   **ptr = (OThread **)lua_newuserdata(L, sizeof(OThread*));
-  *ptr= new OThread(OBERON_PATH, str);
+  *ptr= new OThread(CHARON_PATH, str);
   luaL_getmetatable(L, "OThread.metatable");
   lua_setmetatable(L, -2);
 

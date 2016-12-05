@@ -11,7 +11,7 @@ INCLUDEPATH += ../vendors/ap
 
 #unix:QMAKE_EXTENSION_SHLIB=so
 
-TARGET = oberon
+TARGET = charon
 DESTDIR = ../../vendors
 
 # Input
@@ -33,7 +33,7 @@ SOURCES += base/math.cpp            \
 
 QMAKE_RPATHDIR += ../vendors
 
-mac:QMAKE_POST_LINK += install_name_tool -change liboberon.1.dylib  ../vendors/liboberon.1.dylib ../../vendors/liboberon.1.0.0.dylib ; install_name_tool -change liblua.so  @executable_path/../vendors/liblua.so ../../vendors/liboberon.1.0.0.dylib
+mac:QMAKE_POST_LINK += install_name_tool -change libcharon.1.dylib  ../vendors/libcharon.1.dylib ../../vendors/libcharon.1.0.0.dylib ; install_name_tool -change liblua.so  @executable_path/../vendors/liblua.so ../../vendors/libcharon.1.0.0.dylib
 
 
 LIBS += -L ../../vendors -llua

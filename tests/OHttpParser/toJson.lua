@@ -3,7 +3,7 @@ require "OHttpParser"
 local test = {}
 
 test['deve retornar path /pedido/varejo'] = function()
-  local header  = os.read(OBERON_PATH .. '/tests/OHttpParser/example-1.header')
+  local header  = os.read(CHARON_PATH .. '/tests/OHttpParser/example-1.header')
   local request = OHttpParser.new(header)
   json = [[{
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",

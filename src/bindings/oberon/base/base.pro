@@ -7,7 +7,7 @@ TEMPLATE = lib
 CONFIG += plugin
 CONFIG += no_plugin_name_prefix
 
-DESTDIR = ../../../../clib/oberon
+DESTDIR = ../../../../clib/charon
 TARGET = helper
 
 INCLUDEPATH += .
@@ -22,9 +22,9 @@ SOURCES += math.cpp
 SOURCES += os.cpp
 SOURCES += string.cpp
 
-LIBS += -L ../../../../vendors -loberon -llua
+LIBS += -L ../../../../vendors -lcharon -llua
 
 unix:LIBS += -lcurl
 win32:LIBS += ../../../../vendors/libcurl.dll
 
-mac:QMAKE_POST_LINK += install_name_tool -change liblua.so  @executable_path/../vendors/liblua.so ../../../../clib/oberon/helper.dylib;install_name_tool -change liboberon.1.dylib  @executable_path/../vendors/liboberon.1.dylib ../../../../clib/oberon/helper.dylib
+mac:QMAKE_POST_LINK += install_name_tool -change liblua.so  @executable_path/../vendors/liblua.so ../../../../clib/charon/helper.dylib;install_name_tool -change libcharon.1.dylib  @executable_path/../vendors/libcharon.1.dylib ../../../../clib/charon/helper.dylib

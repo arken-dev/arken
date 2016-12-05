@@ -21,9 +21,9 @@ INCLUDEPATH += ../../../vendors/include
 
 QMAKE_RPATHDIR += ../vendors
 
-LIBS += -L ../../../vendors -llua -loberon -lcurl
+LIBS += -L ../../../vendors -llua -lcharon -lcurl
 
 # Input
-SOURCES += triton.cpp main.cpp ../oberon/oberon.cpp triton_register.cpp
+SOURCES += triton.cpp main.cpp ../charon/charon.cpp triton_register.cpp
 
-mac:QMAKE_POST_LINK += install_name_tool -change liboberon.1.dylib  @executable_path/../vendors/liboberon.1.dylib ../../../bin/triton ; install_name_tool -change liblua.so  @executable_path/../vendors/liblua.so ../../../bin/triton
+mac:QMAKE_POST_LINK += install_name_tool -change libcharon.1.dylib  @executable_path/../vendors/libcharon.1.dylib ../../../bin/triton ; install_name_tool -change liblua.so  @executable_path/../vendors/liblua.so ../../../bin/triton

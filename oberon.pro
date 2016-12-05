@@ -3,7 +3,7 @@
 ######################################################################
 
 TEMPLATE = subdirs
-SUBDIRS = src/oberon   \
+SUBDIRS = src/charon   \
           src/projects \
           src/bindings \
           src/lua

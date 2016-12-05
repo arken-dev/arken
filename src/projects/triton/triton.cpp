@@ -1,11 +1,11 @@
-// Copyright 2016 The Oberon Platform Authors.
+// Copyright 2016 The Charon Platform Authors.
 // All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
 #include <triton.h>
 #include <QDebug>
-#include <oberon/helper>
+#include <charon/helper>
 #include <OStringList>
 
 QHash<QByteArray, QByteArray *> * Triton::s_result = new QHash<QByteArray, QByteArray *>();
@@ -20,7 +20,7 @@ Triton::Triton(int argc, char * argv[], const char * path, QByteArray fileName)
   m_path = path;
   m_fileName = fileName;
 
-  m_state = Oberon::init(m_argc, m_argv, m_path);
+  m_state = Charon::init(m_argc, m_argv, m_path);
   triton_register(m_state);
 }
 
@@ -33,7 +33,7 @@ void Triton::run()
 {
 
   lua_settop(m_state, 0);
-  lua_getglobal(m_state, "OBERON_PATH");
+  lua_getglobal(m_state, "CHARON_PATH");
 
   int rv;
   rv = luaL_loadfile(m_state, m_fileName);
