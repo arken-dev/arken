@@ -1,6 +1,6 @@
 require 'Controller'
 require 'CByteArray'
-require 'OHttpParser'
+require 'CHttpParser'
 require 'ActiveRecord'
 
 local url      = require 'url'
@@ -102,7 +102,7 @@ local M = {}
 M.prefix = nil
 
 M.parse_path  = function()
-  local path  = request:requestPath()
+  local path  = request.requestPath()
   local last  = path:lastIndexOf('/')
   local start = 1
   if M.prefix then
@@ -135,7 +135,7 @@ M.dispatchLocal = function(file_name)
 end
 
 M.dispatchController = function()
-  controller_name, action_name, controller_path = M.parse_path()
+  local controller_name, action_name, controller_path = M.parse_path()
   local class  = M.require_controller_name(controller_name)
   local object = class.new{controller_name = controller_name, action_name = action_name, controller_path = controller_path}
   if object[action_name .. "Action"] then
