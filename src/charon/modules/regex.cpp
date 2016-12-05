@@ -7,7 +7,7 @@
 #include <charon/modules/regex.h>
 #include <QRegExp>
 #include <QString>
-#include <OStringList>
+#include <CStringList>
 #include <QStringList>
 #include <QByteArray>
 #include <cstring>
@@ -27,10 +27,10 @@ int regex::index(const char * string, const char * regex, int offset)
   return QRegExp(regex).indexIn(string, offset);
 }
 
-OStringList * regex::split(const char * string, const char * regex)
+CStringList * regex::split(const char * string, const char * regex)
 {
   QRegExp qregex(regex);
-  OStringList *list = new OStringList();
+  CStringList *list = new CStringList();
   QString qstr(string);
   int older = 0;
   int poss  = 0;
@@ -60,10 +60,10 @@ char * regex::replace(const char * string, const char * regex, const char * afte
   return result;
 }
 
-OStringList * regex::scan(const char * string, const char * regex)
+CStringList * regex::scan(const char * string, const char * regex)
 {
   QRegExp qregex(regex);
-  OStringList *list = new OStringList();
+  CStringList *list = new CStringList();
   QString qstr(string);
   int older = 0;
   int poss  = 0;

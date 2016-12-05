@@ -68,7 +68,7 @@ static int lua_charon_os_exists( lua_State *L ) {
 }
 
 static int lua_charon_os_glob( lua_State *L ) {
-  OStringList * list = 0;
+  CStringList * list = 0;
   const char  * path = luaL_checkstring(L, 1);
 
   if( lua_gettop(L) == 1 ) { /* número de argumentos */
@@ -87,9 +87,9 @@ static int lua_charon_os_glob( lua_State *L ) {
     list = os::glob( path, lua_tostring(L, 2), lua_toboolean(L, 3) );
   }
 
-  OStringList **ptr = (OStringList **)lua_newuserdata(L, sizeof(OStringList*));
+  CStringList **ptr = (CStringList **)lua_newuserdata(L, sizeof(CStringList*));
   *ptr = list;
-  luaL_getmetatable(L, "OStringList.metatable");
+  luaL_getmetatable(L, "CStringList.metatable");
   lua_setmetatable(L, -2);
 
   return 1;

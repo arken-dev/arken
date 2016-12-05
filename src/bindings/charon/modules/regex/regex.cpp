@@ -48,13 +48,13 @@ static int lua_charon_regex_replace( lua_State *L ) {
 }
 
 static int lua_charon_regex_scan( lua_State *L ) {
-  OStringList * list;
+  CStringList * list;
   const char  * string = luaL_checkstring(L, 1);
   const char  * regex  = luaL_checkstring(L, 2);
   list = regex::scan(string, regex);
-  OStringList **ptr = (OStringList **)lua_newuserdata(L, sizeof(OStringList*));
+  CStringList **ptr = (CStringList **)lua_newuserdata(L, sizeof(CStringList*));
   *ptr = list;
-  luaL_getmetatable(L, "OStringList.metatable");
+  luaL_getmetatable(L, "CStringList.metatable");
   lua_setmetatable(L, -2);
 
   return 1;
@@ -63,10 +63,10 @@ static int lua_charon_regex_scan( lua_State *L ) {
 static int lua_charon_regex_split( lua_State *L ) {
   const char  * string = luaL_checkstring(L, 1);
   const char  * regex  = luaL_checkstring(L, 2);
-  OStringList * list   = regex::split(string, regex);
-  OStringList **ptr = (OStringList **)lua_newuserdata(L, sizeof(OStringList*));
+  CStringList * list   = regex::split(string, regex);
+  CStringList **ptr = (CStringList **)lua_newuserdata(L, sizeof(CStringList*));
   *ptr = list;
-  luaL_getmetatable(L, "OStringList.metatable");
+  luaL_getmetatable(L, "CStringList.metatable");
   lua_setmetatable(L, -2);
 
   return 1;

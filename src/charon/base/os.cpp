@@ -90,14 +90,14 @@ bool os::exists(const char * path)
   return QFile::exists(path);
 }
 
-OStringList * os::glob(const char * dir)
+CStringList * os::glob(const char * dir)
 {
   return os::glob(dir, false);
 }
 
-OStringList * os::glob(const char * dir, bool sub)
+CStringList * os::glob(const char * dir, bool sub)
 {
-  OStringList * list = new OStringList();
+  CStringList * list = new CStringList();
   QDirIterator::IteratorFlags flags;
 
   if( sub ) {
@@ -114,16 +114,16 @@ OStringList * os::glob(const char * dir, bool sub)
   return list;
 }
 
-OStringList * os::glob(const char * dir, const char * regex)
+CStringList * os::glob(const char * dir, const char * regex)
 {
   return os::glob(dir, regex, false);
 }
 
-OStringList * os::glob(const char * dir, const char * regex, bool sub)
+CStringList * os::glob(const char * dir, const char * regex, bool sub)
 {
 
   QRegExp qregex(regex);
-  OStringList * list = new OStringList();
+  CStringList * list = new CStringList();
   QDirIterator::IteratorFlags flags;
 
   if( sub ) {

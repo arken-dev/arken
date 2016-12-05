@@ -12,10 +12,10 @@ namespace charon {
     uint     ctime(const char * path);
     char   * dirpath(const char * path);
     bool     exists(const char * path);
-    OStringList * glob(const char * dir);
-    OStringList * glob(const char * dir, bool sub);
-    OStringList * glob(const char * dir, const char * regex);
-    OStringList * glob(const char * dir, const char * regex, bool sub);
+    CStringList * glob(const char * dir);
+    CStringList * glob(const char * dir, bool sub);
+    CStringList * glob(const char * dir, const char * regex);
+    CStringList * glob(const char * dir, const char * regex, bool sub);
     char   * home();
     char   * hostname();
     bool     link(const char * source, const char * destination, bool force);
