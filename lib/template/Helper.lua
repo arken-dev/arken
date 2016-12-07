@@ -557,4 +557,12 @@ function M:nl2br(value)
   return tostring(value):swap('\n', '<br>')
 end
 
+function M:toNumber(value)
+  if value == nil then
+    return 0
+  else
+    return tonumber(value)
+  end
+end
+
 return M
