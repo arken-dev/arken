@@ -353,7 +353,7 @@ end
 
 function ActiveRecord_PostgresAdapter:fetch(sql)
   local result = self:execute(sql)
-  local res    = result:fetch()
+  local res    = result:fetch({}, 'a')
   if res == nil then
     return nil
   else

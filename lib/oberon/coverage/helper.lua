@@ -30,10 +30,6 @@ M.calc_coverage = function(dump)
   end
 end
 
-local sort = function(a, b)
-  return tostring(a.file_name) < tostring(b.file_name)
-end
-
 M.sort = function(tbl)
   table.sort(tbl, sort)
   return tbl
