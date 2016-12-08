@@ -83,6 +83,7 @@ function triton_stop()
   for i, file in ipairs(files) do
     files[i] = 'coverage/@' .. file:mid(2, -1):replace('/', '-') .. '.json'
   end
+
   print('')
   local dir    = 'coverage'
   local tpl    = OBERON_PATH .. "/lib/oberon/coverage/templates/index.html"
