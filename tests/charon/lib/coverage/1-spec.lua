@@ -3,7 +3,7 @@ local should   = require 'test.should'
 local test   = {}
 
 coverage.start()
-require 'specs.coverage.1-example'
+loadfile('specs.coverage.1-example.example')
 coverage.stop()
 
 test['should return the table type of name file'] = function()
