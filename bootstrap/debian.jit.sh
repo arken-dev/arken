@@ -8,7 +8,7 @@ apt-get install        \
 cd tmp
 curl http://luajit.org/download/LuaJIT-2.0.4.tar.gz -o tmp.tar.gz
 tar -xzvf tmp.tar.gz
-#cp ../bootstrap/debian/Makefile.jit LuaJIT-2.0.4/src/Makefile
+cp ../bootstrap/debian/Makefile.jit LuaJIT-2.0.4/src/Makefile
 cd LuaJIT-2.0.4
 make
 make install PREFIX=$PWD/../luajit
