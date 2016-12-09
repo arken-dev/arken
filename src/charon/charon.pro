@@ -33,9 +33,6 @@ SOURCES += base/math.cpp            \
 
 QMAKE_RPATHDIR += ../deps
 
-unix:QMAKE_PRE_LINK += cp -pr ../../include ../../deps
-windows:QMAKE_PRE_LINK += copy ../../include ../../deps
-
 mac:QMAKE_POST_LINK += install_name_tool -change libcharon.1.dylib  ../deps/libcharon.1.dylib ../../deps/libcharon.1.0.0.dylib ; install_name_tool -change liblua.so  @executable_path/../deps/liblua.so ../../deps/libcharon.1.0.0.dylib
 
 LIBS += -L ../../deps -llua -lcurl
