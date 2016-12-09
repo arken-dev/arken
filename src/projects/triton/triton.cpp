@@ -22,7 +22,7 @@ Triton::Triton(int argc, char * argv[], const char * path, QByteArray fileName)
 
   m_state = Charon::init(m_argc, m_argv, m_path);
   triton_register(m_state);
-  lua_settop(L, 0);
+  lua_settop(m_state, 0);
 }
 
 Triton::~Triton()
