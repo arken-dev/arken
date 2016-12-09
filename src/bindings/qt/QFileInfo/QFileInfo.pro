@@ -7,14 +7,14 @@ CONFIG += no_plugin_name_prefix
 
 INCLUDEPATH += .
 INCLUDEPATH += ../../../../include
-INCLUDEPATH += ../../../../vendors/include
+INCLUDEPATH += ../../../../deps/include
 
 TARGET = QFileInfo
 DESTDIR = ../../../../clib
 
-LIBS += -L ../../../../vendors -llua
+LIBS += -L ../../../../deps -llua
 
 # Input
 SOURCES += QFileInfo.cpp
 
-mac:QMAKE_POST_LINK += install_name_tool -change liblua.so  @executable_path/../vendors/liblua.so ../../../../clib/QFileInfo.dylib
+mac:QMAKE_POST_LINK += install_name_tool -change liblua.so  @executable_path/../deps/liblua.so ../../../../clib/QFileInfo.dylib
