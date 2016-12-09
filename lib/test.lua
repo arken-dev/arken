@@ -1,5 +1,5 @@
 require 'charon.regex'
-require 'OStringList'
+require 'CStringList'
 
 -------------------------------------------------------------------------------
 -- CHARON_ENV
