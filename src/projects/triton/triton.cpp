@@ -22,6 +22,7 @@ Triton::Triton(int argc, char * argv[], const char * path, QByteArray fileName)
 
   m_state = Charon::init(m_argc, m_argv, m_path);
   triton_register(m_state);
+  lua_settop(L, 0);
 }
 
 Triton::~Triton()
@@ -59,7 +60,7 @@ void Triton::run()
     lua_pushstring(m_state, *file_name);
 
     if( lua_pcall(m_state, 1, 0, lua_gettop(m_state) - 1 ) != 0 ) {
-      fprintf(stderr, "%s\n", lua_tostring(m_state, -1));
+      fprintf(stderr, " =>>>> %s\n", lua_tostring(m_state, -1));
       throw;
     }
   }

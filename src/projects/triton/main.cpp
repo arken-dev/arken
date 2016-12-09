@@ -48,17 +48,19 @@ int main(int argc, char * argv[])
     }
   }
 
+  lua_settop(L, 0);
+
   int rv;
   rv = luaL_loadfile(L, fileName);
   if (rv) {
     fprintf(stderr, "%s\n", lua_tostring(L, -1));
-    throw;
+    return rv;
   }
 
   rv = lua_pcall(L, 0, 0, lua_gettop(L) - 1);
   if (rv) {
     fprintf(stderr, "%s\n", lua_tostring(L, -1));
-    throw;
+    return rv;
   }
 
   lua_settop(L, 0);
