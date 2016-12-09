@@ -7,13 +7,13 @@ CONFIG += no_plugin_name_prefix
 
 INCLUDEPATH += .
 INCLUDEPATH += ../../../../../include
-INCLUDEPATH += ../../../../../vendors/include
+INCLUDEPATH += ../../../../../deps/include
 
 TARGET = CStringList
 DESTDIR = ../../../../../clib
 
-LIBS += -L ../../../../../vendors -lcharon -llua
+LIBS += -L ../../../../../deps -lcharon -llua
 
 # Input
 SOURCES += CStringList.cpp
-mac:QMAKE_POST_LINK += install_name_tool -change liblua.so  @executable_path/../vendors/liblua.so ../../../../../clib/CStringList.dylib; install_name_tool -change libcharon.1.dylib  @executable_path/../vendors/libcharon.1.dylib ../../../../../clib/CStringList.dylib
+mac:QMAKE_POST_LINK += install_name_tool -change liblua.so  @executable_path/../deps/liblua.so ../../../../../clib/CStringList.dylib; install_name_tool -change libcharon.1.dylib  @executable_path/../deps/libcharon.1.dylib ../../../../../clib/CStringList.dylib

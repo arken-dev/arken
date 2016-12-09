@@ -7,14 +7,14 @@ CONFIG += no_plugin_name_prefix
 
 INCLUDEPATH += .
 INCLUDEPATH += ../../../../../include
-INCLUDEPATH += ../../../../../vendors/include
+INCLUDEPATH += ../../../../../deps/include
 
 TARGET = CByteArray
 DESTDIR = ../../../../../clib
 
-LIBS += -L ../../../../../vendors -lcharon -llua
+LIBS += -L ../../../../../deps -lcharon -llua
 
 # Input
 SOURCES += CByteArray.cpp
 
-mac:QMAKE_POST_LINK += install_name_tool -change liblua.so  @executable_path/../vendors/liblua.so ../../../../../clib/OByteArray.dylib; install_name_tool -change libcharon.1.dylib  @executable_path/../vendors/libcharon.1.dylib ../../../../../clib/OByteArray.dylib
+mac:QMAKE_POST_LINK += install_name_tool -change liblua.so  @executable_path/../deps/liblua.so ../../../../../clib/OByteArray.dylib; install_name_tool -change libcharon.1.dylib  @executable_path/../deps/libcharon.1.dylib ../../../../../clib/OByteArray.dylib

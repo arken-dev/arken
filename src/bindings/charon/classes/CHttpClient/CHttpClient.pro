@@ -8,17 +8,14 @@ CONFIG += no_plugin_name_prefix
 
 INCLUDEPATH += .
 INCLUDEPATH += ../../../../../include
-INCLUDEPATH += ../../../../../vendors/include
+INCLUDEPATH += ../../../../../deps/include
 
 TARGET = CHttpClient
 DESTDIR = ../../../../../clib/
 
-LIBS += -L ../../../../../vendors -lcharon -llua
-
-unix:LIBS  += -lcurl
-win32:LIBS += ../../../../../vendors/libcurl.dll
+LIBS += -L ../../../../../deps -lcharon -llua -lcurl
 
 # Input
 SOURCES += CHttpClient.cpp
 
-mac:QMAKE_POST_LINK += install_name_tool -change liblua.so  @executable_path/../vendors/liblua.so ../../../../../clib/CHttpClient.dylib; install_name_tool -change libcharon.1.dylib  @executable_path/../vendors/libcharon.1.dylib ../../../../../clib/CHttpClient.dylib
+mac:QMAKE_POST_LINK += install_name_tool -change liblua.so  @executable_path/../deps/liblua.so ../../../../../clib/CHttpClient.dylib; install_name_tool -change libcharon.1.dylib  @executable_path/../deps/libcharon.1.dylib ../../../../../clib/CHttpClient.dylib

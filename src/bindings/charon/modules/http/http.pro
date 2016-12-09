@@ -12,14 +12,11 @@ TARGET = http
 
 INCLUDEPATH += .
 INCLUDEPATH += ../../../../../include
-INCLUDEPATH += ../../../../../vendors/include
+INCLUDEPATH += ../../../../../deps/include
 
 # Input
 SOURCES += http.cpp
 
-LIBS += -L ../../../../../vendors -lcharon -llua
+LIBS += -L ../../../../../deps -lcharon -llua -lcurl
 
-unix:LIBS  += -lcurl
-win32:LIBS += ../../../../../vendors/libcurl.dll
-
-mac:QMAKE_POST_LINK += install_name_tool -change liblua.so  @executable_path/../vendors/liblua.so ../../../../../clib/charon/http.dylib; install_name_tool -change libcharon.1.dylib  @executable_path/../vendors/libcharon.1.dylib ../../../../../clib/charon/http.dylib
+mac:QMAKE_POST_LINK += install_name_tool -change liblua.so  @executable_path/../deps/liblua.so ../../../../../clib/charon/http.dylib; install_name_tool -change libcharon.1.dylib  @executable_path/../deps/libcharon.1.dylib ../../../../../clib/charon/http.dylib

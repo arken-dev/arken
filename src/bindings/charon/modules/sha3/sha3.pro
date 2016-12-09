@@ -12,11 +12,11 @@ TARGET = sha3
 
 INCLUDEPATH += .
 INCLUDEPATH += ../../../../../include
-INCLUDEPATH += ../../../../../vendors/include
+INCLUDEPATH += ../../../../../deps/include
 
 # Input
 SOURCES += sha3.cpp
 
-LIBS += -L ../../../../../vendors -lcharon -llua
+LIBS += -L ../../../../../deps -lcharon -llua
 
-mac:QMAKE_POST_LINK += install_name_tool -change liblua.so  @executable_path/../vendors/liblua.so ../../../../../clib/charon/sha3.dylib; install_name_tool -change libcharon.1.dylib  @executable_path/../vendors/libcharon.1.dylib ../../../../../clib/charon/sha3.dylib
+mac:QMAKE_POST_LINK += install_name_tool -change liblua.so  @executable_path/../deps/liblua.so ../../../../../clib/charon/sha3.dylib; install_name_tool -change libcharon.1.dylib  @executable_path/../deps/libcharon.1.dylib ../../../../../clib/charon/sha3.dylib
