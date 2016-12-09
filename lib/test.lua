@@ -19,7 +19,8 @@ function test.process(file_name)
   local status, specs = pcall(dofile, file_name)
   -- arquivo com erro de sintaxe
   if not status then
-    results[1] = {['file not load'] = specs, status = 'failure', msg = specs}
+    print(specs)
+    results[file_name] = { status = 'failure', msg = specs }
     return results
   end
   if specs == nil then
