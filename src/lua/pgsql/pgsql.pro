@@ -7,14 +7,12 @@ CONFIG += no_plugin_name_prefix
 
 INCLUDEPATH += .
 INCLUDEPATH += ../../../include
-INCLUDEPATH += ../../../vendors/include
+INCLUDEPATH += ../../../deps/include
 
 TARGET = pgsql
 DESTDIR = ../../../clib
 
-LIBS += -L ../../../vendors -llua
-LIBS += "-L/usr/lib/x86_64-linux-gnu"
-LIBS += "-lpq"
+LIBS += -L ../../../deps -llua -lpq
 
 # Input
 HEADERS += pgsql.h
