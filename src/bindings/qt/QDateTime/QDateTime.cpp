@@ -16,6 +16,11 @@ checkQDateTime( lua_State *L ) {
   return *(QDateTime **) luaL_checkudata(L, 1, "QDateTime.metatable");
 }
 
+QDateTime *
+checkQDateTime( lua_State *L, int i ) {
+  return *(QDateTime **) luaL_checkudata(L, i, "QDateTime.metatable");
+}
+
 /**
  * ClassMethods
  */
@@ -83,6 +88,25 @@ lua_QDateTimeInstanceMethodToString( lua_State *L ) {
   }
 
   lua_pushstring(L, dt->toString(str).toLocal8Bit().data());
+  return 1;
+}
+
+static int
+lua_QDateTimeInstanceMethodConcat( lua_State *L ) {
+  QDateTime *dt;
+  QString concat;
+  const char * str;
+  const char * format = "yyyy/MM/dd hh:mm:ss";
+  if(lua_isstring(L, 1)) {
+    str = lua_tostring(L, 1);
+    dt  = checkQDateTime( L, 2 );
+    concat = dt->toString(format).prepend(str);
+  } else {
+    dt  = checkQDateTime( L, 1 );
+    str = lua_tostring(L, 2);
+    concat = dt->toString(format).append(str);
+  }
+  lua_pushstring(L, concat.toLocal8Bit().data());
   return 1;
 }
 
@@ -303,6 +327,7 @@ luaL_reg QDateTimeInstanceMethods[] = {
   {"__lt", lua_QDateTimeInstanceMethodLessThan},
   {"__eq", lua_QDateTimeInstanceMethodEqual},
   {"__tostring", lua_QDateTimeInstanceMethodToString},
+  {"__concat", lua_QDateTimeInstanceMethodConcat},
   {"__gc", lua_QDateTimeInstanceMethodDestruct},
   {NULL, NULL}
 };
