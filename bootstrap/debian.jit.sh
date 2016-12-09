@@ -1,4 +1,4 @@
-sudo apt-get install   \
+apt-get install        \
   build-essential      \
   libgl1-mesa-dev      \
   curl                 \
@@ -8,7 +8,7 @@ sudo apt-get install   \
 cd tmp
 curl http://luajit.org/download/LuaJIT-2.0.4.tar.gz -o tmp.tar.gz
 tar -xzvf tmp.tar.gz
-cp ../bootstrap/debian.jit/Makefile LuaJIT-2.0.4/src/
+cp ../bootstrap/debian/Makefile.jit LuaJIT-2.0.4/src/Makefile
 cd LuaJIT-2.0.4
 make
 cd src
@@ -18,3 +18,6 @@ cd tmp
 ar -x libluajit.a
 gcc -fPIC -shared *.o -o liblua.so
 cp liblua.so ../../../../deps/liblua.so
+cd ../../..
+rm -Rf LuaJIT-2.0.4
+rm -Rf tmp.tar.gz
