@@ -18,5 +18,5 @@ moc_*
 
 profile.d/*
 config/*
-vendors/lib*
+deps/*
 .qmake.stash
