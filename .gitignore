@@ -1,6 +1,5 @@
 *.pro.*
 
-shared/*
 clib/*
 tmp/*
 bin/*
