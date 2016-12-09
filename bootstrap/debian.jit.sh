@@ -1,4 +1,4 @@
-apt-get install        \
+sudo apt-get install   \
   build-essential      \
   libgl1-mesa-dev      \
   curl                 \
@@ -17,4 +17,4 @@ cp libluajit.a tmp
 cd tmp
 ar -x libluajit.a
 gcc -fPIC -shared *.o -o liblua.so
-cp liblua.so ../../../../vendors/liblua.so
+cp liblua.so ../../../../deps/liblua.so
