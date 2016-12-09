@@ -11,13 +11,16 @@ tar -xzvf tmp.tar.gz
 cp ../bootstrap/debian/Makefile.jit LuaJIT-2.0.4/src/Makefile
 cd LuaJIT-2.0.4
 make
-cd src
-mkdir tmp
-cp libluajit.a tmp
+make install PREFIX=$PWD/../luajit
+mkdir -p tmp
+cp ../luajit/lib/libluajit-5.1.a tmp
 cd tmp
-ar -x libluajit.a
+ar -x libluajit-5.1.a
 gcc -fPIC -shared *.o -o liblua.so
-cp liblua.so ../../../../deps/liblua.so
-cd ../../..
-rm -Rf LuaJIT-2.0.4
-rm -Rf tmp.tar.gz
+cp liblua.so ../../../deps/liblua.so
+cd ..
+mkdir -p ../../deps/include
+cp -pr ../luajit/include/luajit-2.0/ ../../deps/include/lua
+#rm -Rf LuaJIT-2.0.4
+#rm -Rf tmp.tar.gz
+#rm -Rf luajit
