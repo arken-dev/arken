@@ -17,7 +17,7 @@ DESTDIR = ../../../bin
 
 INCLUDEPATH += .
 INCLUDEPATH += ../../../include
-INCLUDEPATH += ../../../vendors/include
+INCLUDEPATH += ../../../deps/include
 
 SOURCES += main.cpp\
         dialog.cpp \
@@ -38,8 +38,8 @@ FORMS    += dialog.ui
 RESOURCES += \
     rescource.qrc
 
-QMAKE_RPATHDIR += ../vendors
+QMAKE_RPATHDIR += ../deps
 
-LIBS += -L ../../../vendors -lcharon -llua -lcurl
+LIBS += -L ../../../deps -lcharon -llua -lcurl
 
-mac:QMAKE_POST_LINK += install_name_tool -change libcharon.1.dylib  @executable_path/../vendors/libcharon.1.dylib ../../../bin/callisto ; install_name_tool -change liblua.so  @executable_path/../vendors/liblua.so ../../../bin/callisto
+mac:QMAKE_POST_LINK += install_name_tool -change libcharon.1.dylib  @executable_path/../deps/libcharon.1.dylib ../../../bin/callisto ; install_name_tool -change liblua.so  @executable_path/../deps/liblua.so ../../../bin/callisto

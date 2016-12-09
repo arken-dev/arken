@@ -5,14 +5,14 @@ QT += network
 TEMPLATE = lib
 INCLUDEPATH += .
 INCLUDEPATH += ../../include
-INCLUDEPATH += ../../vendors/include
+INCLUDEPATH += ../../deps/include
 INCLUDEPATH += ../vendors/mongrel2
 INCLUDEPATH += ../vendors/ap
 
 #unix:QMAKE_EXTENSION_SHLIB=so
 
 TARGET = charon
-DESTDIR = ../../vendors
+DESTDIR = ../../deps
 
 # Input
 SOURCES += base/math.cpp            \
@@ -31,11 +31,8 @@ SOURCES += base/math.cpp            \
            ../vendors/mongrel2/http11/http11_parser.c \
            ../vendors/ap/ap_base64.c
 
-QMAKE_RPATHDIR += ../vendors
+QMAKE_RPATHDIR += ../deps
 
-mac:QMAKE_POST_LINK += install_name_tool -change libcharon.1.dylib  ../vendors/libcharon.1.dylib ../../vendors/libcharon.1.0.0.dylib ; install_name_tool -change liblua.so  @executable_path/../vendors/liblua.so ../../vendors/libcharon.1.0.0.dylib
+mac:QMAKE_POST_LINK += install_name_tool -change libcharon.1.dylib  ../deps/libcharon.1.dylib ../../deps/libcharon.1.0.0.dylib ; install_name_tool -change liblua.so  @executable_path/../vendors/liblua.so ../../vendors/libcharon.1.0.0.dylib
 
-
-LIBS += -L ../../vendors -llua
-unix:LIBS  += -lcurl
-win32:LIBS += ../../vendors/libcurl.dll
+LIBS += -L ../../deps -llua -lcurl
