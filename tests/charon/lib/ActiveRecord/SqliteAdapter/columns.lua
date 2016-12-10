@@ -2,6 +2,7 @@ local test   = {}
 local Person = Class.new("Person", "ActiveRecord")
 
 test.beforeAll = function()
+  ActiveRecord.config = "config/active_record_sqlite.json"
   local sql = [[
   CREATE TABLE person (
     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, name VARCHAR(250), observation TEXT,
@@ -19,6 +20,7 @@ test.after = function()
 end
 
 test.afterAll = function()
+  ActiveRecord.config = nil
   Person.adapter():execute("DROP TABLE person")
 end
 

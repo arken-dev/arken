@@ -128,13 +128,19 @@ ActiveRecord.inherit = function(class)
   -----------------------------------------------------------------------------
 
   class.loadConfig = function()
-    local raw    = os.read("config/active_record.json")
+    local config = class.config or "config/active_record.json"
+
+    if not os.exists(config) then
+      error("file " .. config .. " not exists")
+    end
+
+    local raw    = os.read(config)
     local env    = CHARON_ENV or 'development'
-    local config = json.decode(raw)
-    if type(config) == 'table' then
-      return config[env]
+    local data   = json.decode(raw)
+    if type(data) == 'table' then
+      return data[env]
     else
-      error "config/active_record.json invalid"
+      error(config .. " invalid")
     end
   end
 
