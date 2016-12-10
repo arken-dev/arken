@@ -17,7 +17,7 @@ DESTDIR = ../../../bin
 
 INCLUDEPATH += .
 INCLUDEPATH += ../../../include
-INCLUDEPATH += ../../../vendors/include
+INCLUDEPATH += ../../../deps/include
 
 SOURCES += main.cpp\
         dialog.cpp \
@@ -27,7 +27,7 @@ SOURCES += main.cpp\
 # win32:SOURCES += keylogger/win32.c
 # SOURCES += keyloggerworker.cpp
 
-SOURCES += ../oberon/oberon.cpp
+SOURCES += ../charon/charon.cpp
 
 HEADERS  += dialog.h callisto.h
 
@@ -38,8 +38,8 @@ FORMS    += dialog.ui
 RESOURCES += \
     rescource.qrc
 
-QMAKE_RPATHDIR += ../vendors
+QMAKE_RPATHDIR += ../deps
 
-LIBS += -L ../../../vendors -loberon -llua -lcurl
+LIBS += -L ../../../deps -lcharon -llua -lcurl
 
-mac:QMAKE_POST_LINK += install_name_tool -change liboberon.1.dylib  @executable_path/../vendors/liboberon.1.dylib ../../../bin/callisto ; install_name_tool -change liblua.so  @executable_path/../vendors/liblua.so ../../../bin/callisto
+mac:QMAKE_POST_LINK += install_name_tool -change libcharon.1.dylib  @executable_path/../deps/libcharon.1.dylib ../../../bin/callisto ; install_name_tool -change liblua.so  @executable_path/../deps/liblua.so ../../../bin/callisto

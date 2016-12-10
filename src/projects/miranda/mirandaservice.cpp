@@ -1,4 +1,4 @@
-// Copyright 2016 The Oberon Platform Authors.
+// Copyright 2016 The Charon Platform Authors.
 // All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
@@ -7,7 +7,7 @@
 #include "mirandastate.h"
 #include <QDebug>
 #include <QFile>
-#include <OByteArray>
+#include <CByteArray>
 #include <QList>
 
 QMutex MirandaService::s_mutex;
@@ -80,9 +80,9 @@ void MirandaService::run() {
   state = MirandaState::pop();
   luaState = state->instance();
 
-  /* OBERON_TASK */
+  /* CHARON_TASK */
   lua_pushstring(luaState, m_uuid);
-  lua_setglobal(luaState, "OBERON_TASK");
+  lua_setglobal(luaState, "CHARON_TASK");
 
   //allocate
   lua_pushlightuserdata(luaState, this);
@@ -101,9 +101,9 @@ void MirandaService::run() {
     return;
   }
 
-  // clear OBERON_TASK
+  // clear CHARON_TASK
   lua_pushboolean(luaState, false);
-  lua_setglobal(luaState, "OBERON_TASK");
+  lua_setglobal(luaState, "CHARON_TASK");
 
   // clear this
   lua_pushnil(luaState);
@@ -120,12 +120,12 @@ void MirandaService::run() {
   /*
   //debug cache
   int total = 0;
-  QList<OByteArray> list = MirandaState::s_cache->keys();
+  QList<CByteArray> list = MirandaState::s_cache->keys();
   qDebug() << "TOTAL DE ITENS NO CACHE " << list.size() << "\n\n";
 
   for(int i = 0; i < list.size(); i++ ) {
-    OByteArray key   = list.at(i);
-    OByteArray value = MirandaState::s_cache->value(key);
+    CByteArray key   = list.at(i);
+    CByteArray value = MirandaState::s_cache->value(key);
     qDebug() << "key " << key << '\n';
     total += value.size();
   }

@@ -1,17 +1,17 @@
 cd ..
-cp -pr oberon oberon-dist
-cp oberon/vendors/*.dll oberon-dist/bin
-cp $1/bin/libgcc_s_dw2-1.dll oberon-dist/bin
-cp $1/bin/libstdc++-6.dll oberon-dist/bin
-cp $1/bin/libwinpthread-1.dll oberon-dist/bin
-cp $1/bin/Qt5Concurrent.dll oberon-dist/bin
-cp $1/bin/Qt5Concurrentd.dll oberon-dist/bin
-cp $1/bin/Qt5Core.dll oberon-dist/bin
-cp $1/bin/Qt5Cored.dll oberon-dist/bin
-cp $1/bin/Qt5Network.dll oberon-dist/bin
-cp $1/bin/Qt5Networkd.dll oberon-dist/bin
-cp $1/bin/Qt5Widgets.dll oberon-dist/bin
-cp $1/bin/Qt5Widgetsd.dll oberon-dist/bin
-cp $1/bin/Qt5Gui.dll oberon-dist/bin
-cp $1/bin/Qt5Guid.dll oberon-dist/bin
-cp -r $1/plugins/platforms oberon-dist/bin
+cp -pr charon charon-dist
+cp charon/vendors/*.dll charon-dist/bin
+cp $1/bin/libgcc_s_dw2-1.dll charon-dist/bin
+cp $1/bin/libstdc++-6.dll charon-dist/bin
+cp $1/bin/libwinpthread-1.dll charon-dist/bin
+cp $1/bin/Qt5Concurrent.dll charon-dist/bin
+cp $1/bin/Qt5Concurrentd.dll charon-dist/bin
+cp $1/bin/Qt5Core.dll charon-dist/bin
+cp $1/bin/Qt5Cored.dll charon-dist/bin
+cp $1/bin/Qt5Network.dll charon-dist/bin
+cp $1/bin/Qt5Networkd.dll charon-dist/bin
+cp $1/bin/Qt5Widgets.dll charon-dist/bin
+cp $1/bin/Qt5Widgetsd.dll charon-dist/bin
+cp $1/bin/Qt5Gui.dll charon-dist/bin
+cp $1/bin/Qt5Guid.dll charon-dist/bin
+cp -r $1/plugins/platforms charon-dist/bin

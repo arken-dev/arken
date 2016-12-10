@@ -50,7 +50,7 @@ function Controller:resolvHelper()
 end
 
 function Controller:helper()
-  if helpers[self.controller_name] == nil or OBERON_ENV ~= 'production' then
+  if helpers[self.controller_name] == nil or CHARON_ENV ~= 'production' then
     helpers[self.controller_name] = self:resolvHelper()
   end
 
@@ -62,7 +62,7 @@ function Controller:url(params)
     return params
   end
 
-  local dispatcher = require 'oberon.dispatcher'
+  local dispatcher = require 'charon.dispatcher'
   local controller = params.controller or self.controller_name
   local action     = params.action or 'index'
 

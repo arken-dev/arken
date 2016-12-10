@@ -7,14 +7,14 @@ CONFIG += no_plugin_name_prefix
 
 INCLUDEPATH += .
 INCLUDEPATH += ../../../../include
-INCLUDEPATH += ../../../../vendors/include
+INCLUDEPATH += ../../../../deps/include
 
 TARGET = QDateTime
 DESTDIR = ../../../../clib
 
-LIBS  += -L ../../../../vendors -llua
+LIBS  += -L ../../../../deps -llua
 
 # Input
 SOURCES += QDateTime.cpp
 
-mac:QMAKE_POST_LINK += install_name_tool -change liblua.so  @executable_path/../vendors/liblua.so ../../../../clib/QDateTime.dylib
+mac:QMAKE_POST_LINK += install_name_tool -change liblua.so  @executable_path/../deps/liblua.so ../../../../clib/QDateTime.dylib

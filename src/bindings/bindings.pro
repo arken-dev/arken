@@ -3,5 +3,5 @@
 ######################################################################
 
 TEMPLATE = subdirs
-SUBDIRS = oberon         \
+SUBDIRS = charon         \
           qt

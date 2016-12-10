@@ -1,13 +1,13 @@
-// Copyright 2016 The Oberon Platform Authors.
+// Copyright 2016 The Charon Platform Authors.
 // All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
 #include <lua/lua.hpp>
-#include <OByteArray>
+#include <CByteArray>
 #include <QDebug>
 #include <QThread>
-#include <oberon/helper>
+#include <charon/helper>
 #include "mirandastate.h"
 
 extern "C" {

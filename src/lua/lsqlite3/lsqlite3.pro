@@ -8,13 +8,13 @@ CONFIG += warn_off
 
 INCLUDEPATH += .
 INCLUDEPATH += ../../../include
-INCLUDEPATH += ../../../vendors/include
+INCLUDEPATH += ../../../deps/include
 INCLUDEPATH += ../../vendors/sqlite3/
 
 TARGET = lsqlite3
 DESTDIR = ../../../clib
 
-LIBS += -L ../../../vendors -llua
+LIBS += -L ../../../deps -llua
 
 # Input
 SOURCES += lsqlite3.c ../../vendors/sqlite3/sqlite3.c

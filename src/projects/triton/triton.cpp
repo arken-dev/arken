@@ -1,12 +1,12 @@
-// Copyright 2016 The Oberon Platform Authors.
+// Copyright 2016 The Charon Platform Authors.
 // All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
 #include <triton.h>
 #include <QDebug>
-#include <oberon/helper>
-#include <OStringList>
+#include <charon/helper>
+#include <CStringList>
 
 QHash<QByteArray, QByteArray *> * Triton::s_result = new QHash<QByteArray, QByteArray *>();
 QHash<QByteArray, int> * Triton::s_total = new QHash<QByteArray, int>();
@@ -20,8 +20,9 @@ Triton::Triton(int argc, char * argv[], const char * path, QByteArray fileName)
   m_path = path;
   m_fileName = fileName;
 
-  m_state = Oberon::init(m_argc, m_argv, m_path);
+  m_state = Charon::init(m_argc, m_argv, m_path);
   triton_register(m_state);
+  lua_settop(m_state, 0);
 }
 
 Triton::~Triton()
@@ -33,7 +34,7 @@ void Triton::run()
 {
 
   lua_settop(m_state, 0);
-  lua_getglobal(m_state, "OBERON_PATH");
+  lua_getglobal(m_state, "CHARON_PATH");
 
   int rv;
   rv = luaL_loadfile(m_state, m_fileName);
@@ -59,7 +60,7 @@ void Triton::run()
     lua_pushstring(m_state, *file_name);
 
     if( lua_pcall(m_state, 1, 0, lua_gettop(m_state) - 1 ) != 0 ) {
-      fprintf(stderr, "%s\n", lua_tostring(m_state, -1));
+      fprintf(stderr, "file_name %s: %s\n", file_name->data(), lua_tostring(m_state, 1));
       throw;
     }
   }
@@ -73,7 +74,7 @@ void Triton::init(QStringList list)
     for(int i=1; i < list.size(); i++) {
       QFileInfo fileInfo(list.at(i));
       if( fileInfo.isDir() ) {
-        OStringList * l = os::glob(list.at(i).toLocal8Bit().data(), ".*.lua$", true);
+        CStringList * l = os::glob(list.at(i).toLocal8Bit().data(), ".*.lua$", true);
         for(int j=0; j < l->size(); j++) {
           s_queue->append(new QByteArray(l->at(j)));
         }

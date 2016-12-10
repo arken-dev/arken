@@ -7,14 +7,14 @@ CONFIG += no_plugin_name_prefix
 
 INCLUDEPATH += .
 INCLUDEPATH += ../../../../include
-INCLUDEPATH += ../../../../vendors/include
+INCLUDEPATH += ../../../../deps/include
 
 TARGET = QStringList
 DESTDIR = ../../../../clib
 
-LIBS  += -L ../../../../vendors -llua
+LIBS  += -L ../../../../deps -llua
 
 # Input
 SOURCES += QStringList.cpp
 
-mac:QMAKE_POST_LINK += install_name_tool -change liblua.so  @executable_path/../vendors/liblua.so ../../../../clib/QStringList.dylib
+mac:QMAKE_POST_LINK += install_name_tool -change liblua.so  @executable_path/../deps/liblua.so ../../../../clib/QStringList.dylib

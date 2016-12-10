@@ -1,15 +1,15 @@
-// Copyright 2016 The Oberon Platform Authors.
+// Copyright 2016 The Charon Platform Authors.
 // All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
 #include <lua/lua.hpp>
-#include <OHttpParser>
+#include <CHttpParser>
 
 static int
-lua_OHttpParserInstanceMethodData( lua_State *L ) {
+lua_CHttpParserInstanceMethodData( lua_State *L ) {
   lua_getglobal( L, "__http_request");
-  OHttpParser *req = (OHttpParser *) lua_touserdata(L, -1);
+  CHttpParser *req = (CHttpParser *) lua_touserdata(L, -1);
   char * data = req->data();
   lua_pushstring(L, data);
   delete[] data;
@@ -17,18 +17,18 @@ lua_OHttpParserInstanceMethodData( lua_State *L ) {
 }
 
 static int
-lua_OHttpParserInstanceMethodField( lua_State *L ) {
+lua_CHttpParserInstanceMethodField( lua_State *L ) {
   lua_getglobal( L, "__http_request");
-  OHttpParser *req = (OHttpParser *) lua_touserdata(L, -1);
+  CHttpParser *req = (CHttpParser *) lua_touserdata(L, -1);
   const char  *field = luaL_checkstring(L, 1);
   lua_pushstring(L, req->field(field));
   return 1;
 }
 
 static int
-lua_OHttpParserInstanceMethodFragment( lua_State *L ) {
+lua_CHttpParserInstanceMethodFragment( lua_State *L ) {
   lua_getglobal( L, "__http_request");
-  OHttpParser *req = (OHttpParser *) lua_touserdata(L, -1);
+  CHttpParser *req = (CHttpParser *) lua_touserdata(L, -1);
   if( req->fragment() == NULL ) {
     lua_pushnil(L);
   } else {
@@ -38,49 +38,49 @@ lua_OHttpParserInstanceMethodFragment( lua_State *L ) {
 }
 
 static int
-lua_OHttpParserInstanceMethodHttpVersion( lua_State *L ) {
+lua_CHttpParserInstanceMethodHttpVersion( lua_State *L ) {
   lua_getglobal( L, "__http_request");
-  OHttpParser *req = (OHttpParser *) lua_touserdata(L, -1);
+  CHttpParser *req = (CHttpParser *) lua_touserdata(L, -1);
   lua_pushstring(L, req->httpVersion());
   return 1;
 }
 
 static int
-lua_OHttpParserInstanceMethodRequestUri( lua_State *L ) {
+lua_CHttpParserInstanceMethodRequestUri( lua_State *L ) {
   lua_getglobal( L, "__http_request");
-  OHttpParser *req = (OHttpParser *) lua_touserdata(L, -1);
+  CHttpParser *req = (CHttpParser *) lua_touserdata(L, -1);
   lua_pushstring(L, req->requestUri());
   return 1;
 }
 
 static int
-lua_OHttpParserInstanceMethodRequestPath( lua_State *L ) {
+lua_CHttpParserInstanceMethodRequestPath( lua_State *L ) {
   lua_getglobal( L, "__http_request");
-  OHttpParser *req = (OHttpParser *) lua_touserdata(L, -1);
+  CHttpParser *req = (CHttpParser *) lua_touserdata(L, -1);
   lua_pushstring(L, req->requestPath());
   return 1;
 }
 
 static int
-lua_OHttpParserInstanceMethodRequestMethod( lua_State *L ) {
+lua_CHttpParserInstanceMethodRequestMethod( lua_State *L ) {
   lua_getglobal( L, "__http_request");
-  OHttpParser *req = (OHttpParser *) lua_touserdata(L, -1);
+  CHttpParser *req = (CHttpParser *) lua_touserdata(L, -1);
   lua_pushstring(L, req->requestMethod());
   return 1;
 }
 
 static int
-lua_OHttpParserInstanceMethodQueryString( lua_State *L ) {
+lua_CHttpParserInstanceMethodQueryString( lua_State *L ) {
   lua_getglobal( L, "__http_request");
-  OHttpParser *req = (OHttpParser *) lua_touserdata(L, -1);
+  CHttpParser *req = (CHttpParser *) lua_touserdata(L, -1);
   lua_pushstring(L, req->queryString());
   return 1;
 }
 
 static int
-lua_OHttpParserInstanceMethodHeaderDone( lua_State *L ) {
+lua_CHttpParserInstanceMethodHeaderDone( lua_State *L ) {
   lua_getglobal( L, "__http_request");
-  OHttpParser *req = (OHttpParser *) lua_touserdata(L, -1);
+  CHttpParser *req = (CHttpParser *) lua_touserdata(L, -1);
   lua_pushstring(L, req->headerDone());
   return 1;
 }
@@ -88,15 +88,15 @@ lua_OHttpParserInstanceMethodHeaderDone( lua_State *L ) {
 void
 miranda_request_register(lua_State * L) {
   static const 	luaL_reg Map[] = {
-    {"data", lua_OHttpParserInstanceMethodData},
-    {"field", lua_OHttpParserInstanceMethodField},
-    {"fragment", lua_OHttpParserInstanceMethodFragment},
-    {"headerDone", lua_OHttpParserInstanceMethodHeaderDone},
-    {"httpVersion", lua_OHttpParserInstanceMethodHttpVersion},
-    {"requestUri", lua_OHttpParserInstanceMethodRequestUri},
-    {"requestMethod", lua_OHttpParserInstanceMethodRequestMethod},
-    {"requestPath", lua_OHttpParserInstanceMethodRequestPath},
-    {"queryString", lua_OHttpParserInstanceMethodQueryString},
+    {"data", lua_CHttpParserInstanceMethodData},
+    {"field", lua_CHttpParserInstanceMethodField},
+    {"fragment", lua_CHttpParserInstanceMethodFragment},
+    {"headerDone", lua_CHttpParserInstanceMethodHeaderDone},
+    {"httpVersion", lua_CHttpParserInstanceMethodHttpVersion},
+    {"requestUri", lua_CHttpParserInstanceMethodRequestUri},
+    {"requestMethod", lua_CHttpParserInstanceMethodRequestMethod},
+    {"requestPath", lua_CHttpParserInstanceMethodRequestPath},
+    {"queryString", lua_CHttpParserInstanceMethodQueryString},
     {NULL, NULL}
   };
 

@@ -1,4 +1,4 @@
-require 'oberon.pgsql'
+require 'charon.pgsql'
 
 ActiveRecord_PostgresMemoryAdapter = Class.new(
   "ActiveRecord.PostgresMemoryAdapter",

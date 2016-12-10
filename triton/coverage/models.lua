@@ -1,8 +1,8 @@
-OBERON_ENV = os.getenv("OBERON_ENV") or "test"
+CHARON_ENV = os.getenv("CHARON_ENV") or "test"
 
 local test     = require 'test'
 local template = require 'template'
-local coverage = require 'oberon.coverage'
+local coverage = require 'charon.coverage'
 local start    = os.microtime()
 local files    = {}
 
@@ -61,7 +61,7 @@ function triton_run(fileName)
 
   local dir     = 'coverage'
   local file    = '@' .. fileName:mid(2, -1)
-  local tpl     = OBERON_PATH .. "/lib/oberon/coverage/templates/file.html"
+  local tpl     = CHARON_PATH .. "/lib/charon/coverage/templates/file.html"
   local dump    = coverage.dump()
   local data    = coverage.analyze(file)
   local buffer  = template.execute(tpl, data)
@@ -86,7 +86,7 @@ function triton_stop()
 
   print('')
   local dir    = 'coverage'
-  local tpl    = OBERON_PATH .. "/lib/oberon/coverage/templates/index.html"
+  local tpl    = CHARON_PATH .. "/lib/charon/coverage/templates/index.html"
   local data   = {files = files, time = (os.microtime() - start), total = triton.total('tests')}
   local buffer = template.execute(tpl, data)
 

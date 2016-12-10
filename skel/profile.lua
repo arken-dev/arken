@@ -3,7 +3,7 @@ package.path  = package.path .. ";app/controllers/?.lua"
 package.path  = package.path .. ";app/helpers/?.lua"
 package.path  = package.path .. ";lib/?.lua"
 
-OBERON_ENV    = os.getenv("OBERON_ENV") or "development"
+CHARON_ENV    = os.getenv("CHARON_ENV") or "development"
 
 -------------------------------------------------------------------------------
 -- PRODUCTION
@@ -11,7 +11,7 @@ OBERON_ENV    = os.getenv("OBERON_ENV") or "development"
 
 local template = require 'template'
 
-if OBERON_ENV == 'production' then
+if CHARON_ENV == 'production' then
   template.filter = function(file_name, buffer)
     if file_name:endsWith('.html') then
       return buffer:simplified()

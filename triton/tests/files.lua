@@ -1,4 +1,4 @@
-OBERON_ENV = os.getenv("OBERON_ENV") or "test"
+CHARON_ENV = os.getenv("CHARON_ENV") or "test"
 
 local test  = require 'test'
 local start = os.microtime()
