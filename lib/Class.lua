@@ -67,7 +67,7 @@ function Class.new(className, inheritedBy, params)
 
   -- contract
   function class.contract(name)
-    local contract = require('contract')
+    local contract = require('charon.contract')
     contract.create(class, name)
   end
 
