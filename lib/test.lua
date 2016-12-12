@@ -16,7 +16,7 @@ CHARON_ENV = os.getenv("CHARON_ENV") or "test"
 -- TEST MODULE
 -------------------------------------------------------------------------------
 
-local colorize = require 'colorize'
+local colorize = require 'charon.colorize'
 local test = {}
 
 function test.process(file_name)
