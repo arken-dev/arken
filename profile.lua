@@ -18,7 +18,7 @@ os.setlocale("C", "numeric")
 -------------------------------------------------------------------------------
 -- Base
 -------------------------------------------------------------------------------
-require 'json_pretty'
+require 'charon.json'
 require 'charon.helper'
 require 'charon.base.package'
 require 'charon.parse'
