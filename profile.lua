@@ -2,26 +2,26 @@
 -- PATH
 -------------------------------------------------------------------------------
 
-package.path  = package.path  .. ";" .. OBERON_PATH .. "/lib/?.lua"
-package.path  = package.path  .. ";" .. OBERON_PATH .. "/rhea/?.lua"
-package.cpath = package.cpath .. ";" .. OBERON_PATH .. "/clib/?.so"
-package.cpath = package.cpath .. ";" .. OBERON_PATH .. "/clib/?.dylib"
-package.cpath = package.cpath .. ";" .. OBERON_PATH .. "/clib/?.dll"
+package.path  = package.path  .. ";" .. CHARON_PATH .. "/lib/?.lua"
+package.path  = package.path  .. ";" .. CHARON_PATH .. "/rhea/?.lua"
+package.cpath = package.cpath .. ";" .. CHARON_PATH .. "/clib/?.so"
+package.cpath = package.cpath .. ";" .. CHARON_PATH .. "/clib/?.dylib"
+package.cpath = package.cpath .. ";" .. CHARON_PATH .. "/clib/?.dll"
 
 -------------------------------------------------------------------------------
 -- ENV
 -------------------------------------------------------------------------------
 
-OBERON_ENV = os.getenv("OBERON_ENV") or "development"
+CHARON_ENV = os.getenv("CHARON_ENV") or "development"
 os.setlocale("C", "numeric")
 
 -------------------------------------------------------------------------------
 -- Base
 -------------------------------------------------------------------------------
 require 'json_pretty'
-require 'oberon.helper'
-require 'oberon.base.package'
-require 'oberon.parse'
+require 'charon.helper'
+require 'charon.base.package'
+require 'charon.parse'
 require 'toboolean' -- deprecate ?
 require 'isblank'   -- deprecate ?
 require 'inspect'   -- deprecate ?
@@ -62,7 +62,7 @@ require "Object"
 -- PROFILE.D
 -------------------------------------------------------------------------------
 
-iterator = QDirIterator.new(OBERON_PATH .. '/profile.d')
+iterator = QDirIterator.new(CHARON_PATH .. '/profile.d')
 while(iterator:hasNext()) do
   iterator:next()
   local fileInfo = iterator:fileInfo()
@@ -75,7 +75,7 @@ end
 -- LOCAL PROFILE
 -------------------------------------------------------------------------------
 
-if OBERON_PATH ~= QDir.currentPath() then
+if CHARON_PATH ~= QDir.currentPath() then
   local profile = QDir.currentPath() .. '/profile.lua'
   if QFile.exists(profile) then
     dofile(profile)

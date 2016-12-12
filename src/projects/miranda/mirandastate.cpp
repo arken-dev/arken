@@ -1,4 +1,4 @@
-// Copyright 2016 The Oberon Platform Authors.
+// Copyright 2016 The Charon Platform Authors.
 // All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
@@ -11,13 +11,13 @@
 
 int        MirandaState::s_gc          = 0;
 qint64     MirandaState::s_version     = 0;
-OByteArray MirandaState::s_oberonPath  = "";
-OByteArray MirandaState::s_profilePath = "";
+CByteArray MirandaState::s_charonPath  = "";
+CByteArray MirandaState::s_profilePath = "";
 QMutex     MirandaState::s_mutex;
 
 QStack<MirandaState *> * MirandaState::s_stack   = new QStack<MirandaState *>;
 QList<MirandaService*> * MirandaState::s_service = new QList<MirandaService *>;
-QHash<OByteArray, MirandaCache *> * MirandaState::s_cache = new QHash<OByteArray, MirandaCache *>;
+QHash<CByteArray, MirandaCache *> * MirandaState::s_cache = new QHash<CByteArray, MirandaCache *>;
 QThreadPool * MirandaState::s_pool = 0;
 QReadWriteLock lock;
 
@@ -44,11 +44,11 @@ MirandaState::MirandaState()
   miranda_task_register(m_State);
 
   if( strcmp(os::name(), "windows") == 0 ) {
-    s_oberonPath = s_oberonPath.capitalize();
+    s_charonPath = s_charonPath.capitalize();
   }
 
-  lua_pushstring(m_State, s_oberonPath);
-  lua_setglobal(m_State, "OBERON_PATH");
+  lua_pushstring(m_State, s_charonPath);
+  lua_setglobal(m_State, "CHARON_PATH");
 
   rv = luaL_loadfile(m_State, s_profilePath);
   if (rv) {
@@ -72,10 +72,10 @@ MirandaState::~MirandaState()
 
 void MirandaState::init(QCoreApplication *app)
 {
-  s_oberonPath = app->applicationDirPath().toLocal8Bit();
-  s_oberonPath.truncate( s_oberonPath.lastIndexOf('/') );
+  s_charonPath = app->applicationDirPath().toLocal8Bit();
+  s_charonPath.truncate( s_charonPath.lastIndexOf('/') );
 
-  s_profilePath = s_oberonPath;
+  s_profilePath = s_charonPath;
   s_profilePath.append("/profile.lua");
 
   servicesLoad();

@@ -8,14 +8,14 @@ CONFIG += no_plugin_name_prefix
 
 INCLUDEPATH += .
 INCLUDEPATH += ../../../../include
-INCLUDEPATH += ../../../../vendors/include
+INCLUDEPATH += ../../../../deps/include
 
 TARGET = QSqlQuery
 DESTDIR = ../../../../clib
 
-LIBS  += -L ../../../../vendors -llua
+LIBS  += -L ../../../../deps -llua
 
 # Input
 SOURCES += QSqlQuery.cpp
 
-mac:QMAKE_POST_LINK += install_name_tool -change liblua.so  @executable_path/../vendors/liblua.so ../../../../clib/QSqlQuery.dylib
+mac:QMAKE_POST_LINK += install_name_tool -change liblua.so  @executable_path/../deps/liblua.so ../../../../clib/QSqlQuery.dylib

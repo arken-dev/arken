@@ -1,6 +1,0 @@
-#include <oberon.h>
-#include <oberon/base/math.h>
-#include <oberon/base/os.h>
-#include <oberon/base/string.h>
-
-using namespace oberon;

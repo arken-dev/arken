@@ -7,14 +7,14 @@ CONFIG += no_plugin_name_prefix
 
 INCLUDEPATH += .
 INCLUDEPATH += ../../../../include
-INCLUDEPATH += ../../../../vendors/include
+INCLUDEPATH += ../../../../deps/include
 
 TARGET = QByteArrayList
 DESTDIR = ../../../../clib
 
-LIBS += -L ../../../../vendors -llua
+LIBS += -L ../../../../deps -llua
 
 # Input
 SOURCES += QByteArrayList.cpp
 
-mac:QMAKE_POST_LINK += install_name_tool -change liblua.so  @executable_path/../vendors/liblua.so ../../../../clib/QByteArrayList.dylib
+mac:QMAKE_POST_LINK += install_name_tool -change liblua.so  @executable_path/../deps/liblua.so ../../../../clib/QByteArrayList.dylib

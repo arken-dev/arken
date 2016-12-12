@@ -8,7 +8,7 @@ function FormHelper:url(params)
     return params
   end
 
-  local dispatcher = require 'oberon.dispatcher'
+  local dispatcher = require 'charon.dispatcher'
   local controller = params.controller or self.controller.controller_name
   local action     = params.action or self.controller.action_name or 'index'
 

@@ -242,7 +242,7 @@ function M:submitCancel()
 end
 
 function M:fileTimestamp(file_name)
-  if cache[file_name] == nil or OBERON_ENV ~= 'production' then
+  if cache[file_name] == nil or CHARON_ENV ~= 'production' then
     if QFile.exists('public' .. file_name) then
       local fileInfo = QFileInfo.new('public' .. file_name)
       cache[file_name] = fileInfo:lastModified():toTime_t()
@@ -295,7 +295,7 @@ function M:url(params)
     return params
   end
 
-  local dispatcher = require 'oberon.dispatcher'
+  local dispatcher = require 'charon.dispatcher'
   local controller = params.controller or self.controller_name
   local action     = params.action or 'index'
 

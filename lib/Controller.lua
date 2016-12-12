@@ -1,4 +1,10 @@
+-- Copyright 2016 The Charon Platform Authors.
+-- All rights reserved.
+-- Use of this source code is governed by a BSD-style
+-- license that can be found in the LICENSE file.
+
 require "Class"
+
 template = require "template"
 
 Controller = Class.new("Controller")
@@ -50,7 +56,7 @@ function Controller:resolvHelper()
 end
 
 function Controller:helper()
-  if helpers[self.controller_name] == nil or OBERON_ENV ~= 'production' then
+  if helpers[self.controller_name] == nil or CHARON_ENV ~= 'production' then
     helpers[self.controller_name] = self:resolvHelper()
   end
 
@@ -62,7 +68,7 @@ function Controller:url(params)
     return params
   end
 
-  local dispatcher = require 'oberon.dispatcher'
+  local dispatcher = require 'charon.dispatcher'
   local controller = params.controller or self.controller_name
   local action     = params.action or 'index'
 

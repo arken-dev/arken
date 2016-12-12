@@ -1,3 +1,8 @@
+-- Copyright 2016 The Charon Platform Authors.
+-- All rights reserved.
+-- Use of this source code is governed by a BSD-style
+-- license that can be found in the LICENSE file.
+
 require 'ActiveRecord.Adapter'
 
 ActiveRecord = Class.new("ActiveRecord")
@@ -123,13 +128,19 @@ ActiveRecord.inherit = function(class)
   -----------------------------------------------------------------------------
 
   class.loadConfig = function()
-    local raw    = os.read("config/active_record.json")
-    local env    = OBERON_ENV or 'development'
-    local config = json.decode(raw)
-    if type(config) == 'table' then
-      return config[env]
+    local config = class.config or "config/active_record.json"
+
+    if not os.exists(config) then
+      error("file " .. config .. " not exists")
+    end
+
+    local raw    = os.read(config)
+    local env    = CHARON_ENV or 'development'
+    local data   = json.decode(raw)
+    if type(data) == 'table' then
+      return data[env]
     else
-      error "config/active_record.json invalid"
+      error(config .. " invalid")
     end
   end
 

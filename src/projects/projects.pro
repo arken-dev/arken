@@ -3,7 +3,7 @@
 ######################################################################
 
 TEMPLATE = subdirs
-SUBDIRS = oberon   \
+SUBDIRS = charon   \
           miranda  \
           rhea     \
           callisto \

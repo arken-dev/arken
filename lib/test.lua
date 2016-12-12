@@ -1,11 +1,16 @@
-require 'oberon.regex'
-require 'OStringList'
+-- Copyright 2016 The Charon Platform Authors.
+-- All rights reserved.
+-- Use of this source code is governed by a BSD-style
+-- license that can be found in the LICENSE file.
+
+require 'charon.regex'
+require 'CStringList'
 
 -------------------------------------------------------------------------------
--- OBERON_ENV
+-- CHARON_ENV
 -------------------------------------------------------------------------------
 
-OBERON_ENV = os.getenv("OBERON_ENV") or "test"
+CHARON_ENV = os.getenv("CHARON_ENV") or "test"
 
 -------------------------------------------------------------------------------
 -- TEST MODULE
@@ -19,7 +24,9 @@ function test.process(file_name)
   local status, specs = pcall(dofile, file_name)
   -- arquivo com erro de sintaxe
   if not status then
-    results[1] = {['file not load'] = specs, status = 'failure', msg = specs}
+    print(file_name)
+    print(specs)
+    results[file_name] = { status = 'failure', msg = specs }
     return results
   end
   if specs == nil then
@@ -41,7 +48,7 @@ function test.process(file_name)
       if status then
         status, message = pcall(func)
       end
-      -- require( 'oberon.record' ).cache = {}
+      -- require( 'charon.record' ).cache = {}
       if status == false then
         if type(message) == 'table' then
           if message.kind == 'test' then

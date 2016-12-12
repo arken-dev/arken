@@ -10,13 +10,13 @@ DESTDIR     = ../../../bin
 
 INCLUDEPATH += .
 INCLUDEPATH += ../../../include
-INCLUDEPATH += ../../../vendors/include
+INCLUDEPATH += ../../../deps/include
 INCLUDEPATH += ../../lua/json
 
 
-QMAKE_RPATHDIR += ../vendors
+QMAKE_RPATHDIR += ../deps
 
-LIBS += -L ../../../vendors -llua -loberon -lcurl
+LIBS += -L ../../../deps -llua -lcharon -lcurl
 
 # Input
 SOURCES += main.cpp    \
@@ -42,4 +42,4 @@ HEADERS += mirandaserver.h \
     mirandastate.h         \
     ../../lua/json/json.h
 
-mac:QMAKE_POST_LINK += install_name_tool -change liboberon.1.dylib  @executable_path/../vendors/liboberon.1.dylib ../../../bin/miranda ; install_name_tool -change liblua.so  @executable_path/../vendors/liblua.so ../../../bin/miranda
+mac:QMAKE_POST_LINK += install_name_tool -change libcharon.1.dylib  @executable_path/../deps/libcharon.1.dylib ../../../bin/miranda ; install_name_tool -change liblua.so  @executable_path/../deps/liblua.so ../../../bin/miranda

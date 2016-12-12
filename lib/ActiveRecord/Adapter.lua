@@ -1,3 +1,8 @@
+-- Copyright 2016 The Charon Platform Authors.
+-- All rights reserved.
+-- Use of this source code is governed by a BSD-style
+-- license that can be found in the LICENSE file.
+
 ActiveRecord_Adapter = Class.new("ActiveRecord_Adapter")
 
 ActiveRecord_Adapter.reserved = {'new_record', 'class', 'errors'}
@@ -386,7 +391,7 @@ end
 -------------------------------------------------------------------------------
 
 function ActiveRecord_Adapter:createTimestamp()
-  if OBERON_ENV == 'test' then
+  if CHARON_ENV == 'test' then
     local format = "yyyy/MM/dd hh:mm:ss."
     local clock  = tostring(os.clock())
     local index  = clock:indexOf('.')
