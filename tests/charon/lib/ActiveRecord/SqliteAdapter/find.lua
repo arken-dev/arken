@@ -39,7 +39,7 @@ test.should_return_instance_by_primary_key = function()
   p:save()
   local record = Person.find{ id = p.id }
 
-  assert( p == record, string.format('%s %s', p, record) )
+  assert( p == record, string.format('%s %s', p.id, record.id) )
 end
 
 test.should_return_one_id = function()
@@ -57,7 +57,7 @@ test.should_return_instance_by_other_attribute = function()
   p:save()
   local record = Person.find{ name = "Junior Cigano" }
 
-  assert( p == record, string.format('%s %s', p, record) )
+  assert( p == record, string.format('%s %s', p.id, record.id) )
 end
 
 return test
