@@ -24,7 +24,6 @@ require 'charon.base.package'
 require 'charon.parse'
 require 'toboolean' -- deprecate ?
 require 'isblank'   -- deprecate ?
-require 'inspect'   -- deprecate ?
 
 -------------------------------------------------------------------------------
 -- String
