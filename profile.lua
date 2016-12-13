@@ -74,9 +74,9 @@ end
 -- LOCAL PROFILE
 -------------------------------------------------------------------------------
 
-if CHARON_PATH ~= QDir.currentPath() then
-  local profile = QDir.currentPath() .. '/profile.lua'
-  if QFile.exists(profile) then
+if CHARON_PATH ~= os.pwd() then
+  local profile = os.pwd() .. '/profile.lua'
+  if os.exists(profile) then
     dofile(profile)
   end
 end
