@@ -28,7 +28,7 @@ require 'isblank'   -- deprecate ?
 -------------------------------------------------------------------------------
 -- String
 -------------------------------------------------------------------------------
-
+require "CStringList"
 require "QString"
 require "QByteArrayList"
 require "QStringList"
@@ -61,12 +61,11 @@ require "Object"
 -- PROFILE.D
 -------------------------------------------------------------------------------
 
-iterator = QDirIterator.new(CHARON_PATH .. '/profile.d')
-while(iterator:hasNext()) do
-  iterator:next()
-  local fileInfo = iterator:fileInfo()
-  if(fileInfo:suffix() == 'lua') then
-    dofile(fileInfo:filePath())
+local list = os.glob(CHARON_PATH .. '/profile.d')
+for i = 1, list:size() do
+  local fileName = list:at(i)
+  if fileName:endsWith(".lua") then
+    dofile(fileName)
   end
 end
 
