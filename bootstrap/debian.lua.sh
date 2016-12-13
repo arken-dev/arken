@@ -3,7 +3,8 @@ apt-get install        \
   libgl1-mesa-dev      \
   curl                 \
   libcurl4-openssl-dev \
-  libpq-dev
+  libpq-dev            \
+  libmysqlclient-dev
 
 cd tmp
 curl http://www.lua.org/ftp/lua-5.1.5.tar.gz -o tmp.tar.gz

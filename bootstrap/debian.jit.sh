@@ -3,7 +3,8 @@ apt-get install        \
   libgl1-mesa-dev      \
   curl                 \
   libcurl4-openssl-dev \
-  libpq-dev
+  libpq-dev            \
+  libmysqlclient-dev
 
 cd tmp
 curl http://luajit.org/download/LuaJIT-2.0.4.tar.gz -o tmp.tar.gz
