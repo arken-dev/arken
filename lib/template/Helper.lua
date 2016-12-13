@@ -243,9 +243,8 @@ end
 
 function M:fileTimestamp(file_name)
   if cache[file_name] == nil or CHARON_ENV ~= 'production' then
-    if QFile.exists('public' .. file_name) then
-      local fileInfo = QFileInfo.new('public' .. file_name)
-      cache[file_name] = fileInfo:lastModified():toTime_t()
+    if os.exists('public' .. file_name) then
+      cache[file_name] = os.ctime('public' .. file_name)
     else
       cache[file_name] = 0
     end
