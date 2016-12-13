@@ -585,6 +585,37 @@ char * string::swap(const char * original, const char * pattern, const char * re
   }
 }
 
+char * string::suffix(const char * raw)
+{
+  return string::suffix(raw, '.');
+}
+
+char *  string::suffix(const char * raw, char chr)
+{
+  char * result = 0;
+  int i, j;
+  int point = 0;
+  int len = strlen(raw);
+
+  for( i = len; i > 0; i--) {
+    if( raw[i] == chr ) {
+      point = i;
+    }
+  }
+
+  if( point > 0 ) {
+    point++;
+    result = (char *) malloc( (len - point) + 1 * sizeof(char) );
+    j = 0;
+    for( i = point; i < len; i++, j++) {
+      result[j] = raw[i];
+    }
+    result[(len - point)] = '\0';
+  }
+
+  return result;
+}
+
 bool string::startsWith(const char *string, const char *str)
 {
   int i;

@@ -173,6 +173,20 @@ static int lua_charon_string_startsWith( lua_State *L ) {
   return 1;
 }
 
+static int lua_charon_string_suffix( lua_State *L ) {
+  const char * string = luaL_checkstring(L, 1);
+  char chr = '.';
+  char * result;
+  if(lua_gettop(L) == 2) { /* número de argumentos */
+    chr =  luaL_checkstring(L, 2)[0];
+  }
+  result = string::suffix(string, chr);
+  lua_pushstring(L, result);  /* push result */
+  delete[] result;
+  return 1;
+}
+
+
 static int lua_charon_string_swap( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   const char * before = luaL_checkstring(L, 2);
@@ -229,6 +243,7 @@ int luaopen_charon_string( lua_State *L ) {
     {"right",       lua_charon_string_right},
     {"simplified",  lua_charon_string_simplified},
     {"startsWith",  lua_charon_string_startsWith},
+    {"suffix",      lua_charon_string_suffix},
     {"swap",        lua_charon_string_swap},
     {"trimmed",     lua_charon_string_trimmed},
     {"truncate",    lua_charon_string_truncate},

@@ -5,7 +5,7 @@
 
 CHARON_ENV = os.getenv("CHARON_ENV") or "test"
 
-local test  = require 'test'
+local test  = require 'charon.test'
 
 callisto = function(file)
   local t = QDateTime.currentMSecsSinceEpoch()
