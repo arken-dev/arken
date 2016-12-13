@@ -3,11 +3,7 @@
 -- Use of this source code is governed by a BSD-style
 -- license that can be found in the LICENSE file.
 
-require "QDateTime"
-require "QFileInfo"
-require "QFile"
-
-package.msecs = QDateTime.currentMSecsSinceEpoch()
+package.time = os.microtime()
 package.mixed = {}
 package.cache = {}
 
@@ -16,7 +12,7 @@ package.checkPath= function(path)
     if package.isPathUpdated(path) then
       if package.mixed[path] then
         local class = package.mixed[path]
-        print('reload: ' .. path)
+        print('reload: ', path)
         package.loaded[path]  = nil
         package.loaded[class] = nil
         path = class
@@ -37,10 +33,10 @@ package.isPathUpdated = function(path)
 end
 
 package.pathToFilename = function(path)
-  if package.cache[path] == nil or not QFile.exists(package.cache[path]) then
+  if package.cache[path] == nil or not os.exists(package.cache[path]) then
     for str in string.gmatch(package.path, "([^;]+)") do
       local file_name = tostring(str:gsub("?", path:replace('.', '/')))
-      if QFileInfo.exists(file_name) then
+      if os.exists(file_name) then
         package.cache[path] = file_name
         break
       end
@@ -55,12 +51,11 @@ package.pathToFilename = function(path)
 end
 
 package.isFilenameUpdated = function(file_name)
-  local  fileInfo = QFileInfo.new(file_name)
-  return fileInfo:lastModified():toMSecsSinceEpoch() > package.msecs
+  return os.ctime(file_name) > package.time
 end
 
 package.reloadPath = function(path)
-    print('reload: ' .. path)
+    print('reload: ', path)
     local filename = package.pathToFilename(path)
     if filename then
       package.loaded[path] = assert(dofile(filename))
@@ -69,12 +64,12 @@ package.reloadPath = function(path)
 end
 
 package.reload = function()
-  local init = QDateTime.currentMSecsSinceEpoch()
+  local init = os.microtime()
   for path, table in pairs(package.loaded) do
     if package.cache[path] ~= false then
       package.checkPath(path)
     end
   end
-  package.msecs = QDateTime.currentMSecsSinceEpoch()
-  return (package.msecs - init) / 1000.0
+  package.time = os.microtime()
+  return (package.time - init)
 end

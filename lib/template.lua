@@ -3,9 +3,12 @@
 -- Use of this source code is governed by a BSD-style
 -- license that can be found in the LICENSE file.
 
+require 'QString'
+require 'QStringList'
+
 local M = {}
 
-M.msecs  = QDateTime.currentMSecsSinceEpoch()
+M.mtime  = os.microtime()
 M.cache  = {}
 M.source = {}
 M.time   = 0
@@ -102,14 +105,13 @@ end
 function M.reload()
   -- M.cache = {}
   for file_name, source in pairs(M.source) do
-    local fileInfo = QFileInfo.new(file_name)
-    if fileInfo:lastModified():toMSecsSinceEpoch() > M.msecs then
+    if os.ctime(file_name) > M.mtime then
       print("reload: " .. file_name)
       M.cache[file_name] = M.build(file_name)()
     end
   end
 
-  M.msecs  = QDateTime.currentMSecsSinceEpoch()
+  M.mtime = os.microtime()
 end
 
 function M.debug(file_name)

@@ -16,44 +16,16 @@ CHARON_ENV = os.getenv("CHARON_ENV") or "development"
 os.setlocale("C", "numeric")
 
 -------------------------------------------------------------------------------
--- Base
+-- GLOBALS
 -------------------------------------------------------------------------------
+
 require 'charon.json'
 require 'charon.helper'
 require 'charon.package'
 require 'charon.parse'
 require 'toboolean' -- deprecate ?
 require 'isblank'   -- deprecate ?
-
--------------------------------------------------------------------------------
--- String
--------------------------------------------------------------------------------
 require "CStringList"
-require "QString"
-require "QByteArrayList"
-require "QStringList"
-require "QRegExp"
-
--------------------------------------------------------------------------------
--- QDir and QFile
--------------------------------------------------------------------------------
-
-require "QDir"
-require "QDirIterator"
-require "QFile"
-require "QFileInfo"
-require "QFileInfoList"
-
--------------------------------------------------------------------------------
--- QDate, QTime and QDateTime
--------------------------------------------------------------------------------
-
-require "QDateTime"
-
--------------------------------------------------------------------------------
--- OOP
--------------------------------------------------------------------------------
-
 require "Class"
 require "Object"
 
