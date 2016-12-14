@@ -1,6 +1,9 @@
 CHARON_ENV = os.getenv("CHARON_ENV") or "test"
 
-local test     = require 'test'
+require 'QDirIterator'
+require 'QFileInfo'
+
+local test     = require 'charon.test'
 local template = require 'template'
 local coverage = require 'charon.coverage'
 local start    = os.microtime()

@@ -129,13 +129,12 @@ M.require_controller_name = function(controller_name)
   return require(controller_name:camelcase() .. "Controller")
 end
 
-M.dispatchLocal = function(file_name)
+M.dispatchLocal = function(fileName)
   local list     = require 'charon.mime-type'
-  local fileInfo = QFileInfo.new(file_name)
-  local suffix   = fileInfo:suffix()
+  local suffix   = fileName:suffix()
   local mimetype = tostring(list[suffix])
   local header   = "Content-type: " .. mimetype
-  local file     = io.open(file_name, "rb")
+  local file     = io.open(fileName, "rb")
   return 200, {header}, file:read("*all")
 end
 
@@ -157,9 +156,9 @@ M.dispatch = function()
   local reload  = 0
   local code, headers, body
   if CHARON_ENV == 'development' then
-    local file_name = "public" .. request.requestPath()
-    if file_name ~= "public/" and QFile.exists(file_name) then
-      return M.dispatchLocal(file_name)
+    local fileName = "public" .. request.requestPath()
+    if fileName ~= "public/" and os.exists(fileName) then
+      return M.dispatchLocal(fileName)
     else
       reload = package.reload()
       template.reload()

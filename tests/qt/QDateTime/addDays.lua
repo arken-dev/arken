@@ -1,3 +1,5 @@
+require "QDateTime"
+
 local test = {}
 
 test.should_return_new_date_add_days = function()

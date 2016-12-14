@@ -392,12 +392,11 @@ end
 
 function ActiveRecord_Adapter:createTimestamp()
   if CHARON_ENV == 'test' then
-    local format = "yyyy/MM/dd hh:mm:ss."
     local clock  = tostring(os.clock())
     local index  = clock:indexOf('.')
-    return QDateTime.currentDateTime():toString(format) .. clock:mid(index+1, #clock)
+    return os.date("%Y/%m/%d %H:%M:%S.") .. clock:mid(index+1, -1)
   else
-    return QDateTime.currentDateTime():toString()
+    return os.date("%Y/%m/%d %H:%M:%S")
   end
 end
 

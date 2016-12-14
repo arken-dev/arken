@@ -5,10 +5,10 @@
 
 CHARON_ENV = os.getenv("CHARON_ENV") or "test"
 
-local test  = require 'test'
+local test  = require 'charon.test'
 
 callisto = function(file)
-  local t = QDateTime.currentMSecsSinceEpoch()
+  local init = os.microtime()
   package.reload()
   local results = test.execute({file})
 
@@ -58,7 +58,7 @@ callisto = function(file)
       end
     end
     buffer = buffer .. rodape
-    buffer = buffer .. '\n\nFinished in ' .. tostring((QDateTime.currentMSecsSinceEpoch() - t) / 1000.0) .. ' seconds'
+    buffer = buffer .. '\n\nFinished in ' .. string.format("%.3f", os.microtime() - init) .. ' seconds'
     print(buffer)
     return icon, buffer:swap('\n', '<br>')
 end

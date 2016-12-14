@@ -1,3 +1,5 @@
+require "QDateTime"
+
 local test = {}
 
 test.should_concat_string_and_userdata = function()

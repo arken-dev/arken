@@ -49,7 +49,7 @@ M.number_format = function(value)
 end
 
 M.datetime = function()
-  return QDateTime.currentDateTime():toString("yyyy/MM/dd hh:mm:ss")
+  return os.date("%Y/%m/%d %H:%M:%S")
 end
 
 M.parameterize = function(value)

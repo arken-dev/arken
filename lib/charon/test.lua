@@ -4,7 +4,6 @@
 -- license that can be found in the LICENSE file.
 
 require 'charon.regex'
-require 'CStringList'
 
 -------------------------------------------------------------------------------
 -- CHARON_ENV
@@ -16,7 +15,7 @@ CHARON_ENV = os.getenv("CHARON_ENV") or "test"
 -- TEST MODULE
 -------------------------------------------------------------------------------
 
-local colorize = require 'colorize'
+local colorize = require 'charon.colorize'
 local test = {}
 
 function test.process(file_name)
@@ -109,11 +108,10 @@ end
 
 function test.execute(argfiles)
   local files = {}
-  for _, value in ipairs(argfiles) do
-    local fileInfo = QFileInfo.new(value)
-    if fileInfo:suffix() == "lua" then
-      if fileInfo:exists() then
-        table.insert(files, value)
+  for _, file_name in ipairs(argfiles) do
+    if file_name:endsWith(".lua") then
+      if os.exists(file_name) then
+        table.insert(files, file_name)
       else
         error(value .. " not exists")
       end

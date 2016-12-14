@@ -30,14 +30,14 @@ function ActiveRecord_MysqlAdapter:connect()
       db = self.database,
     }
 
-    instanceConnection, errmsq = mysql.newclient(dbarg)
+    instanceConnection, errmsg = mysql.newclient(dbarg)
     if errmsg ~= nil then
-      error("connect to mysql error: ", errmsg, "\n")
+      error(string.format("connect to mysql error: %s\n", errmsg))
     else
       if self.charset then
         errmsg = instanceConnection:setcharset("utf8")
         if errmsg ~= nil then
-          error("connect to mysql error: ", errmsg, "\n")
+          error(string.format("connect to mysql error: %s\n", errmsg))
         end
       end
 
@@ -265,7 +265,7 @@ function ActiveRecord_MysqlAdapter:columns()
     local result = {}
     local stm, errmsg = self:connect():query(sql)
     if errmsg ~= nil then
-      error("error: " .. errmsg .. "\n")
+      error(string.format("error: %s\n", errmsg))
     end
 
     for row in stm:recordlist() do
@@ -389,7 +389,7 @@ function ActiveRecord_MysqlAdapter:parser_format(format_type)
     return 'string'
   end
 
-  error('format_type: ' .. format_type ..' not resolved')
+  error(string.format('format_type: %s not resolved', format_type ))
 end
 
 --------------------------------------------------------------------------------

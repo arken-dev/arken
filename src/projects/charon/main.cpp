@@ -29,36 +29,6 @@ int charonFileLoad(lua_State *L, QFile &file)
   return rv;
 }
 
-int charonTaskLoad(lua_State *L, char * task)
-{
-  int rv;
-  CByteArray lib;
-
-  lua_settop(L, 0);
-  lua_getglobal(L, "CHARON_PATH");
-
-  lib = lua_tostring(L, 1);
-
-  lua_pushstring(L, task);
-  lua_setglobal(L, "CHARON_TASK");
-
-  lib.append("/lib/task.lua");
-
-  rv = luaL_loadfile(L, lib);
-  if (rv) {
-    fprintf(stderr, "%s\n", lua_tostring(L, -1));
-    return rv;
-  }
-
-  rv = lua_pcall(L, 0, 0, lua_gettop(L) - 1);
-  if (rv) {
-    fprintf(stderr, "%s\n", lua_tostring(L, -1));
-    return rv;
-  }
-
-  return rv;
-}
-
 void charonConsolePrintAround(CByteArray &buffer)
 {
   buffer.remove(0, 1);
@@ -178,10 +148,9 @@ int main(int argc, char * argv[])
 
   if(file.exists()) {
     rv = charonFileLoad(L, file);
-  }
-
-  if(!file.exists()) {
-    rv = charonTaskLoad(L, argv[1]);
+  } else {
+    fprintf(stderr, "No such file or directory %s\n", argv[1]);
+    return 1;
   }
 
   return rv;
