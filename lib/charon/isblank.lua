@@ -3,7 +3,7 @@
 -- Use of this source code is governed by a BSD-style
 -- license that can be found in the LICENSE file.
 
-function isblank(value)
+local isblank = function(value)
   if type(value) == 'nil' then
     return true
   end
@@ -22,3 +22,5 @@ function isblank(value)
 
   return false
 end
+
+return isblank

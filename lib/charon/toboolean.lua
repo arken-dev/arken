@@ -3,7 +3,7 @@
 -- Use of this source code is governed by a BSD-style
 -- license that can be found in the LICENSE file.
 
-function toboolean(value)
+local toboolean = function(value)
   if value == 'true' or value == 't' or value == true or value == 1 then
     return true
   end
@@ -14,3 +14,5 @@ function toboolean(value)
 
   return nil
 end
+
+return toboolean
