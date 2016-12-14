@@ -40,7 +40,7 @@ int main(int argc, char * argv[])
     fileName.append(argv[1]);
   } else {
     fileName.prepend("triton/");
-    fileName.append(string::replace(argv[1], '.', '/'));
+    fileName.append(string::replace(argv[1], ".", "/"));
     fileName.append(".lua");
     if( ! os::exists(fileName) ) {
       fileName.prepend("/");

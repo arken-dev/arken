@@ -19,13 +19,12 @@ namespace charon {
     char * mid(const char * string, int pos, int len);
     char * normalize(const char * string);
     char * repeated(const char *buffer, int times);
-    char * replace(const char * string, const char before, const char after);
+    char * replace(const char * string, const char * before, const char * after);
     char * right(const char *buffer, int len);
     char * simplified(const char *buffer);
     char * suffix(const char * raw);
     char * suffix(const char * raw, const char chr);
     bool   startsWith(const char *string, const char *str);
-    char * swap(const char * string, const char * before, const char * after);
     char * trimmed(const char *string);
     char * truncate(const char *string, int pos);
     char * underscore(const char *string);

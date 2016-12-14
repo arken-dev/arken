@@ -129,16 +129,6 @@ static int lua_charon_string_normalize( lua_State *L ) {
   return 1;
 }
 
-static int lua_charon_string_replace( lua_State *L ) {
-  const char * string = luaL_checkstring(L, 1);
-  const char * before = luaL_checkstring(L, 2);
-  const char * after  = luaL_checkstring(L, 3);
-  char * result       = string::replace(string, before[0], after[0]);
-  lua_pushstring(L, result);  /* push result */
-  delete[] result;
-  return 1;
-}
-
 static int lua_charon_string_repeated( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   int    times  =  luaL_checkinteger(L, 2);
@@ -187,16 +177,15 @@ static int lua_charon_string_suffix( lua_State *L ) {
 }
 
 
-static int lua_charon_string_swap( lua_State *L ) {
+static int lua_charon_string_replace( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   const char * before = luaL_checkstring(L, 2);
   const char * after  = luaL_checkstring(L, 3);
-  char * result       = string::swap(string, before, after);
+  char * result       = string::replace(string, before, after);
   lua_pushstring(L, result);  /* push result */
   delete[] result;
   return 1;
 }
-
 
 static int lua_charon_string_trimmed( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
@@ -244,7 +233,6 @@ int luaopen_charon_string( lua_State *L ) {
     {"simplified",  lua_charon_string_simplified},
     {"startsWith",  lua_charon_string_startsWith},
     {"suffix",      lua_charon_string_suffix},
-    {"swap",        lua_charon_string_swap},
     {"trimmed",     lua_charon_string_trimmed},
     {"truncate",    lua_charon_string_truncate},
     {"underscore",  lua_charon_string_underscore},

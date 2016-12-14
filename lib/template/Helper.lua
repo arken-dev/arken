@@ -553,7 +553,18 @@ end
 -- nl2br
 -- converte em uma string todos os \n para <br>
 function M:nl2br(value)
-  return tostring(value):swap('\n', '<br>')
+  return tostring(value):replace('\n', '<br>')
+end
+
+function M:toNumber(value)
+  if value == nil then
+    return 0
+  end
+  return tonumber(value)
+end
+
+function M:intFormat(value)
+  return tonumber(value)
 end
 
 return M

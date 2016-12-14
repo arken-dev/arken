@@ -61,7 +61,7 @@ local function printHelp(module)
 
     for k, v in pairs(module.help) do
       local space = string.rep(' ', size - #k)
-      help = help .. k .. space .. ' # ' .. v:trimmed():swap('\n', margem) .. '\n'
+      help = help .. k .. space .. ' # ' .. v:trimmed():replace('\n', margem) .. '\n'
     end
 
     print(help)
@@ -71,7 +71,7 @@ end
 rhea = function()
   local path = {}
   for str in string.gmatch(package.path, "([^;]+)") do
-    str = str:swap("/?.lua", ""):replace('.', '/')
+    str = str:replace("/?.lua", ""):replace('.', '/')
     if str:contains("rhea") and os.exists(str) then
       table.insert(path, str)
     end
@@ -121,7 +121,7 @@ rhea = function()
         if object.help[action] then
           local help   = object.help[action]
           local margem = '\n' .. string.rep(' ', #action + 1)
-          print(action .. ' # ' .. help:trimmed():swap('\n', margem))
+          print(action .. ' # ' .. help:trimmed():replace('\n', margem))
         else
           print(action .. ": undocumented")
         end

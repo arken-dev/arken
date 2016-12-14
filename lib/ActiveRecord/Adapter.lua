@@ -128,7 +128,7 @@ function ActiveRecord_Adapter:where(values, flag)
     -- values.where = nil
     for index, value in pairs(values) do
       --where:replace('$' .. index, format[type(value)](value))
-      where = string.swap(where, '$' .. index, format[type(value)](value))
+      where = string.replace(where, '$' .. index, format[type(value)](value))
     end
     result = where --:__tostring()
   else
@@ -381,7 +381,7 @@ function ActiveRecord_Adapter:sql(name, params)
 
   if binding then
     for index, value in pairs(binding) do
-      sql = string.swap(sql, '$' .. index, format[type(value)](value))
+      sql = string.replace(sql, '$' .. index, format[type(value)](value))
     end
   end
 
