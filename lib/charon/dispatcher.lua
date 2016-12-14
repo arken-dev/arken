@@ -8,8 +8,8 @@ require 'CByteArray'
 require 'CHttpParser'
 require 'ActiveRecord'
 
-local url      = require 'url'
-local cookie   = require 'charon.cookie'
+local url      = require 'charon.net.url'
+local cookie   = require 'charon.net.cookie'
 local template = require 'template'
 
 request.params = function()

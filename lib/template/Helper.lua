@@ -22,7 +22,7 @@
 
 require "template.FormHelper"
 
-local url   = require 'url'
+local url   = require 'charon.net.url'
 local M     = {}
 local cache = {}
 

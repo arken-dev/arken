@@ -1,4 +1,4 @@
-local url    = require 'url'
+local url    = require 'charon.net.url'
 
 FormHelper = Class.new("FormHelper")
 
