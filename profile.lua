@@ -24,8 +24,6 @@ require 'charon.helper'
 require 'charon.package'
 require 'charon.parse'
 require "CStringList"
---require "Class"
---require "Object"
 
 -------------------------------------------------------------------------------
 -- PROFILE.D
