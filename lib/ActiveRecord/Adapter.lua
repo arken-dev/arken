@@ -3,6 +3,8 @@
 -- Use of this source code is governed by a BSD-style
 -- license that can be found in the LICENSE file.
 
+local Class = require('charon.oop.Class')
+
 ActiveRecord_Adapter = Class.new("ActiveRecord_Adapter")
 
 ActiveRecord_Adapter.reserved = {'new_record', 'class', 'errors'}

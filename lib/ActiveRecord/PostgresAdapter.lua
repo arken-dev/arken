@@ -5,6 +5,8 @@
 
 require 'pgsql'
 
+local Class = require('charon.oop.Class')
+
 ActiveRecord_PostgresAdapter = Class.new("ActiveRecord.PostgresAdapter", "ActiveRecord.Adapter")
 
 ------------------------------------------------------------------------------

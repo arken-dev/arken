@@ -26,8 +26,8 @@ require 'charon.parse'
 require 'toboolean' -- deprecate ?
 require 'isblank'   -- deprecate ?
 require "CStringList"
-require "Class"
-require "Object"
+--require "Class"
+--require "Object"
 
 -------------------------------------------------------------------------------
 -- PROFILE.D

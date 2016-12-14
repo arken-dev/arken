@@ -1,4 +1,4 @@
-local cookie = require 'charon.cookie'
+local cookie = require 'charon.net.cookie'
 local test   = {}
 
 test['should return __gads'] = function()

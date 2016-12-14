@@ -1,4 +1,5 @@
 local test = {}
+local Class  = require('charon.oop.Class')
 local Person = Class.new("Person", "ActiveRecord")
 
 test.beforeAll = function()
