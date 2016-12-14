@@ -28,7 +28,7 @@ function triton_run(file)
     if titulo:len() > 0 then
       titulo = titulo, ', '
     end
-    titulo = titulo .. file_name:swap('specs/models/', '')
+    titulo = titulo .. file_name:replace('specs/models/', '')
   end
 
   for file_name, result in pairs(results) do

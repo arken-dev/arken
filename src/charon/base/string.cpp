@@ -443,7 +443,7 @@ char * string::repeated(const char *string, int times)
 
   return result;
 }
-
+/*
 char * string::replace(const char *string, const char before, const char after)
 {
   int i, j;
@@ -465,7 +465,7 @@ char * string::replace(const char *string, const char before, const char after)
 
   return result;
 }
-
+*/
 char * string::right(const char *string, int len)
 {
   int i, j, string_len;
@@ -542,7 +542,7 @@ char * string::simplified(const char *string)
 }
 
 //http://stackoverflow.com/questions/779875/what-is-the-function-to-replace-string-in-c
-char * string::swap(const char * original, const char * pattern, const char * replacement )
+char * string::replace(const char * original, const char * pattern, const char * replacement )
 {
   size_t const replen = strlen(replacement);
   size_t const patlen = strlen(pattern);

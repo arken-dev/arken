@@ -252,11 +252,11 @@ function ActiveRecord_SqliteAdapter:parser_default(format, value)
 end
 
 function ActiveRecord_SqliteAdapter.parser_string(value)
-  return value:swap("::character varying", ""):swap("'", "")
+  return value:replace("::character varying", ""):replace("'", "")
 end
 
 function ActiveRecord_SqliteAdapter.parser_time(value)
-  return value:swap("::time without time zone", ""):swap("'", "")
+  return value:replace("::time without time zone", ""):replace("'", "")
 end
 
 function ActiveRecord_SqliteAdapter.parser_date(value)

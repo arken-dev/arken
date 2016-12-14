@@ -31,7 +31,7 @@ end
 
 function triton_run(fileName)
   local tests     = {}
-  local dirName   = fileName:gsub(".lua", ""):swap("./", "./tests/")
+  local dirName   = fileName:gsub(".lua", ""):replace("./", "./tests/")
   print('dirName')
   print(dirName)
   local modelName = dirName:gsub("./tests/lib/", ""):gsub("/", ".")
