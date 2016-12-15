@@ -20,7 +20,7 @@
 <a href="<%= helper.url{ action = 'concluir' } -%>" data-remote='true'><%= helper.image("icone/detalhes") -%></a>
 ]]
 
-require "template.FormHelper"
+require "charon.Helper.FormHelper"
 
 local url   = require 'charon.net.url'
 local M     = {}

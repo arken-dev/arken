@@ -4,7 +4,7 @@
 -- license that can be found in the LICENSE file.
 
 local Class = require "charon.oop.Class"
-local template = require "template"
+local template = require "charon.template"
 
 Controller = Class.new("Controller")
 local helpers = {}
@@ -20,7 +20,7 @@ end
 function Controller:resolvHelper()
   local prefix = "app.helpers."
 
-  local helper = require("template.Helper")
+  local helper = require("charon.Helper")
   helper.__index = helper
 
   local file   = prefix .. "default"

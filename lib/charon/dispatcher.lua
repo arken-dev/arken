@@ -11,7 +11,7 @@ require 'CHttpParser'
 
 local url      = require 'charon.net.url'
 local cookie   = require 'charon.net.cookie'
-local template = require 'template'
+local template = require 'charon.template'
 
 request.params = function()
   if request.__params == nil then

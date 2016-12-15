@@ -4,7 +4,7 @@ require 'QDirIterator'
 require 'QFileInfo'
 
 local test     = require 'charon.test'
-local template = require 'template'
+local template = require 'charon.template'
 local coverage = require 'charon.coverage'
 local start    = os.microtime()
 local files    = {}
