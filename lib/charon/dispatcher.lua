@@ -4,9 +4,10 @@
 -- license that can be found in the LICENSE file.
 
 require 'Controller'
+require 'charon.ActiveRecord'
+
 require 'CByteArray'
 require 'CHttpParser'
-require 'ActiveRecord'
 
 local url      = require 'charon.net.url'
 local cookie   = require 'charon.net.cookie'
