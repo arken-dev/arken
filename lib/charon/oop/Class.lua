@@ -83,17 +83,19 @@ Class.new = function(className, inheritedBy, params)
 end
 
 Class.lookup = function(name)
- return Class.retrieve(name) or Class.classes[name] or _G[name] or error( name .. ' lookup failed' )
+  return Class.classes[name] or Class.retrieve(name)
 end
 
 Class.retrieve = function(name)
-  local flag, class = pcall(require, name)
+  local flag, class_or_error = pcall(require, name)
   if flag then
-    return class or flag
+    return class_or_error or flag
   end
   local flag, class = pcall(require, 'charon.' .. name)
   if flag then
     return class or flag
+  else
+    error(class_or_error)
   end
   return nil
 end
