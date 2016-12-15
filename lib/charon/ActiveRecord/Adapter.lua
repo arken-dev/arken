@@ -123,14 +123,11 @@ function ActiveRecord_Adapter:where(values, flag)
   values.limit   = nil
 
   if values.where then
-    --local where = QString.new(values.where)
     local where = values.where
-    -- values.where = nil
     for index, value in pairs(values) do
-      --where:replace('$' .. index, format[type(value)](value))
       where = string.replace(where, '$' .. index, format[type(value)](value))
     end
-    result = where --:__tostring()
+    result = where
   else
     for index, value in pairs(values) do
       if ActiveRecord_Adapter.reserved[index] == nil then
