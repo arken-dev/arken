@@ -3,20 +3,21 @@
 -- Use of this source code is governed by a BSD-style
 -- license that can be found in the LICENSE file.
 
-require 'pgsql'
+require 'lsqlite3'
 
 local isblank   = require('charon.isblank')
 local toboolean = require('charon.toboolean')
 local Class     = require('charon.oop.Class')
+local Adapter   = require('charon.ActiveRecord.Adapter')
 
-ActiveRecord_PostgresAdapter = Class.new("ActiveRecord.PostgresAdapter", "ActiveRecord.Adapter")
+ActiveRecord_SqliteAdapter = Class.new("ActiveRecord.SqliteAdapter", Adapter)
 
 ------------------------------------------------------------------------------
 -- CACHE
 -------------------------------------------------------------------------------
 
-ActiveRecord_PostgresAdapter.cache = {}
-ActiveRecord_PostgresAdapter.neat  = {}
+ActiveRecord_SqliteAdapter.cache = {}
+ActiveRecord_SqliteAdapter.neat  = {}
 
 ------------------------------------------------------------------------------
 -- CONNECT
@@ -24,14 +25,13 @@ ActiveRecord_PostgresAdapter.neat  = {}
 
 local instanceConnection = nil
 
-function ActiveRecord_PostgresAdapter:connect()
+function ActiveRecord_SqliteAdapter:connect()
   if instanceConnection == nil then
-    local config = ""
-    local config = config .. ' dbname=' .. self.database
-          config = config .. ' user=' .. self.user
-          config = config .. ' password=' .. self.password
-          config = config .. ' host=' .. self.host
-    instanceConnection = pg.connect(config)
+    if self.database == 'memory' then
+      instanceConnection = sqlite3.open_memory()
+    else
+      instanceConnection = sqlite3.open(self.database)
+    end
   end
   return instanceConnection
 end
@@ -40,9 +40,12 @@ end
 -- EXECUTE
 --------------------------------------------------------------------------------
 
-function ActiveRecord_PostgresAdapter:execute(sql)
+function ActiveRecord_SqliteAdapter:execute(sql)
   local time = os.microtime()
-  local result = assert(self:connect():exec(sql))
+  local result, message, teste = self:connect():exec(sql)
+  if result ~= 0 then
+    error(self:connect():error_message())
+  end
   time = os.microtime() - time
   if ActiveRecord.debug then
     print(sql .. string.format(" (%.3f) secs", time))
@@ -55,7 +58,7 @@ end
 -- QUERY
 --------------------------------------------------------------------------------
 
-function ActiveRecord_PostgresAdapter:query(sql)
+function ActiveRecord_SqliteAdapter:query(sql)
   local time = os.microtime()
   local result = assert(self:connect():query(sql))
   time = os.microtime() - time
@@ -70,7 +73,7 @@ end
 -- INSERT
 --------------------------------------------------------------------------------
 
-function ActiveRecord_PostgresAdapter:insert(record)
+function ActiveRecord_SqliteAdapter:insert(record)
   self:bang(record)
   local sql = 'INSERT INTO ' .. self.table_name .. ' '
   local col = ''
@@ -80,9 +83,6 @@ function ActiveRecord_PostgresAdapter:insert(record)
   end
   if self:columns().updated_at then
     record.updated_at = record.created_at
-  end
-  if self:columns().uuid then
-    record.uuid = os.uuid()
   end
   for column, value in pairs(record) do
     if not self:isReserved(column) then
@@ -116,14 +116,14 @@ function ActiveRecord_PostgresAdapter:insert(record)
       end
     end
   end
-  return sql ..  '(' .. col .. ') VALUES (' .. val .. ') ' .. ' RETURNING ' .. record.primary_key
+  return sql ..  '(' .. col .. ') VALUES (' .. val .. ') '
 end
 
 --------------------------------------------------------------------------------
 -- UPDATE
 --------------------------------------------------------------------------------
 
-function ActiveRecord_PostgresAdapter:update(record)
+function ActiveRecord_SqliteAdapter:update(record)
   self:bang(record)
   local sql = 'UPDATE ' .. self.table_name .. ' SET '
   local col = ''
@@ -151,7 +151,7 @@ function ActiveRecord_PostgresAdapter:update(record)
     result = true
   end
   -- neat
-  local neat = ActiveRecord_PostgresAdapter.neat[record:cacheKey()] or {}
+  local neat = ActiveRecord_SqliteAdapter.neat[record:cacheKey()] or {}
   for column, properties in pairs(self:columns()) do
     neat[column] = record[column]
   end
@@ -163,20 +163,18 @@ end
 -- CREATE
 --------------------------------------------------------------------------------
 
-function ActiveRecord_PostgresAdapter:create(record)
+function ActiveRecord_SqliteAdapter:create(record)
   record:populate(record) -- TODO otimizar
   local sql    = self:insert(record)
   local status, result = pcall(self.execute, self, sql)
   if status == false then
     error(string.format("error %s, sql %s", result, sql))
   else
-    local cursor = result
-    local row    = cursor:fetch({}, 'a')
-    record.id    = tonumber(row[self.primary_key])
+    record.id = self:connect():last_insert_rowid()
     record.new_record = false
     local key         = record:cacheKey()
-    self.cache[key]   = record
-    ActiveRecord_PostgresAdapter.neat[key] = record:dup()
+    ActiveRecord_SqliteAdapter.cache[key] = record
+    ActiveRecord_SqliteAdapter.neat[key]  = record:dup()
   end
   return record
 end
@@ -189,7 +187,7 @@ function ActiveRecord_Adapter:destroy(record)
   local values = {[self.primary_key] = record[self.primary_key]}
   local sql = 'DELETE FROM ' .. self.table_name .. " " .. self:where(values)
   local result = self:execute(sql)
-  self.cache[record:cacheKey()] = false
+  ActiveRecord_SqliteAdapter.cache[record:cacheKey()] = false
   return result
 end
 
@@ -197,37 +195,27 @@ end
 -- FIND
 --------------------------------------------------------------------------------
 
-function ActiveRecord_PostgresAdapter:find(params)
+function ActiveRecord_SqliteAdapter:find(params)
 
   if params[self.primary_key] then
     local key = self.table_name .. '_' .. tostring(params[self.primary_key])
-    if self.cache[key] then
-      return self.cache[key]
+    if ActiveRecord_SqliteAdapter.cache[key] then
+      return ActiveRecord_SqliteAdapter.cache[key]
     end
   end
 
-  local sql  = self:select(params, true)
-  local data = self:fetch(sql)
-  if data == nil then
-    return nil
-  else
-    data.new_record = false
-    data = self.record_class.new(data)
-    local key = self.table_name .. '_' .. tostring(data[self.primary_key])
-    return data
-  end
-
+  local sql = self:select(params, true)
+  return self:fetch(sql)
 end
 
 --------------------------------------------------------------------------------
 -- ALL
 --------------------------------------------------------------------------------
 
-function ActiveRecord_PostgresAdapter:all(params)
+function ActiveRecord_SqliteAdapter:all(params)
   local sql    = self:select(params)
-  local res    = self:execute(sql)
   local result = {}
-  for row in res:rows() do
+  for row in self:connect():nrows(sql) do
     table.insert(result, self:parser_fetch(row))
   end
   return result
@@ -237,29 +225,21 @@ end
 -- COLUMNS
 --------------------------------------------------------------------------------
 
-function ActiveRecord_PostgresAdapter:columns()
+function ActiveRecord_SqliteAdapter:columns()
   if self.instanceColumns == nil then
-    sql = [[
-      SELECT a.attname, format_type(a.atttypid, a.atttypmod), d.adsrc, a.attnotnull
-        FROM pg_attribute a LEFT JOIN pg_attrdef d
-          ON a.attrelid = d.adrelid AND a.attnum = d.adnum
-        WHERE a.attrelid = ']] .. self.table_name .. [['::regclass
-          AND a.attnum > 0 AND NOT a.attisdropped
-        ORDER BY a.attnum
-    ]]
-
-    local res    = self:execute(sql)
+    local sql = string.format("pragma table_info(%s)", self.table_name)
     local result = {}
-    for row in res:rows() do
-      local format = self:parser_format(row.format_type)
-      result[row.attname] = {
-        default  = self:parser_default(format, row.adsrc),
-        not_null = toboolean(row.attnotnull),
+    for row in self:connect():nrows(sql) do
+      local format = self:parser_format(row.type)
+      result[row.name] = {
+        default  = self:parser_default(format, row.value),
+        not_null = toboolean(row.notnull),
         format   = format
       }
     end
     self.instanceColumns = result
   end
+
   return self.instanceColumns
 
 end
@@ -268,7 +248,7 @@ end
 -- PARSER DEFAULT
 -------------------------------------------------------------------------------
 
-function ActiveRecord_PostgresAdapter:parser_default(format, value)
+function ActiveRecord_SqliteAdapter:parser_default(format, value)
   if format == nil or value == nil then
     return nil
   else
@@ -276,23 +256,23 @@ function ActiveRecord_PostgresAdapter:parser_default(format, value)
   end
 end
 
-function ActiveRecord_PostgresAdapter.parser_string(value)
+function ActiveRecord_SqliteAdapter.parser_string(value)
   return value:replace("::character varying", ""):replace("'", "")
 end
 
-function ActiveRecord_PostgresAdapter.parser_time(value)
+function ActiveRecord_SqliteAdapter.parser_time(value)
   return value:replace("::time without time zone", ""):replace("'", "")
 end
 
-function ActiveRecord_PostgresAdapter.parser_date(value)
+function ActiveRecord_SqliteAdapter.parser_date(value)
   return value
 end
 
-function ActiveRecord_PostgresAdapter.parser_number(value)
+function ActiveRecord_SqliteAdapter.parser_number(value)
   return tonumber(value)
 end
 
-function ActiveRecord_PostgresAdapter.parser_boolean(value)
+function ActiveRecord_SqliteAdapter.parser_boolean(value)
   return toboolean(value)
 end
 
@@ -300,8 +280,9 @@ end
 -- PARSER FORMAT
 -------------------------------------------------------------------------------
 
-function ActiveRecord_PostgresAdapter:parser_format(format_type)
-  if string.contains(format_type, 'character') then
+function ActiveRecord_SqliteAdapter:parser_format(format_type)
+  format_type = format_type:lower()
+  if string.contains(format_type, 'varchar') then
     return 'string'
   end
 
@@ -317,11 +298,19 @@ function ActiveRecord_PostgresAdapter:parser_format(format_type)
     return 'number'
   end
 
-  if string.contains(format_type, 'numeric') then
+  if format_type == 'real' then
+    return 'number'
+  end
+
+  if format_type == 'numeric' then
     return 'number'
   end
 
   if format_type == 'smallint' then
+    return 'number'
+  end
+
+  if format_type == 'int' then
     return 'number'
   end
 
@@ -333,8 +322,16 @@ function ActiveRecord_PostgresAdapter:parser_format(format_type)
     return 'number'
   end
 
+  if format_type == '' then
+    return 'string'
+  end
+
   if format_type == 'text' then
     return 'string'
+  end
+
+  if format_type == 'tinyint' then
+    return 'boolean'
   end
 
   if format_type == 'boolean' then
@@ -360,13 +357,16 @@ end
 -- FETCH
 --------------------------------------------------------------------------------
 
-function ActiveRecord_PostgresAdapter:fetch(sql)
-  local result = self:execute(sql)
-  local res    = result:fetch({}, 'a')
-  if res == nil then
+function ActiveRecord_SqliteAdapter:fetch(sql)
+  local result
+  for row in  self:connect():nrows(sql) do
+    result = row
+    break
+  end
+  if result == nil then
     return nil
   else
-    return self:parser_fetch(res)
+    return self:parser_fetch(result)
   end
 end
 
@@ -374,10 +374,11 @@ end
 -- PARSER FETCH
 -------------------------------------------------------------------------------
 
-function ActiveRecord_PostgresAdapter:parser_fetch(res)
+function ActiveRecord_SqliteAdapter:parser_fetch(res)
   local key  = self.table_name .. '_' .. tostring(res[self.primary_key])
-  if ActiveRecord_PostgresAdapter.cache[key] then
-    return ActiveRecord_PostgresAdapter.cache[key]
+
+  if ActiveRecord_SqliteAdapter.cache[key] then
+    return ActiveRecord_SqliteAdapter.cache[key]
   else
     local neat = {}
 
@@ -387,14 +388,14 @@ function ActiveRecord_PostgresAdapter:parser_fetch(res)
       neat[column] = res[column]
     end
 
-    ActiveRecord_PostgresAdapter.neat[key]  = neat
-    ActiveRecord_PostgresAdapter.cache[key] = res
+    ActiveRecord_SqliteAdapter.neat[key]  = neat
+    ActiveRecord_SqliteAdapter.cache[key] = res
 
     return self.record_class.new(res)
   end
 end
 
-function ActiveRecord_PostgresAdapter:parser_value(format, value)
+function ActiveRecord_SqliteAdapter:parser_value(format, value)
   if format == nil or value == nil then
     return nil
   else
@@ -403,11 +404,11 @@ function ActiveRecord_PostgresAdapter:parser_value(format, value)
   end
 end
 
-function ActiveRecord_PostgresAdapter.parser_value_string(value)
+function ActiveRecord_SqliteAdapter.parser_value_string(value)
   return value
 end
 
-function ActiveRecord_PostgresAdapter.parser_value_time(value)
+function ActiveRecord_SqliteAdapter.parser_value_time(value)
   if value == '' then
     return nil
   else
@@ -415,7 +416,7 @@ function ActiveRecord_PostgresAdapter.parser_value_time(value)
   end
 end
 
-function ActiveRecord_PostgresAdapter.parser_value_date(value)
+function ActiveRecord_SqliteAdapter.parser_value_date(value)
   if value == '' then
     return nil
   else
@@ -423,7 +424,7 @@ function ActiveRecord_PostgresAdapter.parser_value_date(value)
   end
 end
 
-function ActiveRecord_PostgresAdapter.parser_value_number(value)
+function ActiveRecord_SqliteAdapter.parser_value_number(value)
   value = tostring(value)
   if value:contains(',') then
     return tonumber(value:replace('.', ''):replace(',', '.'))
@@ -432,11 +433,11 @@ function ActiveRecord_PostgresAdapter.parser_value_number(value)
   end
 end
 
-function ActiveRecord_PostgresAdapter.parser_value_boolean(value)
+function ActiveRecord_SqliteAdapter.parser_value_boolean(value)
   return toboolean(value)
 end
 
-function ActiveRecord_PostgresAdapter.parser_value_timestamp(value)
+function ActiveRecord_SqliteAdapter.parser_value_timestamp(value)
   if value == '' then
     return nil
   else
@@ -447,32 +448,32 @@ end
 --------------------------------------------------------------------------------
 -- BEGIN
 --------------------------------------------------------------------------------
-function ActiveRecord_PostgresAdapter:begin()
+function ActiveRecord_SqliteAdapter:begin()
   return self:execute("BEGIN")
 end
 
 --------------------------------------------------------------------------------
 -- ROLLBACK
 --------------------------------------------------------------------------------
-function ActiveRecord_PostgresAdapter:rollback()
-  ActiveRecord_PostgresAdapter.cache = {}
-  ActiveRecord_PostgresAdapter.neat  = {}
+function ActiveRecord_SqliteAdapter:rollback()
+  ActiveRecord_SqliteAdapter.cache = {}
+  ActiveRecord_SqliteAdapter.neat  = {}
   return self:execute("ROLLBACK")
 end
 
 --------------------------------------------------------------------------------
 -- COMMIT
 --------------------------------------------------------------------------------
-function ActiveRecord_PostgresAdapter:commit()
-  ActiveRecord_PostgresAdapter.cache = {}
-  ActiveRecord_PostgresAdapter.neat  = {}
+function ActiveRecord_SqliteAdapter:commit()
+  ActiveRecord_SqliteAdapter.cache = {}
+  ActiveRecord_SqliteAdapter.neat  = {}
   return self:execute("COMMIT")
 end
 
 --------------------------------------------------------------------------------
 -- POPULATE
 --------------------------------------------------------------------------------
-function ActiveRecord_PostgresAdapter:populate(record, params)
+function ActiveRecord_SqliteAdapter:populate(record, params)
   for column, properties in pairs(self:columns()) do
     if params[column] then
       record[column] = self:parser_value(properties.format, params[column])
@@ -484,7 +485,7 @@ end
 -- SET
 --------------------------------------------------------------------------------
 
-function ActiveRecord_PostgresAdapter:set(record, column, value)
+function ActiveRecord_SqliteAdapter:set(record, column, value)
   local properties = self:columns()[column]
   record[column] = self:parser_value(properties.format, value)
 end
@@ -493,7 +494,7 @@ end
 -- READ
 --------------------------------------------------------------------------------
 
-function ActiveRecord_PostgresAdapter:read(record, column)
+function ActiveRecord_SqliteAdapter:read(record, column)
   local value = record[column]
   column = self:columns()[column]
   if value == nil or column == nil then
@@ -507,7 +508,7 @@ end
 -- GET
 --------------------------------------------------------------------------------
 
-function ActiveRecord_PostgresAdapter:get(record, column, default)
+function ActiveRecord_SqliteAdapter:get(record, column, default)
   local value = record[column]
   column = self:columns()[column]
   if value == nil or column == nil then
@@ -521,7 +522,7 @@ end
 -- READ VALUE
 --------------------------------------------------------------------------------
 
-function ActiveRecord_PostgresAdapter:read_value(format, value)
+function ActiveRecord_SqliteAdapter:read_value(format, value)
   if format == nil or value == nil then
     return nil
   else
@@ -530,23 +531,23 @@ function ActiveRecord_PostgresAdapter:read_value(format, value)
   end
 end
 
-function ActiveRecord_PostgresAdapter.read_value_string(value)
+function ActiveRecord_SqliteAdapter.read_value_string(value)
   return value
 end
 
-function ActiveRecord_PostgresAdapter.read_value_time(value)
+function ActiveRecord_SqliteAdapter.read_value_time(value)
   return value
 end
 
-function ActiveRecord_PostgresAdapter.read_value_timestamp(value)
+function ActiveRecord_SqliteAdapter.read_value_timestamp(value)
   return value:toDateTime()
 end
 
-function ActiveRecord_PostgresAdapter.read_value_date(value)
+function ActiveRecord_SqliteAdapter.read_value_date(value)
   return value
 end
 
-function ActiveRecord_PostgresAdapter.read_value_number(value)
+function ActiveRecord_SqliteAdapter.read_value_number(value)
   if tostring(value):contains(',') then
     return tonumber(value:replace('.', ''):replace(',', '.'))
   else
@@ -554,15 +555,15 @@ function ActiveRecord_PostgresAdapter.read_value_number(value)
   end
 end
 
-function ActiveRecord_PostgresAdapter.read_value_boolean(value)
+function ActiveRecord_SqliteAdapter.read_value_boolean(value)
   return toboolean(value)
 end
 
-function ActiveRecord_PostgresAdapter.read_value_boolean(value)
+function ActiveRecord_SqliteAdapter.read_value_boolean(value)
   return toboolean(value)
 end
 
-function ActiveRecord_PostgresAdapter.read_value_table(value)
+function ActiveRecord_SqliteAdapter.read_value_table(value)
   return table.concat(value, ',')
 end
 
@@ -570,10 +571,10 @@ end
 -- CHANGES
 -------------------------------------------------------------------------------
 
-function ActiveRecord_PostgresAdapter:changes(record)
+function ActiveRecord_SqliteAdapter:changes(record)
   local changes = {}
   local key     = record:cacheKey()
-  local neat    = ActiveRecord_PostgresAdapter.neat[key] or {}
+  local neat    = ActiveRecord_SqliteAdapter.neat[key] or {}
 
   for column, properties in pairs(self:columns()) do
     if record[column] ~= neat[column] then
@@ -588,18 +589,12 @@ end
 -- TABLE EXISTS
 -------------------------------------------------------------------------------
 
-function ActiveRecord_PostgresAdapter:tableExists(table_name)
-
+function ActiveRecord_SqliteAdapter:tableExists(table_name)
+  local sql  = string.format("pragma table_info(%s)", table_name)
   local flag = false
-  local sql  = string.format([[
-    SELECT 1
-    FROM   pg_catalog.pg_class c
-    JOIN   pg_catalog.pg_namespace n ON n.oid = c.relnamespace
-    WHERE  c.relname = '%s']], table_name)
-  local res = self:execute(sql)
-  for row in res:rows() do
+
+  for row in self:connect():nrows(sql) do
     flag = true
-    break
   end
 
   return flag
@@ -609,7 +604,7 @@ end
 -- PREPARE MIGRATIONS
 -------------------------------------------------------------------------------
 
-function ActiveRecord_PostgresAdapter:prepareMigration()
+function ActiveRecord_SqliteAdapter:prepareMigration()
   if not self:tableExists('schema_migration') then
     self:execute([[
       CREATE TABLE schema_migration (version VARCHAR(250) NOT NULL UNIQUE)
@@ -618,8 +613,8 @@ function ActiveRecord_PostgresAdapter:prepareMigration()
 
   local list = {}
   local sql  = "SELECT version FROM schema_migration"
-  local res = self:execute(sql)
-  for row in res:rows() do
+
+  for row in self:connect():nrows(sql) do
     table.insert(list, row.version)
   end
 
@@ -631,14 +626,13 @@ end
 --------------------------------------------------------------------------------
 
 function ActiveRecord_Adapter:count(params)
-  local sql   = 'SELECT COUNT(*) count_all FROM ' .. self.table_name .. " " .. self:where(params)
-  local res   = self:execute(sql)
+  local sql = 'SELECT COUNT(*) count_all FROM ' .. self.table_name .. " " .. self:where(params)
   local count = 0
-  for row in res:rows() do
+  for row in self:connect():nrows(sql) do
     count = row.count_all
     break
   end
   return count
 end
 
-return ActiveRecord_PostgresAdapter
+return ActiveRecord_SqliteAdapter

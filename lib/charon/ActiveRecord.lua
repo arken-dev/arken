@@ -4,7 +4,6 @@
 -- license that can be found in the LICENSE file.
 
 local Class = require("charon.oop.Class")
-require 'ActiveRecord.Adapter'
 
 ActiveRecord = Class.new("ActiveRecord")
 
@@ -113,7 +112,7 @@ ActiveRecord.inherit = function(class)
   class.loadAdapter = function(adapter_name)
     local config  = class.loadConfig()
     local adapter = adapter_name or config.adapter
-    return require(adapter).new{
+    return Class.lookup(adapter).new{
       record_class = class,
       table_name   = class.table_name,
       primary_key  = class.primary_key,

@@ -9,10 +9,10 @@ Class = Class or {}
 Class.classes    = {}
 Class.class_name = "Class"
 
-function Class.new(className, inheritedBy, params)
+Class.new = function(className, inheritedBy, params)
   local class;
-  if inheritedBy then
-    inheritedBy = require(inheritedBy, true)
+  if type(inheritedBy) == 'string' then
+    inheritedBy = Class.lookup(inheritedBy)
   end
   -- recreate empty class
   if Class.classes[className] then
@@ -80,6 +80,22 @@ function Class.new(className, inheritedBy, params)
   end
 
   return class
+end
+
+Class.lookup = function(name)
+ return Class.retrieve(name) or Class.classes[name] or _G[name] or error( name .. ' lookup failed' )
+end
+
+Class.retrieve = function(name)
+  local flag, class = pcall(require, name)
+  if flag then
+    return class or flag
+  end
+  local flag, class = pcall(require, 'charon.' .. name)
+  if flag then
+    return class or flag
+  end
+  return nil
 end
 
 return Class

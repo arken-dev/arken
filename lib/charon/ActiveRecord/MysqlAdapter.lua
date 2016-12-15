@@ -8,8 +8,9 @@ require 'mysql'
 local isblank   = require('charon.isblank')
 local toboolean = require('charon.toboolean')
 local Class     = require('charon.oop.Class')
+local Adapter   = require('charon.ActiveRecord.Adapter')
 
-ActiveRecord_MysqlAdapter = Class.new("ActiveRecord.MysqlAdapter", "ActiveRecord.Adapter")
+ActiveRecord_MysqlAdapter = Class.new("ActiveRecord.MysqlAdapter", Adapter)
 
 ------------------------------------------------------------------------------
 -- CACHE
