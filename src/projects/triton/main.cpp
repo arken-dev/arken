@@ -3,7 +3,6 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#include <iostream>
 #include <lua/lua.hpp>
 #include <QtCore>
 #include <QCoreApplication>
@@ -24,40 +23,20 @@ int main(int argc, char * argv[])
   lua_State * L = Charon::init(argc, argv, path);
   triton_register(L);
 
-  lua_settop(L, 0);
-  lua_getglobal(L, "CHARON_PATH");
-
-  QByteArray charonPath = lua_tostring(L, 1);
-
   if( argc == 1 ) {
     fprintf(stderr, "missing param, see your triton file\n");
     throw;
   }
 
   QByteArray fileName;
-
-  if( os::exists(argv[1]) ) {
-    fileName.append(argv[1]);
-  } else {
-    fileName.prepend("triton/");
-    fileName.append(string::replace(argv[1], ".", "/"));
-    fileName.append(".lua");
-    if( ! os::exists(fileName) ) {
-      fileName.prepend("/");
-      fileName.prepend(charonPath);
-    }
-  }
-
-  lua_settop(L, 0);
+  fileName.prepend("triton.");
+  fileName.append(argv[1]);
 
   int rv;
-  rv = luaL_loadfile(L, fileName);
-  if (rv) {
-    fprintf(stderr, "%s\n", lua_tostring(L, -1));
-    return rv;
-  }
+  lua_getglobal(L, "require");
+  lua_pushstring(L, fileName);
 
-  rv = lua_pcall(L, 0, 0, lua_gettop(L) - 1);
+  rv = lua_pcall(L, 1, 0, lua_gettop(L) - 1);
   if (rv) {
     fprintf(stderr, "%s\n", lua_tostring(L, -1));
     return rv;
@@ -66,8 +45,7 @@ int main(int argc, char * argv[])
   lua_settop(L, 0);
   lua_getglobal(L, "triton_start");
   if( lua_pcall(L, 0, 0, lua_gettop(L) - 1 ) != 0 ) {
-    fprintf(stderr, "%s\n", lua_tostring(L, -1));
-    throw;
+    fprintf(stderr, " %s\n", lua_tostring(L, -1));
   }
 
   QFile config("config/triton.json");
@@ -77,7 +55,6 @@ int main(int argc, char * argv[])
     QJsonDocument json = QJsonDocument::fromJson(config.readAll(), error);
     if( error->error != 0 ) {
       qDebug() << error->errorString();
-      throw;
     }
     QJsonObject object = json.object();
     threads = object.value("threads").toInt();

@@ -1,12 +1,10 @@
 CHARON_ENV = os.getenv("CHARON_ENV") or "test"
-
 local test  = require 'charon.test'
 local start = os.microtime()
 
 -------------------------------------------------------------------------------
 -- TRITON START
 -------------------------------------------------------------------------------
-
 function triton_start()
   local list = os.glob("tests", ".*.lua$", true)
   for i = 1, list:size() do
