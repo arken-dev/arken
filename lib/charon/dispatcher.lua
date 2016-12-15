@@ -9,14 +9,19 @@ require 'charon.ActiveRecord'
 require 'CByteArray'
 require 'CHttpParser'
 
-local url      = require 'charon.net.url'
-local cookie   = require 'charon.net.cookie'
-local template = require 'charon.template'
+local multipart = require 'charon.net.multi-part'
+local url       = require 'charon.net.url'
+local cookie    = require 'charon.net.cookie'
+local template  = require 'charon.template'
 
 request.params = function()
   if request.__params == nil then
     if request.requestMethod() == 'POST' then
-      request.__params = url.parseQuery(request.headerDone())
+      if request.field('Content-Type'):startsWith('multipart/form-data;') then
+        request.__params = multipart.parse(request.headerDone())
+      else
+        request.__params = url.parseQuery(request.headerDone())
+      end
     else
       request.__params = url.parseQuery(request.queryString())
     end
