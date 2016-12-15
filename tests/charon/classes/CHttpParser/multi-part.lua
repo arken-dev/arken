@@ -37,13 +37,12 @@ test.should_return_nil_with_httpVersion = function()
   local parser = CHttpParser.new(header)
   assert(parser:httpVersion() == 'HTTP/1.0', parser:httpVersion())
 end
---[[
+
 test.should_return_nil_with_headerDone = function()
   local header = os.read(CHARON_PATH .. '/tests/charon/classes/CHttpParser/example-2.header')
   local parser = CHttpParser.new(header)
-  assert(parser:headerDone() == nil, parser:headerDone())
+  assert(parser:headerDone():contains([[Content-Disposition: form-data; name="id"]]))
 end
-]]
 
 test.should_return_form_data_with_contentType = function()
   local header = os.read(CHARON_PATH .. '/tests/charon/classes/CHttpParser/example-2.header')
