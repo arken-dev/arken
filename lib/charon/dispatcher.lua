@@ -131,7 +131,7 @@ M.require_controller_name = function(controller_name)
 end
 
 M.dispatchLocal = function(fileName)
-  local list     = require 'charon.mime-type'
+  local list     = require 'charon.net.mime-type'
   local suffix   = fileName:suffix()
   local mimetype = tostring(list[suffix])
   local header   = "Content-type: " .. mimetype
