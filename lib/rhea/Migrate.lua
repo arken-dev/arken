@@ -1,4 +1,4 @@
-require 'ActiveRecord'
+require 'charon.ActiveRecord'
 
 local Migrate = Class.new("Migrate")
 

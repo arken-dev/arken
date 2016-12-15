@@ -6,7 +6,7 @@
 require "CStringList"
 
 -------------------------------------------------------------------------------
--- TETIS
+-- RHEA
 -------------------------------------------------------------------------------
 
 local function parseArg(index, arg)
@@ -70,14 +70,16 @@ end
 
 rhea = function()
   local path = {}
+
+  if arg[0] == nil then
   for str in string.gmatch(package.path, "([^;]+)") do
     str = str:replace("/?.lua", ""):replace('.', '/')
-    if str:contains("rhea") and os.exists(str) then
+    str = os.abspath(str) .. '/rhea'
+    if os.exists(str) then
       table.insert(path, str)
     end
   end
 
-  if arg[0] == nil then
     for _, str in ipairs(path) do
       local list = os.glob(str, "\\.lua$", false)
       for i = 1, list:size() do
@@ -98,17 +100,12 @@ rhea = function()
     end
 
     local module, result
-    for _, str in ipairs(path) do
-      local file_name = str .. '/' .. name:camelcase() .. '.lua'
-      --print(file_name)
-      if os.exists(file_name) then
-        result, module = pcall(dofile, file_name)
-        if result == false then
-          print(name .. " not work" .. module)
-          os.exit()
-        end
+      local rhea_name = 'rhea.' .. name:camelcase()
+      local result, module = pcall(require , rhea_name)
+      if result == false then
+        print(name .. " not work" .. module)
+        os.exit()
       end
-    end
 
     -------------------------------------------------------------------------------
     -- EXECUTE
@@ -134,5 +131,4 @@ rhea = function()
       end
     end
   end
-
 end
