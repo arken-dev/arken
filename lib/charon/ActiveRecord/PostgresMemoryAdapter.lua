@@ -26,7 +26,7 @@ ActiveRecord_PostgresMemoryAdapter.indexes   = {}
 function ActiveRecord_PostgresMemoryAdapter:create(record)
   self:bang(record)
   if self:columns().created_at then
-    record.created_at = QDateTime.currentDateTime():toString()
+    record.created_at = self:createTimestamp()
   end
   if self:columns().updated_at then
     record.updated_at = record.created_at
