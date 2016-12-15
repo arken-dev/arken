@@ -15,6 +15,7 @@ class CStringList
   ~CStringList();
   void replace(int pos, const char * value);
   CStringList &append(const char * value);
+  CStringList &append(const char * value, int len);
   CStringList &operator << (const char * value);
   const char *operator[](int pos);
   const char *at(int pos);

@@ -176,6 +176,17 @@ static int lua_charon_string_suffix( lua_State *L ) {
   return 1;
 }
 
+static int lua_charon_string_split( lua_State *L ) {
+  const char  * string  = luaL_checkstring(L, 1);
+  const char  * pattern = luaL_checkstring(L, 2);
+  CStringList * list    = string::split(string, pattern);
+  CStringList **ptr = (CStringList **)lua_newuserdata(L, sizeof(CStringList*));
+  *ptr = list;
+  luaL_getmetatable(L, "CStringList.metatable");
+  lua_setmetatable(L, -2);
+
+  return 1;
+}
 
 static int lua_charon_string_replace( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
@@ -232,6 +243,7 @@ int luaopen_charon_string( lua_State *L ) {
     {"right",       lua_charon_string_right},
     {"simplified",  lua_charon_string_simplified},
     {"startsWith",  lua_charon_string_startsWith},
+    {"split",       lua_charon_string_split},
     {"suffix",      lua_charon_string_suffix},
     {"trimmed",     lua_charon_string_trimmed},
     {"truncate",    lua_charon_string_truncate},

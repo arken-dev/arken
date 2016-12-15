@@ -4,6 +4,8 @@
 // license that can be found in the LICENSE file.
 
 #include <charon/helper>
+#include <CStringList>
+#include <QDebug>
 
 char * string::append(const char * string, const char * ba)
 {
@@ -583,6 +585,43 @@ char * string::replace(const char * original, const char * pattern, const char *
     }
     return returned;
   }
+}
+
+CStringList * string::split(const char * raw, const char * pattern)
+{
+  CStringList *list = new CStringList();
+
+  const char * current = raw;
+  const char * other   = raw;
+  int rawlen = strlen(raw);
+  int patternlen = strlen(pattern);
+  int i, flag = 0, size = 0;
+
+  for(i = 0; i < rawlen; i++) {
+    if( strncmp(current, pattern, patternlen) == 0 ) {
+      other = raw + flag;
+      size = i - flag;
+      if( size > 0 ) {
+        //char * tmp = new char[size+1];
+        //strncpy(tmp, other, size);
+        //tmp[size] = '\0';
+        list->append(other, size);
+      }
+      flag = i+patternlen;
+    }
+    current++;
+  }
+
+  if( flag < rawlen ) {
+    other = raw + flag;
+    size =  i - flag;
+    //char * tmp = new char[size+1];
+    //strncpy(tmp, other, size);
+    //tmp[size] = '\0';
+    list->append(other, size);
+  }
+
+  return list;
 }
 
 char * string::suffix(const char * raw)

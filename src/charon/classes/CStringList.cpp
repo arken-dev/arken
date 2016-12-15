@@ -82,6 +82,19 @@ CStringList & CStringList::append(const char * value)
   return *this;
 }
 
+CStringList & CStringList::append(const char * value, int len)
+{
+  if( m_size == m_resource ) {
+    init();
+  }
+  char * tmp = new char[len+1];
+  strncpy(tmp, value, len);
+  tmp[len] = '\0';
+  m_array[m_size] = tmp;
+  ++m_size;
+  return *this;
+}
+
 CStringList & CStringList::operator<<(const char * value)
 {
   if( m_size == m_resource ) {

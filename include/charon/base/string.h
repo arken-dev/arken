@@ -1,6 +1,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <cctype>
+#include <CStringList>
 
 namespace charon {
   namespace string {
@@ -22,6 +23,7 @@ namespace charon {
     char * replace(const char * string, const char * before, const char * after);
     char * right(const char *buffer, int len);
     char * simplified(const char *buffer);
+    CStringList * split(const char * string, const char * pattern);
     char * suffix(const char * raw);
     char * suffix(const char * raw, const char chr);
     bool   startsWith(const char *string, const char *str);
