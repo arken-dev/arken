@@ -41,13 +41,14 @@ end
 test.should_return_nil_with_headerDone = function()
   local header = os.read(CHARON_PATH .. '/tests/charon/classes/CHttpParser/example-2.header')
   local parser = CHttpParser.new(header)
-  assert(parser:headerDone():contains([[Content-Disposition: form-data; name="id"]]))
+  --assert(parser:headerDone():contains([[Content-Disposition: form-data; name="id"]]))
+  assert(parser:headerDone():startsWith([[-----------------------------152822217111798973981392119654]]), parser:headerDone())
 end
 
 test.should_return_form_data_with_contentType = function()
   local header = os.read(CHARON_PATH .. '/tests/charon/classes/CHttpParser/example-2.header')
   local parser = CHttpParser.new(header)
-  assert(parser:field('Content-Type') == 'multipart/form-data; boundary=---------------------------152822217111798973981392119654', parser:field('Content-Type'))
+  assert(parser:field('Content-Type'):startsWith('multipart/form-data;'), parser:field('Content-Type'))
 end
 
 return test
