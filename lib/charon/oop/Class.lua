@@ -7,7 +7,7 @@ require 'charon.oop.Object'
 
 Class = Class or {}
 Class.classes    = {}
-Class.class_name = "Class"
+Class.className  = "Class"
 
 Class.new = function(className, inheritedBy, params)
   local class;
@@ -25,7 +25,7 @@ Class.new = function(className, inheritedBy, params)
     end
 
     -- name class
-    class.class_name = className
+    class.className = className
     class.__index    = class
     class.class      = class
 
@@ -41,7 +41,7 @@ Class.new = function(className, inheritedBy, params)
     Class.classes[className] = {}
     class = Class.classes[className]
     -- name class
-    class.class_name = className --'class'
+    class.className = className --'class'
     class.__index    = class
     class.class      = class
 
@@ -72,7 +72,7 @@ Class.new = function(className, inheritedBy, params)
   end
 
   function class.mixin(path)
-    package.mixed[path] = class.class_name
+    package.mixed[path] = class.className
     local M = require(path, true)
     for key, value in pairs(M) do
       class[key] = value

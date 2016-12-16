@@ -84,7 +84,7 @@ rhea = function()
       local list = os.glob(str, "\\.lua$", false)
       for i = 1, list:size() do
         local module = dofile(list:at(i))
-        print(module.class_name:underscore())
+        print(module.className:underscore())
         printHelp(module)
       end
     end

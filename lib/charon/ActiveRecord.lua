@@ -20,8 +20,8 @@ ActiveRecord.inherit = function(class)
   -----------------------------------------------------------------------------
 
   class.primary_key      = 'id'
-  class.table_name       = class.class_name:underscore()
-  class.adapter_instance = class.class_name .. 'AdapterInstance'
+  class.table_name       = class.className:underscore()
+  class.adapter_instance = class.className .. 'AdapterInstance'
 
   ------------------------------------------------------------------------------
   -- RELACIONAMENTOS
@@ -181,7 +181,7 @@ ActiveRecord.inherit = function(class)
   -- ActiveRecord#where
   ------------------------------------------------------------------------------
   function class.where(params)
-    error('where not implemented in ' .. class.class_name)
+    error('where not implemented in ' .. class.className)
   end
 
   ------------------------------------------------------------------------------

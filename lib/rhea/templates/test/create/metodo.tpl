@@ -1,4 +1,4 @@
-require "<%= self.class_name -%>"
+require "<%= self.className -%>"
 
 local should = require "test.should"
 local test   = {}
