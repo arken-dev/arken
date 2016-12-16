@@ -3,10 +3,9 @@
 -- Use of this source code is governed by a BSD-style
 -- license that can be found in the LICENSE file.
 
-local Class = require("charon.oop.Class")
-
-ActiveRecord = Class.new("ActiveRecord")
-
+local Class   = require("charon.oop.Class")
+local Adapter = require("charon.ActiveRecord.Adapter")
+ActiveRecord  = Class.new("ActiveRecord")
 ActiveRecord.time = 0
 
 -------------------------------------------------------------------------------
@@ -173,8 +172,8 @@ ActiveRecord.inherit = function(class)
   ------------------------------------------------------------------------------
   -- clear all cache
   function class.clear()
-    ActiveRecord_Adapter._cache = {}
-    ActiveRecord_Adapter.cache = {}
+    Adapter._cache = {}
+    Adapter.cache = {}
   end
 
   ------------------------------------------------------------------------------
