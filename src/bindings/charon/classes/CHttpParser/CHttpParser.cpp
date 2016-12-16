@@ -27,7 +27,7 @@ lua_CHttpParserClassMethodNew( lua_State *L ) {
   size_t len;
   const char *data  = luaL_checklstring(L, 1, &len);
   CHttpParser **ptr = (CHttpParser **)lua_newuserdata(L, sizeof(CHttpParser*));
-  *ptr= new CHttpParser(QByteArray(data));
+  *ptr= new CHttpParser(QByteArray(data, len));
   luaL_getmetatable(L, "CHttpParser.metatable");
   lua_setmetatable(L, -2);
   return 1;
@@ -111,7 +111,14 @@ lua_CHttpParserInstanceMethodQueryString( lua_State *L ) {
 static int
 lua_CHttpParserInstanceMethodHeaderDone( lua_State *L ) {
   CHttpParser *udata = checkCHttpParser( L );
-  lua_pushstring(L, udata->headerDone());
+  lua_pushlstring(L, udata->headerDone(), udata->headerDoneLength() );
+  return 1;
+}
+
+static int
+lua_CHttpParserInstanceMethodHeaderDoneLength( lua_State *L ) {
+  CHttpParser *udata = checkCHttpParser( L );
+  lua_pushinteger(L, udata->headerDoneLength());
   return 1;
 }
 
@@ -135,6 +142,7 @@ luaL_reg CHttpParserInstanceMethods[] = {
   {"field", lua_CHttpParserInstanceMethodField},
   {"fragment", lua_CHttpParserInstanceMethodFragment},
   {"headerDone", lua_CHttpParserInstanceMethodHeaderDone},
+  {"headerDoneLength", lua_CHttpParserInstanceMethodHeaderDoneLength},
   {"httpVersion", lua_CHttpParserInstanceMethodHttpVersion},
   {"requestUri", lua_CHttpParserInstanceMethodRequestUri},
   {"requestMethod", lua_CHttpParserInstanceMethodRequestMethod},

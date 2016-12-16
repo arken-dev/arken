@@ -24,6 +24,7 @@ namespace charon {
     char * right(const char *buffer, int len);
     char * simplified(const char *buffer);
     CStringList * split(const char * string, const char * pattern);
+    CStringList * split(const char * string, size_t len, const char * pattern);
     char * suffix(const char * raw);
     char * suffix(const char * raw, const char chr);
     bool   startsWith(const char *string, const char *str);

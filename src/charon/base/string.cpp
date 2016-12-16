@@ -589,11 +589,16 @@ char * string::replace(const char * original, const char * pattern, const char *
 
 CStringList * string::split(const char * raw, const char * pattern)
 {
+  return string::split(raw, strlen(raw), pattern);
+}
+
+CStringList * string::split(const char * raw, size_t len, const char * pattern)
+{
   CStringList *list = new CStringList();
 
   const char * current = raw;
   const char * other   = raw;
-  int rawlen = strlen(raw);
+  int rawlen = len;
   int patternlen = strlen(pattern);
   int i, flag = 0, size = 0;
 

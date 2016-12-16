@@ -1,20 +1,27 @@
+require 'CByteArray'
 local multipart = {}
 
 multipart.parse = function(data)
-  local list   = data:split('\r\n')
+  local indexOf  = data:indexOf('\r\n')
+  local boundary = data:left(indexOf)
+  local list     = data:split(boundary)
   local result = {}
   for i = 1, list:size() do
-    if list:at(i):startsWith('Content-Disposition: form-data;') then
-      local cols = list:at(i):split('"')
-      local name = cols:at(2)
-      if cols:at(4) then
-        local file = {}
-        file.name = cols:at(4)
-        file.contentType = list:at(i+1)
-        file.data = list:at(i+2)
-        result[name] = file
-      else
-        result[name] = list:at(i+1)
+    local frag  = list:at(i)
+    local rows  = frag:split('\r\n')
+    local disp  = rows:at(1)
+    local cols  = disp:split('"')
+    local field = cols:at(2)
+    if( cols:at(4) ) then
+      local file = {}
+      file.name = cols:at(4)
+      file.contentType = rows:at(2)
+      local tamanho = #disp + #file.contentType + 8
+      file.data = CByteArray.new(frag):mid(tamanho, #frag - tamanho - 2)
+      result[field] = file
+    else
+      if field then
+        result[field] = rows:at(2)
       end
     end
   end

@@ -22,9 +22,10 @@ checkCByteArray( lua_State *L ) {
 
 static int
 lua_CByteArrayClassMethodNew( lua_State *L ) {
-  const char *str = (char *) lua_tostring(L, 1);
+  size_t len;
+  const char *str = (char *) lua_tolstring(L, 1, &len);
   CByteArray **ptr = (CByteArray **)lua_newuserdata(L, sizeof(CByteArray*));
-  *ptr= new CByteArray(CByteArray(str));
+  *ptr= new CByteArray(CByteArray(str, len));
   luaL_getmetatable(L, "CByteArray.metatable");
   lua_setmetatable(L, -2);
   return 1;
@@ -54,7 +55,7 @@ lua_CByteArrayInstanceMethodDestruct( lua_State *L ) {
 static int
 lua_CByteArrayInstanceMethodToString( lua_State *L ) {
   CByteArray *udata = checkCByteArray( L );
-  lua_pushstring(L, udata->data());
+  lua_pushlstring(L, udata->data(), udata->size());
   return 1;
 }
 
@@ -151,12 +152,13 @@ lua_CByteArrayInstanceMethodMid( lua_State *L ) {
   int pos =  luaL_checkinteger(L, 2);
   int len;
   if(lua_gettop(L) == 3) {
-    len =  luaL_checkinteger(L, 3);
+    len = luaL_checkinteger(L, 3);
   } else {
     len = udata->size();
   }
 
-  lua_pushstring(L, udata->mid(pos, len));
+  QByteArray mid = udata->mid(pos, len);
+  lua_pushlstring(L, mid, mid.size() );
   return 1;
 }
 

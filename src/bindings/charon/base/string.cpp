@@ -177,9 +177,10 @@ static int lua_charon_string_suffix( lua_State *L ) {
 }
 
 static int lua_charon_string_split( lua_State *L ) {
-  const char  * string  = luaL_checkstring(L, 1);
+  size_t len;
+  const char  * string  = luaL_checklstring(L, 1, &len);
   const char  * pattern = luaL_checkstring(L, 2);
-  CStringList * list    = string::split(string, pattern);
+  CStringList * list    = string::split(string, len, pattern);
   CStringList **ptr = (CStringList **)lua_newuserdata(L, sizeof(CStringList*));
   *ptr = list;
   luaL_getmetatable(L, "CStringList.metatable");

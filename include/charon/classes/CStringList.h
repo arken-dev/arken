@@ -1,13 +1,15 @@
 #ifndef _CSTRING_LIST_HEADER_
 #define _CSTRING_LIST_HEADER_
 
+#include <QByteArray>
+
 class CStringList
 {
   private:
   void init();
   int m_size;
   int m_resource;
-  const char ** m_array;
+  QByteArray ** m_array;
 
   public:
   CStringList();
@@ -19,6 +21,7 @@ class CStringList
   CStringList &operator << (const char * value);
   const char *operator[](int pos);
   const char *at(int pos);
+  const char *at(int pos, int * len);
   const char *first();
   const char *last();
   char * join(const char * separator);

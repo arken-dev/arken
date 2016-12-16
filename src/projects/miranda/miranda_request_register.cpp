@@ -81,7 +81,7 @@ static int
 lua_CHttpParserInstanceMethodHeaderDone( lua_State *L ) {
   lua_getglobal( L, "__http_request");
   CHttpParser *req = (CHttpParser *) lua_touserdata(L, -1);
-  lua_pushstring(L, req->headerDone());
+  lua_pushlstring(L, req->headerDone(), req->headerDoneLength());
   return 1;
 }
 

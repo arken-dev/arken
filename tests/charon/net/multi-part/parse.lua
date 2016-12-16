@@ -5,6 +5,14 @@ local header = os.read(CHARON_PATH .. '/tests/charon/classes/CHttpParser/example
 local parser = CHttpParser.new(header)
 local test = {}
 
+test.should_parse_requestUri = function()
+  assert(parser:requestUri() == '/app/fornecedor/filtrar/indexPerform', parser:requestUri())
+end
+
+test.should_parse_requestUri = function()
+  assert(parser:requestPath() == '/app/fornecedor/filtrar/indexPerform', parser:requestPath())
+end
+
 test.should_parse_field_id = function()
   local result = multipart.parse(parser:headerDone())
   assert(result.id == '12.341.234', result.id)
@@ -41,7 +49,8 @@ test.should_parse_first_field_myfile = function()
   assert(type(myfile) == 'table', type(myfile))
   assert(myfile.name == 'teste.png', myfile.name)
   assert(myfile.contentType == 'Content-Type: image/png', myfile.contentType)
-  assert(myfile.data:left(4):contains('PNG'), myfile.data:left(4))
+  assert(myfile.data:left(1000):contains('PNG'), myfile.data:left(10))
+  assert(#myfile.data == 311, #myfile.data)
 end
 
 return test
