@@ -158,6 +158,8 @@ CHttpParser::CHttpParser(QByteArray data)
   m_requestUri    = NULL;
   m_httpVersion   = NULL;
   m_headerDone    = NULL;
+  m_headerDoneLength = NULL;
+
   http_parser_execute(parser, m_data.data(), m_data.size(), 0);
   free(parser);
 }

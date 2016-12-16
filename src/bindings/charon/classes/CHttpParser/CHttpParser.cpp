@@ -111,7 +111,11 @@ lua_CHttpParserInstanceMethodQueryString( lua_State *L ) {
 static int
 lua_CHttpParserInstanceMethodHeaderDone( lua_State *L ) {
   CHttpParser *udata = checkCHttpParser( L );
-  lua_pushlstring(L, udata->headerDone(), udata->headerDoneLength() );
+  if( udata->headerDoneLength() == 0 ) {
+    lua_pushnil(L);
+  } else {
+    lua_pushlstring(L, udata->headerDone(), udata->headerDoneLength() );
+  }
   return 1;
 }
 
