@@ -1,10 +1,10 @@
-require "CHttpParser"
+local HttpParser = require "charon.net.HttpParser"
 
 local test = {}
 
 test['deve retornar path /pedido/varejo'] = function()
   local header  = os.read(CHARON_PATH .. '/tests/charon/classes/CHttpParser/example-1.header')
-  local request = CHttpParser.new(header)
+  local request = HttpParser.new(header)
   local json = [[{
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
     "Accept-Encoding": "gzip, deflate",
