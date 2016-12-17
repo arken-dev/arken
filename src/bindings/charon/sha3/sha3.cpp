@@ -45,7 +45,10 @@ extern "C" {
       {"sha512", lua_charon_sha3_sha512},
       {NULL, NULL}
     };
-    luaL_register(L, "sha3", Map);
+    luaL_newmetatable(L, "sha3");
+    luaL_register(L, NULL, Map);
+    lua_pushvalue(L, -1);
+    lua_setfield(L, -1, "__index");
     return 1;
   }
 }
