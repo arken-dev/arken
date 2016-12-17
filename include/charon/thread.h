@@ -12,7 +12,7 @@ namespace charon
     QByteArray   m_fileName;
     lua_State  * m_luaState;
 
-    explicit CThread(QByteArray charonPath, QByteArray fileName);
+    explicit Thread(QByteArray charonPath, QByteArray fileName);
     void run();
   };
 

@@ -16,10 +16,10 @@ namespace charon {
       static uint     ctime(const char * path);
       static char   * dirpath(const char * path);
       static bool     exists(const char * path);
-      static ByteArray * glob(const char * dir);
-      static ByteArray * glob(const char * dir, bool sub);
-      static ByteArray * glob(const char * dir, const char * regex);
-      static ByteArray * glob(const char * dir, const char * regex, bool sub);
+      static ByteArrayList * glob(const char * dir);
+      static ByteArrayList * glob(const char * dir, bool sub);
+      static ByteArrayList * glob(const char * dir, const char * regex);
+      static ByteArrayList * glob(const char * dir, const char * regex, bool sub);
       static char   * home();
       static char   * hostname();
       static bool     link(const char * source, const char * destination, bool force);

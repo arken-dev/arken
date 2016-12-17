@@ -3,11 +3,11 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#include <charon/classes/CStringList.h>
+#include <charon/helper>
 #include <iostream>
 #include <cstring>
 
-void CStringList::init()
+void ByteArrayList::init()
 {
   if( m_size == m_resource ) {
     m_resource *= 2;
@@ -32,7 +32,7 @@ void CStringList::init()
   }
 }
 
-CStringList::CStringList()
+ByteArrayList::ByteArrayList()
 {
 
   m_array = 0;
@@ -41,7 +41,7 @@ CStringList::CStringList()
   init();
 }
 
-CStringList::CStringList(int resource)
+ByteArrayList::ByteArrayList(int resource)
 {
   m_array = 0;
   m_size  = 0;
@@ -49,7 +49,7 @@ CStringList::CStringList(int resource)
   init();
 }
 
-CStringList::~CStringList()
+ByteArrayList::~ByteArrayList()
 {
 
   for(int i = 0; i < m_size; i++) {
@@ -61,7 +61,7 @@ CStringList::~CStringList()
   delete[] m_array;
 }
 
-void CStringList::replace(int pos, const char * value)
+void ByteArrayList::replace(int pos, const char * value)
 {
   if( m_array[pos] != 0 ) {
     delete m_array[pos];
@@ -72,7 +72,7 @@ void CStringList::replace(int pos, const char * value)
   m_array[pos] = new QByteArray(value);//tmp;
 }
 
-CStringList & CStringList::append(const char * value)
+ByteArrayList & ByteArrayList::append(const char * value)
 {
   if( m_size == m_resource ) {
     init();
@@ -84,7 +84,7 @@ CStringList & CStringList::append(const char * value)
   return *this;
 }
 
-CStringList & CStringList::append(const char * value, int len)
+ByteArrayList & ByteArrayList::append(const char * value, int len)
 {
   if( m_size == m_resource ) {
     init();
@@ -97,7 +97,7 @@ CStringList & CStringList::append(const char * value, int len)
   return *this;
 }
 
-CStringList & CStringList::operator<<(const char * value)
+ByteArrayList & ByteArrayList::operator<<(const char * value)
 {
   if( m_size == m_resource ) {
     init();
@@ -109,12 +109,12 @@ CStringList & CStringList::operator<<(const char * value)
   return *this;
 }
 
-const char * CStringList::operator[](int pos)
+const char * ByteArrayList::operator[](int pos)
 {
   return at(pos); //m_array[pos]->data();
 }
 
-const char * CStringList::at(int pos)
+const char * ByteArrayList::at(int pos)
 {
   if( pos > 0 ) {
     return 0;
@@ -127,7 +127,7 @@ const char * CStringList::at(int pos)
   }
 }
 
-const char * CStringList::at(int pos, int * len)
+const char * ByteArrayList::at(int pos, int * len)
 {
   if( pos > m_size ) {
     * len = 0;
@@ -143,22 +143,22 @@ const char * CStringList::at(int pos, int * len)
   }
 }
 
-const char * CStringList::first()
+const char * ByteArrayList::first()
 {
   return at(0);// m_array[0]->data();
 }
 
-const char * CStringList::last()
+const char * ByteArrayList::last()
 {
   return at(m_size-1);//m_array[m_size-1]->data();
 }
 
-int CStringList::size()
+int ByteArrayList::size()
 {
   return m_size;
 }
 
-char * CStringList::join(const char * separator)
+char * ByteArrayList::join(const char * separator)
 {
   char * result;
   int size = 0;

@@ -6,6 +6,8 @@
 #include <cmath>
 #include <charon/helper>
 
+using namespace charon::base;
+
 int math::abs(int number)
 {
   return std::abs(number);

@@ -4,11 +4,12 @@
 // license that can be found in the LICENSE file.
 
 #include <curl/curl.h>
-#include <charon/modules/http.h>
 #include <charon/helper>
 #include <iostream>
 
-struct MemoryStruct {
+using namespace charon;
+
+struct MemoryStructHttp {
   char * memory;
   size_t size;
 };
@@ -17,7 +18,7 @@ static size_t
 WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp)
 {
   size_t realsize = size * nmemb;
-  struct MemoryStruct *mem = (struct MemoryStruct *)userp;
+  struct MemoryStructHttp *mem = (struct MemoryStructHttp *)userp;
 
   mem->memory = (char *) realloc(mem->memory, mem->size + realsize + 1);
   if(mem->memory == NULL) {
@@ -38,7 +39,7 @@ char * http::read(const char * url)
   CURL *curl_handle;
   CURLcode res;
 
-  struct MemoryStruct chunk;
+  struct MemoryStructHttp chunk;
 
   chunk.memory = (char *) malloc(1);  // will be grown as needed by the realloc above
   chunk.size = 0;    // no data at this point
@@ -84,7 +85,7 @@ char * http::get(const char * url)
   CURL *curl_handle;
   CURLcode res;
 
-  struct MemoryStruct chunk;
+  struct MemoryStructHttp chunk;
 
   chunk.memory = (char *) malloc(1);  // will be grown as needed by the realloc above
   chunk.size = 0;    // no data at this point
@@ -142,7 +143,7 @@ char * http::post(const char * url)
   CURL *curl_handle;
   CURLcode res;
 
-  struct MemoryStruct chunk;
+  struct MemoryStructHttp chunk;
 
   chunk.memory = (char *) malloc(1);  // will be grown as needed by the realloc above
   chunk.size = 0;    // no data at this point
@@ -206,7 +207,7 @@ char * http::put(const char * url)
   CURL *curl_handle;
   CURLcode res;
 
-  struct MemoryStruct chunk;
+  struct MemoryStructHttp chunk;
 
   chunk.memory = (char *) malloc(1);  // will be grown as needed by the realloc above
   chunk.size = 0;    // no data at this point

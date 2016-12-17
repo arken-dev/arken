@@ -18,20 +18,20 @@ class ByteArray : public QByteArray
 
   public:
 
-  CByteArray() : QByteArray() { }
-  CByteArray(const char *data) : QByteArray(data) { }
-  CByteArray(const char *data, int size) : QByteArray(data, size) { }
+  ByteArray() : QByteArray() { }
+  ByteArray(const char *data) : QByteArray(data) { }
+  ByteArray(const char *data, int size) : QByteArray(data, size) { }
 
-  CByteArray camelcase(void);
-  CByteArray capitalize(void);
-  CByteArray underscore(void);
-  CByteArray simplified(void);
-  CByteArray trimmed(void);
-  CByteArray toUpper(void);
-  CByteArray &append(const char *s);
-  CByteArray &append(const QByteArray &a);
-  CByteArray &operator=(const CByteArray &a);
-  CByteArray &operator=(const char * a);
+  ByteArray camelcase(void);
+  ByteArray capitalize(void);
+  ByteArray underscore(void);
+  ByteArray simplified(void);
+  ByteArray trimmed(void);
+  ByteArray toUpper(void);
+  ByteArray &append(const char *s);
+  ByteArray &append(const QByteArray &a);
+  ByteArray &operator=(const ByteArray &a);
+  ByteArray &operator=(const char * a);
 };
 
 }

@@ -6,6 +6,7 @@ namespace charon
 {
 
 class http {
+  public:
   static char * read(const char * url);
   static char * get(const char * url);
   static char * post(const char * url);

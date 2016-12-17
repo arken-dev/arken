@@ -14,8 +14,8 @@ namespace net {
 class HttpClient
 {
   public:
-  CHttpClient(const char * url);
-  ~CHttpClient();
+  HttpClient(const char * url);
+  ~HttpClient();
   void appendHeader(const char * header);
   void setVerbose(bool verbose);
   bool verbose();

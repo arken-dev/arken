@@ -4,13 +4,14 @@
 // license that can be found in the LICENSE file.
 
 #include <charon/helper>
-#include <charon/modules/regex.h>
 #include <QRegExp>
 #include <QString>
-#include <CStringList>
 #include <QStringList>
-#include <QByteArray>
 #include <cstring>
+
+using namespace charon;
+using charon::ByteArray;
+using charon::ByteArrayList;
 
 bool regex::ematch(const char * string, const char * regex)
 {
@@ -27,10 +28,10 @@ int regex::index(const char * string, const char * regex, int offset)
   return QRegExp(regex).indexIn(string, offset);
 }
 
-CStringList * regex::split(const char * string, const char * regex)
+ByteArrayList * regex::split(const char * string, const char * regex)
 {
   QRegExp qregex(regex);
-  CStringList *list = new CStringList();
+  ByteArrayList *list = new ByteArrayList();
   QString qstr(string);
   int older = 0;
   int poss  = 0;
@@ -60,10 +61,10 @@ char * regex::replace(const char * string, const char * regex, const char * afte
   return result;
 }
 
-CStringList * regex::scan(const char * string, const char * regex)
+ByteArrayList * regex::scan(const char * string, const char * regex)
 {
   QRegExp qregex(regex);
-  CStringList *list = new CStringList();
+  ByteArrayList *list = new ByteArrayList();
   QString qstr(string);
   int older = 0;
   int poss  = 0;

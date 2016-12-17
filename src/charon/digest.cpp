@@ -4,8 +4,9 @@
 // license that can be found in the LICENSE file.
 
 #include <charon/helper>
-#include <charon/modules/digest.h>
 #include <QCryptographicHash>
+
+using namespace charon;
 
 char * digest::md4(const char * hash)
 {

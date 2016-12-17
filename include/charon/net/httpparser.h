@@ -1,7 +1,10 @@
 #include <QByteArray>
 #include <QHash>
 
-class CHttpParser
+namespace charon {
+namespace net {
+
+class HttpParser
 {
 
   QByteArray m_data;
@@ -17,8 +20,8 @@ class CHttpParser
   size_t m_headerDoneLength;
 
   public:
-  CHttpParser(QByteArray data);
-  ~CHttpParser();
+  HttpParser(QByteArray data);
+  ~HttpParser();
 
   void  setField(const char * fragment, const char * value);
   void  setFragment(const char * fragment);
@@ -42,3 +45,6 @@ class CHttpParser
   QByteArray toJson();
 
 };
+
+}
+}

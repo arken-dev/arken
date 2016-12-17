@@ -4,8 +4,9 @@
 // license that can be found in the LICENSE file.
 
 #include <charon/helper>
-#include <charon/modules/sha3.h>
 #include <QCryptographicHash>
+
+using namespace charon;
 
 char * sha3::sha224(const char * hash)
 {

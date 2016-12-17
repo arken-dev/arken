@@ -3,10 +3,12 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#include <charon/classes/CHttpClient.h>
+#include <charon/helper>
 #include <curl/curl.h>
 #include <cstdlib>
 #include <cstring>
+
+using namespace charon::net;
 
 static size_t
 WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp)
@@ -28,7 +30,7 @@ WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp)
   return realsize;
 }
 
-CHttpClient::CHttpClient(const char * url)
+HttpClient::HttpClient(const char * url)
 {
   m_url = url;
   m_chunk.memory = (char *) malloc(1);  // will be grown as needed by the realloc above
@@ -44,7 +46,7 @@ CHttpClient::CHttpClient(const char * url)
   curl_easy_setopt(m_curl, CURLOPT_URL, url);
 }
 
-CHttpClient::~CHttpClient()
+HttpClient::~HttpClient()
 {
   // cleanup curl stuff
   curl_easy_cleanup(m_curl);
@@ -56,33 +58,33 @@ CHttpClient::~CHttpClient()
   curl_global_cleanup();
 }
 
-void CHttpClient::appendHeader(const char * header)
+void HttpClient::appendHeader(const char * header)
 {
    m_chunk_list = curl_slist_append(m_chunk_list, header);
 }
 
-void CHttpClient::setVerbose(bool verbose)
+void HttpClient::setVerbose(bool verbose)
 {
   m_verbose = verbose;
   curl_easy_setopt(m_curl, CURLOPT_VERBOSE, verbose);//1L);
 }
 
-bool CHttpClient::verbose()
+bool HttpClient::verbose()
 {
   return m_verbose;
 }
 
-void CHttpClient::setBody(const char * body)
+void HttpClient::setBody(const char * body)
 {
    m_body = body;
 }
 
-const char * CHttpClient::body()
+const char * HttpClient::body()
 {
   return m_body;
 }
 
-char * CHttpClient::performGet()
+char * HttpClient::performGet()
 {
   CURLcode res;
 
@@ -115,7 +117,7 @@ char * CHttpClient::performGet()
   return result;
 }
 
-char * CHttpClient::performPost()
+char * HttpClient::performPost()
 {
   CURLcode res;
 
@@ -154,7 +156,7 @@ char * CHttpClient::performPost()
   return result;
 }
 
-char * CHttpClient::performPut()
+char * HttpClient::performPut()
 {
   CURLcode res;
 
@@ -193,7 +195,7 @@ char * CHttpClient::performPut()
   return result;
 }
 
-char * CHttpClient::performDelete()
+char * HttpClient::performDelete()
 {
   CURLcode res;
 

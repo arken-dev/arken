@@ -3,15 +3,17 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#include "CThread"
+#include "charon/helper"
 
-CThread::CThread(QByteArray charonPath, QByteArray fileName)
+using namespace charon;
+
+Thread::Thread(QByteArray charonPath, QByteArray fileName)
 {
   m_charonPath = charonPath;
   m_fileName   = fileName;
 }
 
-void CThread::run() {
+void Thread::run() {
   int rv, i;
   QByteArray profile, name;
   QVariant value;

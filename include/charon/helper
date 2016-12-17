@@ -1,3 +1,6 @@
+#ifndef _CHARON_HELPER_
+#define _CHARON_HELPER_
+
 #include <charon/charon.h>
 #include <charon/base/math.h>
 #include <charon/base/os.h>
@@ -13,3 +16,9 @@
 #include <charon/regex.h>
 #include <charon/sha3.h>
 #include <charon/thread.h>
+
+using charon::base::os;
+using charon::base::string;
+using charon::base::math;
+
+#endif

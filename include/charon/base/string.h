@@ -25,8 +25,8 @@ namespace charon {
       static char * replace(const char * string, const char * before, const char * after);
       static char * right(const char *buffer, int len);
       static char * simplified(const char *buffer);
-      static CStringList * split(const char * string, const char * pattern);
-      static CStringList * split(const char * string, size_t len, const char * pattern);
+      static ByteArrayList * split(const char * string, const char * pattern);
+      static ByteArrayList * split(const char * string, size_t len, const char * pattern);
       static char * suffix(const char * raw);
       static char * suffix(const char * raw, const char chr);
       static bool   startsWith(const char *string, const char *str);

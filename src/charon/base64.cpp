@@ -4,10 +4,12 @@
 // license that can be found in the LICENSE file.
 
 #include <charon/helper>
-#include <charon/modules/base64.h>
+
 extern "C" {
   #include <ap_base64.h>
 }
+
+using namespace charon;
 
 char * base64::decode(const char * encoded)
 {
