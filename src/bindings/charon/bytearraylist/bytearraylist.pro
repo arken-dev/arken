@@ -9,7 +9,7 @@ INCLUDEPATH += .
 INCLUDEPATH += ../../../../include
 INCLUDEPATH += ../../../../deps/include
 
-TARGET = StringList
+TARGET = ByteArrayList
 DESTDIR = ../../../../clib/charon
 
 LIBS += -L ../../../../deps -lcharon -llua

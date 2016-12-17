@@ -140,7 +140,7 @@ registerByteArrayListInstanceMethods( lua_State *L ) {
 
 extern "C" {
   int
-  luaopen_charon_StringList( lua_State *L ) {
+  luaopen_charon_ByteArrayList( lua_State *L ) {
     registerByteArrayListInstanceMethods(L);
     registerByteArrayListClassMethods(L);
     return 1;

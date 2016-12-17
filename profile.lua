@@ -20,7 +20,7 @@ os.setlocale("C", "numeric")
 require 'charon.json'
 require 'charon.helper'
 require 'charon.package'
-require "CStringList"
+require 'charon.ByteArrayList'
 
 -------------------------------------------------------------------------------
 -- PROFILE.D
