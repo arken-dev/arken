@@ -17,7 +17,6 @@ os.setlocale("C", "numeric")
 -- GLOBALS
 -------------------------------------------------------------------------------
 
-json = require 'charon.jsonp'
 require 'charon.helper'
 require 'charon.package'
 require 'charon.ByteArrayList'
