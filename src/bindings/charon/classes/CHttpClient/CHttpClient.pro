@@ -10,8 +10,8 @@ INCLUDEPATH += .
 INCLUDEPATH += ../../../../../include
 INCLUDEPATH += ../../../../../deps/include
 
-TARGET = CHttpClient
-DESTDIR = ../../../../../clib/
+TARGET = HttpClient
+DESTDIR = ../../../../../clib/charon/net
 
 LIBS += -L ../../../../../deps -lcharon -llua -lcurl
 

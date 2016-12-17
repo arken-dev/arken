@@ -39,7 +39,10 @@ static const luaL_reg CHttpClientClassMethods[] = {
 
 void static
 registerCHttpClientClassMethods( lua_State *L ) {
-  luaL_register(L, "CHttpClient", CHttpClientClassMethods);
+  luaL_newmetatable(L, "HttpClient");
+  luaL_register(L, NULL, CHttpClientClassMethods);
+  lua_pushvalue(L, -1);
+  lua_setfield(L, -1, "__index");
 }
 
 /**
@@ -154,9 +157,9 @@ registerCHttpClientInstanceMethods( lua_State *L ) {
 
 extern "C" {
   int
-  luaopen_CHttpClient( lua_State *L ) {
-    registerCHttpClientClassMethods(L);
+  luaopen_charon_net_HttpClient( lua_State *L ) {
     registerCHttpClientInstanceMethods(L);
+    registerCHttpClientClassMethods(L);
     return 1;
   }
 }
