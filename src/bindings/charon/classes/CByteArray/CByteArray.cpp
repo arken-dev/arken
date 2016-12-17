@@ -211,7 +211,7 @@ registerCByteArrayInstanceMethods( lua_State *L ) {
 
 extern "C" {
   int
-  luaopen_CByteArray( lua_State *L ) {
+  luaopen_charon_ByteArray( lua_State *L ) {
     registerCByteArrayInstanceMethods(L);
     registerCByteArrayClassMethods(L);
     return 1;
