@@ -101,7 +101,10 @@ extern "C" {
       {"encode", json_encode_data},
       {NULL, NULL}
     };
-    luaL_register(L, "json", Map);
+    luaL_newmetatable(L, "json");
+    luaL_register(L, NULL, Map);
+    lua_pushvalue(L, -1);
+    lua_setfield(L, -1, "__index");
     return 1;
   }
 }

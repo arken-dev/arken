@@ -4,7 +4,7 @@
 -- Use of this source code is governed by a BSD-style
 -- license that can be found in the LICENSE file.
 
-require 'json'
+local json = require 'charon.json'
 
 json.pretty = function(dt, lf, id, ac, ec)
     local s, e = (ec or json.encode)(dt)
@@ -48,3 +48,5 @@ json.pretty = function(dt, lf, id, ac, ec)
     end
     return table.concat(r)
 end
+
+return json

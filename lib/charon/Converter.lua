@@ -4,7 +4,7 @@
 -- license that can be found in the LICENSE file.
 
 local Class = require('charon.oop.Class')
-local json  = require('json')
+local json  = require('charon.json')
 local Converter = Class.new("Converter")
 
 -------------------------------------------------------------------------------
