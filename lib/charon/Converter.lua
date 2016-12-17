@@ -1,15 +1,13 @@
--- Copyright 2016 The Charon Platform Authors.
--- All rights reserved.
--- Use of this source code is governed by a BSD-style
--- license that can be found in the LICENSE file.
-
-parse = {}
+local Class = require('charon.oop.Class')
+local json  = require('json')
+local Converter = Class.new("Converter")
 
 -------------------------------------------------------------------------------
 -- IS EMPTY
 -------------------------------------------------------------------------------
 
-parse.isEmpty = function( value )
+function Converter:isEmpty( field )
+  local value = self[field]
   if value == nil then
     return true
   end
@@ -26,7 +24,9 @@ end
 -------------------------------------------------------------------------------
 
 
-parse.isNumber = function(value)
+function Converter:isNumber(field)
+  local value = self[field]
+
   if value == nil then
     return false
   end
@@ -50,7 +50,9 @@ end
 -- IS BOOLEAN
 -------------------------------------------------------------------------------
 
-parse.isBoolean = function( value )
+function Converter:isBoolean( field )
+  local value = self[field]
+
   if value == nil then
     return false
   end
@@ -60,17 +62,30 @@ parse.isBoolean = function( value )
   end
 
   if type(value) == 'string' then
-    return ( value == 'true' or value == 'false' or value == 't' or value == 'f' or value == '1' or value == '0' )
+    if value == 'true' or value == 't' or value == '1' then
+      return true
+    end
+    if value == 'false' or value == 'f' or value == '0' then
+      return true
+    end
   end
 
   return false
 end
 
 -------------------------------------------------------------------------------
+-- IS BOOL
+-------------------------------------------------------------------------------
+
+Converter.isBool = Converter.isBoolean
+
+-------------------------------------------------------------------------------
 -- IS DATE TIME
 -------------------------------------------------------------------------------
 
-parse.isDateTime = function()
+function Converter:isDateTime(field)
+  local value = self[field]
+
   if tostring(value):sub(6, 6) == '/' or tostring(value):sub(5, 5) == '/' then
     return value:sub(14, 14) == ':'
   end
@@ -82,7 +97,8 @@ end
 -- IS DATE
 -------------------------------------------------------------------------------
 
-parse.isDate = function()
+function Converter:isDate(field)
+  local value = self[field]
   return tostring(value):sub(6, 6) == '/' or tostring(value):sub(5, 5) == '/'
 end
 
@@ -90,7 +106,8 @@ end
 -- IS TIME
 -------------------------------------------------------------------------------
 
-parse.isTime = function()
+function Converter:isTime(field)
+  local value = self[field]
   return tostring(value):sub(3, 3) == ':'
 end
 
@@ -98,20 +115,25 @@ end
 -- TO BOOLEAN
 -------------------------------------------------------------------------------
 
-parse.toBoolean = function(value)
-  value = tostring(value)
+function Converter:toBoolean(field, default)
+  local value = tostring(self[field])
+
   if value == 'true' or value == 't' or value == '1' then
     return true
   end
 
-  return false
+  if value == 'false' or value == 'f' or value == '0' then
+    return true
+  end
+  return default
 end
 
 -------------------------------------------------------------------------------
 -- TO NUMBER
 -------------------------------------------------------------------------------
 
-parse.toNumber = function(value)
+function Converter:toNumber(field, default)
+  local value = self[field]
   if type(value) == 'number' then
     return value
   else
@@ -120,7 +142,7 @@ parse.toNumber = function(value)
       value = value:replace('.', ''):replace(',', '.')
     end
 
-    return tonumber(value) or 0
+    return tonumber(value) or default
   end
 end
 
@@ -128,7 +150,8 @@ end
 -- INSPECT
 -------------------------------------------------------------------------------
 
-parse.inspect = function(value)
+function Converter.inspect(field)
+  local value = field or self
   if type(value) == 'userdata' then
     return 'userdata'
   else
@@ -136,4 +159,4 @@ parse.inspect = function(value)
   end
 end
 
-return parse
+return Converter
