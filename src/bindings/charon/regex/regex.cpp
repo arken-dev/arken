@@ -87,7 +87,10 @@ extern "C" {
       {"scan",    lua_charon_regex_scan},
       {NULL, NULL}
     };
-    luaL_register(L, "regex", Map);
+    luaL_newmetatable(L, "regex");
+    luaL_register(L, NULL, Map);
+    lua_pushvalue(L, -1);
+    lua_setfield(L, -1, "__index");
     return 1;
   }
 }
