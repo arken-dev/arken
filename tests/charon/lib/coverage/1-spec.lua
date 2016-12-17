@@ -1,4 +1,5 @@
 local coverage = require 'charon.coverage'
+local json = require('charon.json')
 local test = {}
 local file_coverage = '@' .. CHARON_PATH .. '/lib/charon/coverage/examples/1-example.lua'
 

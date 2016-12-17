@@ -1,6 +1,5 @@
-require 'charon.regex'
-
-local test = {}
+local regex = require 'charon.regex'
+local test  = {}
 
 test['should be true for (g|p|r)ato'] = function()
   assert(regex.match("rato", "(g|p|r)ato") == true)

@@ -5,6 +5,7 @@
 
 require 'mysql'
 
+local json      = require('charon.json')
 local isblank   = require('charon.isblank')
 local toboolean = require('charon.toboolean')
 local Class     = require('charon.oop.Class')
