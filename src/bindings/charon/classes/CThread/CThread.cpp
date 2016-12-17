@@ -44,7 +44,10 @@ static const luaL_reg CThreadClassMethods[] = {
 
 void static
 registerCThreadClassMethods( lua_State *L ) {
-  luaL_register(L, "CThread", CThreadClassMethods);
+  luaL_newmetatable(L, "CThread");
+  luaL_register(L, NULL, CThreadClassMethods);
+  lua_pushvalue(L, -1);
+  lua_setfield(L, -1, "__index");
 }
 
 /**
@@ -151,9 +154,9 @@ registerCThreadInstanceMethods( lua_State *L ) {
 
 extern "C" {
   int
-  luaopen_CThread( lua_State *L ) {
-    registerCThreadClassMethods(L);
+  luaopen_charon_Thread( lua_State *L ) {
     registerCThreadInstanceMethods(L);
+    registerCThreadClassMethods(L);
     return 1;
   }
 }
