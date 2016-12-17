@@ -40,7 +40,10 @@ static const luaL_reg CHttpParserClassMethods[] = {
 
 void static
 registerCHttpParserClassMethods( lua_State *L ) {
-  luaL_register(L, "CHttpParser", CHttpParserClassMethods);
+  luaL_newmetatable(L, "CHttpParser");
+  luaL_register(L, NULL, CHttpParserClassMethods);
+  lua_pushvalue(L, -1);
+  lua_setfield(L, -1, "__index");
 }
 
 /**
@@ -167,9 +170,9 @@ registerCHttpParserInstanceMethods( lua_State *L ) {
 
 extern "C" {
   int
-  luaopen_CHttpParser( lua_State *L ) {
-    registerCHttpParserClassMethods(L);
+  luaopen_charon_net_HttpParser( lua_State *L ) {
     registerCHttpParserInstanceMethods(L);
+    registerCHttpParserClassMethods(L);
     return 1;
   }
 }
