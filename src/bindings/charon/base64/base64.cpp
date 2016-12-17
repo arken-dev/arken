@@ -32,7 +32,10 @@ extern "C" {
       {"decode", lua_charon_base64_decode},
       {NULL, NULL}
     };
-    luaL_register(L, "base64", Map);
+    luaL_newmetatable(L, "base64");
+    luaL_register(L, NULL, Map);
+    lua_pushvalue(L, -1);
+    lua_setfield(L, -1, "__index");
     return 1;
   }
 }

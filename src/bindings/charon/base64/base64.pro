@@ -7,7 +7,7 @@ TEMPLATE = lib
 CONFIG += plugin
 CONFIG += no_plugin_name_prefix
 
-DESTDIR = ../../../../../clib/charon
+DESTDIR = ../../../../clib/charon
 TARGET = base64
 
 INCLUDEPATH += .
