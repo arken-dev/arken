@@ -2,13 +2,18 @@
 #include <QtCore>
 #include <QThread>
 
-class CThread : public QThread
+namespace charon
 {
-  public:
-  QByteArray   m_charonPath;
-  QByteArray   m_fileName;
-  lua_State  * m_luaState;
 
-  explicit CThread(QByteArray charonPath, QByteArray fileName);
-  void run();
-};
+  class Thread : public QThread
+  {
+    public:
+    QByteArray   m_charonPath;
+    QByteArray   m_fileName;
+    lua_State  * m_luaState;
+
+    explicit CThread(QByteArray charonPath, QByteArray fileName);
+    void run();
+  };
+
+}

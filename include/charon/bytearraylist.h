@@ -3,7 +3,10 @@
 
 #include <QByteArray>
 
-class CStringList
+namespace charon
+{
+
+class ByteArrayList
 {
   private:
   void init();
@@ -28,4 +31,5 @@ class CStringList
   int size();
 };
 
+}
 #endif

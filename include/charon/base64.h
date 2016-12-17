@@ -1,7 +1,11 @@
-namespace charon {
-  namespace base64 {
-    char * decode(const char * data);
-    char * encode(const char * data, int len);
-    char * encode(const char * data);
-  }
+namespace charon
+{
+
+class base64 {
+  public:
+  static char * decode(const char * data);
+  static char * encode(const char * data, int len);
+  static char * encode(const char * data);
+};
+
 }

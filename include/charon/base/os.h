@@ -1,5 +1,7 @@
 #include <QtCore>
-#include <CStringList>
+#include <charon/ByteArrayList>
+
+using charon::ByteArrayList;
 
 namespace charon {
   namespace base {
@@ -14,10 +16,10 @@ namespace charon {
       static uint     ctime(const char * path);
       static char   * dirpath(const char * path);
       static bool     exists(const char * path);
-      static CStringList * glob(const char * dir);
-      static CStringList * glob(const char * dir, bool sub);
-      static CStringList * glob(const char * dir, const char * regex);
-      static CStringList * glob(const char * dir, const char * regex, bool sub);
+      static ByteArray * glob(const char * dir);
+      static ByteArray * glob(const char * dir, bool sub);
+      static ByteArray * glob(const char * dir, const char * regex);
+      static ByteArray * glob(const char * dir, const char * regex, bool sub);
       static char   * home();
       static char   * hostname();
       static bool     link(const char * source, const char * destination, bool force);
@@ -37,6 +39,6 @@ namespace charon {
       static char   * read(const char * path);
       static char   * read(const char * path, size_t * size);
       static char   * root();
-    }
+    };
   }
 }

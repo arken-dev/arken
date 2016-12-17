@@ -4,6 +4,9 @@
 #include <QtCore>
 #include <charon/helper>
 
+namespace charon
+{
+
 class ByteArray : public QByteArray
 {
 
@@ -30,5 +33,7 @@ class ByteArray : public QByteArray
   CByteArray &operator=(const CByteArray &a);
   CByteArray &operator=(const char * a);
 };
+
+}
 
 #endif

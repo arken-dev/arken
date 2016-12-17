@@ -1,7 +1,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <cctype>
-#include <CStringList>
+#include <charon/ByteArrayList>
 
 namespace charon {
   namespace base {
@@ -33,6 +33,6 @@ namespace charon {
       static char * trimmed(const char *string);
       static char * truncate(const char *string, int pos);
       static char * underscore(const char *string);
-    }
+    };
   }
 }
