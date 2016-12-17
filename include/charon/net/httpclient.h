@@ -8,7 +8,10 @@ struct MemoryStruct {
   size_t size;
 };
 
-class CHttpClient
+namespace charon {
+namespace net {
+
+class HttpClient
 {
   public:
   CHttpClient(const char * url);
@@ -30,5 +33,8 @@ class CHttpClient
   CURL * m_curl;
   MemoryStruct m_chunk;
 };
+
+}
+}
 
 #endif
