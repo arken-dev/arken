@@ -74,7 +74,10 @@ static const luaL_reg QDirIteratorClassMethods[] = {
 
 void static
 registerQDirIteratorClassMethods( lua_State *L ) {
-  luaL_register(L, "QDirIterator", QDirIteratorClassMethods);
+  luaL_newmetatable(L, "QDirIterator");
+  luaL_register(L, NULL, QDirIteratorClassMethods);
+  lua_pushvalue(L, -1);
+  lua_setfield(L, -1, "__index");
 }
 
 /**
@@ -159,8 +162,8 @@ registerQDirIteratorInstanceMethods( lua_State *L ) {
 extern "C" {
   int
   luaopen_QDirIterator( lua_State *L ) {
-    registerQDirIteratorClassMethods(L);
     registerQDirIteratorInstanceMethods(L);
+    registerQDirIteratorClassMethods(L);
     return 1;
   }
 }

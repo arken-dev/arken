@@ -37,7 +37,10 @@ static const luaL_reg QStringClassMethods[] = {
 
 void static
 registerQStringClassMethods( lua_State *L ) {
-  luaL_register(L, "QString", QStringClassMethods);
+  luaL_newmetatable(L, "QString");
+  luaL_register(L, NULL, QStringClassMethods);
+  lua_pushvalue(L, -1);
+  lua_setfield(L, -1, "__index");
 }
 
 /**

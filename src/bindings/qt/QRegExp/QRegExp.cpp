@@ -37,7 +37,10 @@ static const luaL_reg QRegExpClassMethods[] = {
 
 void static
 registerQRegExpClassMethods( lua_State *L ) {
-  luaL_register(L, "QRegExp", QRegExpClassMethods);
+  luaL_newmetatable(L, "QRegExp.metatable");
+  luaL_register(L, NULL, QRegExpClassMethods);
+  lua_pushvalue(L, -1);
+  lua_setfield(L, -1, "__index");
 }
 
 /**
@@ -143,8 +146,8 @@ registerQRegExpInstanceMethods( lua_State *L ) {
 extern "C" {
   int
   luaopen_QRegExp( lua_State *L ) {
-    registerQRegExpClassMethods(L);
     registerQRegExpInstanceMethods(L);
+    registerQRegExpClassMethods(L);
     return 1;
   }
 }

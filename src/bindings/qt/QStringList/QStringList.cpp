@@ -37,7 +37,11 @@ static const luaL_reg QStringListClassMethods[] = {
 
 void static
 registerQStringListClassMethods( lua_State *L ) {
-  luaL_register(L, "QStringList", QStringListClassMethods);
+  luaL_newmetatable(L, "QStringList");
+  luaL_register(L, NULL, QStringListClassMethods);
+  lua_pushvalue(L, -1);
+  lua_setfield(L, -1, "__index");
+
 }
 
 /**
@@ -101,8 +105,8 @@ registerQStringListInstanceMethods( lua_State *L ) {
 extern "C" {
   int
   luaopen_QStringList( lua_State *L ) {
-    registerQStringListClassMethods(L);
     registerQStringListInstanceMethods(L);
+    registerQStringListClassMethods(L);
     return 1;
   }
 }

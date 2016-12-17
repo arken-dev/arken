@@ -189,7 +189,10 @@ static const luaL_reg QDirClassMethods[] = {
 
 void static
 registerQDirClassMethods( lua_State *L ) {
-  luaL_register(L, "QDir", QDirClassMethods);
+  luaL_newmetatable(L, "QDir");
+  luaL_register(L, NULL, QDirClassMethods);
+  lua_pushvalue(L, -1);
+  lua_setfield(L, -1, "__index");
 }
 
 /**
@@ -472,8 +475,8 @@ registerQDirInstanceMethods( lua_State *L ) {
 extern "C" {
   int
   luaopen_QDir( lua_State *L ) {
-    registerQDirClassMethods(L);
     registerQDirInstanceMethods(L);
+    registerQDirClassMethods(L);
     return 1;
   }
 }
