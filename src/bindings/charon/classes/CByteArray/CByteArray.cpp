@@ -38,7 +38,10 @@ static const luaL_reg CByteArrayClassMethods[] = {
 
 void static
 registerCByteArrayClassMethods( lua_State *L ) {
-  luaL_register(L, "CByteArray", CByteArrayClassMethods);
+  luaL_newmetatable(L, "ByteArray");
+  luaL_register(L, NULL, CByteArrayClassMethods);
+  lua_pushvalue(L, -1);
+  lua_setfield(L, -1, "__index");
 }
 
 /**
@@ -209,8 +212,8 @@ registerCByteArrayInstanceMethods( lua_State *L ) {
 extern "C" {
   int
   luaopen_CByteArray( lua_State *L ) {
-    registerCByteArrayClassMethods(L);
     registerCByteArrayInstanceMethods(L);
+    registerCByteArrayClassMethods(L);
     return 1;
   }
 }
