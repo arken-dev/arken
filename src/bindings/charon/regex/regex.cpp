@@ -8,6 +8,7 @@
 
 using charon::ByteArray;
 using charon::ByteArrayList;
+using charon::regex;
 
 static int lua_charon_regex_match( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);

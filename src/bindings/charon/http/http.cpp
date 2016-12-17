@@ -5,7 +5,8 @@
 
 #include <lua/lua.hpp>
 #include <charon/helper>
-#include <charon/modules/http.h>
+
+using namespace charon;
 
 static int lua_charon_http_read( lua_State *L ) {
   const char *path = luaL_checkstring(L, 1);

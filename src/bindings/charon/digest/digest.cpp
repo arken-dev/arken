@@ -5,7 +5,8 @@
 
 #include <lua/lua.hpp>
 #include <charon/helper>
-#include <charon/modules/digest.h>
+
+using namespace charon;
 
 static int lua_charon_digest_md4( lua_State *L ) {
   size_t size;

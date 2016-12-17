@@ -6,13 +6,13 @@ CONFIG += plugin
 CONFIG += no_plugin_name_prefix
 
 INCLUDEPATH += .
-INCLUDEPATH += ../../../../../include
-INCLUDEPATH += ../../../../../deps/include
+INCLUDEPATH += ../../../../include
+INCLUDEPATH += ../../../../deps/include
 
 TARGET = ByteArray
-DESTDIR = ../../../../../clib/charon
+DESTDIR = ../../../../clib/charon
 
-LIBS += -L ../../../../../deps -lcharon -llua
+LIBS += -L ../../../../deps -lcharon -llua
 
 # Input
 SOURCES += bytearray.cpp

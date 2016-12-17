@@ -5,7 +5,8 @@
 
 #include <lua/lua.hpp>
 #include <charon/helper>
-#include <charon/modules/sha3.h>
+
+using charon::sha3;
 
 static int lua_charon_sha3_sha224( lua_State *L ) {
   size_t size;

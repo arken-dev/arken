@@ -9,7 +9,7 @@
 #include <iostream>
 #include <QByteArray>
 
-using charon::HttpParser;
+using charon::net::HttpParser;
 
 /**
  * checkHttpParser

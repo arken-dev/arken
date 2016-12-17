@@ -4,6 +4,7 @@
 // license that can be found in the LICENSE file.
 
 #include <lua/lua.hpp>
+#include <charon/helper>
 
 static int lua_charon_odebug_info( lua_State *L ) {
   lua_Debug info;
