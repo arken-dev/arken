@@ -6,6 +6,9 @@
 #include <lua/lua.hpp>
 #include <charon/helper>
 
+using charon::ByteArray;
+using charon::ByteArrayList;
+
 static int lua_charon_string_append( lua_State *L ) {
   const char *string = luaL_checkstring(L, 1);
   const char *str    = luaL_checkstring(L, 2);
@@ -180,10 +183,10 @@ static int lua_charon_string_split( lua_State *L ) {
   size_t len;
   const char  * string  = luaL_checklstring(L, 1, &len);
   const char  * pattern = luaL_checkstring(L, 2);
-  CStringList * list    = string::split(string, len, pattern);
-  CStringList **ptr = (CStringList **)lua_newuserdata(L, sizeof(CStringList*));
+  ByteArrayList * list    = string::split(string, len, pattern);
+  ByteArrayList **ptr = (ByteArrayList **)lua_newuserdata(L, sizeof(ByteArrayList*));
   *ptr = list;
-  luaL_getmetatable(L, "CStringList.metatable");
+  luaL_getmetatable(L, "ByteArrayList.metatable");
   lua_setmetatable(L, -2);
 
   return 1;

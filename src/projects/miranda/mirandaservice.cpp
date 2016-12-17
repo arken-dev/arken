@@ -4,11 +4,13 @@
 // license that can be found in the LICENSE file.
 
 #include <lua/lua.hpp>
-#include "mirandastate.h"
+#include <charon/helper>
 #include <QDebug>
 #include <QFile>
-#include <CByteArray>
 #include <QList>
+#include "mirandastate.h"
+
+using charon::ByteArray;
 
 QMutex MirandaService::s_mutex;
 
@@ -120,12 +122,12 @@ void MirandaService::run() {
   /*
   //debug cache
   int total = 0;
-  QList<CByteArray> list = MirandaState::s_cache->keys();
+  QList<ByteArray> list = MirandaState::s_cache->keys();
   qDebug() << "TOTAL DE ITENS NO CACHE " << list.size() << "\n\n";
 
   for(int i = 0; i < list.size(); i++ ) {
-    CByteArray key   = list.at(i);
-    CByteArray value = MirandaState::s_cache->value(key);
+    ByteArray key   = list.at(i);
+    ByteArray value = MirandaState::s_cache->value(key);
     qDebug() << "key " << key << '\n';
     total += value.size();
   }

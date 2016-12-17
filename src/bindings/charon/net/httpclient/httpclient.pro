@@ -10,12 +10,12 @@ INCLUDEPATH += .
 INCLUDEPATH += ../../../../../include
 INCLUDEPATH += ../../../../../deps/include
 
-TARGET = HttpParser
+TARGET = HttpClient
 DESTDIR = ../../../../../clib/charon/net
 
-LIBS += -L ../../../../../deps -lcharon -llua
+LIBS += -L ../../../../../deps -lcharon -llua -lcurl
 
 # Input
-SOURCES += CHttpParser.cpp
+SOURCES += httpclient.cpp
 
-mac:QMAKE_POST_LINK += install_name_tool -change liblua.so  @executable_path/../deps/liblua.so ../../../../../clib/charon/net/HttpParser.dylib; install_name_tool -change libcharon.1.dylib  @executable_path/../deps/libcharon.1.dylib ../../../../../clib/charon/net/HttpParser.dylib
+mac:QMAKE_POST_LINK += install_name_tool -change liblua.so  @executable_path/../deps/liblua.so ../../../../../clib/charon/net/HttpClient.dylib; install_name_tool -change libcharon.1.dylib  @executable_path/../deps/libcharon.1.dylib ../../../../../clib/charon/net/HttpClient.dylib

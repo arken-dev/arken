@@ -6,6 +6,9 @@
 #include <lua/lua.hpp>
 #include <charon/helper>
 
+using charon::ByteArray;
+using charon::ByteArrayList;
+
 static int lua_charon_os_abspath( lua_State *L ) {
   const char * path = luaL_checkstring(L, 1);
   lua_pushstring( L, os::abspath(path) );
@@ -68,7 +71,7 @@ static int lua_charon_os_exists( lua_State *L ) {
 }
 
 static int lua_charon_os_glob( lua_State *L ) {
-  CStringList * list = 0;
+  ByteArrayList * list = 0;
   const char  * path = luaL_checkstring(L, 1);
 
   if( lua_gettop(L) == 1 ) { /* número de argumentos */
@@ -87,9 +90,9 @@ static int lua_charon_os_glob( lua_State *L ) {
     list = os::glob( path, lua_tostring(L, 2), lua_toboolean(L, 3) );
   }
 
-  CStringList **ptr = (CStringList **)lua_newuserdata(L, sizeof(CStringList*));
+  ByteArrayList **ptr = (ByteArrayList **)lua_newuserdata(L, sizeof(ByteArrayList*));
   *ptr = list;
-  luaL_getmetatable(L, "CStringList.metatable");
+  luaL_getmetatable(L, "ByteArrayList.metatable");
   lua_setmetatable(L, -2);
 
   return 1;

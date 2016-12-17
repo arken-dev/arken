@@ -6,12 +6,14 @@
 #include <lua/lua.hpp>
 #include <QtCore>
 #include <QCoreApplication>
-#include <CByteArray>
 #include <QDebug>
 #include <QStringList>
 #include <charon/helper>
 #include <triton.h>
 #include <QJsonObject>
+
+using charon::ByteArray;
+using charon::ByteArrayList;
 
 int main(int argc, char * argv[])
 {
