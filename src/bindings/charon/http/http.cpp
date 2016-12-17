@@ -41,7 +41,10 @@ extern "C" {
       {"put",  lua_charon_http_put},
       {NULL, NULL}
     };
-    luaL_register(L, "http", Map);
+    luaL_newmetatable(L, "http");
+    luaL_register(L, NULL, Map);
+    lua_pushvalue(L, -1);
+    lua_setfield(L, -1, "__index");
     return 1;
   }
 }
