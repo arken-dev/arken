@@ -63,7 +63,10 @@ static const luaL_reg QDateTimeClassMethods[] = {
 
 void static
 registerQDateTimeClassMethods( lua_State *L ) {
-  luaL_register(L, "QDateTime", QDateTimeClassMethods);
+  luaL_newmetatable(L, "QDateTime");
+  luaL_register(L, NULL, QDateTimeClassMethods);
+  lua_pushvalue(L, -1);
+  lua_setfield(L, -1, "__index");
 }
 
 /**
