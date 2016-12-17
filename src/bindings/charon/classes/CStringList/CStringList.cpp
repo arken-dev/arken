@@ -36,7 +36,10 @@ static const luaL_reg CStringListClassMethods[] = {
 
 void static
 registerCStringListClassMethods( lua_State *L ) {
-  luaL_register(L, "CStringList", CStringListClassMethods);
+  luaL_newmetatable(L, "CStringList");
+  luaL_register(L, NULL, CStringListClassMethods);
+  lua_pushvalue(L, -1);
+  lua_setfield(L, -1, "__index");
 }
 
 /**
@@ -137,9 +140,9 @@ registerCStringListInstanceMethods( lua_State *L ) {
 
 extern "C" {
   int
-  luaopen_CStringList( lua_State *L ) {
-    registerCStringListClassMethods(L);
+  luaopen_charon_StringList( lua_State *L ) {
     registerCStringListInstanceMethods(L);
+    registerCStringListClassMethods(L);
     return 1;
   }
 }

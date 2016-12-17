@@ -9,11 +9,11 @@ INCLUDEPATH += .
 INCLUDEPATH += ../../../../../include
 INCLUDEPATH += ../../../../../deps/include
 
-TARGET = CStringList
-DESTDIR = ../../../../../clib
+TARGET = StringList
+DESTDIR = ../../../../../clib/charon
 
 LIBS += -L ../../../../../deps -lcharon -llua
 
 # Input
 SOURCES += CStringList.cpp
-mac:QMAKE_POST_LINK += install_name_tool -change liblua.so  @executable_path/../deps/liblua.so ../../../../../clib/CStringList.dylib; install_name_tool -change libcharon.1.dylib  @executable_path/../deps/libcharon.1.dylib ../../../../../clib/CStringList.dylib
+mac:QMAKE_POST_LINK += install_name_tool -change liblua.so  @executable_path/../deps/liblua.so ../../../../../clib/charon/StringList.dylib; install_name_tool -change libcharon.1.dylib  @executable_path/../deps/libcharon.1.dylib ../../../../../clib/charon/StringList.dylib
