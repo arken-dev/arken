@@ -4,8 +4,9 @@
 // license that can be found in the LICENSE file.
 
 #include <lua/lua.hpp>
-#include <charon/helper>
-#include <charon/modules/base64.h>
+#include <charon/base64>
+
+using charon::base64;
 
 static int lua_charon_base64_decode( lua_State *L ) {
   const char * data = luaL_checkstring(L, 1);

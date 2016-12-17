@@ -3,4 +3,4 @@
 #include <charon/base/os.h>
 #include <charon/base/string.h>
 
-using namespace charon;
+using namespace charon::base;
