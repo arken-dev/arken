@@ -159,8 +159,8 @@ registerQStringInstanceMethods( lua_State *L ) {
 extern "C" {
   int
   luaopen_QString( lua_State *L ) {
-    registerQStringClassMethods(L);
     registerQStringInstanceMethods(L);
+    registerQStringClassMethods(L);
     return 1;
   }
 }
