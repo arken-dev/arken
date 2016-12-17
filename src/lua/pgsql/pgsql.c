@@ -222,7 +222,7 @@ static const luaL_Reg R_res_array[] = {
 };
 
 /* open the library - used by require() */
-LUALIB_API int luaopen_pgsql(lua_State *L) {
+LUALIB_API int luaopen_charon_pgsql(lua_State *L) {
 	/* register the base functions and module tags */
 	luaL_register(L, "pg", R_pg_functions);
 	lua_pushliteral(L,"version");			/** version */

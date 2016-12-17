@@ -10,7 +10,7 @@ INCLUDEPATH += ../../../include
 INCLUDEPATH += ../../../deps/include
 
 TARGET = pgsql
-DESTDIR = ../../../clib
+DESTDIR = ../../../clib/charon
 
 LIBS += -L ../../../deps -llua -lpq
 

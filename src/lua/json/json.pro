@@ -11,7 +11,7 @@ INCLUDEPATH += ../../../deps/include
 
 TARGET = json
 
-DESTDIR = ../../../clib/
+DESTDIR = ../../../clib/charon
 
 # Input
 HEADERS += json.h dtoa_config.h fpconv.h strbuf.h

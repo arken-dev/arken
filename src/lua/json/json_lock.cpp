@@ -95,7 +95,7 @@ json_encode_data(lua_State *L) {
 }
 
 extern "C" {
-  int luaopen_json( lua_State *L ) {
+  int luaopen_charon_json( lua_State *L ) {
     static const luaL_reg Map[] = {
       {"decode", json_decode_data},
       {"encode", json_encode_data},
