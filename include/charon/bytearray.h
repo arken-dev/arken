@@ -4,7 +4,7 @@
 #include <QtCore>
 #include <charon/helper>
 
-class CByteArray : public QByteArray
+class ByteArray : public QByteArray
 {
 
   //Data *d;
