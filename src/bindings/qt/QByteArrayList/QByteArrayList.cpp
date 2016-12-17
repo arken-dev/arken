@@ -40,7 +40,10 @@ static const luaL_reg QByteArrayListClassMethods[] = {
 
 void static
 registerQByteArrayListClassMethods( lua_State *L ) {
-  luaL_register(L, "QByteArrayList", QByteArrayListClassMethods);
+  luaL_newmetatable(L, "QByteArrayList");
+  luaL_register(L, NULL, QByteArrayListClassMethods);
+  lua_pushvalue(L, -1);
+  lua_setfield(L, -1, "__index");
 }
 
 /**
@@ -98,8 +101,8 @@ registerQByteArrayListInstanceMethods( lua_State *L ) {
 extern "C" {
   int
   luaopen_QByteArrayList( lua_State *L ) {
-    registerQByteArrayListClassMethods(L);
     registerQByteArrayListInstanceMethods(L);
+    registerQByteArrayListClassMethods(L);
     return 1;
   }
 }
