@@ -58,10 +58,39 @@ bool os::compare(const char * path1, const char * path2)
 
 bool os::copy(const char * source, const char * destination, bool force = false)
 {
-  if( force && QFile::exists(destination) ) {
-    QFile::remove(destination);
+
+  QFileInfo fileSource(source);
+  if ( fileSource.isFile() ) {
+    if( force && QFile::exists(destination) ) {
+      QFile::remove(destination);
+    }
+    return QFile::copy(source, destination);
   }
-  return QFile::copy(source, destination);
+
+  if( fileSource.isDir() ) {
+    QDir dir(source);
+    QString src(source);
+    QString dest(destination);
+    QStringList dirList = dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
+    for( int i = 0; i < dirList.size(); i++) {
+        QString d = dirList.at(i);
+        QString dst_path = dest + QDir::separator() + d;
+        dir.mkpath(dst_path);
+        if( os::copy((src + QDir::separator() + d).toLocal8Bit(), dst_path.toLocal8Bit()) == false ) {
+          return false;
+        }
+    }
+
+    QStringList fileList = dir.entryList(QDir::Files);
+    for(int i=0; i < fileList.size(); i ++) {
+        QString f = fileList.at(i);
+        if( QFile::copy(src + QDir::separator() + f, dest + QDir::separator() + f) == false ) {
+          return false;
+        }
+    }
+  }
+
+  return true;
 }
 
 int os::cores()

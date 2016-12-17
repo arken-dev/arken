@@ -36,7 +36,6 @@ miranda_task_start(lua_State *L) {
   MirandaState::insert(uuid, result);
   MirandaState::createTask( file_name, uuid );
   lua_pushstring(L, uuid);
-  delete[] result;
   delete[] uuid;
   return 1;
 }

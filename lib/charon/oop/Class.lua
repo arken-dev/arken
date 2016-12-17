@@ -7,12 +7,12 @@ require 'charon.oop.Object'
 
 Class = Class or {}
 Class.classes    = {}
-Class.class_name = "Class"
+Class.className  = "Class"
 
-function Class.new(className, inheritedBy, params)
+Class.new = function(className, inheritedBy, params)
   local class;
-  if inheritedBy then
-    inheritedBy = require(inheritedBy, true)
+  if type(inheritedBy) == 'string' then
+    inheritedBy = Class.lookup(inheritedBy)
   end
   -- recreate empty class
   if Class.classes[className] then
@@ -25,7 +25,7 @@ function Class.new(className, inheritedBy, params)
     end
 
     -- name class
-    class.class_name = className
+    class.className = className
     class.__index    = class
     class.class      = class
 
@@ -41,7 +41,7 @@ function Class.new(className, inheritedBy, params)
     Class.classes[className] = {}
     class = Class.classes[className]
     -- name class
-    class.class_name = className --'class'
+    class.className = className --'class'
     class.__index    = class
     class.class      = class
 
@@ -72,7 +72,7 @@ function Class.new(className, inheritedBy, params)
   end
 
   function class.mixin(path)
-    package.mixed[path] = class.class_name
+    package.mixed[path] = class.className
     local M = require(path, true)
     for key, value in pairs(M) do
       class[key] = value
@@ -80,6 +80,24 @@ function Class.new(className, inheritedBy, params)
   end
 
   return class
+end
+
+Class.lookup = function(name)
+  return Class.classes[name] or Class.retrieve(name)
+end
+
+Class.retrieve = function(name)
+  local flag, class_or_error = pcall(require, name)
+  if flag then
+    return class_or_error or flag
+  end
+  local flag, class = pcall(require, 'charon.' .. name)
+  if flag then
+    return class or flag
+  else
+    error(class_or_error)
+  end
+  return nil
 end
 
 return Class

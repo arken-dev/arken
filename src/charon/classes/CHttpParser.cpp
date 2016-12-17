@@ -61,7 +61,7 @@ on_header_done_cb(void *data, const char *at, size_t length)
   tmp[i] = '\0';
 
   CHttpParser * p = (CHttpParser *) data;
-  p->setHeaderDone(tmp);
+  p->setHeaderDone(tmp, length);
 }
 
 static void
@@ -158,6 +158,8 @@ CHttpParser::CHttpParser(QByteArray data)
   m_requestUri    = NULL;
   m_httpVersion   = NULL;
   m_headerDone    = NULL;
+  m_headerDoneLength = NULL;
+
   http_parser_execute(parser, m_data.data(), m_data.size(), 0);
   free(parser);
 }
@@ -190,8 +192,9 @@ void CHttpParser::setFragment(const char * fragment)
   m_fragment = fragment;
 }
 
-void CHttpParser::setHeaderDone(const char * headerDone)
+void CHttpParser::setHeaderDone(const char * headerDone, size_t length)
 {
+  m_headerDoneLength = length;
   m_headerDone = headerDone;
 }
 
@@ -249,6 +252,12 @@ const char * CHttpParser::headerDone()
 {
   return m_headerDone;
 }
+
+size_t CHttpParser::headerDoneLength()
+{
+  return m_headerDoneLength;
+}
+
 
 const char * CHttpParser::fragment()
 {
