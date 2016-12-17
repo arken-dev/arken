@@ -15,19 +15,19 @@ TARGET = charon
 DESTDIR = ../../deps
 
 # Input
-SOURCES += base/math.cpp            \
-           base/os.cpp              \
-           base/string.cpp          \
-           classes/CByteArray.cpp   \
-           classes/CThread.cpp      \
-           classes/CHttpClient.cpp  \
-           classes/CHttpParser.cpp  \
-           classes/CStringList.cpp  \
-           modules/base64.cpp       \
-           modules/digest.cpp       \
-           modules/http.cpp         \
-           modules/regex.cpp        \
-           modules/sha3.cpp         \
+SOURCES += base/math.cpp       \
+           base/os.cpp         \
+           base/string.cpp     \
+           net/httpclient.cpp  \
+           net/httpparser.cpp  \
+           base64.cpp          \
+           bytearray.cpp       \
+           bytearraylist.cpp   \
+           digest.cpp          \
+           http.cpp            \
+           regex.cpp           \
+           sha3.cpp            \
+           thread.cpp          \
            ../vendors/mongrel2/http11/http11_parser.c \
            ../vendors/ap/ap_base64.c
 
