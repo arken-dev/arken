@@ -1,7 +1,14 @@
+local cache  = {}
 function using(module, name)
-  local index = module:lastIndexOf('.') + 1
-  local name  = name or module:mid(index, -1)
-  local value = require(module)
+  local data = cache[module]
+  if not data then
+    data  = {}
+    data.name  = module:mid(module:lastIndexOf('.') + 1, -1)
+    data.value = require(module)
+    cache[module] = data
+  end
+  local name  = name or data.name
   local env   = getfenv(2)
-  env[name] = value
+  env[name] = data.value
+  return data.value
 end
