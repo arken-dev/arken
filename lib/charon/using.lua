@@ -1,5 +1,5 @@
 local cache  = {}
-function using(module, name)
+function using(module)
   local data = cache[module]
   if not data then
     data  = {}
@@ -7,8 +7,7 @@ function using(module, name)
     data.value = require(module)
     cache[module] = data
   end
-  local name  = name or data.name
   local env   = getfenv(2)
-  env[name] = data.value
+  env[data.name] = data.value
   return data.value
 end
