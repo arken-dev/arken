@@ -25,7 +25,11 @@
 char * os::abspath(const char * path)
 {
   QFileInfo info(path);
-  return info.absoluteFilePath().toLocal8Bit().data();
+  QString abspath = info.absoluteFilePath();
+  char * result = new char[abspath.size() + 1];
+  strcpy(result, abspath.toLocal8Bit());
+  result[abspath.size()] = '\0';
+  return result;
 }
 
 uint os::atime(const char * path)
@@ -110,7 +114,11 @@ uint os::ctime(const char * path)
 char * os::dirpath(const char * path)
 {
   QFileInfo info(path);
-  return info.absolutePath().toLocal8Bit().data();
+  QString dirpath = info.absolutePath();
+  char * result = new char[dirpath.size() + 1];
+  strcpy(result, dirpath.toLocal8Bit());
+  result[dirpath.size()] = '\0';
+  return result;
 }
 
 bool os::exists(const char * path)
@@ -172,13 +180,20 @@ ByteArrayList * os::glob(const char * dir, const char * regex, bool sub)
 
 char * os::home()
 {
-  return QDir::homePath().toLocal8Bit().data();
+  QString homePath = QDir::homePath();
+  char * result = new char[homePath.size()+1];
+  strcpy(result, homePath.toLocal8Bit());
+  result[homePath.size()] = '\0';
+  return result;
 }
 
 char * os::hostname()
 {
-  QString result = QHostInfo::localHostName();
-  return result.toLocal8Bit().data();
+  QString hostname = QHostInfo::localHostName();
+  char * result = new char[hostname.size() + 1];
+  strcpy(result, hostname.toLocal8Bit());
+  result[hostname.size()] = '\0';
+  return result;
 }
 
 bool os::link(const char * source, const char * destination, bool force = false)
@@ -208,27 +223,32 @@ bool os::mkpath(const char * dirpath)
 
 char * os::name()
 {
-  QString result;
+  QString name;
   #if defined(Q_OS_ANDROID)
-  result = QLatin1String("android");
+  name = QString("android");
   #elif defined(Q_OS_BLACKBERRY)
-  result = QLatin1String("blackberry");
+  name = QString("blackberry");
   #elif defined(Q_OS_IOS)
-  result = QLatin1String("ios");
+  name = QString("ios");
   #elif defined(Q_OS_MAC)
-  result = QLatin1String("osx");
+  name = QString("osx");
   #elif defined(Q_OS_WINCE)
-  result = QLatin1String("wince");
+  name = QString("wince");
   #elif defined(Q_OS_WIN)
-  result = QLatin1String("windows");
+  name = QString("windows");
   #elif defined(Q_OS_LINUX)
-  result = QLatin1String("linux");
+  name = QString("linux");
   #elif defined(Q_OS_UNIX)
-  result = QLatin1String("unix");
+  name = QString("unix");
   #else
-  result = QLatin1String("unknown");
+  name = QString("unknown");
   #endif
-  return result.toLocal8Bit().data();
+
+  char * result = new char[name.size() + 1];
+  strcpy(result, name.toLocal8Bit());
+  result[name.size()] = '\0';
+
+  return result;
 }
 
 qint64 os::pid()
@@ -238,7 +258,11 @@ qint64 os::pid()
 
 char * os::pwd()
 {
-  return QDir::currentPath().toLocal8Bit().data();
+  QString pwd = QDir::currentPath();
+  char * result = new char[pwd.size() + 1];
+  strcpy(result, pwd.toLocal8Bit());
+  result[pwd.size()] = '\0';
+  return result;
 }
 
 bool os::rmdir(const char * dirname)
@@ -260,12 +284,20 @@ void os::sleep(double secs)
 
 char * os::target(const char * path)
 {
-  return QFile::symLinkTarget(path).toLocal8Bit().data();
+  QString target = QFile::symLinkTarget(path);
+  char * result  = new char[target.size() + 1];
+  strcpy(result, target.toLocal8Bit());
+  result[target.size()] = '\0';
+  return result;
 }
 
 char * os::temp()
 {
-  return QDir::tempPath().toLocal8Bit().data();
+  QString temp = QDir::tempPath();
+  char * result = new char[temp.size() + 1];
+  strcpy(result, temp.toLocal8Bit());
+  result[temp.size()] = '\0';
+  return result;
 }
 
 bool os::touch(const char * path)
@@ -321,7 +353,9 @@ char * os::read(const char * path, size_t * size)
 
 char * os::root()
 {
-  return QDir::rootPath().toLocal8Bit().data();
+  QString root = QDir::rootPath();
+  char * result = new char[root.size() + 1];
+  strcpy(result, root.toLocal8Bit());
+  result[root.size()] = '\0';
+  return result;
 }
-
-

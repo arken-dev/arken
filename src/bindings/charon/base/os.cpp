@@ -11,7 +11,9 @@ using charon::ByteArrayList;
 
 static int lua_charon_os_abspath( lua_State *L ) {
   const char * path = luaL_checkstring(L, 1);
-  lua_pushstring( L, os::abspath(path) );
+  char * result = os::abspath(path);
+  lua_pushstring( L, result );
+  delete[] result;
   return 1;
 }
 
@@ -60,7 +62,9 @@ static int lua_charon_os_ctime( lua_State *L ) {
 
 static int lua_charon_os_dirpath( lua_State *L ) {
   const char * path = luaL_checkstring(L, 1);
-  lua_pushstring( L, os::dirpath(path) );
+  char * result = os::dirpath(path);
+  lua_pushstring( L, result );
+  delete[] result;
   return 1;
 }
 
@@ -99,12 +103,16 @@ static int lua_charon_os_glob( lua_State *L ) {
 }
 
 static int lua_charon_os_home( lua_State *L ) {
-  lua_pushstring( L, os::home() );
+  char * result = os::home();
+  lua_pushstring( L, result );
+  delete[] result;
   return 1;
 }
 
 static int lua_charon_os_hostname( lua_State *L ) {
-  lua_pushstring( L, os::hostname() );
+  char * result = os::hostname();
+  lua_pushstring( L, result );
+  delete[] result;
   return 1;
 }
 
@@ -138,12 +146,16 @@ static int lua_charon_os_mkpath( lua_State *L ) {
 }
 
 static int lua_charon_os_name( lua_State *L ) {
-  lua_pushstring( L, os::name() );
+  char * result = os::name();
+  lua_pushstring( L, result );
+  delete[] result;
   return 1;
 }
 
 static int lua_charon_os_pwd( lua_State *L ) {
-  lua_pushstring( L, os::pwd() );
+  char * result = os::pwd();
+  lua_pushstring( L, result );
+  delete[] result;
   return 1;
 }
 
@@ -172,12 +184,16 @@ static int lua_charon_os_sleep( lua_State *L ) {
 
 static int lua_charon_os_target( lua_State *L ) {
   const char * path = luaL_checkstring(L, 1);
-  lua_pushstring( L, os::target(path) );
+  char * result = os::target(path);
+  lua_pushstring( L, result );
+  delete[] result;
   return 1;
 }
 
 static int lua_charon_os_temp( lua_State *L ) {
-  lua_pushstring( L, os::temp() );
+  char * result = os::temp();
+  lua_pushstring( L, result );
+  delete[] result;
   return 1;
 }
 
@@ -188,9 +204,9 @@ static int lua_charon_os_touch( lua_State *L ) {
 }
 
 static int lua_charon_os_uuid( lua_State *L ) {
-  char * uuid = os::uuid();
-  lua_pushstring( L, uuid );
-  delete[] uuid;
+  char * result = os::uuid();
+  lua_pushstring( L, result );
+  delete[] result;
   return 1;
 }
 
@@ -208,7 +224,9 @@ static int lua_charon_os_read( lua_State *L ) {
 }
 
 static int lua_charon_os_root( lua_State *L ) {
-  lua_pushstring( L, os::root() );
+  char * result = os::root();
+  lua_pushstring( L, result );
+  delete[] result;
   return 1;
 }
 
