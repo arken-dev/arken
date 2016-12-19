@@ -75,7 +75,6 @@ rhea = function()
   local list = tostring(package.path):split(';')
   for i = 1, list:size() do
     local str = list:at(i)
-    print('antes' .. str)
     str = str:replace("/?.lua", ""):replace('.', '/')
     str = os.abspath(str)
     if str:contains('rhea') and os.exists(str) then
