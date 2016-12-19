@@ -72,11 +72,19 @@ rhea = function()
   local path = {}
 
   if arg[0] == nil then
-  for str in string.gmatch(package.path, "([^;]+)") do
+  local list = tostring(package.path):split(';')
+  for i = 1, list:size() do
+    local str = list:at(i)
+    print('antes' .. str)
     str = str:replace("/?.lua", ""):replace('.', '/')
-    str = os.abspath(str) .. '/rhea'
-    if os.exists(str) then
+    str = os.abspath(str)
+    if str:contains('rhea') and os.exists(str) then
       table.insert(path, str)
+    else
+      str = str .. '/rhea'
+      if os.exists(str) then
+        table.insert(path, str)
+      end
     end
   end
 
