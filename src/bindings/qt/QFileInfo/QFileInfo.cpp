@@ -54,7 +54,11 @@ static const luaL_reg QFileInfoClassMethods[] = {
 
 void static
 registerQFileInfoClassMethods( lua_State *L ) {
-  luaL_register(L, "QFileInfo", QFileInfoClassMethods);
+  luaL_newmetatable(L, "QFileInfo");
+  luaL_register(L, NULL, QFileInfoClassMethods);
+  lua_pushvalue(L, -1);
+  lua_setfield(L, -1, "__index");
+
 }
 
 /**
@@ -441,8 +445,8 @@ registerQFileInfoInstanceMethods( lua_State *L ) {
 extern "C" {
   int
   luaopen_QFileInfo( lua_State *L ) {
-    registerQFileInfoClassMethods(L);
     registerQFileInfoInstanceMethods(L);
+    registerQFileInfoClassMethods(L);
     return 1;
   }
 }

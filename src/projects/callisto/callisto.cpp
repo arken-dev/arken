@@ -8,9 +8,10 @@
 #include <iostream>
 #include <QDebug>
 #include <QThread>
-#include <CByteArray>
 #include <charon/helper>
-#include <CStringList>
+
+using charon::ByteArray;
+using charon::ByteArrayList;
 
 Callisto::Callisto(int argc, char * argv[], const char * path, QObject *parent) : QObject(parent)
 {
@@ -28,7 +29,7 @@ Callisto::Callisto(int argc, char * argv[], const char * path, QObject *parent) 
 
   m_watcher->addPath(m_file);
   if( os::exists("app/models") ) {
-    CStringList * list = os::glob("app/models", "\\.lua$", true);
+    ByteArrayList * list = os::glob("app/models", "\\.lua$", true);
     for(int i = 0; i < list->size(); i++) {
       qDebug() << list->at(i);
       m_watcher->addPath(list->at(i));

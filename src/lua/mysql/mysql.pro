@@ -10,7 +10,7 @@ INCLUDEPATH += ../../../include
 INCLUDEPATH += ../../../deps/include
 
 TARGET = mysql
-DESTDIR = ../../../clib
+DESTDIR = ../../../clib/charon
 
 LIBS += -L ../../../deps -llua -lm -lmysqlclient -ldl
 

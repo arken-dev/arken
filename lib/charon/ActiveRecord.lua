@@ -3,6 +3,7 @@
 -- Use of this source code is governed by a BSD-style
 -- license that can be found in the LICENSE file.
 
+local json    = require("charon.json")
 local Class   = require("charon.oop.Class")
 local Adapter = require("charon.ActiveRecord.Adapter")
 ActiveRecord  = Class.new("ActiveRecord")

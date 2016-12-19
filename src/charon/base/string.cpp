@@ -4,8 +4,9 @@
 // license that can be found in the LICENSE file.
 
 #include <charon/helper>
-#include <CStringList>
 #include <QDebug>
+
+using charon::ByteArrayList;
 
 char * string::append(const char * string, const char * ba)
 {
@@ -587,14 +588,14 @@ char * string::replace(const char * original, const char * pattern, const char *
   }
 }
 
-CStringList * string::split(const char * raw, const char * pattern)
+ByteArrayList * string::split(const char * raw, const char * pattern)
 {
   return string::split(raw, strlen(raw), pattern);
 }
 
-CStringList * string::split(const char * raw, size_t len, const char * pattern)
+ByteArrayList * string::split(const char * raw, size_t len, const char * pattern)
 {
-  CStringList *list = new CStringList();
+  ByteArrayList *list = new ByteArrayList();
 
   const char * current = raw;
   const char * other   = raw;

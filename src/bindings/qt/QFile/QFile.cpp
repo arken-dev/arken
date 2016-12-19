@@ -133,7 +133,10 @@ static const luaL_reg QFileClassMethods[] = {
 
 void static
 registerQFileClassMethods( lua_State *L ) {
-  luaL_register(L, "QFile", QFileClassMethods);
+  luaL_newmetatable(L, "QFile");
+  luaL_register(L, NULL, QFileClassMethods);
+  lua_pushvalue(L, -1);
+  lua_setfield(L, -1, "__index");
 }
 
 /**
@@ -339,8 +342,8 @@ registerQFileInstanceMethods( lua_State *L ) {
 extern "C" {
   int
   luaopen_QFile( lua_State *L ) {
-    registerQFileClassMethods(L);
     registerQFileInstanceMethods(L);
+    registerQFileClassMethods(L);
     return 1;
   }
 }

@@ -40,7 +40,10 @@ static const luaL_reg QSqlDatabaseClassMethods[] = {
 
 void static
 registerQSqlDatabaseClassMethods( lua_State *L ) {
-  luaL_register(L, "QSqlDatabase", QSqlDatabaseClassMethods);
+  luaL_newmetatable(L, "QSqlDatabase");
+  luaL_register(L, NULL, QSqlDatabaseClassMethods);
+  lua_pushvalue(L, -1);
+  lua_setfield(L, -1, "__index");
 }
 
 /**
@@ -154,8 +157,8 @@ registerQSqlDatabaseInstanceMethods( lua_State *L ) {
 extern "C" {
   int
   luaopen_QSqlDatabase( lua_State *L ) {
-    registerQSqlDatabaseClassMethods(L);
     registerQSqlDatabaseInstanceMethods(L);
+    registerQSqlDatabaseClassMethods(L);
     return 1;
   }
 }

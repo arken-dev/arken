@@ -4,11 +4,12 @@
 // license that can be found in the LICENSE file.
 
 #include <lua/lua.hpp>
+#include <charon/helper>
 #include <iostream>
 #include <QtCore>
 #include <QCoreApplication>
-#include <charon/helper>
-#include <CByteArray>
+
+using charon::ByteArray;
 
 int charonFileLoad(lua_State *L, QFile &file)
 {
@@ -29,14 +30,14 @@ int charonFileLoad(lua_State *L, QFile &file)
   return rv;
 }
 
-void charonConsolePrintAround(CByteArray &buffer)
+void charonConsolePrintAround(ByteArray &buffer)
 {
   buffer.remove(0, 1);
   buffer.prepend("print(");
   buffer.append(")");
 }
 
-bool charonConsoleIncrementLevel(CByteArray &row)
+bool charonConsoleIncrementLevel(ByteArray &row)
 {
   /* if */
   if(row.startsWith("if ") or row.contains(" if ")) {
@@ -61,7 +62,7 @@ bool charonConsoleIncrementLevel(CByteArray &row)
   return false;
 }
 
-bool charonConsoleDecrementLevel(CByteArray &row)
+bool charonConsoleDecrementLevel(ByteArray &row)
 {
   /* end */
   if(row.startsWith("end") or row.contains(" end ")) {
@@ -81,8 +82,8 @@ int charonConsoleLoad(lua_State *L)
   int rv = 0;
   int level = 0;
   std::string line;
-  CByteArray  row;
-  CByteArray  buffer;
+  ByteArray  row;
+  ByteArray  buffer;
 
   while(true) {
     std::cout << "charon" << level << "> ";
@@ -128,8 +129,8 @@ int charonConsoleLoad(lua_State *L)
 int main(int argc, char * argv[])
 {
   int rv = 0;
-  CByteArray charonPath;
-  CByteArray task;
+  ByteArray charonPath;
+  ByteArray task;
   QString    dirPath;
   QFile      file(argv[1]);
   QCoreApplication app(argc, argv);

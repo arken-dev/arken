@@ -3,9 +3,6 @@
 -- Use of this source code is governed by a BSD-style
 -- license that can be found in the LICENSE file.
 
-require 'QString'
-require 'QStringList'
-
 local M = {}
 
 M.mtime  = os.microtime()
@@ -117,12 +114,12 @@ end
 function M.debug(file_name)
   local source = M.source[file_name]
   local buffer = ""
-  local list   = QString.new(source):split('\n')
+  local list   = source:split('\n')
   for i = 1, list:size() do
     if i < 10 then
       buffer = buffer .. ' '
     end
-    buffer = buffer .. i .. ") " .. list:at(i):__tostring() .. '\n'
+    buffer = buffer .. i .. ") " .. list:at(i) .. '\n'
   end
   return buffer
 end

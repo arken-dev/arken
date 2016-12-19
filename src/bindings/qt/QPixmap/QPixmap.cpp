@@ -37,7 +37,11 @@ static const luaL_reg QPixmapClassMethods[] = {
 
 void static
 registerQPixmapClassMethods( lua_State *L ) {
-  luaL_register(L, "QPixmap", QPixmapClassMethods);
+  luaL_newmetatable(L, "QPixmap");
+  luaL_register(L, NULL, QPixmapClassMethods);
+  lua_pushvalue(L, -1);
+  lua_setfield(L, -1, "__index");
+
 }
 
 /**
@@ -68,8 +72,8 @@ registerQPixmapInstanceMethods( lua_State *L ) {
 extern "C" {
   int
   luaopen_QPixmap( lua_State *L ) {
-    registerQPixmapClassMethods(L);
     registerQPixmapInstanceMethods(L);
+    registerQPixmapClassMethods(L);
     return 1;
   }
 }

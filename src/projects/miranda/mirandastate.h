@@ -2,6 +2,7 @@
 #define MIRANDASTATE_H
 
 #include <lua/lua.hpp>
+#include <charon/helper>
 
 #include <QCoreApplication>
 #include <QDateTime>
@@ -9,11 +10,10 @@
 #include <QStack>
 #include <QHash>
 
-#include <charon/helper>
-#include <CByteArray>
-
 #include "mirandaservice.h"
 #include "mirandacache.h"
+
+using charon::ByteArray;
 
 class MirandaState
 {
@@ -41,7 +41,7 @@ public:
   static void createService(QByteArray fileName);
   static void createTask(QByteArray fileName, const char * uuid);
   static void taskPool(QByteArray fileName, const char * uuid);
-  static QHash<CByteArray, MirandaCache *> * s_cache;
+  static QHash<ByteArray, MirandaCache *> * s_cache;
 
   lua_State * instance();
 
@@ -49,11 +49,11 @@ private:
   lua_State * m_State;
   qint64      m_version;
   int         m_gc;
-  static int        s_gc;
-  static qint64     s_version;
-  static CByteArray s_charonPath;
-  static CByteArray s_profilePath;
-  static QMutex     s_mutex;
+  static int       s_gc;
+  static qint64    s_version;
+  static ByteArray s_charonPath;
+  static ByteArray s_profilePath;
+  static QMutex    s_mutex;
   static QStack<MirandaState *> * s_stack;
   static QList<MirandaService*> * s_service;
   static QThreadPool * s_pool;

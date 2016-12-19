@@ -4,11 +4,13 @@
 // license that can be found in the LICENSE file.
 
 #include <lua/lua.hpp>
+#include <charon/helper>
 #include "mirandatask.h"
 #include <iostream>
 #include <QThread>
 #include <QMutex>
-#include <CHttpParser>
+
+using charon::net::HttpParser;
 
 MirandaTask::MirandaTask(qintptr descriptor)
 {
@@ -67,7 +69,7 @@ void MirandaTask::processRequest(MirandaState * state, QByteArray &buffer)
   L = state->instance();
 
   //request
-  CHttpParser * http_request = new CHttpParser(buffer);
+  HttpParser * http_request = new HttpParser(buffer);
   lua_pushlightuserdata(L, http_request);
   lua_setglobal(L, "__http_request");
 

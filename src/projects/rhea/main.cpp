@@ -5,10 +5,11 @@
 
 #include <iostream>
 #include <lua/lua.hpp>
+#include <charon/helper>
 #include <QtCore>
 #include <QCoreApplication>
-#include <CByteArray>
-#include <charon/helper>
+
+using charon::ByteArray;
 
 int main(int argc, char * argv[])
 {

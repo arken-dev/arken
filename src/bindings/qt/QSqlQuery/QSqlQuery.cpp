@@ -39,7 +39,10 @@ static const luaL_reg QSqlQueryClassMethods[] = {
 
 void static
 registerQSqlQueryClassMethods( lua_State *L ) {
-  luaL_register(L, "QSqlQuery", QSqlQueryClassMethods);
+  luaL_newmetatable(L, "QSqlQuery");
+  luaL_register(L, NULL, QSqlQueryClassMethods);
+  lua_pushvalue(L, -1);
+  lua_setfield(L, -1, "__index");
 }
 
 /**
@@ -104,8 +107,8 @@ registerQSqlQueryInstanceMethods( lua_State *L ) {
 extern "C" {
   int
   luaopen_QSqlQuery( lua_State *L ) {
-    registerQSqlQueryClassMethods(L);
     registerQSqlQueryInstanceMethods(L);
+    registerQSqlQueryClassMethods(L);
     return 1;
   }
 }

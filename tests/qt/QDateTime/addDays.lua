@@ -1,4 +1,4 @@
-require "QDateTime"
+local QDateTime = require "QDateTime"
 
 local test = {}
 

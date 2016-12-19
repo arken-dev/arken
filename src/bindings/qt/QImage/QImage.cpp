@@ -37,7 +37,11 @@ static const luaL_reg QImageClassMethods[] = {
 
 void static
 registerQImageClassMethods( lua_State *L ) {
-  luaL_register(L, "QImage", QImageClassMethods);
+  luaL_newmetatable(L, "QImage");
+  luaL_register(L, NULL, QImageClassMethods);
+  lua_pushvalue(L, -1);
+  lua_setfield(L, -1, "__index");
+
 }
 
 /**
@@ -68,8 +72,8 @@ registerQImageInstanceMethods( lua_State *L ) {
 extern "C" {
   int
   luaopen_QImage( lua_State *L ) {
-    registerQImageClassMethods(L);
     registerQImageInstanceMethods(L);
+    registerQImageClassMethods(L);
     return 1;
   }
 }

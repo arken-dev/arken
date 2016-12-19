@@ -4,11 +4,12 @@
 // license that can be found in the LICENSE file.
 
 #include <lua/lua.hpp>
-#include <CByteArray>
+#include <charon/helper>
 #include <QDebug>
 #include <QThread>
-#include <charon/helper>
 #include "mirandastate.h"
+
+using charon::ByteArray;
 
 extern "C" {
   char * miranda_json_encode(lua_State *l);

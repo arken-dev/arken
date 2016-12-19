@@ -20,7 +20,6 @@
 #include <QUuid>
 
 #include <charon/helper>
-#include <charon/modules/http.h>
 #include <iostream>
 
 char * os::abspath(const char * path)
@@ -119,14 +118,14 @@ bool os::exists(const char * path)
   return QFile::exists(path);
 }
 
-CStringList * os::glob(const char * dir)
+ByteArrayList * os::glob(const char * dir)
 {
   return os::glob(dir, false);
 }
 
-CStringList * os::glob(const char * dir, bool sub)
+ByteArrayList * os::glob(const char * dir, bool sub)
 {
-  CStringList * list = new CStringList();
+  ByteArrayList * list = new ByteArrayList();
   QDirIterator::IteratorFlags flags;
 
   if( sub ) {
@@ -143,16 +142,16 @@ CStringList * os::glob(const char * dir, bool sub)
   return list;
 }
 
-CStringList * os::glob(const char * dir, const char * regex)
+ByteArrayList * os::glob(const char * dir, const char * regex)
 {
   return os::glob(dir, regex, false);
 }
 
-CStringList * os::glob(const char * dir, const char * regex, bool sub)
+ByteArrayList * os::glob(const char * dir, const char * regex, bool sub)
 {
 
   QRegExp qregex(regex);
-  CStringList * list = new CStringList();
+  ByteArrayList * list = new ByteArrayList();
   QDirIterator::IteratorFlags flags;
 
   if( sub ) {

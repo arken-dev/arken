@@ -1,6 +1,24 @@
+#ifndef _CHARON_HELPER_
+#define _CHARON_HELPER_
+
 #include <charon/charon.h>
 #include <charon/base/math.h>
 #include <charon/base/os.h>
 #include <charon/base/string.h>
+#include <charon/net/httpclient.h>
+#include <charon/net/httpparser.h>
+#include <charon/base64.h>
+#include <charon/bytearray.h>
+#include <charon/bytearraylist.h>
+#include <charon/charon.h>
+#include <charon/digest.h>
+#include <charon/http.h>
+#include <charon/regex.h>
+#include <charon/sha3.h>
+#include <charon/thread.h>
 
-using namespace charon;
+using charon::base::os;
+using charon::base::string;
+using charon::base::math;
+
+#endif

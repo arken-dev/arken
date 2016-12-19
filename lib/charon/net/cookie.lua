@@ -3,7 +3,7 @@
 -- Use of this source code is governed by a BSD-style
 -- license that can be found in the LICENSE file.
 
-require "CByteArray"
+local ByteArray = require "charon.ByteArray"
 
 local M = {}
 
@@ -15,7 +15,7 @@ M.parse = function(buffer)
   if index == nil and len > 0 then
     local equal    = buffer:find("=")
     local key      = buffer:sub(0, equal-1)
-    local value    = CByteArray.new(buffer:sub(equal+1, buffer:len())):trimmed()
+    local value    = ByteArray.new(buffer:sub(equal+1, buffer:len())):trimmed()
     result[key] = value
     return result
   end
@@ -23,7 +23,7 @@ M.parse = function(buffer)
     local fragment = buffer:sub(0, index)
     local equal    = fragment:find("=")
     local key      = fragment:sub(0, equal-1)
-    local value    = CByteArray.new(fragment:sub(equal+1, index-1)):trimmed()
+    local value    = ByteArray.new(fragment:sub(equal+1, index-1)):trimmed()
     result[key] = value
     --
     buffer = buffer:sub(index+2, -1)
@@ -32,7 +32,7 @@ M.parse = function(buffer)
       fragment = buffer:sub(0, index)
       equal    = fragment:find("=")
       key      = fragment:sub(0, equal-1)
-      value    = CByteArray.new(fragment:sub(equal+1, -1)):trimmed()
+      value    = ByteArray.new(fragment:sub(equal+1, -1)):trimmed()
       result[key] = value
     end
   end

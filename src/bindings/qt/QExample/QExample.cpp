@@ -37,7 +37,10 @@ static const luaL_reg QExampleClassMethods[] = {
 
 void static
 registerQExampleClassMethods( lua_State *L ) {
-  luaL_register(L, "QExample", QExampleClassMethods);
+  luaL_newmetatable(L, "QExample");
+  luaL_register(L, NULL, QExampleClassMethods);
+  lua_pushvalue(L, -1);
+  lua_setfield(L, -1, "__index");
 }
 
 /**
@@ -68,8 +71,8 @@ registerQExampleInstanceMethods( lua_State *L ) {
 extern "C" {
   int
   luaopen_QExample( lua_State *L ) {
-    registerQExampleClassMethods(L);
     registerQExampleInstanceMethods(L);
+    registerQExampleClassMethods(L);
     return 1;
   }
 }

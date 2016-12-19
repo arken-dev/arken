@@ -4,11 +4,12 @@
 // license that can be found in the LICENSE file.
 
 #include <lua/lua.hpp>
-#include <CByteArray>
+#include <charon/helper>
 #include <QDebug>
 #include <QThread>
-#include <charon/helper>
 #include <triton.h>
+
+using charon::ByteArray;
 
 static int
 triton_enqueue(lua_State *L) {

@@ -9,15 +9,17 @@
 #include <QStack>
 #include <QReadWriteLock>
 
+using charon::ByteArray;
+
 int        MirandaState::s_gc          = 0;
 qint64     MirandaState::s_version     = 0;
-CByteArray MirandaState::s_charonPath  = "";
-CByteArray MirandaState::s_profilePath = "";
+ByteArray  MirandaState::s_charonPath  = "";
+ByteArray  MirandaState::s_profilePath = "";
 QMutex     MirandaState::s_mutex;
 
 QStack<MirandaState *> * MirandaState::s_stack   = new QStack<MirandaState *>;
 QList<MirandaService*> * MirandaState::s_service = new QList<MirandaService *>;
-QHash<CByteArray, MirandaCache *> * MirandaState::s_cache = new QHash<CByteArray, MirandaCache *>;
+QHash<ByteArray, MirandaCache *> * MirandaState::s_cache = new QHash<ByteArray, MirandaCache *>;
 QThreadPool * MirandaState::s_pool = 0;
 QReadWriteLock lock;
 

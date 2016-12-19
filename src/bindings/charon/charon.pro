@@ -3,6 +3,15 @@
 ######################################################################
 
 TEMPLATE = subdirs
-SUBDIRS = base    \
-          classes \
-          modules
+SUBDIRS = base           \
+          base64         \
+          bytearray      \
+          bytearraylist  \
+          digest         \
+          http           \
+          net/httpclient \
+          net/httpparser \
+          odebug         \
+          regex          \
+          sha3           \
+          thread

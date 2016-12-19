@@ -12,7 +12,7 @@ INCLUDEPATH += ../../../deps/include
 INCLUDEPATH += ../../vendors/sqlite3/
 
 TARGET = lsqlite3
-DESTDIR = ../../../clib
+DESTDIR = ../../../clib/charon
 
 LIBS += -L ../../../deps -llua
 

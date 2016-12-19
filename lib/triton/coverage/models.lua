@@ -1,7 +1,7 @@
 CHARON_ENV = os.getenv("CHARON_ENV") or "test"
 
-require 'QDirIterator'
-require 'QFileInfo'
+local QDirIterator = require 'QDirIterator'
+local QFileInfo    = require 'QFileInfo'
 
 local test     = require 'charon.test'
 local template = require 'charon.template'

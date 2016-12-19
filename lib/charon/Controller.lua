@@ -167,7 +167,8 @@ function Controller:render_html(params)
     if flag then
       self._yield = result
     else
-      self._yield = (file .. '\n\n' .. result .. '\n\n' .. template.debug(self._yield))
+      --self._yield = (file .. '\n\n' .. result .. '\n\n' .. template.debug(self._yield))
+      return 500, {'Content-Type: text/plain'}, file .. '\n\n' .. result .. '\n\n' .. template.debug(file)
     end
 
     if request.field("Accept") == "text/javascript" then

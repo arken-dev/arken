@@ -1,17 +1,20 @@
 namespace charon {
-  namespace math {
-    int    abs(int number);
-    double acos(double number);
-    double asin(double number);
-    double atan(double number);
-    double atan2(double x, double y);
-    double ceil(double number);
-    double cos(double number);
-    double cosh(double number);
-    double exp(double number);
-    double floor(double number);
-    double fmod(double number, double denom);
-    double round(double number, int precision);
-    double truncate(double number, int precision);
+  namespace base {
+    class math {
+      public:
+      static int    abs(int number);
+      static double acos(double number);
+      static double asin(double number);
+      static double atan(double number);
+      static double atan2(double x, double y);
+      static double ceil(double number);
+      static double cos(double number);
+      static double cosh(double number);
+      static double exp(double number);
+      static double floor(double number);
+      static double fmod(double number, double denom);
+      static double round(double number, int precision);
+      static double truncate(double number, int precision);
+    };
   }
 }
