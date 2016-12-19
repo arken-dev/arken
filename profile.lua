@@ -16,7 +16,6 @@ os.setlocale("C", "numeric")
 -------------------------------------------------------------------------------
 -- GLOBALS
 -------------------------------------------------------------------------------
-require 'charon.using'
 require 'charon.helper'
 require 'charon.package'
 require 'charon.ByteArrayList'
