@@ -25,7 +25,7 @@ callisto = function(file)
     if titulo:len() > 0 then
       titulo = titulo, ', '
     end
-    titulo = titulo .. file_name:swap('specs/models/', '')
+    titulo = titulo .. file_name:replace('specs/models/', '')
   end
 
   for file_name, result in pairs(results) do
@@ -60,5 +60,5 @@ callisto = function(file)
     buffer = buffer .. rodape
     buffer = buffer .. '\n\nFinished in ' .. string.format("%.3f", os.microtime() - init) .. ' seconds'
     print(buffer)
-    return icon, buffer:swap('\n', '<br>')
+    return icon, buffer:replace('\n', '<br>')
 end

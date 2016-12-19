@@ -4,6 +4,8 @@
 // license that can be found in the LICENSE file.
 
 #include <charon/helper>
+#include <CStringList>
+#include <QDebug>
 
 char * string::append(const char * string, const char * ba)
 {
@@ -443,7 +445,7 @@ char * string::repeated(const char *string, int times)
 
   return result;
 }
-
+/*
 char * string::replace(const char *string, const char before, const char after)
 {
   int i, j;
@@ -465,7 +467,7 @@ char * string::replace(const char *string, const char before, const char after)
 
   return result;
 }
-
+*/
 char * string::right(const char *string, int len)
 {
   int i, j, string_len;
@@ -542,7 +544,7 @@ char * string::simplified(const char *string)
 }
 
 //http://stackoverflow.com/questions/779875/what-is-the-function-to-replace-string-in-c
-char * string::swap(const char * original, const char * pattern, const char * replacement )
+char * string::replace(const char * original, const char * pattern, const char * replacement )
 {
   size_t const replen = strlen(replacement);
   size_t const patlen = strlen(pattern);
@@ -583,6 +585,48 @@ char * string::swap(const char * original, const char * pattern, const char * re
     }
     return returned;
   }
+}
+
+CStringList * string::split(const char * raw, const char * pattern)
+{
+  return string::split(raw, strlen(raw), pattern);
+}
+
+CStringList * string::split(const char * raw, size_t len, const char * pattern)
+{
+  CStringList *list = new CStringList();
+
+  const char * current = raw;
+  const char * other   = raw;
+  int rawlen = len;
+  int patternlen = strlen(pattern);
+  int i, flag = 0, size = 0;
+
+  for(i = 0; i < rawlen; i++) {
+    if( strncmp(current, pattern, patternlen) == 0 ) {
+      other = raw + flag;
+      size = i - flag;
+      if( size > 0 ) {
+        //char * tmp = new char[size+1];
+        //strncpy(tmp, other, size);
+        //tmp[size] = '\0';
+        list->append(other, size);
+      }
+      flag = i+patternlen;
+    }
+    current++;
+  }
+
+  if( flag < rawlen ) {
+    other = raw + flag;
+    size =  i - flag;
+    //char * tmp = new char[size+1];
+    //strncpy(tmp, other, size);
+    //tmp[size] = '\0';
+    list->append(other, size);
+  }
+
+  return list;
 }
 
 char * string::suffix(const char * raw)

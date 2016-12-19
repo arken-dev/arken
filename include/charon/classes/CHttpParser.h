@@ -14,6 +14,7 @@ class CHttpParser
   const char * m_requestUri;
   const char * m_httpVersion;
   const char * m_headerDone;
+  size_t m_headerDoneLength;
 
   public:
   CHttpParser(QByteArray data);
@@ -26,7 +27,7 @@ class CHttpParser
   void  setRequestMethod(const char * requestMethod);
   void  setRequestUri(const char * requestUri);
   void  setHttpVersion(const char * httpVersion);
-  void  setHeaderDone(const char * headerDone);
+  void  setHeaderDone(const char * headerDone, size_t length);
 
   const char * fragment();
   const char * queryString();
@@ -35,6 +36,7 @@ class CHttpParser
   const char * requestUri();
   const char * httpVersion();
   const char * headerDone();
+  size_t headerDoneLength();
   const char * field(const char *);
   char * data();
   QByteArray toJson();

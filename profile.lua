@@ -1,9 +1,7 @@
 -------------------------------------------------------------------------------
 -- PATH
 -------------------------------------------------------------------------------
-
 package.path  = package.path  .. ";" .. CHARON_PATH .. "/lib/?.lua"
-package.path  = package.path  .. ";" .. CHARON_PATH .. "/rhea/?.lua"
 package.cpath = package.cpath .. ";" .. CHARON_PATH .. "/clib/?.so"
 package.cpath = package.cpath .. ";" .. CHARON_PATH .. "/clib/?.dylib"
 package.cpath = package.cpath .. ";" .. CHARON_PATH .. "/clib/?.dll"
@@ -22,12 +20,7 @@ os.setlocale("C", "numeric")
 require 'charon.json'
 require 'charon.helper'
 require 'charon.package'
-require 'charon.parse'
-require 'toboolean' -- deprecate ?
-require 'isblank'   -- deprecate ?
 require "CStringList"
-require "Class"
-require "Object"
 
 -------------------------------------------------------------------------------
 -- PROFILE.D

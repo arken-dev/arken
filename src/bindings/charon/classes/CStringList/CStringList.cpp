@@ -54,7 +54,13 @@ static int
 lua_CStringListInstanceMethodAt( lua_State *L ) {
   CStringList * udata  = checkCStringList( L );
   int pos = luaL_checkint(L, 2);
-  lua_pushstring(L, udata->at(pos-1));
+  int len;
+  const char * str = udata->at(pos-1, &len);
+  if( str == 0 ) {
+    lua_pushnil(L);
+  } else {
+    lua_pushlstring(L, str, len);
+  }
   return 1;
 }
 

@@ -129,16 +129,6 @@ static int lua_charon_string_normalize( lua_State *L ) {
   return 1;
 }
 
-static int lua_charon_string_replace( lua_State *L ) {
-  const char * string = luaL_checkstring(L, 1);
-  const char * before = luaL_checkstring(L, 2);
-  const char * after  = luaL_checkstring(L, 3);
-  char * result       = string::replace(string, before[0], after[0]);
-  lua_pushstring(L, result);  /* push result */
-  delete[] result;
-  return 1;
-}
-
 static int lua_charon_string_repeated( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   int    times  =  luaL_checkinteger(L, 2);
@@ -186,17 +176,28 @@ static int lua_charon_string_suffix( lua_State *L ) {
   return 1;
 }
 
+static int lua_charon_string_split( lua_State *L ) {
+  size_t len;
+  const char  * string  = luaL_checklstring(L, 1, &len);
+  const char  * pattern = luaL_checkstring(L, 2);
+  CStringList * list    = string::split(string, len, pattern);
+  CStringList **ptr = (CStringList **)lua_newuserdata(L, sizeof(CStringList*));
+  *ptr = list;
+  luaL_getmetatable(L, "CStringList.metatable");
+  lua_setmetatable(L, -2);
 
-static int lua_charon_string_swap( lua_State *L ) {
+  return 1;
+}
+
+static int lua_charon_string_replace( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   const char * before = luaL_checkstring(L, 2);
   const char * after  = luaL_checkstring(L, 3);
-  char * result       = string::swap(string, before, after);
+  char * result       = string::replace(string, before, after);
   lua_pushstring(L, result);  /* push result */
   delete[] result;
   return 1;
 }
-
 
 static int lua_charon_string_trimmed( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
@@ -243,8 +244,8 @@ int luaopen_charon_string( lua_State *L ) {
     {"right",       lua_charon_string_right},
     {"simplified",  lua_charon_string_simplified},
     {"startsWith",  lua_charon_string_startsWith},
+    {"split",       lua_charon_string_split},
     {"suffix",      lua_charon_string_suffix},
-    {"swap",        lua_charon_string_swap},
     {"trimmed",     lua_charon_string_trimmed},
     {"truncate",    lua_charon_string_truncate},
     {"underscore",  lua_charon_string_underscore},

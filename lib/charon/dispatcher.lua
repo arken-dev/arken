@@ -3,24 +3,42 @@
 -- Use of this source code is governed by a BSD-style
 -- license that can be found in the LICENSE file.
 
-require 'Controller'
+require 'charon.Controller'
+require 'charon.ActiveRecord'
+
 require 'CByteArray'
 require 'CHttpParser'
-require 'ActiveRecord'
 
-local url      = require 'url'
-local cookie   = require 'charon.cookie'
-local template = require 'template'
+local multipart  = require 'charon.net.multi-part'
+local url        = require 'charon.net.url'
+local cookie     = require 'charon.net.cookie'
+local template   = require 'charon.template'
+
+-------------------------------------------------------------------------------
+-- DISPATCHER
+-------------------------------------------------------------------------------
+
+local dispatcher = {}
+dispatcher.converter = require('charon.Converter')
+dispatcher.prefix = nil
+
+-------------------------------------------------------------------------------
+-- REQUEST
+-------------------------------------------------------------------------------
 
 request.params = function()
   if request.__params == nil then
     if request.requestMethod() == 'POST' then
-      request.__params = url.parseQuery(request.headerDone())
+      if request.field('Content-Type'):startsWith('multipart/form-data;') then
+        request.__params = multipart.parse(request.headerDone())
+      else
+        request.__params = url.parseQuery(request.headerDone())
+      end
     else
       request.__params = url.parseQuery(request.queryString())
     end
   end
-  return request.__params
+  return dispatcher.converter.new(request.__params)
 end
 
 request.cookies = function()
@@ -64,7 +82,7 @@ request.session = function()
   local cookies = request.cookies()
   if cookies.charon_session_id then
     if request.__session_data == nil then
-      request.__session_id   = cookies.charon_session_id
+      request.__session_id = cookies.charon_session_id
       if cache.value(request.__session_id) then
         local data = cache.value(request.__session_id)
         if #data == 0 then
@@ -102,16 +120,16 @@ request.append = function(header)
   table.insert(request.__response, header)
 end
 
-local M = {}
+-------------------------------------------------------------------------------
+-- PARSE PATH
+-------------------------------------------------------------------------------
 
-M.prefix = nil
-
-M.parse_path  = function()
+dispatcher.parsePath  = function()
   local path  = request.requestPath()
   local last  = path:lastIndexOf('/')
   local start = 1
-  if M.prefix then
-    start = start + #M.prefix + 1
+  if dispatcher.prefix then
+    start = start + #dispatcher.prefix + 1
   end
   local controller = path:mid(start, last-start)
   local action     = path:right(path:len() - last - 1)
@@ -125,12 +143,21 @@ M.parse_path  = function()
   return controller, action, path
 end
 
-M.require_controller_name = function(controller_name)
+-------------------------------------------------------------------------------
+-- REQUIRE CONTROLLER
+-------------------------------------------------------------------------------
+
+dispatcher.requireController = function(controller_name)
   return require(controller_name:camelcase() .. "Controller")
 end
 
-M.dispatchLocal = function(fileName)
-  local list     = require 'charon.mime-type'
+-------------------------------------------------------------------------------
+-- DISPATCHER LOCAL
+-- dispatcher local files in dir public in development mode
+-------------------------------------------------------------------------------
+
+dispatcher.dispatchLocal = function(fileName)
+  local list     = require 'charon.net.mime-type'
   local suffix   = fileName:suffix()
   local mimetype = tostring(list[suffix])
   local header   = "Content-type: " .. mimetype
@@ -138,9 +165,13 @@ M.dispatchLocal = function(fileName)
   return 200, {header}, file:read("*all")
 end
 
-M.dispatchController = function()
-  local controller_name, action_name, controller_path = M.parse_path()
-  local class  = M.require_controller_name(controller_name)
+-------------------------------------------------------------------------------
+-- DISPATCHER CONTROLLER
+-------------------------------------------------------------------------------
+
+dispatcher.dispatchController = function()
+  local controller_name, action_name, controller_path = dispatcher.parsePath()
+  local class  = dispatcher.requireController(controller_name)
   local object = class.new{controller_name = controller_name, action_name = action_name, controller_path = controller_path}
   if object[action_name .. "Action"] then
     return object:pexecute(action_name .. "Action")
@@ -149,23 +180,35 @@ M.dispatchController = function()
   end
 end
 
-M.dispatch = function()
+-------------------------------------------------------------------------------
+-- BEFORE CALLBACK
+-------------------------------------------------------------------------------
+
+dispatcher.before = function()
   ActiveRecord.time = 0
   template.time = 0
+end
+
+-------------------------------------------------------------------------------
+-- DISPATCH
+-------------------------------------------------------------------------------
+
+dispatcher.dispatch = function()
+  dispatcher.before()
   local time    = os.microtime()
   local reload  = 0
   local code, headers, body
   if CHARON_ENV == 'development' then
     local fileName = "public" .. request.requestPath()
     if fileName ~= "public/" and os.exists(fileName) then
-      return M.dispatchLocal(fileName)
+      return dispatcher.dispatchLocal(fileName)
     else
       reload = package.reload()
       template.reload()
-      code, headers, body = M.dispatchController()
+      code, headers, body = dispatcher.dispatchController()
     end
   else
-    code, headers, body = M.dispatchController()
+    code, headers, body = dispatcher.dispatchController()
   end
   if request.__response then
     for _, header in ipairs(request.__response) do
@@ -176,30 +219,40 @@ M.dispatch = function()
   if code == nil then
     error "body empty, render ?"
   end
-  M.log(code, time, reload)
-  request.reset()
+  dispatcher.log(code, time, reload)
+  dispatcher.after()
   return code, headers, body
 end
 
-M.log = function(code, time, reload)
+-------------------------------------------------------------------------------
+-- LOG
+-------------------------------------------------------------------------------
+
+dispatcher.log = function(code, time, reload)
   local msg = "Completed in %.4f ms (Reload: %.4f, View: %.4f, DB: %.4f) | %i OK [%s]"
   local log = string.format(msg, time, reload, template.time, ActiveRecord.time, code, request:requestUri())
-  M.reset()
   print(log)
 end
 
-M.reset = function()
+-------------------------------------------------------------------------------
+-- AFTER
+-------------------------------------------------------------------------------
+
+dispatcher.after = function()
+  request.reset()
   ActiveRecord.clear()
   ActiveRecord.time = 0
   template.time     = 0
-
-  return true
 end
 
-M.test = function()
+-------------------------------------------------------------------------------
+-- TEST
+-------------------------------------------------------------------------------
+
+dispatcher.test = function()
   return 200,
     {'Content-Type: text/html; charset=utf-8'},
     "<html><body><h1>DISPATCHER TEST IS WORKS ...</h1></body></html>"
 end
 
-return M
+return dispatcher

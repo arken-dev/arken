@@ -1,0 +1,411 @@
+local Class = require 'charon.oop.Class'
+local url   = require 'charon.net.url'
+
+FormHelper = Class.new("FormHelper")
+
+function FormHelper:url(params)
+
+  if type(params) == 'string' then
+    return params
+  end
+
+  local dispatcher = require 'charon.dispatcher'
+  local controller = params.controller or self.controller.controller_name
+  local action     = params.action or self.controller.action_name or 'index'
+
+  if dispatcher.prefix then
+    controller = dispatcher.prefix .. '/' .. controller
+  end
+
+  params.action = nil
+  params.controller = nil
+
+  local result = params.path or ('/' .. controller .. '/' .. action)
+  local query  = url.buildQuery(params)
+
+  if #query > 0 then
+    result = result .. '?' .. query
+  end
+
+  return result
+end
+
+function FormHelper:urlPerform()
+  local action = self.controller.action_name:gsub("Perform", "") .. "Perform"
+  return self:url{ action = action }
+end
+
+function FormHelper:buildId(field)
+  return (self.name .. '_' .. field)
+end
+
+function FormHelper:buildName(field)
+  return (self.name .. '[' .. field .. ']')
+end
+
+function FormHelper:buildValue(field)
+  local value
+  if self.data['read'] then
+    value = self.data['read'](self.data, field)
+  else
+    value = self.data[field]
+  end
+   if value == nil then
+     return ''
+   else
+     return value
+   end
+end
+
+function FormHelper:hiddenField(field)
+  local html = [[<input type="hidden" id="%s" name="%s" value=%q>]]
+  return string.format(html, self:buildId(field), self:buildName(field), self:buildValue(field))
+end
+
+function FormHelper:textField(field, options)
+  options       = options or {}
+  local value   = options.value or self:buildValue(field)
+  local options = options or {}
+  local style   = options.style or "width:250px"
+  local html    = [[<input type="text" id="%s" name="%s" value=%q style=%q]]
+  local html    = string.format(html, self:buildId(field), self:buildName(field), value, style)
+
+  if options.onblur then
+    html = html .. string.format(" onblur=%q ", options.onblur)
+  end
+
+  if options.onfocus then
+    html = html .. string.format(" onfocus=%q ", options.onfocus)
+  end
+
+  if options.onkeypress then
+    html = html .. string.format(" onkeypress=%q ", options.onkeypress)
+  end
+
+  if options.onkeyup then
+    html = html .. string.format(" onkeyup=%q ", options.onkeyup)
+  end
+
+  return (html .. ' />')
+end
+
+function FormHelper:textArea(field, options)
+  options       = options or {}
+  local value   = options.value or self:buildValue(field)
+  local options = options or {}
+  local style   = options.style or "width:250px;height:65px"
+  local html    = [[<textarea id=%q name=%q style=%q >%s]]
+  local html    = string.format(html, self:buildId(field), self:buildName(field), style, value)
+
+  if options.onblur then
+    html = html .. string.format(" onblur=%q ", options.onblur)
+  end
+
+  if options.onfocus then
+    html = html .. string.format(" onfocus=%q ", options.onfocus)
+  end
+
+  if options.onkeypress then
+    html = html .. string.format(" onkeypress=%q ", options.onkeypress)
+  end
+
+  if options.onkeyup then
+    html = html .. string.format(" onkeyup=%q ", options.onkeyup)
+  end
+
+  return (html .. '</textarea>')
+end
+
+
+function FormHelper:floatField(field, options)
+  options            = options            or {}
+  options.onblur     = options.onblur     or "inputBlur( this )"
+  options.onfocus    = options.onfocus    or "inputFocus( this )"
+  options.onkeypress = options.onkeypress or "inputPress( this, event )"
+  options.onkeyup    = options.onkeyup    or "format_invert(this, '**.***.***,**')"
+  options.style      = options.style      or "width:95px;text-align:right"
+  return self:textField(field, options)
+end
+
+function FormHelper:intField(field, options)
+  options            = options            or {}
+  options.onblur     = options.onblur     or "inputBlur( this )"
+  options.onfocus    = options.onfocus    or "inputFocus( this )"
+  options.onkeypress = options.onkeypress or "inputPress( this, event )"
+  options.onkeyup    = options.onkeyup    or "format_invert(this, '***.***.***')"
+  options.style      = options.style      or "width:95px;text-align:right"
+  return self:textField(field, options)
+end
+
+function FormHelper:dateField(field, options)
+  options            = options            or {}
+  options.onblur     = options.onblur     or "inputBlur( this )"
+  options.onfocus    = options.onfocus    or "inputFocus( this )"
+  options.onkeypress = options.onkeypress or "inputPress( this, event )"
+  options.onkeyup    = options.onkeyup    or "format_invert(this, '**/**/****')"
+  options.style      = options.style      or "width:80px;text-align:right"
+
+  value = self:buildValue(field)
+
+  if value:sub(5, 5) == '/' then
+    local slice = value:slice('/')
+    value = slice[3] .. '/' .. slice[2] .. '/' .. slice[1]
+    options.value = value
+  end
+
+  if value:sub(5, 5) == '-' then
+    local slice = value:slice('-')
+    value = slice[3] .. '/' .. slice[2] .. '/' .. slice[1]
+    options.value = value
+  end
+
+  local html     = self:textField(field, options)
+  local calendar = [[<script>jQuery.calendar('#%s')</script>]]
+
+  return html .. string.format(calendar, self:buildId(field), options)
+end
+
+function FormHelper:submitSave()
+  return [[<input type="image" src="/images/icons/botao_gravar.png?1453303287" style="border: 0px" >]]
+end
+
+function FormHelper:submitCancel()
+  local helper = require 'app.helpers.default'
+  return helper:link{ img = 'icons/botao_cancelar.png', url = self:url{ action = 'cancel' }, remote = true }
+end
+
+--------------------------------------------------------------------------------
+-- SELECT LIST
+--------------------------------------------------------------------------------
+
+function FormHelper:selectList(field, list, field_value, field_description, options)
+  options = options or {}
+  local html     = "<select "
+  local option   = "<option value=%q %s >%s</option>"
+  local selected = ""
+  local value    = self:buildValue(field)
+
+  if options.multiple then
+    html = html .. string.format([[ multiple="multiple" size=%q ]], options.multiple)
+  end
+
+  html = html .. [[ id=%q name=%q style="width:250px;">]]
+  html = string.format(html, self:buildId(field), self:buildName(field))
+
+  if options.blank then
+    local blank = ""
+    if type(options.blank) == 'string' then
+      blank = options.blank
+    end
+    html = html .. string.format(option, "", "", blank)
+  end
+  for i = 1, #list do
+    local row = list[i]
+    if row[field_value] == value then
+      selected = 'selected'
+    else
+      selected = ''
+    end
+    html = html .. string.format(option, row[field_value], selected, row[field_description])
+  end
+  html = html .. "</select>"
+
+  return html
+end
+
+--------------------------------------------------------------------------------
+-- SELECT HASH
+--------------------------------------------------------------------------------
+
+function FormHelper:selectHash(field, list, options)
+  options = options or {}
+  local html     = "<select "
+  local option   = "<option value=%q %s >%s</option>"
+  local selected = ""
+  local value    = self:buildValue(field)
+
+  if options.multiple then
+    html = html .. string.format([[ multiple="multiple" size=%q ]], options.multiple)
+  end
+
+  html = html .. [[ id=%q name=%q style="width:250px;">]]
+  html = string.format(html, self:buildId(field), self:buildName(field))
+
+  if options.blank then
+    local blank = ""
+    if type(options.blank) == 'string' then
+      blank = options.blank
+    end
+    html = html .. string.format(option, "", "", blank)
+  end
+
+  for k, v in pairs(list) do
+    if k == value then
+      selected = 'selected'
+    else
+      selected = ''
+    end
+    html = html .. string.format(option, k, selected, v)
+  end
+  html = html .. "</select>"
+
+  return html
+end
+
+-------------------------------------------------------------------------------
+-- AUTO COMPLETE
+-------------------------------------------------------------------------------
+
+function FormHelper:autoComplete(field, resource, options)
+  local options = options or {}
+  local field_value       = options.field_value or "value"
+  local field_description = options.field_description or "label"
+  local url     = self:url(resource)
+  local style   = options.style or "width:250px"
+  local html    = [[<input type="text" id="%s" name="%s" style=%q>]]
+  local select  = options.select or ""
+  html = string.format(html, field:normalize(), field, style)
+  html = html .. string.format([[
+  <script>
+   jQuery(function() {
+     jQuery( "#%s" ).autocomplete({
+       source: function(request, response) {
+         jQuery.ajax({
+           url: '%s',
+           dataType: 'jsonp',
+           jsonp: 'json_callback',
+           data: {
+             featureClass: 'P',
+             style: 'full',
+             limit: 10,
+             busca: request.term
+         },
+         success: function( data ){
+           response( jQuery.map( data, function( item ) {
+             return {
+               label: item.%s,
+               value: item.%s,
+               attributes: item
+             }
+           }));
+         },
+         error: function(params1, params2, params3) {
+         //alert(params1+' - '+params2+' - '+params3);
+         }
+       })
+     },
+     select: function(event, ui) { %s; },
+     minLength: 1
+   });
+  });
+  </script>]], field:normalize(), url, field_description, field_value, select)
+
+  return html
+end
+
+-------------------------------------------------------------------------------
+-- AUTO LIST
+-------------------------------------------------------------------------------
+
+function FormHelper:autoList(field, resource)
+  local controller
+  local action
+  if type(resource) == 'table' then
+    controller = resource.controller
+    action     = resource.action or 'index'
+  else
+    controller = resource
+  end
+  if type(self.data[field]) ~= 'function' then
+    error(field .. " is not a function")
+  end
+  local text    = self.data[field](self.data) or ""
+  local display = 'visible'
+  if self.data[field .. '_id'] then
+    display = 'none'
+  end
+  local label = "<a href='#' onclick='AutoList.input(%q, %q)' title='clique aqui para trocar'>%s</a>"
+  label = string.format(label, field, self:buildName(field .. "_id"), text)
+
+  local func  = string.format([[AutoList.select(%q, %q, %q, ui);]],
+    field, self:buildName(field .. "_id"), self:buildId(field .. "_id")
+  )
+  local input = self:autoComplete( 'autolist[' .. field .. ']',
+    { controller = controller, action = action },
+    { ['select'] = func, style='width:250;display:' .. display }
+  )
+  local helper = require 'app.helpers.default'
+  local link  = helper:link {
+    img    = 'icons/refresh.gif',
+    url    = '#',
+    click  = string.format([[AutoList.list('%s', '%s', '%s', '%s');]],
+      field, self:buildName(field .. "_id"), self:buildId(field .. "_id"),
+      self:url({ controller = controller, action = 'select', field = self:buildName(field .. "_id") })
+    )
+  }
+
+  local html = [[
+    <table cellspacing='0' cellpadding='0'>
+      <tr>
+        <td width='250'>
+          %s
+          <div id='autolist_%s_container' style='width:250px;display:%s'>%s</div>
+        </td>
+        <td>&nbsp;</td>
+        <td>%s</td>
+      </tr>
+    </table>
+  ]]
+  if display == 'none' then
+    display = 'visible'
+  else
+    display = 'none'
+  end
+  return string.format(html, input, field, display, label, link)
+end
+
+function FormHelper:boolField(field, options)
+  local value   = self:buildValue(field)
+  local options = options or {}
+  local html    = ""
+  local label   = ""
+  local checked = ""
+  local input   = ""
+
+  -- positive option
+  label = options.positive or " sim"
+  if toboolean(value) == true then
+    checked = "checked"
+  else
+    checked = ""
+  end
+  input = [[<input type="radio" name=%q value="true" %s > %s ]]
+  html  = html .. string.format(input, self:buildName(field), checked, label)
+
+  -- negative option
+  label = options.negative or " não"
+  if toboolean(value) == false then
+    checked = "checked"
+  else
+    checked = ""
+  end
+  input = [[<input type="radio" name=%q value="false" %s > %s ]]
+  html = html .. string.format(input, self:buildName(field), checked, label)
+
+  -- blank option
+  if options.blank ~= nil then
+    label = options.blank
+    if value == "" or value == nil then
+      checked = "checked"
+    else
+      checked = ""
+    end
+    input = [[<input type="radio" name=%q value="" %s > %s ]]
+    html = html .. string.format(input, self:buildName(field), checked, label)
+  end
+
+  return html
+end
+
+
+return FormHelper

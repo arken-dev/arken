@@ -34,16 +34,11 @@ void Triton::run()
 {
 
   lua_settop(m_state, 0);
-  lua_getglobal(m_state, "CHARON_PATH");
+  lua_getglobal(m_state, "require");
+  lua_pushstring(m_state, m_fileName);
 
   int rv;
-  rv = luaL_loadfile(m_state, m_fileName);
-  if (rv) {
-    fprintf(stderr, "%s\n", lua_tostring(m_state, -1));
-    throw;
-  }
-
-  rv = lua_pcall(m_state, 0, 0, lua_gettop(m_state) - 1);
+  rv = lua_pcall(m_state, 1, 0, lua_gettop(m_state) - 1);
   if (rv) {
     fprintf(stderr, "%s\n", lua_tostring(m_state, -1));
     throw;

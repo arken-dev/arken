@@ -6,7 +6,7 @@
 require "CStringList"
 
 -------------------------------------------------------------------------------
--- TETIS
+-- RHEA
 -------------------------------------------------------------------------------
 
 local function parseArg(index, arg)
@@ -61,7 +61,7 @@ local function printHelp(module)
 
     for k, v in pairs(module.help) do
       local space = string.rep(' ', size - #k)
-      help = help .. k .. space .. ' # ' .. v:trimmed():swap('\n', margem) .. '\n'
+      help = help .. k .. space .. ' # ' .. v:trimmed():replace('\n', margem) .. '\n'
     end
 
     print(help)
@@ -70,19 +70,21 @@ end
 
 rhea = function()
   local path = {}
+
+  if arg[0] == nil then
   for str in string.gmatch(package.path, "([^;]+)") do
-    str = str:swap("/?.lua", ""):replace('.', '/')
-    if str:contains("rhea") and os.exists(str) then
+    str = str:replace("/?.lua", ""):replace('.', '/')
+    str = os.abspath(str) .. '/rhea'
+    if os.exists(str) then
       table.insert(path, str)
     end
   end
 
-  if arg[0] == nil then
     for _, str in ipairs(path) do
       local list = os.glob(str, "\\.lua$", false)
       for i = 1, list:size() do
         local module = dofile(list:at(i))
-        print(module.class_name:underscore())
+        print(module.className:underscore())
         printHelp(module)
       end
     end
@@ -98,17 +100,12 @@ rhea = function()
     end
 
     local module, result
-    for _, str in ipairs(path) do
-      local file_name = str .. '/' .. name:camelcase() .. '.lua'
-      --print(file_name)
-      if os.exists(file_name) then
-        result, module = pcall(dofile, file_name)
-        if result == false then
-          print(name .. " not work" .. module)
-          os.exit()
-        end
+      local rhea_name = 'rhea.' .. name:camelcase()
+      local result, module = pcall(require , rhea_name)
+      if result == false then
+        print(name .. " not work" .. module)
+        os.exit()
       end
-    end
 
     -------------------------------------------------------------------------------
     -- EXECUTE
@@ -121,7 +118,7 @@ rhea = function()
         if object.help[action] then
           local help   = object.help[action]
           local margem = '\n' .. string.rep(' ', #action + 1)
-          print(action .. ' # ' .. help:trimmed():swap('\n', margem))
+          print(action .. ' # ' .. help:trimmed():replace('\n', margem))
         else
           print(action .. ": undocumented")
         end
@@ -134,5 +131,4 @@ rhea = function()
       end
     end
   end
-
 end
