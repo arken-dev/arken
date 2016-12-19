@@ -25,8 +25,8 @@ dispatcher.prefix = nil
 -- REQUEST
 -------------------------------------------------------------------------------
 
-request.params = function()
-  if request.__params == nil then
+request.params = function(rebuild)
+  if request.__params == nil or rebuild then
     if request.requestMethod() == 'POST' then
       if request.field('Content-Type'):startsWith('multipart/form-data;') then
         request.__params = multipart.parse(request.headerDone())
