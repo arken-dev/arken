@@ -3,6 +3,10 @@
 -- Use of this source code is governed by a BSD-style
 -- license that can be found in the LICENSE file.
 
+local QDateTime   = require('QDateTime')
+local QString     = require('QString')
+local QStringList = require('QStringList')
+
 local M = {}
 
 M.mtime  = os.microtime()
@@ -114,7 +118,7 @@ end
 function M.debug(file_name)
   local source = M.source[file_name]
   local buffer = ""
-  local list   = source:split('\n')
+  local list   = QString.new(source):split('\n')
   for i = 1, list:size() do
     if i < 10 then
       buffer = buffer .. ' '
