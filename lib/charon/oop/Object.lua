@@ -104,4 +104,18 @@ function Object:isBlank(column)
   end
 end
 
+------------------------------------------------------------------------------
+-- METHODS
+------------------------------------------------------------------------------
+
+function Object:methods()
+  local methods = {}
+  for k, v in pairs(self.class) do
+    if type(v) == 'function' then
+      table.insert(methods, k)
+    end
+  end
+  return methods
+end
+
 return Object
