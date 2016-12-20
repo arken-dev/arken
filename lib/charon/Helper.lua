@@ -567,4 +567,12 @@ function M:intFormat(value)
   return tonumber(value)
 end
 
+function M:toNumber(value)
+  if value == nil then
+    return 0
+  else
+    return tonumber(value)
+  end
+end
+
 return M
