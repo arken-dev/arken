@@ -122,8 +122,11 @@ function ActiveRecord_Adapter:where(values, flag)
   values.order   = nil
   values.limit   = nil
 
-  if values.where then
-    local where = values.where
+  if values.where or values.join then
+    local where = (values.join or '')
+    if values.where then
+      where = where .. ' WHERE ' .. (values.where or '')
+    end
     for index, value in pairs(values) do
       where = string.replace(where, '$' .. index, format[type(value)](value))
     end
@@ -141,9 +144,10 @@ function ActiveRecord_Adapter:where(values, flag)
       error "parameters for find empty"
     end
     result = result .. col
-  end
-  if #result > 0 then
-    result = " WHERE " .. result
+
+    if #result > 0 then
+      result = " WHERE " .. result
+    end
   end
   if order then
     result = result .. ' ORDER BY ' .. order
@@ -160,7 +164,7 @@ end
 --------------------------------------------------------------------------------
 
 function ActiveRecord_Adapter:select(params, flag)
-  return 'SELECT * FROM ' .. self.table_name .. " " .. self:where(params, flag)
+  return 'SELECT ' .. self.table_name .. '.* FROM ' .. self.table_name .. " " .. self:where(params, flag)
 end
 
 --------------------------------------------------------------------------------
