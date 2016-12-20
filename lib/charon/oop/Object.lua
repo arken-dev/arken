@@ -74,11 +74,21 @@ function Object:try(column, params)
   local result = nil;
   if type(self[column]) == 'function' then
     result = self[column](self, params)
+  else
+    result = self[column]
   end
   if result == nil then
     result = Object.new()
   end
   return result
+end
+
+string.try = function(self, value, v1, v2, v3, v4, v5)
+  if(type(string[value]) == 'function') then
+    return string[value](self, v1, v2, v3, v4, v5)
+  else
+    return self
+  end
 end
 
 ------------------------------------------------------------------------------
@@ -116,6 +126,10 @@ function Object:methods()
     end
   end
   return methods
+end
+
+function Object:__tostring()
+  return ""
 end
 
 return Object
