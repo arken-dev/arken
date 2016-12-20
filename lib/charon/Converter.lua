@@ -21,6 +21,15 @@ function Converter:isEmpty( field )
     return true
   end
 
+  if type(value) == 'table' then
+    local flag = true
+    for _, _ in pairs(value) do
+      flag = false
+      break
+    end
+    return flag
+  end
+
   return false
 end
 
