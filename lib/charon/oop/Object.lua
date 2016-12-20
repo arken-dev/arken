@@ -74,6 +74,8 @@ function Object:try(column, params)
   local result = nil;
   if type(self[column]) == 'function' then
     result = self[column](self, params)
+  else
+    result = self[column]
   end
   if result == nil then
     result = Object.new()
@@ -95,13 +97,31 @@ end
 ------------------------------------------------------------------------------
 -- IS BLANK
 ------------------------------------------------------------------------------
-
+--[[
 function Object:isBlank(column)
   if self[column] == nil or self[column] == '' then
     return true
   else
     return false
   end
+end
+]]
+------------------------------------------------------------------------------
+-- METHODS
+------------------------------------------------------------------------------
+
+function Object:methods()
+  local methods = {}
+  for k, v in pairs(self.class) do
+    if type(v) == 'function' then
+      table.insert(methods, k)
+    end
+  end
+  return methods
+end
+
+function Object:__tostring()
+  return ""
 end
 
 return Object
