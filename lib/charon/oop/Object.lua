@@ -82,15 +82,7 @@ function Object:try(column, params)
   end
   return result
 end
---[[
-string.try = function(self, value, v1, v2, v3, v4, v5)
-  if(type(string[value]) == 'function') then
-    return string[value](self, v1, v2, v3, v4, v5)
-  else
-    return self
-  end
-end
-]]
+
 ------------------------------------------------------------------------------
 -- NEW
 ------------------------------------------------------------------------------
