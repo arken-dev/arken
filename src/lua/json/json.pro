@@ -19,4 +19,4 @@ SOURCES += json.c strbuf.c g_fmt.c dtoa.c json_lock.cpp #fpconv.c
 
 LIBS += -L ../../../deps -llua
 
-mac:QMAKE_POST_LINK += install_name_tool -change liblua.so  @executable_path/../deps/liblua.so ../../../clib/json.dylib
+mac:QMAKE_POST_LINK += install_name_tool -change liblua.so  @executable_path/../deps/liblua.so ../../../clib/charon/json.dylib

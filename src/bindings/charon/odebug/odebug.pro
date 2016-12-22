@@ -22,4 +22,4 @@ LIBS += -L ../../../../deps -lcharon -llua
 unix:LIBS += -lcurl
 win32:LIBS += ../../../../deps/libcurl.dll
 
-mac:QMAKE_POST_LINK += install_name_tool -change liblua.so  @executable_path/../deps/liblua.so ../../../../../clib/charon/odebug.dylib; install_name_tool -change libcharon.1.dylib  @executable_path/../deps/libcharon.1.dylib ../../../../../clib/charon/odebug.dylib
+mac:QMAKE_POST_LINK += install_name_tool -change liblua.so  @executable_path/../deps/liblua.so ../../../../clib/charon/odebug.dylib; install_name_tool -change libcharon.1.dylib  @executable_path/../deps/libcharon.1.dylib ../../../../clib/charon/odebug.dylib
