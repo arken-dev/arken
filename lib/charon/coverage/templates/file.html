@@ -17,7 +17,7 @@
       <% for i, line in ipairs(self.lines) do -%>
       <tr bgcolor='<%= helper.color(line.flag) -%>'>
         <td><%= i -%></td>
-        <td><%= helper.spacing(line.src) -%></td>
+        <td><%= helper.spacing(line.src:escapeHtml()) -%></td>
       </tr>
       <% end -%>
       <tr>
