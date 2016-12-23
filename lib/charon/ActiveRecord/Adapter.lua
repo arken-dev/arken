@@ -154,7 +154,9 @@ function ActiveRecord_Adapter:where(values, flag)
     if flag and #col == 0 then
       error "parameters for find empty"
     end
-    result = ' WHERE ' .. result .. col
+    if col ~= '' then
+      result = ' WHERE ' .. result .. col
+    end
   end
   if join then
     result = join .. result
