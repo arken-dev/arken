@@ -39,6 +39,7 @@ end
 -------------------------------------------------------------------------------
 
 M.stop = function()
+  debug.sethook(nil, "l")
   local tmp = {}
   for fileName, content in pairs(result) do
     if fileName:startsWith('@') then
@@ -48,7 +49,6 @@ M.stop = function()
     tmp[fileName] = content
   end
   result = tmp
-  debug.sethook(nil, "l")
 end
 
 M.dump = function()
