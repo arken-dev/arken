@@ -135,11 +135,13 @@ function ActiveRecord_Adapter:where(values, flag)
 
   if values.where then
     local where = values.where
-    where = ' WHERE ' .. where
-    for index, value in pairs(values) do
-      where = string.replace(where, '$' .. index, format[type(value)](value))
+    if where ~= '' then
+      where = ' WHERE ' .. where
+      for index, value in pairs(values) do
+        where = string.replace(where, '$' .. index, format[type(value)](value))
+      end
+      result = where
     end
-    result = where
   else
     for index, value in pairs(values) do
       if ActiveRecord_Adapter.reserved[index] == nil then
