@@ -210,6 +210,22 @@ static int lua_charon_string_trimmed( lua_State *L ) {
   return 1;
 }
 
+static int lua_charon_string_trimmedLeft( lua_State *L ) {
+  const char * string = luaL_checkstring(L, 1);
+  char * result       = string::trimmedLeft(string);
+  lua_pushstring(L, result);  /* push result */
+  delete[] result;
+  return 1;
+}
+
+static int lua_charon_string_trimmedRight( lua_State *L ) {
+  const char * string = luaL_checkstring(L, 1);
+  char * result       = string::trimmedRight(string);
+  lua_pushstring(L, result);  /* push result */
+  delete[] result;
+  return 1;
+}
+
 static int lua_charon_string_truncate( lua_State *L ) {
   const char *string = luaL_checkstring(L, 1);
   int        pos     = luaL_checkinteger(L, 2);
@@ -250,6 +266,8 @@ int luaopen_charon_string( lua_State *L ) {
     {"split",       lua_charon_string_split},
     {"suffix",      lua_charon_string_suffix},
     {"trimmed",     lua_charon_string_trimmed},
+    {"trimmedLeft", lua_charon_string_trimmedLeft},
+    {"trimmedRight",lua_charon_string_trimmedRight},
     {"truncate",    lua_charon_string_truncate},
     {"underscore",  lua_charon_string_underscore},
     {NULL, NULL}

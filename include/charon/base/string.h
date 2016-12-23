@@ -36,6 +36,8 @@ namespace charon {
       static char * suffix(const char * raw, const char chr);
       static bool   startsWith(const char *string, const char *str);
       static char * trimmed(const char *string);
+      static char * trimmedLeft(const char *string);
+      static char * trimmedRight(const char *string);
       static char * truncate(const char *string, int pos);
       static char * underscore(const char *string);
     };

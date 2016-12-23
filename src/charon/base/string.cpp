@@ -722,6 +722,65 @@ char * string::trimmed(const char *string)
   return result;
 }
 
+char * string::trimmedLeft(const char *string)
+{
+  int i = 0;
+  int j = 0;
+  int len;
+  char * result;
+
+  len = strlen(string);
+
+  while(trimmed_special_char(string[i])) {
+    i++;
+  }
+
+  if( (len - i) <= 0 ) {
+    result = new char[1];
+    result[0] = '\0';
+  } else {
+    result = new char[(len) + 1];
+    while(i <= len) {
+      result[j] = string[i];
+      i++;
+      j++;
+    }
+
+    result[j] = '\0';
+  }
+
+  return result;
+}
+
+char * string::trimmedRight(const char *string)
+{
+  int i = 0;
+  int j = 0;
+  int len;
+  char * result;
+
+  len = strlen(string);
+
+  while(trimmed_special_char(string[len])) {
+    len--;
+  }
+
+  if( (len - i) <= 0 ) {
+    result = new char[1];
+    result[0] = '\0';
+  } else {
+    result = new char[(len) + 1];
+    while(i <= len) {
+      result[j] = string[i];
+      i++;
+      j++;
+    }
+
+    result[j] = '\0';
+  }
+
+  return result;
+}
 
 char * string::truncate(const char *string, int pos)
 {
