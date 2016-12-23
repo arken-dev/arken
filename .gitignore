@@ -12,6 +12,7 @@ Makefile.*
 *.o
 
 moc_*
+qrc_*
 
 *.swp
 
