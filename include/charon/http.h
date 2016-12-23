@@ -1,7 +1,11 @@
-/**
- * Using libcurl for http request
- *  https://curl.haxx.se/libcurl/c/example.html
- */
+// Copyright 2016 The Charon Platform Authors.
+// All rights reserved.
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE file.
+//
+// Using libcurl for http request
+//  https://curl.haxx.se/libcurl/c/example.html
+
 namespace charon
 {
 
