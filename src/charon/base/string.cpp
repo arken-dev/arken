@@ -275,7 +275,7 @@ int string::indexOf(const char * string, const char * str)
   int string_len = strlen(string);
   int str_len    = strlen(str);
 
-  result = 0;
+  result = -1;
 
   for(i = 0; i < string_len; i++) {
     c = 0;
