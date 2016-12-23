@@ -40,7 +40,7 @@ void Triton::run()
   lua_pushstring(m_state, m_fileName);
 
   int rv;
-  rv = lua_pcall(m_state, 1, 0, lua_gettop(m_state) - 1);
+  rv = lua_pcall(m_state, 1, 0, 0);
   if (rv) {
     fprintf(stderr, "%s\n", lua_tostring(m_state, -1));
     throw;
@@ -56,7 +56,7 @@ void Triton::run()
 
     lua_pushstring(m_state, *file_name);
 
-    if( lua_pcall(m_state, 1, 0, lua_gettop(m_state) - 1 ) != 0 ) {
+    if( lua_pcall(m_state, 1, 0, 0) != 0 ) {
       fprintf(stderr, "file_name %s: %s\n", file_name->data(), lua_tostring(m_state, 1));
     }
   }

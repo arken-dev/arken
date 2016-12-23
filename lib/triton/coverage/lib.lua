@@ -1,20 +1,18 @@
 CHARON_ENV = os.getenv("CHARON_ENV") or "test"
 
-require 'QDirIterator'
-require 'QFileInfo'
-
-local test     = require 'charon.test'
-local template = require 'template'
-local coverage = require 'charon.coverage'
-local start    = os.microtime()
-local files    = {}
+local QDirIterator = require 'QDirIterator'
+local QFileInfo    = require 'QFileInfo'
+local test         = require 'charon.test'
+local template     = require 'charon.template'
+local coverage     = require 'charon.coverage'
+local start        = os.microtime()
+local files        = {}
 
 -------------------------------------------------------------------------------
 -- TRITON START
 -------------------------------------------------------------------------------
 
 function triton_start()
-  print('aqui')
   local iterator = QDirIterator.new('./lib', {"Subdirectories"})
   while(iterator:hasNext()) do
     iterator:next()
