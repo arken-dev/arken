@@ -30,7 +30,7 @@ int main(int argc, char * argv[])
     throw;
   }
 
-  rv = lua_pcall(L, 0, 0, lua_gettop(L) - 1);
+  rv = lua_pcall(L, 0, 0, 0);
   if (rv) {
     fprintf(stderr, "%s\n", lua_tostring(L, -1));
     throw;
@@ -39,7 +39,7 @@ int main(int argc, char * argv[])
   lua_settop(L, 0);
   lua_getglobal(L, "rhea");
 
-  if( lua_pcall(L, 0, 0, lua_gettop(L) - 1 ) != 0 ) {
+  if( lua_pcall(L, 0, 0, 0) != 0 ) {
     fprintf(stderr, "%s\n", lua_tostring(L, -1));
   } else {
     return 0;
