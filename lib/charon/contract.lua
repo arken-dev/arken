@@ -69,7 +69,7 @@ contract.create = function(table, name)
   end
 
   -- contract is now "contract_body"
-  func = table[name]
+  local func = table[name]
   table[body] = func
 
   -- contract current
