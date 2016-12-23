@@ -113,20 +113,29 @@ end
 --------------------------------------------------------------------------------
 
 function ActiveRecord_Adapter:where(values, flag)
+
   local result = ""
   local col    = ""
+  local join   = values.join
   local order  = values.order
   local limit  = values.limit
 
+  values.join    = nil
   values.binding = nil
   values.order   = nil
   values.limit   = nil
 
-  if values.where or values.join then
-    local where = (values.join or '')
-    if values.where then
-      where = where .. ' WHERE ' .. (values.where or '')
+  if type(join) == 'table' then
+    local tmp = join[1]
+    for index, value in pairs(join) do
+      tmp = string.replace(tmp, '$' .. index, format[type(value)](value))
     end
+  join = tmp
+  end
+
+  if values.where then
+    local where = values.where
+    where = ' WHERE ' .. where
     for index, value in pairs(values) do
       where = string.replace(where, '$' .. index, format[type(value)](value))
     end
@@ -143,11 +152,10 @@ function ActiveRecord_Adapter:where(values, flag)
     if flag and #col == 0 then
       error "parameters for find empty"
     end
-    result = result .. col
-
-    if #result > 0 then
-      result = " WHERE " .. result
-    end
+    result = ' WHERE ' .. result .. col
+  end
+  if join then
+    result = join .. result
   end
   if order then
     result = result .. ' ORDER BY ' .. order
