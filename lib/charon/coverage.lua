@@ -33,7 +33,21 @@ M.start = function()
   debug.sethook(hook, "l")
 end
 
+-------------------------------------------------------------------------------
+-- STOP
+-- sanitize file name, remove @ char, and replace for absolute path
+-------------------------------------------------------------------------------
+
 M.stop = function()
+  local tmp = {}
+  for fileName, content in pairs(result) do
+    if fileName:startsWith('@') then
+      fileName = fileName:mid(1, -1)
+    end
+    fileName = os.abspath(fileName)
+    tmp[fileName] = content
+  end
+  result = tmp
   debug.sethook(nil, "l")
 end
 
@@ -95,6 +109,12 @@ M.analyze = function(file_name)
   local lines = {}
   local count = 1
   local uncov = 0
+
+  if file_name:startsWith('@') then
+    file_name = file_name:mid(1, -1)
+  end
+
+  file_name = os.abspath(file_name)
 
   if result[file_name] == nil then
     result[file_name] = {}

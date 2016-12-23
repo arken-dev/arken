@@ -1,4 +1,5 @@
 <% local helper = require "charon.coverage.helper" -%>
+<% local json   = require "charon.json" -%>
 <html>
   <head>
     <title>coverage</title>
@@ -21,14 +22,12 @@
     </tr>
     <% local coverage = 0 -%>
     <% table.sort(self.files) -%>
-    <% for i, row in ipairs(self.files) do -%>
-    <% row = json.decode(os.read(row)) -%>
+    <% for i, file in ipairs(self.files) do -%>
+    <% local row = json.decode(os.read('coverage/' .. os.abspath(file):replace('/', '-') .. '.json')) -%>
     <tr bgcolor='<%= helper.color_coverage(row.coverage) -%>'>
        <% coverage = coverage + row.coverage -%>
        <td align='right'> <%= i -%></td>
-       <td>
-         <a href='<%= helper.parameterize(row.file_name) -%>.html'><%= row.file_name -%></a>
-       </td>
+       <td><a href='<%= helper.parameterize(row.file_name) -%>.html'><%= helper.sanitize(file) -%></a></td>
        <td align='right'><%= helper.number_format(row.coverage) -%>%</td>
     </tr>
     <% end -%>

@@ -20,3 +20,4 @@ profile.d/*
 config/*
 deps/*
 .qmake.stash
+coverage/*

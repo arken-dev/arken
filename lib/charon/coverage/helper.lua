@@ -56,4 +56,14 @@ M.parameterize = function(value)
   return tostring(value):replace("/", "-")
 end
 
+M.sanitize = function(fileName)
+  if fileName:startsWith('@') then
+    fileName = fileName:mid(1, -1)
+  end
+  if fileName:startsWith('./') then
+    fileName = fileName:mid(2, -1)
+  end
+  return fileName
+end
+
 return M

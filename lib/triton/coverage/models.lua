@@ -14,6 +14,11 @@ local files    = {}
 -------------------------------------------------------------------------------
 
 function triton_start()
+  local dir = 'coverage'
+  if not os.exists(dir) then
+    os.mkdir(dir)
+  end
+
   local iterator = QDirIterator.new('./app/models', {"Subdirectories"})
   while(iterator:hasNext()) do
     iterator:next()
@@ -49,7 +54,7 @@ function triton_run(fileName)
 
   for fileName, result in pairs(results) do
     for description, result in pairs(result) do
-      triton.count('test')
+      triton.count('tests')
       if result.status ~= 'ok' then
         local buffer = description .. '\n'
         if result.msg and tostring(result.msg):len() > 0  then
@@ -73,7 +78,6 @@ function triton_run(fileName)
   file:close()
 
   file = io.open((dir .. "/" .. data.file_name:replace("/", "-") .. '.json'), "w")
-  --file:write(require('JSON'):encode_pretty(data))
   file:write(json.encode(data))
   file:close()
 end
@@ -83,10 +87,6 @@ end
 -------------------------------------------------------------------------------
 
 function triton_stop()
-  for i, file in ipairs(files) do
-    files[i] = 'coverage/@' .. file:mid(2, -1):replace('/', '-') .. '.json'
-  end
-
   print('')
   local dir    = 'coverage'
   local tpl    = CHARON_PATH .. "/lib/charon/coverage/templates/index.html"
