@@ -3,7 +3,7 @@ local test = {}
 test['should remove white spaces'] = function()
   local str1 = "   this is a test   "
   local str2 = "this is a test"
-  assert( str1:trimmed() == str2 )
+  assert( str1:trimmed() == str2, str1:trimmed() )
 end
 
 test['should remove left white spaces'] = function()
@@ -40,6 +40,30 @@ test['should empty string for empty string'] = function()
   local str1 = ""
   local str2 = ""
   assert( str1:trimmed() == str2 )
+end
+
+test['should string with one char'] = function()
+  local str1 = "("
+  local str2 = "("
+  assert( str1:trimmed() == str2, str1:trimmed() )
+end
+
+test['should string with one char with space right'] = function()
+  local str1 = "( "
+  local str2 = "("
+  assert( str1:trimmed() == str2, str1:trimmed() )
+end
+
+test['should string with one char with space left'] = function()
+  local str1 = " ("
+  local str2 = "("
+  assert( str1:trimmed() == str2, str1:trimmed() )
+end
+
+test['should string with one char with space spaces'] = function()
+  local str1 = " ("
+  local str2 = "("
+  assert( str1:trimmed() == str2, str1:trimmed() )
 end
 
 return test

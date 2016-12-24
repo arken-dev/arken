@@ -705,11 +705,11 @@ char * string::trimmed(const char *string)
     len--;
   }
 
-  if( (len - i) <= 0 ) {
+  if( (len - i) < 0 ) {
     result = new char[1];
     result[0] = '\0';
   } else {
-    result = new char[(len) + 1];
+    result = new char[(len-i) + 2];
     while(i <= len) {
       result[j] = string[i];
       i++;
@@ -735,11 +735,11 @@ char * string::trimmedLeft(const char *string)
     i++;
   }
 
-  if( (len - i) <= 0 ) {
+  if( (len - i) < 0 ) {
     result = new char[1];
     result[0] = '\0';
   } else {
-    result = new char[(len) + 1];
+    result = new char[(len-i) + 2];
     while(i <= len) {
       result[j] = string[i];
       i++;
@@ -765,11 +765,11 @@ char * string::trimmedRight(const char *string)
     len--;
   }
 
-  if( (len - i) <= 0 ) {
+  if( (len - i) < 0 ) {
     result = new char[1];
     result[0] = '\0';
   } else {
-    result = new char[(len) + 1];
+    result = new char[(len-i) + 2];
     while(i <= len) {
       result[j] = string[i];
       i++;

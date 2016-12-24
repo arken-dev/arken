@@ -42,4 +42,28 @@ test['should empty string for empty string'] = function()
   assert( str1:trimmedRight() == str2 )
 end
 
+test['should string with one char'] = function()
+  local str1 = "("
+  local str2 = "("
+  assert( str1:trimmedRight() == str2, str1:trimmedRight() )
+end
+
+test['should string with one char with space right'] = function()
+  local str1 = "( "
+  local str2 = "("
+  assert( str1:trimmedRight() == str2, str1:trimmedRight() )
+end
+
+test['should string with one char with space left'] = function()
+  local str1 = " ("
+  local str2 = " ("
+  assert( str1:trimmedRight() == str2, str1:trimmedRight() )
+end
+
+test['should string with one char with space spaces'] = function()
+  local str1 = " ("
+  local str2 = " ("
+  assert( str1:trimmedRight() == str2, str1:trimmedRight() )
+end
+
 return test
