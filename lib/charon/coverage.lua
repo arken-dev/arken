@@ -82,7 +82,7 @@ coverage.line = function(line, flag, keywords)
     end
   end
 
-  if keywords.str1 == false and keywords.str2 == false then
+  if keywords.flag == nil and keywords.str1 == false and keywords.str2 == false then
     local index  = line:indexOf("function")
     if index > -1 then
       local simplified = line:simplified()

@@ -168,4 +168,11 @@ test.should_return_one_negative_if_open_brackets = function()
   assert( coverage.line('local var = "abc"', nil, keywords) == nil)
 end
 
+test.should_return_one_negative_if_function_inside_brackets_comments = function()
+  local keywords = { flag1 = 0, flag2 = 0, flag3 = 0, str1 = false, str2 = false }
+  assert( coverage.line('--[[', nil, keywords) == -1)
+  assert( coverage.line('function Object:isBlank(column)', nil, keywords) == -1)
+  assert( coverage.line(']]', nil, keywords) == -1)
+end
+
 return test
