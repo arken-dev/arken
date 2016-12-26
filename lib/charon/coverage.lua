@@ -75,20 +75,18 @@ coverage.line = function(line, flag, keywords)
   end
 
   if trimmed:startsWith("--") then
-    return -1
+    if trimmed:startsWith("--[[") then
+      flag = -1
+    else
+      return -1
+    end
   end
 
   if keywords.str1 == false and keywords.str2 == false then
     local index  = line:indexOf("function")
     if index > -1 then
-      local before = line:mid(index-1, 1)
-      local after  = line:mid(index+8, 1)
-
-      if index == 0 or before == ' ' or before == '=' then
-        keywords.flag = false
-        flag = 1
-      end
-      if after == nil or after == ' ' or after:byte() == 40 then
+      local simplified = line:simplified()
+      if simplified:mid(index-1, 1) == '=' or simplified:mid(index-2, 1) == '=' then
         keywords.flag = false
         flag = 1
       end
