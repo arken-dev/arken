@@ -44,12 +44,8 @@ Class.new = function(className, inheritedBy, params)
     class.className = className --'class'
     class.__index    = class
     class.class      = class
-
     if inheritedBy then
       setmetatable(Class.classes[className], inheritedBy)
-      if class.inherit then
-        class.inherit(class, params)
-      end
       class.superclass = inheritedBy
     else
       setmetatable(Class.classes[className], Object)
@@ -97,7 +93,6 @@ Class.retrieve = function(name)
   else
     error(class_or_error)
   end
-  return nil
 end
 
 return Class
