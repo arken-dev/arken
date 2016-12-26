@@ -97,7 +97,6 @@ Class.retrieve = function(name)
   else
     error(class_or_error)
   end
-  return nil
 end
 
 return Class
