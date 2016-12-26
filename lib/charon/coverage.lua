@@ -75,7 +75,7 @@ coverage.line = function(line, flag, keywords)
   end
 
   if trimmed:startsWith("--") then
-    flag = -1
+    return -1
   end
 
   if keywords.str1 == false and keywords.str2 == false then

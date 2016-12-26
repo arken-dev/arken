@@ -164,4 +164,9 @@ test.should_keyword_is_open_if_string_brackets_is_open = function()
   assert( keywords.str2  == false )
 end
 
+test.should_return_one_negative_if_start_comment_and_function_word_inside = function()
+  local keywords = { flag1 = 0, flag2 = 0, flag3 = 0, str1 = false, str2 = false }
+  assert( coverage.line("-- This function will also remove multiple slashes", nil, keywords) == -1)
+end
+
 return test
