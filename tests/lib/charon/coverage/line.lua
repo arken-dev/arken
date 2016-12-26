@@ -181,4 +181,14 @@ test.should_return_one_negative_if_function_inside_brackets_comments = function(
   assert( coverage.line('end)', nil, keywords) == nil )
 end
 
+test.should_return_origin_flag_if_function_is_declared = function()
+  local keywords = { flag1 = 0, flag2 = 0, flag3 = 0, str1 = false, str2 = false }
+  assert( coverage.line('function Object:execute(method, params)', 1, keywords) == 1 )
+end
+
+test.should_return_origin_flag_if_function_is_declared = function()
+  local keywords = { flag1 = 0, flag2 = 0, flag3 = 0, str1 = false, str2 = false }
+  assert( coverage.line('coverage.start = function(fake)', nil, keywords) == 1 )
+end
+
 return test
