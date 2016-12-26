@@ -3,13 +3,11 @@
 -- Use of this source code is governed by a BSD-style
 -- license that can be found in the LICENSE file.
 
-require 'charon.odebug'
+local odebug   = require 'charon.odebug'
+local coverage = {}
+local result   = {}
 
-local M = {}
-
-local result = {}
-
-local hook = function()
+coverage.hook = function(val1, val2, fake)
   -- disabling because it is slow
   --[[
   local info = debug.getinfo(2, "Sl")
@@ -17,9 +15,9 @@ local hook = function()
   local linedefined  = info.currentline
   ]]
 
-  -- odebug is a charon module return values
-  -- whitout values not return table
-  local filename, linedefined = odebug.info()
+  -- odebug is a charon module return values whitout table
+  local ldebug = fake or odebug
+  local filename, linedefined = ldebug.info()
 
   result[filename] = result[filename] or {}
   if result[filename][linedefined] then
@@ -29,8 +27,9 @@ local hook = function()
   end
 end
 
-M.start = function()
-  debug.sethook(hook, "l")
+coverage.start = function(fake)
+  local debug = fake or require('debug')
+  debug.sethook(coverage.hook, "l")
 end
 
 -------------------------------------------------------------------------------
@@ -38,7 +37,8 @@ end
 -- sanitize file name, remove @ char, and replace for absolute path
 -------------------------------------------------------------------------------
 
-M.stop = function()
+coverage.stop = function(fake)
+  local debug = fake or require('debug')
   debug.sethook(nil, "l")
   local tmp = {}
   for fileName, content in pairs(result) do
@@ -51,60 +51,113 @@ M.stop = function()
   result = tmp
 end
 
-M.dump = function()
+coverage.dump = function()
   return result
 end
 
-M.reset = function()
+coverage.reset = function()
   result = {}
 end
 
-M.line = function(line, flag)
+coverage.line = function(line, flag, keywords)
+  local trimmed = line:trimmed()
 
-  if M.flag then
+  if trimmed == 'else' then
+     return -1
+   end
+
+  if trimmed == 'end' then
+     return -1
+  end
+
+  if trimmed == '' then
+     return -1
+  end
+
+  if trimmed:startsWith("--") then
     flag = -1
   end
 
-  if line:gsub(' ', ''):startsWith("--") then
-    flag = -1
+  if keywords.str1 == false and keywords.str2 == false then
+    local index  = line:indexOf("function")
+    if index > -1 then
+      local before = line:mid(index-1, 1)
+      local after  = line:mid(index+8, 1)
+
+      if index == 0 or before == ' ' or before == '=' then
+        keywords.flag = false
+        flag = 1
+      end
+      if after == nil or after == ' ' or after:byte() == 40 then
+        keywords.flag = false
+        flag = 1
+      end
+      return flag
+    end
   end
 
-  if line:endsWith("end") then
-    flag = -1
+  for i=1, #line do
+    local chr = line:sub(i,i)
+    if keywords.str2 == false and chr == "'" then
+      if keywords.str1 then
+        keywords.str1 = false
+      else
+        keywords.str1 = true
+      end
+    end
+
+    if keywords.str1 == false and chr == '"' then
+      if keywords.str2 then
+        keywords.str2 = false
+      else
+        keywords.str2 = true
+      end
+    end
+
+    if keywords.str1 == false and keywords.str2 == false then
+      if chr == '(' then
+        keywords.flag1 = keywords.flag1 + 1
+      end
+      if chr == ')' then
+        keywords.flag1 = keywords.flag1 - 1
+      end
+      if chr == '{' then
+        keywords.flag2 = keywords.flag2 + 1
+      end
+      if chr == '}' then
+        keywords.flag2 = keywords.flag2 - 1
+      end
+      if chr == '[' then
+        keywords.flag3 = keywords.flag3 + 1
+      end
+      if chr == ']' then
+        keywords.flag3 = keywords.flag3 - 1
+      end
+    end
   end
 
-  if line:endsWith("else") then
-    flag = -1
+  if keywords.str1 or keywords.str2 then
+    return -1
   end
 
-  if line:endsWith("(") then
-    M.flag = true
+  if keywords.flag1 > 0 or keywords.flag2 > 0 or keywords.flag3 > 0 then
+    if keywords.flag then
+      return flag or -1
+    else
+      keywords.flag = true
+      return flag or 1
+    end
+  else
+    if keywords.flag then
+      keywords.flag = false
+      return flag or -1
+    else
+      return flag
+    end
   end
-
-  if (line:contains("{") and not line:contains("}")) then
-    M.flag = true
-  end
-
-  --if line:endsWith(")") then
-  --  flag = 1
-  --end
-
-  if line:endsWith("}") then
-    M.flag = false
-  end
-
-  if line == "}" then
-    flag = -1
-  end
-
-  if line == '' then
-    flag = -1
-  end
-
-  return flag
 end
 
-M.analyze = function(file_name)
+function coverage.analyze(file_name)
   local data  = {}
   local lines = {}
   local count = 1
@@ -120,9 +173,18 @@ M.analyze = function(file_name)
     result[file_name] = {}
   end
 
-  for line in io.lines(file_name:replace('@', '')) do
+  -- keywords
+  -- flag1 = ( )
+  -- flag2 = { }
+  -- flag3 = [ ]
+  -- str1  = '
+  -- str2  = "
+  local keywords = { flag1 = 0, flag2 = 0, flag3 = 0, str1 = false, str2 = false }
+  local i = 0
+  for line in io.lines(file_name) do
+    i = i + 1
     flag = result[file_name][count]
-    flag = M.line(line, flag)
+    flag = coverage.line(line, flag, keywords)
     if flag == nil then
       uncov = uncov + 1
     end
@@ -133,9 +195,8 @@ M.analyze = function(file_name)
   data.lines     = lines
   data.file_name = file_name
   data.coverage  = 100 - ((100 * uncov) / count)
-  M.flag = nil
 
   return data
 end
 
-return M
+return coverage

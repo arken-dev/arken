@@ -24,7 +24,10 @@ extern "C" {
       {"info", lua_charon_odebug_info},
       {NULL, NULL}
     };
-    luaL_register(L, "odebug", Map);
+    luaL_newmetatable(L, "odebug");
+    luaL_register(L, NULL, Map);
+    lua_pushvalue(L, -1);
+    lua_setfield(L, -1, "__index");
     return 1;
   }
 }
