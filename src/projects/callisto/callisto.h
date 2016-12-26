@@ -22,6 +22,7 @@ class Callisto : public QObject
 private:
   lua_State * m_luaState;
   QString m_file;
+  int m_ref;
   void run();
 
 public slots:

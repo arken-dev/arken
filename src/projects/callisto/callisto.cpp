@@ -55,16 +55,17 @@ Callisto::Callisto(int argc, char * argv[], const char * path, QObject *parent) 
     throw;
   }
 
-  rv = lua_pcall(m_luaState, 0, 0, lua_gettop(m_luaState) - 1);
+  rv = lua_pcall(m_luaState, 0, 1, lua_gettop(m_luaState) - 1);
   if (rv) {
     fprintf(stderr, "%s\n", lua_tostring(m_luaState, -1));
     throw;
   }
 
+  m_ref = luaL_ref(m_luaState, LUA_REGISTRYINDEX);
+
   m_dialog = new Dialog;
 
   this->run();
-
 }
 
 Callisto::~Callisto()
@@ -105,7 +106,8 @@ void Callisto::run()
 {
 
   lua_settop(m_luaState, 0);
-  lua_getglobal(m_luaState, "callisto");
+  lua_rawgeti(m_luaState, LUA_REGISTRYINDEX, m_ref);
+
   lua_pushstring(m_luaState, m_file.toLocal8Bit().data());
   if( lua_pcall(m_luaState, 1, 2, 0 ) != 0 ) {
     m_dialog->send("error", m_file, lua_tostring(m_luaState, -1));

@@ -7,26 +7,17 @@ CHARON_ENV = os.getenv("CHARON_ENV") or "test"
 
 local test  = require 'charon.test'
 
-callisto = function(file)
+local callisto = function(file)
   local init = os.microtime()
   package.reload()
   local results = test.execute({file})
-
-  local buffer = ""
-  local titulo = ""
-  local icon   = "ok"
+  local buffer  = ""
+  local icon    = "ok"
 
   count = {}
   count.ok      = 0
   count.failure = 0
   count.pending = 0
-
-  for file_name, result in pairs(results) do
-    if titulo:len() > 0 then
-      titulo = titulo, ', '
-    end
-    titulo = titulo .. file_name:replace('specs/models/', '')
-  end
 
   for file_name, result in pairs(results) do
     for description, result in pairs(result) do
@@ -48,7 +39,7 @@ callisto = function(file)
       icon = "failure"
     end
 
-    print("")
+    test.output("\n")
     rodape = ""
     for i, v in pairs(count) do
       if rodape:len() > 1 then
@@ -58,7 +49,9 @@ callisto = function(file)
       end
     end
     buffer = buffer .. rodape
-    buffer = buffer .. '\n\nFinished in ' .. string.format("%.3f", os.microtime() - init) .. ' seconds'
-    print(buffer)
+    buffer = buffer .. '\n\nFinished in ' .. string.format("%.3f", os.microtime() - init) .. ' seconds\n'
+    test.output(buffer)
     return icon, buffer:replace('\n', '<br>')
 end
+
+return callisto

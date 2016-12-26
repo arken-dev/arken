@@ -17,6 +17,7 @@ CHARON_ENV = os.getenv("CHARON_ENV") or "test"
 
 local colorize = require 'charon.colorize'
 local test = {}
+test.output = io.write
 
 function test.process(file_name)
   local results   = {}
@@ -59,7 +60,7 @@ function test.process(file_name)
               end
             end
             results[description] = {status = 'fail', msg = message.msg .. '\n' .. tostring(trace)}
-            io.write(colorize.format('.', 'red'))
+            test.output(colorize.format('.', 'red'))
           else
             local text = ""
             local traceback = message.traceback
@@ -80,24 +81,24 @@ function test.process(file_name)
               text = text .. '\n' .. trace
             end
             results[description] = {status = 'failure', msg = text}
-            io.write(colorize.format('.', 'red'))
+            test.output(colorize.format('.', 'red'))
           end
         else
           results[description] = {status = 'failure', msg = message}
-          io.write(colorize.format('.', 'red'))
+          test.output(colorize.format('.', 'red'))
         end
       else
         results[description] = {status = "ok", msg = ''}
-        io.write(colorize.format('.', 'green'))
+        test.output(colorize.format('.', 'green'))
       end
       status, message = pcall(after)
       if status == false then
         results['after'] = {status = 'failure', msg = message}
-        io.write(colorize.format('.', 'red'))
+        test.output(colorize.format('.', 'red'))
       end
     else
       results[description] = {status = 'pending', msg = func}
-      io.write(colorize.format('.', 'yellow'))
+      test.output(colorize.format('.', 'yellow'))
     end
     io.flush()
   end
@@ -113,7 +114,7 @@ function test.execute(argfiles)
       if os.exists(file_name) then
         table.insert(files, file_name)
       else
-        error(value .. " not exists")
+        error(file_name .. " not exists")
       end
     end
   end
