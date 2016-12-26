@@ -153,6 +153,7 @@ coverage.line = function(line, flag, keywords)
       return flag
     end
   end
+  return flag
 end
 
 function coverage.analyze(file_name)
