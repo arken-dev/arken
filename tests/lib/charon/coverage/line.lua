@@ -195,4 +195,13 @@ test.should_return_origin_flag_if_function_is_declared_after_comment = function(
   assert( coverage.line('coverage.start = function(fake)', nil, keywords) == 1 )
 end
 
+test.should_return_origin_flag_if_function_is_declared_after_comment = function()
+  local keywords = { flag1 = 0, flag2 = 0, flag3 = 0, str1 = false, str2 = false }
+  assert( coverage.line('-- comment', nil, keywords) == -1 )
+  assert( coverage.line('--[[', nil, keywords) == -1 )
+  assert( coverage.line('local var = "teste"', nil, keywords) == -1 )
+  assert( coverage.line(']]', nil, keywords) == -1 )
+  assert( coverage.line('function Object:initialize()', nil, keywords) == 1 )
+end
+
 return test

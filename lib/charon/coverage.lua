@@ -90,6 +90,9 @@ coverage.line = function(line, flag, keywords)
         keywords.flag = false
         return 1
       end
+      if simplified:startsWith("function") then
+        return 1
+      end
       return flag
     end
   end
