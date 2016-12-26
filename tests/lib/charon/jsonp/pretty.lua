@@ -31,14 +31,14 @@ tests.should_json_encode_array = function()
 end
 
 tests.should_json_encode_table_inside_table = function()
-  local encoded = json.pretty{ value = { id = 1234, description = "this is a test" } }
+  local encoded = json.pretty{ value = { id = 1234, description = "this is a test", flag = true } }
   local value   = json.decode(encoded).value
   assert(value.id == 1234)
   assert(value.description == "this is a test")
 end
 
 tests.should_json_encode_array_inside_table = function()
-  local encoded = json.pretty{ value = { 1234, "this is a test" } }
+  local encoded = json.pretty{ value = { 1234, "this is a test", true } }
   local value   = json.decode(encoded).value
   assert(value[1] == 1234)
   assert(value[2] == "this is a test")

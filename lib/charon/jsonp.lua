@@ -19,21 +19,21 @@ json.pretty = function(dt, lf, id, ac, ec)
             j = j + 1
         elseif not q and (c == "}" or c == "]") then
             j = j - 1
-            if p == "{" or p == "[" then
-                i = i - 1
-                r[i] = table.concat{ string.rep(id, j), p, c }
-            else
+--            if p == "{" or p == "[" then
+--                i = i - 1
+--                r[i] = table.concat{ string.rep(id, j), p, c }
+--            else
                 r[i] = table.concat{ lf, string.rep(id, j), c }
-            end
+--            end
         elseif not q and c == "," then
             r[i] = table.concat{ c, lf }
             k = -1
         elseif not q and c == ":" then
             r[i] = table.concat{ c, ac }
-            if al then
-                i = i + 1
-                r[i] = string.rep(id, j)
-            end
+--            if al then
+--                i = i + 1
+--                r[i] = string.rep(id, j)
+--            end
         else
             if c == '"' and p ~= "\\" then
                 q = not q and true or nil
