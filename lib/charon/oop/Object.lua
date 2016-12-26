@@ -117,6 +117,7 @@ function Object:methods()
       table.insert(methods, k)
     end
   end
+  table.sort(methods)
   return methods
 end
 
