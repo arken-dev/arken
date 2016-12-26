@@ -8,7 +8,7 @@ local toboolean = function(value)
     return true
   end
 
-  if value == 'false' or value == 'f' or value == false then
+  if value == 'false' or value == 'f' or value == false or value == 0 then
     return false
   end
 
