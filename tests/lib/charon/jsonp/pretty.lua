@@ -44,6 +44,11 @@ tests.should_json_encode_array_inside_table = function()
   assert(value[2] == "this is a test")
 end
 
-
+tests.should_json_encode_array_inside_array = function()
+  local encoded = json.pretty{ { 1234, "this is a test" } }
+  local value   = json.decode(encoded)[1]
+  assert(value[1] == 1234)
+  assert(value[2] == "this is a test")
+end
 
 return tests
