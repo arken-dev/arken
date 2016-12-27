@@ -50,14 +50,18 @@ padRight (dart)
 replaceChar
 replaceAll (java, dart)
 replaceFirst (java, dart)
+
 compare (java compareTo)
 compareIgnoreCase (compareToIgnoreCase java)
 equals              (java)
 equalsIgnoreCase    (java)
+
 chars (ruby)
 bytes (ruby)
+
 truncateLeft
 truncateRight
+
 count (ruby, python)
 
 deleteAll
@@ -72,6 +76,10 @@ printable(Elixir)
 palindromo
 lines
 put
+mid => slice ???
+
+-- index - 1 ???
+*insert, indexOf, lastIndex, left, mid, right, truncate
 
 http://api.rubyonrails.org/classes/String.html
 http://magaloma.seasidehosting.st/Collections-Strings#String
