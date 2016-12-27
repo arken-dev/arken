@@ -67,10 +67,12 @@ local function decode(str)
 	end))
 end
 
+M.encodeUpper = function(v)
+  return string.upper(string.format("%%%02x", string.byte(v)))
+end
+
 local function encode(str)
-	return (str:gsub("([^A-Za-z0-9%_%.%-%~])", function(v)
-			return string.upper(string.format("%%%02x", string.byte(v)))
-	end))
+  return (str:gsub("([^A-Za-z0-9%_%.%-%~])", M.encodeUpper))
 end
 
 -- for query values, prefer + instead of %20 for spaces
@@ -320,54 +322,6 @@ function M.parse(url)
 		__tostring = M.build}
 	)
 	return comp
-end
-
---- removes dots and slashes in urls when possible
--- This function will also remove multiple slashes
--- @param path The string representing the path to clean
--- @return a string of the path without unnecessary dots and segments
-function M.removeDotSegments(path)
-	local fields = {}
-	if string.len(path) == 0 then
-		return ""
-	end
-	local startslash = false
-	local endslash = false
-	if string.sub(path, 1, 1) == "/" then
-		startslash = true
-	end
-	if (string.len(path) > 1 or startslash == false) and string.sub(path, -1) == "/" then
-		endslash = true
-	end
-
-	path:gsub('[^/]+', function(c) table.insert(fields, c) end)
-
-	local new = {}
-	local j = 0
-
-	for i,c in ipairs(fields) do
-		if c == '..' then
-			if j > 0 then
-				j = j - 1
-			end
-		elseif c ~= "." then
-			j = j + 1
-			new[j] = c
-		end
-	end
-	local ret = ""
-	if #new > 0 and j > 0 then
-		ret = table.concat(new, '/', 1, j)
-	else
-		ret = ""
-	end
-	if startslash then
-		ret = '/'..ret
-	end
-	if endslash then
-		ret = ret..'/'
-	end
-	return ret
 end
 
 local function absolutePath(base_path, relative_path)
