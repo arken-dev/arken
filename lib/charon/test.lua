@@ -3,8 +3,6 @@
 -- Use of this source code is governed by a BSD-style
 -- license that can be found in the LICENSE file.
 
-require 'charon.regex'
-
 -------------------------------------------------------------------------------
 -- CHARON_ENV
 -------------------------------------------------------------------------------
@@ -53,7 +51,7 @@ function test.process(file_name)
         if type(message) == 'table' then
           if message.kind == 'test' then
             local trace = ""
-            local list  = regex.split(tostring(message.traceback), "\n")
+            local list  = tostring(message.traceback):split("\n")
             for i = 1, list:size() do
               if list:at(i):contains(file_name) then
                 trace = trace .. list:at(i):simplified() .. '\n'
