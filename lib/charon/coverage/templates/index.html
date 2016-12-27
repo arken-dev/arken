@@ -6,11 +6,12 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
     <style type="text/css">
       table {
-        font-family : courier new ;
-        font-size: 10pt ;
-        font-style: bold;
-        margin: 0px auto;
+        font-family : 'Source Code Pro', monospace;
+        font-size: 14px ;
+        margin: 5px auto;
+        color: #111111;
       }
+      tr { line-height: 18px; }
     </style>
   </head>
   <body>
@@ -28,7 +29,7 @@
        <% coverage = coverage + row.coverage -%>
        <td align='right'> <%= i -%></td>
        <td><a href='<%= helper.parameterize(row.file_name) -%>.html'><%= helper.sanitize(file) -%></a></td>
-       <td align='right'><%= helper.number_format(row.coverage) -%>%</td>
+       <td align='right'><%= helper.number_format(row.coverage) -%>%&nbsp;</td>
     </tr>
     <% end -%>
     <tr>
@@ -37,7 +38,7 @@
         <%= #self.files -%> files (<%= helper.number_format(self.time) -%> secs)
         <%= triton.total('test') -%> total tests
       </td>
-      <td align='right'><%= helper.number_format(coverage/#self.files) -%>%</td>
+      <td align='right'><%= helper.number_format(coverage/#self.files) -%>%&nbsp;</td>
     </tr>
     </table>
   </body>

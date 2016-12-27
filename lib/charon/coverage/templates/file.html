@@ -4,11 +4,12 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
     <style type="text/css">
       table {
-        font-family : monaco, courier new ;
-        font-size: 10pt ;
-        font-style: bold;
-        margin: 0px auto;
+        font-family : 'Source Code Pro', monospace;
+        font-size: 14px ;
+        margin: 5px auto;
+        color: #111111;
       }
+      tr { line-height: 18px; }
     </style>
     <title><%= self.file_name -%></title>
   </head>
@@ -16,7 +17,7 @@
     <table width='90%'>
       <% for i, line in ipairs(self.lines) do -%>
       <tr bgcolor='<%= helper.color(line.flag) -%>'>
-        <td><%= i -%></td>
+        <td align='right'><%= i -%></td>
         <td><%= helper.spacing(line.src:escapeHtml()) -%></td>
       </tr>
       <% end -%>
