@@ -34,7 +34,7 @@ helper.number_format = function(value)
 end
 
 helper.datetime = function()
-  return os.date("%Y/%m/%d %H:%helper:%S")
+  return os.date("%Y/%m/%d %H:%M:%S")
 end
 
 helper.parameterize = function(value)
