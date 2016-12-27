@@ -204,10 +204,15 @@ test.should_return_origin_flag_if_function_is_declared_after_comment = function(
   assert( coverage.line('function Object:initialize()', nil, keywords) == 1 )
 end
 
-test.should_return_origin_flag_if_function_is_declared_after_comment_and_after_space = function()
+test.should_return_flag_one_if_function_is_declared_after_comment_and_after_space = function()
   local keywords = { flag1 = 0, flag2 = 0, flag3 = 0, str1 = false, str2 = false }
   assert( coverage.line('-- comment', nil, keywords) == -1 )
   assert( coverage.line('  table[name] = function(t, params)', nil, keywords) == 1 )
+end
+
+test.should_return_flag_one_if_function_is_local = function()
+  local keywords = { flag1 = 0, flag2 = 0, flag3 = 0, str1 = false, str2 = false }
+  assert( coverage.line('local function decode(str)', nil, keywords) == 1 )
 end
 
 return test
