@@ -1,6 +1,10 @@
 local Class = require('charon.oop.Class')
 local test  = {}
 
+test.before = function()
+  Class.classes = {}
+end
+
 test.should_create_new_class_and_register = function()
   local MyClass = Class.new("MyClass")
   assert( MyClass == Class.lookup("MyClass") )
