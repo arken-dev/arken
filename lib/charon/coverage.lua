@@ -83,9 +83,9 @@ coverage.line = function(line, flag, keywords)
   end
 
   if keywords.flag ~= true and keywords.str1 == false and keywords.str2 == false then
-    local index  = line:indexOf("function")
+    local simplified = line:simplified()
+    local index  = simplified:indexOf("function")
     if index > -1 then
-      local simplified = line:simplified()
       if simplified:mid(index-1, 1) == '=' or simplified:mid(index-2, 1) == '=' then
         keywords.flag = false
         return 1
@@ -185,6 +185,8 @@ function coverage.analyze(file_name)
   for line in io.lines(file_name) do
     i = i + 1
     flag = result[file_name][count]
+    -- debug
+    -- print("number :", i, "flag ", flag, "line : ", line)
     flag = coverage.line(line, flag, keywords)
     if flag == nil then
       uncov = uncov + 1
