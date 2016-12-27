@@ -36,3 +36,42 @@ Date, DaTime, active support
 regex
 ---
 utf8
+
+string
+---
+at (charAt java => at)
+trimmed => trim
+trimLeft
+trimRight
+isEmpty (dart)
+isNotEmpty (dart)
+padLeft (dart)
+padRight (dart)
+replaceChar
+replaceAll (java, dart)
+replaceFirst (java, dart)
+compare (java compareTo)
+compareIgnoreCase (compareToIgnoreCase java)
+equals              (java)
+equalsIgnoreCase    (java)
+chars (ruby)
+bytes (ruby)
+truncateLeft
+truncateRight
+count (ruby, python)
+
+deleteAll
+deleteFirst
+deleteLast
+
+prepend (ruby, qt)
+swapcase(python, ruby)
+escapeRegex
+
+printable(Elixir)
+palindromo
+lines
+put
+
+http://api.rubyonrails.org/classes/String.html
+http://magaloma.seasidehosting.st/Collections-Strings#String
