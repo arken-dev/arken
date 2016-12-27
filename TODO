@@ -43,18 +43,16 @@ at (charAt java => at)
 trimmed => trim
 trimLeft
 trimRight
+
 isEmpty (dart)
 isNotEmpty (dart)
+
 padLeft (dart)
 padRight (dart)
+
 replaceChar
 replaceAll (java, dart)
 replaceFirst (java, dart)
-
-compare (java compareTo)
-compareIgnoreCase (compareToIgnoreCase java)
-equals              (java)
-equalsIgnoreCase    (java)
 
 chars (ruby)
 bytes (ruby)
@@ -62,20 +60,28 @@ bytes (ruby)
 truncateLeft
 truncateRight
 
+lines
+put
+mid => slice ???
+
+prepend (ruby, qt)
+
 count (ruby, python)
 
 deleteAll
 deleteFirst
 
-prepend (ruby, qt)
+compare (java compareTo)
+compareIgnoreCase (compareToIgnoreCase java)
+equals              (java)
+equalsIgnoreCase    (java)
+
+
 swapcase(python, ruby)
 escapeRegex
 
 printable(Elixir)
 palindromo
-lines
-put
-mid => slice ???
 
 -- index - 1 ???
 *insert, indexOf, lastIndex, left, mid, right, truncate
