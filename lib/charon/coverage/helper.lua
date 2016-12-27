@@ -3,9 +3,9 @@
 -- Use of this source code is governed by a BSD-style
 -- license that can be found in the LICENSE file.
 
-local M = {}
+local helper = {}
 
-M.color = function(value)
+helper.color = function(value)
   if value == nil then
     return "#ffd4d4"
   end
@@ -15,11 +15,9 @@ M.color = function(value)
   if value == -1 then
     return "#ffffff"
   end
-
-  return "yellow"
 end
 
-M.color_coverage = function(value)
+helper.color_coverage = function(value)
   if value < 100 then
     return "#ffd4d4"
   else
@@ -27,36 +25,23 @@ M.color_coverage = function(value)
   end
 end
 
-M.calc_coverage = function(dump)
-  local total = #dump
-  local uncoverage = 0
-  for i, lines in ipairs(dump) do
-    uncoverage = uncoverage + 1
-  end
-end
-
-M.sort = function(tbl)
-  table.sort(tbl, sort)
-  return tbl
-end
-
-M.spacing = function(str)
+helper.spacing = function(str)
   return tostring(str):gsub(" ", "&nbsp;")
 end
 
-M.number_format = function(value)
+helper.number_format = function(value)
   return string.format("%.4f", value)
 end
 
-M.datetime = function()
-  return os.date("%Y/%m/%d %H:%M:%S")
+helper.datetime = function()
+  return os.date("%Y/%m/%d %H:%helper:%S")
 end
 
-M.parameterize = function(value)
+helper.parameterize = function(value)
   return tostring(value):replace("/", "-")
 end
 
-M.sanitize = function(fileName)
+helper.sanitize = function(fileName)
   if fileName:startsWith('@') then
     fileName = fileName:mid(1, -1)
   end
@@ -66,4 +51,4 @@ M.sanitize = function(fileName)
   return fileName
 end
 
-return M
+return helper
