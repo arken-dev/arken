@@ -10,12 +10,12 @@ Test.help = {}
 -- SPLIT
 -------------------------------------------------------------------------------
 
-Test.help.split = [[
+Test.help.extract = [[
   receive file name para and extrac all functions methods e create equivalente
   file tests
 ]]
 
-function Test:split()
+function Test:extract()
   local fileName = arg[1]
   local module   = dofile(arg[1])
   local filePath = 'tests/' .. fileName:mid(0, fileName:lastIndexOf("."))
