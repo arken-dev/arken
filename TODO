@@ -84,7 +84,7 @@ printable(Elixir)
 palindromo
 
 -- index - 1 ???
-*insert, indexOf, lastIndex, left, mid, right, truncate
+*indexOf, lastIndex, insert, left, mid, right, truncate
 
 http://api.rubyonrails.org/classes/String.html
 http://magaloma.seasidehosting.st/Collections-Strings#String

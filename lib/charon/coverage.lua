@@ -43,7 +43,7 @@ coverage.stop = function(fake)
   local tmp = {}
   for fileName, content in pairs(result) do
     if fileName:startsWith('@') then
-      fileName = fileName:mid(1, -1)
+      fileName = fileName:mid(2, -1)
     end
     fileName = os.abspath(fileName)
     tmp[fileName] = content
@@ -96,7 +96,6 @@ coverage.line = function(line, flag, keywords)
       return flag
     end
   end
-
   for i=1, #line do
     local chr = line:sub(i,i)
     if keywords.str2 == false and chr == "'" then
@@ -165,7 +164,7 @@ function coverage.analyze(file_name)
   local uncov = 0
 
   if file_name:startsWith('@') then
-    file_name = file_name:mid(1, -1)
+    file_name = file_name:mid(2, -1)
   end
 
   file_name = os.abspath(file_name)

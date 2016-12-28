@@ -3,15 +3,14 @@
 -- Use of this source code is governed by a BSD-style
 -- license that can be found in the LICENSE file.
 
-require 'charon.Controller'
-require 'charon.ActiveRecord'
-local ByteArray  = require 'charon.ByteArray'
-local HttpParser = require 'charon.net.HttpParser'
-
-local multipart  = require 'charon.net.multi-part'
-local url        = require 'charon.net.url'
-local cookie     = require 'charon.net.cookie'
-local template   = require 'charon.template'
+local Controller   = require 'charon.Controller'
+local ActiveRecord = require 'charon.ActiveRecord'
+local ByteArray    = require 'charon.ByteArray'
+local HttpParser   = require 'charon.net.HttpParser'
+local multipart    = require 'charon.net.multi-part'
+local url          = require 'charon.net.url'
+local cookie       = require 'charon.net.cookie'
+local template     = require 'charon.template'
 
 -------------------------------------------------------------------------------
 -- DISPATCHER
@@ -126,17 +125,17 @@ end
 dispatcher.parsePath  = function()
   local path  = request.requestPath()
   local last  = path:lastIndexOf('/')
-  local start = 1
+  local start = 2
   if dispatcher.prefix then
     start = start + #dispatcher.prefix + 1
   end
   local controller = path:mid(start, last-start)
-  local action     = path:right(path:len() - last - 1)
-  local path       = path:mid(0, path:len() - action:len())
+  local action     = path:mid(#controller + start + 1)
+  local path       = path:mid(1, path:len() - action:len())
   if controller == '' then
     controller = 'index'
   end
-  if last == 0 or action == '' then
+  if last == 1 or action == '' then
     action = "index"
   end
   return controller, action, path

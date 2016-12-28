@@ -78,6 +78,9 @@ static int lua_charon_string_indexOf( lua_State *L ) {
   const char *string = luaL_checkstring(L, 1);
   const char *str    = luaL_checkstring(L, 2);
   int result = string::indexOf(string, str);
+  if( result > -1 ) {
+    result ++;
+  }
   lua_pushnumber(L, result);
   return 1;
 }
@@ -86,7 +89,7 @@ static int lua_charon_string_insert( lua_State *L ) {
   const char *string = luaL_checkstring(L, 1);
   int len            = luaL_checkinteger(L, 2);
   const char *ba     = luaL_checkstring(L, 3);
-  char *result = string::insert(string, len, ba);
+  char *result = string::insert(string, len-1, ba);
   lua_pushstring(L, result);
   delete[] result;
   return 1;
@@ -96,6 +99,9 @@ static int lua_charon_string_lastIndexOf( lua_State *L ) {
   const char *string = luaL_checkstring(L, 1);
   const char *str    = luaL_checkstring(L, 2);
   int result = string::lastIndexOf(string, str);
+  if( result > -1 ) {
+    result ++;
+  }
   lua_pushnumber(L, result);
   return 1;
 }
@@ -103,7 +109,7 @@ static int lua_charon_string_lastIndexOf( lua_State *L ) {
 static int lua_charon_string_left( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   int    len    =  luaL_checkinteger(L, 2);
-  char * result = string::left(string, len);
+  char * result = string::left(string, len-1);
   lua_pushstring(L, result);
   delete[] result;
   return 1;
@@ -118,7 +124,7 @@ static int lua_charon_string_mid( lua_State *L ) {
   } else {
     len = -1;
   }
-  char *result = string::mid(string, pos, len);
+  char *result = string::mid(string, pos-1, len);
   lua_pushstring(L, result);  /* push result */
   delete[] result;
   return 1;
@@ -144,7 +150,7 @@ static int lua_charon_string_repeated( lua_State *L ) {
 static int lua_charon_string_right( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   int    len    =  luaL_checkinteger(L, 2);
-  char * result = string::right(string, len);
+  char * result = string::right(string, len-1);
   lua_pushstring(L, result);  /* push result */
   delete[] result;
   return 1;

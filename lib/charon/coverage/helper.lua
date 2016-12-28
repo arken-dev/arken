@@ -43,10 +43,10 @@ end
 
 helper.sanitize = function(fileName)
   if fileName:startsWith('@') then
-    fileName = fileName:mid(1, -1)
+    fileName = fileName:mid(2, -1)
   end
   if fileName:startsWith('./') then
-    fileName = fileName:mid(2, -1)
+    fileName = fileName:mid(3, -1)
   end
   return fileName
 end
