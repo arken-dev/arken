@@ -679,7 +679,7 @@ bool string::startsWith(const char *string, const char *str)
   return true;
 }
 
-static inline bool trimmed_special_char(const char chr)
+static inline bool trim_special_char(const char chr)
 {
   if( chr >= 0 and chr <= 32 ) {
     return true;
@@ -688,7 +688,7 @@ static inline bool trimmed_special_char(const char chr)
   }
 }
 
-char * string::trimmed(const char *string)
+char * string::trim(const char *string)
 {
   int i = 0;
   int j = 0;
@@ -697,11 +697,11 @@ char * string::trimmed(const char *string)
 
   len = strlen(string);
 
-  while(trimmed_special_char(string[i])) {
+  while(trim_special_char(string[i])) {
     i++;
   }
 
-  while(trimmed_special_char(string[len])) {
+  while(trim_special_char(string[len])) {
     len--;
   }
 
@@ -722,7 +722,7 @@ char * string::trimmed(const char *string)
   return result;
 }
 
-char * string::trimmedLeft(const char *string)
+char * string::trimLeft(const char *string)
 {
   int i = 0;
   int j = 0;
@@ -731,7 +731,7 @@ char * string::trimmedLeft(const char *string)
 
   len = strlen(string);
 
-  while(trimmed_special_char(string[i])) {
+  while(trim_special_char(string[i])) {
     i++;
   }
 
@@ -752,7 +752,7 @@ char * string::trimmedLeft(const char *string)
   return result;
 }
 
-char * string::trimmedRight(const char *string)
+char * string::trimRight(const char *string)
 {
   int i = 0;
   int j = 0;
@@ -761,7 +761,7 @@ char * string::trimmedRight(const char *string)
 
   len = strlen(string);
 
-  while(trimmed_special_char(string[len])) {
+  while(trim_special_char(string[len])) {
     len--;
   }
 

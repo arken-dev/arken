@@ -60,7 +60,7 @@ coverage.reset = function()
 end
 
 coverage.line = function(line, flag, keywords)
-  local trimmed = line:trimmed()
+  local trimmed = line:trim()
 
   if trimmed == 'else' then
      return -1

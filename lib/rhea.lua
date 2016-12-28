@@ -61,7 +61,7 @@ local function printHelp(module)
 
     for k, v in pairs(module.help) do
       local space = string.rep(' ', size - #k)
-      help = help .. k .. space .. ' # ' .. v:trimmed():replace('\n', margem) .. '\n'
+      help = help .. k .. space .. ' # ' .. v:trim():replace('\n', margem) .. '\n'
     end
 
     print(help)
@@ -125,7 +125,7 @@ rhea = function()
         if object.help[action] then
           local help   = object.help[action]
           local margem = '\n' .. string.rep(' ', #action + 1)
-          print(action .. ' # ' .. help:trimmed():replace('\n', margem))
+          print(action .. ' # ' .. help:trim():replace('\n', margem))
         else
           print(action .. ": undocumented")
         end

@@ -208,25 +208,25 @@ static int lua_charon_string_replace( lua_State *L ) {
   return 1;
 }
 
-static int lua_charon_string_trimmed( lua_State *L ) {
+static int lua_charon_string_trim( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
-  char * result       = string::trimmed(string);
+  char * result       = string::trim(string);
   lua_pushstring(L, result);  /* push result */
   delete[] result;
   return 1;
 }
 
-static int lua_charon_string_trimmedLeft( lua_State *L ) {
+static int lua_charon_string_trimLeft( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
-  char * result       = string::trimmedLeft(string);
+  char * result       = string::trimLeft(string);
   lua_pushstring(L, result);  /* push result */
   delete[] result;
   return 1;
 }
 
-static int lua_charon_string_trimmedRight( lua_State *L ) {
+static int lua_charon_string_trimRight( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
-  char * result       = string::trimmedRight(string);
+  char * result       = string::trimRight(string);
   lua_pushstring(L, result);  /* push result */
   delete[] result;
   return 1;
@@ -271,9 +271,9 @@ int luaopen_charon_string( lua_State *L ) {
     {"startsWith",  lua_charon_string_startsWith},
     {"split",       lua_charon_string_split},
     {"suffix",      lua_charon_string_suffix},
-    {"trimmed",     lua_charon_string_trimmed},
-    {"trimmedLeft", lua_charon_string_trimmedLeft},
-    {"trimmedRight",lua_charon_string_trimmedRight},
+    {"trim",        lua_charon_string_trim},
+    {"trimLeft",    lua_charon_string_trimLeft},
+    {"trimRight",   lua_charon_string_trimRight},
     {"truncate",    lua_charon_string_truncate},
     {"underscore",  lua_charon_string_underscore},
     {NULL, NULL}
