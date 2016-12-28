@@ -18,7 +18,7 @@ Test.help.extract = [[
 function Test:extract()
   local fileName = arg[1]
   local module   = dofile(arg[1])
-  local filePath = 'tests/' .. fileName:mid(0, fileName:lastIndexOf("."))
+  local filePath = 'tests/' .. fileName:mid(1, fileName:lastIndexOf(".")-1)
   print(fileName)
   print(filePath)
   os.mkpath(filePath)
@@ -51,6 +51,5 @@ function Test:extract()
     end
   end
 end
-
 
 return Test

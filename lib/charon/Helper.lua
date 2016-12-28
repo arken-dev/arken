@@ -1,38 +1,33 @@
+-- Copyright 2016 The Charon Platform Authors.
+-- All rights reserved.
+-- Use of this source code is governed by a BSD-style
+-- license that can be found in the LICENSE file.
+--
+-- Helpers in charon platform follow similiar principle of Velocity Framework
 -- http://stackoverflow.com/questions/4201142/rails-style-template-helpers-in-velocity
--- http://framework.zend.com/manual/current/en/modules/zend.view.helpers.html
--- http://framework.zend.com/manual/current/en/modules/zend.view.helpers.url.html
+-- Examples:
+-- <% local img = helper:img("pdf.png") -%>
+-- <%= helper:floatField("total", {default = 0.0})
+-- <%= helper:link{ text = 'cancel', url = {controller = "cancel"} } -%>
+-- or
+-- <a href="<%= helper:url{ action = 'cancel' } -%>">cancel</a>
 
---[[
-<?php echo $this->formText('email', 'you@example.com', array('size' => 32)) ?>
-<%=        helper.formText('email', 'you@example.com', array('size' => 32)) %>
+local Form       = require "charon.Helper.FormHelper"
+local url        = require "charon.net.url"
+local toboolean  = require "charon.toboolean"
+local dispatcher = require 'charon.dispatcher'
+local Helper     = {}
+local cache      = {}
 
+Helper.publicPath = "public"
 
-<% local img = helper.img("teste") -%>
-<%= helper.link(img, {url = "teste"}) -%>
-<%= helper.link(helper.img("icons/detalhes.png") , {url = "teste"}) -%>
-
-
-<%= helper.link{img = "icons/teste.png", url = "teste"} -%>
-
-
-<% local form = helper.form("pedido") -%>
-<%= form.floatField("total", {default = 0.0})
-<a href="<%= helper.url{ action = 'concluir' } -%>" data-remote='true'><%= helper.image("icone/detalhes") -%></a>
-]]
-
-require "charon.Helper.FormHelper"
-
-local url   = require 'charon.net.url'
-local M     = {}
-local cache = {}
-
-function M:hiddenField(field, value)
+function Helper:hiddenField(field, value)
   value = value or ""
   local html = [[<input type="hidden" id="%s" name="%s" value=%q>]]
   return string.format(html, field:normalize(), field, value)
 end
 
-function M:textField(field, value, options)
+function Helper:textField(field, value, options)
   local value   = value   or ""
   local options = options or {}
   local style   = options.style or "width:250px"
@@ -58,12 +53,12 @@ function M:textField(field, value, options)
   return (html .. ' />')
 end
 
-function M:textArea(field, value, options)
+function Helper:textArea(field, value, options)
   local value   = value   or ""
   local options = options or {}
   local style   = options.style or "width:250px;height:65px"
-  local html    = [[<textarea id="%s" name="%s" style=%q>%s]]
-  local html    = string.format(html, field:normalize(), field, style, value)
+  local html    = [[<textarea id="%s" name="%s" style=%q]]
+  local html    = string.format(html, field:normalize(), field, style)
 
   if options.onblur then
     html = html .. string.format(" onblur=%q ", options.onblur)
@@ -81,30 +76,30 @@ function M:textArea(field, value, options)
     html = html .. string.format(" onkeyup=%q ", options.onkeyup)
   end
 
-  return (html .. '</textarea>')
+  return html .. string.format('>%s</textarea>', value)
 end
 
-function M:floatField(field, value, options)
+function Helper:floatField(field, value, options)
   options            = options            or {}
   options.onblur     = options.onblur     or "inputBlur( this )"
   options.onfocus    = options.onfocus    or "inputFocus( this )"
   options.onkeypress = options.onkeypress or "inputPress( this, event )"
   options.onkeyup    = options.onkeyup    or "format_invert(this, '**.***.***,**')"
   options.style      = options.style      or "width:95px;text-align:right"
-  return M:textField(field, value, options)
+  return Helper:textField(field, value, options)
 end
 
-function M:intField(field, value, options)
+function Helper:intField(field, value, options)
   options            = options            or {}
   options.onblur     = options.onblur     or "inputBlur( this )"
   options.onfocus    = options.onfocus    or "inputFocus( this )"
   options.onkeypress = options.onkeypress or "inputPress( this, event )"
   options.onkeyup    = options.onkeyup    or "format_invert(this, '***.***.***')"
   options.style      = options.style      or "width:95px;text-align:right"
-  return M:textField(field, value, options)
+  return Helper:textField(field, value, options)
 end
 
-function M:dateField(field, value, options)
+function Helper:dateField(field, value, options)
   options            = options            or {}
   options.onblur     = options.onblur     or "inputBlur( this )"
   options.onfocus    = options.onfocus    or "inputFocus( this )"
@@ -112,20 +107,28 @@ function M:dateField(field, value, options)
   options.onkeyup    = options.onkeyup    or "format_invert(this, '**/**/****')"
   options.style      = options.style      or "width:80px;text-align:right"
 
-  local html     = M:textField(field, value, options)
+  local html     = Helper:textField(field, value, options)
   local calendar = [[<script>jQuery.calendar('#%s')</script>]]
 
   return html .. string.format(calendar, field, options)
 end
 
-function M:boolField(field, value, options)
+function Helper:negativeLabel()
+  return 'not'
+end
+
+function Helper:positiveLabel()
+  return 'yes'
+end
+
+function Helper:boolField(field, value, options)
   local options = options or {}
   local html    = ""
   local label   = ""
   local checked = ""
 
   -- positive option
-  label = options.positive or " sim"
+  label = options.positive or self:positiveLabel()
   if toboolean(value) == true then
     checked = "checked"
   else
@@ -134,7 +137,7 @@ function M:boolField(field, value, options)
   html = html .. string.format([[<input type="radio" name=%q value="true" %s > %s ]], field, checked, label)
 
   -- negative option
-  label = options.negative or " não"
+  label = options.negative or self:negativeLabel()
   if toboolean(value) == false then
     checked = "checked"
   else
@@ -156,7 +159,7 @@ function M:boolField(field, value, options)
   return html
 end
 
-function M:selectList(field, list, field_value, field_description, value, options)
+function Helper:selectList(field, list, field_value, field_description, value, options)
   options = options or {}
   local html     = "<select "
   local option   = "<option value=%q %s >%s</option>"
@@ -193,7 +196,7 @@ function M:selectList(field, list, field_value, field_description, value, option
   return html
 end
 
-function M:selectHash(field, list, value, options)
+function Helper:selectHash(field, list, value, options)
   options = options or {}
   local html     = "<select "
   local option   = "<option value=%q %s >%s</option>"
@@ -222,29 +225,17 @@ function M:selectHash(field, list, value, options)
     else
       selected = ''
     end
-    html = html .. string.format(option, tostring(k), selected, tostring(v))
+    html = html .. string.format(option, k, selected, v)
   end
   html = html .. "</select>"
 
   return html
 end
 
-function M:submitSend()
-  return [[<input type="image" src="/images/icons/botao_enviar.png?1453303287" style="border: 0px" >]]
-end
-
-function M:submitSave()
-  return [[<input type="image" src="/images/icons/botao_gravar.png?1453303287" style="border: 0px" >]]
-end
-
-function M:submitCancel()
-  return self:link{ img = 'icons/botao_cancelar.png', url = { action = 'cancel' }, remote = true }
-end
-
-function M:fileTimestamp(file_name)
+function Helper:fileTimestamp(file_name)
   if cache[file_name] == nil or CHARON_ENV ~= 'production' then
-    if os.exists('public' .. file_name) then
-      cache[file_name] = os.ctime('public' .. file_name)
+    if os.exists(Helper.publicPath .. file_name) then
+      cache[file_name] = os.ctime(Helper.publicPath .. file_name)
     else
       cache[file_name] = 0
     end
@@ -252,50 +243,49 @@ function M:fileTimestamp(file_name)
   return cache[file_name]
 end
 
-function M:javascriptSrc(file_name)
-  local html = [[<script src="/app%s?%i" type="text/javascript"></script>]]
+function Helper:javascript(file_name)
+  local html = [[<script src="%s%s?%i" type="text/javascript"></script>]]
   file_name  = string.format("/javascripts/%s.js", file_name)
-  return string.format(html, file_name, self:fileTimestamp(file_name))
+  return string.format(html, dispatcher.prefix, file_name, self:fileTimestamp(file_name))
 end
 
-function M:stylesheetSrc(file_name)
-  local html = [[<link href="/app%s?%i" media="screen" rel="stylesheet" type="text/css" />]]
+function Helper:stylesheet(file_name)
+  local html = [[<link href="%s%s?%i" media="screen" rel="stylesheet" type="text/css" />]]
   file_name  = string.format("/stylesheets/%s.css", file_name)
-  return string.format(html, file_name, self:fileTimestamp(file_name))
+  return string.format(html, dispatcher.prefix, file_name, self:fileTimestamp(file_name))
 end
 
-function M:img(file_name, options)
+function Helper:img(file_name, options)
   local options = options or {}
-  local title   = options.title or ""
-  local html    = [[<img src="%s?%i" title="%s" />]]
+  local title   = options.title or file_name:left(file_name:lastIndexOf('.'))
+  local html    = [[<img src="%s%s?%i" title="%s" />]]
   file_name     = string.format("/images/%s", file_name)
-  return string.format(html, file_name, self:fileTimestamp(file_name), title)
+  return string.format(html, dispatcher.prefix, file_name, self:fileTimestamp(file_name), title)
 end
 
-function M:imgPath(file_name)
+function Helper:imgPath(file_name)
   local html    = '%s?%i'
-  file_name     = string.format("/images/%s", file_name)
+  file_name     = string.format("%s/images/%s", dispatcher.prefix, file_name)
   return string.format(html, file_name, self:fileTimestamp(file_name))
 end
 
-function M:formCreate(instance_or_name, name)
+function Helper:formCreate(instance_or_name, name)
   local data
   if type(instance_or_name) == 'string' then
     data = self.controller[instance_or_name]
   else
     data = instance_or_name
   end
-  return FormHelper.new{ data = data, name = (name or 'form'), controller = self.controller }
+  return Form.new{ data = data, name = (name or 'form'), controller = self.controller }
 end
 
-function M:url(params)
+function Helper:url(params)
 
   if type(params) == 'string' then
     return params
   end
 
-  local dispatcher = require 'charon.dispatcher'
-  local controller = params.controller or self.controller_name
+  local controller = params.controller or self.controller_name or 'index'
   local action     = params.action or 'index'
 
   if dispatcher.prefix then
@@ -305,7 +295,7 @@ function M:url(params)
   params.action = nil
   params.controller = nil
 
-  local result = params.path or ('/' .. controller .. '/' .. action)
+  local result = params.path or (controller .. '/' .. action)
   local query  = url.buildQuery(params)
 
   if #query > 0 then
@@ -315,78 +305,42 @@ function M:url(params)
   return result
 end
 
-function M:urlPerform()
+function Helper:urlPerform()
   local action = self.action_name:gsub("Perform", "") .. "Perform"
   return self:url{ action = action }
 end
 
-function M:link(params)
+function Helper:link(params)
   local html = [[<a href=%q]]
 
-  if params.modal then
-    local onclick = "modal_open"
+  html = string.format(html, self:url(params.url))
 
-    if params.condition == nil and params.with then
-      onclick = " checkArg() && " .. onclick
-    end
+  if params.remote then
+    html = html .. string.format(" data-remote=%q ", "true")
+  end
 
-    if params.condition then
-      onclick = params.condition .. " && " .. onclick
-    end
+  if params.after then
+    html = html .. string.format(" data-after=%q ", params.after)
+  end
 
-    if params.confirm then
-      onclick = string.format("window.confirm(%q) && ", params.confirm) .. onclick
-    end
+  if params.click then
+    html = html .. string.format(" onclick=%q ", params.click )
+  end
 
-    if params.with then
-      html = string.format(html, "#") .. [[ onclick='%s(%q+jQuery.param(%s)); return false;' ]]
-      local url = self:url(params.url)
-      if url:contains("?") then
-        url = url .. "&"
-      else
-        url = url .. "?"
-      end
-      html = string.format(html, onclick, url, params.with)
-    else
-      html = string.format(html, "#") .. [[ onclick='modal_open(%q); return false;' ]]
-      html = string.format(html, self:url(params.url))
-    end
+  if params.update then
+    html = html .. string.format(" data-update=%q ", params.update)
+  end
 
-  else
+  if params.confirm then
+    html = html .. string.format(" data-confirm=%q ", params.confirm)
+  end
 
-    html = string.format(html, self:url(params.url))
+  if params.with and params.remote then
+    html = html .. string.format(" data-with=%q ", params.with)
+  end
 
-    if params.remote then
-      html = html .. string.format(" data-remote=%q ", "true")
-    end
-
-    if params.after then
-      html = html .. string.format(" data-after=%q ", params.after)
-    end
-
-    if params.click then
-      html = html .. string.format(" onclick=%q ", params.click )
-    end
-
-    if params.update then
-      html = html .. string.format(" data-update=%q ", params.update)
-    end
-
-    if params.confirm then
-      html = html .. string.format(" data-confirm=%q ", params.confirm)
-    end
-
-    if params.with and params.remote then
-      html = html .. string.format(" data-with=%q ", params.with)
-      if params.condition == nil then
-        html = html .. string.format(" data-condition=%q ", "checkArg()")
-      end
-    end
-
-    if params.condition then
-      html = html .. string.format(" data-condition=%q ", params.condition)
-    end
-
+  if params.condition then
+    html = html .. string.format(" data-condition=%q ", params.condition)
   end
 
   if params.style then
@@ -417,7 +371,7 @@ end
 -- AUTO COMPLETE
 -------------------------------------------------------------------------------
 
-function M:autoComplete(field, resource, options)
+function Helper:autoComplete(field, resource, options)
   local options = options or {}
   local field_value       = options.field_value or "value"
   local field_description = options.field_description or "label"
@@ -465,114 +419,26 @@ function M:autoComplete(field, resource, options)
   return html
 end
 
--------------------------------------------------------------------------------
--- AUTO LIST
--------------------------------------------------------------------------------
-
-function M:autoList(field, resource)
-  local controller
-  local action
-  if type(resource) == 'table' then
-    controller = resource.controller
-    action     = resource.action or 'index'
-  else
-    controller = resource
-  end
-  local func  = string.format([[AutoList.select(%q, %q, %q, ui);]], field, (field .. "_id"), (field .. "_id"))
-  local input = self:autoComplete( 'autolist[' .. field .. ']',
-    { controller = controller, action = action },
-    { ['select'] = func }
-  )
-
-  local link  = self:link {
-    img    = 'icons/refresh.gif',
-    url    = '#',
-    click  = string.format([[AutoList.list('%s', '%s', '%s', '%s');]],
-      field, (field .. "_id"), (field .. "_id"),
-      self:url({ controller = controller, action = 'select', field = (field .. "_id") })
-    )
-  }
-
-  local html = [[
-    <table cellspacing='0' cellpadding='0'>
-      <tr>
-        <td width='250'>
-          %s
-          <div id='autolist_%s_container' style='width:250px;display:none'></div>
-        </td>
-        <td>&nbsp;</td>
-        <td>%s</td>
-      </tr>
-    </table>
-  ]]
-
-  return string.format(html, input, field, link)
-end
-
-function M:slice(value, start, stop)
-
-  if value==nil  then
-    return ""
-  end
-
-  return string.sub(tostring(value), start, stop)
-end
-
-function M:dateFormat(value)
-  if value==nil then
-    return ""
-  end
-
-  local dia = M:slice(value, 9, 10)
-  local mes = M:slice(value, 6, 7)
-  local ano = M:slice(value, 0, 4)
-  return dia .. "/" .. mes .. "/" .. ano
-end
-
-function M:dateTimeFormat(value)
+function Helper:dateFormat(value)
   return value
 end
 
-
-function M:trucante(value, size)
+function Helper:dateTimeFormat(value)
   return value
 end
 
-function M:boolFormat(value, positive, negative)
+function Helper:boolFormat(value, positive, negative)
   if toboolean(value) then
-    return positive or 'sim'
+    return positive or 'yes'
   else
-    return negative or 'não'
+    return negative or 'no'
   end
-end
-
-function M:dateIntervalo(field)
-  return M:dateField(field .. "_inicio") .. "&nbsp;à&nbsp;" .. M:dateField(field .. "_fim")
 end
 
 -- nl2br
 -- converte em uma string todos os \n para <br>
-function M:nl2br(value)
+function Helper:nl2br(value)
   return tostring(value):replace('\n', '<br>')
 end
 
-function M:toNumber(value)
-  if value == nil then
-    return 0
-  end
-  return tonumber(value)
-end
-
-function M:intFormat(value)
-  return tonumber(value)
-end
-
-function M:toNumber(value)
-  if value == nil then
-    return 0
-  else
-    return tonumber(value)
-  end
-end
-
-return M
+return Helper

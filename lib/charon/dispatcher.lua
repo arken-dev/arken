@@ -18,11 +18,12 @@ local template     = require 'charon.template'
 
 local dispatcher = {}
 dispatcher.converter = require('charon.Converter')
-dispatcher.prefix = nil
+dispatcher.prefix = ""
 
 -------------------------------------------------------------------------------
 -- REQUEST
 -------------------------------------------------------------------------------
+request = request or {}
 
 request.params = function(rebuild)
   if request.__params == nil or rebuild then
@@ -127,7 +128,7 @@ dispatcher.parsePath  = function()
   local last  = path:lastIndexOf('/')
   local start = 2
   if dispatcher.prefix then
-    start = start + #dispatcher.prefix + 1
+    start = start + #dispatcher.prefix
   end
   local controller = path:mid(start, last-start)
   local action     = path:mid(#controller + start + 1)

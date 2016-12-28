@@ -99,7 +99,7 @@ rhea = function()
     local task   = arg[0]
     local last   = task:lastIndexOf(":")
     local name   = task:left(last):replace(":", ".")
-    local action = task:right(task:len() - last - 1)
+    local action = task:mid(last+1, -1)
 
     if last < 0 then
       name   = arg[0]
