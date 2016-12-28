@@ -1,5 +1,13 @@
-local helper = require('charon.Helper')
-local test   = {}
+local helper     = require('charon.Helper')
+local dispatcher = require('charon.dispatcher')
+local test       = {}
+
+test.before = function()
+  dispatcher.prefix = ""
+  helper.controller = nil
+  helper.controller_name = nil
+  helper.action = nil
+end
 
 test.should_return_html_index_controller_and_index_action = function()
   local result = helper:url{ action = 'index' }

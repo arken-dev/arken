@@ -1,5 +1,10 @@
 local FormHelper = require('charon.Helper.FormHelper')
+local dispatcher = require('charon.dispatcher')
 local test = {}
+
+test.before = function()
+  dispatcher.prefix = ""
+end
 
 test.should_return_url_string = function()
   local form = FormHelper.new()
@@ -36,8 +41,7 @@ end
 
 test.should_return_action = function()
   request    = {}
-  dispatcher = require('charon.dispatcher')
-  dispatcher.prefix = 'app'
+  dispatcher.prefix = '/app'
   local controller  = { action_name = 'save' }
   local form        = FormHelper.new{ controller = controller }
   local result      = form:url( {controller = "redirect"} )

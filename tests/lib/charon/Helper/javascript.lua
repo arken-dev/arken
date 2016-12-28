@@ -1,6 +1,13 @@
-local helper     = require 'charon.Helper'
-local dispatcher = require 'charon.dispatcher'
+local helper     = require('charon.Helper')
+local dispatcher = require('charon.dispatcher')
 local test       = {}
+
+test.before = function()
+  dispatcher.prefix = ""
+  dispatcher.controller = nil
+  dispatcher.controller_name = nil
+  dispatcher.action = nil
+end
 
 test.should_return_html = function()
   local result = helper:javascript("main")

@@ -1,5 +1,13 @@
-local helper = require('charon.Helper')
-local test   = {}
+local helper     = require('charon.Helper')
+local dispatcher = require('charon.dispatcher')
+local test       = {}
+
+test.before = function()
+  dispatcher.prefix = ""
+  helper.controller = nil
+  helper.controller_name = nil
+  helper.action = nil
+end
 
 test.should_return_html_with_minimal_params = function()
   local result = helper:link{ text = 'hello', url = { action = 'index' } }
@@ -38,9 +46,9 @@ test.should_return_html_with_confirm = function()
 end
 
 test.should_return_html_with_json = function()
-  local url    = { acton = 'index' }
+  local url    = { action = 'index' }
   local result = helper:link{ text = 'hello', url = url, remote = true, with = [[{ id: "name" }]] }
-  local html   = [[<a href="/index/index?acton=index" data-remote="true"  data-with="{ id: \"name\" }" >hello</a>]]
+  local html   = [[<a href="/index/index" data-remote="true"  data-with="{ id: \"name\" }" >hello</a>]]
   assert( result == html, result )
 end
 

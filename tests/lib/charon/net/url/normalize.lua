@@ -7,21 +7,23 @@ test.should_return_table_form_url = function()
   assert( result.path == "//path", result.path )
   assert( result:normalize().path == "/path", result:normalize().path )
 end
-
+--[[
 test.should_return_table_form_url = function()
+  local normalize = string.normalize
   string.normalize = url.normalize
   local url    = "HTTP://www.Example.com/"
   local result = url:normalize()
-  string.normalize = nil
+  string.normalize = normalize
   assert( result:build() == "http://www.example.com/", json.encode(result:build()) )
 end
 
 test.should_return_table_form_url = function()
+  local normalize = string.normalize
   string.normalize = url.normalize
   local url    = "HTTP://www.Example_Host.com/"
   local result = url:normalize()
-  string.normalize = nil
+  string.normalize = normalize
   assert( result:build() == "http://www.example_host.com/", json.encode(result:build()) )
 end
-
+]]
 return test

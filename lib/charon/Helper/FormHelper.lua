@@ -26,7 +26,7 @@ function FormHelper:url(params)
   params.action = nil
   params.controller = nil
 
-  local result = params.path or ('/' .. controller .. '/' .. action)
+  local result = params.path or (controller .. '/' .. action)
   local query  = url.buildQuery(params)
 
   if #query > 0 then
