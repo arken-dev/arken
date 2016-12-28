@@ -83,8 +83,5 @@ escapeRegex
 printable(Elixir)
 palindromo
 
--- index - 1 ???
-*indexOf, lastIndex, insert, left, mid, right, truncate
-
 http://api.rubyonrails.org/classes/String.html
 http://magaloma.seasidehosting.st/Collections-Strings#String
