@@ -91,11 +91,33 @@ lua_ByteArrayInstanceMethodReplace( lua_State *L ) {
 }
 
 static int
-lua_ByteArrayInstanceMethodTrimmed( lua_State *L ) {
+lua_ByteArrayInstanceMethodNormalize( lua_State *L ) {
   ByteArray *udata  = checkByteArray( L );
-  lua_pushstring(L, udata->trimmed());
+  lua_pushstring(L, udata->normalize());
   return 1;
 }
+
+static int
+lua_ByteArrayInstanceMethodTrim( lua_State *L ) {
+  ByteArray *udata  = checkByteArray( L );
+  lua_pushstring(L, udata->trim());
+  return 1;
+}
+
+static int
+lua_ByteArrayInstanceMethodTrimLeft( lua_State *L ) {
+  ByteArray *udata  = checkByteArray( L );
+  lua_pushstring(L, udata->trimLeft());
+  return 1;
+}
+
+static int
+lua_ByteArrayInstanceMethodTrimRight( lua_State *L ) {
+  ByteArray *udata  = checkByteArray( L );
+  lua_pushstring(L, udata->trimRight());
+  return 1;
+}
+
 
 static int
 lua_ByteArrayInstanceMethodSimplified( lua_State *L ) {
@@ -193,8 +215,11 @@ luaL_reg ByteArrayInstanceMethods[] = {
   {"toUpper", lua_ByteArrayInstanceMethodToUpper},
   {"prepend", lua_ByteArrayInstanceMethodPrepend},
   {"append", lua_ByteArrayInstanceMethodAppend},
-  {"trimmed", lua_ByteArrayInstanceMethodTrimmed},
-  {"replace", lua_ByteArrayInstanceMethodReplace},
+  {"trim",      lua_ByteArrayInstanceMethodTrim},
+  {"trimLeft",  lua_ByteArrayInstanceMethodTrimLeft},
+  {"trimRight", lua_ByteArrayInstanceMethodTrimRight},
+  {"normalize", lua_ByteArrayInstanceMethodNormalize},
+  {"replace",   lua_ByteArrayInstanceMethodReplace},
   {"simplified", lua_ByteArrayInstanceMethodSimplified},
   {"underscore", lua_ByteArrayInstanceMethodUnderscore},
   {"__concat", lua_ByteArrayInstanceMethodConcat},

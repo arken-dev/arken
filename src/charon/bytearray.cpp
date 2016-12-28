@@ -18,6 +18,11 @@ ByteArray ByteArray::capitalize(void)
   return ByteArray(string::capitalize(this->data()));
 }
 
+ByteArray ByteArray::normalize(void)
+{
+  return ByteArray(string::normalize(this->data()));
+}
+
 ByteArray ByteArray::underscore(void)
 {
   return ByteArray(string::underscore(this->data()));
@@ -28,9 +33,19 @@ ByteArray ByteArray::simplified(void)
   return (ByteArray) QByteArray::simplified();
 }
 
-ByteArray ByteArray::trimmed(void)
+ByteArray ByteArray::trim(void)
 {
-  return (ByteArray) QByteArray::trimmed();
+  return ByteArray(string::trim(this->data()));
+}
+
+ByteArray ByteArray::trimLeft(void)
+{
+  return ByteArray(string::trimLeft(this->data()));
+}
+
+ByteArray ByteArray::trimRight(void)
+{
+  return ByteArray(string::trimRight(this->data()));
 }
 
 ByteArray ByteArray::toUpper(void)
