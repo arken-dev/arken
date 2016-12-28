@@ -44,21 +44,20 @@ trimmed => trim
 trimLeft
 trimRight
 
+replaceChar
+replaceAll (java, dart)
+replaceFirst (java, dart)
+
 isEmpty (dart)
 isNotEmpty (dart)
 
 padLeft (dart)
 padRight (dart)
 
-replaceChar
-replaceAll (java, dart)
-replaceFirst (java, dart)
-
 chars (ruby)
 bytes (ruby)
 
-truncateLeft
-truncateRight
+truncate, suporte end text
 
 lines
 put
