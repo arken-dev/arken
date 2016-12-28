@@ -1,5 +1,6 @@
-local Class = require 'charon.oop.Class'
-local url   = require 'charon.net.url'
+local Class     = require 'charon.oop.Class'
+local url       = require 'charon.net.url'
+local toboolean = require 'charon.toboolean'
 
 FormHelper = Class.new("FormHelper")
 
@@ -10,7 +11,7 @@ function FormHelper:url(params)
   end
 
   local dispatcher = require 'charon.dispatcher'
-  local controller = params.controller or self.controller.controller_name
+  local controller = params.controller or self.controller.controller_name or 'index'
   local action     = params.action or self.controller.action_name or 'index'
 
   if dispatcher.prefix then
@@ -45,16 +46,18 @@ end
 
 function FormHelper:buildValue(field)
   local value
-  if self.data['read'] then
-    value = self.data['read'](self.data, field)
-  else
-    value = self.data[field]
+  if self.data then
+    if self.data.read then
+      value = self.data['read'](self.data, field)
+    else
+      value = self.data[field]
+    end
   end
-   if value == nil then
-     return ''
-   else
-     return value
-   end
+  if value == nil then
+    return ''
+  else
+    return value
+  end
 end
 
 function FormHelper:hiddenField(field)
@@ -71,19 +74,19 @@ function FormHelper:textField(field, options)
   local html    = string.format(html, self:buildId(field), self:buildName(field), value, style)
 
   if options.onblur then
-    html = html .. string.format(" onblur=%q ", options.onblur)
+    html = html .. string.format(" onblur=%q", options.onblur)
   end
 
   if options.onfocus then
-    html = html .. string.format(" onfocus=%q ", options.onfocus)
+    html = html .. string.format(" onfocus=%q", options.onfocus)
   end
 
   if options.onkeypress then
-    html = html .. string.format(" onkeypress=%q ", options.onkeypress)
+    html = html .. string.format(" onkeypress=%q", options.onkeypress)
   end
 
   if options.onkeyup then
-    html = html .. string.format(" onkeyup=%q ", options.onkeyup)
+    html = html .. string.format(" onkeyup=%q", options.onkeyup)
   end
 
   return (html .. ' />')
@@ -94,26 +97,26 @@ function FormHelper:textArea(field, options)
   local value   = options.value or self:buildValue(field)
   local options = options or {}
   local style   = options.style or "width:250px;height:65px"
-  local html    = [[<textarea id=%q name=%q style=%q >%s]]
-  local html    = string.format(html, self:buildId(field), self:buildName(field), style, value)
+  local html    = [[<textarea id=%q name=%q style=%q]]
+  local html    = string.format(html, self:buildId(field), self:buildName(field), style)
 
   if options.onblur then
-    html = html .. string.format(" onblur=%q ", options.onblur)
+    html = html .. string.format(" onblur=%q", options.onblur)
   end
 
   if options.onfocus then
-    html = html .. string.format(" onfocus=%q ", options.onfocus)
+    html = html .. string.format(" onfocus=%q", options.onfocus)
   end
 
   if options.onkeypress then
-    html = html .. string.format(" onkeypress=%q ", options.onkeypress)
+    html = html .. string.format(" onkeypress=%q", options.onkeypress)
   end
 
   if options.onkeyup then
-    html = html .. string.format(" onkeyup=%q ", options.onkeyup)
+    html = html .. string.format(" onkeyup=%q", options.onkeyup)
   end
 
-  return (html .. '</textarea>')
+  return html .. string.format('>%s</textarea>', value)
 end
 
 
@@ -148,14 +151,14 @@ function FormHelper:dateField(field, options)
   value = self:buildValue(field)
 
   if value:sub(5, 5) == '/' then
-    local slice = value:slice('/')
-    value = slice[3] .. '/' .. slice[2] .. '/' .. slice[1]
+    local list = value:split('/')
+    value = tostring(list:at(3)) .. '/' .. tostring(list:at(2)) .. '/' .. tostring(list:at(1))
     options.value = value
   end
 
   if value:sub(5, 5) == '-' then
-    local slice = value:slice('-')
-    value = slice[3] .. '/' .. slice[2] .. '/' .. slice[1]
+    local list = value:split('-')
+    value = tostring(list:at(3)) .. '-' .. tostring(list:at(2)) .. '-' .. tostring(list:at(1))
     options.value = value
   end
 
@@ -170,7 +173,7 @@ function FormHelper:submitSave()
 end
 
 function FormHelper:submitCancel()
-  local helper = require 'app.helpers.default'
+  local helper = require 'charon.Helper'
   return helper:link{ img = 'icons/botao_cancelar.png', url = self:url{ action = 'cancel' }, remote = true }
 end
 
@@ -186,6 +189,9 @@ function FormHelper:selectList(field, list, field_value, field_description, opti
   local value    = self:buildValue(field)
 
   if options.multiple then
+    if options.multiple == true then
+      options.multiple = 5
+    end
     html = html .. string.format([[ multiple="multiple" size=%q ]], options.multiple)
   end
 
@@ -225,6 +231,9 @@ function FormHelper:selectHash(field, list, options)
   local value    = self:buildValue(field)
 
   if options.multiple then
+    if options.multiple == true then
+      options.multiple = 5
+    end
     html = html .. string.format([[ multiple="multiple" size=%q ]], options.multiple)
   end
 
@@ -304,64 +313,15 @@ function FormHelper:autoComplete(field, resource, options)
 end
 
 -------------------------------------------------------------------------------
--- AUTO LIST
+-- BOOL FIELD
 -------------------------------------------------------------------------------
 
-function FormHelper:autoList(field, resource)
-  local controller
-  local action
-  if type(resource) == 'table' then
-    controller = resource.controller
-    action     = resource.action or 'index'
-  else
-    controller = resource
-  end
-  if type(self.data[field]) ~= 'function' then
-    error(field .. " is not a function")
-  end
-  local text    = self.data[field](self.data) or ""
-  local display = 'visible'
-  if self.data[field .. '_id'] then
-    display = 'none'
-  end
-  local label = "<a href='#' onclick='AutoList.input(%q, %q)' title='clique aqui para trocar'>%s</a>"
-  label = string.format(label, field, self:buildName(field .. "_id"), text)
+FormHelper.negativeLabel = function()
+  return 'not'
+end
 
-  local func  = string.format([[AutoList.select(%q, %q, %q, ui);]],
-    field, self:buildName(field .. "_id"), self:buildId(field .. "_id")
-  )
-  local input = self:autoComplete( 'autolist[' .. field .. ']',
-    { controller = controller, action = action },
-    { ['select'] = func, style='width:250;display:' .. display }
-  )
-  local helper = require 'app.helpers.default'
-  local link  = helper:link {
-    img    = 'icons/refresh.gif',
-    url    = '#',
-    click  = string.format([[AutoList.list('%s', '%s', '%s', '%s');]],
-      field, self:buildName(field .. "_id"), self:buildId(field .. "_id"),
-      self:url({ controller = controller, action = 'select', field = self:buildName(field .. "_id") })
-    )
-  }
-
-  local html = [[
-    <table cellspacing='0' cellpadding='0'>
-      <tr>
-        <td width='250'>
-          %s
-          <div id='autolist_%s_container' style='width:250px;display:%s'>%s</div>
-        </td>
-        <td>&nbsp;</td>
-        <td>%s</td>
-      </tr>
-    </table>
-  ]]
-  if display == 'none' then
-    display = 'visible'
-  else
-    display = 'none'
-  end
-  return string.format(html, input, field, display, label, link)
+FormHelper.positiveLabel = function ()
+  return 'yes'
 end
 
 function FormHelper:boolField(field, options)
@@ -373,7 +333,7 @@ function FormHelper:boolField(field, options)
   local input   = ""
 
   -- positive option
-  label = options.positive or " sim"
+  label = options.positive or FormHelper.positiveLabel()
   if toboolean(value) == true then
     checked = "checked"
   else
@@ -383,7 +343,7 @@ function FormHelper:boolField(field, options)
   html  = html .. string.format(input, self:buildName(field), checked, label)
 
   -- negative option
-  label = options.negative or " não"
+  label = options.negative or FormHelper.negativeLabel()
   if toboolean(value) == false then
     checked = "checked"
   else
