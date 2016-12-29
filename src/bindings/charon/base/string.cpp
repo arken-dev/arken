@@ -158,6 +158,15 @@ static int lua_charon_string_padLeft( lua_State *L ) {
   return 1;
 }
 
+static int lua_charon_string_padRight( lua_State *L ) {
+  const char *string = luaL_checkstring(L, 1);
+  int size           = luaL_checkinteger(L, 2);
+  const char *pad    = luaL_checkstring(L, 3);
+  char *result       = string::padRight(string, size, pad);
+  lua_pushstring(L, result);
+  delete[] result;
+  return 1;
+}
 
 static int lua_charon_string_repeated( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
@@ -307,6 +316,7 @@ int luaopen_charon_string( lua_State *L ) {
     {"mid",         lua_charon_string_mid},
     {"normalize",   lua_charon_string_normalize},
     {"padLeft",     lua_charon_string_padLeft},
+    {"padRight",    lua_charon_string_padRight},
     {"repeated",    lua_charon_string_repeated},
     {"replaceAll",  lua_charon_string_replaceAll},
     {"replaceFirst",lua_charon_string_replaceFirst},
