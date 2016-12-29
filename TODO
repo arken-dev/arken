@@ -16,9 +16,6 @@ time
 - DateTime
 - Time
 
-string
-- truncate width text
-
 http://ruby-doc.org/core-2.4.0/String.html
 http://api.rubyonrails.org/classes/String.html
 http://magaloma.seasidehosting.st/Collections-Strings#String
