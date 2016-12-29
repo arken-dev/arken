@@ -257,7 +257,7 @@ end
 
 function Helper:img(file_name, options)
   local options = options or {}
-  local title   = options.title or file_name:left(file_name:lastIndexOf('.'))
+  local title   = options.title or file_name:left(file_name:lastIndexOf('.') - 1)
   local html    = [[<img src="%s%s?%i" title="%s" />]]
   file_name     = string.format("/images/%s", file_name)
   return string.format(html, dispatcher.prefix, file_name, self:fileTimestamp(file_name), title)

@@ -109,7 +109,7 @@ static int lua_charon_string_lastIndexOf( lua_State *L ) {
 static int lua_charon_string_left( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   int    len    =  luaL_checkinteger(L, 2);
-  char * result = string::left(string, len-1);
+  char * result = string::left(string, len);
   lua_pushstring(L, result);
   delete[] result;
   return 1;
@@ -150,7 +150,7 @@ static int lua_charon_string_repeated( lua_State *L ) {
 static int lua_charon_string_right( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   int    len    =  luaL_checkinteger(L, 2);
-  char * result = string::right(string, len-1);
+  char * result = string::right(string, len);
   lua_pushstring(L, result);  /* push result */
   delete[] result;
   return 1;

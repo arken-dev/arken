@@ -3,7 +3,7 @@ local multipart = {}
 
 multipart.parse = function(data)
   local indexOf  = data:indexOf('\r\n')
-  local boundary = data:left(indexOf)
+  local boundary = data:left(indexOf-1)
   local list     = data:split(boundary)
   local result = {}
   for i = 1, list:size() do

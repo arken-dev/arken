@@ -98,7 +98,7 @@ rhea = function()
   else
     local task   = arg[0]
     local last   = task:lastIndexOf(":")
-    local name   = task:left(last):replaceChars(":", ".")
+    local name   = task:left(last-1):replaceChars(":", ".")
     local action = task:mid(last+1, -1)
 
     if last < 0 then
