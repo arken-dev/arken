@@ -42,39 +42,15 @@ string
 
 isEmpty (dart)
 isNotEmpty (dart)
-
 padLeft (dart)
 padRight (dart)
-padCenter
-
-chars (ruby)
-bytes (ruby)
-
-truncate, suporte end text
-
+center
+truncate width text
 lines
 put
-mid => slice ???
-
 prepend (ruby, qt)
 
-count (ruby, python)
-
-deleteAll
-deleteFirst
-
-compare (java compareTo)
-compareIgnoreCase (compareToIgnoreCase java)
-equals              (java)
-equalsIgnoreCase    (java)
-
-
-swapcase(python, ruby)
-escapeRegex
-
-printable(Elixir)
-palindromo
-
+http://ruby-doc.org/core-2.4.0/String.html
 http://api.rubyonrails.org/classes/String.html
 http://magaloma.seasidehosting.st/Collections-Strings#String
 https://commons.apache.org/proper/commons-lang/apidocs/org/apache/commons/lang3/StringUtils.html
