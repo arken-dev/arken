@@ -3,11 +3,12 @@
 -- Use of this source code is governed by a BSD-style
 -- license that can be found in the LICENSE file.
 
-local Class    = require "charon.oop.Class"
-local template = require "charon.template"
-local url      = require "charon.net.url"
+local Class      = require "charon.oop.Class"
+local template   = require "charon.template"
+local url        = require "charon.net.url"
+local json       = require "charon.json"
+local Controller = Class.new("Controller")
 
-Controller = Class.new("Controller")
 Controller.prefixHelpers = "app.helpers."
 
 local helpers = {}
