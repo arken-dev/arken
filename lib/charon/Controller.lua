@@ -3,8 +3,9 @@
 -- Use of this source code is governed by a BSD-style
 -- license that can be found in the LICENSE file.
 
-local Class = require "charon.oop.Class"
+local Class    = require "charon.oop.Class"
 local template = require "charon.template"
+local url      = require "charon.net.url"
 
 Controller = Class.new("Controller")
 Controller.prefixHelpers = "app.helpers."
@@ -64,37 +65,7 @@ function Controller:helper()
 end
 
 function Controller:url(params)
-  if type(params) == 'string' then
-    return params
-  end
-
-  local dispatcher = require 'charon.dispatcher'
-  local controller = params.controller or self.controller_name
-  local action     = params.action or 'index'
-
-  if dispatcher.prefix then
-    controller = dispatcher.prefix .. '/' .. controller
-  end
-
-  params.action = nil
-  params.controller = nil
-
-  local result = '/' .. controller .. '/' .. action
-  local query  = true
-  local open   = false
-  for k, v in pairs(params) do
-    if query then
-      result = result .. '?'
-      query  = false
-    end
-    if open then
-      result = result .. '&'
-    end
-    result = result .. k .. '=' .. v
-    open = true
-  end
-
-  return result
+  return self:helper():url(params)
 end
 
 function Controller:redirect(params)
