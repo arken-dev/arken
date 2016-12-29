@@ -284,8 +284,23 @@ static int lua_charon_string_trimRight( lua_State *L ) {
 
 static int lua_charon_string_truncate( lua_State *L ) {
   const char *string = luaL_checkstring(L, 1);
-  int        pos     = luaL_checkinteger(L, 2);
-  char      * result = string::truncate(string, pos);
+  int pos = luaL_checkinteger(L, 2);
+  const char * omission;
+  char separator;
+
+  if(lua_gettop(L) >= 3) { /* número de argumentos */
+    omission = lua_tostring(L, 3);
+  } else {
+    omission = "...";
+  }
+
+  if(lua_gettop(L) == 4) { /* número de argumentos */
+    separator = lua_tostring(L, 4)[0];
+  } else {
+    separator = ' ';
+  }
+
+  char  * result = string::truncate(string, pos, omission, separator);
   lua_pushstring(L, result);
   delete[] result;
   return 1;

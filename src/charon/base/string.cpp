@@ -916,17 +916,60 @@ char * string::trimRight(const char *string)
 
 char * string::truncate(const char *string, int pos)
 {
-  char * result;
-  int i, len;
+  return string::truncate(string, pos, "...");
+}
 
-  len = strlen(string);
-  if (pos > len) {
-    pos = len;
+char * string::truncate(const char *string, int pos, const char *omission)
+{
+  return string::truncate(string, pos, omission, ' ');
+}
+
+char * string::truncate(const char *string, int pos, const char * omission, char separator)
+{
+  char * result;
+  int i, string_len, omission_len;
+
+  string_len = strlen(string);
+
+  if( omission == 0 ) {
+    omission_len = 0;
+  } else {
+    omission_len = strlen(omission);
   }
+
+  pos -= omission_len;
+
+  if (pos > string_len) {
+    pos = string_len;
+  }
+
+  i = 0;
+
+  if ( separator != '\0' ) {
+    for( i = pos; i > 0; i--) {
+      if ( string[i] == separator ) {
+        //i--;
+        break;
+      }
+    }
+  }
+
+  if ( i > 0 ) {
+    pos = i;
+  }
+
+  //pos += omission_len;
+
   result = new char[pos+1];
 
   for (i = 0; i < pos; i++) {
     result[i] = string[i];
+  }
+
+  if ( omission_len > 0 ) {
+    for( int j = 0; j < omission_len; j++, i++ ) {
+      result[i] = omission[j];
+    }
   }
   result[i] = '\0';
 

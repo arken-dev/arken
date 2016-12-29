@@ -44,6 +44,8 @@ namespace charon {
       static char * trimLeft(const char *string);
       static char * trimRight(const char *string);
       static char * truncate(const char *string, int pos);
+      static char * truncate(const char *string, int pos, const char *omission);
+      static char * truncate(const char *string, int pos, const char *omission, const char separator);
       static char * underscore(const char *string);
     };
   }
