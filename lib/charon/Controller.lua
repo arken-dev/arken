@@ -7,6 +7,8 @@ local Class = require "charon.oop.Class"
 local template = require "charon.template"
 
 Controller = Class.new("Controller")
+Controller.prefixHelpers = "app/helpers/"
+
 local helpers = {}
 
 function Controller:render(params)
@@ -18,22 +20,21 @@ end
 -------------------------------------------------------------------------------
 
 function Controller:resolvHelper()
-  local prefix = "app.helpers."
 
   local helper = require("charon.Helper")
   helper.__index = helper
 
-  local file   = prefix .. "default"
-  if os.exists(file:replaceChars('.', '/') .. '.lua')  then
-    local tmp = require(file)
+  local file   = self.prefixHelpers .. "default.lua"
+  if os.exists(file)  then
+    local tmp = dofile(file)
     tmp.__index = tmp
     setmetatable(tmp, helper)
     helper = tmp
   end
 
-  local file = prefix .. self.controller_name
+  local file = self.prefixHelpers .. self.controller_name
   if os.exists(file:replaceChars('.', '/') .. '.lua')  then
-    local tmp = require(file)
+    local tmp = dofile(file .. '.lua')
     tmp.controller_path = self.controller_path
     tmp.controller_name = self.controller_name
     tmp.action_name     = self.action_name
@@ -79,8 +80,8 @@ function Controller:url(params)
   params.controller = nil
 
   local result = '/' .. controller .. '/' .. action
-  local query = true
-  local open  = false
+  local query  = true
+  local open   = false
   for k, v in pairs(params) do
     if query then
       result = result .. '?'
