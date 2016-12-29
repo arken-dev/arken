@@ -95,6 +95,46 @@ char * string::capitalize(const char * string)
   return result;
 }
 
+char * string::center(const char * string, size_t size, const char * pad)
+{
+  size_t str_len = strlen(string);
+  size_t pad_len = strlen(pad);
+  size_t mid_len = (size - str_len) / 2;
+  char * result;
+
+  if( size < str_len or pad_len == 0 ) {
+    result = new char[ str_len + 1 ];
+    strcpy(result, string);
+    result[str_len] = '\0';
+  } else {
+    result = new char[ size + 1 ];
+
+    size_t i = 0;
+    size_t j = 0;
+
+    for(i = 0; i < mid_len; i++, j++ ) {
+      if( j >= pad_len ) {
+        j = 0;
+      }
+      result[i] = pad[j];
+    }
+
+    for(j = 0; j < str_len; j++, i++ ) {
+      result[i] = string[j];
+    }
+
+    for(j = 0; i < size ; i++, j++ ) {
+      if( j >= pad_len ) {
+        j = 0;
+      }
+      result[i] = pad[j];
+    }
+    result[size] = '\0';
+  }
+
+  return result;
+}
+
 bool string::contains(const char * string, const char * str)
 {
   int length = strlen(string);

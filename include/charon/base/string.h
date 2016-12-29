@@ -16,6 +16,7 @@ namespace charon {
       static char * camelcase(const char * string, bool lcfirst);
       static char * camelcase(const char * string);
       static char * capitalize(const char * string);
+      static char * center(const char * string, size_t size, const char * pad);
       static bool   contains(const char * string, const char * str);
       static char * escape(const char * string);
       static char * escapeHtml(const char * string);
