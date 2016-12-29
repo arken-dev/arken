@@ -7,7 +7,7 @@ local Class = require "charon.oop.Class"
 local template = require "charon.template"
 
 Controller = Class.new("Controller")
-Controller.prefixHelpers = "app/helpers/"
+Controller.prefixHelpers = "app.helpers."
 
 local helpers = {}
 
@@ -24,9 +24,9 @@ function Controller:resolvHelper()
   local helper = require("charon.Helper")
   helper.__index = helper
 
-  local file   = self.prefixHelpers .. "default.lua"
-  if os.exists(file)  then
-    local tmp = dofile(file)
+  local file   = self.prefixHelpers .. "default"
+  if os.exists(file:replaceChars('.', '/') .. '.lua')  then
+    local tmp   = require(file)
     tmp.__index = tmp
     setmetatable(tmp, helper)
     helper = tmp
@@ -34,7 +34,7 @@ function Controller:resolvHelper()
 
   local file = self.prefixHelpers .. self.controller_name
   if os.exists(file:replaceChars('.', '/') .. '.lua')  then
-    local tmp = dofile(file .. '.lua')
+    local tmp = require(file)
     tmp.controller_path = self.controller_path
     tmp.controller_name = self.controller_name
     tmp.action_name     = self.action_name
