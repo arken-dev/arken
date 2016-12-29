@@ -67,8 +67,13 @@ end
 -- INSPECT
 -------------------------------------------------------------------------------
 
-function Converter.inspect(field)
-  local value = field or self
+function Converter:inspect(field)
+  local value
+  if field then
+    value = self[field]
+  else
+    value = self
+  end
   if type(value) == 'userdata' then
     return 'userdata'
   else
