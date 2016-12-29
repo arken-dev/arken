@@ -39,4 +39,18 @@ test.shold_3_returns_if_execute_without_error = function()
   assert( body == "Hello World...", body )
 end
 
+test.should_return_validate_params_if_validate_implemented = function()
+  local c = Controller.new()
+  c.myAction = function()
+    return 200, {}, "Hello World..."
+  end
+  c.validate = function()
+    return 500, {}, "Oh No !!!"
+  end
+  local status, headers, body = c:pexecute('myAction', {})
+  assert( status == 500 )
+  assert( type(headers) == 'table' )
+  assert( body == "Oh No !!!", body )
+end
+
 return test
