@@ -40,9 +40,6 @@ utf8
 string
 ---
 at (charAt java => at)
-trimmed => trim
-trimLeft
-trimRight
 
 replaceChar
 replaceAll (java, dart)
@@ -53,6 +50,7 @@ isNotEmpty (dart)
 
 padLeft (dart)
 padRight (dart)
+padCenter
 
 chars (ruby)
 bytes (ruby)
