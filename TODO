@@ -17,11 +17,8 @@ time
 - Time
 
 string
-- isEmpty (dart)
-- isNotEmpty (dart)
 - padLeft (dart)
 - padRight (dart)
-- center
 - truncate width text
 - lines
 - put
