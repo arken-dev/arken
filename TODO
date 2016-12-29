@@ -11,9 +11,6 @@ web
 - name route
 - helpers revision
 
-os
-- basename
-
 time
 - Date
 - DateTime

@@ -14,6 +14,7 @@ namespace charon {
       public:
       static char   * abspath(const char * path);
       static uint     atime(const char * path);
+      static char   * basename(const char * path);
       static bool     compare(const char * path1, const char * path2);
       static bool     copy(const char * source, const char * destination, bool force);
       static int      cores();

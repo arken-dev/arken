@@ -17,6 +17,14 @@ static int lua_charon_os_abspath( lua_State *L ) {
   return 1;
 }
 
+static int lua_charon_os_basename( lua_State *L ) {
+  const char * path = luaL_checkstring(L, 1);
+  char * result = os::basename(path);
+  lua_pushstring( L, result );
+  delete[] result;
+  return 1;
+}
+
 static int lua_charon_os_atime( lua_State *L ) {
   const char * path = luaL_checkstring(L, 1);
   lua_pushnumber( L, os::atime(path) );
@@ -234,6 +242,7 @@ int luaopen_charon_os( lua_State *L ) {
   static const luaL_reg Map[] = {
     {"abspath",    lua_charon_os_abspath},
     {"atime",      lua_charon_os_atime},
+    {"basename",   lua_charon_os_basename},
     {"compare",    lua_charon_os_compare},
     {"copy",       lua_charon_os_copy},
     {"cores",      lua_charon_os_cores},

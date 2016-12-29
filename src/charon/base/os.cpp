@@ -32,6 +32,16 @@ char * os::abspath(const char * path)
   return result;
 }
 
+char * os::basename(const char * path)
+{
+  QFileInfo info(path);
+  QString basename = info.fileName();
+  char * result = new char[basename.size() + 1];
+  strcpy(result, basename.toLocal8Bit());
+  result[basename.size()] = '\0';
+  return result;
+}
+
 uint os::atime(const char * path)
 {
   return QFileInfo(path).lastRead().toTime_t();
