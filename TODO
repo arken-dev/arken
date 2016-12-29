@@ -36,6 +36,9 @@ Date, DaTime, active support
 regex
 ---
 utf8
+- reverse
+- lower
+- upper
 
 string
 ---
