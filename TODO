@@ -17,11 +17,8 @@ time
 - Time
 
 string
-- padLeft (dart)
 - padRight (dart)
 - truncate width text
-- lines
-- put
 
 http://ruby-doc.org/core-2.4.0/String.html
 http://api.rubyonrails.org/classes/String.html
