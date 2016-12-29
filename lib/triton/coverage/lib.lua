@@ -34,7 +34,7 @@ end
 
 function triton_run(fileName)
   local tests     = {}
-  local dirName   = fileName:gsub(".lua", ""):replace("./", "./tests/")
+  local dirName   = fileName:gsub(".lua", ""):replaceAll("./", "./tests/")
   if not os.exists(dirName) then
     triton.append("message", string.format("warning: directory %s not exists\n", dirName))
   end
@@ -76,11 +76,11 @@ function triton_run(fileName)
   local dump    = coverage.dump()
   local data    = coverage.analyze(fileName)
   local buffer  = template.execute(tpl, data)
-  local file    = io.open((dir .. "/" .. data.file_name:replace("/", "-") .. '.html'), "w")
+  local file    = io.open((dir .. "/" .. data.file_name:replaceChars("/", "-") .. '.html'), "w")
   file:write(buffer)
   file:close()
 
-  file = io.open((dir .. "/" .. data.file_name:replace("/", "-") .. '.json'), "w")
+  file = io.open((dir .. "/" .. data.file_name:replaceChars("/", "-") .. '.json'), "w")
   file:write(json.encode(data))
   file:close()
 end

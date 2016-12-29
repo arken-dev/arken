@@ -2,7 +2,7 @@ local test   = {}
 local json   = require('charon.json')
 local Class  = require('charon.oop.Class')
 local Person = Class.new("Person", "ActiveRecord")
-Person.table_name = string.format("person_%s", os.uuid():replace('-', '_'))
+Person.table_name = string.format("person_%s", os.uuid():replaceChars('-', '_'))
 
 test.beforeAll = function()
   ActiveRecord.config = "config/active_record_mysql.json"

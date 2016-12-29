@@ -39,11 +39,6 @@ utf8
 
 string
 ---
-at (charAt java => at)
-
-replaceChar
-replaceAll (java, dart)
-replaceFirst (java, dart)
 
 isEmpty (dart)
 isNotEmpty (dart)
@@ -82,3 +77,4 @@ palindromo
 
 http://api.rubyonrails.org/classes/String.html
 http://magaloma.seasidehosting.st/Collections-Strings#String
+https://commons.apache.org/proper/commons-lang/apidocs/org/apache/commons/lang3/StringUtils.html

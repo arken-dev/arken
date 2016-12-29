@@ -34,8 +34,8 @@ end
 
 function triton_run(fileName)
   local tests     = {}
-  local dirName   = fileName:gsub(".lua", ""):gsub("app", "tests")
-  local modelName = dirName:gsub("./tests/models/", ""):gsub("/", ".")
+  local dirName   = fileName:replaceAll(".lua", ""):replaceAll("app", "tests")
+  local modelName = dirName:replaceAll("./tests/models/", ""):replaceChars("/", ".")
   local iterator  = QDirIterator.new(dirName)
   package.loaded[modelName] = nil
 
@@ -68,16 +68,16 @@ function triton_run(fileName)
   end
 
   local dir     = 'coverage'
-  local file    = '@' .. fileName:mid(2, -1)
+  local file    = fileName:mid(3, -1)
   local tpl     = CHARON_PATH .. "/lib/charon/coverage/templates/file.html"
   local dump    = coverage.dump()
   local data    = coverage.analyze(file)
   local buffer  = template.execute(tpl, data)
-  local file    = io.open((dir .. "/" .. data.file_name:replace("/", "-") .. '.html'), "w")
+  local file    = io.open((dir .. "/" .. data.file_name:replaceChars("/", "-") .. '.html'), "w")
   file:write(buffer)
   file:close()
 
-  file = io.open((dir .. "/" .. data.file_name:replace("/", "-") .. '.json'), "w")
+  file = io.open((dir .. "/" .. data.file_name:replaceChars("/", "-") .. '.json'), "w")
   file:write(json.encode(data))
   file:close()
 end

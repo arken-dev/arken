@@ -51,7 +51,7 @@ function Converter:isNumber(field)
 
   if type(value) == 'string' then
     if value:contains(',') then
-      value = value:replace('.', ''):replace(',', '.')
+      value = value:replaceChars('.', ''):replaceChars(',', '.')
     end
 
     return not (tonumber(value) == nil)
@@ -153,7 +153,7 @@ function Converter:toNumber(field, default)
   else
     value = tostring(value)
     if value:contains(',') then
-      value = value:replace('.', ''):replace(',', '.')
+      value = value:replaceChars('.', ''):replaceChars(',', '.')
     end
 
     return tonumber(value) or default

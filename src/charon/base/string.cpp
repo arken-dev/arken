@@ -446,8 +446,8 @@ char * string::repeated(const char *string, int times)
 
   return result;
 }
-/*
-char * string::replace(const char *string, const char before, const char after)
+
+char * string::replaceChars(const char *string, const char before, const char after)
 {
   int i, j;
   int string_len = strlen(string);
@@ -468,7 +468,7 @@ char * string::replace(const char *string, const char before, const char after)
 
   return result;
 }
-*/
+
 char * string::right(const char *string, int len)
 {
   int i, j, string_len;
@@ -545,7 +545,7 @@ char * string::simplified(const char *string)
 }
 
 //http://stackoverflow.com/questions/779875/what-is-the-function-to-replace-string-in-c
-char * string::replace(const char * original, const char * pattern, const char * replacement )
+char * string::replaceAll(const char * original, const char * pattern, const char * replacement )
 {
   size_t const replen = strlen(replacement);
   size_t const patlen = strlen(pattern);
@@ -586,6 +586,32 @@ char * string::replace(const char * original, const char * pattern, const char *
     }
     return returned;
   }
+}
+
+
+char * string::replaceFirst(const char * original, const char * pattern, const char * replacement )
+{
+  size_t orilen = strlen(original);
+  size_t replen = strlen(replacement);
+  size_t patlen = strlen(pattern);
+  size_t len    = orilen - patlen + replen;
+  char * result = new char[len+1];
+  const char * patloc = strstr(original, pattern);
+  size_t skplen = patloc - original;
+  size_t i, j, k;
+  for( i = 0; i < skplen; i++ ) {
+    result[i] = original[i];
+  }
+  k = i;
+  for(j = 0 ; j < replen; i++, j++ ) {
+    result[i] = replacement[j];
+  }
+  for(k = k + patlen; k < orilen; i++, k++ ) {
+    result[i] = original[k];
+  }
+  result[i] = '\0';
+
+  return result;
 }
 
 ByteArrayList * string::split(const char * raw, const char * pattern)

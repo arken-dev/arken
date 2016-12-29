@@ -37,7 +37,7 @@ local function parseArgs()
 
   for index, value in ipairs(arg) do
     if value:startsWith("--") then
-      key = value:replace("--", "")
+      key = value:replaceAll("--", "")
       params[key] = parseArg(index, arg)
     end
   end
@@ -61,7 +61,7 @@ local function printHelp(module)
 
     for k, v in pairs(module.help) do
       local space = string.rep(' ', size - #k)
-      help = help .. k .. space .. ' # ' .. v:trim():replace('\n', margem) .. '\n'
+      help = help .. k .. space .. ' # ' .. v:trim():replaceAll('\n', margem) .. '\n'
     end
 
     print(help)
@@ -75,7 +75,7 @@ rhea = function()
   local list = tostring(package.path):split(';')
   for i = 1, list:size() do
     local str = list:at(i)
-    str = str:replace("/?.lua", ""):replace('.', '/')
+    str = str:replaceAll("/?.lua", ""):replaceChars('.', '/')
     str = os.abspath(str)
     if str:contains('rhea') and os.exists(str) then
       table.insert(path, str)
@@ -98,7 +98,7 @@ rhea = function()
   else
     local task   = arg[0]
     local last   = task:lastIndexOf(":")
-    local name   = task:left(last):replace(":", ".")
+    local name   = task:left(last):replaceChars(":", ".")
     local action = task:mid(last+1, -1)
 
     if last < 0 then
@@ -125,7 +125,7 @@ rhea = function()
         if object.help[action] then
           local help   = object.help[action]
           local margem = '\n' .. string.rep(' ', #action + 1)
-          print(action .. ' # ' .. help:trim():replace('\n', margem))
+          print(action .. ' # ' .. help:trim():replaceAll('\n', margem))
         else
           print(action .. ": undocumented")
         end

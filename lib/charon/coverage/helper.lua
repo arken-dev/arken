@@ -38,7 +38,7 @@ helper.datetime = function()
 end
 
 helper.parameterize = function(value)
-  return tostring(value):replace("/", "-")
+  return tostring(value):replaceChars("/", "-")
 end
 
 helper.sanitize = function(fileName)

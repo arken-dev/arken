@@ -257,11 +257,11 @@ function ActiveRecord_SqliteAdapter:parser_default(format, value)
 end
 
 function ActiveRecord_SqliteAdapter.parser_string(value)
-  return value:replace("::character varying", ""):replace("'", "")
+  return value:replaceAll("::character varying", ""):replaceChars("'", "")
 end
 
 function ActiveRecord_SqliteAdapter.parser_time(value)
-  return value:replace("::time without time zone", ""):replace("'", "")
+  return value:replaceAll("::time without time zone", ""):replaceChars("'", "")
 end
 
 function ActiveRecord_SqliteAdapter.parser_date(value)
@@ -427,7 +427,7 @@ end
 function ActiveRecord_SqliteAdapter.parser_value_number(value)
   value = tostring(value)
   if value:contains(',') then
-    return tonumber(value:replace('.', ''):replace(',', '.'))
+    return tonumber(value:replaceChars('.', ''):replaceChars(',', '.'))
   else
     return tonumber(value)
   end
@@ -549,7 +549,7 @@ end
 
 function ActiveRecord_SqliteAdapter.read_value_number(value)
   if tostring(value):contains(',') then
-    return tonumber(value:replace('.', ''):replace(',', '.'))
+    return tonumber(value:replaceChars('.', ''):replaceChars(',', '.'))
   else
     return tonumber(value)
   end
