@@ -16,11 +16,6 @@ time
 - DateTime
 - Time
 
-utf8
-- reverse
-- lower
-- upper
-
 string
 - isEmpty (dart)
 - isNotEmpty (dart)
