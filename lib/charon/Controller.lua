@@ -69,8 +69,8 @@ function Controller:url(params)
 end
 
 function Controller:redirect(params)
-  local url  = self:url(params)
-  local host = request.field("Host")
+  local url    = self:url(params)
+  local host   = request.field("Host")
   local header = "Location: http://" .. host .. url
   return 302, {header}, nil
 end
