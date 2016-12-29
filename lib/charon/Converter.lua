@@ -22,107 +22,10 @@ function Converter:isEmpty( field )
   end
 
   if type(value) == 'table' then
-    local flag = true
-    for _, _ in pairs(value) do
-      flag = false
-      break
-    end
-    return flag
+    return next(value) == nil
   end
 
   return false
-end
-
--------------------------------------------------------------------------------
--- IS NUMBER
--------------------------------------------------------------------------------
-
-
-function Converter:isNumber(field)
-  local value = self[field]
-
-  if value == nil then
-    return false
-  end
-
-  if type(value) == 'number' then
-    return true
-  end
-
-  if type(value) == 'string' then
-    if value:contains(',') then
-      value = value:replaceChars('.', ''):replaceChars(',', '.')
-    end
-
-    return not (tonumber(value) == nil)
-  end
-
-  return false
-end
-
--------------------------------------------------------------------------------
--- IS BOOLEAN
--------------------------------------------------------------------------------
-
-function Converter:isBoolean( field )
-  local value = self[field]
-
-  if value == nil then
-    return false
-  end
-
-  if type(value) == 'boolean' then
-    return true
-  end
-
-  if type(value) == 'string' then
-    if value == 'true' or value == 't' or value == '1' then
-      return true
-    end
-    if value == 'false' or value == 'f' or value == '0' then
-      return true
-    end
-  end
-
-  return false
-end
-
--------------------------------------------------------------------------------
--- IS BOOL
--------------------------------------------------------------------------------
-
-Converter.isBool = Converter.isBoolean
-
--------------------------------------------------------------------------------
--- IS DATE TIME
--------------------------------------------------------------------------------
-
-function Converter:isDateTime(field)
-  local value = self[field]
-
-  if tostring(value):sub(6, 6) == '/' or tostring(value):sub(5, 5) == '/' then
-    return value:sub(14, 14) == ':'
-  end
-
-  return false
-end
-
--------------------------------------------------------------------------------
--- IS DATE
--------------------------------------------------------------------------------
-
-function Converter:isDate(field)
-  local value = self[field]
-  return tostring(value):sub(6, 6) == '/' or tostring(value):sub(5, 5) == '/'
-end
-
--------------------------------------------------------------------------------
--- IS TIME
--------------------------------------------------------------------------------
-
-function Converter:isTime(field)
-  local value = self[field]
-  return tostring(value):sub(3, 3) == ':'
 end
 
 -------------------------------------------------------------------------------
@@ -137,7 +40,7 @@ function Converter:toBoolean(field, default)
   end
 
   if value == 'false' or value == 'f' or value == '0' then
-    return true
+    return false
   end
   return default
 end
