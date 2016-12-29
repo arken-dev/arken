@@ -28,6 +28,7 @@ SOURCES += base/math.cpp       \
            regex.cpp           \
            sha3.cpp            \
            thread.cpp          \
+           utf8.cpp            \
            ../vendors/mongrel2/http11/http11_parser.c \
            ../vendors/ap/ap_base64.c
 
