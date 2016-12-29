@@ -183,14 +183,6 @@ function Controller:partial(params)
 end
 
 function Controller:yield()
---[[
-  local flag, result = pcall(template.execute, self._yield, self, self:helper())
-  if flag then
-    return result
-  else
-    error(self._yield .. '\n\n' .. result .. '\n\n' .. template.debug(self._yield))
-  end
-]]
   return self._yield
 end
 
