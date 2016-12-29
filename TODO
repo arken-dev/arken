@@ -25,7 +25,6 @@ string
 - truncate width text
 - lines
 - put
-- prepend (ruby, qt)
 
 http://ruby-doc.org/core-2.4.0/String.html
 http://api.rubyonrails.org/classes/String.html
