@@ -987,25 +987,32 @@ static inline int charon_string_underscore_special_char(const char *string, int 
 
 static inline int charon_string_underscore_len(const char *string, int len)
 {
-  int i, j = 0, flag = 1;
+  int i, j = 0, flag1 = 1, flag2 = 1;
   for(i = 0; i < len; i++) {
     if(isupper(string[i])) {
-      if(flag == 0) {
+      if(flag1 == 0) {
         j++;
       }
+      flag2 = 0;
       j++;
     } else {
       if(charon_string_underscore_special_char(string, i)) {
-        if(flag == 0) {
+        if(flag2 == 0) {
           j++;
-          flag = 1;
+          flag2 = 1;
+          flag1 = 1;
         }
       } else {
-        flag = 0;
+        flag1 = 0;
+        flag2 = 0;
         j++;
       }
     }
   }
+  if(charon_string_underscore_special_char(string, i-1)) {
+    j--;
+  }
+
   j++;
   return j;
 }
@@ -1013,30 +1020,35 @@ static inline int charon_string_underscore_len(const char *string, int len)
 char * string::underscore(const char *string)
 {
   int len = strlen(string);
-  int i, j = 0, flag = 1;
-  char * res = new char[charon_string_underscore_len(string,len)];
+  int i, j = 0, flag1 = 1, flag2 = 1;
+  char * res = new char[charon_string_underscore_len(string,len)+1];
   for(i = 0; i < len; i++) {
     if(isupper(string[i])) {
-      if(flag == 0) {
+      if(flag1 == 0) {
         res[j] = '_';
         j++;
       }
       res[j] = tolower(string[i]);
-      flag = 0;
+      flag2 = 0;
       j++;
     } else {
       if(charon_string_underscore_special_char(string, i)) {
-        if(flag == 0) {
+        if(flag2 == 0) {
           res[j] = '_';
           j++;
-          flag = 1;
+          flag2 = 1;
+          flag1 = 1;
         }
       } else {
         res[j] = string[i];
-        flag = 0;
+        flag1 = 0;
+        flag2 = 0;
         j++;
       }
     }
+  }
+  if(charon_string_underscore_special_char(string, i-1)) {
+    j--;
   }
   res[j] = '\0';
 
