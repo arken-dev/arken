@@ -83,14 +83,14 @@ coverage.line = function(line, flag, keywords)
   end
 
   if keywords.flag ~= true and keywords.str1 == false and keywords.str2 == false then
-    local simplified = line:simplified()
-    local index  = simplified:indexOf("function")
+    local reduce = line:reduce()
+    local index  = reduce:indexOf("function")
     if index > -1 then
-      if simplified:mid(index-1, 1) == '=' or simplified:mid(index-2, 1) == '=' then
+      if reduce:mid(index-1, 1) == '=' or reduce:mid(index-2, 1) == '=' then
         keywords.flag = false
         return 1
       end
-      if simplified:startsWith("function") or simplified:startsWith("local function") then
+      if reduce:startsWith("function") or reduce:startsWith("local function") then
         return 1
       end
       return flag

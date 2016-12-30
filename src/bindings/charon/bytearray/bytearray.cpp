@@ -122,7 +122,7 @@ lua_ByteArrayInstanceMethodTrimRight( lua_State *L ) {
 static int
 lua_ByteArrayInstanceMethodSimplified( lua_State *L ) {
   ByteArray *udata  = checkByteArray( L );
-  lua_pushstring(L, udata->simplified());
+  lua_pushstring(L, udata->reduce());
   return 1;
 }
 
@@ -220,7 +220,7 @@ luaL_reg ByteArrayInstanceMethods[] = {
   {"trimRight", lua_ByteArrayInstanceMethodTrimRight},
   {"normalize", lua_ByteArrayInstanceMethodNormalize},
   {"replace",   lua_ByteArrayInstanceMethodReplace},
-  {"simplified", lua_ByteArrayInstanceMethodSimplified},
+  {"reduce", lua_ByteArrayInstanceMethodSimplified},
   {"underscore", lua_ByteArrayInstanceMethodUnderscore},
   {"__concat", lua_ByteArrayInstanceMethodConcat},
   {"__tostring", lua_ByteArrayInstanceMethodToString},

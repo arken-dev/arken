@@ -594,7 +594,7 @@ char * string::right(const char *string, int len)
   return result;
 }
 
-static inline bool simplified_special_char(const char chr)
+static inline bool reduce_special_char(const char chr)
 {
   if( chr >= 0 and chr <= 32 ) {
     return true;
@@ -603,7 +603,7 @@ static inline bool simplified_special_char(const char chr)
   }
 }
 
-char * string::simplified(const char *string)
+char * string::reduce(const char *string)
 {
   int i = 0;
   int j = 0;
@@ -613,11 +613,11 @@ char * string::simplified(const char *string)
 
   len = strlen(string);
 
-  while(simplified_special_char(string[i])) {
+  while(reduce_special_char(string[i])) {
     i++;
   }
 
-  while(simplified_special_char(string[len-1])) {
+  while(reduce_special_char(string[len-1])) {
     len--;
   }
 
@@ -627,7 +627,7 @@ char * string::simplified(const char *string)
   } else {
     result = new char[len + 1];
     while(i < len) {
-      if( simplified_special_char(string[i]) ) {
+      if( reduce_special_char(string[i]) ) {
         if( f ) {
           i++;
         } else {

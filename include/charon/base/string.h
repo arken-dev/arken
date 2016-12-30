@@ -29,12 +29,12 @@ namespace charon {
       static char * normalize(const char * string);
       static char * padLeft(const char * string, size_t size, const char * pad);
       static char * padRight(const char * string, size_t size, const char * pad);
+      static char * reduce(const char *buffer);
       static char * repeated(const char *buffer, int times);
       static char * replaceAll(const char * string, const char * before, const char * after);
       static char * replaceFirst(const char * string, const char * before, const char * after);
       static char * replaceChars(const char * string, const char before, const char after);
       static char * right(const char *buffer, int len);
-      static char * simplified(const char *buffer);
       static ByteArrayList * split(const char * string, const char * pattern);
       static ByteArrayList * split(const char * string, size_t len, const char * pattern);
       static char * suffix(const char * raw);

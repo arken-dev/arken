@@ -186,9 +186,9 @@ static int lua_charon_string_right( lua_State *L ) {
   return 1;
 }
 
-static int lua_charon_string_simplified( lua_State *L ) {
+static int lua_charon_string_reduce( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
-  char * result = string::simplified(string);
+  char * result = string::reduce(string);
   lua_pushstring(L, result);  /* push result */
   delete[] result;
   return 1;
@@ -332,12 +332,12 @@ int luaopen_charon_string( lua_State *L ) {
     {"normalize",   lua_charon_string_normalize},
     {"padLeft",     lua_charon_string_padLeft},
     {"padRight",    lua_charon_string_padRight},
+    {"reduce",      lua_charon_string_reduce},
     {"repeated",    lua_charon_string_repeated},
     {"replaceAll",  lua_charon_string_replaceAll},
     {"replaceFirst",lua_charon_string_replaceFirst},
     {"replaceChars",lua_charon_string_replaceChars},
     {"right",       lua_charon_string_right},
-    {"simplified",  lua_charon_string_simplified},
     {"startsWith",  lua_charon_string_startsWith},
     {"split",       lua_charon_string_split},
     {"suffix",      lua_charon_string_suffix},

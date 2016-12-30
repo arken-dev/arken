@@ -28,9 +28,9 @@ ByteArray ByteArray::underscore(void)
   return ByteArray(string::underscore(this->data()));
 }
 
-ByteArray ByteArray::simplified(void)
+ByteArray ByteArray::reduce(void)
 {
-  return (ByteArray) QByteArray::simplified();
+  return ByteArray(string::reduce(this->data()));
 }
 
 ByteArray ByteArray::trim(void)

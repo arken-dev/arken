@@ -30,7 +30,7 @@ class ByteArray : public QByteArray
   ByteArray camelcase(void);
   ByteArray capitalize(void);
   ByteArray underscore(void);
-  ByteArray simplified(void);
+  ByteArray reduce(void);
   ByteArray normalize(void);
   ByteArray trim(void);
   ByteArray trimLeft(void);
