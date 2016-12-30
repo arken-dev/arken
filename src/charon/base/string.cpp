@@ -937,11 +937,11 @@ char * string::truncate(const char *string, int pos, const char * omission, char
     omission_len = strlen(omission);
   }
 
-  pos -= omission_len;
-
-  if (pos > string_len) {
+  if ( pos > string_len ) {
     pos = string_len;
   }
+
+  pos -= omission_len;
 
   i = 0;
 
@@ -955,12 +955,12 @@ char * string::truncate(const char *string, int pos, const char * omission, char
   }
 
   if ( i > 0 ) {
-    pos = i;
+    pos = i + 1;
   }
 
   //pos += omission_len;
 
-  result = new char[pos+1];
+  result = new char[pos+omission_len+1];
 
   for (i = 0; i < pos; i++) {
     result[i] = string[i];
