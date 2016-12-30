@@ -124,6 +124,24 @@ static int lua_charon_os_hostname( lua_State *L ) {
   return 1;
 }
 
+static int lua_charon_os_isfile( lua_State *L ) {
+  const char * path = luaL_checkstring(L, 1);
+  lua_pushboolean( L, os::isfile(path) );
+  return 1;
+}
+
+static int lua_charon_os_isdir( lua_State *L ) {
+  const char * path = luaL_checkstring(L, 1);
+  lua_pushboolean( L, os::isdir(path) );
+  return 1;
+}
+
+static int lua_charon_os_islink( lua_State *L ) {
+  const char * path = luaL_checkstring(L, 1);
+  lua_pushboolean( L, os::islink(path) );
+  return 1;
+}
+
 static int lua_charon_os_link( lua_State *L ) {
   const char * source      = luaL_checkstring(L, 1);
   const char * destination = luaL_checkstring(L, 2);
@@ -253,6 +271,9 @@ int luaopen_charon_os( lua_State *L ) {
     {"glob",       lua_charon_os_glob},
     {"home",       lua_charon_os_home},
     {"hostname",   lua_charon_os_hostname},
+    {"isfile",     lua_charon_os_isfile},
+    {"isdir",      lua_charon_os_isdir},
+    {"islink",     lua_charon_os_islink},
     {"link",       lua_charon_os_link},
     {"microtime",  lua_charon_os_microtime},
     {"mkdir",      lua_charon_os_mkdir},

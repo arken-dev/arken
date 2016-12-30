@@ -206,6 +206,24 @@ char * os::hostname()
   return result;
 }
 
+bool os::isdir(const char * path)
+{
+  QFileInfo info(path);
+  return info.isDir();
+}
+
+bool os::isfile(const char * path)
+{
+  QFileInfo info(path);
+  return info.isFile();
+}
+
+bool os::islink(const char * path)
+{
+  QFileInfo info(path);
+  return info.isSymLink();
+}
+
 bool os::link(const char * source, const char * destination, bool force = false)
 {
   if( force && QFile::exists(destination) ) {

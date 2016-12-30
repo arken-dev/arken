@@ -28,6 +28,9 @@ namespace charon {
       static ByteArrayList * glob(const char * dir, const char * regex, bool sub);
       static char   * home();
       static char   * hostname();
+      static bool     isdir(const char * path);
+      static bool     isfile(const char * path);
+      static bool     islink(const char * path);
       static bool     link(const char * source, const char * destination, bool force);
       static double   microtime();
       static bool     mkdir(const char * dirname);
