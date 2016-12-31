@@ -45,7 +45,7 @@ test.should_return_action = function()
   local controller  = { action_name = 'save' }
   local form        = FormHelper.new{ controller = controller }
   local result      = form:url( {controller = "redirect"} )
-  dispatcher.prefix = nil
+  dispatcher.prefix = ''
   assert( result == '/app/redirect/save', result )
 end
 
