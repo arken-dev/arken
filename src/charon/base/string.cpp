@@ -955,7 +955,7 @@ char * string::truncate(const char *string, int pos, const char * omission, char
   }
 
   if ( i > 0 ) {
-    pos = i + 1;
+    pos = i;
   }
 
   //pos += omission_len;
