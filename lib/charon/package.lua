@@ -73,3 +73,5 @@ package.reload = function()
   package.time = os.microtime()
   return (package.time - init)
 end
+
+return package
