@@ -2,14 +2,14 @@ local Controller = require('charon.Controller')
 local test = {}
 
 test.before = function()
-  Controller.prefixHelpers = 'util.helpers.'
+  Controller.prefixHelpers = 'util.helpers'
 end
 
 test.should_return_default_helper_by_metatable = function()
-  Controller.prefixHelpers = 'util.disabled.'
+  Controller.prefixHelpers = 'util.disabled'
   local c = Controller.new{ controller_name = 'controller' }
   local h = c:resolvHelper()
-  Controller.prefixHelpers = 'util.helpers.'
+  Controller.prefixHelpers = 'util.helpers'
   assert( getmetatable(h) == require('charon.Helper') )
 end
 

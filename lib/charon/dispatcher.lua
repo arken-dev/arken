@@ -198,7 +198,7 @@ dispatcher.dispatch = function()
   local reload  = 0
   local code, headers, body
   if CHARON_ENV == 'development' then
-    local fileName = "public" .. request.requestPath()
+    local fileName = "public" .. request.requestPath():mid(#dispatcher.prefix+1, -1)
     if fileName ~= "public/" and os.exists(fileName) then
       return dispatcher.dispatchLocal(fileName)
     else

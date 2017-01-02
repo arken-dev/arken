@@ -9,7 +9,8 @@ local url        = require "charon.net.url"
 local json       = require "charon.json"
 local Controller = Class.new("Controller")
 
-Controller.prefixHelpers = "app.helpers."
+Controller.prefixHelpers = "app.helpers"
+Controller.prefixViews   = "app/views"
 
 local helpers = {}
 
@@ -23,10 +24,10 @@ end
 
 function Controller:resolvHelper()
 
-  local helper = require("charon.Helper")
+  local helper   = require("charon.Helper")
   helper.__index = helper
 
-  local file   = self.prefixHelpers .. "default"
+  local file   = self.prefixHelpers .. ".default"
   if os.exists(file:replaceChars('.', '/') .. '.lua')  then
     local tmp   = require(file)
     tmp.__index = tmp
@@ -34,7 +35,7 @@ function Controller:resolvHelper()
     helper = tmp
   end
 
-  local file = self.prefixHelpers .. self.controller_name
+  local file = self.prefixHelpers .. "." .. self.controller_name
   if os.exists(file:replaceChars('.', '/') .. '.lua')  then
     local tmp = require(file)
     tmp.controller_path = self.controller_path
@@ -77,56 +78,51 @@ function Controller:redirect(params)
 end
 
 function Controller:render_js(params)
-  local prefix = "app/views"
-  local view   = nil
-  local file   = nil
+  local fileName = nil
 
   if params.template == nil then
     if params.view == nil then
-      file = prefix .. "/" .. self.controller_name .. "/" .. self.action_name .. ".js"
+      fileName = self.prefixViews .. "/" .. self.controller_name .. "/" .. self.action_name .. ".js"
     else
-      file = prefix .. "/" .. self.controller_name .. "/" .. params.view .. ".js"
+      fileName = self.prefixViews .. "/" .. self.controller_name .. "/" .. params.view .. ".js"
     end
   else
-    file = prefix .. "/" .. params.template .. ".js"
+    fileName = self.prefixViews .. "/" .. params.template .. ".js"
   end
 
   if self.layout then
-    local flag, result = pcall(template.execute, file, self, self:helper())
+    local flag, result = pcall(template.execute, fileName, self, self:helper())
     if flag then
       self._yield = result
     else
-      self._yield = (file .. '\n\n' .. result .. '\n\n' .. template.debug(self._yield))
+      self._yield = (fileName .. '\n\n' .. result .. '\n\n' .. template.debug(fileName))
     end
-
-    file = "app/views/layouts/" .. self.layout .. "_ajax.js"
+    fileName = self.prefixViews .. "/layouts/" .. self.layout .. ".js"
   end
 
-  local flag, result = pcall(template.execute, file, self, self:helper())
+  local flag, result = pcall(template.execute, fileName, self, self:helper())
   if flag then
     return 200, {'Content-Type: text/javascript'}, result
   else
-    return 500, {'Content-Type: text/plain'}, file .. '\n\n' .. result .. '\n\n' .. template.debug(file)
+    return 500, {'Content-Type: text/plain'}, fileName .. '\n\n' .. result .. '\n\n' .. template.debug(fileName)
   end
 end
 
 function Controller:render_html(params)
-  if params.value then
+  if params.value and params.layout == false then
     return 200, {'Content-Type: text/html'}, params.value
   end
 
-  local prefix = "app/views"
-  local view   = nil
   local file   = nil
 
   if params.template == nil then
     if params.view == nil then
-      file = prefix .. "/" .. self.controller_name .. "/" .. self.action_name .. ".html"
+      file = self.prefixViews .. "/" .. self.controller_name .. "/" .. self.action_name .. ".html"
     else
-      file = prefix .. "/" .. self.controller_name .. "/" .. params.view .. ".html"
+      file = self.prefixViews .. "/" .. self.controller_name .. "/" .. params.view .. ".html"
     end
   else
-    file = prefix .. "/" .. params.template .. ".html"
+    file = self.prefixViews .. "/" .. params.template .. ".html"
   end
 
   if self.layout then
@@ -140,15 +136,10 @@ function Controller:render_html(params)
     if flag then
       self._yield = result
     else
-      --self._yield = (file .. '\n\n' .. result .. '\n\n' .. template.debug(self._yield))
       return 500, {'Content-Type: text/plain'}, file .. '\n\n' .. result .. '\n\n' .. template.debug(file)
     end
 
-    if request.field("Accept") == "text/javascript" then
-      file = "app/views/layouts/" .. self.layout .. ".js"
-    else
-      file = "app/views/layouts/" .. self.layout .. ".html"
-    end
+    file = self.prefixViews .. "/layouts/" .. self.layout .. ".html"
   end
 
   local flag, result = pcall(template.execute, file, self, self:helper())
@@ -160,19 +151,15 @@ function Controller:render_html(params)
 end
 
 function Controller:partial(params)
-  local prefix = "app/views"
-  local view   = nil
+  params = params or {}
   local file   = nil
 
-  if params.template == nil then
-    if params.view == nil then
-      file = prefix .. "/" .. self.controller_name .. "/_" .. self.action_name .. ".html"
-    else
-      file = prefix .. "/" .. self.controller_name .. "/_" .. params.view .. ".html"
-    end
+  if params.view == nil then
+    file = self.prefixViews .. "/" .. self.controller_name .. "/_" .. self.action_name .. ".html"
   else
-    file = prefix .. "/_" .. params.template
+    file = self.prefixViews .. "/" .. self.controller_name .. "/_" .. params.view .. ".html"
   end
+
   local context = params.context or self
   local flag, result = pcall(template.execute, file, context, self:helper())
   if flag then

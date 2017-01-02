@@ -112,6 +112,9 @@ function M.reload()
 end
 
 function M.debug(file_name)
+  if not os.exists(file_name) then
+    error(string.format("file %s not exists", file_name))
+  end
   local source = M.source[file_name]
   local buffer = ""
   local list   = source:split('\n')
