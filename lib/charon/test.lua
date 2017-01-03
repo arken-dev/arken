@@ -14,16 +14,16 @@ CHARON_ENV = os.getenv("CHARON_ENV") or "test"
 -------------------------------------------------------------------------------
 
 local colorize = require 'charon.colorize'
-local test = {}
-test.output = io.write
+local test     = {}
+test.output    = io.write
 
 function test.process(file_name)
   local results   = {}
   local status, specs = pcall(dofile, file_name)
   -- arquivo com erro de sintaxe
   if not status then
-    print(file_name)
-    print(specs)
+    test.output(file_name)
+    test.output(specs)
     results[file_name] = { status = 'failure', msg = specs }
     return results
   end
@@ -49,38 +49,26 @@ function test.process(file_name)
       -- require( 'charon.record' ).cache = {}
       if status == false then
         if type(message) == 'table' then
-          if message.kind == 'test' then
-            local trace = ""
-            local list  = tostring(message.traceback):split("\n")
-            for i = 1, list:size() do
-              if list:at(i):contains(file_name) then
-                trace = trace .. list:at(i):reduce() .. '\n'
-              end
+          local text = ""
+          local traceback = message.traceback or ''
+          message.traceback = nil
+          local trace = ""
+          local list  = string.split(traceback, "\n")
+          for i = 1, list:size() do
+            if list:at(i):contains(file_name) then
+              trace = trace .. list:at(i):reduce() .. '\n'
             end
-            results[description] = {status = 'fail', msg = message.msg .. '\n' .. tostring(trace)}
-            test.output(colorize.format('.', 'red'))
-          else
-            local text = ""
-            local traceback = message.traceback
-            message.traceback = nil
-            local trace = ""
-            local list  = regex.split(traceback, "\n")
-            for i = 1, list:size() do
-              if list:at(i):contains(file_name) then
-                trace = trace .. list:at(i):reduce() .. '\n'
-              end
-            end
-            trace = trace .. '\n\n' .. traceback
-
-            for k, v in pairs(message) do
-              text = text .. k .. ': ' .. v .. '\n'
-            end
-            if trace then
-              text = text .. '\n' .. trace
-            end
-            results[description] = {status = 'failure', msg = text}
-            test.output(colorize.format('.', 'red'))
           end
+          trace = trace .. '\n\n' .. traceback
+
+          for k, v in pairs(message) do
+            text = text .. k .. ': ' .. v .. '\n'
+          end
+          if trace then
+            text = text .. '\n' .. trace
+          end
+          results[description] = {status = 'failure', msg = text}
+          test.output(colorize.format('.', 'red'))
         else
           results[description] = {status = 'failure', msg = message}
           test.output(colorize.format('.', 'red'))
