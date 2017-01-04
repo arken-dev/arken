@@ -77,6 +77,10 @@ function Controller:redirect(params)
   return 302, {header}, nil
 end
 
+function Controller:templateParams()
+  return { self = self, request = request, helper = self:helper() }
+end
+
 function Controller:render_js(params)
   local fileName = nil
 
@@ -91,7 +95,7 @@ function Controller:render_js(params)
   end
 
   if self.layout then
-    local flag, result = pcall(template.execute, fileName, self, self:helper())
+    local flag, result = pcall(template.execute, fileName, self:templateParams(), CHARON_ENV ~= 'production')
     if flag then
       self._yield = result
     else
@@ -100,7 +104,7 @@ function Controller:render_js(params)
     fileName = self.prefixViews .. "/layouts/" .. self.layout .. ".js"
   end
 
-  local flag, result = pcall(template.execute, fileName, self, self:helper())
+  local flag, result = pcall(template.execute, fileName, self:templateParams(), CHARON_ENV ~= 'production')
   if flag then
     return 200, {'Content-Type: text/javascript'}, result
   else
@@ -131,7 +135,7 @@ function Controller:render_html(params)
       flag   = true
       result = params.value
     else
-      flag, result = pcall(template.execute, file, self, self:helper())
+      flag, result = pcall(template.execute, file, self:templateParams(), CHARON_ENV ~= 'production')
     end
     if flag then
       self._yield = result
@@ -142,7 +146,7 @@ function Controller:render_html(params)
     file = self.prefixViews .. "/layouts/" .. self.layout .. ".html"
   end
 
-  local flag, result = pcall(template.execute, file, self, self:helper())
+  local flag, result = pcall(template.execute, file, self:templateParams(), CHARON_ENV ~= 'production')
   if flag then
     return 200, {'Content-Type: text/html'}, result
   else
@@ -161,7 +165,7 @@ function Controller:partial(params)
   end
 
   local context = params.context or self
-  local flag, result = pcall(template.execute, file, context, self:helper())
+  local flag, result = pcall(template.execute, file, self:templateParams(), CHARON_ENV ~= 'production')
   if flag then
     return result
   else

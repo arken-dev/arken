@@ -168,10 +168,15 @@ end
 -- DISPATCHER CONTROLLER
 -------------------------------------------------------------------------------
 
-dispatcher.dispatchController = function()
+dispatcher.dispatchController = function(request)
   local controller_name, action_name, controller_path = dispatcher.parsePath()
   local class  = dispatcher.requireController(controller_name)
-  local object = class.new{controller_name = controller_name, action_name = action_name, controller_path = controller_path}
+  local object = class.new{
+    controller_name = controller_name,
+    action_name     = action_name,
+    controller_path = controller_path,
+    request         = request
+  }
   if object[action_name .. "Action"] then
     return object:pexecute(action_name .. "Action")
   else
@@ -203,11 +208,10 @@ dispatcher.dispatch = function()
       return dispatcher.dispatchLocal(fileName)
     else
       reload = package.reload()
-      template.reload()
-      code, headers, body = dispatcher.dispatchController()
+      code, headers, body = dispatcher.dispatchController(request)
     end
   else
-    code, headers, body = dispatcher.dispatchController()
+    code, headers, body = dispatcher.dispatchController(request)
   end
   if request.__response then
     for _, header in ipairs(request.__response) do

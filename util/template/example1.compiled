@@ -1,0 +1,9 @@
+return function(params)
+local request = params.request
+local helper = params.helper
+local form = params.form
+  local __buffer = ''
+   __buffer = __buffer .. [[
+print("hello...")]]
+  return __buffer
+end

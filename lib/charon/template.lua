@@ -3,14 +3,21 @@
 -- Use of this source code is governed by a BSD-style
 -- license that can be found in the LICENSE file.
 
-local M = {}
+local template  = {}
+template.cache  = {}
+template.source = {}
+template.mtime  = os.microtime()
+template.time   = 0
 
-M.mtime  = os.microtime()
-M.cache  = {}
-M.source = {}
-M.time   = 0
+function template.paramsToLocal(params)
+  local result = ""
+  for k, _ in pairs(params) do
+    result = result .. string.format("local %s = params.%s\n", k, k)
+  end
+  return result
+end
 
-function M.compile(file_name)
+function template.compile(file_name, params)
   if not os.exists(file_name) then
     error(string.format("%s not exists", file_name))
   end
@@ -21,8 +28,9 @@ function M.compile(file_name)
   local i    = 0
   local j    = 0
 
-  local buffer ="\n"
-  buffer = buffer .. "return function(self, helper)\n"
+  local buffer = ""
+  buffer = buffer .. "return function(params)\n"
+  buffer = buffer .. template.paramsToLocal(params)
   buffer = buffer .. "  local __buffer = ''\n"
   buffer = buffer .. "   __buffer = __buffer .. [[\n"
 
@@ -72,50 +80,39 @@ function M.compile(file_name)
 
   end
 
-  buffer = buffer .. "]] \n"
-  buffer = buffer .. "  return __buffer \n"
-  buffer = buffer .. "end"
-
-  return M.filter(file_name, buffer)
+  buffer = buffer .. "]]\n"
+  buffer = buffer .. "  return __buffer\n"
+  buffer = buffer .. "end\n"
+  return template.filter(file_name, buffer)
 end
 
-function M.filter(file_name, buffer)
+function template.filter(file_name, buffer)
   return buffer
 end
 
-function M.build(file_name)
-  M.source[file_name] = M.compile(file_name)
-  return assert(loadstring(M.source[file_name]))
+function template.build(file_name, params)
+  template.source[file_name] = template.compile(file_name, params)
+  return assert(loadstring(template.source[file_name]))
 end
-
-function M.execute(file_name, data, helper)
+function template.execute(file_name, params, flag)
   local buffer = nil
   local time   = os.microtime()
-  if not M.cache[file_name] then
-    M.cache[file_name] = M.build(file_name)()
+  if flag and os.ctime(file_name) > template.mtime then
+    template.cache[file_name] = nil
   end
-  buffer = M.cache[file_name](data, helper)
-  M.time = M.time + (os.microtime() - time)
+  if not template.cache[file_name] then
+    template.cache[file_name] = template.build(file_name, params)()
+  end
+  buffer = template.cache[file_name](params)
+  template.time = template.time + (os.microtime() - time)
   return buffer
 end
 
-function M.reload()
-  -- M.cache = {}
-  for file_name, source in pairs(M.source) do
-    if os.ctime(file_name) > M.mtime then
-      print("reload: " .. file_name)
-      M.cache[file_name] = M.build(file_name)()
-    end
-  end
-
-  M.mtime = os.microtime()
-end
-
-function M.debug(file_name)
+function template.debug(file_name)
   if not os.exists(file_name) then
     error(string.format("file %s not exists", file_name))
   end
-  local source = M.source[file_name]
+  local source = template.source[file_name]
   local buffer = ""
   local list   = source:split('\n')
   for i = 1, list:size() do
@@ -127,4 +124,4 @@ function M.debug(file_name)
   return buffer
 end
 
-return M
+return template

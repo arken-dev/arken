@@ -1,0 +1,6 @@
+ 1) return function(params)
+ 2)   local __buffer = ''
+ 3)    __buffer = __buffer .. [[
+ 4) print("hello...")]]
+ 5)   return __buffer
+ 6) end

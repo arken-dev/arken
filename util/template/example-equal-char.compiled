@@ -1,0 +1,6 @@
+return function(params)
+  local __buffer = ''
+   __buffer = __buffer .. [[
+]] .. tostring("Hello World !!!" ) .. [[]]
+  return __buffer
+end

@@ -1,0 +1,18 @@
+return function(params)
+  local __buffer = ''
+   __buffer = __buffer .. [[
+]] .. tostring("Hello World" ) .. [[
+
+]]
+if true then 
+ __buffer = __buffer .. [[
+  ]] .. tostring('is true' ) .. [[
+]]
+else 
+ __buffer = __buffer .. [[
+  ]] .. tostring('is false' ) .. [[
+]]
+end 
+ __buffer = __buffer .. [[]]
+  return __buffer
+end
