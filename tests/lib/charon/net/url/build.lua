@@ -17,4 +17,15 @@ test.should_return_table_form_url_without_url = function()
   assert( result:build() == "http://username:password@hostname:2345", result:build() )
 end
 
+test.should_return_encoded_path = function()
+  local result = url.parse("http://newlink.org/user/user=riveira")
+  assert( result:build() == "http://newlink.org/user/user=riveira", result:build() )
+end
+
+test.should_return_major_char_path = function()
+  local result = url.parse("http://newlink.org/user/user>riveira")
+  assert( result:build() == "http://newlink.org/user/user>riveira", result:build() )
+end
+
+
 return test

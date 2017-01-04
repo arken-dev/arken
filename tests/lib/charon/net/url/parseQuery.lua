@@ -33,4 +33,35 @@ test.should_return_converting_param_with_array = function()
   assert(result.val[1] == "val1", result.val[1])
 end
 
+test.should_return_array_query = function()
+  local result = url.parseQuery("var[]=1234&var[]=2345&var[]=9876")
+  assert(result.var[1] == '1234', result.var[1] )
+  assert(result.var[2] == '2345', result.var[2] )
+  assert(result.var[3] == '9876', result.var[3] )
+end
+
+test.should_return_hash_and_hash_query = function()
+  local result = url.parseQuery("var[1234][id]=1234&var[1234][name]=John")
+  assert(result.var[1234].id == '1234')
+  assert(result.var[1234].name == 'John')
+end
+
+test.should_return_hash_and_hash_query_and_empty_var = function()
+  local result = url.parseQuery("var[1234][id]=1234&var[1234][name]=John&var[2345][id]=&var[2345][name]=")
+  assert(result.var[2345].id == '')
+  assert(result.var[2345].name == '')
+end
+
+test.should_return_hash_and_array_query = function()
+  local result = url.parseQuery("var[1234][]=1234&var[1234][]=John")
+  assert(result.var[1234][1] == '1234')
+  assert(result.var[1234][2] == 'John')
+end
+
+test.should_return_array_inside_array = function()
+  local result = url.parseQuery("var[][]=1234&var[][]=John")
+  assert(result.var[1][1] == '1234')
+  assert(result.var[2][1] == 'John')
+end
+
 return test

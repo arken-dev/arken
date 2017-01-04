@@ -35,4 +35,9 @@ test.should_return_converting_encoding_url = function()
   assert(result == "val%5B1%5D=val1&val%5B2%5D=val2&val%5B3%5D=val3", json.encode(result))
 end
 
+test.should_return_query_with_blank_string = function()
+  local result = url.buildQuery({val = {"val1", "", "val3"}})
+  assert(result == "val%5B1%5D=val1&val%5B2%5D&val%5B3%5D=val3", json.encode(result))
+end
+
 return test

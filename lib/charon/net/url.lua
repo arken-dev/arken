@@ -209,17 +209,14 @@ function M.parseQuery(str, sep)
     if not values[key] then
       values[key] = {}
     end
-    if #keys > 0 and type(values[key]) ~= 'table' then
-      values[key] = {}
+    if #keys > 0 and type(values[key]) ~= 'table' then values[key] = {}
     elseif #keys == 0 and type(values[key]) == 'table' then
       values[key] = decode(val)
     end
 
     local t = values[key]
     for i,k in ipairs(keys) do
-      if type(t) ~= 'table' then
-        t = {}
-      end
+      if type(t) ~= 'table' then t = {} end
       if k == "" then
         k = #t+1
       end
@@ -319,8 +316,7 @@ function M.parse(url)
 
   setmetatable(comp, {
     __index = M,
-    __tostring = M.build}
-  )
+    __tostring = M.build})
   return comp
 end
 
@@ -334,18 +330,30 @@ local function absolutePath(base_path, relative_path)
   end
   path = path .. relative_path
   path = path:gsub("([^/]*%./)", function (s)
-    if s ~= "./" then return s else return "" end
+    if s ~= "./" then
+      return s
+    else
+      return ""
+    end
   end)
   path = string.gsub(path, "/%.$", "/")
   local reduced
   while reduced ~= path do
     reduced = path
     path = string.gsub(reduced, "([^/]*/%.%./)", function (s)
-      if s ~= "../../" then return "" else return s end
+      if s ~= "../../" then
+        return ""
+      else
+        return s
+      end
     end)
   end
   path = string.gsub(path, "([^/]*/%.%.?)$", function (s)
-    if s ~= "../.." then return "" else return s end
+    if s ~= "../.." then
+     return ""
+    else
+      return s
+    end
   end)
   local reduced
   while reduced ~= path do
@@ -359,9 +367,6 @@ end
 -- @param other A string or a table representing a url
 -- @return a new url table
 function M:resolve(other)
-  if type(self) == "string" then
-    self = M.parse(self)
-  end
   if type(other) == "string" then
     other = M.parse(other)
   end
@@ -373,14 +378,16 @@ function M:resolve(other)
       other:setAuthority(self.authority)
       if not other.path or other.path == "" then
         other.path = self.path
-        local query = other.query
-        if not query or not next(query) then
-          other.query = self.query
-        end
-      else
+        else
         other.path = absolutePath(self.path, other.path)
       end
     end
+
+    local query = other.query
+    if not query or not next(query) then
+      other.query = self.query
+    end
+
     return other
   end
 end
@@ -389,9 +396,6 @@ end
 -- described on <a href="http://en.wikipedia.org/wiki/URL_normalization">The URL normalization page of Wikipedia</a>
 -- @return the normalized path
 function M:normalize()
-  if type(self) == 'string' then
-    self = M.parse(self)
-  end
   if self.path then
     local path = self.path
     path = absolutePath(path, "")
