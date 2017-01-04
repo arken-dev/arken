@@ -3,13 +3,15 @@
 -- Use of this source code is governed by a BSD-style
 -- license that can be found in the LICENSE file.
 
-package.time  = os.microtime()
-package.mixed = {}
-package.cache = {}
+package.time   = os.microtime()
+package.output = print
+package.mixed  = {}
+package.cache  = {}
 
-package.checkPath= function(path)
+package.checkPath = function(path)
   if package.loaded[path] then
     if package.isPathUpdated(path) then
+--[[
       if package.mixed[path] then
         local class = package.mixed[path]
         print('reload: ', path)
@@ -17,6 +19,7 @@ package.checkPath= function(path)
         package.loaded[class] = nil
         path = class
       end
+]]
       return package.reloadPath(path)
     end
   end
@@ -32,8 +35,12 @@ package.isPathUpdated = function(path)
   end
 end
 
+package.isPathUnknow = function(path)
+  return package.cache[path] == nil or package.cache[path] == false or not os.exists(package.cache[path]) 
+end
+
 package.pathToFilename = function(path)
-  if package.cache[path] == nil or not os.exists(package.cache[path]) then
+  if package.isPathUnknow(path) then
     for str in string.gmatch(package.path, "([^;]+)") do
       local file_name = tostring(str:gsub("?", path:replaceChars('.', '/')))
       if os.exists(file_name) then
@@ -55,7 +62,7 @@ package.isFilenameUpdated = function(file_name)
 end
 
 package.reloadPath = function(path)
-    print('reload: ', path)
+    package.output('reload: ', path)
     local filename = package.pathToFilename(path)
     if filename then
       package.loaded[path] = assert(dofile(filename))
