@@ -9,6 +9,8 @@
 
 void ByteArrayList::init()
 {
+  m_cursor = 0;
+
   if( m_size == m_resource ) {
     m_resource *= 2;
   }
@@ -116,7 +118,7 @@ const char * ByteArrayList::operator[](int pos)
 
 const char * ByteArrayList::at(int pos)
 {
-  if( pos > 0 ) {
+  if( pos > m_size ) {
     return 0;
   }
   QByteArray * ba = m_array[pos];
@@ -187,5 +189,15 @@ char * ByteArrayList::join(const char * separator)
   }
   result[result_size] = '\0';
 
+  return result;
+}
+
+const char * ByteArrayList::each()
+{
+  const char * result = at(m_cursor);
+  m_cursor++;
+  if( m_cursor > m_size ) {
+    m_cursor = 0;
+  }
   return result;
 }

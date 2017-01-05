@@ -17,6 +17,7 @@ class ByteArrayList
   void init();
   int m_size;
   int m_resource;
+  int m_cursor;
   QByteArray ** m_array;
 
   public:
@@ -32,6 +33,7 @@ class ByteArrayList
   const char *at(int pos, int * len);
   const char *first();
   const char *last();
+  const char *each();
   char * join(const char * separator);
   int size();
 };

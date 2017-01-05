@@ -75,4 +75,17 @@ test.should_return_first_and_last_words_with_begin_and_center_and_last_is_only_p
   assert( list:at(3) == nil )
 end
 
+test.should_iterate_in_list = function()
+  local str  = 'o rato roeu a roupa do rei de roma'
+  local list = str:split(' ')
+  local res  = ""
+  for row in list:each() do
+    if #res > 0 then
+      res = res .. ' '
+    end
+    res = res .. row
+  end
+  assert(str == res, res)
+end
+
 return test

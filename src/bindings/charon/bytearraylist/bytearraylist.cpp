@@ -68,6 +68,28 @@ lua_ByteArrayListInstanceMethodAt( lua_State *L ) {
 }
 
 static int
+charon_byte_array_list_each( lua_State *L ) {
+  int i = lua_upvalueindex(1);
+  luaL_checktype(L, i, LUA_TLIGHTUSERDATA);
+  ByteArrayList * ba  = (ByteArrayList *) lua_touserdata(L, i);
+  const char * result = ba->each();
+  if( result == 0 ) {
+    lua_pushnil(L);
+  } else {
+    lua_pushstring(L, result);
+  }
+  return 1;
+}
+
+static int
+lua_ByteArrayListInstanceMethodEach( lua_State *L ) {
+  ByteArrayList * udata  = checkByteArrayList( L );
+  lua_pushlightuserdata(L, udata);
+  lua_pushcclosure(L, charon_byte_array_list_each, 1);
+  return 1;
+}
+
+static int
 lua_ByteArrayListInstanceMethodFirst( lua_State *L ) {
   ByteArrayList * udata  = checkByteArrayList( L );
   lua_pushstring(L, udata->first());
@@ -121,6 +143,7 @@ static const
 luaL_reg ByteArrayListInstanceMethods[] = {
   {"append", lua_ByteArrayListInstanceMethodAppend},
   {"at", lua_ByteArrayListInstanceMethodAt},
+  {"each",    lua_ByteArrayListInstanceMethodEach},
   {"first", lua_ByteArrayListInstanceMethodFirst},
   {"last", lua_ByteArrayListInstanceMethodLast},
   {"join", lua_ByteArrayListInstanceMethodJoin},
