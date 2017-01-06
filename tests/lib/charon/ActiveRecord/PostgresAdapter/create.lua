@@ -2,15 +2,16 @@ local test = {}
 local json  = require('charon.json')
 local Class  = require('charon.oop.Class')
 local Person = Class.new("Person", "ActiveRecord")
+Person.table_name = string.format("person_%s", os.uuid():replaceAll('-', '_'))
 
 test.beforeAll = function()
   ActiveRecord.config = "config/active_record_postgres.json"
   local sql = [[
-  CREATE TABLE person (
+  CREATE TABLE %s (
     id SERIAL PRIMARY KEY, name VARCHAR(250), observation TEXT,
     created_at TEXT, updated_at TEXT
   )]]
-  Person.adapter():execute(sql)
+  Person.adapter():execute(string.format(sql, Person.table_name))
 end
 
 test.before = function()
@@ -22,7 +23,7 @@ test.after = function()
 end
 
 test.afterAll = function()
-  Person.adapter():execute("DROP TABLE person")
+  Person.adapter():execute(string.format("DROP TABLE %s", Person.table_name))
   ActiveRecord.config = nil
 end
 
@@ -32,7 +33,7 @@ test.should_insert_in_the_database = function()
   p:save()
 
   local result
-  for row in Person.adapter():execute([[ SELECT * FROM person ]]):rows() do
+  for row in Person.adapter():execute(string.format("SELECT * FROM %s", Person.table_name)):rows() do
     result = row
     break
   end
