@@ -6,9 +6,9 @@ local Person = Class.new("Person", "ActiveRecord")
 test.beforeAll = function()
   ActiveRecord.config = "config/active_record_sqlite.json"
   local sql = [[
-  CREATE TABLE person (
-    id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(250), observation TEXT,
-    created_at TEXT, updated_at TEXT
+  CREATE TABLE IF NOT EXISTS person (
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, name VARCHAR(250), observation TEXT,
+    created_at TEXT, updated_at TEXT, total REAL
   )]]
   Person.adapter():execute(sql)
 end
@@ -22,7 +22,6 @@ test.after = function()
 end
 
 test.afterAll = function()
-  Person.adapter():execute("DROP TABLE person")
   ActiveRecord.config = nil
 end
 
