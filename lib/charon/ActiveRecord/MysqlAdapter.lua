@@ -3,8 +3,7 @@
 -- Use of this source code is governed by a BSD-style
 -- license that can be found in the LICENSE file.
 
-require 'charon.mysql'
-
+local mysql     = require "luasql.mysql"
 local json      = require('charon.json')
 local isblank   = require('charon.isblank')
 local toboolean = require('charon.toboolean')
@@ -28,28 +27,21 @@ local instanceConnection = nil
 
 function ActiveRecord_MysqlAdapter:connect()
   if instanceConnection == nil then
-    local dbarg = {
-      host = self.host,
-      port = (self.port or 3306),
-      user = self.user,
-      password = self.password,
-      db = self.database,
-    }
-
-    instanceConnection, errmsg = mysql.newclient(dbarg)
+    local env  = mysql.mysql()
+    local password = self.password or ''
+    instanceConnection, errmsg = env:connect(self.database, self.user, password)
     if errmsg ~= nil then
       error(string.format("connect to mysql error: %s\n", errmsg))
-    else
-      if self.charset then
-        errmsg = instanceConnection:setcharset("utf8")
-        if errmsg ~= nil then
-          error(string.format("connect to mysql error: %s\n", errmsg))
-        end
-      end
-
     end
   end
   return instanceConnection
+end
+
+function ActiveRecord_MysqlAdapter:close()
+  if instanceConnection ~= nil then
+    instanceConnection:close()
+    instanceConnection = nil
+  end
 end
 
 --------------------------------------------------------------------------------
@@ -58,16 +50,16 @@ end
 
 function ActiveRecord_MysqlAdapter:execute(sql)
   local time = os.microtime()
-  local result, errmsg = self:connect():query(sql)
+  local cursor, errmsg = self:connect():execute(sql)
   if errmsg ~= nil then
-    error(errmsg .. sql)
+    error(string.format("error %s, sql %s", errmsg, sql))
   end
   time = os.microtime() - time
   if ActiveRecord.debug then
     print(sql .. string.format(" (%.3f) secs", time))
   end
   ActiveRecord.time = ActiveRecord.time + time
-  return result
+  return cursor
 end
 
 --------------------------------------------------------------------------------
@@ -75,8 +67,8 @@ end
 --------------------------------------------------------------------------------
 
 function ActiveRecord_MysqlAdapter:query(sql)
-  local time = os.microtime()
-  local result = assert(self:connect():query(sql))
+  local time   = os.microtime()
+  local cursor = assert(self:connect():query(sql))
   time = os.microtime() - time
   if ActiveRecord.debug then
     --print(sql .. string.format(" (%.3f) secs", time))
@@ -182,22 +174,12 @@ end
 function ActiveRecord_MysqlAdapter:create(record)
   record:populate(record) -- TODO otimizar
   local sql    = self:insert(record)
-  local status, result = pcall(self.execute, self, sql)
-  if status == false then
-    error(string.format("error %s, sql %s", result, sql))
-  else
-    local result = self:execute("SELECT LAST_INSERT_ID()")
-    local row
-    for r in result:recordlist() do
-      row = r
-      break
-    end
-    record.id = tonumber(row[1])
-    record.new_record = false
-    local key         = record:cacheKey()
-    ActiveRecord_MysqlAdapter.cache[key] = record
-    ActiveRecord_MysqlAdapter.neat[key]  = record:dup()
-  end
+  local cursor = self:execute(sql)
+  record.id    = self:connect():getlastautoid()
+  record.new_record = false
+  local key = record:cacheKey()
+  ActiveRecord_MysqlAdapter.cache[key] = record
+  ActiveRecord_MysqlAdapter.neat[key]  = record:dup()
   return record
 end
 
@@ -235,30 +217,17 @@ end
 
 function ActiveRecord_MysqlAdapter:all(params)
   local sql    = self:select(params)
+  local cursor = self:execute(sql)
   local result = {}
-  local stm    = self:execute(sql)
-  for i, row in ipairs(self:extract(stm)) do
+  for row in cursor:each() do
     table.insert(result, self:parser_fetch(row))
   end
-  return result
-end
-
-function ActiveRecord_MysqlAdapter:extract(stm)
-  local result = {}
-  local fieldnamelist = stm:fieldnamelist()
-  for record in stm:recordlist() do
-    local row = {}
-    for i, name in ipairs(fieldnamelist) do
-      row[name] = record[i]
-    end
-    table.insert(result, row)
-  end
+  cursor:close()
   return result
 end
 
 function ActiveRecord_MysqlAdapter:query(sql)
-  local stm = self:execute(sql)
-  return self:extract(stm)
+  return self:execute(sql)
 end
 
 --------------------------------------------------------------------------------
@@ -267,26 +236,21 @@ end
 
 function ActiveRecord_MysqlAdapter:columns()
   if self.instanceColumns == nil then
-    local sql = string.format("SHOW COLUMNS FROM %s", self.table_name)
+    local sql    = string.format("SHOW COLUMNS FROM %s", self.table_name)
     local result = {}
-    local stm, errmsg = self:connect():query(sql)
-    if errmsg ~= nil then
-      error(string.format("error: %s\n", errmsg))
-    end
-
-    for row in stm:recordlist() do
-      local format = self:parser_format(row[2])
-      result[row[1]] = {
+    local cursor = self:execute(sql)
+    for row in cursor:each() do
+      local format = self:parser_format(row.Type)
+      result[row.Field] = {
         default  = self:parser_default(format, row.Default),
-        not_null = row[3] == 'NO',
+        not_null = row.Null == 'NO',
         format   = format
       }
     end
     self.instanceColumns = result
+    cursor:close()
   end
-
   return self.instanceColumns
-
 end
 
 -------------------------------------------------------------------------------
@@ -403,11 +367,9 @@ end
 --------------------------------------------------------------------------------
 
 function ActiveRecord_MysqlAdapter:fetch(sql)
-  local result
-  for i, row in ipairs(self:query(sql)) do
-    result = row
-    break
-  end
+  local cursor = self:query(sql)
+  local result = cursor:fetch({}, 'a')
+  cursor:close()
   if result == nil then
     return nil
   else

@@ -2,7 +2,7 @@ local test = {}
 local json   = require('charon.json')
 local Class  = require('charon.oop.Class')
 local Person = Class.new("Person", "ActiveRecord")
-Person.table_name = string.format("person_%s", os.uuid():replaceAll('-', '_'))
+Person.table_name = string.format("person_%s", 'test_all')
 
 test.beforeAll = function()
   ActiveRecord.config = "config/active_record_mysql.json"
@@ -10,7 +10,7 @@ test.beforeAll = function()
   CREATE TABLE %s (
     id INTEGER PRIMARY KEY AUTO_INCREMENT, name VARCHAR(250), observation TEXT,
     created_at TEXT, updated_at TEXT
-  )]]
+  ) ENGINE=InnoDB]]
   Person.adapter():execute(string.format(sql, Person.table_name))
 end
 
@@ -25,6 +25,7 @@ end
 test.afterAll = function()
   Person.adapter():execute(string.format("DROP TABLE %s", Person.table_name))
   ActiveRecord.config = nil
+  ActiveRecord.adapter():close()
 end
 
 test.should_return_record_stored = function()
@@ -50,7 +51,6 @@ test.should_return_one_id = function()
   p.name = "Ed Alvares"
   p:save()
   local result = Person.all{ name = "Ed Alvares" }
-
   assert( p.id == result[1].id, string.format('%i %i', p.id, result[1].id) )
 end
 

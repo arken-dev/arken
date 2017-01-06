@@ -1,7 +1,7 @@
 local test   = {}
 local Class  = require('charon.oop.Class')
 local Person = Class.new("Person", "ActiveRecord")
-Person.table_name = string.format("person_%s", os.uuid():replaceChars('-', '_'))
+Person.table_name = string.format("person_%s", "update") --os.uuid():replaceChars('-', '_'))
 
 test.beforeAll = function()
   ActiveRecord.config = "config/active_record_mysql.json"
@@ -9,7 +9,7 @@ test.beforeAll = function()
   CREATE TABLE %s (
     id INTEGER PRIMARY KEY AUTO_INCREMENT, name VARCHAR(250), observation TEXT,
     created_at TEXT, updated_at TEXT
-  )]]
+  ) ENGINE=InnoDB ]]
   Person.adapter():execute(string.format(sql, Person.table_name))
 end
 
@@ -23,6 +23,7 @@ end
 
 test.afterAll = function()
   Person.adapter():execute(string.format("DROP TABLE %s", Person.table_name))
+  ActiveRecord.adapter():close()
   ActiveRecord.config = nil
 end
 

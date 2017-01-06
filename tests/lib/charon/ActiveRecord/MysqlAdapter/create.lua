@@ -2,14 +2,15 @@ local test = {}
 local json  = require('charon.json')
 local Class  = require('charon.oop.Class')
 local Person = Class.new("Person", "ActiveRecord")
+Person.table_name = "person_create"
 
 test.beforeAll = function()
   ActiveRecord.config = "config/active_record_mysql.json"
   local sql = [[
-  CREATE TABLE person (
+  CREATE TABLE person_create (
     id INTEGER PRIMARY KEY AUTO_INCREMENT, name VARCHAR(250), observation TEXT,
     created_at TEXT, updated_at TEXT
-  )]]
+  ) ENGINE=InnoDB]]
   Person.adapter():execute(sql)
 end
 
@@ -22,7 +23,8 @@ test.after = function()
 end
 
 test.afterAll = function()
-  Person.adapter():execute("DROP TABLE person")
+  Person.adapter():execute("DROP TABLE person_create")
+  ActiveRecord.adapter():close()
   ActiveRecord.config = nil
 end
 
@@ -32,7 +34,8 @@ test.should_insert_in_the_database = function()
   p:save()
 
   local result
-  for i, row in ipairs(Person.adapter():query([[ SELECT * FROM person ]])) do
+  local cursor = Person.adapter():query([[ SELECT * FROM person_create ]])
+  for row in cursor:each() do
     result = row
   end
 

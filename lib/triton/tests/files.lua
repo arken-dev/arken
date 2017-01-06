@@ -19,7 +19,6 @@ end
 -------------------------------------------------------------------------------
 
 function triton_run(file)
-
   local results = test.execute({file})
 
   local titulo = ""

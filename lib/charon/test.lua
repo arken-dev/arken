@@ -33,12 +33,15 @@ function test.process(file_name)
   local before    = specs.before    or function() end
   local after     = specs.after     or function() end
   local beforeAll = specs.beforeAll or function() end
-  local afterAll  = specs.beforeAll or function() end
+  local afterAll  = specs.afterAll  or function() end
   specs.before    = nil
   specs.after     = nil
   specs.beforeAll = nil
   specs.afterAll  = nil
   status, message = pcall(beforeAll)
+  if status == false then
+    error(message)
+  end
   for description, func in pairs(specs) do
     local status, message
     if type(func) == 'function' then
@@ -89,6 +92,9 @@ function test.process(file_name)
     io.flush()
   end
   status, message = pcall(afterAll)
+  if status == false then
+    error(message)
+  end
 
   return results
 end
