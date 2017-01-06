@@ -330,6 +330,10 @@ function ActiveRecord_PostgresAdapter:parser_format(format_type)
     return 'number'
   end
 
+  if format_type == 'real' then
+    return 'number'
+  end
+
   if format_type == 'bigint' then
     return 'number'
   end
