@@ -25,7 +25,6 @@ end
 test.afterAll = function()
   Person.adapter():execute(string.format("DROP TABLE %s", Person.table_name))
   ActiveRecord.config = nil
-  ActiveRecord.adapter():close()
 end
 
 test.should_return_record_stored = function()

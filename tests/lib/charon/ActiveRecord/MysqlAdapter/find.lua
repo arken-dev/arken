@@ -24,7 +24,6 @@ end
 
 test.afterAll = function()
   Person.adapter():execute(string.format("DROP TABLE %s", Person.table_name))
-  ActiveRecord.adapter():close()
   ActiveRecord.config = nil
 end
 
