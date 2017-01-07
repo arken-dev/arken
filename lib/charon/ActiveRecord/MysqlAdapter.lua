@@ -632,14 +632,12 @@ end
 -- COUNT
 --------------------------------------------------------------------------------
 
-function ActiveRecord_Adapter:count(params)
+function ActiveRecord_MysqlAdapter:count(params)
   local sql = 'SELECT COUNT(*) count_all FROM ' .. self.table_name .. " " .. self:where(params)
-  local count = 0
-  for row in self:query(sql) do
-    count = row.count_all
-    break
-  end
-  return count
+  local cursor = self:execute(sql)
+  local result = cursor:fetch({}, 'a')
+  cursor:close()
+  return result.count_all
 end
 
 return ActiveRecord_MysqlAdapter
