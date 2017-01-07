@@ -3,8 +3,7 @@
 -- Use of this source code is governed by a BSD-style
 -- license that can be found in the LICENSE file.
 
-require 'charon.pgsql'
-
+local driver    = require('luasql.postgres')
 local isblank   = require('charon.isblank')
 local toboolean = require('charon.toboolean')
 local Class     = require('charon.oop.Class')
@@ -27,12 +26,11 @@ local instanceConnection = nil
 
 function ActiveRecord_PostgresAdapter:connect()
   if instanceConnection == nil then
-    local config = ""
-    local config = config .. ' dbname=' .. self.database
-          config = config .. ' user=' .. self.user
-          config = config .. ' password=' .. self.password
-          config = config .. ' host=' .. self.host
-    instanceConnection = pg.connect(config)
+    local env = driver.postgres()
+    instanceConnection, errmsg = env:connect(self.database, self.user, password, self.host)
+    if errmsg ~= nil then
+      error(string.format("connect to postgres error: %s\n", errmsg))
+    end
   end
   return instanceConnection
 end
@@ -43,13 +41,16 @@ end
 
 function ActiveRecord_PostgresAdapter:execute(sql)
   local time = os.microtime()
-  local result = assert(self:connect():exec(sql))
+  local cursor, errmsg = self:connect():execute(sql)
+  if errmsg ~= nil then
+    error(string.format("error %s, sql %s", errmsg, sql))
+  end
   time = os.microtime() - time
   if ActiveRecord.debug then
     print(sql .. string.format(" (%.3f) secs", time))
   end
   ActiveRecord.time = ActiveRecord.time + time
-  return result
+  return cursor
 end
 
 --------------------------------------------------------------------------------
@@ -58,7 +59,7 @@ end
 
 function ActiveRecord_PostgresAdapter:query(sql)
   local time = os.microtime()
-  local result = assert(self:connect():query(sql))
+  local result = assert(self:connect():execute(sql))
   time = os.microtime() - time
   if ActiveRecord.debug then
     --print(sql .. string.format(" (%.3f) secs", time))
@@ -167,18 +168,13 @@ end
 function ActiveRecord_PostgresAdapter:create(record)
   record:populate(record) -- TODO otimizar
   local sql    = self:insert(record)
-  local status, result = pcall(self.execute, self, sql)
-  if status == false then
-    error(string.format("error %s, sql %s", result, sql))
-  else
-    local cursor = result
-    local row    = cursor:fetch({}, 'a')
-    record.id    = tonumber(row[self.primary_key])
-    record.new_record = false
-    local key         = record:cacheKey()
-    self.cache[key]   = record
-    ActiveRecord_PostgresAdapter.neat[key] = record:dup()
-  end
+  local cursor = self:execute(sql)
+  local row    = cursor:fetch({}, 'a')
+  record.id    = tonumber(row[self.primary_key])
+  record.new_record = false
+  local key         = record:cacheKey()
+  self.cache[key]   = record
+  ActiveRecord_PostgresAdapter.neat[key] = record:dup()
   return record
 end
 
@@ -208,16 +204,7 @@ function ActiveRecord_PostgresAdapter:find(params)
   end
 
   local sql  = self:select(params, true)
-  local data = self:fetch(sql)
-  if data == nil then
-    return nil
-  else
-    data.new_record = false
-    data = self.record_class.new(data)
-    local key = self.table_name .. '_' .. tostring(data[self.primary_key])
-    return data
-  end
-
+  return self:fetch(sql)
 end
 
 --------------------------------------------------------------------------------
@@ -226,9 +213,9 @@ end
 
 function ActiveRecord_PostgresAdapter:all(params)
   local sql    = self:select(params)
-  local res    = self:execute(sql)
+  local cursor = self:execute(sql)
   local result = {}
-  for row in res:rows() do
+  for row in cursor:each() do
     table.insert(result, self:parser_fetch(row))
   end
   return result
@@ -249,9 +236,9 @@ function ActiveRecord_PostgresAdapter:columns()
         ORDER BY a.attnum
     ]]
 
-    local res    = self:execute(sql)
+    local cursor = self:execute(sql)
     local result = {}
-    for row in res:rows() do
+    for row in cursor:each({}) do
       local format = self:parser_format(row.format_type)
       result[row.attname] = {
         default  = self:parser_default(format, row.adsrc),
@@ -260,6 +247,7 @@ function ActiveRecord_PostgresAdapter:columns()
       }
     end
     self.instanceColumns = result
+    cursor:close()
   end
   return self.instanceColumns
 

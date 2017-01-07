@@ -29,7 +29,7 @@ function ActiveRecord_MysqlAdapter:connect()
   if instanceConnection == nil then
     local env  = mysql.mysql()
     local password = self.password or ''
-    instanceConnection, errmsg = env:connect(self.database, self.user, password)
+    instanceConnection, errmsg = env:connect(self.database, self.user, password, self.host)
     if errmsg ~= nil then
       error(string.format("connect to mysql error: %s\n", errmsg))
     end
@@ -188,7 +188,8 @@ end
 --------------------------------------------------------------------------------
 
 function ActiveRecord_Adapter:destroy(record)
-  local values = {[self.primary_key] = record[self.primary_key]} local sql = 'DELETE FROM ' .. self.table_name .. " " .. self:where(values)
+  local values = {[self.primary_key] = record[self.primary_key]}
+  local sql = 'DELETE FROM ' .. self.table_name .. " " .. self:where(values)
   local result = self:execute(sql)
   ActiveRecord_MysqlAdapter.cache[record:cacheKey()] = false
   return result
@@ -239,7 +240,7 @@ function ActiveRecord_MysqlAdapter:columns()
     local sql    = string.format("SHOW COLUMNS FROM %s", self.table_name)
     local result = {}
     local cursor = self:execute(sql)
-    for row in cursor:each() do
+    for row in cursor:each({}) do
       local format = self:parser_format(row.Type)
       result[row.Field] = {
         default  = self:parser_default(format, row.Default),

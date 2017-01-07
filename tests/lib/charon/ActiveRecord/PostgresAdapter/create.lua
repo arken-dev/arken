@@ -33,7 +33,7 @@ test.should_insert_in_the_database = function()
   p:save()
 
   local result
-  for row in Person.adapter():execute(string.format("SELECT * FROM %s", Person.table_name)):rows() do
+  for row in Person.adapter():execute(string.format("SELECT * FROM %s", Person.table_name)):each() do
     result = row
     break
   end
