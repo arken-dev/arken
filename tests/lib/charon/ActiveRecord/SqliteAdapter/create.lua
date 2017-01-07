@@ -31,7 +31,7 @@ test.should_insert_in_the_database = function()
   p:save()
 
   local result
-  for row in Person.adapter():connect():nrows([[ SELECT * FROM person ]]) do
+  for row in Person.adapter():connect():execute([[ SELECT * FROM person ]]):each() do
     result = row
   end
 
@@ -42,7 +42,6 @@ test.define_primary_key = function()
   local p = Person.new()
   p.name = "Chris Weidman"
   p:save()
-
   assert(p.id > 0, json.encode(result))
 end
 

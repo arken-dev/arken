@@ -3,8 +3,7 @@
 -- Use of this source code is governed by a BSD-style
 -- license that can be found in the LICENSE file.
 
-require 'charon.lsqlite3'
-
+local driver    = require "luasql.sqlite3"
 local isblank   = require('charon.isblank')
 local toboolean = require('charon.toboolean')
 local Class     = require('charon.oop.Class')
@@ -27,10 +26,10 @@ local instanceConnection = nil
 
 function ActiveRecord_SqliteAdapter:connect()
   if instanceConnection == nil then
-    if self.database == 'memory' then
-      instanceConnection = sqlite3.open_memory()
-    else
-      instanceConnection = sqlite3.open(self.database)
+    local env  = driver.sqlite3()
+    instanceConnection, errmsg = env:connect(self.database)
+    if errmsg ~= nil then
+      error(string.format("connect to mysql error: %s\n", errmsg))
     end
   end
   return instanceConnection
@@ -42,16 +41,16 @@ end
 
 function ActiveRecord_SqliteAdapter:execute(sql)
   local time = os.microtime()
-  local result, message, teste = self:connect():exec(sql)
-  if result ~= 0 then
-    error(self:connect():error_message())
+  local cursor, errmsg = self:connect():execute(sql)
+  if errmsg ~= nil then
+    error(string.format("error %s, sql %s", errmsg, sql))
   end
   time = os.microtime() - time
   if ActiveRecord.debug then
     print(sql .. string.format(" (%.3f) secs", time))
   end
   ActiveRecord.time = ActiveRecord.time + time
-  return result
+  return cursor
 end
 
 --------------------------------------------------------------------------------
@@ -59,8 +58,8 @@ end
 --------------------------------------------------------------------------------
 
 function ActiveRecord_SqliteAdapter:query(sql)
-  local time = os.microtime()
-  local result = assert(self:connect():query(sql))
+  local time   = os.microtime()
+  local cursor = assert(self:connect():execute(sql))
   time = os.microtime() - time
   if ActiveRecord.debug then
     --print(sql .. string.format(" (%.3f) secs", time))
@@ -166,16 +165,12 @@ end
 function ActiveRecord_SqliteAdapter:create(record)
   record:populate(record) -- TODO otimizar
   local sql    = self:insert(record)
-  local status, result = pcall(self.execute, self, sql)
-  if status == false then
-    error(string.format("error %s, sql %s", result, sql))
-  else
-    record.id = self:connect():last_insert_rowid()
-    record.new_record = false
-    local key         = record:cacheKey()
-    ActiveRecord_SqliteAdapter.cache[key] = record
-    ActiveRecord_SqliteAdapter.neat[key]  = record:dup()
-  end
+  local cursor = self:execute(sql)
+  record.id    = self:connect():getlastautoid()
+  record.new_record = false
+  local key = record:cacheKey()
+  ActiveRecord_SqliteAdapter.cache[key] = record
+  ActiveRecord_SqliteAdapter.neat[key]  = record:dup()
   return record
 end
 
@@ -214,10 +209,12 @@ end
 
 function ActiveRecord_SqliteAdapter:all(params)
   local sql    = self:select(params)
+  local cursor = self:execute(sql)
   local result = {}
-  for row in self:connect():nrows(sql) do
+  for row in cursor:each() do
     table.insert(result, self:parser_fetch(row))
   end
+  cursor:close()
   return result
 end
 
@@ -227,21 +224,21 @@ end
 
 function ActiveRecord_SqliteAdapter:columns()
   if self.instanceColumns == nil then
-    local sql = string.format("pragma table_info(%s)", self.table_name)
+    local sql    = string.format("pragma table_info(%s)", self.table_name)
     local result = {}
-    for row in self:connect():nrows(sql) do
+    local cursor = self:execute(sql)
+    for row in cursor:each() do
       local format = self:parser_format(row.type)
       result[row.name] = {
-        default  = self:parser_default(format, row.value),
-        not_null = toboolean(row.notnull),
+        default  = self:parser_default(format, row.dflt_value),
+        not_null = row.notnull == 1,
         format   = format
       }
     end
     self.instanceColumns = result
+    cursor:close()
   end
-
   return self.instanceColumns
-
 end
 
 -------------------------------------------------------------------------------
@@ -358,11 +355,9 @@ end
 --------------------------------------------------------------------------------
 
 function ActiveRecord_SqliteAdapter:fetch(sql)
-  local result
-  for row in  self:connect():nrows(sql) do
-    result = row
-    break
-  end
+  local cursor = self:execute(sql)
+  local result = cursor:fetch({}, 'a')
+  cursor:close()
   if result == nil then
     return nil
   else
@@ -628,12 +623,10 @@ end
 
 function ActiveRecord_Adapter:count(params)
   local sql = 'SELECT COUNT(*) count_all FROM ' .. self.table_name .. " " .. self:where(params)
-  local count = 0
-  for row in self:connect():nrows(sql) do
-    count = row.count_all
-    break
-  end
-  return count
+  local cursor = self:execute(sql)
+  local result = cursor:fetch({}, 'a')
+  cursor:close()
+  return result.count_all
 end
 
 return ActiveRecord_SqliteAdapter
