@@ -1,18 +1,16 @@
 local test   = {}
 local json   = require('charon.json')
 local Class  = require('charon.oop.Class')
-local ActiveRecord = require('charon.ActiveRecord')
 local Person = Class.new("Person", "ActiveRecord")
-Person.table_name = string.format("person_%s", os.uuid():replaceChars('-', '_'))
 
 test.beforeAll = function()
-  ActiveRecord.config = "config/active_record_postgres.json"
+  ActiveRecord.config = "config/active_record_sqlite.json"
   local sql = [[
-  CREATE TABLE %s (
-    id SERIAL PRIMARY KEY, name VARCHAR(250), observation TEXT,
-    created_at TEXT, updated_at TEXT
+  CREATE TABLE IF NOT EXISTS person (
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, name VARCHAR(250), observation TEXT,
+    created_at TEXT, updated_at TEXT, total REAL
   )]]
-  Person.adapter():execute(string.format(sql, Person.table_name))
+  Person.adapter():execute(sql)
 end
 
 test.before = function()
@@ -24,7 +22,6 @@ test.after = function()
 end
 
 test.afterAll = function()
-  Person.adapter():execute(string.format("DROP TABLE %s", Person.table_name))
   ActiveRecord.config = nil
 end
 
@@ -57,9 +54,9 @@ end
 
 test.should_return_instance_by_other_attribute = function()
   local p = Person.new()
-  p.name = "Ronda"
+  p.name = "Junior Cigano"
   p:save()
-  local record = Person.find{ name = "Ronda" }
+  local record = Person.find{ name = "Junior Cigano" }
 
   assert( p == record, string.format('%s %s', p.id, record.id) )
 end

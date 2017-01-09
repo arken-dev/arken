@@ -32,7 +32,7 @@ ActiveRecord.inherit = function(class)
       if self[params.foreign_key] == nil then
         return nil
       else
-        local  record = require(params.record)
+        local  record = Class.lookup(params.record)
         return record.find{[record.primary_key] = self[params.foreign_key]}
       end
     end
@@ -40,18 +40,14 @@ ActiveRecord.inherit = function(class)
 
   class.hasOne = function(params)
     class[params.name] = function(self)
-      if self[self.primary_key] == nil then
-        return nil
-      else
-        local  record = require(params.record)
-        return record.find{[params.foreign_key] = self[self.primary_key]}
-      end
+      local  record = Class.lookup(params.record)
+      return record.find{[params.foreign_key] = self[self.primary_key]}
     end
   end
 
   class.hasMany = function(params)
     class[params.name] = function(self)
-      local record     = require(params.record)
+      local record     = Class.lookup(params.record)
       local conditions = params.conditions or {}
       conditions[params.foreign_key] = self[record.primary_key]
       if params.order then
@@ -173,7 +169,7 @@ ActiveRecord.inherit = function(class)
   ------------------------------------------------------------------------------
   -- clear all cache
   function class.clear()
-    Adapter._cache = {}
+    Adapter.neat  = {}
     Adapter.cache = {}
   end
 
@@ -226,6 +222,9 @@ end
 -------------------------------------------------------------------------------
 
 function ActiveRecord:update()
+  if self.destroy_record then
+    error("record destroyed")
+  end
   return self.adapter():update(self)
 end
 
@@ -247,6 +246,7 @@ end
 -------------------------------------------------------------------------------
 
 function ActiveRecord:destroy()
+  self.destroy_record = true
   return self.adapter():destroy(self)
 end
 

@@ -1,5 +1,3 @@
-require 'charon.ActiveRecord.SqliteAdapter'
-
 local test   = {}
 local json   = require('charon.json')
 local Class  = require('charon.oop.Class')
@@ -27,41 +25,40 @@ test.afterAll = function()
   ActiveRecord.config = nil
 end
 
-test.should_return_record_stored = function()
+test.should_insert_in_the_database = function()
   local p = Person.new()
   p.name = "Chris Weidman"
   p:save()
 
-  local result = Person.all{ name = "Chris Weidman" }
-  assert( result[1].name == 'Chris Weidman', json.encode(result) )
+  local result
+  for row in Person.adapter():connect():execute([[ SELECT * FROM person ]]):each() do
+    result = row
+  end
+
+  assert(result.name == 'Chris Weidman', json.encode(result))
 end
 
-test.should_return_instance_by_primary_key = function()
+test.define_primary_key = function()
   local p = Person.new()
   p.name = "Chris Weidman"
   p:save()
-  local result = Person.all{ id = p.id }
-
-  assert( p == result[1], tostring(p) .. ' ' .. tostring(result) )
+  assert(p.id > 0, json.encode(result))
 end
 
-test.should_return_one_id = function()
+test.define_created_at = function()
   local p = Person.new()
-  p.name = "Junior Cigano"
+  p.name = "Chris Weidman"
   p:save()
-  local result = Person.all{ name = "Junior Cigano" }
 
-  assert( p.id == result[1].id, string.format('%i %i', p.id, result[1].id) )
+  assert(type(p.created_at) == 'string', p.created_at)
 end
 
-
-test.should_return_instance_by_other_attribute = function()
+test.define_update_at_with_the_value_of_created_at = function()
   local p = Person.new()
-  p.name = "Junior Cigano"
+  p.name = "Chris Weidman"
   p:save()
-  local result = Person.all{ name = "Junior Cigano" }
 
-  assert( p == result[1], tostring(p) .. ' ' .. tostring(result[1]) )
+  assert(p.created_at == p.updated_at, p.update_at)
 end
 
 return test

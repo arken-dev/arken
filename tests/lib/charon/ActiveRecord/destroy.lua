@@ -1,5 +1,3 @@
-require 'charon.ActiveRecord.SqliteAdapter'
-
 local test   = {}
 local json   = require('charon.json')
 local Class  = require('charon.oop.Class')
@@ -27,41 +25,40 @@ test.afterAll = function()
   ActiveRecord.config = nil
 end
 
-test.should_return_record_stored = function()
+test.should_return_nil_in_next_find = function()
+  local p = Person.new()
+  p.name = "Chris Weidman"
+  p:save()
+  p:destroy()
+
+  local record = Person.find{ name = "Chris Weidman" }
+  assert( record == nil, json.encode(record) )
+end
+
+test.should_error_if_save = function()
   local p = Person.new()
   p.name = "Chris Weidman"
   p:save()
 
-  local result = Person.all{ name = "Chris Weidman" }
-  assert( result[1].name == 'Chris Weidman', json.encode(result) )
+  p:destroy()
+
+  local status, message = p:pcall('save')
+
+  assert( status == false )
+  assert( message:contains( 'record destroyed' ), message )
 end
 
-test.should_return_instance_by_primary_key = function()
+test.should_error_if_update = function()
   local p = Person.new()
   p.name = "Chris Weidman"
   p:save()
-  local result = Person.all{ id = p.id }
 
-  assert( p == result[1], tostring(p) .. ' ' .. tostring(result) )
-end
+  p:destroy()
 
-test.should_return_one_id = function()
-  local p = Person.new()
-  p.name = "Junior Cigano"
-  p:save()
-  local result = Person.all{ name = "Junior Cigano" }
+  local status, message = p:pcall('update')
 
-  assert( p.id == result[1].id, string.format('%i %i', p.id, result[1].id) )
-end
-
-
-test.should_return_instance_by_other_attribute = function()
-  local p = Person.new()
-  p.name = "Junior Cigano"
-  p:save()
-  local result = Person.all{ name = "Junior Cigano" }
-
-  assert( p == result[1], tostring(p) .. ' ' .. tostring(result[1]) )
+  assert( status == false )
+  assert( message:contains( 'record destroyed' ), message )
 end
 
 return test

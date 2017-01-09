@@ -10,6 +10,8 @@ ActiveRecord_Adapter = Class.new("ActiveRecord_Adapter")
 ActiveRecord_Adapter.reserved = {'new_record', 'class', 'errors'}
 
 ActiveRecord_Adapter.errors = {}
+ActiveRecord_Adapter.cache  = {}
+ActiveRecord_Adapter.neat   = {}
 
 -------------------------------------------------------------------------------
 -- FORMAT
@@ -185,8 +187,9 @@ end
 
 function ActiveRecord_Adapter:destroy(record)
   local values = {[self.primary_key] = record[self.primary_key]}
-  local sql = 'DELETE FROM ' .. self.table_name .. " " .. self:where(values)
+  local sql    = "DELETE FROM " .. self.table_name .. " " .. self:where(values)
   local result = self:execute(sql)
+  self.cache[record:cacheKey()] = false
   return result
 end
 
@@ -227,7 +230,16 @@ end
 --------------------------------------------------------------------------------
 
 function ActiveRecord_Adapter:find(params)
-  error('find not implemeted')
+
+  if params[self.primary_key] then
+    local key = self.table_name .. '_' .. tostring(params[self.primary_key])
+    if ActiveRecord_Adapter.cache[key] then
+      return ActiveRecord_Adapter.cache[key]
+    end
+  end
+
+  local sql  = self:select(params, true)
+  return self:fetch(sql)
 end
 
 --------------------------------------------------------------------------------
@@ -235,7 +247,14 @@ end
 --------------------------------------------------------------------------------
 
 function ActiveRecord_Adapter:all(params)
-  error('all not implemeted')
+  local sql    = self:select(params)
+  local cursor = self:execute(sql)
+  local result = {}
+  for row in cursor:each() do
+    table.insert(result, self:parser_fetch(row))
+  end
+  cursor:close()
+  return result
 end
 
 --------------------------------------------------------------------------------
@@ -260,7 +279,17 @@ end
 --------------------------------------------------------------------------------
 
 function ActiveRecord_Adapter:execute(sql)
-  error('not implemeted')
+  local time = os.microtime()
+  local cursor, errmsg = self:connect():execute(sql)
+  if errmsg ~= nil then
+    error(string.format("error %s, sql %s", errmsg, sql))
+  end
+  time = os.microtime() - time
+  if ActiveRecord.debug then
+    print(sql .. string.format(" (%.3f) secs", time))
+  end
+  ActiveRecord.time = ActiveRecord.time + time
+  return cursor
 end
 
 --------------------------------------------------------------------------------
@@ -268,7 +297,54 @@ end
 --------------------------------------------------------------------------------
 
 function ActiveRecord_Adapter:query(sql)
-  error('not implemeted')
+  local time   = os.microtime()
+  local cursor = self:execute(sql)
+  time = os.microtime() - time
+  if ActiveRecord.debug then
+    --print(sql .. string.format(" (%.3f) secs", time))
+  end
+  ActiveRecord.time = ActiveRecord.time + time
+  return cursor
+end
+
+--------------------------------------------------------------------------------
+-- FETCH
+--------------------------------------------------------------------------------
+
+function ActiveRecord_Adapter:fetch(sql)
+  local cursor = self:execute(sql)
+  local result = cursor:fetch({}, 'a')
+  cursor:close()
+  if result == nil then
+    return nil
+  else
+    return self:parser_fetch(result)
+  end
+end
+
+-------------------------------------------------------------------------------
+-- PARSER FETCH
+-------------------------------------------------------------------------------
+
+function ActiveRecord_Adapter:parser_fetch(res)
+  local key  = self.table_name .. '_' .. tostring(res[self.primary_key])
+
+  if ActiveRecord_Adapter.cache[key] then
+    return ActiveRecord_Adapter.cache[key]
+  else
+    local neat = {}
+
+    res.new_record = false
+    for column, properties in pairs(self:columns()) do
+      res[column]  = self:parser_value(properties.format, res[column])
+      neat[column] = res[column]
+    end
+
+    ActiveRecord_Adapter.neat[key]  = neat
+    ActiveRecord_Adapter.cache[key] = res
+
+    return self.record_class.new(res)
+  end
 end
 
 --------------------------------------------------------------------------------
@@ -276,15 +352,17 @@ end
 --------------------------------------------------------------------------------
 
 function ActiveRecord_Adapter:begin()
-  error('not implemeted')
+  return self:execute("BEGIN")
 end
 
 --------------------------------------------------------------------------------
--- ROOLBACK
+-- ROLLBACK
 --------------------------------------------------------------------------------
 
 function ActiveRecord_Adapter:rollback()
-  error('not implemeted')
+  ActiveRecord_Adapter.errors = {}
+  ActiveRecord_Adapter.cache  = {}
+  return self:execute("ROLLBACK")
 end
 
 --------------------------------------------------------------------------------
@@ -292,16 +370,21 @@ end
 --------------------------------------------------------------------------------
 
 function ActiveRecord_Adapter:commit()
-  error('not implemeted')
+  ActiveRecord_Adapter.errors = {}
+  ActiveRecord_Adapter.cache  = {}
+  return self:execute("COMMIT")
 end
-
 
 --------------------------------------------------------------------------------
 -- POPULATE
 --------------------------------------------------------------------------------
 
-function ActiveRecord_Adapter:populate()
-  error('not implemeted')
+function ActiveRecord_Adapter:populate(record, params)
+  for column, properties in pairs(self:columns()) do
+    if params[column] then
+      record[column] = self:parser_value(properties.format, params[column])
+    end
+  end
 end
 
 --------------------------------------------------------------------------------
@@ -429,6 +512,171 @@ end
 
 function ActiveRecord_Adapter:prepareMigration()
   error("prepare migrations not implemented")
+end
+
+--------------------------------------------------------------------------------
+-- SET
+--------------------------------------------------------------------------------
+
+function ActiveRecord_Adapter:set(record, column, value)
+  local properties = self:columns()[column]
+  record[column] = self:parser_value(properties.format, value)
+end
+
+--------------------------------------------------------------------------------
+-- READ
+--------------------------------------------------------------------------------
+
+function ActiveRecord_Adapter:read(record, column)
+  local value = record[column]
+  column = self:columns()[column]
+  if value == nil or column == nil then
+    return nil
+  else
+    return self:read_value(column.format, value)
+  end
+end
+
+function ActiveRecord_Adapter:read_value(format, value)
+  if format == nil or value == nil then
+    return nil
+  else
+    return self['read_value_' .. format](value)
+  end
+end
+
+function ActiveRecord_Adapter.read_value_string(value)
+  return value
+end
+
+function ActiveRecord_Adapter.read_value_time(value)
+  return value
+end
+
+function ActiveRecord_Adapter.read_value_timestamp(value)
+  return value:toDateTime()
+end
+
+function ActiveRecord_Adapter.read_value_date(value)
+  return value
+end
+
+function ActiveRecord_Adapter.read_value_number(value)
+  if tostring(value):contains(',') then
+    return tonumber(value:replaceChars('.', ''):replaceChars(',', '.'))
+  else
+    return tonumber(value)
+  end
+end
+
+function ActiveRecord_Adapter.read_value_boolean(value)
+  return toboolean(value)
+end
+
+function ActiveRecord_Adapter.read_value_boolean(value)
+  return toboolean(value)
+end
+
+function ActiveRecord_Adapter.read_value_table(value)
+  return table.concat(value, ',')
+end
+
+
+--------------------------------------------------------------------------------
+-- GET
+--------------------------------------------------------------------------------
+
+function ActiveRecord_Adapter:get(record, column, default)
+  local value = record[column]
+  column = self:columns()[column]
+  if value == nil or column == nil then
+    return default
+  else
+    return self:read_value(column.format, value) or default
+  end
+end
+
+--------------------------------------------------------------------------------
+-- COUNT
+--------------------------------------------------------------------------------
+
+function ActiveRecord_Adapter:count(params)
+  local sql    = "SELECT COUNT(*) count_all FROM " .. self.table_name .. " " .. self:where(params)
+  local cursor = self:execute(sql)
+  local res    = cursor:fetch({}, 'a')
+  cursor:close()
+  return tonumber(res.count_all)
+end
+
+-------------------------------------------------------------------------------
+-- CHANGES
+-------------------------------------------------------------------------------
+
+function ActiveRecord_Adapter:changes(record)
+  local changes = {}
+  local key     = record:cacheKey()
+  local neat    = ActiveRecord_Adapter.neat[key] or {}
+
+  for column, properties in pairs(self:columns()) do
+    if record[column] ~= neat[column] then
+      changes[column] = { neat[column], record[column] }
+    end
+  end
+
+  return changes
+end
+
+-------------------------------------------------------------------------------
+-- PARSER VALUE
+-------------------------------------------------------------------------------
+
+function ActiveRecord_Adapter:parser_value(format, value)
+  if format == nil or value == nil then
+    return nil
+  else
+    return self['parser_value_' .. format](value)
+  end
+end
+
+function ActiveRecord_Adapter.parser_value_string(value)
+  return value
+end
+
+function ActiveRecord_Adapter.parser_value_time(value)
+  if value == '' then
+    return nil
+  else
+    return value
+  end
+end
+
+function ActiveRecord_Adapter.parser_value_date(value)
+  if value == '' then
+    return nil
+  else
+    return value
+  end
+end
+
+function ActiveRecord_Adapter.parser_value_number(value)
+  value = tostring(value)
+  if value:contains(',') then
+    return tonumber(value:replaceChars('.', ''):replaceChars(',', '.'))
+  else
+    return tonumber(value)
+  end
+end
+
+function ActiveRecord_Adapter.parser_value_boolean(value)
+  return toboolean(value)
+end
+
+function ActiveRecord_Adapter.parser_value_timestamp(value)
+  if value == '' then
+    return nil
+  else
+    return value
+  end
 end
 
 return ActiveRecord_Adapter

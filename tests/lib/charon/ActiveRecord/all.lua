@@ -1,5 +1,3 @@
-require 'charon.ActiveRecord.SqliteAdapter'
-
 local test   = {}
 local json   = require('charon.json')
 local Class  = require('charon.oop.Class')

@@ -1,0 +1,20 @@
+{
+  "development" : {
+    "adapter"  : "ActiveRecord.MysqlAdapter",
+    "host"     : "localhost",
+    "database" : "test",
+    "user"     : "root",
+    "password" : ""
+  },
+  "production" : {
+    "adapter"  : "ActiveRecord.PostgresAdapter",
+    "host"     : "localhost",
+    "database" : "mydatabase",
+    "user"     : "postgres",
+    "password" : "mypassword"
+  },
+  "test" : {
+    "adapter"  : "ActiveRecord.SqliteAdapter",
+    "database" : ":memory:"
+  }
+}

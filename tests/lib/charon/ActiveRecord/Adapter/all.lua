@@ -1,4 +1,4 @@
-require 'charon.ActiveRecord.SqliteAdapter'
+require 'charon.ActiveRecord.Adapter'
 
 local test   = {}
 local json   = require('charon.json')
