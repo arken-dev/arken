@@ -194,9 +194,9 @@ static int cur_iter(lua_State *L) {
 }
 
 static int cur_at(lua_State *L) {
-	cur_data *cur  = getcursor(L);
+	cur_data *cur = getcursor(L);
 	PGresult *res = cur->pg_res;
-	int tuple = cur->curr_tuple;
+	int tuple = luaL_checkint(L, 2) - 1;
 
 	if (tuple >= PQntuples(cur->pg_res)) {
 		cur_nullify (L, cur);
@@ -204,7 +204,6 @@ static int cur_at(lua_State *L) {
 		return 1;
 	}
 
-	cur->curr_tuple++;
 	int i;
 	lua_createtable(L, 0, cur->numcols);
 	for (i = 1; i <= cur->numcols; i++) {
