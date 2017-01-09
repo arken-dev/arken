@@ -3,6 +3,12 @@
 ######################################################################
 
 TEMPLATE = subdirs
-SUBDIRS = lsqlite3 json
+SUBDIRS = lsqlite3 \
+          json \
+          luasql/sqlite3
+
+
 linux:SUBDIRS += pgsql \
-                 mysql
+                 mysql \
+                 luasql/mysql \
+                 luasql/postgres
