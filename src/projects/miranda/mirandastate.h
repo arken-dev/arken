@@ -33,7 +33,7 @@ public:
   static MirandaState * takeFirst();
   static void push(MirandaState *);
   static void reload();
-  static void clear();
+  static int  clear();
   static int  version();
   static int  gc();
   static void insert(const char * key, const char * value);
