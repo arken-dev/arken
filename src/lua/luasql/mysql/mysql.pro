@@ -15,7 +15,7 @@ TARGET = mysql
 
 DESTDIR = ../../../../clib/luasql
 
-LIBS += -L /home/ariveira/projetos/charon/deps -llua -lm -lmysqlclient -ldl
+LIBS += -L ../../../../deps -llua -lm -lmysqlclient -ldl
 
 # Input
 SOURCES += ls_mysql.c \

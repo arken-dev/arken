@@ -16,7 +16,7 @@ TARGET = sqlite3
 
 DESTDIR = ../../../../clib/luasql
 
-LIBS += -L /home/ariveira/projetos/charon/deps -llua
+LIBS += -L ../../../../deps -llua
 
 # Input
 SOURCES += ls_sqlite3.c \

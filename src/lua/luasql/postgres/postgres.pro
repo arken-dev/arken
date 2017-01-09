@@ -15,7 +15,7 @@ TARGET = postgres
 
 DESTDIR = ../../../../clib/luasql
 
-LIBS += -L /home/ariveira/projetos/charon/deps -llua -lpq
+LIBS += -L ../../../../deps -llua -lpq
 
 # Input
 SOURCES += ls_postgres.c \
