@@ -3,6 +3,7 @@
 -- Use of this source code is governed by a BSD-style
 -- license that can be found in the LICENSE file.
 
+local Array = require('charon.Array')
 local Class = require('charon.oop.Class')
 
 ActiveRecord_Adapter = Class.new("ActiveRecord_Adapter")
@@ -249,7 +250,7 @@ end
 function ActiveRecord_Adapter:all(params)
   local sql    = self:select(params)
   local cursor = self:execute(sql)
-  local result = {}
+  local result = Array.new()
   for row in cursor:each() do
     table.insert(result, self:parser_fetch(row))
   end
