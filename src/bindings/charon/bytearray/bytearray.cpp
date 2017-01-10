@@ -204,6 +204,22 @@ lua_ByteArrayInstanceMethodRight( lua_State *L ) {
   return 1;
 }
 
+static int
+lua_ByteArrayInstanceMethodResize( lua_State *L ) {
+  ByteArray *udata  = checkByteArray( L );
+  int len =  luaL_checkinteger(L, 2);
+  udata->resize(len);
+  return 0;
+}
+
+static int
+lua_ByteArrayInstanceMethodSqueeze( lua_State *L ) {
+  ByteArray *udata  = checkByteArray( L );
+  udata->squeeze();
+  return 0;
+}
+
+
 static const
 luaL_reg ByteArrayInstanceMethods[] = {
   {"camelcase", lua_ByteArrayInstanceMethodCamelcase},
@@ -222,6 +238,8 @@ luaL_reg ByteArrayInstanceMethods[] = {
   {"replace",   lua_ByteArrayInstanceMethodReplace},
   {"reduce", lua_ByteArrayInstanceMethodSimplified},
   {"underscore", lua_ByteArrayInstanceMethodUnderscore},
+  {"resize", lua_ByteArrayInstanceMethodResize},
+  {"squeeze", lua_ByteArrayInstanceMethodSqueeze},
   {"__concat", lua_ByteArrayInstanceMethodConcat},
   {"__tostring", lua_ByteArrayInstanceMethodToString},
   {"__gc", lua_ByteArrayInstanceMethodDestruct},
