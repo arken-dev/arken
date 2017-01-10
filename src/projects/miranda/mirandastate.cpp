@@ -200,9 +200,12 @@ MirandaState * MirandaState::takeFirst()
 
 void MirandaState::push(MirandaState * state)
 {
-
-  QMutexLocker ml(&s_mutex);
-  s_stack->push(state);
+  if( s_version != state->m_version ) {
+      delete state;
+  } else {
+    QMutexLocker ml(&s_mutex);
+    s_stack->push(state);
+  }
 }
 
 void MirandaState::reload()
