@@ -156,6 +156,7 @@ int MirandaState::gc()
   while( state->m_gc != s_gc ) {
     lua_gc(state->instance(), LUA_GCCOLLECT, 0);
     state->m_gc = s_gc;
+
     push(state);
     i++;
 
@@ -199,6 +200,7 @@ MirandaState * MirandaState::takeFirst()
 
 void MirandaState::push(MirandaState * state)
 {
+
   QMutexLocker ml(&s_mutex);
   s_stack->push(state);
 }
@@ -224,13 +226,16 @@ void MirandaState::servicesReload()
 
 }
 
-void MirandaState::clear()
+int MirandaState::clear()
 {
+  int result = 0;
   QMutexLocker ml(&s_mutex);
   s_version++;
   while( !s_stack->isEmpty() ) {
+    result++;
     delete s_stack->pop();
   }
+  return result;
 }
 
 lua_State * MirandaState::instance()

@@ -30,10 +30,11 @@ miranda_server_reload(lua_State *) {
 }
 
 static int
-miranda_server_clear(lua_State *) {
-  MirandaState::clear();
+miranda_server_clear(lua_State *L) {
+  int result = MirandaState::clear();
   qDebug() << "clear: " << MirandaState::version() ;
-  return 0;
+  lua_pushnumber(L, result);
+  return 1;
 }
 
 static int
