@@ -5,11 +5,13 @@
 
 #include <lua/lua.hpp>
 #include <charon/helper>
+#include <charon/net/httpbody.h>
 #include "mirandatask.h"
 #include <iostream>
 #include <QThread>
 #include <QMutex>
 
+using charon::net::HttpBody;
 using charon::net::HttpParser;
 
 MirandaTask::MirandaTask(qintptr descriptor)
@@ -117,13 +119,23 @@ void MirandaTask::processRequest(MirandaState * state, QByteArray &buffer)
      if( code < 0 ) {
         code = 500;
         result = luaL_checklstring( L , -1, &len );
+        buffer.append(result, len);
       } else {
-        result = luaL_checklstring( L, 3, &len );
-        buffer.append("Content-Length:");
-        buffer.append(QByteArray::number((int)len, 10));
-        buffer.append("\r\n\r\n");
+        if( lua_isuserdata( L, 3 ) ) {
+          HttpBody * body = *(HttpBody **) lua_touserdata(L, 3);
+          buffer.append("Content-Length:");
+          buffer.append(QByteArray::number((int)body->size(), 10));
+          buffer.append("\r\n\r\n");
+          buffer.append(body->read(), body->size());
+          body->release();
+        } else {
+          result = luaL_checklstring( L, 3, &len );
+          buffer.append("Content-Length:");
+          buffer.append(QByteArray::number((int)len, 10));
+          buffer.append("\r\n\r\n");
+          buffer.append(result, len);
+        }
       }
-      buffer.append(result, len);
     } else {
       buffer.append("\r\n");
     }

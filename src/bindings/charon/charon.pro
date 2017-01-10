@@ -9,6 +9,7 @@ SUBDIRS = base           \
           bytearraylist  \
           digest         \
           http           \
+          net/httpbody   \
           net/httpclient \
           net/httpparser \
           odebug         \

@@ -18,6 +18,7 @@ DESTDIR = ../../deps
 SOURCES += base/math.cpp       \
            base/os.cpp         \
            base/string.cpp     \
+           net/httpbody.cpp    \
            net/httpclient.cpp  \
            net/httpparser.cpp  \
            base64.cpp          \
