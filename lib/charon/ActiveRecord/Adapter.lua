@@ -13,6 +13,7 @@ ActiveRecord_Adapter.reserved = {'new_record', 'class', 'errors'}
 ActiveRecord_Adapter.errors = {}
 ActiveRecord_Adapter.cache  = {}
 ActiveRecord_Adapter.neat   = {}
+ActiveRecord_Adapter.cursor = {}
 
 -------------------------------------------------------------------------------
 -- FORMAT
@@ -305,6 +306,7 @@ function ActiveRecord_Adapter:query(sql)
     --print(sql .. string.format(" (%.3f) secs", time))
   end
   ActiveRecord.time = ActiveRecord.time + time
+  table.insert(ActiveRecord_Adapter.cursor, cursor)
   return cursor
 end
 

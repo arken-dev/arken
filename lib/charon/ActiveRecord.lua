@@ -171,6 +171,10 @@ ActiveRecord.inherit = function(class)
   function class.clear()
     Adapter.neat  = {}
     Adapter.cache = {}
+    for _, cursor in ipairs(Adapter.cursor) do
+      cursor:close()
+    end
+    Adapter.cursor = {}
   end
 
   ------------------------------------------------------------------------------
