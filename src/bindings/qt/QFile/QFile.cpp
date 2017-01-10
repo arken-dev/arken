@@ -303,14 +303,17 @@ lua_QFileInstanceMethodWrite( lua_State *L ) {
   QFile *file;
   qint64 size;
   size_t length;
-  const char * buffer;
 
   file = checkQFile( L );
-  buffer = luaL_checklstring(L, 2, &length);
-
-  size = file->write(buffer, length);
-
-  lua_pushnumber( L , size );
+  if( lua_isuserdata(L, 2) ) {
+    QByteArray * buffer = *(QByteArray**) lua_touserdata(L, 2);
+    size = file->write(*buffer);
+    lua_pushnumber( L , size );
+  } else {
+    const char * buffer = luaL_checklstring(L, 2, &length);
+    size = file->write(buffer, length);
+    lua_pushnumber( L , size );
+  }
   return 1;
 }
 
