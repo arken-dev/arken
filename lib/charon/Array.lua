@@ -1,3 +1,4 @@
+local Class = require('charon.oop.Class')
 local Array = Class.new("Array")
 
 function Array:at(i)

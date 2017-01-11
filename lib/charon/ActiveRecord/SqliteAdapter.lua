@@ -12,13 +12,6 @@ local Adapter   = require('charon.ActiveRecord.Adapter')
 ActiveRecord_SqliteAdapter = Class.new("ActiveRecord.SqliteAdapter", Adapter)
 
 ------------------------------------------------------------------------------
--- CACHE
--------------------------------------------------------------------------------
-
-ActiveRecord_SqliteAdapter.cache = {}
-ActiveRecord_SqliteAdapter.neat  = {}
-
-------------------------------------------------------------------------------
 -- CONNECT
 -------------------------------------------------------------------------------
 

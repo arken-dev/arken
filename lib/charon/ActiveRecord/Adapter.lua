@@ -26,7 +26,7 @@ format.boolean = function(value)
 end
 
 format.number = function(value)
-  return tostring(value):replaceChars('.', ''):replaceChars(',', '.')
+  return tostring(value) --:replaceChars('.', ''):replaceChars(',', '.')
 end
 
 format.string = function(value)
@@ -34,7 +34,14 @@ format.string = function(value)
 end
 
 format.table = function(value)
-  return table.concat(value, ',')
+  local result =  ''
+  for _, v in ipairs(value) do
+    if result:len() > 0 then
+      result = result .. ','
+    end
+    result = result .. format[type(v)](v)
+  end
+  return result
 end
 
 format.userdata = function(value)
@@ -195,14 +202,6 @@ function ActiveRecord_Adapter:destroy(record)
   return result
 end
 
--------------------------------------------------------------------------------
--- COUNT
--------------------------------------------------------------------------------
-
-function ActiveRecord_Adapter:count()
-  error("count not implemented")
-end
-
 --------------------------------------------------------------------------------
 -- INSERT
 --------------------------------------------------------------------------------
@@ -267,14 +266,6 @@ function ActiveRecord_Adapter:columns(sql)
   error('not implemeted')
 end
 
-
---------------------------------------------------------------------------------
--- LAST_ID
---------------------------------------------------------------------------------
-
-function ActiveRecord_Adapter:lastid()
-  error('not implemeted')
-end
 
 --------------------------------------------------------------------------------
 -- EXECUTE
@@ -375,6 +366,7 @@ end
 function ActiveRecord_Adapter:commit()
   ActiveRecord_Adapter.errors = {}
   ActiveRecord_Adapter.cache  = {}
+  ActiveRecord_Adapter.neat   = {}
   return self:execute("COMMIT")
 end
 
@@ -541,11 +533,7 @@ function ActiveRecord_Adapter:read(record, column)
 end
 
 function ActiveRecord_Adapter:read_value(format, value)
-  if format == nil or value == nil then
-    return nil
-  else
-    return self['read_value_' .. format](value)
-  end
+  return self['read_value_' .. format](value)
 end
 
 function ActiveRecord_Adapter.read_value_string(value)
@@ -557,7 +545,7 @@ function ActiveRecord_Adapter.read_value_time(value)
 end
 
 function ActiveRecord_Adapter.read_value_timestamp(value)
-  return value:toDateTime()
+  return value
 end
 
 function ActiveRecord_Adapter.read_value_date(value)
@@ -583,7 +571,6 @@ end
 function ActiveRecord_Adapter.read_value_table(value)
   return table.concat(value, ',')
 end
-
 
 --------------------------------------------------------------------------------
 -- GET
