@@ -8,7 +8,7 @@ local Class = require('charon.oop.Class')
 
 ActiveRecord_Adapter = Class.new("ActiveRecord_Adapter")
 
-ActiveRecord_Adapter.reserved = {'new_record', 'class', 'errors'}
+ActiveRecord_Adapter.reserved = {'new_record', 'class', 'errors', 'join', 'binding', 'order', 'limit'}
 
 ActiveRecord_Adapter.errors = {}
 ActiveRecord_Adapter.cache  = {}
@@ -130,18 +130,19 @@ function ActiveRecord_Adapter:where(values, flag)
   local join   = values.join
   local order  = values.order
   local limit  = values.limit
-
+--[[
   values.join    = nil
   values.binding = nil
   values.order   = nil
   values.limit   = nil
+]]
 
   if type(join) == 'table' then
     local tmp = join[1]
     for index, value in pairs(join) do
       tmp = string.replaceAll(tmp, '$' .. index, format[type(value)](value))
     end
-  join = tmp
+    join = tmp
   end
 
   if values.where then
@@ -275,7 +276,7 @@ function ActiveRecord_Adapter:execute(sql)
   local time = os.microtime()
   local cursor, errmsg = self:connect():execute(sql)
   if errmsg ~= nil then
-    error(string.format("error %s, sql %s", errmsg, sql))
+    error(string.format("error %s, tracekback %s, sql %s", errmsg, debug.traceback(), sql))
   end
   time = os.microtime() - time
   if ActiveRecord.debug then
