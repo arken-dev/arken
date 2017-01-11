@@ -85,7 +85,7 @@ test.should_return_where_and_2_parameters = function()
   local created_at = '2010/03/01'
   local customer_id = 1500
   local where      = adapter:where{ customer_id = customer_id, created_at = created_at }
-  assert( where == " WHERE customer_id = 1500 AND created_at = '2010/03/01'", where )
+  assert( where == " WHERE created_at = '2010/03/01' AND customer_id = 1500", where )
 end
 
 test.should_error_if_values_emptys_and_flag_true = function()

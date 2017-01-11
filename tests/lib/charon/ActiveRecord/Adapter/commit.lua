@@ -46,7 +46,7 @@ end
 test.should_error_if_not_begin = function()
   local status, message = pcall(ActiveRecord.commit)
   assert(status == false)
-  assert(message:contains('cannot commit - no transaction is active, sql COMMIT'), message)
+  assert(message:contains('cannot commit - no transaction is active'), message)
 end
 
 return test

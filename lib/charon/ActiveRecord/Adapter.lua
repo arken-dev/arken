@@ -8,7 +8,10 @@ local Class = require('charon.oop.Class')
 
 ActiveRecord_Adapter = Class.new("ActiveRecord_Adapter")
 
-ActiveRecord_Adapter.reserved = {'new_record', 'class', 'errors', 'join', 'binding', 'order', 'limit'}
+ActiveRecord_Adapter.reserved = {
+  new_record = true, class = true, errors = true, join = true,
+  binding = true, order = true, limit = true
+}
 
 ActiveRecord_Adapter.errors = {}
 ActiveRecord_Adapter.cache  = {}
@@ -107,16 +110,11 @@ function ActiveRecord_Adapter:escape(value)
 end
 
 --------------------------------------------------------------------------------
--- isReserved
---------------------------------------------------------------------------------
+--- isReserved
+---------------------------------------------------------------------------------
 
 function ActiveRecord_Adapter:isReserved(column)
-  for _, value in ipairs(ActiveRecord_Adapter.reserved) do
-    if value == column then
-      return true
-    end
-  end
-  return false
+  return ActiveRecord_Adapter.reserved[column]
 end
 
 --------------------------------------------------------------------------------
@@ -156,7 +154,7 @@ function ActiveRecord_Adapter:where(values, flag)
     end
   else
     for index, value in pairs(values) do
-      if ActiveRecord_Adapter.reserved[index] == nil then
+      if not ActiveRecord_Adapter.reserved[index] then
         if #col > 0 then
           col = col .. ' AND '
         end
