@@ -129,7 +129,7 @@ function Controller:render_html(params)
     file = self.prefixViews .. "/" .. params.template .. ".html"
   end
 
-  if self.layout then
+  if self.layout and not params.layout == false then
     local flag, result
     if params.value then
       flag   = true
