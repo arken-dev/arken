@@ -7,7 +7,6 @@
 #include "mirandacache.h"
 #include <QDebug>
 #include <QStack>
-#include <QReadWriteLock>
 
 using charon::ByteArray;
 
@@ -253,18 +252,15 @@ int MirandaState::version()
 
 const char * MirandaState::value(const char * key)
 {
-  lock.lockForRead();
+  QMutexLocker ml(&s_mutex);
   MirandaCache * cache = s_cache->value(key, 0);
-  lock.unlock();
 
   if( cache == 0 ) {
     return 0;
   }
 
   if ( cache->isExpires() ) {
-    lock.lockForWrite();
     s_cache->remove(key);
-    lock.unlock();
     return 0;
   } else {
     return cache->data();
@@ -279,14 +275,12 @@ void MirandaState::insert(const char * key, const char * value)
 
 void MirandaState::insert(const char * key, const char * value, int expires)
 {
-  lock.lockForWrite();
+  QMutexLocker ml(&s_mutex);
   s_cache->insert(key, new MirandaCache(value, expires));
-  lock.unlock();
 }
 
 int MirandaState::remove(const char * key)
 {
-  lock.lockForWrite();
+  QMutexLocker ml(&s_mutex);
   return s_cache->remove(key);
-  lock.unlock();
 }
