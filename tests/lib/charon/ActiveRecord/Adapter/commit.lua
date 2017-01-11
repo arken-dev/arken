@@ -13,7 +13,7 @@ test.should_execute_commit_after_begin = function()
   local adapter = ActiveRecord.loadAdapter()
   adapter:begin()
   local value = adapter:commit()
-  assert(value == 0, value)
+  assert(type(value) == 'number', value)
 end
 
 test.should_clear_errors = function()
