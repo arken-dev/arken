@@ -37,7 +37,7 @@ test.should_return_controller_name_and_layout = function()
   local status, headers, body = c:render({ output = 'html' })
   assert( status == 200, status )
   assert( headers[1] == 'Content-Type: text/html', headers[1] )
-  assert( body == "<html><body>teste<br><h3>Order</h3></body></html>", body )
+  assert( body == "<html><body>teste<br><h3>Order</h3></body></html>", body:escapeHtml() )
 end
 
 test.should_return_value_and_layout = function()
