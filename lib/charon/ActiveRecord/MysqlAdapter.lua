@@ -259,14 +259,14 @@ end
 -------------------------------------------------------------------------------
 
 function ActiveRecord_MysqlAdapter:tableExists(table_name)
-  local sql  = string.format("pragma table_info(%s)", table_name)
-  local flag = false
-
-  for row in self:connect():query(sql) do
-    flag = true
+  local sql    = string.format("SHOW TABLES LIKE '%s'", table_name)
+  local cursor = self:execute(sql)
+  local result = false
+  if type(cursor) == 'userdata' then
+    result = cursor:fetch({}, 'a') ~= nil
+    cursor:close()
   end
-
-  return flag
+  return result
 end
 
 -------------------------------------------------------------------------------
@@ -280,13 +280,13 @@ function ActiveRecord_MysqlAdapter:prepareMigration()
     ]])
   end
 
-  local list = {}
-  local sql  = "SELECT version FROM schema_migration"
-
-  for row in self:query(sql) do
-    table.insert(list, row.version)
+  local list   = {}
+  local sql    = "SELECT version FROM schema_migration"
+  local cursor = self:execute(sql)
+  for row in cursor:each() do
+    list[row.version] = true
   end
-
+  cursor:close()
   return list
 end
 
