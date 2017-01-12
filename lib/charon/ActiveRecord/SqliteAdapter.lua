@@ -257,11 +257,14 @@ function ActiveRecord_SqliteAdapter:prepareMigration()
     ]])
   end
 
-  local list = {}
-  local sql  = "SELECT version FROM schema_migration"
+  local list   = {}
+  local sql    = "SELECT version FROM schema_migration"
   local cursor = self:execute(sql)
-  local result = cursor:fetch({}, 'a')
-  error(require('json').encode(result))
+  for row in cursor:each() do
+    list[row.version] = true
+  end
+  cursor:close()
+  return list
 end
 
 return ActiveRecord_SqliteAdapter
