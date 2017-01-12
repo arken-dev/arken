@@ -22,7 +22,9 @@ function ActiveRecord_MysqlAdapter:connect()
   if ActiveRecord_MysqlAdapter.instanceConnection == nil then
     local env  = mysql.mysql()
     local password = self.password or ''
-    ActiveRecord_MysqlAdapter.instanceConnection, errmsg = env:connect(self.database, self.user, password, self.host)
+    ActiveRecord_MysqlAdapter.instanceConnection, errmsg = env:connect(
+      self.database, self.user, password, self.host
+    )
     if errmsg ~= nil then
       error(string.format("connect to mysql error: %s\n", errmsg))
     end
