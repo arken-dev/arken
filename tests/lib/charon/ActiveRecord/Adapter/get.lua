@@ -33,11 +33,19 @@ test.should_return_converterd_value = function()
   assert( p:get('total') == 123.45 )
 end
 
-test.should_return_default_value = function()
+test.should_return_default_value_with_failed_conversion = function()
   local p = Person.new()
   p.name = "Chris Weidman"
   p.total = "123.45abc"
   assert( p.total == '123.45abc' )
+  assert( p:get('total', 0.50) == 0.50 )
+end
+
+test.should_return_default_value_with_nil = function()
+  local p = Person.new()
+  p.name = "Chris Weidman"
+  p.total = nil
+  assert( p.total == nil )
   assert( p:get('total', 0.50) == 0.50 )
 end
 
