@@ -113,5 +113,4 @@ test.should_validate_length_max = function()
   assert( #person.errors == 0 )
 end
 
-
 return test
