@@ -200,28 +200,12 @@ function ActiveRecord_SqliteAdapter:parser_format(format_type)
     return 'number'
   end
 
-  if format_type == 'numeric' then
-    return 'number'
-  end
-
-  if format_type == 'smallint' then
-    return 'number'
-  end
-
-  if format_type == 'int' then
+  if format_type == 'float' then
     return 'number'
   end
 
   if format_type == 'integer' then
     return 'number'
-  end
-
-  if format_type == 'bigint' then
-    return 'number'
-  end
-
-  if format_type == '' then
-    return 'string'
   end
 
   if format_type == 'text' then
@@ -232,20 +216,8 @@ function ActiveRecord_SqliteAdapter:parser_format(format_type)
     return 'boolean'
   end
 
-  if format_type == 'boolean' then
-    return 'boolean'
-  end
-
   if format_type == 'date' then
     return 'date'
-  end
-
-  if format_type == 'bytea' then
-    return 'bytea'
-  end
-
-  if format_type == 'tsvector' then
-    return 'string'
   end
 
   error('format_type: ' .. format_type ..' not resolved')
