@@ -63,20 +63,6 @@ function ActiveRecord_MysqlAdapter:insert(record)
     end
   end
 
-  if col:len() == 0 then
-    for column, properties in pairs(self:columns(table)) do
-      if column ~= self.primary_key then
-        if col:len() > 0 then
-          col = col .. ', '
-        end
-        if val:len() > 0 then
-          val = val .. ', '
-        end
-        col = col .. column
-        val = val .. ' NULL '
-      end
-    end
-  end
   return sql ..  '(' .. col .. ') VALUES (' .. val .. ') '
 end
 
