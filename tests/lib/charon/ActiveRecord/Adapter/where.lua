@@ -97,4 +97,42 @@ test.should_error_if_values_emptys_and_flag_true = function()
   assert( message:contains("parameters for find empty") == true, message )
 end
 
+test.should_return_where_with_boolean_value = function()
+  local adapter = Adapter.new()
+  local cancel  = true
+  local where   = adapter:where{ cancel = cancel }
+  assert( where == " WHERE cancel = 'true'", where )
+end
+
+test.should_return_where_with_NULL = function()
+  local adapter = Adapter.new()
+  local flag    = 'NULL'
+  local where   = adapter:where{ flag = flag }
+  assert( where == " WHERE flag IS NULL", where )
+end
+
+test.should_return_where_with_NOT_NULL = function()
+  local adapter = Adapter.new()
+  local flag    = 'NOT NULL'
+  local where   = adapter:where{ flag = flag }
+  assert( where == " WHERE flag IS NOT NULL", where )
+end
+
+test.should_return_where_with_userdata = function()
+  local QDateTime = require('QDateTime')
+  local adapter   = Adapter.new()
+  local date      = QDateTime.currentDateTime()
+  local where     = adapter:where{ date = date }
+  local result    = string.format(" WHERE date = '%s'", date:__tostring())
+  assert( where == result, where )
+end
+
+test.should_return_where_with_table = function()
+  local adapter   = Adapter.new()
+  local values    = {12, 29, 33}
+  local where     = adapter:where{ id = values }
+  local result    = ' WHERE id IN (12,29,33)'
+  assert( where == result, where )
+end
+
 return test

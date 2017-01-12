@@ -74,11 +74,11 @@ ActiveRecord_Adapter.finders['number'] = function(value)
 end
 
 ActiveRecord_Adapter.finders['table'] = function(value)
-  return " = '".. value['__finder'](value) .. "'"
+  return " IN (".. format['table'](value) .. ")"
 end
 
 ActiveRecord_Adapter.finders['userdata'] = function(value)
-  return " = '".. value['__finder'](value) .. "'"
+  return " = ".. format['userdata'](value)
 end
 
 --------------------------------------------------------------------------------
