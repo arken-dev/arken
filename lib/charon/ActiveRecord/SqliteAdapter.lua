@@ -146,27 +146,27 @@ function ActiveRecord_SqliteAdapter:parser_default(format, value)
   if format == nil or value == nil then
     return nil
   else
-    return self['parser_' .. format](value)
+    return self['parser_default_' .. format](value)
   end
 end
 
-function ActiveRecord_SqliteAdapter.parser_string(value)
-  return value:replaceAll("::character varying", ""):replaceChars("'", "")
-end
-
-function ActiveRecord_SqliteAdapter.parser_time(value)
-  return value:replaceAll("::time without time zone", ""):replaceChars("'", "")
-end
-
-function ActiveRecord_SqliteAdapter.parser_date(value)
+function ActiveRecord_SqliteAdapter.parser_default_string(value)
   return value
 end
 
-function ActiveRecord_SqliteAdapter.parser_number(value)
+function ActiveRecord_SqliteAdapter.parser_default_time(value)
+  return value
+end
+
+function ActiveRecord_SqliteAdapter.parser_default_date(value)
+  return value
+end
+
+function ActiveRecord_SqliteAdapter.parser_default_number(value)
   return tonumber(value)
 end
 
-function ActiveRecord_SqliteAdapter.parser_boolean(value)
+function ActiveRecord_SqliteAdapter.parser_default_boolean(value)
   return toboolean(value)
 end
 

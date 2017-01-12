@@ -11,7 +11,8 @@ test.beforeAll = function()
   local sql = [[
   CREATE TABLE IF NOT EXISTS sqlit_adapter_types (
     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, name VARCHAR(250), observation TEXT,
-    created_at timestamp, updated_at timestamp, total REAL, cancel TINYINT, birthday date,
+    created_at timestamp, updated_at timestamp, total REAL, cancel TINYINT,
+    cancel_default_true TINYINT default 1, cancel_default_false TINYINT default 0, birthday date,
     date_meeting datetime, last_access timestamp, last_hour time, sub_total double, frete float
   )]]
   SqliteTypes.adapter():execute(sql)
@@ -60,6 +61,18 @@ test.should_error_if_format_not_exists = function()
   local status, message = pcall(Adapter.parser_format, adapter, 'unknow_type')
   assert( status == false )
   assert( message:contains('format_type: unknow_type not resolved') == true, message )
+end
+
+test.should_default_true = function()
+  local columns = SqliteTypes.columns()
+  assert(columns.cancel_default_true.format == 'boolean', columns.cancel_default_true.format)
+  assert(columns.cancel_default_true.default == true, tostring(columns.cancel_default_true.default))
+end
+
+test.should_default_false = function()
+  local columns = SqliteTypes.columns()
+  assert(columns.cancel_default_false.format == 'boolean', columns.cancel_default_false.format)
+  assert(columns.cancel_default_false.default == false, tostring(columns.cancel_default_false.default))
 end
 
 return test
