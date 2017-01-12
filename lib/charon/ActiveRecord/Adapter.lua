@@ -642,12 +642,7 @@ function ActiveRecord_Adapter.parser_value_date(value)
 end
 
 function ActiveRecord_Adapter.parser_value_number(value)
-  value = tostring(value)
-  if value:contains(',') then
-    return tonumber(value:replaceChars('.', ''):replaceChars(',', '.'))
-  else
-    return tonumber(value)
-  end
+  return tonumber(value)
 end
 
 function ActiveRecord_Adapter.parser_value_boolean(value)

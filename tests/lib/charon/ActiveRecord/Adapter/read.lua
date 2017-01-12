@@ -9,7 +9,7 @@ test.beforeAll = function()
   CREATE TABLE IF NOT EXISTS employee_master (
     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, name VARCHAR(250), observation TEXT,
     created_at timestamp, updated_at timestamp, total REAL, cancel TINYINT, birthday date,
-    date_meeting datetime
+    date_meeting datetime, last_access timestamp
   )]]
   Employee.adapter():execute(sql)
 end
@@ -90,6 +90,34 @@ test.should_return_string_timestamp_with_3_digits_in_milliconds = function()
   assert( p2:read('created_at'):toString() == created_at, p2:read('created_at'):toString() )
 end
 
+test.should_return_string_timestamp_blank = function()
+  local p = Employee.new()
+  p.name  = "Chris Weidman"
+  p.last_access = ''
+  p:save()
+  ActiveRecord.clear()
+  local p2 = Employee.find{ id = p.id }
+  assert( p ~= p2 )
+  assert( type(p2.last_access) == 'nil' )
+  assert( type(p2:read('last_access')) == 'nil' )
+  local created_at = ''
+  assert( p2:read('last_access') == nil, p2:read('access') )
+end
+
+test.should_return_string_date_blank = function()
+  local p = Employee.new()
+  p.name  = "Chris Weidman"
+  p.birthday = ''
+  p:save()
+  ActiveRecord.clear()
+  local p2 = Employee.find{ id = p.id }
+  --assert( Employee.columns().created_at.format == 'time', Employee.columns().created_at.format)
+  assert( p ~= p2 )
+  assert( type(p.created_at) == 'string' )
+  assert( type(p:read('birthday')) == 'nil' )
+  assert( p2:read('birthday') == nil )
+end
+
 test.should_return_string_date = function()
   local p = Employee.new()
   p.name  = "Chris Weidman"
@@ -104,6 +132,7 @@ test.should_return_string_date = function()
   assert( p2:read('birthday'):toString():left(10) == p2.birthday, p2:read('birthday'):toString() )
 end
 
+
 test.should_return_string_datetime = function()
   local p = Employee.new()
   p.name  = "Chris Weidman"
@@ -117,5 +146,34 @@ test.should_return_string_datetime = function()
   assert( type(p:read('date_meeting')) == 'userdata' )
   assert( p2:read('date_meeting'):toString():left(19) == p2.date_meeting, p2:read('date_meeting'):toString() )
 end
+
+test.should_return_string_datetime_blank = function()
+  local p = Employee.new()
+  p.name  = "Chris Weidman"
+  p.date_meeting = ''
+  p:save()
+  ActiveRecord.clear()
+  local p2 = Employee.find{ id = p.id }
+  assert( Employee.columns().date_meeting.format == 'datetime', Employee.columns().date_meeting.format)
+  assert( p ~= p2 )
+  assert( type(p.date_meeting) == 'nil' )
+  assert( type(p:read('date_meeting')) == 'nil' )
+  assert( p2:read('date_meeting') == nil )
+end
+
+test.should_return_string_boolean = function()
+  local p = Employee.new()
+  p.name  = "Chris Weidman"
+  p.cancel = 'true'
+  p:save()
+  ActiveRecord.clear()
+  local p2 = Employee.find{ id = p.id }
+  assert( Employee.columns().cancel.format == 'boolean', Employee.columns().cancel.format)
+  assert( p ~= p2 )
+  assert( type(p.cancel) == 'boolean', type(p.cancel) )
+  assert( type(p:read('cancel')) == 'boolean' )
+  assert( p2:read('cancel') == true )
+end
+
 
 return test
