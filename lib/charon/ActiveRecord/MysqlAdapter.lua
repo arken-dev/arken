@@ -30,13 +30,6 @@ function ActiveRecord_MysqlAdapter:connect()
   return ActiveRecord_MysqlAdapter.instanceConnection
 end
 
-function ActiveRecord_MysqlAdapter:close()
-  if instanceConnection ~= nil then
-    instanceConnection:close()
-    instanceConnection = nil
-  end
-end
-
 --------------------------------------------------------------------------------
 -- INSERT
 --------------------------------------------------------------------------------
