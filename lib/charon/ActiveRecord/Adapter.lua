@@ -484,8 +484,8 @@ end
 -------------------------------------------------------------------------------
 
 function ActiveRecord_Adapter:createTimestamp()
-  local clock  = tostring(os.clock())
-  local index  = clock:indexOf('.')
+  local clock = tostring(os.clock())
+  local index = clock:indexOf('.')
   return os.date("%Y/%m/%d %H:%M:%S.") .. clock:mid(index+1, -1)
 end
 
