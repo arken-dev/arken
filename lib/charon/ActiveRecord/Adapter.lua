@@ -553,6 +553,10 @@ function ActiveRecord_Adapter.read_value_date(value)
   return QDateTime.fromString(value:left(10), 'yyyy/MM/dd')
 end
 
+function ActiveRecord_Adapter.read_value_time(value)
+  return value
+end
+
 function ActiveRecord_Adapter.read_value_number(value)
   if tostring(value):contains(',') then
     return tonumber(value:replaceChars('.', ''):replaceChars(',', '.'))

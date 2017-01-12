@@ -9,7 +9,7 @@ test.beforeAll = function()
   CREATE TABLE IF NOT EXISTS employee_master (
     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, name VARCHAR(250), observation TEXT,
     created_at timestamp, updated_at timestamp, total REAL, cancel TINYINT, birthday date,
-    date_meeting datetime, last_access timestamp
+    date_meeting datetime, last_access timestamp, last_hour time
   )]]
   Employee.adapter():execute(sql)
 end
@@ -175,5 +175,32 @@ test.should_return_string_boolean = function()
   assert( p2:read('cancel') == true )
 end
 
+test.should_return_string_last_hour = function()
+  local p = Employee.new()
+  p.name  = "Chris Weidman"
+  p.last_hour = '13:30'
+  p:save()
+  ActiveRecord.clear()
+  local p2 = Employee.find{ id = p.id }
+  assert( Employee.columns().last_hour.format == 'time', Employee.columns().last_hour.format)
+  assert( p ~= p2 )
+  assert( type(p.last_hour) == 'string', type(p.last_hour) )
+  assert( type(p:read('last_hour')) == 'string' )
+  assert( p2:read('last_hour') == '13:30' )
+end
+
+test.should_return_string_last_hour_blank = function()
+  local p = Employee.new()
+  p.name  = "Chris Weidman"
+  p.last_hour = ''
+  p:save()
+  ActiveRecord.clear()
+  local p2 = Employee.find{ id = p.id }
+  assert( Employee.columns().last_hour.format == 'time', Employee.columns().last_hour.format)
+  assert( p ~= p2 )
+  assert( type(p.last_hour) == 'nil', type(p.last_hour) )
+  assert( type(p:read('last_hour')) == 'nil' )
+  assert( p2:read('last_hour') == nil )
+end
 
 return test
