@@ -34,4 +34,23 @@ test.should_return_cursor = function()
   assert( tostring(record):contains('cursor') == true, tostring(record) )
 end
 
+test.should_error_if_file_not_exists = function()
+  Person.where = function(params)
+    return params
+  end
+
+  local status, message = pcall(Person.query, 'notexists', {} )
+  assert( status == false )
+  assert( message:contains('query/person/notexists.sql file not exists') == true , message )
+end
+
+test.should_error_if_file_not_exists = function()
+  Person.where = function(params)
+    return params
+  end
+
+  local sql = Person.adapter():sql('all_with_binding', { binding = { user_id = 153 } })
+  assert( sql == 'SELECT person.* FROM person LEFT JOIN orders ON orders.person_id = person.id AND orders.user_id = 153\n', sql )  
+end
+
 return test
