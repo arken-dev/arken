@@ -236,14 +236,14 @@ end
 -------------------------------------------------------------------------------
 
 function ActiveRecord_SqliteAdapter:tableExists(table_name)
-  local sql  = string.format("pragma table_info(%s)", table_name)
-  local flag = false
-
-  for row in self:connect():nrows(sql) do
-    flag = true
+  local sql    = string.format("pragma table_info(%s)", table_name)
+  local cursor = self:execute(sql)
+  local result = false
+  if type(cursor) == 'userdata' then
+    result = cursor:fetch({}, 'a') ~= nil
+    cursor:close()
   end
-
-  return flag
+  return result
 end
 
 -------------------------------------------------------------------------------
@@ -259,12 +259,9 @@ function ActiveRecord_SqliteAdapter:prepareMigration()
 
   local list = {}
   local sql  = "SELECT version FROM schema_migration"
-
-  for row in self:connect():nrows(sql) do
-    table.insert(list, row.version)
-  end
-
-  return list
+  local cursor = self:execute(sql)
+  local result = cursor:fetch({}, 'a')
+  error(require('json').encode(result))
 end
 
 return ActiveRecord_SqliteAdapter
