@@ -105,7 +105,7 @@ function ActiveRecord_Adapter:escape(value)
     if(type(value) == 'number') then
       return tostring(value) --:replaceChars('.', ''):replaceChars(',', '.')
     else
-      return "'" .. tostring(value) .. "'"
+      return "'" .. tostring(value):escape() .. "'"
     end
   end
 end
