@@ -15,17 +15,17 @@ ActiveRecord_SqliteAdapter = Class.new("ActiveRecord.SqliteAdapter", Adapter)
 -- CONNECT
 -------------------------------------------------------------------------------
 
-local instanceConnection = nil
+ActiveRecord_SqliteAdapter.instanceConnection = nil
 
 function ActiveRecord_SqliteAdapter:connect()
-  if instanceConnection == nil then
+  if ActiveRecord_SqliteAdapter.instanceConnection == nil then
     local env  = driver.sqlite3()
-    instanceConnection, errmsg = env:connect(self.database)
+    ActiveRecord_SqliteAdapter.instanceConnection, errmsg = env:connect(self.database)
     if errmsg ~= nil then
-      error(string.format("connect to mysql error: %s\n", errmsg))
+      error(string.format("connect to sqlite error: %s\n", errmsg))
     end
   end
-  return instanceConnection
+  return ActiveRecord_SqliteAdapter.instanceConnection
 end
 
 --------------------------------------------------------------------------------
