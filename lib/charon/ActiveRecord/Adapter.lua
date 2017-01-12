@@ -484,13 +484,9 @@ end
 -------------------------------------------------------------------------------
 
 function ActiveRecord_Adapter:createTimestamp()
-  if CHARON_ENV == 'test' then
-    local clock  = tostring(os.clock())
-    local index  = clock:indexOf('.')
-    return os.date("%Y/%m/%d %H:%M:%S.") .. clock:mid(index+1, -1)
-  else
-    return os.date("%Y/%m/%d %H:%M:%S")
-  end
+  local clock  = tostring(os.clock())
+  local index  = clock:indexOf('.')
+  return os.date("%Y/%m/%d %H:%M:%S.") .. clock:mid(index+1, -1)
 end
 
 -------------------------------------------------------------------------------
