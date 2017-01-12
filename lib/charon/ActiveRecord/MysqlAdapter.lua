@@ -16,18 +16,18 @@ ActiveRecord_MysqlAdapter = Class.new("ActiveRecord.MysqlAdapter", Adapter)
 -- CONNECT
 -------------------------------------------------------------------------------
 
-local instanceConnection = nil
+ActiveRecord_MysqlAdapter.instanceConnection = nil
 
 function ActiveRecord_MysqlAdapter:connect()
-  if instanceConnection == nil then
+  if ActiveRecord_MysqlAdapter.instanceConnection == nil then
     local env  = mysql.mysql()
     local password = self.password or ''
-    instanceConnection, errmsg = env:connect(self.database, self.user, password, self.host)
+    ActiveRecord_MysqlAdapter.instanceConnection, errmsg = env:connect(self.database, self.user, password, self.host)
     if errmsg ~= nil then
       error(string.format("connect to mysql error: %s\n", errmsg))
     end
   end
-  return instanceConnection
+  return ActiveRecord_MysqlAdapter.instanceConnection
 end
 
 function ActiveRecord_MysqlAdapter:close()
