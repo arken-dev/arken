@@ -17,6 +17,7 @@ ActiveRecord_Adapter.errors = {}
 ActiveRecord_Adapter.cache  = {}
 ActiveRecord_Adapter.neat   = {}
 ActiveRecord_Adapter.cursor = {}
+ActiveRecord_Adapter.output = print
 
 -------------------------------------------------------------------------------
 -- FORMAT
@@ -278,7 +279,7 @@ function ActiveRecord_Adapter:execute(sql)
   end
   time = os.microtime() - time
   if ActiveRecord.debug then
-    print(sql .. string.format(" (%.3f) secs", time))
+    ActiveRecord_Adapter.output(sql .. string.format(" (%.3f) secs", time))
   end
   ActiveRecord.time = ActiveRecord.time + time
   return cursor
