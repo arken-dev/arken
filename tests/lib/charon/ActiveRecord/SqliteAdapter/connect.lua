@@ -13,7 +13,7 @@ test.afterAll = function()
 end
 
 test.should_error_connect_with_database_invalid = function()
-  ActiveRecord_SqliteAdapter.instanceConnection = nil
+  Adapter.instanceConnection = nil
   local PersonConnect = Class.new("PersonConnect", "ActiveRecord")
   local status, message = pcall( PersonConnect.columns )
   assert( status == false )
