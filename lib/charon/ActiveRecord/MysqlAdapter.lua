@@ -131,7 +131,7 @@ function ActiveRecord_MysqlAdapter:columns()
     local sql    = string.format("SHOW COLUMNS FROM %s", self.table_name)
     local result = {}
     local cursor = self:execute(sql)
-    for row in cursor:each({}) do
+    for row in cursor:each() do
       local format = self:parser_format(row.Type)
       result[row.Field] = {
         default  = self:parser_default(format, row.Default),
@@ -150,30 +150,30 @@ end
 -------------------------------------------------------------------------------
 
 function ActiveRecord_MysqlAdapter:parser_default(format, value)
-  if format == nil or value == nil then
-    return nil
-  else
-    return self['parser_' .. format](value)
-  end
+  return self['parser_default_' .. format:lower()](value)
 end
 
-function ActiveRecord_MysqlAdapter.parser_string(value)
+function ActiveRecord_MysqlAdapter.parser_default_string(value)
   return value:replaceAll("::character varying", ""):replaceChars("'", "")
 end
 
-function ActiveRecord_MysqlAdapter.parser_time(value)
+function ActiveRecord_MysqlAdapter.parser_default_time(value)
   return value:replaceAll("::time without time zone", ""):replaceChars("'", "")
 end
 
-function ActiveRecord_MysqlAdapter.parser_date(value)
+function ActiveRecord_MysqlAdapter.parser_default_datetime(value)
   return value
 end
 
-function ActiveRecord_MysqlAdapter.parser_number(value)
+function ActiveRecord_MysqlAdapter.parser_default_date(value)
+  return value
+end
+
+function ActiveRecord_MysqlAdapter.parser_default_number(value)
   return tonumber(value)
 end
 
-function ActiveRecord_MysqlAdapter.parser_boolean(value)
+function ActiveRecord_MysqlAdapter.parser_default_boolean(value)
   return toboolean(value)
 end
 
@@ -183,12 +183,17 @@ end
 
 function ActiveRecord_MysqlAdapter:parser_format(format_type)
   format_type = format_type:lower()
+
+  if string.contains(format_type, 'tinyint') then
+    return 'boolean'
+  end
+
   if string.contains(format_type, 'varchar') then
     return 'string'
   end
 
-  if string.contains(format_type, 'timestamp') then
-    return 'timestamp'
+  if string.contains(format_type, 'datetime') then
+    return 'datetime'
   end
 
   if string.contains(format_type, 'time') then
@@ -199,15 +204,7 @@ function ActiveRecord_MysqlAdapter:parser_format(format_type)
     return 'number'
   end
 
-  if format_type == 'real' then
-    return 'number'
-  end
-
-  if format_type == 'numeric' then
-    return 'number'
-  end
-
-  if format_type == 'smallint' then
+  if format_type == 'float' then
     return 'number'
   end
 
@@ -215,40 +212,12 @@ function ActiveRecord_MysqlAdapter:parser_format(format_type)
     return 'number'
   end
 
-  if format_type == 'integer' then
-    return 'number'
-  end
-
-  if format_type == 'bigint' then
-    return 'number'
-  end
-
-  if format_type == '' then
-    return 'string'
-  end
-
   if format_type == 'text' then
     return 'string'
   end
 
-  if format_type == 'tinyint' then
-    return 'boolean'
-  end
-
-  if format_type == 'boolean' then
-    return 'boolean'
-  end
-
   if format_type == 'date' then
     return 'date'
-  end
-
-  if format_type == 'bytea' then
-    return 'bytea'
-  end
-
-  if format_type == 'tsvector' then
-    return 'string'
   end
 
   error(string.format('format_type: %s not resolved', format_type ))
