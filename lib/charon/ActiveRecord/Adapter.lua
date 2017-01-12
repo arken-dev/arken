@@ -5,6 +5,8 @@
 
 local Array = require('charon.Array')
 local Class = require('charon.oop.Class')
+local toboolean = require('charon.toboolean')
+local QDateTime = require('QDateTime')
 
 ActiveRecord_Adapter = Class.new("ActiveRecord_Adapter")
 
@@ -536,16 +538,16 @@ function ActiveRecord_Adapter.read_value_string(value)
   return value
 end
 
-function ActiveRecord_Adapter.read_value_time(value)
-  return value
+function ActiveRecord_Adapter.read_value_timestamp(value)
+  return QDateTime.fromString(value:mid(1, value:indexOf('.') + 3), 'yyyy/MM/dd hh:mm:ss.zzz')
 end
 
-function ActiveRecord_Adapter.read_value_timestamp(value)
-  return value
+function ActiveRecord_Adapter.read_value_datetime(value)
+  return QDateTime.fromString(value:left(19), 'yyyy/MM/dd hh:mm:ss')
 end
 
 function ActiveRecord_Adapter.read_value_date(value)
-  return value
+  return QDateTime.fromString(value:left(10), 'yyyy/MM/dd')
 end
 
 function ActiveRecord_Adapter.read_value_number(value)
@@ -558,14 +560,6 @@ end
 
 function ActiveRecord_Adapter.read_value_boolean(value)
   return toboolean(value)
-end
-
-function ActiveRecord_Adapter.read_value_boolean(value)
-  return toboolean(value)
-end
-
-function ActiveRecord_Adapter.read_value_table(value)
-  return table.concat(value, ',')
 end
 
 --------------------------------------------------------------------------------
@@ -664,5 +658,14 @@ function ActiveRecord_Adapter.parser_value_timestamp(value)
     return value
   end
 end
+
+function ActiveRecord_Adapter.parser_value_datetime(value)
+  if value == '' then
+    return nil
+  else
+    return value
+  end
+end
+
 
 return ActiveRecord_Adapter

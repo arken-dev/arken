@@ -203,6 +203,10 @@ function ActiveRecord_SqliteAdapter:parser_format(format_type)
     return 'timestamp'
   end
 
+  if string.contains(format_type, 'datetime') then
+    return 'datetime'
+  end
+
   if string.contains(format_type, 'time') then
     return 'time'
   end
