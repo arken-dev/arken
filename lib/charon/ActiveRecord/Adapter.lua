@@ -21,6 +21,17 @@ ActiveRecord_Adapter.neat   = {}
 ActiveRecord_Adapter.cursor = {}
 ActiveRecord_Adapter.output = print
 
+ActiveRecord_Adapter.boolean_values = {
+  ['t']     = true,
+  ['1']     = true,
+  ['true']  = true,
+  ['f']     = true,
+  ['0']     = true,
+  ['false'] = true,
+  [true]    = true,
+  [false]   = false
+}
+
 -------------------------------------------------------------------------------
 -- FORMAT
 -------------------------------------------------------------------------------
@@ -417,21 +428,20 @@ function ActiveRecord_Adapter:validatePresence(record, params)
 end
 
 function ActiveRecord_Adapter:validateBoolean(record, params)
-  if not parse.isBoolean(record[params.column]) then
+  if not ActiveRecord_Adapter.boolean_values[record[params.column]] then
     record.errors[params.column] = params.message
   end
 end
 
 function ActiveRecord_Adapter:validateLength(record, params)
+  local length = 0
   if type(record[params.column]) == 'string' then
-    local length = #record[params.column]
-    if params.min and length < params.min then
-      record.errors[params.column] = params.message
-    end
-    if params.max and length > params.max then
-      record.errors[params.column] = params.message
-    end
-  else
+    length = #record[params.column]
+  end
+  if params.min and length < params.min then
+    record.errors[params.column] = params.message
+  end
+  if params.max and length > params.max then
     record.errors[params.column] = params.message
   end
 end
