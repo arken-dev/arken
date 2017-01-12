@@ -60,21 +60,6 @@ function ActiveRecord_SqliteAdapter:insert(record)
       end
     end
   end
-
-  if col:len() == 0 then
-    for column, properties in pairs(self:columns(table)) do
-      if column ~= self.primary_key then
-        if col:len() > 0 then
-          col = col .. ', '
-        end
-        if val:len() > 0 then
-          val = val .. ', '
-        end
-        col = col .. column
-        val = val .. ' NULL '
-      end
-    end
-  end
   return sql ..  '(' .. col .. ') VALUES (' .. val .. ') '
 end
 
@@ -102,13 +87,9 @@ function ActiveRecord_SqliteAdapter:update(record)
     end
   end
   local result = false
-  if col:len() > 0 then
-    local where = ' WHERE ' .. self.primary_key .. " = " .. self:escape(record[self.primary_key])
-    sql = sql .. col .. where
-    result = self:execute(sql)
-  else
-    result = true
-  end
+  local where = ' WHERE ' .. self.primary_key .. " = " .. self:escape(record[self.primary_key])
+  sql = sql .. col .. where
+  result = self:execute(sql)
   -- neat
   local neat = ActiveRecord_SqliteAdapter.neat[record:cacheKey()] or {}
   for column, properties in pairs(self:columns()) do
