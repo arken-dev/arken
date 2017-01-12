@@ -90,13 +90,9 @@ function ActiveRecord_MysqlAdapter:update(record)
     end
   end
   local result = false
-  if col:len() > 0 then
-    local where = ' WHERE ' .. self.primary_key .. " = " .. self:escape(record[self.primary_key])
-    sql = sql .. col .. where
-    result = self:execute(sql)
-  else
-    result = true
-  end
+  local where = ' WHERE ' .. self.primary_key .. " = " .. self:escape(record[self.primary_key])
+  sql = sql .. col .. where
+  result = self:execute(sql)
   -- neat
   local neat = ActiveRecord_MysqlAdapter.neat[record:cacheKey()] or {}
   for column, properties in pairs(self:columns()) do
