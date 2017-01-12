@@ -13,7 +13,12 @@ test.beforeAll = function()
     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, name VARCHAR(250), observation TEXT,
     created_at timestamp, updated_at timestamp, total REAL, cancel TINYINT,
     cancel_default_true TINYINT default 1, cancel_default_false TINYINT default 0, birthday date,
-    date_meeting datetime, last_access timestamp, last_hour time, sub_total double, frete float
+    date_meeting datetime, last_access timestamp, last_hour time, sub_total double, frete float,
+    observation_with_default TEXT default 'hello !!!', total_with_default REAL DEFAULT 135.35,
+    timestamp_with_default timestamp default '2015-03-11 13:35:10',
+    datetime_with_default datetime default '2016-05-29 14:50:30',
+    date_with_default date default '2015-03-15', time_with_default time default '14:50:30'
+
   )]]
   SqliteTypes.adapter():execute(sql)
 end
@@ -63,16 +68,58 @@ test.should_error_if_format_not_exists = function()
   assert( message:contains('format_type: unknow_type not resolved') == true, message )
 end
 
-test.should_default_true = function()
+test.should_default_boolean_true = function()
   local columns = SqliteTypes.columns()
   assert(columns.cancel_default_true.format == 'boolean', columns.cancel_default_true.format)
   assert(columns.cancel_default_true.default == true, tostring(columns.cancel_default_true.default))
 end
 
-test.should_default_false = function()
+test.should_default_boolean_false = function()
   local columns = SqliteTypes.columns()
   assert(columns.cancel_default_false.format == 'boolean', columns.cancel_default_false.format)
   assert(columns.cancel_default_false.default == false, tostring(columns.cancel_default_false.default))
+end
+
+test.should_text_with_default = function()
+  local columns = SqliteTypes.columns()
+  assert(columns.observation_with_default.format == 'string', columns.observation_with_default.format)
+  assert(columns.observation_with_default.default == "hello !!!", tostring(columns.observation_with_default.default))
+end
+
+test.should_save_text_with_default = function()
+  local value = SqliteTypes.new{ name = 'John' }
+  value:save()
+  assert( value.observation_with_default == 'hello !!!' )
+end
+
+test.should_number_with_default = function()
+  local columns = SqliteTypes.columns()
+  assert(columns.total_with_default.format == 'number', columns.total_with_default.format)
+  assert(columns.total_with_default.default == 135.35, tostring(columns.total_with_default.default))
+end
+
+test.should_timestamp_with_default = function()
+  local columns = SqliteTypes.columns()
+  assert(columns.timestamp_with_default.format == 'timestamp', columns.timestamp_with_default.format)
+  assert(columns.timestamp_with_default.default == '2015-03-11 13:35:10', tostring(columns.timestamp_with_default.default))
+end
+
+test.should_datetime_with_default = function()
+  local columns = SqliteTypes.columns()
+  assert(columns.datetime_with_default.format == 'datetime', columns.datetime_with_default.format)
+  assert(columns.datetime_with_default.default == '2016-05-29 14:50:30', tostring(columns.datetime_with_default.default))
+end
+
+test.should_date_with_default = function()
+  local columns = SqliteTypes.columns()
+  assert(columns.date_with_default.format == 'date', columns.date_with_default.format)
+  assert(columns.date_with_default.default == '2015-03-15', tostring(columns.date_with_default.default))
+end
+
+test.should_datetime_with_default = function()
+  local columns = SqliteTypes.columns()
+  assert(columns.time_with_default.format == 'time', columns.time_with_default.format)
+  assert(columns.time_with_default.default == '14:50:30', tostring(columns.time_with_default.default))
 end
 
 return test

@@ -151,15 +151,23 @@ function ActiveRecord_SqliteAdapter:parser_default(format, value)
 end
 
 function ActiveRecord_SqliteAdapter.parser_default_string(value)
-  return value
+  return value:mid(2, #value-2)
 end
 
 function ActiveRecord_SqliteAdapter.parser_default_time(value)
-  return value
+  return value:mid(2, #value-2)
+end
+
+function ActiveRecord_SqliteAdapter.parser_default_timestamp(value)
+  return value:mid(2, #value-2)
+end
+
+function ActiveRecord_SqliteAdapter.parser_default_datetime(value)
+  return value:mid(2, #value-2)
 end
 
 function ActiveRecord_SqliteAdapter.parser_default_date(value)
-  return value
+  return value:mid(2, #value-2)
 end
 
 function ActiveRecord_SqliteAdapter.parser_default_number(value)
