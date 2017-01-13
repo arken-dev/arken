@@ -1,5 +1,5 @@
-require 'QSqlDatabase'
-require 'QSqlQuery'
+local QSqlDatabase = require 'QSqlDatabase'
+local QSqlQuery    = require 'QSqlQuery'
 
 db = QSqlDatabase.addDatabase("QPSQL");
 db:setHostName("localhost");
@@ -11,6 +11,6 @@ print(ok)
 query = db:query()
 result = query:exec("SELECT attname FROM pg_attribute")
 while(query:next()) do
-  print(query:value("attname"))
+  local attname = query:value("attname")
 end
 
