@@ -54,6 +54,23 @@ test.should_return_error_after = function()
   ctest.output = io.write
 end
 
+test.should_return_error_after_all = function()
+  ctest.output = function() end
+  local result, message = pcall(ctest.process, 'util/tests/example-error-afterAll.lua')
+  assert(result == false)
+  assert(message:contains('error after all') == true, json.encode(message))
+  ctest.output = io.write
+end
+
+test.should_return_error_before_all = function()
+  ctest.output = function() end
+  local result, message = pcall(ctest.process, 'util/tests/example-error-beforeAll.lua')
+  assert(result == false)
+  assert(message:contains('error before all') == true, json.encode(message))
+  ctest.output = io.write
+end
+
+
 test.should_return_pending = function()
   ctest.output = function() end
   local result, message = pcall(ctest.process, 'util/tests/example-pending.lua')
