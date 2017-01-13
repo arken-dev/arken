@@ -28,11 +28,11 @@ test.afterAll = function()
 end
 
 test.should_return_true_for_table_exists = function()
-  assert( ActiveRecord.adapter():tableExists('person_postgres') == true )
+  assert( PersonPostgres.adapter():tableExists('person_postgres') == true )
 end
 
 test.should_return_false_for_table_not_exists = function()
-  assert( ActiveRecord.adapter():tableExists('table_not_exists') == false )
+  assert( PersonPostgres.adapter():tableExists('table_not_exists') == false )
 end
 
 return test

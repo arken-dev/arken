@@ -162,27 +162,31 @@ function ActiveRecord_PostgresAdapter:parser_default(format, value)
   if format == nil or value == nil then
     return nil
   else
-    return self['parser_' .. format](value)
+    return self['parser_default_' .. format](value)
   end
 end
 
-function ActiveRecord_PostgresAdapter.parser_string(value)
+function ActiveRecord_PostgresAdapter.parser_default_string(value)
   return value:replaceAll("::character varying", ""):replaceChars("'", "")
 end
 
-function ActiveRecord_PostgresAdapter.parser_time(value)
+function ActiveRecord_PostgresAdapter.parser_default_time(value)
   return value:replaceAll("::time without time zone", ""):replaceChars("'", "")
 end
 
-function ActiveRecord_PostgresAdapter.parser_date(value)
-  return value
+function ActiveRecord_PostgresAdapter.parser_default_datetime(value)
+  return value:replaceAll("::timestamp without time zone", ""):replaceChars("'", "")
 end
 
-function ActiveRecord_PostgresAdapter.parser_number(value)
+function ActiveRecord_PostgresAdapter.parser_default_date(value)
+  return value:replaceAll("::date", ""):replaceChars("'", "")
+end
+
+function ActiveRecord_PostgresAdapter.parser_default_number(value)
   return tonumber(value)
 end
 
-function ActiveRecord_PostgresAdapter.parser_boolean(value)
+function ActiveRecord_PostgresAdapter.parser_default_boolean(value)
   return toboolean(value)
 end
 
@@ -196,7 +200,7 @@ function ActiveRecord_PostgresAdapter:parser_format(format_type)
   end
 
   if string.contains(format_type, 'timestamp') then
-    return 'timestamp'
+    return 'datetime'
   end
 
   if string.contains(format_type, 'time') then
@@ -207,23 +211,11 @@ function ActiveRecord_PostgresAdapter:parser_format(format_type)
     return 'number'
   end
 
-  if string.contains(format_type, 'numeric') then
-    return 'number'
-  end
-
-  if format_type == 'smallint' then
-    return 'number'
-  end
-
   if format_type == 'integer' then
     return 'number'
   end
 
   if format_type == 'real' then
-    return 'number'
-  end
-
-  if format_type == 'bigint' then
     return 'number'
   end
 
@@ -240,7 +232,7 @@ function ActiveRecord_PostgresAdapter:parser_format(format_type)
   end
 
   if format_type == 'bytea' then
-    return 'bytea'
+    return 'string'
   end
 
   if format_type == 'tsvector' then

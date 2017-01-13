@@ -5,6 +5,7 @@ local ActiveRecord = require('charon.ActiveRecord')
 
 test.beforeAll = function()
   ActiveRecord.config = "config/active_record_postgres.json"
+  ActiveRecord.adapter(true)
 end
 
 test.before = function()

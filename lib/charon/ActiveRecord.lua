@@ -93,9 +93,9 @@ ActiveRecord.inherit = function(class)
   -- ActiveRecord#adapter()
   -----------------------------------------------------------------------------
 
-  class.adapter = function()
+  class.adapter = function(force)
     local adapter_instance = class.adapter_instance
-    if class[adapter_instance] == nil then
+    if class[adapter_instance] == nil or force then
       class[adapter_instance] = class.loadAdapter()
     end
     return class[adapter_instance]
