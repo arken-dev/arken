@@ -4,7 +4,8 @@ local test = {}
 package.path = package.path .. ';util/?.lua'
 
 test.beforeAll = function()
-  _G.request = {}
+  dispatcher.output = function() end
+  _G.request = require('charon.net.request')
   request.reset = function()
   end
 end

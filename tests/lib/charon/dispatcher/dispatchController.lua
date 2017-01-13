@@ -3,8 +3,18 @@ local dispatcher = require('charon.dispatcher')
 local test = {}
 package.path = package.path .. ';util/?.lua'
 
+test.beforeAll = function()
+  dispatcher.output = function() end
+  _G.request = require('charon.net.request')
+  request.reset = function()
+  end
+end
+
+test.afterAll = function()
+  _G.request = nil
+end
+
 test.should_return_error_if_action_not_found = function()
-  local request = {}
   request.requestPath = function()
     return "/order/unknow"
   end
@@ -18,7 +28,6 @@ test.should_return_error_if_action_not_found = function()
 end
 
 test.should_return_error_if_action_save = function()
-  local request = {}
   request.requestPath = function()
     return "/order/save"
   end

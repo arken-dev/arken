@@ -127,10 +127,12 @@ end
 -- LOG
 -------------------------------------------------------------------------------
 
+dispatcher.output = print
+
 dispatcher.log = function(code, time, reload)
   local msg = "Completed in %.4f ms (Reload: %.4f, View: %.4f, DB: %.4f) | %i OK [%s]"
   local log = string.format(msg, time, reload, template.time, ActiveRecord.time, code, request:requestUri())
-  print(log)
+  dispatcher.output(log)
 end
 
 -------------------------------------------------------------------------------
