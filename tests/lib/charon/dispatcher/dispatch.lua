@@ -76,7 +76,9 @@ test.should_return_error_with_not_render = function()
   end
 
   dispatcher.prefix = ""
-  local status, message = pcall(dispatcher.dispatch, 'development')
+  CHARON_ENV='development'
+  local status, message = pcall(dispatcher.dispatch)
+  CHARON_ENV='test'
   assert( status == false, tostring(status) )
   assert( message:contains('body empty, render ?') == true, message )
 end
@@ -92,8 +94,10 @@ test.should_return_public_image_in_development = function()
 
   dispatcher.prefix = ""
   dispatcher.public = "util/public"
+  CHARON_ENV='development'
+  local status, headers, body = dispatcher.dispatch()
+  CHARON_ENV='test'
 
-  local status, headers, body = dispatcher.dispatch('development')
   assert( status == 200, status )
   assert( headers[1] == 'Content-type: image/jpeg', headers[1] )
   assert( #body == 2059595, #body )

@@ -98,12 +98,12 @@ end
 -- DISPATCH
 -------------------------------------------------------------------------------
 
-dispatcher.dispatch = function(environment)
+dispatcher.dispatch = function()
   dispatcher.before()
   local time    = os.microtime()
   local reload  = 0
   local code, headers, body
-  if environment == 'development' then
+  if CHARON_ENV == 'development' then
     local fileName = dispatcher.public .. request.requestPath():mid(#dispatcher.prefix+1, -1)
     if fileName ~= (dispatcher.public .. "/") and os.exists(fileName) then
       return dispatcher.dispatchLocal(fileName)
