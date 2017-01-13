@@ -47,19 +47,55 @@ test.should_return_error_if_action_not_found_in_production = function()
   assert( body:contains('action: "unknowAction" not found') == true, body )
 end
 
---[[
+
 test.should_return_error_if_action_save = function()
-  local request = {}
+
   request.requestPath = function()
+    return "/order/save"
+  end
+  request.requestUri = function()
     return "/order/save"
   end
 
   dispatcher.prefix = ""
-  local status, headers, body = dispatcher.dispatchController(request)
+  local status, headers, body = dispatcher.dispatch('development')
   assert( status == 200, status )
   assert( headers[1] == 'Content-Type: text/html; charset=utf-8', headers[1] )
   assert( type(headers) == 'table', json.encode(headers) )
   assert( body == 'save !', body )
 end
-]]
+
+test.should_return_error_with_not_render = function()
+
+  request.requestPath = function()
+    return "/order/test"
+  end
+  request.requestUri = function()
+    return "/order/test"
+  end
+
+  dispatcher.prefix = ""
+  local status, message = pcall(dispatcher.dispatch, 'development')
+  assert( status == false, tostring(status) )
+  assert( message:contains('body empty, render ?') == true, message )
+end
+
+test.should_return_public_image_in_development = function()
+
+  request.requestPath = function()
+    return "/images/PIA00317.jpg"
+  end
+  request.requestUri = function()
+    return "/images/PIA00317.jpg"
+  end
+
+  dispatcher.prefix = ""
+  dispatcher.public = "util/public"
+
+  local status, headers, body = dispatcher.dispatch('development')
+  assert( status == 200, status )
+  assert( headers[1] == 'Content-type: image/jpeg', headers[1] )
+  assert( #body == 2059595, #body )
+end
+
 return test

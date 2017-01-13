@@ -19,6 +19,7 @@ local template     = require 'charon.template'
 local dispatcher = {}
 dispatcher.converter = require('charon.Converter')
 dispatcher.prefix = ""
+dispatcher.public = "public"
 
 -------------------------------------------------------------------------------
 -- REQUEST
@@ -203,8 +204,8 @@ dispatcher.dispatch = function(environment)
   local reload  = 0
   local code, headers, body
   if environment == 'development' then
-    local fileName = "public" .. request.requestPath():mid(#dispatcher.prefix+1, -1)
-    if fileName ~= "public/" and os.exists(fileName) then
+    local fileName = dispatcher.public .. request.requestPath():mid(#dispatcher.prefix+1, -1)
+    if fileName ~= (dispatcher.public .. "/") and os.exists(fileName) then
       return dispatcher.dispatchLocal(fileName)
     else
       reload = package.reload()
