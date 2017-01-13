@@ -1,5 +1,5 @@
-local test = {}
 local dispatcher = require('charon.dispatcher')
+local test = {}
 package.path = package.path .. ';util/?.lua'
 
 test.should_return_require_controller_with_camelcase = function()
