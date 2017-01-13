@@ -17,7 +17,8 @@ test.beforeAll = function()
     timestamp_with_default timestamp default '2015-03-11 13:35:10',
     datetime_with_default timestamp default '2016-05-29 14:50:30',
     date_with_default date default '2015-03-15', time_with_default time default '14:50:30',
-    bytea_type bytea, tsvector_type tsvector
+    bytea_type bytea, tsvector_type tsvector, total_numeric numeric(9,2), total_bigint bigint,
+    total_smallint smallint
   )]]
   --print(string.format(sql, Person.table_name))
   Person.adapter(true):execute(string.format(sql, Person.table_name))
@@ -146,5 +147,24 @@ test.should_tsvector_with_default_nil = function()
   assert(columns.tsvector_type.format == 'string', columns.tsvector_type.format)
   assert(columns.tsvector_type.default == nil, tostring(columns.tsvector_type.default))
 end
+
+test.should_numeric_with_default_nil = function()
+  local columns = Person.columns()
+  assert(columns.total_numeric.format == 'number', columns.total_numeric.format)
+  assert(columns.total_numeric.default == nil, tostring(columns.total_numeric.default))
+end
+
+test.should_bigint_with_default_nil = function()
+  local columns = Person.columns()
+  assert(columns.total_bigint.format == 'number', columns.total_bigint.format)
+  assert(columns.total_bigint.default == nil, tostring(columns.total_bigint.default))
+end
+
+test.should_smallint_with_default_nil = function()
+  local columns = Person.columns()
+  assert(columns.total_smallint.format == 'number', columns.total_smallint.format)
+  assert(columns.total_smallint.default == nil, tostring(columns.total_smallint.default))
+end
+
 
 return test
