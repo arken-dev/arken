@@ -6,6 +6,7 @@ local ActiveRecord = require('charon.ActiveRecord')
 
 test.beforeAll = function()
   ActiveRecord.config = "config/active_record_mysql.json"
+  ActiveRecord.adapter(true)
 end
 
 test.before = function()
