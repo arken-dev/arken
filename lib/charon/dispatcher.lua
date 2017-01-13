@@ -123,7 +123,7 @@ end
 -- PARSE PATH
 -------------------------------------------------------------------------------
 
-dispatcher.parsePath  = function()
+dispatcher.parsePath  = function(request)
   local path  = request.requestPath()
   local last  = path:lastIndexOf('/')
   local start = 2
@@ -169,7 +169,7 @@ end
 -------------------------------------------------------------------------------
 
 dispatcher.dispatchController = function(request)
-  local controller_name, action_name, controller_path = dispatcher.parsePath()
+  local controller_name, action_name, controller_path = dispatcher.parsePath(request)
   local class  = dispatcher.requireController(controller_name)
   local object = class.new{
     controller_name = controller_name,
