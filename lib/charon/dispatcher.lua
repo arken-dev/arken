@@ -253,9 +253,10 @@ end
 -------------------------------------------------------------------------------
 
 dispatcher.test = function()
-  return 200,
-    {'Content-Type: text/html; charset=utf-8'},
-    "<html><body><h1>DISPATCHER TEST IS WORKS ...</h1></body></html>"
+  local status  = 200
+  local headers = {'Content-Type: text/html; charset=utf-8'}
+  local html    = "<html><body><h1>DISPATCHER TEST IS WORKS ...</h1></body></html>"
+  return status, headers, body
 end
 
 return dispatcher
