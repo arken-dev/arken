@@ -255,20 +255,18 @@ end
 -------------------------------------------------------------------------------
 
 function ActiveRecord_PostgresAdapter:tableExists(table_name)
-
-  local flag = false
   local sql  = string.format([[
     SELECT 1
     FROM   pg_catalog.pg_class c
     JOIN   pg_catalog.pg_namespace n ON n.oid = c.relnamespace
     WHERE  c.relname = '%s']], table_name)
-  local res = self:execute(sql)
-  for row in res:rows() do
-    flag = true
-    break
+  local cursor = self:execute(sql)
+  local result = false
+  if type(cursor) == 'userdata' then
+    result = cursor:fetch({}, 'a') ~= nil
+    cursor:close()
   end
-
-  return flag
+  return result
 end
 
 -------------------------------------------------------------------------------
@@ -282,13 +280,13 @@ function ActiveRecord_PostgresAdapter:prepareMigration()
     ]])
   end
 
-  local list = {}
-  local sql  = "SELECT version FROM schema_migration"
-  local res = self:execute(sql)
-  for row in res:rows() do
-    table.insert(list, row.version)
+  local list   = {}
+  local sql    = "SELECT version FROM schema_migration"
+  local cursor = self:execute(sql)
+  for row in cursor:each() do
+    list[row.version] = true
   end
-
+  cursor:close()
   return list
 end
 
