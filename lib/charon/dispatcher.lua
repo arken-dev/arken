@@ -130,16 +130,16 @@ dispatcher.parsePath  = function(request)
   if dispatcher.prefix then
     start = start + #dispatcher.prefix
   end
-  local controller = path:mid(start, last-start)
-  local action     = path:mid(#controller + start + 1)
-  local path       = path:mid(1, path:len() - action:len())
-  if controller == '' then
-    controller = 'index'
+  local controller_name = path:mid(start, last-start)
+  local action_name     = path:mid(#controller_name + start + 1)
+  local controller_path = path:mid(1, path:len() - action_name:len())
+  if controller_name == '' then
+    controller_name = 'index'
   end
-  if last == 1 or action == '' then
-    action = "index"
+  if last == 1 or action_name == '' then
+    action_name = "index"
   end
-  return controller, action, path
+  return controller_name, action_name, controller_path
 end
 
 -------------------------------------------------------------------------------
@@ -253,10 +253,10 @@ end
 -------------------------------------------------------------------------------
 
 dispatcher.test = function()
-  local status  = 200
-  local headers = {'Content-Type: text/html; charset=utf-8'}
-  local html    = "<html><body><h1>DISPATCHER TEST IS WORKS ...</h1></body></html>"
-  return status, headers, body
+  local status = 200
+  local header = {'Content-Type: text/html; charset=utf-8'}
+  local body   = "<html><body><h1>DISPATCHER TEST IS WORKS ...</h1></body></html>"
+  return status, header, body
 end
 
 return dispatcher
