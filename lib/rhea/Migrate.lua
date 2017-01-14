@@ -2,7 +2,9 @@ require 'charon.ActiveRecord'
 
 local Migrate = Class.new("Migrate")
 
-Migrate.help = {}
+Migrate.help   = {}
+Migrate.dir    = "db/migrate"
+Migrate.output = print
 
 -------------------------------------------------------------------------------
 -- RUN
@@ -17,7 +19,7 @@ function Migrate:runPrepare()
 end
 
 function Migrate:run()
-  local glob = os.glob("db/migrate", ".*(lua$|sql$)", true)
+  local glob = os.glob(Migrate.dir, ".*(lua$|sql$)", true)
   local list = {}
   for i = 1, glob:size() do
     table.insert(list, glob:at(i))
@@ -30,7 +32,7 @@ function Migrate:run()
     local version = file_name:mid(index1, index2)
 
     if self.list[version] then
-        print(string.format("%s version ok", version))
+        Migrate.output(string.format("%s version ok", version))
     else
       local sql = os.read(file_name)
       --print(sql)
@@ -38,7 +40,7 @@ function Migrate:run()
       ActiveRecord.adapter():execute(string.format([[INSERT INTO schema_migration VALUES ('%s')]], version))
     end
   end
-  print("migrations finished")
+  Migrate.output("migrations finished")
 end
 
 Migrate.contract('run')
