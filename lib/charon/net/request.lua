@@ -1,6 +1,7 @@
 local url        = require 'charon.net.url'
 local cookie     = require 'charon.net.cookie'
 local multipart  = require 'charon.net.multi-part'
+local json       = require 'charon.json'
 --local HttpParser = require 'charon.net.HttpParser'
 
 request = request or {}
