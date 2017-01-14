@@ -1,6 +1,7 @@
 -------------------------------------------------------------------------------
 -- PATH
 -------------------------------------------------------------------------------
+package.path  = package.path  .. ";" .. CHARON_PATH .. "/?.lua"
 package.path  = package.path  .. ";" .. CHARON_PATH .. "/lib/?.lua"
 package.cpath = package.cpath .. ";" .. CHARON_PATH .. "/clib/?.so"
 package.cpath = package.cpath .. ";" .. CHARON_PATH .. "/clib/?.dylib"
