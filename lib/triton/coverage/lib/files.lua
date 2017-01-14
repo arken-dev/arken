@@ -99,6 +99,6 @@ function triton_stop()
 
   local result = "%i tests, %i pendings, %i failures"
   print('\n' .. triton.result('message'))
-  print(string.format(result, triton.total('test'), triton.total('failure'), triton.total('pending')))
+  print(string.format(result, triton.total('tests'), triton.total('failure'), triton.total('pending')))
   print(string.format("Finished in %.2f seconds", os.microtime() - start))
 end

@@ -18,28 +18,19 @@ int main(int argc, char * argv[])
   lua_State * L = Charon::init(argc, argv, app.applicationFilePath().toLocal8Bit().data());
 
   lua_settop(L, 0);
-  lua_getglobal(L, "CHARON_PATH");
-
-  QByteArray rhea = lua_tostring(L, 1);
-  rhea.append("/lib/rhea.lua");
-
   int rv;
-  rv = luaL_loadfile(L, rhea);
+  lua_getglobal(L, "require");
+  lua_pushstring(L, "rhea");
+  rv = lua_pcall(L, 1, 1, 0);
   if (rv) {
-    fprintf(stderr, "%s\n", lua_tostring(L, -1));
+    fprintf(stderr, "erro no inicio: %s\n", lua_tostring(L, -1));
     throw;
   }
 
-  rv = lua_pcall(L, 0, 0, 0);
-  if (rv) {
-    fprintf(stderr, "%s\n", lua_tostring(L, -1));
-    throw;
-  }
+  lua_getfield(L, -1, "run");
+  lua_getglobal(L, "arg");
 
-  lua_settop(L, 0);
-  lua_getglobal(L, "rhea");
-
-  if( lua_pcall(L, 0, 0, 0) != 0 ) {
+  if( lua_pcall(L, 1, 0, 0) != 0 ) {
     fprintf(stderr, "%s\n", lua_tostring(L, -1));
   } else {
     return 0;

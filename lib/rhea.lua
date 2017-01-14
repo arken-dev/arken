@@ -3,20 +3,19 @@
 -- Use of this source code is governed by a BSD-style
 -- license that can be found in the LICENSE file.
 
-require "charon.ByteArrayList"
+local ByteArrayList = require "charon.ByteArrayList"
+local rhea = {}
 
--------------------------------------------------------------------------------
--- RHEA
--------------------------------------------------------------------------------
+rhea.output = print
 
-local function parseArg(index, arg)
+rhea.parseArg = function(index, args)
   index = index + 1
   local result = {}
-  while (index <= #arg) do
-    if arg[index]:startsWith("--") then
+  while (index <= #args) do
+    if args[index]:startsWith("--") then
       break
     end
-    table.insert(result, arg[index])
+    table.insert(result, args[index])
     index = index + 1
   end
 
@@ -31,21 +30,21 @@ local function parseArg(index, arg)
   return result
 end
 
-local function parseArgs()
+rhea.parseArgs = function(args)
   local params = {}
   local key = ""
 
-  for index, value in ipairs(arg) do
+  for index, value in ipairs(args) do
     if value:startsWith("--") then
-      key = value:replaceAll("--", "")
-      params[key] = parseArg(index, arg)
+      key = value:mid(3, -1)
+      params[key] = rhea.parseArg(index, args)
     end
   end
 
   return params
 end
 
-local function printHelp(module)
+rhea.help = function(module)
   local help = ""
   local size = 0
 
@@ -64,60 +63,51 @@ local function printHelp(module)
       help = help .. k .. space .. ' # ' .. v:trim():replaceAll('\n', margem) .. '\n'
     end
 
-    print(help)
+    rhea.output(help)
   end
 end
 
-rhea = function()
+rhea.run = function(args)
   local path = {}
 
-  if arg[0] == nil then
+  if args[0] == nil then
   local list = tostring(package.path):split(';')
   for i = 1, list:size() do
     local str = list:at(i)
     str = str:replaceAll("/?.lua", ""):replaceChars('.', '/')
     str = os.abspath(str)
-    if str:contains('rhea') and os.exists(str) then
+    str = str .. '/rhea'
+    if os.exists(str) then
       table.insert(path, str)
-    else
-      str = str .. '/rhea'
-      if os.exists(str) then
-        table.insert(path, str)
-      end
     end
   end
-
     for _, str in ipairs(path) do
       local list = os.glob(str, "\\.lua$", false)
       for i = 1, list:size() do
         local module = dofile(list:at(i))
-        print(module.className:underscore())
-        printHelp(module)
+        rhea.output(module.className:underscore())
+        rhea.help(module)
       end
     end
   else
-    local task   = arg[0]
+    local task   = args[0]
     local last   = task:lastIndexOf(":")
-    local name   = task:left(last-1):replaceChars(":", ".")
-    local action = task:mid(last+1, -1)
+    local name   = args[0]
+    local action = nil
 
-    if last < 0 then
-      name   = arg[0]
-      action = nil
+    if last > 0 then
+      name   = task:left(last-1):replaceChars(":", ".")
+      action = task:mid(last+1, -1)
     end
 
     local module, result
       local rhea_name = 'rhea.' .. name:camelcase()
-      local result, module = pcall(require , rhea_name)
-      if result == false then
-        print(name .. " not work" .. module)
-        os.exit()
-      end
+      local module = require(rhea_name)
 
     -------------------------------------------------------------------------------
     -- EXECUTE
     -------------------------------------------------------------------------------
-    local params = parseArgs()
+    local params = rhea.parseArgs(args)
 
     if module[action] then
       local object = module.new()
@@ -125,17 +115,19 @@ rhea = function()
         if object.help[action] then
           local help   = object.help[action]
           local margem = '\n' .. string.rep(' ', #action + 1)
-          print(action .. ' # ' .. help:trim():replaceAll('\n', margem))
+          rhea.output(action .. ' # ' .. help:trim():replaceAll('\n', margem))
         else
-          print(action .. ": undocumented")
+          rhea.output(action .. ": undocumented")
         end
       else
         object:execute(action, params)
       end
     else
       if params.help then
-        printHelp(module)
+        rhea.help(module)
       end
     end
   end
 end
+
+return rhea
