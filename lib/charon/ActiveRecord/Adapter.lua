@@ -550,7 +550,11 @@ function ActiveRecord_Adapter.read_value_datetime(value)
 end
 
 function ActiveRecord_Adapter.read_value_date(value)
-  return QDateTime.fromString(value:left(10), 'yyyy/MM/dd')
+  if value:sub(5, 5) == '-' then
+    return QDateTime.fromString(value:left(10), 'yyyy-MM-dd')
+  else
+    return QDateTime.fromString(value:left(10), 'yyyy/MM/dd')
+  end
 end
 
 function ActiveRecord_Adapter.read_value_time(value)

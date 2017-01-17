@@ -118,7 +118,7 @@ test.should_return_string_date_blank = function()
   assert( p2:read('birthday') == nil )
 end
 
-test.should_return_string_date = function()
+test.should_return_string_date_with_bar = function()
   local p = Employee.new()
   p.name  = "Chris Weidman"
   p.birthday = '1975/03/21'
@@ -131,6 +131,21 @@ test.should_return_string_date = function()
   assert( type(p:read('birthday')) == 'userdata' )
   assert( p2:read('birthday'):toString():left(10) == p2.birthday, p2:read('birthday'):toString() )
 end
+
+test.should_return_string_date_with_trace = function()
+  local p = Employee.new()
+  p.name  = "Chris Weidman"
+  p.birthday = '1975-03-21'
+  p:save()
+  ActiveRecord.clear()
+  local p2 = Employee.find{ id = p.id }
+  --assert( Employee.columns().created_at.format == 'time', Employee.columns().created_at.format)
+  assert( p ~= p2 )
+  assert( type(p.created_at) == 'string' )
+  assert( type(p:read('birthday')) == 'userdata' )
+  assert( p2:read('birthday'):toString():left(10) == p2.birthday:replaceChars('-', '/'), p2:read('birthday'):toString() )
+end
+
 
 
 test.should_return_string_datetime = function()
