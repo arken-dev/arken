@@ -146,9 +146,7 @@ test.should_return_string_date_with_trace = function()
   assert( p2:read('birthday'):toString():left(10) == p2.birthday:replaceChars('-', '/'), p2:read('birthday'):toString() )
 end
 
-
-
-test.should_return_string_datetime = function()
+test.should_return_string_datetime_with_bar = function()
   local p = Employee.new()
   p.name  = "Chris Weidman"
   p.date_meeting = '2017/03/21 15:30:01'
@@ -160,6 +158,20 @@ test.should_return_string_datetime = function()
   assert( type(p.date_meeting) == 'string' )
   assert( type(p:read('date_meeting')) == 'userdata' )
   assert( p2:read('date_meeting'):toString():left(19) == p2.date_meeting, p2:read('date_meeting'):toString() )
+end
+
+test.should_return_string_datetime_with_tarce = function()
+  local p = Employee.new()
+  p.name  = "Chris Weidman"
+  p.date_meeting = '2017-03-21 15:30:01'
+  p:save()
+  ActiveRecord.clear()
+  local p2 = Employee.find{ id = p.id }
+  assert( Employee.columns().date_meeting.format == 'datetime', Employee.columns().date_meeting.format)
+  assert( p ~= p2 )
+  assert( type(p.date_meeting) == 'string' )
+  assert( type(p:read('date_meeting')) == 'userdata' )
+  assert( p2:read('date_meeting'):toString():left(19) == p2.date_meeting:replaceChars('-', '/'), p2:read('date_meeting'):toString() )
 end
 
 test.should_return_string_datetime_blank = function()
