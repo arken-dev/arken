@@ -362,6 +362,7 @@ char * os::read(const char * path, size_t * size)
   char * result;
   if (string::startsWith(path, "http://")) {
     result = http::read(path);
+    *size  = strlen(result);
   } else {
     QFile file(path);
     QByteArray raw;
