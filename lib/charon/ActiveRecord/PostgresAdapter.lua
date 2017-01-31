@@ -31,6 +31,22 @@ function ActiveRecord_PostgresAdapter:connect()
 end
 
 --------------------------------------------------------------------------------
+-- ESCAPE
+--------------------------------------------------------------------------------
+
+function ActiveRecord_PostgresAdapter:escape(value)
+  if value == nil then
+    return " NULL "
+  else
+    if(type(value) == 'number') then
+      return tostring(value) --:replaceChars('.', ''):replaceChars(',', '.')
+    else
+      return "'" .. tostring(value):replaceAll("'", "''") .. "'"
+    end
+  end
+end
+
+--------------------------------------------------------------------------------
 -- INSERT
 --------------------------------------------------------------------------------
 
