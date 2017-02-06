@@ -34,6 +34,7 @@ HttpClient::HttpClient(const char * url)
 {
   m_url = url;
   m_chunk.memory = (char *) malloc(1);  // will be grown as needed by the realloc above
+  m_chunk.memory[0] = '\0';
   m_chunk.size = 0;    // no data at this point
   m_chunk_list = NULL;
 
