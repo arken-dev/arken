@@ -42,6 +42,7 @@ char * http::read(const char * url)
   struct MemoryStructHttp chunk;
 
   chunk.memory = (char *) malloc(1);  // will be grown as needed by the realloc above
+  chunk.memory[0] = '\0';
   chunk.size = 0;    // no data at this point
 
   curl_global_init(CURL_GLOBAL_ALL);
