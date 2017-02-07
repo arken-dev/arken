@@ -258,8 +258,8 @@ end
 -- ActiveRecord#pcall
 -------------------------------------------------------------------------------
 
-function ActiveRecord:pcall(method, params)
-  return pcall(self[method], self, params)
+function ActiveRecord:pcall(method, ...)
+  return pcall(self[method], self, ...)
 end
 
 -------------------------------------------------------------------------------
