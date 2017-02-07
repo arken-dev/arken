@@ -94,6 +94,7 @@ function template.build(file_name, params)
   template.source[file_name] = template.compile(file_name, params)
   return assert(loadstring(template.source[file_name]))
 end
+
 function template.execute(file_name, params, flag)
   local buffer = nil
   local time   = os.microtime()

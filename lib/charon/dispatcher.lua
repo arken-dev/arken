@@ -110,6 +110,7 @@ dispatcher.dispatch = function()
     else
       reload = package.reload()
       code, headers, body = dispatcher.dispatchController(request)
+      template.mtime = os.microtime()
     end
   else
     code, headers, body = dispatcher.dispatchController(request)
