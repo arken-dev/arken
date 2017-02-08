@@ -10,11 +10,12 @@ Class.classes    = {}
 Class.className  = "Class"
 
 Class.new = function(className, inheritedBy, params)
-  local class;
+  local class
+
   if type(inheritedBy) == 'string' then
     inheritedBy = Class.lookup(inheritedBy)
   end
-  -- recreate empty class
+
   if Class.classes[className] then
     class = Class.classes[className]
     if inheritedBy then
@@ -23,39 +24,15 @@ Class.new = function(className, inheritedBy, params)
     for key, value in pairs(class) do
       class[key] = nil
     end
-
-    -- name class
-    class.className = className
-    class.__index    = class
-    class.class      = class
-
-    if inheritedBy then
-      class.superclass = inheritedBy
-      if class.inherit then
-        class.inherit(class, params)
-      end
-    else
-      class.superclass = Class
-    end
   else
     Class.classes[className] = {}
     class = Class.classes[className]
-    -- name class
-    class.className = className --'class'
-    class.__index    = class
-    class.class      = class
-
-    if inheritedBy then
-      setmetatable(Class.classes[className], inheritedBy)
-      if class.inherit then
-        class.inherit(class, params)
-      end
-      class.superclass = inheritedBy
-    else
-      setmetatable(Class.classes[className], Object)
-      class.superclass = Class
-    end
   end
+
+  -- name class
+  class.className = className --'class'
+  class.__index    = class
+  class.class      = class
 
   -- create new
   function class.new(record)
@@ -63,6 +40,18 @@ Class.new = function(className, inheritedBy, params)
     setmetatable(obj, class)
     obj:initialize()
     return obj
+  end
+
+  -- inherith
+  if inheritedBy then
+    setmetatable(Class.classes[className], inheritedBy)
+    if class.inherit then
+      class.inherit(class, params)
+    end
+    class.superclass = inheritedBy
+  else
+    setmetatable(Class.classes[className], Object)
+    class.superclass = Class
   end
 
   -- contract
