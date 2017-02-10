@@ -4,6 +4,10 @@ Charon is a industrial platform for web development (and others) of extremely fa
 
 ![Charon image](images/logo2.jpg)
 
+# ROADMAP
+
+To follow the development roadmap: https://trello.com/b/27ccvQuw/charon-platform
+
 http://charonplatform.org
 
 debian
