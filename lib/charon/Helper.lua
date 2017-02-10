@@ -50,6 +50,10 @@ function Helper:textField(field, value, options)
     html = html .. string.format(" onkeyup=%q ", options.onkeyup)
   end
 
+  if options.disabled then
+    html = html .. ' disabled'
+  end
+
   return (html .. ' />')
 end
 

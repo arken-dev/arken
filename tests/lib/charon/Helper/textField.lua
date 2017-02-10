@@ -7,6 +7,12 @@ test.should_return_html = function()
   assert( result == html, result )
 end
 
+test.should_return_html_with_disabled = function()
+  local result = helper:textField("name", "John", {disabled = true})
+  local html   = [[<input type="text" id="name" name="name" value="John" style="width:250px" disabled />]]
+  assert( result == html, result )
+end
+
 test.should_return_html_with_onblur = function()
   local result = helper:textField("name", "John", { onblur = 'alert("here !!!")' } )
   local html   = [[<input type="text" id="name" name="name" value="John" style="width:250px" onblur="alert(\"here !!!\")"  />]]
