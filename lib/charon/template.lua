@@ -6,7 +6,7 @@
 local template  = {}
 template.cache  = {}
 template.source = {}
-template.mtime  = os.microtime()
+template.mtime  = {}
 template.time   = 0
 
 function template.paramsToLocal(params)
@@ -98,11 +98,13 @@ end
 function template.execute(file_name, params, flag)
   local buffer = nil
   local time   = os.microtime()
-  if flag and os.ctime(file_name) > template.mtime then
+  local mtime  = template.mtime[file_name] or 0
+  if flag and os.ctime(file_name) > mtime then
     template.cache[file_name] = nil
   end
   if not template.cache[file_name] then
     template.cache[file_name] = template.build(file_name, params)()
+    template.mtime[file_name] = os.microtime()
   end
   buffer = template.cache[file_name](params)
   template.time = template.time + (os.microtime() - time)
