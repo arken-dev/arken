@@ -1,6 +1,6 @@
 # CHARON PLATFORM
 
-Charon is a industrial platform for web development (and others) of extremely fast and scalable web applications
+Charon is a industrial platform for web development (and others) of extremely fast and scalable
 
 ![Charon image](images/logo2.jpg)
 
