@@ -28,8 +28,13 @@ Callisto::Callisto(int argc, char * argv[], const char * path, QObject *parent) 
   qDebug() << "m_file " << m_file;
 
   m_watcher->addPath(m_file);
-  if( os::exists("app/models") ) {
-    ByteArrayList * list = os::glob("app/models", "\\.lua$", true);
+
+  ByteArrayList * split = string::split(m_file.toLocal8Bit(), "/");
+  QByteArray dir = "app/";
+  dir.append(split->at(1));
+
+  if( os::exists(dir) ) {
+    ByteArrayList * list = os::glob(dir, "\\.lua$", true);
     for(int i = 0; i < list->size(); i++) {
       qDebug() << list->at(i);
       m_watcher->addPath(list->at(i));
