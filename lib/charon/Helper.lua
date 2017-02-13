@@ -187,7 +187,7 @@ function Helper:selectList(field, list, field_value, field_description, value, o
     html = html .. string.format(option, "", "", blank)
   end
   for i = 1, #list do
-    local row = list[i]
+    local row = list:at(i)
     if row[field_value] == value then
       selected = 'selected'
     else

@@ -211,7 +211,7 @@ function FormHelper:selectList(field, list, field_value, field_description, opti
     html = html .. string.format(option, "", "", blank)
   end
   for i = 1, #list do
-    local row = list[i]
+    local row = list:at(i)
     if row[field_value] == value then
       selected = 'selected'
     else
