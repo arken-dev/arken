@@ -80,7 +80,7 @@ test.should_return_error_with_not_render = function()
   local status, message = pcall(dispatcher.dispatch)
   CHARON_ENV='test'
   assert( status == false, tostring(status) )
-  assert( message:contains('body empty, render ?') == true, message )
+  assert( message:contains('body empty, missing render or return ?') == true, message )
 end
 
 test.should_return_public_image_in_development = function()

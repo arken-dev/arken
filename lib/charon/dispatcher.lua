@@ -116,7 +116,7 @@ dispatcher.dispatch = function()
   end
   time = (os.microtime() - time)
   if code == nil then
-    error "body empty, render ?"
+    error "body empty, missing render or return ?"
   end
   dispatcher.log(code, time, reload)
   dispatcher.after()
