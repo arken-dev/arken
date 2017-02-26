@@ -677,5 +677,4 @@ function ActiveRecord_Adapter.parser_value_datetime(value)
   end
 end
 
-
 return ActiveRecord_Adapter

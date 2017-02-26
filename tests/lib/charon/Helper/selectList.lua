@@ -1,8 +1,9 @@
+local Array  = require('charon.Array')
 local helper = require('charon.Helper')
 local test   = {}
 
 test.should_return_html = function()
-  local list   = {
+  local list   = Array.new{
     { id = 1, description = 'value 1' },
     { id = 2, description = 'value 2' }
   }
@@ -12,7 +13,7 @@ test.should_return_html = function()
 end
 
 test.should_return_html_with_multiple_true = function()
-  local list   = {
+  local list = Array.new{
     { id = 1, description = 'value 1' },
     { id = 2, description = 'value 2' }
   }
@@ -22,7 +23,7 @@ test.should_return_html_with_multiple_true = function()
 end
 
 test.should_return_html_with_multiple_number = function()
-  local list   = {
+  local list = Array.new{
     { id = 1, description = 'value 1' },
     { id = 2, description = 'value 2' }
   }
@@ -32,7 +33,7 @@ test.should_return_html_with_multiple_number = function()
 end
 
 test.should_return_html_with_blank = function()
-  local list   = {
+  local list = Array.new{
     { id = 1, description = 'value 1' },
     { id = 2, description = 'value 2' }
   }
@@ -42,7 +43,7 @@ test.should_return_html_with_blank = function()
 end
 
 test.should_return_html_with_blank_description = function()
-  local list   = {
+  local list = Array.new{
     { id = 1, description = 'value 1' },
     { id = 2, description = 'value 2' }
   }

@@ -4,6 +4,10 @@ local Class  = require('charon.oop.Class')
 local Person = Class.new("Person", "ActiveRecord")
 local ActiveRecord = require('charon.ActiveRecord')
 
+test.beforeAll = function()
+  ActiveRecord.config = "config/active_record_sqlite.json"
+end
+
 test.before = function()
   ActiveRecord.begin()
 end

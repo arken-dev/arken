@@ -96,7 +96,7 @@ function ActiveRecord_MysqlAdapter:update(record)
   sql = sql .. col .. where
   result = self:execute(sql)
   -- neat
-  local neat = ActiveRecord_MysqlAdapter.neat[record:cacheKey()] or {}
+  local neat = ActiveRecord_Adapter.neat[record:cacheKey()] or {}
   for column, properties in pairs(self:columns()) do
     neat[column] = record[column]
   end

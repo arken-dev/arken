@@ -1,8 +1,9 @@
+local Array      = require('charon.Array')
 local FormHelper = require('charon.Helper.FormHelper')
 local test = {}
 
 test.should_return_html_not_checked = function()
-  local list = { { id = 1, name = 'description' } }
+  local list = Array.new{ { id = 1, name = 'description' } }
   local data = { id = '1' }
   local controller = {controller_name = 'form', action_name = 'save'}
   local form = FormHelper.new{ name = 'form', controller = controller, data = data }
@@ -12,7 +13,7 @@ test.should_return_html_not_checked = function()
 end
 
 test.should_return_html_checked = function()
-  local list = { { id = 1, name = 'description' } }
+  local list = Array.new{ { id = 1, name = 'description' } }
   local data = { id = 1 }
   local controller = {controller_name = 'form', action_name = 'save'}
   local form = FormHelper.new{ name = 'form', controller = controller, data = data }
@@ -22,7 +23,7 @@ test.should_return_html_checked = function()
 end
 
 test.should_return_html_multiple_list_and_checked = function()
-  local list = {
+  local list = Array.new{
     { id = 1, name = 'John' },
     { id = 2, name = 'Suse' },
     { id = 3, name = 'Rute' }
@@ -37,7 +38,7 @@ end
 
 
 test.should_return_html_multiple_true = function()
-  local list = { { id = 1, name = 'description' } }
+  local list = Array.new{ { id = 1, name = 'description' } }
   local data = { id = 1 }
   local controller = {controller_name = 'form', action_name = 'save'}
   local form = FormHelper.new{ name = 'form', controller = controller, data = data }
@@ -47,7 +48,7 @@ test.should_return_html_multiple_true = function()
 end
 
 test.should_return_html_multiple = function()
-  local list = { { id = 1, name = 'description' } }
+  local list = Array.new{ { id = 1, name = 'description' } }
   local data = { id = 1 }
   local controller = {controller_name = 'form', action_name = 'save'}
   local form = FormHelper.new{ name = 'form', controller = controller, data = data }
@@ -57,7 +58,7 @@ test.should_return_html_multiple = function()
 end
 
 test.should_return_html_blank_true = function()
-  local list = { { id = 1, name = 'description' } }
+  local list = Array.new{ { id = 1, name = 'description' } }
   local data = { id = 1 }
   local controller = {controller_name = 'form', action_name = 'save'}
   local form = FormHelper.new{ name = 'form', controller = controller, data = data }
@@ -67,7 +68,7 @@ test.should_return_html_blank_true = function()
 end
 
 test.should_return_html_blank_value = function()
-  local list = { { id = 1, name = 'description' } }
+  local list = Array.new{ { id = 1, name = 'description' } }
   local data = { id = 1 }
   local controller = {controller_name = 'form', action_name = 'save'}
   local form = FormHelper.new{ name = 'form', controller = controller, data = data }

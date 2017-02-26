@@ -5,6 +5,7 @@ local PersonMysql = Class.new("PersonMysql", "ActiveRecord")
 local ActiveRecord = require('charon.ActiveRecord')
 
 test.beforeAll = function()
+  ActiveRecord.reset()
   ActiveRecord.config = "config/active_record_mysql.json"
   local sql = [[
   CREATE TABLE IF NOT EXISTS person_mysql (

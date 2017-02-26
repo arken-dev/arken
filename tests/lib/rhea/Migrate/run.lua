@@ -28,12 +28,14 @@ test.after = function()
 end
 
 test.beforeAll = function()
+  ActiveRecord.reset()
   ActiveRecord.config = "config/active_record_sqlite.json"
   package.path = package.path .. ';' .. CHARON_PATH .. '/util/?.lua'
   rhea.path = package.path
 end
 
 test.afterAll = function()
+  ActiveRecord.config = nil
   package.path = package.path:mid(1, rhea.path:lastIndexOf(';')-1)
 end
 

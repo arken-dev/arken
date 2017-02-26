@@ -2,6 +2,7 @@ local test   = {}
 local json   = require('charon.json')
 local Class  = require('charon.oop.Class')
 local Person = Class.new("Person", "ActiveRecord")
+local Adapter = require('charon.ActiveRecord.Adapter')
 
 test.beforeAll = function()
   ActiveRecord.config = "config/active_record_sqlite.json"
@@ -33,7 +34,7 @@ test.should_reset_instances_storages = function()
   assert( p == record1 , json.encode(record1) )
   ActiveRecord.clear()
   local record2 = Person.find{ id = p.id }
-  assert( p ~= record2 , json.encode(record2) )
+  assert( p ~= record2 , string.format('iguais %s %s', p, record2) )
 end
 
 return test

@@ -5,7 +5,6 @@
 
 local json    = require("charon.json")
 local Class   = require("charon.oop.Class")
-local Adapter = require("charon.ActiveRecord.Adapter")
 ActiveRecord  = Class.new("ActiveRecord")
 ActiveRecord.time = 0
 
@@ -90,6 +89,14 @@ ActiveRecord.inherit = function(class)
   end
 
   -----------------------------------------------------------------------------
+  -- ActiveRecord#reset()
+  -----------------------------------------------------------------------------
+
+  class.reset= function()
+    class[class.adapter_instance] = nil
+  end
+
+  -----------------------------------------------------------------------------
   -- ActiveRecord#adapter()
   -----------------------------------------------------------------------------
 
@@ -169,6 +176,7 @@ ActiveRecord.inherit = function(class)
   ------------------------------------------------------------------------------
   -- clear all cache
   function class.clear()
+    local Adapter = require("charon.ActiveRecord.Adapter")
     Adapter.neat  = {}
     Adapter.cache = {}
     for _, cursor in ipairs(Adapter.cursor) do

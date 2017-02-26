@@ -215,4 +215,9 @@ test.should_return_flag_one_if_function_is_local = function()
   assert( coverage.line('local function decode(str)', nil, keywords) == 1 )
 end
 
+test.should_return_flag_one_if_function_is_returned = function()
+  local keywords = { flag1 = 0, flag2 = 0, flag3 = 0, str1 = false, str2 = false }
+  assert( coverage.line('return function()', nil, keywords) == 1 )
+end
+
 return test

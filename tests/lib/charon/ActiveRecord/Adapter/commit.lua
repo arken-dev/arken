@@ -17,30 +17,33 @@ test.should_execute_commit_after_begin = function()
 end
 
 test.should_clear_errors = function()
+  local Adapter = require('charon.ActiveRecord.Adapter')
   local adapter = ActiveRecord.loadAdapter()
-  adapter.errors.value = 'true'
+  Adapter.errors.value = 'true'
   adapter:begin()
-  assert(adapter.errors.value == 'true')
+  assert(Adapter.errors.value == 'true')
   adapter:commit()
-  assert(adapter.errors.value == nil)
+  assert(Adapter.errors.value == nil, tostring(adapter.errors.value))
 end
 
 test.should_clear_cache = function()
+  local Adapter = require('charon.ActiveRecord.Adapter')
   local adapter = ActiveRecord.loadAdapter()
-  adapter.cache.value = 'true'
+  Adapter.cache.value = 'true'
   adapter:begin()
-  assert(adapter.cache.value == 'true')
+  assert(Adapter.cache.value == 'true')
   adapter:commit()
-  assert(adapter.cache.value == nil, adapter.cache.value)
+  assert(Adapter.cache.value == nil, adapter.cache.value)
 end
 
 test.should_clear_neat = function()
+  local Adapter = require('charon.ActiveRecord.Adapter')
   local adapter = ActiveRecord.loadAdapter()
-  adapter.neat.value = 'true'
+  Adapter.neat.value = 'true'
   adapter:begin()
-  assert(adapter.neat.value == 'true')
+  assert(Adapter.neat.value == 'true')
   adapter:commit()
-  assert(adapter.neat.value == nil, adapter.cache.value)
+  assert(Adapter.neat.value == nil, adapter.cache.value)
 end
 
 test.should_error_if_not_begin = function()

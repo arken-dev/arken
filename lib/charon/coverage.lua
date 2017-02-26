@@ -90,7 +90,9 @@ coverage.line = function(line, flag, keywords)
         keywords.flag = false
         return 1
       end
-      if reduce:startsWith("function") or reduce:startsWith("local function") then
+      if reduce:startsWith("function") or
+        reduce:startsWith("local function") or
+        reduce:startsWith("return function") then
         return 1
       end
       return flag
