@@ -14,7 +14,6 @@
 #include <charon/digest.h>
 #include <charon/http.h>
 #include <charon/regex.h>
-#include <charon/sha3.h>
 #include <charon/thread.h>
 
 using charon::base::os;

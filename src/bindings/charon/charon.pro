@@ -14,6 +14,5 @@ SUBDIRS = base           \
           net/httpparser \
           odebug         \
           regex          \
-          sha3           \
           utf8           \
           thread

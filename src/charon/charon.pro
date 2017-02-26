@@ -27,7 +27,6 @@ SOURCES += base/math.cpp       \
            digest.cpp          \
            http.cpp            \
            regex.cpp           \
-           sha3.cpp            \
            thread.cpp          \
            utf8.cpp            \
            ../vendors/mongrel2/http11/http11_parser.c \
