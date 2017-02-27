@@ -5,9 +5,6 @@
 
 #include <lua/lua.hpp>
 #include <charon/helper>
-#include <QtCore>
-#include <iostream>
-#include <QByteArray>
 
 using charon::net::HttpClient;
 
