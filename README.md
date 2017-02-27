@@ -18,7 +18,7 @@ http://charonplatform.org
 - chmod u+x qt-opensource-linux-x64-5.7.1.run
 - ./qt-opensource-linux-x64-5.7.1.run
 - install in /opt/Qt/5.7.1
-- add PATH var, ex PATH=/opt/Qt5.7.0/5.7/gcc_64/:$PATH
+- add PATH var, ex PATH=/opt/Qt5.7.1/5.7/gcc_64/:$PATH
 
 ### bootstrap (add libraries and install lua lib/include in deps directory)
 
