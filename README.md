@@ -23,11 +23,10 @@ http://charonplatform.org
 ### bootstrap (add libraries and install lua lib/include in deps directory)
 
 - execute bootstrap script
-  bootstrap/debian.jit.sh
-  bootstrap/debian.lua.sh
-  bootstrap/windows.jit.sh
-  bootstrap/macos.lua.sh
-
+- bootstrap/debian.jit.sh
+- bootstrap/debian.lua.sh
+- bootstrap/windows.jit.sh
+- bootstrap/macos.lua.sh
 
 ### cmake (build charon platform)
 
