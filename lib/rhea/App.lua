@@ -13,7 +13,7 @@ App.help.create = [[
 ]]
 
 function App:create(params)
-  local dirName = params[1]
+  local dirName = os.pwd() .. '/' .. params[1]
   if os.exists(dirName) then
     error(dirName .. ' exists')
   else
