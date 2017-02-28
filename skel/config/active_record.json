@@ -1,23 +1,23 @@
 {
   "development" : {
-    "adapter"  : "ActiveRecord.PostgresAdapter",
+    "adapter"  : "charon.ActiveRecord.SqliteAdapter",
     "host"     : "localhost",
     "database" : "mydatabase",
     "user"     : "postgres",
     "password" : "mypassword"
   },
   "production" : {
-    "adapter"  : "ActiveRecord.PostgresAdapter",
+    "adapter"  : "charon.ActiveRecord.SqliteAdapter",
     "host"     : "localhost",
     "database" : "mydatabase",
-    "user"     : "postgres",
+    "user"     : "myuser",
     "password" : "mypassword"
   },
   "test" : {
-    "adapter"  : "ActiveRecord.PostgresMemoryAdapter",
+    "adapter"  : "charon.ActiveRecord.SqliteAdapter",
     "host"     : "localhost",
     "database" : "mydatabase",
-    "user"     : "postgres",
+    "user"     : "myuser",
     "password" : "mypassword"
   }
 }
