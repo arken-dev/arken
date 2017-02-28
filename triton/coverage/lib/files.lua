@@ -34,7 +34,7 @@ function triton_run(fileName)
   if not os.exists(dirName) then
     triton.append("message", string.format("warning: directory %s not exists\n", dirName))
   end
-  local libName  = dirName:replaceAll("tests/lib/", ""):replaceChars("/", "."):replaceAll('.lua', '')
+  local libName  = dirName:replaceAll("tests/lib/", ""):replaceChar("/", "."):replaceAll('.lua', '')
   local iterator = QDirIterator.new(dirName)
   print(libName)
   package.loaded[libName] = nil
@@ -73,11 +73,11 @@ function triton_run(fileName)
   local dump    = coverage.dump()
   local data    = coverage.analyze(fileName)
   local buffer  = template.execute(tpl, { self = data })
-  local file    = io.open((dir .. "/" .. data.file_name:replaceChars("/", "-") .. '.html'), "w")
+  local file    = io.open((dir .. "/" .. data.file_name:replaceChar("/", "-") .. '.html'), "w")
   file:write(buffer)
   file:close()
 
-  file = io.open((dir .. "/" .. data.file_name:replaceChars("/", "-") .. '.json'), "w")
+  file = io.open((dir .. "/" .. data.file_name:replaceChar("/", "-") .. '.json'), "w")
   file:write(json.pretty(data))
   file:close()
 end

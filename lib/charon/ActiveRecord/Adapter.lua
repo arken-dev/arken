@@ -43,7 +43,7 @@ format.boolean = function(value)
 end
 
 format.number = function(value)
-  return tostring(value) --:replaceChars('.', ''):replaceChars(',', '.')
+  return tostring(value) --:replaceChar('.', ''):replaceChar(',', '.')
 end
 
 format.string = function(value)
@@ -83,7 +83,7 @@ ActiveRecord_Adapter.finders['boolean'] = function(value)
 end
 
 ActiveRecord_Adapter.finders['number'] = function(value)
-  return " = " .. tostring(value):replaceChars('.', ''):replaceChars(',', '.')
+  return " = " .. tostring(value):replaceChar('.', ''):replaceChar(',', '.')
 end
 
 ActiveRecord_Adapter.finders['table'] = function(value)
@@ -116,7 +116,7 @@ function ActiveRecord_Adapter:escape(value)
     return " NULL "
   else
     if(type(value) == 'number') then
-      return tostring(value) --:replaceChars('.', ''):replaceChars(',', '.')
+      return tostring(value) --:replaceChar('.', ''):replaceChar(',', '.')
     else
       return "'" .. tostring(value):escape() .. "'"
     end
@@ -567,7 +567,7 @@ end
 
 function ActiveRecord_Adapter.read_value_number(value)
   if tostring(value):contains(',') then
-    return tonumber(value:replaceChars('.', ''):replaceChars(',', '.'))
+    return tonumber(value:replaceChar('.', ''):replaceChar(',', '.'))
   else
     return tonumber(value)
   end

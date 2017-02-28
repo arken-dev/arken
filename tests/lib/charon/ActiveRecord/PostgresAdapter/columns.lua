@@ -3,7 +3,7 @@ local json   = require('charon.json')
 local Class  = require('charon.oop.Class')
 local Adapter = require('charon.ActiveRecord.PostgresAdapter')
 local Person = Class.new("Person", "ActiveRecord")
-Person.table_name = string.format("person_%s", "columns") --os.uuid():replaceChars('-', '_'))
+Person.table_name = string.format("person_%s", "columns") --os.uuid():replaceChar('-', '_'))
 
 test.beforeAll = function()
   ActiveRecord.config = "config/active_record_postgres.json"

@@ -553,7 +553,7 @@ char * string::repeated(const char *string, int times)
   return result;
 }
 
-char * string::replaceChars(const char *string, const char before, const char after)
+char * string::replaceChar(const char *string, const char before, const char after)
 {
   int i, j;
   int string_len = strlen(string);

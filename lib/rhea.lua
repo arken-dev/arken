@@ -74,7 +74,7 @@ rhea.run = function(args)
   local list = tostring(package.path):split(';')
   for i = 1, list:size() do
     local str = list:at(i)
-    str = str:replaceAll("/?.lua", ""):replaceChars('.', '/')
+    str = str:replaceAll("/?.lua", ""):replaceChar('.', '/')
     str = os.abspath(str)
     str = str .. '/rhea'
     if os.exists(str) then
@@ -96,7 +96,7 @@ rhea.run = function(args)
     local action = nil
 
     if last > 0 then
-      name   = task:left(last-1):replaceChars(":", ".")
+      name   = task:left(last-1):replaceChar(":", ".")
       action = task:mid(last+1, -1)
     end
 

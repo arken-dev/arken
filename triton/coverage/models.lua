@@ -35,7 +35,7 @@ end
 function triton_run(fileName)
   local tests     = {}
   local dirName   = fileName:replaceAll(".lua", ""):replaceAll("app", "tests")
-  local modelName = dirName:replaceAll("./tests/models/", ""):replaceChars("/", ".")
+  local modelName = dirName:replaceAll("./tests/models/", ""):replaceChar("/", ".")
   local iterator  = QDirIterator.new(dirName)
   package.loaded[modelName] = nil
 
@@ -73,11 +73,11 @@ function triton_run(fileName)
   local dump    = coverage.dump()
   local data    = coverage.analyze(file)
   local buffer  = template.execute(tpl, { self = data })
-  local file    = io.open((dir .. "/" .. data.file_name:replaceChars("/", "-") .. '.html'), "w")
+  local file    = io.open((dir .. "/" .. data.file_name:replaceChar("/", "-") .. '.html'), "w")
   file:write(buffer)
   file:close()
 
-  file = io.open((dir .. "/" .. data.file_name:replaceChars("/", "-") .. '.json'), "w")
+  file = io.open((dir .. "/" .. data.file_name:replaceChar("/", "-") .. '.json'), "w")
   file:write(json.encode(data))
   file:close()
 end

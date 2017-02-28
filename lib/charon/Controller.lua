@@ -28,7 +28,7 @@ function Controller:resolvHelper()
   helper.__index = helper
 
   local file   = self.prefixHelpers .. ".default"
-  if os.exists(file:replaceChars('.', '/') .. '.lua')  then
+  if os.exists(file:replaceChar('.', '/') .. '.lua')  then
     local tmp   = require(file)
     tmp.__index = tmp
     setmetatable(tmp, helper)
@@ -36,7 +36,7 @@ function Controller:resolvHelper()
   end
 
   local file = self.prefixHelpers .. "." .. self.controller_name
-  if os.exists(file:replaceChars('.', '/') .. '.lua')  then
+  if os.exists(file:replaceChar('.', '/') .. '.lua')  then
     local tmp = require(file)
     tmp.controller_path = self.controller_path
     tmp.controller_name = self.controller_name
