@@ -74,7 +74,7 @@ dispatcher.dispatchController = function(HttpRequest)
     controller_name = controller_name,
     action_name     = action_name,
     controller_path = controller_path,
-    HttpRequest         = HttpRequest
+    HttpRequest     = HttpRequest
   }
   if object[action_name .. "Action"] then
     local status, headers, body = object:pexecute(action_name .. "Action", HttpRequest)
