@@ -2,9 +2,9 @@
 #define _CHARON_HELPER_
 
 #include <charon/charon.h>
-#include <charon/base/math.h>
-#include <charon/base/os.h>
-#include <charon/base/string.h>
+#include <charon/math.h>
+#include <charon/os.h>
+#include <charon/string.h>
 #include <charon/net/httpclient.h>
 #include <charon/net/httpparser.h>
 #include <charon/base64.h>
@@ -16,8 +16,8 @@
 #include <charon/regex.h>
 #include <charon/thread.h>
 
-using charon::base::os;
-using charon::base::string;
-using charon::base::math;
+using charon::os;
+using charon::string;
+using charon::math;
 
 #endif

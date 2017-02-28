@@ -8,7 +8,7 @@
 #include <QRunnable>
 #include <QThread>
 #include <QMutex>
-#include <charon/helper>
+#include <charon/base>
 
 class MirandaService : public QThread, public QRunnable
 {

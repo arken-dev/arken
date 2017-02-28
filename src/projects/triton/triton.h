@@ -19,7 +19,7 @@
 #include <QMutex>
 #include <QRunnable>
 #include <QStringList>
-#include <charon/helper>
+#include <charon/base>
 
 void triton_register(lua_State * L);
 

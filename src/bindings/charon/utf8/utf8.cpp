@@ -4,7 +4,7 @@
 // license that can be found in the LICENSE file.
 
 #include <lua/lua.hpp>
-#include <charon/helper>
+#include <charon/base>
 #include <charon/utf8>
 
 using charon::utf8;

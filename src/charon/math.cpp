@@ -4,9 +4,7 @@
 // license that can be found in the LICENSE file.
 
 #include <cmath>
-#include <charon/helper>
-
-using namespace charon::base;
+#include <charon/base>
 
 int math::abs(int number)
 {

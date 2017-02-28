@@ -5,7 +5,7 @@
 
 #include <iostream>
 #include <lua/lua.hpp>
-#include <charon/helper>
+#include <charon/base>
 #include <QtCore>
 #include <QCoreApplication>
 

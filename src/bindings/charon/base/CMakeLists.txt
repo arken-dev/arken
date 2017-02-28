@@ -13,12 +13,12 @@ include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${PROJECT_SOURCE_DIR}/deps/include)
 
 add_library(
-  helper SHARED helper.cpp math.cpp os.cpp string.cpp
+  base SHARED base.cpp math.cpp os.cpp string.cpp
 )
 
 find_package(Qt5Core)
 find_package(Qt5Network)
 
-set_target_properties(helper PROPERTIES PREFIX "")
+set_target_properties(base PROPERTIES PREFIX "")
 
-target_link_libraries(helper Qt5::Core Qt5::Network charon lua curl)
+target_link_libraries(base Qt5::Core Qt5::Network charon lua curl)

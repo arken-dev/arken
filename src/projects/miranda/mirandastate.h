@@ -7,7 +7,7 @@
 #define MIRANDASTATE_H
 
 #include <lua/lua.hpp>
-#include <charon/helper>
+#include <charon/base>
 
 #include <QCoreApplication>
 #include <QDateTime>

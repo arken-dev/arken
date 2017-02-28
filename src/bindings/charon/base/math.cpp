@@ -4,7 +4,7 @@
 // license that can be found in the LICENSE file.
 
 #include <lua/lua.hpp>
-#include <charon/helper>
+#include <charon/base>
 #include <cmath>
 
 static int lua_charon_math_round( lua_State *L ) {

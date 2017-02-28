@@ -8,7 +8,7 @@
 #include <iostream>
 #include <QDebug>
 #include <QThread>
-#include <charon/helper>
+#include <charon/base>
 
 using charon::ByteArray;
 using charon::ByteArrayList;

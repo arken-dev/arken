@@ -10,7 +10,7 @@ int luaopen_charon_os( lua_State *L );
 int luaopen_charon_string( lua_State *L );
 
 extern "C" {
-  int luaopen_charon_helper( lua_State *L ) {
+  int luaopen_charon_base( lua_State *L ) {
     luaopen_charon_math(L);
     luaopen_charon_os(L);
     luaopen_charon_string(L);

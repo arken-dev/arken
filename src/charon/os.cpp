@@ -19,7 +19,7 @@
 #include <QThread>
 #include <QUuid>
 
-#include <charon/helper>
+#include <charon/base>
 #include <iostream>
 
 char * os::abspath(const char * path)

@@ -7,7 +7,7 @@
 #define _CBYTE_ARRAY_HEADER_
 
 #include <QtCore>
-#include <charon/helper>
+#include <charon/base>
 
 namespace charon
 {
