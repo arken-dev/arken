@@ -12,7 +12,7 @@ local template     = require 'charon.template'
 -- DISPATCHER
 -------------------------------------------------------------------------------
 
-request = require('charon.net.request')
+HttpRequest = require('charon.net.HttpRequest')
 local dispatcher = {}
 
 dispatcher.prefix = ""
@@ -22,8 +22,8 @@ dispatcher.public = "public"
 -- PARSE PATH
 -------------------------------------------------------------------------------
 
-dispatcher.parsePath  = function(request)
-  local path  = request.requestPath()
+dispatcher.parsePath  = function(HttpRequest)
+  local path  = HttpRequest.requestPath()
   local last  = path:lastIndexOf('/')
   local start = 2
   if dispatcher.prefix then
@@ -67,18 +67,18 @@ end
 -- DISPATCHER CONTROLLER
 -------------------------------------------------------------------------------
 
-dispatcher.dispatchController = function(request)
-  local controller_name, action_name, controller_path = dispatcher.parsePath(request)
+dispatcher.dispatchController = function(HttpRequest)
+  local controller_name, action_name, controller_path = dispatcher.parsePath(HttpRequest)
   local class  = dispatcher.requireController(controller_name)
   local object = class.new{
     controller_name = controller_name,
     action_name     = action_name,
     controller_path = controller_path,
-    request         = request
+    HttpRequest         = HttpRequest
   }
   if object[action_name .. "Action"] then
-    local status, headers, body = object:pexecute(action_name .. "Action")
-    request.response(headers)
+    local status, headers, body = object:pexecute(action_name .. "Action", HttpRequest)
+    HttpRequest.response(headers)
     return status, headers, body
   else
     return 500, {}, "action: \"" .. action_name .. "Action\" not found"
@@ -104,15 +104,15 @@ dispatcher.dispatch = function()
   local reload  = 0
   local code, headers, body
   if CHARON_ENV == 'development' then
-    local fileName = dispatcher.public .. request.requestPath():mid(#dispatcher.prefix+1, -1)
+    local fileName = dispatcher.public .. HttpRequest.requestPath():mid(#dispatcher.prefix+1, -1)
     if fileName ~= (dispatcher.public .. "/") and os.exists(fileName) then
       return dispatcher.dispatchLocal(fileName)
     else
       reload = package.reload()
-      code, headers, body = dispatcher.dispatchController(request)
+      code, headers, body = dispatcher.dispatchController(HttpRequest)
     end
   else
-    code, headers, body = dispatcher.dispatchController(request)
+    code, headers, body = dispatcher.dispatchController(HttpRequest)
   end
   time = (os.microtime() - time)
   if code == nil then
@@ -131,7 +131,7 @@ dispatcher.output = print
 
 dispatcher.log = function(code, time, reload)
   local msg = "Completed in %.4f ms (Reload: %.4f, View: %.4f, DB: %.4f) | %i OK [%s]"
-  local log = string.format(msg, time, reload, template.time, ActiveRecord.time, code, request:requestUri())
+  local log = string.format(msg, time, reload, template.time, ActiveRecord.time, code, HttpRequest:requestUri())
   dispatcher.output(log)
 end
 
@@ -140,7 +140,7 @@ end
 -------------------------------------------------------------------------------
 
 dispatcher.after = function()
-  request.reset()
+  HttpRequest.reset()
   ActiveRecord.clear()
   ActiveRecord.time = 0
   template.time     = 0

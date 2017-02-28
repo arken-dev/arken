@@ -102,5 +102,5 @@ miranda_request_register(lua_State * L) {
     {NULL, NULL}
   };
 
-  luaL_register(L, "request", Map);
+  luaL_register(L, "HttpRequest", Map);
 }
