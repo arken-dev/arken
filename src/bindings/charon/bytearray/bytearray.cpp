@@ -145,9 +145,9 @@ lua_ByteArrayInstanceMethodPrepend( lua_State *L ) {
 }
 
 static int
-lua_ByteArrayInstanceMethodCamelcase( lua_State *L ) {
+lua_ByteArrayInstanceMethodCamelCase( lua_State *L ) {
   ByteArray *udata  = checkByteArray( L );
-  lua_pushstring(L, udata->camelcase());
+  lua_pushstring(L, udata->camelCase());
   return 1;
 }
 
@@ -222,7 +222,7 @@ lua_ByteArrayInstanceMethodSqueeze( lua_State *L ) {
 
 static const
 luaL_reg ByteArrayInstanceMethods[] = {
-  {"camelcase", lua_ByteArrayInstanceMethodCamelcase},
+  {"camelCase", lua_ByteArrayInstanceMethodCamelCase},
   {"capitalize", lua_ByteArrayInstanceMethodCapitalize},
   {"right", lua_ByteArrayInstanceMethodRight},
   {"size", lua_ByteArrayInstanceMethodSize},

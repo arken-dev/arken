@@ -27,7 +27,7 @@ class ByteArray : public QByteArray
   ByteArray(const char *data) : QByteArray(data) { }
   ByteArray(const char *data, int size) : QByteArray(data, size) { }
 
-  ByteArray camelcase(void);
+  ByteArray camelCase(void);
   ByteArray capitalize(void);
   ByteArray underscore(void);
   ByteArray reduce(void);

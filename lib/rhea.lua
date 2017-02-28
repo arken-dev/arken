@@ -38,6 +38,8 @@ rhea.parseArgs = function(args)
     if value:startsWith("--") then
       key = value:mid(3, -1)
       params[key] = rhea.parseArg(index, args)
+    else
+      table.insert(params, value)
     end
   end
 
@@ -101,7 +103,7 @@ rhea.run = function(args)
     end
 
     local module, result
-      local rhea_name = 'rhea.' .. name:camelcase()
+      local rhea_name = 'rhea.' .. name:camelCase()
       local module = require(rhea_name)
 
     -------------------------------------------------------------------------------

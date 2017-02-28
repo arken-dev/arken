@@ -12,8 +12,8 @@ namespace charon {
   class string {
     public:
     static char * append(const char * string, const char * str);
-    static char * camelcase(const char * string, bool lcfirst);
-    static char * camelcase(const char * string);
+    static char * camelCase(const char * string, bool lcfirst);
+    static char * camelCase(const char * string);
     static char * capitalize(const char * string);
     static char * center(const char * string, size_t size, const char * pad);
     static bool   contains(const char * string, const char * str);

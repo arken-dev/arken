@@ -46,7 +46,7 @@ end
 -------------------------------------------------------------------------------
 
 dispatcher.requireController = function(controller_name)
-  return require(controller_name:camelcase() .. "Controller")
+  return require(controller_name:camelCase() .. "Controller")
 end
 
 -------------------------------------------------------------------------------

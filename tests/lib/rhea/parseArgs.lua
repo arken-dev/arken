@@ -55,4 +55,12 @@ test.should_return_first_value_second_boolean_and_last_string = function()
   assert( result.param3 == 'value3', json.encode(result) )
 end
 
+test.should_return_numeric_index = function()
+  local args   = {}
+  args[0] = 'migrate:run'
+  args[1] = '/tmp/appdir'
+  local result = rhea.parseArgs(args)
+  assert(result[1] == '/tmp/appdir', json.encode(result))
+end
+
 return test

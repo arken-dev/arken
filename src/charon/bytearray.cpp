@@ -8,9 +8,9 @@
 
 using charon::ByteArray;
 
-ByteArray ByteArray::camelcase(void)
+ByteArray ByteArray::camelCase(void)
 {
-  return ByteArray(string::camelcase(this->data()));
+  return ByteArray(string::camelCase(this->data()));
 }
 
 ByteArray ByteArray::capitalize(void)

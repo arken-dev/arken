@@ -18,7 +18,7 @@ static int lua_charon_string_append( lua_State *L ) {
   return 1;
 }
 
-static int lua_charon_string_camelcase( lua_State *L ) {
+static int lua_charon_string_camelCase( lua_State *L ) {
   char * result;
   const char *string = luaL_checkstring(L, 1);
   bool  flag = false;
@@ -27,7 +27,7 @@ static int lua_charon_string_camelcase( lua_State *L ) {
     flag =  lua_toboolean(L, 2);
   }
 
-  result = string::camelcase(string, flag);
+  result = string::camelCase(string, flag);
 
   lua_pushstring(L, result);
   delete[] result;
@@ -307,7 +307,7 @@ static int lua_charon_string_underscore( lua_State *L ) {
 int luaopen_charon_string( lua_State *L ) {
   static const luaL_reg Map[] = {
     {"append",      lua_charon_string_append},
-    {"camelcase",   lua_charon_string_camelcase},
+    {"camelCase",   lua_charon_string_camelCase},
     {"capitalize",  lua_charon_string_capitalize},
     {"center",      lua_charon_string_center},
     {"contains",    lua_charon_string_contains},
