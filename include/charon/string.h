@@ -31,7 +31,6 @@ namespace charon {
     static char * reduce(const char *buffer);
     static char * repeated(const char *buffer, int times);
     static char * replaceAll(const char * string, const char * before, const char * after);
-    static char * replaceFirst(const char * string, const char * before, const char * after);
     static char * replaceChar(const char * string, const char before, const char after);
     static char * right(const char *buffer, int len);
     static ByteArrayList * split(const char * string, const char * pattern);

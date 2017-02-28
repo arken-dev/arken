@@ -238,16 +238,6 @@ static int lua_charon_string_replaceAll( lua_State *L ) {
   return 1;
 }
 
-static int lua_charon_string_replaceFirst( lua_State *L ) {
-  const char * string = luaL_checkstring(L, 1);
-  const char * before = luaL_checkstring(L, 2);
-  const char * after  = luaL_checkstring(L, 3);
-  char * result       = string::replaceFirst(string, before, after);
-  lua_pushstring(L, result);  /* push result */
-  delete[] result;
-  return 1;
-}
-
 static int lua_charon_string_replaceChar( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   const char * before = luaL_checkstring(L, 2);
@@ -335,7 +325,6 @@ int luaopen_charon_string( lua_State *L ) {
     {"reduce",      lua_charon_string_reduce},
     {"repeated",    lua_charon_string_repeated},
     {"replaceAll",  lua_charon_string_replaceAll},
-    {"replaceFirst",lua_charon_string_replaceFirst},
     {"replaceChar", lua_charon_string_replaceChar},
     {"right",       lua_charon_string_right},
     {"startsWith",  lua_charon_string_startsWith},
