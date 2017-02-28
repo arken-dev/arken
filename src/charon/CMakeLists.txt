@@ -30,3 +30,5 @@ find_package(Qt5Network)
 
 target_link_libraries(charon Qt5::Core)
 target_link_libraries(charon Qt5::Network)
+target_link_libraries(charon curl)
+target_link_libraries(charon lua)

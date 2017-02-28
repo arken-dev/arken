@@ -11,6 +11,9 @@
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/clib/luasql)
 include_directories(${PROJECT_SOURCE_DIR}/src/lua/luasql)
 
-add_subdirectory( mysql )
-add_subdirectory( postgres )
+if ( NOT WIN32 )
+  add_subdirectory( mysql )
+  add_subdirectory( postgres )
+endif( NOT WIN32 )
+
 add_subdirectory( sqlite3 )
