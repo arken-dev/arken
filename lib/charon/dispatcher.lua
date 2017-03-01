@@ -12,9 +12,8 @@ local template     = require 'charon.template'
 -- DISPATCHER
 -------------------------------------------------------------------------------
 
-HttpRequest = require('charon.net.HttpRequest')
-local dispatcher = {}
-
+local HttpRequest = require('charon.net.HttpRequest')
+local dispatcher  = {}
 dispatcher.prefix = ""
 dispatcher.public = "public"
 
