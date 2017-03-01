@@ -64,6 +64,7 @@ void MirandaServer::start()
     qDebug() << QString("start miranda %1:%2 (%3) threads...").arg(m_address).arg(m_port).arg(m_maxThreadCount).toLocal8Bit().data();
   } else {
     qDebug() << "fail start miranda ...";
+    throw;
   }
   QFile log(m_pid);
   if ( log.open(QIODevice::WriteOnly) ) {
