@@ -73,11 +73,11 @@ function triton_run(fileName)
   local dump    = coverage.dump()
   local data    = coverage.analyze(file)
   local buffer  = template.execute(tpl, { self = data })
-  local file    = io.open((dir .. "/" .. data.file_name:replaceChar("/", "-") .. '.html'), "w")
+  local file    = io.open((dir .. "/" .. fileName:replaceChar("/", "-") .. '.html'), "w")
   file:write(buffer)
   file:close()
 
-  file = io.open((dir .. "/" .. data.file_name:replaceChar("/", "-") .. '.json'), "w")
+  file = io.open((dir .. "/" .. fileName:replaceChar("/", "-") .. '.json'), "w")
   file:write(json.encode(data))
   file:close()
 end

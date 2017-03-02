@@ -26,11 +26,11 @@
     <% local coverage = 0 -%>
     <% table.sort(self.files) -%>
     <% for i, file in ipairs(self.files) do -%>
-    <% local row = json.decode(os.read('coverage/' .. os.abspath(file):replaceChar('/', '-') .. '.json')) -%>
+    <% local row = json.decode(os.read('coverage/' .. file:replaceChar('/', '-') .. '.json')) -%>
     <tr bgcolor='<%= helper.color_coverage(row.coverage) -%>'>
        <% coverage = coverage + row.coverage -%>
        <td align='right'> <%= i -%></td>
-       <td><a href='<%= helper.parameterize(row.file_name) -%>.html'><%= helper.sanitize(file) -%></a></td>
+       <td><a href='<%= helper.parameterize(file) -%>.html'><%= helper.sanitize(file) -%></a></td>
        <td align='right'><%= helper.number_format(row.coverage) -%>%&nbsp;</td>
     </tr>
     <% end -%>
