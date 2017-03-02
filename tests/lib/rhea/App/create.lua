@@ -7,19 +7,20 @@ App.output = function(value)
 end
 
 test.should_copy_of_skel = function()
-  local dir    = os.temp() .. '/' .. os.uuid()
+  local dir    = 'tmp/' .. os.uuid()
   local params = {}
   params[0] = 'app:create'
   params[1] = dir
 
   rhea.run(params)
-  assert( os.exists(dir) == true )
+
+  assert( os.exists(os.pwd() .. '/' .. dir) == true, string.format("dir %s not exists", dir) )
   assert( os.exists(dir .. '/app') == true )
   assert( os.exists(dir .. '/config/active_record.json') == true )
 end
 
 test.should_error_if_dir_exists = function()
-  local dir    = os.temp() .. '/' .. os.uuid()
+  local dir    = 'tmp/' .. os.uuid()
   local params = {}
   params[0] = 'app:create'
   params[1] = dir
@@ -32,7 +33,7 @@ test.should_error_if_dir_exists = function()
 end
 
 test.should_config_database_postgres = function()
-  local dir    = os.temp() .. '/' .. os.uuid()
+  local dir    = 'tmp/' .. os.uuid()
   local params = {}
   params[0] = 'app:create'
   params[1] = dir
@@ -45,7 +46,7 @@ test.should_config_database_postgres = function()
 end
 
 test.should_config_database_mysql = function()
-  local dir    = os.temp() .. '/' .. os.uuid()
+  local dir    = 'tmp/' .. os.uuid()
   local params = {}
   params[0] = 'app:create'
   params[1] = dir
@@ -58,7 +59,7 @@ test.should_config_database_mysql = function()
 end
 
 test.should_config_database_sqlite = function()
-  local dir    = os.temp() .. '/' .. os.uuid()
+  local dir    = 'tmp/' .. os.uuid()
   local params = {}
   params[0] = 'app:create'
   params[1] = dir
