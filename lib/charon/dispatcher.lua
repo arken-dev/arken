@@ -77,11 +77,11 @@ dispatcher.dispatchController = function(request)
     request         = request
   }
   if object[action_name .. "Action"] then
-    local status, headers, body = object:pexecute(action_name .. "Action")
+    local status, headers, body = object:pexecute(action_name:camelCase(true) .. "Action")
     request.response(headers)
     return status, headers, body
   else
-    return 500, {}, "action: \"" .. action_name .. "Action\" not found"
+    return 500, {}, "action: \"" .. action_name:camelCase(true) .. "Action\" not found"
   end
 end
 
