@@ -28,16 +28,16 @@ dispatcher.parsePath  = function(env)
   if dispatcher.prefix then
     start = start + #dispatcher.prefix
   end
-  local controller_name = path:mid(start, last-start)
-  local action_name     = path:mid(#controller_name + start + 1)
-  local controller_path = path:mid(1, path:len() - action_name:len())
+  local controllerName = path:mid(start, last-start)
+  local actionName     = path:mid(#controller_name + start + 1)
+  local controllerPath = path:mid(1, path:len() - actionName:len())
   if controller_name == '' then
     controller_name = 'index'
   end
-  if last == 1 or action_name == '' then
-    action_name = "index"
+  if last == 1 or actionName == '' then
+    actionName = "index"
   end
-  return controller_name, action_name, controller_path
+  return controllerName, actionName, controllerPath
 end
 
 -------------------------------------------------------------------------------

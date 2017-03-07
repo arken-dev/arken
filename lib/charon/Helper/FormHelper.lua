@@ -16,8 +16,8 @@ function FormHelper:url(params)
   end
 
   local dispatcher = require 'charon.dispatcher'
-  local controller = params.controller or self.controller.controller_name or 'index'
-  local action     = params.action or self.controller.action_name or 'index'
+  local controller = params.controller or self.controller.controllerName or 'index'
+  local action     = params.action or self.controller.actionName or 'index'
 
   if dispatcher.prefix then
     controller = dispatcher.prefix .. '/' .. controller
@@ -37,7 +37,7 @@ function FormHelper:url(params)
 end
 
 function FormHelper:urlPerform()
-  local action = self.controller.action_name:gsub("Perform", "") .. "Perform"
+  local action = self.controller.actionName:gsub("Perform", "") .. "Perform"
   return self:url{ action = action }
 end
 

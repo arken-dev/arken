@@ -309,7 +309,7 @@ function Helper:url(params)
 end
 
 function Helper:urlPerform()
-  local action = self.action_name:gsub("Perform", "") .. "Perform"
+  local action = self.actionName:gsub("Perform", "") .. "Perform"
   return self:url{ action = action }
 end
 
