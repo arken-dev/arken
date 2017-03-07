@@ -1,4 +1,4 @@
- 1) return function(params)
+ 1) return function(self, helper)
  2)   local __buffer = ''
  3)    __buffer = __buffer .. [[
  4) print("hello...")]]

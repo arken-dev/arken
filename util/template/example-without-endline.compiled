@@ -1,4 +1,4 @@
-return function(params)
+return function(self, helper)
   local __buffer = ''
    __buffer = __buffer .. [[
 ]]

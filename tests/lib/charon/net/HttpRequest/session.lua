@@ -1,6 +1,7 @@
-local HttpParser = require "charon.net.HttpParser"
+local HttpEnv = require "charon.net.HttpEnv"
+local HttpRequest = require "charon.net.HttpRequest"
 local json = require "charon.json"
-request = require('charon.net.request')
+
 cache   = {}
 cache.value = function()
 end
@@ -14,71 +15,70 @@ test.afterAll = function()
 end
 
 test.should_return_table_data = function()
-  request.field = function(val)
+  local env = {}
+  env.field = function()
     return os.read(CHARON_PATH .. "/tests/lib/charon/net/cookie/1-example.cookie")
   end
-  local session = request.session()
+  local request = HttpRequest.new{ _env = env }
+  local session = request:session()
   assert( type(session) == 'table' )
 end
 
 test.should_return_table_restore_from_cache = function()
+  local request = HttpRequest.new()
   cache.value = function()
     return json.encode({ myvalue = '123' })
-  end    
+  end
   local uuid    = os.uuid()
   local cookies = request.cookies
   request.cookies = function(val)
     return { charon_session_id = 'uuid-1234' }
   end
   request.__session_data = nil
-  local session = request.session()
-  request.cookies = cookies
+  local session = request:session()
+
   assert( type(session) == 'table', type(session) )
   assert( session.myvalue == '123', session.myvalue )
 end
 
-
 test.should_return_table_data = function()
-  request.reset() 
-  local uuid    = os.uuid()
-  local cookies = request.cookies
-  request.cookies = function(val)
-    return { charon_session_id = uuid }
+  local request = HttpRequest.new()
+  request.cookies = function()
+    return { charon_session_id = os.uuid() }
   end
-  local session = request.session()
-  request.cookies = cookies
+  local session = request:session()
   assert( type(session) == 'table', type(session) )
-  assert( #request.__session_id == 36, #request.__session_id )
+  assert( #request._session_id == 36, #request._session_id )
 end
 
 test.should_return_empty_table_if_session_empty = function()
+  local request = HttpRequest.new()
   cache.value = function()
     return ""
-  end    
+  end
   local uuid    = os.uuid()
   local cookies = request.cookies
   request.cookies = function(val)
     return { charon_session_id = 'uuid-1234' }
   end
-  request.__session_data = nil
-  local session = request.session()
-  request.cookies = cookies
+  request._session_data = nil
+  local session = request:session()
+
   assert( type(session) == 'table', type(session) )
   assert( json.encode(session) == '{}', json.encode(session) )
 end
 
-
 test.should_return_table_new_session = function()
-  
+  local request = HttpRequest.new()
   local uuid    = os.uuid()
   local cookies = request.cookies
   request.cookies = function(val)
     return { charon_session_id = nil }
   end
-  local session = request.session()
-  request.cookies = cookies
+  local session = request:session()
+
   assert( type(session) == 'table', type(session) )
-  assert( #request.__session_id == 36, #request.__session_id )
+  assert( #request._session_id == 36, #request._session_id )
 end
 
 return test

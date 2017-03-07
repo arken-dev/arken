@@ -1,8 +1,8 @@
-local HttpParser = require "charon.net.HttpParser"
+local HttpEnv = require "charon.net.HttpEnv"
 
 local multipart = require('charon.net.multi-part')
-local header = os.read(CHARON_PATH .. '/tests/charon/net/HttpParser/example-2.header')
-local parser = HttpParser.new(header)
+local header = os.read(CHARON_PATH .. '/tests/charon/net/HttpEnv/example-2.txt')
+local parser = HttpEnv.new(header)
 local test = {}
 
 test.should_parse_requestUri = function()

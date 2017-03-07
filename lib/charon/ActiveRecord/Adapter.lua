@@ -8,10 +8,10 @@ local Class = require('charon.oop.Class')
 local toboolean = require('charon.toboolean')
 local QDateTime = require('QDateTime')
 
-ActiveRecord_Adapter = Class.new("ActiveRecord_Adapter")
+ActiveRecord_Adapter = Class.new("ActiveRecord.Adapter")
 
 ActiveRecord_Adapter.reserved = {
-  new_record = true, class = true, errors = true, join = true,
+  newRecord = true, class = true, errors = true, join = true,
   binding = true, order = true, limit = true
 }
 
@@ -21,7 +21,7 @@ ActiveRecord_Adapter.neat   = {}
 ActiveRecord_Adapter.cursor = {}
 ActiveRecord_Adapter.output = print
 
-ActiveRecord_Adapter.boolean_values = {
+ActiveRecord_Adapter.booleanValues = {
   ['t']     = true,
   ['1']     = true,
   ['true']  = true,
@@ -99,7 +99,7 @@ end
 --------------------------------------------------------------------------------
 
 function ActiveRecord_Adapter:defaultValues(record)
-  record.new_record = true
+  record.newRecord = true
   for column, properties in pairs(self:columns()) do
     if record[column] == nil then -- and properties.not_null then
       record[column] = properties.default
@@ -176,7 +176,7 @@ function ActiveRecord_Adapter:where(values, flag)
       end
     end
     if flag and #col == 0 then
-      error "parameters for find empty"
+      error {"parameters for find empty", traceback = debug.traceback() }
     end
     if col ~= '' then
       result = ' WHERE ' .. result .. col
@@ -200,7 +200,7 @@ end
 --------------------------------------------------------------------------------
 
 function ActiveRecord_Adapter:select(params, flag)
-  return 'SELECT ' .. self.table_name .. '.* FROM ' .. self.table_name .. " " .. self:where(params, flag)
+  return 'SELECT ' .. self.tableName .. '.* FROM ' .. self.tableName .. " " .. self:where(params, flag)
 end
 
 --------------------------------------------------------------------------------
@@ -208,8 +208,8 @@ end
 --------------------------------------------------------------------------------
 
 function ActiveRecord_Adapter:destroy(record)
-  local values = {[self.primary_key] = record[self.primary_key]}
-  local sql    = "DELETE FROM " .. self.table_name .. " " .. self:where(values)
+  local values = {[self.primaryKey] = record[self.primaryKey]}
+  local sql    = "DELETE FROM " .. self.tableName .. " " .. self:where(values)
   local result = self:execute(sql)
   self.cache[record:cacheKey()] = false
   return result
@@ -244,15 +244,14 @@ end
 --------------------------------------------------------------------------------
 
 function ActiveRecord_Adapter:find(params)
-
-  if params[self.primary_key] then
-    local key = self.table_name .. '_' .. tostring(params[self.primary_key])
+  if params[self.primaryKey] then
+    local key = self.tableName .. '_' .. tostring(params[self.primaryKey])
     if ActiveRecord_Adapter.cache[key] then
       return ActiveRecord_Adapter.cache[key]
     end
   end
 
-  local sql  = self:select(params, true)
+  local sql = self:select(params, true)
   return self:fetch(sql)
 end
 
@@ -334,16 +333,16 @@ end
 -------------------------------------------------------------------------------
 
 function ActiveRecord_Adapter:parser_fetch(res)
-  local key  = self.table_name .. '_' .. tostring(res[self.primary_key])
+  local key  = self.tableName .. '_' .. tostring(res[self.primaryKey])
 
   if ActiveRecord_Adapter.cache[key] then
     return ActiveRecord_Adapter.cache[key]
   else
     local neat = {}
 
-    res.new_record = false
+    res.newRecord = false
     for column, properties in pairs(self:columns()) do
-      res[column]  = self:parser_value(properties.format, res[column])
+      res[column]  = self:parserValue(properties.format, res[column])
       neat[column] = res[column]
     end
 
@@ -390,7 +389,7 @@ end
 function ActiveRecord_Adapter:populate(record, params)
   for column, properties in pairs(self:columns()) do
     if params[column] then
-      record[column] = self:parser_value(properties.format, params[column])
+      record[column] = self:parserValue(properties.format, params[column])
     end
   end
 end
@@ -428,7 +427,7 @@ function ActiveRecord_Adapter:validatePresence(record, params)
 end
 
 function ActiveRecord_Adapter:validateBoolean(record, params)
-  if not ActiveRecord_Adapter.boolean_values[record[params.column]] then
+  if not ActiveRecord_Adapter.booleanValues[record[params.column]] then
     record.errors[params.column] = params.message
   end
 end
@@ -450,7 +449,7 @@ function ActiveRecord_Adapter:validateUnique(record, params)
   local value = record[params.column]
   if value ~= nil and value ~= '' then
     local result = self:all{ [params.column] = value }
-    if record[self.primary_key] == nil and #result > 0 then
+    if record[self.primaryKey] == nil and #result > 0 then
       record.errors[params.column] = params.message
     end
   end
@@ -461,7 +460,7 @@ end
 -------------------------------------------------------------------------------
 
 function ActiveRecord_Adapter:sql(name, params)
-  local table   = self.record_class.table_name
+  local table   = self.record_class.tableName
   local query   = (ActiveRecord.query_prefix or '') .. 'query/' .. table
     query  = query .. '/' .. name .. '.sql'
   local values  = self.record_class.where(params)
@@ -516,7 +515,7 @@ end
 
 function ActiveRecord_Adapter:set(record, column, value)
   local properties = self:columns()[column]
-  record[column] = self:parser_value(properties.format, value)
+  record[column] = self:parserValue(properties.format, value)
 end
 
 --------------------------------------------------------------------------------
@@ -596,7 +595,7 @@ end
 --------------------------------------------------------------------------------
 
 function ActiveRecord_Adapter:count(params)
-  local sql    = "SELECT COUNT(*) count_all FROM " .. self.table_name .. " " .. self:where(params)
+  local sql    = "SELECT COUNT(*) count_all FROM " .. self.tableName .. " " .. self:where(params)
   local cursor = self:execute(sql)
   local res    = cursor:fetch({}, 'a')
   cursor:close()
@@ -625,19 +624,19 @@ end
 -- PARSER VALUE
 -------------------------------------------------------------------------------
 
-function ActiveRecord_Adapter:parser_value(format, value)
+function ActiveRecord_Adapter:parserValue(format, value)
   if format == nil or value == nil then
     return nil
   else
-    return self['parser_value_' .. format](value)
+    return self[format .. 'ParserValue'](value)
   end
 end
 
-function ActiveRecord_Adapter.parser_value_string(value)
+function ActiveRecord_Adapter.stringParserValue(value)
   return value
 end
 
-function ActiveRecord_Adapter.parser_value_time(value)
+function ActiveRecord_Adapter.timeParserValue(value)
   if value == '' then
     return nil
   else
@@ -645,7 +644,7 @@ function ActiveRecord_Adapter.parser_value_time(value)
   end
 end
 
-function ActiveRecord_Adapter.parser_value_date(value)
+function ActiveRecord_Adapter.dateParserValue(value)
   if value == '' then
     return nil
   else
@@ -653,15 +652,15 @@ function ActiveRecord_Adapter.parser_value_date(value)
   end
 end
 
-function ActiveRecord_Adapter.parser_value_number(value)
+function ActiveRecord_Adapter.numberParserValue(value)
   return tonumber(value)
 end
 
-function ActiveRecord_Adapter.parser_value_boolean(value)
+function ActiveRecord_Adapter.booleanParserValue(value)
   return toboolean(value)
 end
 
-function ActiveRecord_Adapter.parser_value_timestamp(value)
+function ActiveRecord_Adapter.timestampParserValue(value)
   if value == '' then
     return nil
   else
@@ -669,7 +668,7 @@ function ActiveRecord_Adapter.parser_value_timestamp(value)
   end
 end
 
-function ActiveRecord_Adapter.parser_value_datetime(value)
+function ActiveRecord_Adapter.datetimeParserValue(value)
   if value == '' then
     return nil
   else

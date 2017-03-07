@@ -72,7 +72,7 @@ function triton_run(fileName)
   local tpl     = CHARON_PATH .. "/lib/charon/coverage/templates/file.html"
   local dump    = coverage.dump()
   local data    = coverage.analyze(file)
-  local buffer  = template.execute(tpl, { self = data })
+  local buffer  = template.execute(tpl, data)
   local file    = io.open((dir .. "/" .. fileName:replaceChar("/", "-") .. '.html'), "w")
   file:write(buffer)
   file:close()
@@ -91,7 +91,7 @@ function triton_stop()
   local dir    = 'coverage'
   local tpl    = CHARON_PATH .. "/lib/charon/coverage/templates/index.html"
   local data   = {files = files, time = (os.microtime() - start), total = triton.total('tests')}
-  local buffer = template.execute(tpl, { self = data })
+  local buffer = template.execute(tpl, data)
 
   local file   = io.open((dir .. "/" .. 'index.html'), "w")
   file:write(buffer)

@@ -2,7 +2,7 @@ local test   = {}
 local json   = require('charon.json')
 local Class  = require('charon.oop.Class')
 local Person = Class.new("Person", "ActiveRecord")
-Person.table_name = string.format('person_%s', os.uuid():replaceChar('-', '_'))
+Person.tableName = string.format('person_%s', os.uuid():replaceChar('-', '_'))
 
 test.beforeAll = function()
   ActiveRecord.config = "config/active_record_sqlite.json"
@@ -10,12 +10,12 @@ test.beforeAll = function()
   CREATE TABLE IF NOT EXISTS %s (
     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, name VARCHAR(250), observation TEXT,
     created_at TEXT, updated_at TEXT, total REAL
-  )]], Person.table_name)
+  )]], Person.tableName)
   Person.adapter():execute(sql)
 end
 
 test.before = function()
-  Person.adapter():execute([[DELETE FROM ]] .. Person.table_name)
+  Person.adapter():execute([[DELETE FROM ]] .. Person.tableName)
   ActiveRecord.begin()
 end
 
@@ -36,7 +36,7 @@ test.should_return_record_stored = function()
   assert( record.name == 'Chris Weidman', json.encode(record) )
 end
 
-test.should_return_instance_by_primary_key = function()
+test.should_return_instance_by_primaryKey = function()
   local p = Person.new()
   p.name = "Chris Weidman"
   p:save()

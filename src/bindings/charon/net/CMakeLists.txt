@@ -12,4 +12,4 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/clib/charon/net)
 
 add_subdirectory(httpbody)
 add_subdirectory(httpclient)
-add_subdirectory(httpparser)
+add_subdirectory(httpenv)

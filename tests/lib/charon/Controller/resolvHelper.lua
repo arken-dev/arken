@@ -7,27 +7,27 @@ end
 
 test.should_return_default_helper_by_metatable = function()
   Controller.prefixHelpers = 'util.disabled'
-  local c = Controller.new{ controller_name = 'controller' }
+  local c = Controller.new{ controllerName = 'controller' }
   local h = c:resolvHelper()
   Controller.prefixHelpers = 'util.helpers'
   assert( getmetatable(h) == require('charon.Helper') )
 end
 
 test.should_return_defaul_helper_if_exists = function()
-  local c = Controller.new{ controller_name = 'controller' }
+  local c = Controller.new{ controllerName = 'controller' }
   local h = c:resolvHelper()
   assert( type(h.mydefaulthelper) == 'function', type(h.mydefaulthelper) )
 end
 
 test.should_return_function_from_base_helper = function()
-  local c = Controller.new{ controller_name = 'controller' }
+  local c = Controller.new{ controllerName = 'controller' }
   local h = c:resolvHelper()
   assert( type(h.fileTimestamp) == 'function', type(h.mydefaulthelper) )
 end
 
-test.should_return_helper_from_controller_name = function()
+test.should_return_helper_from_controllerName = function()
   local MyController = Class.new("MyController", Controller)
-  local c = MyController.new{ controller_name = 'my_controller' }
+  local c = MyController.new{ controllerName = 'my_controller' }
   local h = c:resolvHelper()
   -- base helper
   assert( type(h.nl2br) == 'function', type(h.mydefaulthelper) )

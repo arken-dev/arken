@@ -6,7 +6,7 @@ local Login    = Class.new("Login", "ActiveRecord")
 Employee.hasOne {
   name   = 'login',
   record = 'Login',
-  foreign_key = 'employee_id'
+  foreignKey = 'employee_id'
 }
 
 test.beforeAll = function()

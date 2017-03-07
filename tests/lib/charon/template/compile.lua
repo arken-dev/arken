@@ -8,7 +8,7 @@ test.should_error_if_file_not_exists = function()
 end
 
 test.should_compile_params_as_local_vars = function()
-  local result = template.compile("util/template/example1.tpl", { request = {}, helper = {}, form = {} } )
+  local result = template.compile("util/template/example1.tpl", {}, {} )
   assert( result == os.read("util/template/example1.compiled"), result )
 end
 

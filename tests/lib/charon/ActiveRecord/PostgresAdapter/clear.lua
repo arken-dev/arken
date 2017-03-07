@@ -2,7 +2,7 @@ local test   = {}
 local json   = require('charon.json')
 local Class  = require('charon.oop.Class')
 local Person = Class.new("Person", "ActiveRecord")
-Person.table_name = string.format("person_%s", os.uuid():replaceChar('-', '_'))
+Person.tableName = string.format("person_%s", os.uuid():replaceChar('-', '_'))
 
 test.beforeAll = function()
   ActiveRecord.reset()
@@ -12,7 +12,7 @@ test.beforeAll = function()
     id SERIAL PRIMARY KEY, name VARCHAR(250), observation TEXT,
     created_at TEXT, updated_at TEXT
   )]]
-  Person.adapter():execute(string.format(sql, Person.table_name))
+  Person.adapter():execute(string.format(sql, Person.tableName))
 end
 
 test.before = function()
@@ -24,7 +24,7 @@ test.after = function()
 end
 
 test.afterAll = function()
-  Person.adapter():execute(string.format("DROP TABLE %s", Person.table_name))
+  Person.adapter():execute(string.format("DROP TABLE %s", Person.tableName))
   ActiveRecord.config = nil
 end
 

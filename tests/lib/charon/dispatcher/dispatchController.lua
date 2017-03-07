@@ -5,22 +5,19 @@ package.path = package.path .. ';util/?.lua'
 
 test.beforeAll = function()
   dispatcher.output = function() end
-  _G.request = require('charon.net.request')
-  request.reset = function()
-  end
 end
 
 test.afterAll = function()
-  _G.request = nil
 end
 
 test.should_return_error_if_action_not_found = function()
-  request.requestPath = function()
+  local env = {}
+  env.requestPath = function()
     return "/order/unknow"
   end
 
   dispatcher.prefix = ""
-  local status, headers, body = dispatcher.dispatchController(request)
+  local status, headers, body = dispatcher.dispatchController(env)
   assert( status == 500, status )
   assert( #headers == 0, json.encode(headers) )
   assert( type(headers) == 'table', json.encode(headers) )
@@ -28,12 +25,13 @@ test.should_return_error_if_action_not_found = function()
 end
 
 test.should_return_error_if_action_save = function()
-  request.requestPath = function()
+  local env = {}
+  env.requestPath = function()
     return "/order/save"
   end
 
   dispatcher.prefix = ""
-  local status, headers, body = dispatcher.dispatchController(request)
+  local status, headers, body = dispatcher.dispatchController(env)
   assert( status == 200, status )
   assert( headers[1] == 'Content-Type: text/html; charset=utf-8', headers[1] )
   assert( type(headers) == 'table', json.encode(headers) )

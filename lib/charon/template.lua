@@ -9,15 +9,7 @@ template.source = {}
 template.mtime  = {}
 template.time   = 0
 
-function template.paramsToLocal(params)
-  local result = ""
-  for k, _ in pairs(params) do
-    result = result .. string.format("local %s = params.%s\n", k, k)
-  end
-  return result
-end
-
-function template.compile(file_name, params)
+function template.compile(file_name)
   if not os.exists(file_name) then
     error(string.format("%s not exists", file_name))
   end
@@ -29,8 +21,7 @@ function template.compile(file_name, params)
   local j    = 0
 
   local buffer = ""
-  buffer = buffer .. "return function(params)\n"
-  buffer = buffer .. template.paramsToLocal(params)
+  buffer = buffer .. "return function(self, helper)\n"
   buffer = buffer .. "  local __buffer = ''\n"
   buffer = buffer .. "   __buffer = __buffer .. [[\n"
 
@@ -90,12 +81,12 @@ function template.filter(file_name, buffer)
   return buffer
 end
 
-function template.build(file_name, params)
-  template.source[file_name] = template.compile(file_name, params)
+function template.build(file_name)
+  template.source[file_name] = template.compile(file_name)
   return assert(loadstring(template.source[file_name]))
 end
 
-function template.execute(file_name, params, flag)
+function template.execute(file_name, data, helper, flag)
   local buffer = nil
   local time   = os.microtime()
   local mtime  = template.mtime[file_name] or 0
@@ -103,10 +94,10 @@ function template.execute(file_name, params, flag)
     template.cache[file_name] = nil
   end
   if not template.cache[file_name] then
-    template.cache[file_name] = template.build(file_name, params)()
+    template.cache[file_name] = template.build(file_name)()
     template.mtime[file_name] = os.microtime()
   end
-  buffer = template.cache[file_name](params)
+  buffer = template.cache[file_name](data, helper)
   template.time = template.time + (os.microtime() - time)
   return buffer
 end

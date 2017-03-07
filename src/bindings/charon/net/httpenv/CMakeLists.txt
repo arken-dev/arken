@@ -9,16 +9,14 @@
 # ------------------------------------------------------------------------------
 
 include_directories(.)
-include_directories(${PROJECT_SOURCE_DIR}/include)
-include_directories(${PROJECT_SOURCE_DIR}/deps/include)
 
 add_library(
-  HttpParser SHARED httpparser.cpp
+  HttpEnv SHARED httpenv.cpp
 )
 
 find_package(Qt5Core)
 find_package(Qt5Network)
 
-set_target_properties(HttpParser PROPERTIES PREFIX "")
+set_target_properties(HttpEnv PROPERTIES PREFIX "")
 
-target_link_libraries(HttpParser Qt5::Core Qt5::Network charon lua)
+target_link_libraries(HttpEnv Qt5::Core Qt5::Network charon lua)

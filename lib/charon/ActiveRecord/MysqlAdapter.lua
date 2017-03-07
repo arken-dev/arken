@@ -10,7 +10,7 @@ local toboolean = require('charon.toboolean')
 local Class     = require('charon.oop.Class')
 local Adapter   = require('charon.ActiveRecord.Adapter')
 
-ActiveRecord_MysqlAdapter = Class.new("ActiveRecord.MysqlAdapter", Adapter)
+local ActiveRecord_MysqlAdapter = Class.new("ActiveRecord.MysqlAdapter", Adapter)
 
 ------------------------------------------------------------------------------
 -- CONNECT
@@ -38,7 +38,7 @@ end
 
 function ActiveRecord_MysqlAdapter:insert(record)
   self:bang(record)
-  local sql = 'INSERT INTO ' .. self.table_name .. ' '
+  local sql = 'INSERT INTO ' .. self.tableName .. ' '
   local col = ''
   local val = ''
   if self:columns().created_at then
@@ -50,7 +50,7 @@ function ActiveRecord_MysqlAdapter:insert(record)
   for column, value in pairs(record) do
     if not self:isReserved(column) then
     --for column, properties in pairs(self:columns(table)) do
-      if not (column == self.primary_key and isblank(record[self.primary_key]))  then
+      if not (column == self.primaryKey and isblank(record[self.primaryKey]))  then
         --local value = record[column]
         if #col > 0 then
           col = col .. ', '
@@ -74,9 +74,9 @@ end
 
 function ActiveRecord_MysqlAdapter:update(record)
   self:bang(record)
-  local sql = 'UPDATE ' .. self.table_name .. ' SET '
+  local sql = 'UPDATE ' .. self.tableName .. ' SET '
   local col = ''
-  local key = self.table_name .. '_' .. tostring(record.id)
+  local key = self.tableName .. '_' .. tostring(record.id)
 
   if self:columns().updated_at then
     record.updated_at = self:createTimestamp()
@@ -84,7 +84,7 @@ function ActiveRecord_MysqlAdapter:update(record)
 
   for column, properties in pairs(self:columns()) do
     local value = record[column]
-    if column ~= self.primary_key then
+    if column ~= self.primaryKey then
       if #col > 0 then
         col = col .. ', '
       end
@@ -92,7 +92,7 @@ function ActiveRecord_MysqlAdapter:update(record)
     end
   end
   local result = false
-  local where = ' WHERE ' .. self.primary_key .. " = " .. self:escape(record[self.primary_key])
+  local where = ' WHERE ' .. self.primaryKey .. " = " .. self:escape(record[self.primaryKey])
   sql = sql .. col .. where
   result = self:execute(sql)
   -- neat
@@ -113,7 +113,7 @@ function ActiveRecord_MysqlAdapter:create(record)
   local sql    = self:insert(record)
   local cursor = self:execute(sql)
   record.id    = self:connect():getlastautoid()
-  record.new_record = false
+  record.newRecord = false
   local key = record:cacheKey()
   ActiveRecord_Adapter.cache[key] = record
   ActiveRecord_Adapter.neat[key]  = record:dup()
@@ -130,13 +130,13 @@ end
 
 function ActiveRecord_MysqlAdapter:columns()
   if self.instanceColumns == nil then
-    local sql    = string.format("SHOW COLUMNS FROM %s", self.table_name)
+    local sql    = string.format("SHOW COLUMNS FROM %s", self.tableName)
     local result = {}
     local cursor = self:execute(sql)
     for row in cursor:each() do
-      local format = self:parser_format(row.Type)
+      local format = self:parserFormat(row.Type)
       result[row.Field] = {
-        default  = self:parser_default(format, row.Default),
+        default  = self:parserDefault(format, row.Default),
         not_null = row.Null == 'NO',
         format   = format
       }
@@ -151,31 +151,31 @@ end
 -- PARSER DEFAULT
 -------------------------------------------------------------------------------
 
-function ActiveRecord_MysqlAdapter:parser_default(format, value)
-  return self['parser_default_' .. format:lower()](value)
+function ActiveRecord_MysqlAdapter:parserDefault(format, value)
+  return self[format:lower() .. 'ParserDefault'](value)
 end
 
-function ActiveRecord_MysqlAdapter.parser_default_string(value)
+function ActiveRecord_MysqlAdapter.stringParserDefault(value)
   return value:replaceAll("::character varying", ""):replaceChar("'", "")
 end
 
-function ActiveRecord_MysqlAdapter.parser_default_time(value)
+function ActiveRecord_MysqlAdapter.timeParserDefault(value)
   return value:replaceAll("::time without time zone", ""):replaceChar("'", "")
 end
 
-function ActiveRecord_MysqlAdapter.parser_default_datetime(value)
+function ActiveRecord_MysqlAdapter.datetimeParserDefault(value)
   return value
 end
 
-function ActiveRecord_MysqlAdapter.parser_default_date(value)
+function ActiveRecord_MysqlAdapter.dateParserDefault(value)
   return value
 end
 
-function ActiveRecord_MysqlAdapter.parser_default_number(value)
+function ActiveRecord_MysqlAdapter.numberParserDefault(value)
   return tonumber(value)
 end
 
-function ActiveRecord_MysqlAdapter.parser_default_boolean(value)
+function ActiveRecord_MysqlAdapter.booleanParserDefault(value)
   return toboolean(value)
 end
 
@@ -183,7 +183,7 @@ end
 -- PARSER FORMAT
 -------------------------------------------------------------------------------
 
-function ActiveRecord_MysqlAdapter:parser_format(format_type)
+function ActiveRecord_MysqlAdapter:parserFormat(format_type)
   format_type = format_type:lower()
 
   if string.contains(format_type, 'tinyint') then
@@ -229,8 +229,8 @@ end
 -- TABLE EXISTS
 -------------------------------------------------------------------------------
 
-function ActiveRecord_MysqlAdapter:tableExists(table_name)
-  local sql    = string.format("SHOW TABLES LIKE '%s'", table_name)
+function ActiveRecord_MysqlAdapter:tableExists(tableName)
+  local sql    = string.format("SHOW TABLES LIKE '%s'", tableName)
   local cursor = self:execute(sql)
   local result = false
   if type(cursor) == 'userdata' then

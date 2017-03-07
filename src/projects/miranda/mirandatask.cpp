@@ -12,7 +12,7 @@
 #include <QMutex>
 
 using charon::net::HttpBody;
-using charon::net::HttpParser;
+using charon::net::HttpEnv;
 
 MirandaTask::MirandaTask(qintptr descriptor)
 {
@@ -70,21 +70,23 @@ void MirandaTask::processRequest(MirandaState * state, QByteArray &buffer)
 
   L = state->instance();
 
-  //request
-  HttpParser * http_request = new HttpParser(buffer);
-  lua_pushlightuserdata(L, http_request);
-  lua_setglobal(L, "__http_request");
 
-  //return
-  buffer.clear();
 
   // Process Request
   // TODO return is not validate
   lua_settop(L, 0);
   lua_getglobal(L, "dispatch");
 
+  HttpEnv **ptr = (HttpEnv **)lua_newuserdata(L, sizeof(HttpEnv*));
+  *ptr= new HttpEnv(buffer);
+  luaL_getmetatable(L, "HttpEnv.metatable");
+  lua_setmetatable(L, -2);
+
+  buffer.clear();
+
+
   /* error */
-  if( lua_pcall(L, 0, 3, 0 ) != 0 ) {
+  if( lua_pcall(L, 1, 3, 0 ) != 0 ) {
     code = 500;
     buffer.append(httpStatus(code));
     buffer.append("\r\n");
@@ -140,7 +142,7 @@ void MirandaTask::processRequest(MirandaState * state, QByteArray &buffer)
       buffer.append("\r\n");
     }
   }
-  delete http_request;
+  //delete http_request;
 }
 
 void MirandaTask::parseRequest(MirandaState *state, QByteArray &buffer)

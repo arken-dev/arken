@@ -94,7 +94,7 @@ test.should_error_if_values_emptys_and_flag_true = function()
   local customer_id = 1500
   local status, message = pcall(adapter.where, adapter, {}, true)
   assert( status == false )
-  assert( message:contains("parameters for find empty") == true, message )
+  assert( message[1]:contains("parameters for find empty") == true, message )
 end
 
 test.should_return_where_with_boolean_value = function()

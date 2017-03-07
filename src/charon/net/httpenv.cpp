@@ -31,7 +31,7 @@ http_field_cb(void *data, const char *field, size_t flen, const char *value, siz
   }
   m_value[i] = '\0';
 
-  HttpParser * p = (HttpParser *) data;
+  HttpEnv * p = (HttpEnv *) data;
   p->setField(m_field, m_value);
   delete[] m_field;
   delete[] m_value;
@@ -40,7 +40,6 @@ http_field_cb(void *data, const char *field, size_t flen, const char *value, siz
 static void
 on_fragment_cb(void * data, const char * at, size_t length)
 {
-  std::cout << "FRAGMENT...";
   size_t i;
   char * tmp = new char[length+1];
   for(i = 0; i < length; i++) {
@@ -48,7 +47,7 @@ on_fragment_cb(void * data, const char * at, size_t length)
   }
   tmp[i] = '\0';
 
-  HttpParser * p = (HttpParser *) data;
+  HttpEnv * p = (HttpEnv *) data;
   p->setFragment(tmp);
 }
 
@@ -62,7 +61,7 @@ on_header_done_cb(void *data, const char *at, size_t length)
   }
   tmp[i] = '\0';
 
-  HttpParser * p = (HttpParser *) data;
+  HttpEnv * p = (HttpEnv *) data;
   p->setHeaderDone(tmp, length);
 }
 
@@ -76,7 +75,7 @@ on_http_version_cb(void *data, const char *at, size_t length)
   }
   tmp[i] = '\0';
 
-  HttpParser * p = (HttpParser *) data;
+  HttpEnv * p = (HttpEnv *) data;
   p->setHttpVersion(tmp);
 }
 
@@ -90,7 +89,7 @@ on_request_uri_cb(void *data, const char *at, size_t length)
   }
   tmp[i] = '\0';
 
-  HttpParser * p = (HttpParser *) data;
+  HttpEnv * p = (HttpEnv *) data;
   p->setRequestUri(tmp);
 }
 
@@ -104,7 +103,7 @@ on_request_method_cb(void *data, const char *at, size_t length)
   }
   tmp[i] = '\0';
 
-  HttpParser * p = (HttpParser *) data;
+  HttpEnv * p = (HttpEnv *) data;
   p->setRequestMethod(tmp);
 }
 
@@ -118,7 +117,7 @@ on_request_path_cb(void *data, const char *at, size_t length)
   }
   tmp[i] = '\0';
 
-  HttpParser * p = (HttpParser *) data;
+  HttpEnv * p = (HttpEnv *) data;
   p->setRequestPath(tmp);
 }
 
@@ -132,11 +131,11 @@ on_query_string_cb(void *data, const char *at, size_t length)
   }
   tmp[i] = '\0';
 
-  HttpParser * p = (HttpParser *) data;
+  HttpEnv * p = (HttpEnv *) data;
   p->setQueryString(tmp);
 }
 
-HttpParser::HttpParser(QByteArray data)
+HttpEnv::HttpEnv(QByteArray data)
 {
   m_data = data;
   http_parser * parser = (http_parser *) malloc(sizeof(http_parser));
@@ -166,7 +165,7 @@ HttpParser::HttpParser(QByteArray data)
   free(parser);
 }
 
-HttpParser::~HttpParser()
+HttpEnv::~HttpEnv()
 {
   if(m_fragment != NULL)
     delete m_fragment;
@@ -184,94 +183,94 @@ HttpParser::~HttpParser()
     delete m_headerDone;
 }
 
-void HttpParser::setField(const char * field, const char * value)
+void HttpEnv::setField(const char * field, const char * value)
 {
   m_fields.insert(QByteArray(field), value);
 }
 
-void HttpParser::setFragment(const char * fragment)
+void HttpEnv::setFragment(const char * fragment)
 {
   m_fragment = fragment;
 }
 
-void HttpParser::setHeaderDone(const char * headerDone, size_t length)
+void HttpEnv::setHeaderDone(const char * headerDone, size_t length)
 {
   m_headerDoneLength = length;
   m_headerDone = headerDone;
 }
 
-void HttpParser::setQueryString(const char * queryString)
+void HttpEnv::setQueryString(const char * queryString)
 {
   m_queryString = queryString;
 }
 
-void HttpParser::setRequestPath(const char * requestPath)
+void HttpEnv::setRequestPath(const char * requestPath)
 {
   m_requestPath = requestPath;
 }
 
-void HttpParser::setRequestMethod(const char * requestMethod)
+void HttpEnv::setRequestMethod(const char * requestMethod)
 {
   m_requestMethod = requestMethod;
 }
 
-void HttpParser::setRequestUri(const char * requestUri)
+void HttpEnv::setRequestUri(const char * requestUri)
 {
   m_requestUri = requestUri;
 }
 
-void HttpParser::setHttpVersion(const char * httpVersion)
+void HttpEnv::setHttpVersion(const char * httpVersion)
 {
   m_httpVersion = httpVersion;
 }
 
-const char * HttpParser::queryString()
+const char * HttpEnv::queryString()
 {
   return m_queryString;
 }
 
-const char * HttpParser::requestPath()
+const char * HttpEnv::requestPath()
 {
   return m_requestPath;
 }
 
-const char * HttpParser::requestMethod()
+const char * HttpEnv::requestMethod()
 {
   return m_requestMethod;
 }
 
-const char * HttpParser::requestUri()
+const char * HttpEnv::requestUri()
 {
   return m_requestUri;
 }
 
-const char * HttpParser::httpVersion()
+const char * HttpEnv::httpVersion()
 {
   return m_httpVersion;
 }
 
-const char * HttpParser::headerDone()
+const char * HttpEnv::headerDone()
 {
   return m_headerDone;
 }
 
-size_t HttpParser::headerDoneLength()
+size_t HttpEnv::headerDoneLength()
 {
   return m_headerDoneLength;
 }
 
 
-const char * HttpParser::fragment()
+const char * HttpEnv::fragment()
 {
   return m_fragment;
 }
 
-const char * HttpParser::field(const char * field)
+const char * HttpEnv::field(const char * field)
 {
   return m_fields.value(QByteArray(field));
 }
 
-char * HttpParser::data()
+char * HttpEnv::data()
 {
   char * result = new char[m_data.size() + 1];
   strcpy(result, m_data.data());
@@ -279,7 +278,7 @@ char * HttpParser::data()
   return result;
 }
 
-QByteArray HttpParser::toJson()
+QByteArray HttpEnv::toJson()
 {
   QJsonObject json;
   json["fragment"]      = m_fragment;
@@ -296,5 +295,5 @@ QByteArray HttpParser::toJson()
     json[key] = m_fields[key].data();
   }
   QJsonDocument document(json);
-  return document.toJson(); 
+  return document.toJson();
 }

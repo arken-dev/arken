@@ -18,21 +18,21 @@ ActiveRecord.inherit = function(class)
   -- DEFAULT PROPERTIES
   -----------------------------------------------------------------------------
 
-  class.primary_key      = 'id'
-  class.table_name       = class.className:underscore()
-  class.adapter_instance = class.className .. 'AdapterInstance'
+  class.primaryKey     = 'id'
+  class.tableName       = class.className:underscore()
+  class.adapterInstance = class.className .. 'AdapterInstance'
 
   ------------------------------------------------------------------------------
   -- RELACIONAMENTOS
   ------------------------------------------------------------------------------
 
-  class.belongs = function(params)
+  class.belongsTo = function(params)
     class[params.name] = function(self)
-      if self[params.foreign_key] == nil then
+      if self[params.foreignKey] == nil then
         return nil
       else
         local  record = Class.lookup(params.record)
-        return record.find{[record.primary_key] = self[params.foreign_key]}
+        return record.find{[record.primaryKey] = self[params.foreignKey]}
       end
     end
   end
@@ -40,7 +40,7 @@ ActiveRecord.inherit = function(class)
   class.hasOne = function(params)
     class[params.name] = function(self)
       local  record = Class.lookup(params.record)
-      return record.find{[params.foreign_key] = self[self.primary_key]}
+      return record.find{[params.foreignKey] = self[self.primaryKey]}
     end
   end
 
@@ -48,7 +48,7 @@ ActiveRecord.inherit = function(class)
     class[params.name] = function(self)
       local record     = Class.lookup(params.record)
       local conditions = params.conditions or {}
-      conditions[params.foreign_key] = self[record.primary_key]
+      conditions[params.foreignKey] = self[record.primaryKey]
       if params.order then
         conditions.order = params.order
       end
@@ -93,7 +93,7 @@ ActiveRecord.inherit = function(class)
   -----------------------------------------------------------------------------
 
   class.reset= function()
-    class[class.adapter_instance] = nil
+    class[class.adapterInstance] = nil
   end
 
   -----------------------------------------------------------------------------
@@ -101,11 +101,11 @@ ActiveRecord.inherit = function(class)
   -----------------------------------------------------------------------------
 
   class.adapter = function(force)
-    local adapter_instance = class.adapter_instance
-    if class[adapter_instance] == nil or force then
-      class[adapter_instance] = class.loadAdapter()
+    local adapterInstance = class.adapterInstance
+    if class[adapterInstance] == nil or force then
+      class[adapterInstance] = class.loadAdapter()
     end
-    return class[adapter_instance]
+    return class[adapterInstance]
   end
 
   -----------------------------------------------------------------------------
@@ -117,8 +117,8 @@ ActiveRecord.inherit = function(class)
     local adapter = adapter_name or config.adapter
     return Class.lookup(adapter).new{
       record_class = class,
-      table_name   = class.table_name,
-      primary_key  = class.primary_key,
+      tableName   = class.tableName,
+      primaryKey  = class.primaryKey,
       user         = config.user,
       password     = config.password,
       database     = config.database,
@@ -137,9 +137,9 @@ ActiveRecord.inherit = function(class)
       error("file " .. config .. " not exists")
     end
 
-    local raw    = os.read(config)
-    local env    = CHARON_ENV or 'development'
-    local data   = json.decode(raw)
+    local raw  = os.read(config)
+    local env  = CHARON_ENV or 'development'
+    local data = json.decode(raw)
     if type(data) == 'table' then
       return data[env]
     else
@@ -216,7 +216,7 @@ end
 
 function ActiveRecord:initialize()
   self.errors = {}
-  if self.new_record == nil then
+  if self.newRecord == nil then
     self.adapter():defaultValues(self)
   end
 end
@@ -245,7 +245,7 @@ end
 -------------------------------------------------------------------------------
 
 function ActiveRecord:save()
-  if self.new_record then
+  if self.newRecord then
     self:create()
   else
     self:update()
@@ -275,7 +275,7 @@ end
 -------------------------------------------------------------------------------
 
 function ActiveRecord:cacheKey()
-  return self.table_name .. '_' .. tostring(self[self.primary_key])
+  return self.tableName .. '_' .. tostring(self[self.primaryKey])
 end
 
 -------------------------------------------------------------------------------

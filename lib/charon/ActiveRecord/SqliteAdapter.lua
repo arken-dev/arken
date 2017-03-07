@@ -9,7 +9,7 @@ local toboolean = require('charon.toboolean')
 local Class     = require('charon.oop.Class')
 local Adapter   = require('charon.ActiveRecord.Adapter')
 
-ActiveRecord_SqliteAdapter = Class.new("ActiveRecord.SqliteAdapter", Adapter)
+local ActiveRecord_SqliteAdapter = Class.new("ActiveRecord.SqliteAdapter", Adapter)
 
 ------------------------------------------------------------------------------
 -- CONNECT
@@ -34,7 +34,7 @@ end
 
 function ActiveRecord_SqliteAdapter:insert(record)
   self:bang(record)
-  local sql = 'INSERT INTO ' .. self.table_name .. ' '
+  local sql = 'INSERT INTO ' .. self.tableName .. ' '
   local col = ''
   local val = ''
   if self:columns().created_at then
@@ -46,7 +46,7 @@ function ActiveRecord_SqliteAdapter:insert(record)
   for column, value in pairs(record) do
     if not self:isReserved(column) then
     --for column, properties in pairs(self:columns(table)) do
-      if not (column == self.primary_key and isblank(record[self.primary_key]))  then
+      if not (column == self.primaryKey and isblank(record[self.primaryKey]))  then
         --local value = record[column]
         if #col > 0 then
           col = col .. ', '
@@ -69,9 +69,9 @@ end
 
 function ActiveRecord_SqliteAdapter:update(record)
   self:bang(record)
-  local sql = 'UPDATE ' .. self.table_name .. ' SET '
+  local sql = 'UPDATE ' .. self.tableName .. ' SET '
   local col = ''
-  local key = self.table_name .. '_' .. tostring(record.id)
+  local key = self.tableName .. '_' .. tostring(record.id)
 
   if self:columns().updated_at then
     record.updated_at = self:createTimestamp()
@@ -79,7 +79,7 @@ function ActiveRecord_SqliteAdapter:update(record)
 
   for column, properties in pairs(self:columns()) do
     local value = record[column]
-    if column ~= self.primary_key then
+    if column ~= self.primaryKey then
       if #col > 0 then
         col = col .. ', '
       end
@@ -87,7 +87,7 @@ function ActiveRecord_SqliteAdapter:update(record)
     end
   end
   local result = false
-  local where = ' WHERE ' .. self.primary_key .. " = " .. self:escape(record[self.primary_key])
+  local where = ' WHERE ' .. self.primaryKey .. " = " .. self:escape(record[self.primaryKey])
   sql = sql .. col .. where
   result = self:execute(sql)
   -- neat
@@ -108,7 +108,7 @@ function ActiveRecord_SqliteAdapter:create(record)
   local sql    = self:insert(record)
   local cursor = self:execute(sql)
   record.id    = self:connect():getlastautoid()
-  record.new_record = false
+  record.newRecord = false
   local key = record:cacheKey()
   ActiveRecord_Adapter.cache[key] = record
   ActiveRecord_Adapter.neat[key]  = record:dup()
@@ -121,13 +121,13 @@ end
 
 function ActiveRecord_SqliteAdapter:columns()
   if self.instanceColumns == nil then
-    local sql    = string.format("pragma table_info(%s)", self.table_name)
+    local sql    = string.format("pragma table_info(%s)", self.tableName)
     local result = {}
     local cursor = self:execute(sql)
     for row in cursor:each() do
-      local format = self:parser_format(row.type)
+      local format = self:parserFormat(row.type)
       result[row.name] = {
-        default  = self:parser_default(format, row.dflt_value),
+        default  = self:parserDefault(format, row.dflt_value),
         not_null = row.notnull == 1,
         format   = format
       }
@@ -142,39 +142,39 @@ end
 -- PARSER DEFAULT
 -------------------------------------------------------------------------------
 
-function ActiveRecord_SqliteAdapter:parser_default(format, value)
+function ActiveRecord_SqliteAdapter:parserDefault(format, value)
   if format == nil or value == nil then
     return nil
   else
-    return self['parser_default_' .. format](value)
+    return self[format .. 'ParserDefault'](value)
   end
 end
 
-function ActiveRecord_SqliteAdapter.parser_default_string(value)
+function ActiveRecord_SqliteAdapter.stringParserDefault(value)
   return value:mid(2, #value-2)
 end
 
-function ActiveRecord_SqliteAdapter.parser_default_time(value)
+function ActiveRecord_SqliteAdapter.timeParserDefault(value)
   return value:mid(2, #value-2)
 end
 
-function ActiveRecord_SqliteAdapter.parser_default_timestamp(value)
+function ActiveRecord_SqliteAdapter.timestampParserDefault(value)
   return value:mid(2, #value-2)
 end
 
-function ActiveRecord_SqliteAdapter.parser_default_datetime(value)
+function ActiveRecord_SqliteAdapter.datetimeParserDefault(value)
   return value:mid(2, #value-2)
 end
 
-function ActiveRecord_SqliteAdapter.parser_default_date(value)
+function ActiveRecord_SqliteAdapter.dateParserDefault(value)
   return value:mid(2, #value-2)
 end
 
-function ActiveRecord_SqliteAdapter.parser_default_number(value)
+function ActiveRecord_SqliteAdapter.numberParserDefault(value)
   return tonumber(value)
 end
 
-function ActiveRecord_SqliteAdapter.parser_default_boolean(value)
+function ActiveRecord_SqliteAdapter.booleanParserDefault(value)
   return toboolean(value)
 end
 
@@ -182,7 +182,7 @@ end
 -- PARSER FORMAT
 -------------------------------------------------------------------------------
 
-function ActiveRecord_SqliteAdapter:parser_format(format_type)
+function ActiveRecord_SqliteAdapter:parserFormat(format_type)
   format_type = format_type:lower()
   if string.contains(format_type, 'varchar') then
     return 'string'
@@ -235,8 +235,8 @@ end
 -- TABLE EXISTS
 -------------------------------------------------------------------------------
 
-function ActiveRecord_SqliteAdapter:tableExists(table_name)
-  local sql    = string.format("pragma table_info(%s)", table_name)
+function ActiveRecord_SqliteAdapter:tableExists(tableName)
+  local sql    = string.format("pragma table_info(%s)", tableName)
   local cursor = self:execute(sql)
   local result = false
   if type(cursor) == 'userdata' then

@@ -7,14 +7,13 @@ local Controller   = require 'charon.Controller'
 local ActiveRecord = require 'charon.ActiveRecord'
 local ByteArray    = require 'charon.ByteArray'
 local template     = require 'charon.template'
+local HttpEnv      = require 'charon.net.HttpEnv'
 
 -------------------------------------------------------------------------------
 -- DISPATCHER
 -------------------------------------------------------------------------------
 
-request = require('charon.net.request')
 local dispatcher = {}
-
 dispatcher.prefix = ""
 dispatcher.public = "public"
 
@@ -22,8 +21,8 @@ dispatcher.public = "public"
 -- PARSE PATH
 -------------------------------------------------------------------------------
 
-dispatcher.parsePath  = function(request)
-  local path  = request.requestPath()
+dispatcher.parsePath  = function(env)
+  local path  = env:requestPath()
   local last  = path:lastIndexOf('/')
   local start = 2
   if dispatcher.prefix then
@@ -67,21 +66,19 @@ end
 -- DISPATCHER CONTROLLER
 -------------------------------------------------------------------------------
 
-dispatcher.dispatchController = function(request)
-  local controller_name, action_name, controller_path = dispatcher.parsePath(request)
-  local class  = dispatcher.requireController(controller_name)
+dispatcher.dispatchController = function(env)
+  local controllerName, actionName, controllerPath = dispatcher.parsePath(env)
+  local class  = dispatcher.requireController(controllerName)
   local object = class.new{
-    controller_name = controller_name,
-    action_name     = action_name,
-    controller_path = controller_path,
-    request         = request
+    controllerName = controllerName,
+    actionName     = actionName,
+    controllerPath = controllerPath,
+    _env = env
   }
-  if object[action_name .. "Action"] then
-    local status, headers, body = object:pexecute(action_name:camelCase(true) .. "Action")
-    request.response(headers)
-    return status, headers, body
+  if object[actionName .. "Action"] then
+    return object:pexecute(actionName:camelCase(true) .. "Action")
   else
-    return 500, {}, "action: \"" .. action_name:camelCase(true) .. "Action\" not found"
+    return 500, {}, "action: \"" .. actionName:camelCase(true) .. "Action\" not found"
   end
 end
 
@@ -98,27 +95,27 @@ end
 -- DISPATCH
 -------------------------------------------------------------------------------
 
-dispatcher.dispatch = function()
+dispatcher.dispatch = function(env)
   dispatcher.before()
   local time    = os.microtime()
   local reload  = 0
   local code, headers, body
   if CHARON_ENV == 'development' then
-    local fileName = dispatcher.public .. request.requestPath():mid(#dispatcher.prefix+1, -1)
+    local fileName = dispatcher.public .. env:requestPath():mid(#dispatcher.prefix+1, -1)
     if fileName ~= (dispatcher.public .. "/") and os.exists(fileName) then
       return dispatcher.dispatchLocal(fileName)
     else
       reload = package.reload()
-      code, headers, body = dispatcher.dispatchController(request)
+      code, headers, body = dispatcher.dispatchController(env)
     end
   else
-    code, headers, body = dispatcher.dispatchController(request)
+    code, headers, body = dispatcher.dispatchController(env)
   end
   time = (os.microtime() - time)
   if code == nil then
     error "body empty, missing render or return ?"
   end
-  dispatcher.log(code, time, reload)
+  dispatcher.log(env, code, time, reload)
   dispatcher.after()
   return code, headers, body
 end
@@ -129,9 +126,9 @@ end
 
 dispatcher.output = print
 
-dispatcher.log = function(code, time, reload)
+dispatcher.log = function(env, code, time, reload)
   local msg = "Completed in %.4f ms (Reload: %.4f, View: %.4f, DB: %.4f) | %i OK [%s]"
-  local log = string.format(msg, time, reload, template.time, ActiveRecord.time, code, request:requestUri())
+  local log = string.format(msg, time, reload, template.time, ActiveRecord.time, code, env:requestUri())
   dispatcher.output(log)
 end
 
@@ -139,8 +136,7 @@ end
 -- AFTER
 -------------------------------------------------------------------------------
 
-dispatcher.after = function()
-  request.reset()
+dispatcher.after = function(env)
   ActiveRecord.clear()
   ActiveRecord.time = 0
   template.time     = 0

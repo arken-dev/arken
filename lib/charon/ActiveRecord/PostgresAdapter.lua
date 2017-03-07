@@ -9,7 +9,7 @@ local toboolean = require('charon.toboolean')
 local Class     = require('charon.oop.Class')
 local Adapter   = require('charon.ActiveRecord.Adapter')
 
-ActiveRecord_PostgresAdapter = Class.new("ActiveRecord.PostgresAdapter", Adapter)
+local ActiveRecord_PostgresAdapter = Class.new("ActiveRecord.PostgresAdapter", Adapter)
 
 ------------------------------------------------------------------------------
 -- CONNECT
@@ -52,7 +52,7 @@ end
 
 function ActiveRecord_PostgresAdapter:insert(record)
   self:bang(record)
-  local sql = 'INSERT INTO ' .. self.table_name .. ' '
+  local sql = 'INSERT INTO ' .. self.tableName .. ' '
   local col = ''
   local val = ''
   if self:columns().created_at then
@@ -67,7 +67,7 @@ function ActiveRecord_PostgresAdapter:insert(record)
   for column, value in pairs(record) do
     if not self:isReserved(column) then
     --for column, properties in pairs(self:columns(table)) do
-      if not (column == self.primary_key and isblank(record[self.primary_key]))  then
+      if not (column == self.primaryKey and isblank(record[self.primaryKey]))  then
         --local value = record[column]
         if #col > 0 then
           col = col .. ', '
@@ -82,7 +82,7 @@ function ActiveRecord_PostgresAdapter:insert(record)
     end
   end
 
-  return sql ..  '(' .. col .. ') VALUES (' .. val .. ') ' .. ' RETURNING ' .. record.primary_key
+  return sql ..  '(' .. col .. ') VALUES (' .. val .. ') ' .. ' RETURNING ' .. record.primaryKey
 end
 
 --------------------------------------------------------------------------------
@@ -91,9 +91,9 @@ end
 
 function ActiveRecord_PostgresAdapter:update(record)
   self:bang(record)
-  local sql = 'UPDATE ' .. self.table_name .. ' SET '
+  local sql = 'UPDATE ' .. self.tableName .. ' SET '
   local col = ''
-  local key = self.table_name .. '_' .. tostring(record.id)
+  local key = self.tableName .. '_' .. tostring(record.id)
 
   if self:columns().updated_at then
     record.updated_at = self:createTimestamp()
@@ -101,7 +101,7 @@ function ActiveRecord_PostgresAdapter:update(record)
 
   for column, properties in pairs(self:columns()) do
     local value = record[column]
-    if column ~= self.primary_key then
+    if column ~= self.primaryKey then
       if #col > 0 then
         col = col .. ', '
       end
@@ -109,7 +109,7 @@ function ActiveRecord_PostgresAdapter:update(record)
     end
   end
   local result = false
-  local where = ' WHERE ' .. self.primary_key .. " = " .. self:escape(record[self.primary_key])
+  local where = ' WHERE ' .. self.primaryKey .. " = " .. self:escape(record[self.primaryKey])
   sql = sql .. col .. where
   result = self:execute(sql)
   -- neat
@@ -130,9 +130,9 @@ function ActiveRecord_PostgresAdapter:create(record)
   local sql    = self:insert(record)
   local cursor = self:execute(sql)
   local row    = cursor:fetch({}, 'a')
-  record.id    = tonumber(row[self.primary_key])
-  record.new_record = false
-  local key         = record:cacheKey()
+  record.id    = tonumber(row[self.primaryKey])
+  record.newRecord = false
+  local key = record:cacheKey()
   ActiveRecord_Adapter.cache[key] = record
   ActiveRecord_Adapter.neat[key]  = record:dup()
   return record
@@ -148,7 +148,7 @@ function ActiveRecord_PostgresAdapter:columns()
       SELECT a.attname, format_type(a.atttypid, a.atttypmod), d.adsrc, a.attnotnull
         FROM pg_attribute a LEFT JOIN pg_attrdef d
           ON a.attrelid = d.adrelid AND a.attnum = d.adnum
-        WHERE a.attrelid = ']] .. self.table_name .. [['::regclass
+        WHERE a.attrelid = ']] .. self.tableName .. [['::regclass
           AND a.attnum > 0 AND NOT a.attisdropped
         ORDER BY a.attnum
     ]]
@@ -156,9 +156,9 @@ function ActiveRecord_PostgresAdapter:columns()
     local cursor = self:execute(sql)
     local result = {}
     for row in cursor:each({}) do
-      local format = self:parser_format(row.format_type)
+      local format = self:parserFormat(row.format_type)
       result[row.attname] = {
-        default  = self:parser_default(format, row.adsrc),
+        default  = self:parserDefault(format, row.adsrc),
         not_null = toboolean(row.attnotnull),
         format   = format
       }
@@ -174,35 +174,35 @@ end
 -- PARSER DEFAULT
 -------------------------------------------------------------------------------
 
-function ActiveRecord_PostgresAdapter:parser_default(format, value)
+function ActiveRecord_PostgresAdapter:parserDefault(format, value)
   if format == nil or value == nil then
     return nil
   else
-    return self['parser_default_' .. format](value)
+    return self[format .. 'ParserDefault'](value)
   end
 end
 
-function ActiveRecord_PostgresAdapter.parser_default_string(value)
+function ActiveRecord_PostgresAdapter.stringParserDefault(value)
   return value:replaceAll("::character varying", ""):replaceChar("'", "")
 end
 
-function ActiveRecord_PostgresAdapter.parser_default_time(value)
+function ActiveRecord_PostgresAdapter.timeParserDefault(value)
   return value:replaceAll("::time without time zone", ""):replaceChar("'", "")
 end
 
-function ActiveRecord_PostgresAdapter.parser_default_datetime(value)
+function ActiveRecord_PostgresAdapter.datetimeParserDefault(value)
   return value:replaceAll("::timestamp without time zone", ""):replaceChar("'", "")
 end
 
-function ActiveRecord_PostgresAdapter.parser_default_date(value)
+function ActiveRecord_PostgresAdapter.dateParserDefault(value)
   return value:replaceAll("::date", ""):replaceChar("'", "")
 end
 
-function ActiveRecord_PostgresAdapter.parser_default_number(value)
+function ActiveRecord_PostgresAdapter.numberParserDefault(value)
   return tonumber(value)
 end
 
-function ActiveRecord_PostgresAdapter.parser_default_boolean(value)
+function ActiveRecord_PostgresAdapter.booleanParserDefault(value)
   return toboolean(value)
 end
 
@@ -210,7 +210,7 @@ end
 -- PARSER FORMAT
 -------------------------------------------------------------------------------
 
-function ActiveRecord_PostgresAdapter:parser_format(format_type)
+function ActiveRecord_PostgresAdapter:parserFormat(format_type)
   if string.contains(format_type, 'character') then
     return 'string'
   end
@@ -274,12 +274,12 @@ end
 -- TABLE EXISTS
 -------------------------------------------------------------------------------
 
-function ActiveRecord_PostgresAdapter:tableExists(table_name)
+function ActiveRecord_PostgresAdapter:tableExists(tableName)
   local sql  = string.format([[
     SELECT 1
     FROM   pg_catalog.pg_class c
     JOIN   pg_catalog.pg_namespace n ON n.oid = c.relnamespace
-    WHERE  c.relname = '%s']], table_name)
+    WHERE  c.relname = '%s']], tableName)
   local cursor = self:execute(sql)
   local result = false
   if type(cursor) == 'userdata' then

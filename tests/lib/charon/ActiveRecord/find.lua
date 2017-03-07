@@ -34,7 +34,7 @@ test.should_return_record_stored = function()
   assert( record.name == 'Chris Weidman', json.encode(record) )
 end
 
-test.should_return_instance_by_primary_key = function()
+test.should_return_instance_by_primaryKey = function()
   local p = Person.new()
   p.name = "Chris Weidman"
   p:save()

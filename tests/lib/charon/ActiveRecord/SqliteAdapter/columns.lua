@@ -3,7 +3,7 @@ local json    = require('charon.json')
 local Class   = require('charon.oop.Class')
 local Adapter = require('charon.ActiveRecord.SqliteAdapter')
 local SqliteTypes = Class.new("SqliteTypes", "ActiveRecord")
-SqliteTypes.table_name = 'sqlit_adapter_types'
+SqliteTypes.tableName = 'sqlit_adapter_types'
 
 
 test.beforeAll = function()
@@ -63,7 +63,7 @@ end
 
 test.should_error_if_format_not_exists = function()
   local adapter = Adapter.new()
-  local status, message = pcall(Adapter.parser_format, adapter, 'unknow_type')
+  local status, message = pcall(Adapter.parserFormat, adapter, 'unknow_type')
   assert( status == false )
   assert( message:contains('format_type: unknow_type not resolved') == true, message )
 end

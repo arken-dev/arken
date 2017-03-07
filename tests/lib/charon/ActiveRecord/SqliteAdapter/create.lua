@@ -38,7 +38,7 @@ test.should_insert_in_the_database = function()
   assert(result.name == 'Chris Weidman', json.encode(result))
 end
 
-test.define_primary_key = function()
+test.define_primaryKey = function()
   local p = Person.new()
   p.name = "Chris Weidman"
   p:save()

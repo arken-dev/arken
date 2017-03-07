@@ -3,10 +3,10 @@ local Class  = require('charon.oop.Class')
 local Departament = Class.new("Departament", "ActiveRecord")
 local Employee    = Class.new("Employee", "ActiveRecord")
 
-Employee.belongs {
+Employee.belongsTo {
   name   = 'departament',
   record = 'Departament',
-  foreign_key = 'departament_id'
+  foreignKey = 'departament_id'
 }
 
 test.beforeAll = function()

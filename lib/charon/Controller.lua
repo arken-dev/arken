@@ -7,7 +7,8 @@ local Class      = require "charon.oop.Class"
 local template   = require "charon.template"
 local url        = require "charon.net.url"
 local json       = require "charon.json"
-local Controller = Class.new("Controller")
+
+local Controller = Class.new("Controller", "charon.net.HttpRequest")
 
 Controller.prefixHelpers = "app.helpers"
 Controller.prefixViews   = "app/views"
@@ -35,20 +36,20 @@ function Controller:resolvHelper()
     helper = tmp
   end
 
-  local file = self.prefixHelpers .. "." .. self.controller_name
+  local file = self.prefixHelpers .. "." .. self.controllerName
   if os.exists(file:replaceChar('.', '/') .. '.lua')  then
     local tmp = require(file)
     tmp.controller_path = self.controller_path
-    tmp.controller_name = self.controller_name
-    tmp.action_name     = self.action_name
+    tmp.controllerName = self.controllerName
+    tmp.actionName     = self.actionName
     tmp.__index = tmp
     setmetatable(tmp, helper)
     helper = tmp
   else
     local tmp = {}
     tmp.controller_path = self.controller_path
-    tmp.controller_name = self.controller_name
-    tmp.action_name     = self.action_name
+    tmp.controllerName = self.controllerName
+    tmp.actionName     = self.actionName
     tmp.__index = tmp
     setmetatable(tmp, helper)
     helper = tmp
@@ -59,11 +60,11 @@ function Controller:resolvHelper()
 end
 
 function Controller:helper()
-  if helpers[self.controller_name] == nil or CHARON_ENV ~= 'production' then
-    helpers[self.controller_name] = self:resolvHelper()
+  if helpers[self.controllerName] == nil or CHARON_ENV ~= 'production' then
+    helpers[self.controllerName] = self:resolvHelper()
   end
 
-  return helpers[self.controller_name]
+  return helpers[self.controllerName]
 end
 
 function Controller:url(params)
@@ -77,25 +78,21 @@ function Controller:redirect(params)
   return 302, {header}, nil
 end
 
-function Controller:templateParams()
-  return { self = self, request = request, helper = self:helper() }
-end
-
 function Controller:render_js(params)
   local fileName = nil
 
   if params.template == nil then
     if params.view == nil then
-      fileName = self.prefixViews .. "/" .. self.controller_name .. "/" .. self.action_name .. ".js"
+      fileName = self.prefixViews .. "/" .. self.controllerName .. "/" .. self.actionName .. ".js"
     else
-      fileName = self.prefixViews .. "/" .. self.controller_name .. "/" .. params.view .. ".js"
+      fileName = self.prefixViews .. "/" .. self.controllerName .. "/" .. params.view .. ".js"
     end
   else
     fileName = self.prefixViews .. "/" .. params.template .. ".js"
   end
 
   if self.layout then
-    local flag, result = pcall(template.execute, fileName, self:templateParams(), CHARON_ENV ~= 'production')
+    local flag, result = pcall(template.execute, fileName, self, self:helper(), CHARON_ENV ~= 'production')
     if flag then
       self._yield = result
     else
@@ -104,7 +101,7 @@ function Controller:render_js(params)
     fileName = self.prefixViews .. "/layouts/" .. self.layout .. ".js"
   end
 
-  local flag, result = pcall(template.execute, fileName, self:templateParams(), CHARON_ENV ~= 'production')
+  local flag, result = pcall(template.execute, fileName, self, self:helper(), CHARON_ENV ~= 'production')
   if flag then
     return 200, {'Content-Type: text/javascript'}, result
   else
@@ -121,9 +118,9 @@ function Controller:render_html(params)
 
   if params.template == nil then
     if params.view == nil then
-      file = self.prefixViews .. "/" .. self.controller_name .. "/" .. self.action_name .. ".html"
+      file = self.prefixViews .. "/" .. self.controllerName .. "/" .. self.actionName .. ".html"
     else
-      file = self.prefixViews .. "/" .. self.controller_name .. "/" .. params.view .. ".html"
+      file = self.prefixViews .. "/" .. self.controllerName .. "/" .. params.view .. ".html"
     end
   else
     file = self.prefixViews .. "/" .. params.template .. ".html"
@@ -135,7 +132,7 @@ function Controller:render_html(params)
       flag   = true
       result = params.value
     else
-      flag, result = pcall(template.execute, file, self:templateParams(), CHARON_ENV ~= 'production')
+      flag, result = pcall(template.execute, file, self, self:helper(), CHARON_ENV ~= 'production')
     end
     if flag then
       self._yield = result
@@ -146,7 +143,7 @@ function Controller:render_html(params)
     file = self.prefixViews .. "/layouts/" .. self.layout .. ".html"
   end
 
-  local flag, result = pcall(template.execute, file, self:templateParams(), CHARON_ENV ~= 'production')
+  local flag, result = pcall(template.execute, file, self, self:helper(), CHARON_ENV ~= 'production')
   if flag then
     return 200, {'Content-Type: text/html'}, result
   else
@@ -159,13 +156,13 @@ function Controller:partial(params)
   local file   = nil
 
   if params.view == nil then
-    file = self.prefixViews .. "/" .. self.controller_name .. "/_" .. self.action_name .. ".html"
+    file = self.prefixViews .. "/" .. self.controllerName .. "/_" .. self.actionName .. ".html"
   else
-    file = self.prefixViews .. "/" .. self.controller_name .. "/_" .. params.view .. ".html"
+    file = self.prefixViews .. "/" .. self.controllerName .. "/_" .. params.view .. ".html"
   end
 
   local context = params.context or self
-  local flag, result = pcall(template.execute, file, self:templateParams(), CHARON_ENV ~= 'production')
+  local flag, result = pcall(template.execute, file, self, self:helper(), CHARON_ENV ~= 'production')
   if flag then
     return result
   else
@@ -212,6 +209,7 @@ function Controller:execute(method, params)
   self:before(params)
   code, headers, data = self[method](self, params)
   self:after(params)
+  self:response(headers)
   return code, headers, data
 end
 

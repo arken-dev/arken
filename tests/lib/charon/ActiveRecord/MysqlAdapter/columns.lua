@@ -3,7 +3,7 @@ local json   = require('charon.json')
 local Class  = require('charon.oop.Class')
 local Adapter = require('charon.ActiveRecord.MysqlAdapter')
 local Person = Class.new("Person", "ActiveRecord")
-Person.table_name = string.format("person_%s", "columns") --os.uuid():replaceChar('-', '_'))
+Person.tableName = string.format("person_%s", "columns") --os.uuid():replaceChar('-', '_'))
 
 test.beforeAll = function()
   ActiveRecord.config = "config/active_record_mysql.json"
@@ -19,8 +19,8 @@ test.beforeAll = function()
     date_with_default date default '2015-03-15', time_with_default time default '14:50:30'
 
   ) ENGINE=InnoDB]]
-  --print(string.format(sql, Person.table_name))
-  Person.adapter():execute(string.format(sql, Person.table_name))
+  --print(string.format(sql, Person.tableName))
+  Person.adapter():execute(string.format(sql, Person.tableName))
 end
 
 test.before = function()
@@ -33,7 +33,7 @@ end
 
 test.afterAll = function()
   ActiveRecord.config = nil
-  Person.adapter():execute(string.format("DROP TABLE IF EXISTS %s", Person.table_name))
+  Person.adapter():execute(string.format("DROP TABLE IF EXISTS %s", Person.tableName))
 end
 
 test.should_return_table = function()
@@ -64,7 +64,7 @@ end
 
 test.should_error_if_format_not_exists = function()
   local adapter = Adapter.new()
-  local status, message = pcall(Adapter.parser_format, adapter, 'unknow_type')
+  local status, message = pcall(Adapter.parserFormat, adapter, 'unknow_type')
   assert( status == false )
   assert( message:contains('format_type: unknow_type not resolved') == true, message )
 end

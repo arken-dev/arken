@@ -25,7 +25,6 @@ QReadWriteLock lock;
 
 void miranda_cache_register(lua_State * L);
 void miranda_server_register(lua_State * L);
-void miranda_request_register(lua_State * L);
 void miranda_service_register(lua_State * L);
 void miranda_task_register(lua_State * L);
 
@@ -40,7 +39,6 @@ MirandaState::MirandaState()
 
   miranda_cache_register(m_State);
   miranda_server_register(m_State);
-  miranda_request_register(m_State);
   miranda_service_register(m_State);
   miranda_task_register(m_State);
 

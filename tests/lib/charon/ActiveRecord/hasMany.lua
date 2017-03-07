@@ -7,13 +7,13 @@ local Task     = Class.new("Task", "ActiveRecord")
 Employee.hasMany {
   name   = 'tasks',
   record = 'Task',
-  foreign_key = 'employee_id'
+  foreignKey = 'employee_id'
 }
 
-Task.belongs {
+Task.belongsTo {
   name   = 'employee',
   record = 'Employee',
-  foreign_key = 'employee_id'
+  foreignKey = 'employee_id'
 }
 
 test.beforeAll = function()
@@ -83,7 +83,7 @@ test.should_return_order_asc_and_desc = function()
   Employee.hasMany {
     name   = 'tasks',
     record = 'Task',
-    foreign_key = 'employee_id',
+    foreignKey = 'employee_id',
     order = 'description DESC'
   }
 
@@ -92,7 +92,7 @@ test.should_return_order_asc_and_desc = function()
   Employee.hasMany {
     name   = 'tasks',
     record = 'Task',
-    foreign_key = 'employee_id',
+    foreignKey = 'employee_id',
     order = 'description ASC'
   }
 

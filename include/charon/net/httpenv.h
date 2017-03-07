@@ -3,13 +3,16 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+#ifndef __CHARON_NET_HTTP_ENV__
+#define __CHARON_NET_HTTP_ENV__
+
 #include <QByteArray>
 #include <QHash>
 
 namespace charon {
 namespace net {
 
-class HttpParser
+class HttpEnv
 {
 
   QByteArray m_data;
@@ -25,8 +28,8 @@ class HttpParser
   size_t m_headerDoneLength;
 
   public:
-  HttpParser(QByteArray data);
-  ~HttpParser();
+  HttpEnv(QByteArray data);
+  ~HttpEnv();
 
   void  setField(const char * fragment, const char * value);
   void  setFragment(const char * fragment);
@@ -53,3 +56,5 @@ class HttpParser
 
 }
 }
+
+#endif

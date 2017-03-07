@@ -2,7 +2,7 @@ local test = {}
 local json  = require('charon.json')
 local Class  = require('charon.oop.Class')
 local Person = Class.new("Person", "ActiveRecord")
-Person.table_name = "person_create"
+Person.tableName = "person_create"
 
 test.beforeAll = function()
   ActiveRecord.config = "config/active_record_mysql.json"
@@ -41,7 +41,7 @@ test.should_insert_in_the_database = function()
   assert(result.name == 'Chris Weidman', json.encode(result))
 end
 
-test.define_primary_key = function()
+test.define_primaryKey = function()
   local p = Person.new()
   p.name = "Chris Weidman"
   p:save()

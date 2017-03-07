@@ -153,7 +153,7 @@ function FormHelper:dateField(field, options)
   options.onkeyup    = options.onkeyup    or "format_invert(this, '**/**/****')"
   options.style      = options.style      or "width:80px;text-align:right"
 
-  value = self:buildValue(field)
+  local value = self:buildValue(field)
 
   if value:sub(5, 5) == '/' then
     local list = value:split('/')
@@ -370,6 +370,5 @@ function FormHelper:boolField(field, options)
 
   return html
 end
-
 
 return FormHelper
