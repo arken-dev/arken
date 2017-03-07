@@ -5,7 +5,7 @@ local test       = {}
 test.before = function()
   dispatcher.prefix = ""
   helper.controller = nil
-  helper.controller_name = nil
+  helper.controllerName = nil
   helper.action = nil
 end
 
