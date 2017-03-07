@@ -29,10 +29,10 @@ dispatcher.parsePath  = function(env)
     start = start + #dispatcher.prefix
   end
   local controllerName = path:mid(start, last-start)
-  local actionName     = path:mid(#controller_name + start + 1)
+  local actionName     = path:mid(#controllerName + start + 1)
   local controllerPath = path:mid(1, path:len() - actionName:len())
-  if controller_name == '' then
-    controller_name = 'index'
+  if controllerName == '' then
+    controllerName = 'index'
   end
   if last == 1 or actionName == '' then
     actionName = "index"
@@ -44,8 +44,8 @@ end
 -- REQUIRE CONTROLLER
 -------------------------------------------------------------------------------
 
-dispatcher.requireController = function(controller_name)
-  return require(controller_name:camelCase() .. "Controller")
+dispatcher.requireController = function(controllerName)
+  return require(controllerName:camelCase() .. "Controller")
 end
 
 -------------------------------------------------------------------------------

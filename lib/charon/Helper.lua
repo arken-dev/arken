@@ -288,7 +288,7 @@ function Helper:url(params)
     return params
   end
 
-  local controller = params.controller or self.controller_name or 'index'
+  local controller = params.controller or self.controllerName or 'index'
   local action     = params.action or 'index'
 
   if dispatcher.prefix then
