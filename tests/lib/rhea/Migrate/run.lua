@@ -1,9 +1,10 @@
-local rhea = require 'rhea'
-local json = require 'charon.json'
+local rhea         = require 'rhea'
+local json         = require 'charon.json'
+local Migrate      = require('rhea.Migrate')
+local ActiveRecord = require('charon.ActiveRecord')
+
 local test = {}
 local res  = {}
-local ActiveRecord = require('charon.ActiveRecord')
-local Migrate = require('rhea.Migrate')
 
 Migrate.dir = "util/db/migrate"
 -------------------------------------------------------------------------------
@@ -59,15 +60,18 @@ test.should_migrate_helper = function()
   params[0] = 'migrate'
   params[1] = '--help'
   rhea.run(params)
-  assert( result[1] == 'run # execute all migrates\n', result[1] )
+  local result = result[1]:reduce()
+  assert( result:contains('run #') == true, result[1] )
+  assert( result:contains('generate #') == true, result[1] )
 end
 
 test.should_1_output  = function()
   local params = {}
   params[0] = 'migrate:run'
   rhea.run(params)
-  assert( #result == 1, #result )
-  assert( result[1] == 'migrations finished', result[1] )
+  assert( #result == 2, json.encode(result) )
+  assert( result[1] == '20170114133130 execute...', result[1] )
+  assert( result[2] == 'migrations finished', result[1] )
 end
 
 test.should_output_two_runs  = function()
