@@ -34,7 +34,7 @@ function Migrate:run()
     if self.list[version] then
         Migrate.output(string.format("%s version ok", version))
     else
-
+      Migrate.output(string.format("%s execute...", version))
       if fileName:suffix() == 'sql' then
         local sql = os.read(fileName)
         ActiveRecord.adapter():execute(sql)
@@ -54,5 +54,32 @@ function Migrate:run()
 end
 
 Migrate.contract('run')
+
+-------------------------------------------------------------------------------
+-- GENERATE
+-------------------------------------------------------------------------------
+
+Migrate.help.generate = [[
+  generate migrate
+]]
+
+function Migrate:generate(params)
+  local QDateTime = require('QDateTime')
+  local timestamp = QDateTime.currentDateTime():toString('yyyyMdhhmmss')
+  local name      = tostring(params[1]):underscore()
+  if name == 'nil' then
+    error('arg for migrate name')
+  end
+  local ext = 'lua'
+  if params.sql then
+    ext = 'sql'
+  end
+  if not os.exists('db/migrate') then
+    os.mkdir('db/migrate')
+  end
+  local fileName = string.format('db/migrate/%s_%s.%s', timestamp, name, ext)
+  print('create ' .. fileName )
+  os.touch(fileName)
+end
 
 return Migrate
