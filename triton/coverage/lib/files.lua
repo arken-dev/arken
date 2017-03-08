@@ -36,8 +36,10 @@ function triton_run(fileName)
   end
   local libName  = dirName:replaceAll("tests/lib/", ""):replaceChar("/", "."):replaceAll('.lua', '')
   local iterator = QDirIterator.new(dirName)
-  print(libName)
-  package.loaded[libName] = nil
+
+  if libName == 'charon.coverage' then
+    package.loaded[libName] = nil
+  end
 
   while(iterator:hasNext()) do
     iterator:next()
@@ -72,13 +74,13 @@ function triton_run(fileName)
   local tpl     = CHARON_PATH .. "/lib/charon/coverage/templates/file.html"
   local dump    = coverage.dump()
   local data    = coverage.analyze(fileName)
-  local buffer  = template.execute(tpl, { self = data })
+  local buffer  = template.execute(tpl, data)
   local file    = io.open((dir .. "/" .. fileName:replaceChar("/", "-") .. '.html'), "w")
   file:write(buffer)
   file:close()
 
   file = io.open((dir .. "/" .. fileName:replaceChar("/", "-") .. '.json'), "w")
-  file:write(json.pretty(data))
+  file:write(json.encode(data))
   file:close()
 end
 

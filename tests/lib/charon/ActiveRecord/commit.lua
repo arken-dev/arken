@@ -2,6 +2,7 @@ local ActiveRecord = require('charon.ActiveRecord')
 local test = {}
 
 test.before = function()
+  ActiveRecord.reset()
   ActiveRecord.config = "config/active_record_sqlite.json"
 end
 

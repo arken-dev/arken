@@ -5,6 +5,7 @@ local Person = Class.new("Person", "ActiveRecord")
 
 test.beforeAll = function()
   ActiveRecord.config = "config/active_record_sqlite.json"
+  ActiveRecord.reset()
   local sql = [[
   CREATE TABLE IF NOT EXISTS person (
     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, name VARCHAR(250), observation TEXT,

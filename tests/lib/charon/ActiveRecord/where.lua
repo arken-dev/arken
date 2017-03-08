@@ -1,6 +1,10 @@
 local ActiveRecord = require('charon.ActiveRecord')
 local test = {}
 
+test.beforeAll = function()
+  ActiveRecord.reset()
+end
+
 test.should_return_error_default = function()
   local status, message = pcall(ActiveRecord.where)
   assert( status == false )

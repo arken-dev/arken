@@ -1,9 +1,11 @@
-local test   = {}
-local json   = require('charon.json')
-local Class  = require('charon.oop.Class')
-local Person = Class.new("Person", "ActiveRecord")
+local test    = {}
+local json    = require('charon.json')
+local Class   = require('charon.oop.Class')
+local Person  = Class.new("Person", "ActiveRecord")
+local Adapter = require("charon.ActiveRecord.Adapter")
 
 test.beforeAll = function()
+  ActiveRecord.reset()
   ActiveRecord.config = "config/active_record_sqlite.json"
   local sql = [[
   CREATE TABLE IF NOT EXISTS person (
@@ -30,13 +32,13 @@ test.should_create_neat_and_cache = function()
   p.name = "Chris Weidman"
   p:save()
 
-  ActiveRecord_Adapter.neat  = {}
-  ActiveRecord_Adapter.cache = {}
+  Adapter.neat  = {}
+  Adapter.cache = {}
 
   local record = Person.find{ id = p.id }
 
-  assert( ActiveRecord_Adapter.neat[record:cacheKey()].id == record.id )
-  assert( ActiveRecord_Adapter.cache[record:cacheKey()] == record )
+  assert( Adapter.neat[record:cacheKey()].id == record.id )
+  assert( Adapter.cache[record:cacheKey()] == record )
 end
 
 return test

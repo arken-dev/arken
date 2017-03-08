@@ -59,104 +59,104 @@ coverage.reset = function()
   result = {}
 end
 
-coverage.line = function(line, flag, keywords)
-  local trimmed = line:trim()
+coverage.line = function(row, flag)
+  local line = row:trim()
+  local result = nil
+  coverage.comment = nil
 
-  if trimmed == 'else' then
-     return -1
-   end
-
-  if trimmed == 'end' then
-     return -1
+  if line == '' then
+    coverage.comment = "line is blank"
+    return -1
   end
 
-  if trimmed == '' then
-     return -1
-  end
-
-  if trimmed:startsWith("--") then
-    if trimmed:startsWith("--[[") then
-      flag = -1
-    else
+  if coverage.default == -1 and line:contains("]]") and line:contains("[[") then
+    if line:indexOf('[[') > line:indexOf(']]') then
+      coverage.comment = [[starts with --[[ or endsWith [[ or endsWith {]]
+      coverage.default = -1
       return -1
     end
   end
 
-  if keywords.flag ~= true and keywords.str1 == false and keywords.str2 == false then
-    local reduce = line:reduce()
-    local index  = reduce:indexOf("function")
-    if index > -1 then
-      if reduce:mid(index-1, 1) == '=' or reduce:mid(index-2, 1) == '=' then
-        keywords.flag = false
-        return 1
-      end
-      if reduce:startsWith("function") or
-        reduce:startsWith("local function") or
-        reduce:startsWith("return function") then
-        return 1
-      end
-      return flag
-    end
-  end
-  for i=1, #line do
-    local chr = line:sub(i,i)
-    if keywords.str2 == false and chr == "'" then
-      if keywords.str1 then
-        keywords.str1 = false
-      else
-        keywords.str1 = true
-      end
-    end
-
-    if keywords.str1 == false and chr == '"' then
-      if keywords.str2 then
-        keywords.str2 = false
-      else
-        keywords.str2 = true
-      end
-    end
-
-    if keywords.str1 == false and keywords.str2 == false then
-      if chr == '(' then
-        keywords.flag1 = keywords.flag1 + 1
-      end
-      if chr == ')' then
-        keywords.flag1 = keywords.flag1 - 1
-      end
-      if chr == '{' then
-        keywords.flag2 = keywords.flag2 + 1
-      end
-      if chr == '}' then
-        keywords.flag2 = keywords.flag2 - 1
-      end
-      if chr == '[' then
-        keywords.flag3 = keywords.flag3 + 1
-      end
-      if chr == ']' then
-        keywords.flag3 = keywords.flag3 - 1
-      end
+  if coverage.default == nil and (line:contains("--[[") or line:contains("[[")) then
+    coverage.comment = [[starts with --[[ or endsWith [[]]
+    coverage.default = -1
+    if result == nil then
+      result = 1
+    else
+      result = -1
     end
   end
 
-  if keywords.str1 or keywords.str2 then
+  if coverage.default == -1 and (line:contains("]]") or line == "]]") then
+    coverage.comment = "end with ]]"
+    coverage.default = nil
+    result = 1
+  end
+
+  if result ~= nil then
+    return result
+  end
+
+  if line:startsWith("--") then
+    coverage.comment = "starts with --"
     return -1
   end
 
-  if keywords.flag1 > 0 or keywords.flag2 > 0 or keywords.flag3 > 0 then
-    if keywords.flag then
-      return flag or -1
-    else
-      keywords.flag = true
-      return flag or 1
+  if coverage.default == -1 then
+    coverage.comment = "default is -1"
+    return -1
+  end
+
+  if coverage.default == nil then
+    coverage.comment = "default is nil"
+
+    if coverage.braces == true and line:endsWith("}") then
+      coverage.braces = false
+      return 1
     end
-  else
-    if keywords.flag then
-      keywords.flag = false
-      return flag or -1
-    else
-      return flag
+
+    if line:endsWith("{") or coverage.braces == true or (line:contains('{') and not line:contains('}')) then
+      coverage.braces = true
+      return 1
+    end
+
+    if line:contains('function') then
+      coverage.level = coverage.level + 1
+      return 1
+    end
+
+    if line:endsWith(' do') or line == 'do' then
+      coverage.level = coverage.level + 1
+      return 1
+    end
+
+    if line:endsWith(' then') or line == 'then' then
+      coverage.level = coverage.level + 1
+      return 1
+    end
+
+    if line:endsWith(' else') or line == 'else' then
+      return 1
+    end
+
+    if line:endsWith(' end') or line == 'end' then
+      coverage.level = coverage.level + -1
+      return 1
     end
   end
+
+  if coverage.default == nil and row:startsWith('return') then
+    coverage.comment = "default is nil and start with return"
+    return 1
+  end
+
+  if coverage.level == 0 then
+    coverage.comment = "level is 0"
+    return 1
+  end
+
+  coverage.comment = "returning flag"
+  return flag
 end
 
 function coverage.analyze(file_name)
@@ -164,6 +164,8 @@ function coverage.analyze(file_name)
   local lines = {}
   local count = 1
   local uncov = 0
+  local level = 0
+  local default = 1
 
   if file_name:startsWith('@') then
     file_name = file_name:mid(2, -1)
@@ -181,18 +183,24 @@ function coverage.analyze(file_name)
   -- flag3 = [ ]
   -- str1  = '
   -- str2  = "
-  local keywords = { flag1 = 0, flag2 = 0, flag3 = 0, str1 = false, str2 = false }
+  --local keywords = { flag1 = 0, flag2 = 0, flag3 = 0, str1 = false, str2 = false }
   local i = 0
+  coverage.default = nil
+  coverage.braces  = false
+  coverage.level = 0
   for line in io.lines(file_name) do
     i = i + 1
     flag = result[file_name][count]
     -- debug
     -- print("number :", i, "flag ", flag, "line : ", line)
-    flag = coverage.line(line, flag, keywords)
+    flag = coverage.line(line, flag)
     if flag == nil then
       uncov = uncov + 1
     end
-    lines[count] = { src = line, flag = flag }
+    lines[count] = {
+      src = line, flag = flag, level = coverage.level,
+      default = coverage.default, comment = coverage.comment
+    }
     count = count + 1
   end
 

@@ -5,6 +5,7 @@ local PersonPostgres = Class.new("PersonPostgres", "ActiveRecord")
 local ActiveRecord = require('charon.ActiveRecord')
 
 test.beforeAll = function()
+  ActiveRecord.reset()
   ActiveRecord.config = "config/active_record_postgres.json"
   local sql = [[
   CREATE TABLE IF NOT EXISTS person_postgres (

@@ -18,15 +18,15 @@ end
 test.should_define_class_with_inheritancy = function()
   local MyClass = Class.new("MyClass")
   local OtherClass = Class.new("OtherClass", "MyClass")
-  assert( OtherClass.superclass == MyClass )
+  assert( OtherClass.superClass == MyClass )
 end
 
 test.should_redefine_class_with_inheritancy = function()
   local MyClass = Class.new("MyClass")
   local OtherClass = Class.new("OtherClass", "MyClass")
-  assert( OtherClass.superclass == MyClass )
+  assert( OtherClass.superClass == MyClass )
   local OtherClass = Class.new("OtherClass", "MyClass")
-  assert( OtherClass.superclass == MyClass )
+  assert( OtherClass.superClass == MyClass )
 end
 
 test.should_execute_inherit_method = function()

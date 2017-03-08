@@ -2,14 +2,17 @@ local test   = {}
 local json   = require('charon.json')
 local Class  = require('charon.oop.Class')
 local Person = Class.new("Person", "ActiveRecord")
+local Adapter = require('charon.ActiveRecord.Adapter')
+Person.tableName = string.format('person_%s', os.uuid():replaceChar('-', '_'))
 
 test.beforeAll = function()
+  ActiveRecord.reset()
   ActiveRecord.config = "config/active_record_sqlite.json"
-  local sql = [[
-  CREATE TABLE IF NOT EXISTS person (
+  local sql = string.format([[
+  CREATE TABLE IF NOT EXISTS %s (
     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, name VARCHAR(250), observation TEXT,
     created_at TEXT, updated_at TEXT, total REAL
-  )]]
+  )]], Person.tableName)
   Person.adapter():execute(sql)
 end
 
@@ -48,7 +51,6 @@ test.should_return_one_id = function()
   p.name = "Junior Cigano"
   p:save()
   local record = Person.find{ name = "Junior Cigano" }
-
   assert( p.id == record.id, string.format('%i %i', p.id, record.id ) )
 end
 

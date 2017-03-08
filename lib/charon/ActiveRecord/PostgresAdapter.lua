@@ -24,6 +24,7 @@ function ActiveRecord_PostgresAdapter:connect()
       self.database, self.user, password, self.host
     )
     if errmsg ~= nil then
+      ActiveRecord_PostgresAdapter.instanceConnection = nil
       error(string.format("connect to postgres error: %s\n", errmsg))
     end
   end
@@ -113,7 +114,7 @@ function ActiveRecord_PostgresAdapter:update(record)
   sql = sql .. col .. where
   result = self:execute(sql)
   -- neat
-  local neat = ActiveRecord_Adapter.neat[record:cacheKey()] or {}
+  local neat = Adapter.neat[record:cacheKey()] or {}
   for column, properties in pairs(self:columns()) do
     neat[column] = record[column]
   end
@@ -133,8 +134,8 @@ function ActiveRecord_PostgresAdapter:create(record)
   record.id    = tonumber(row[self.primaryKey])
   record.newRecord = false
   local key = record:cacheKey()
-  ActiveRecord_Adapter.cache[key] = record
-  ActiveRecord_Adapter.neat[key]  = record:dup()
+  Adapter.cache[key] = record
+  Adapter.neat[key]  = record:dup()
   return record
 end
 

@@ -20,6 +20,7 @@ Class.new = function(className, inheritedBy, params)
     class = Class.classes[className]
     if inheritedBy then
       setmetatable(Class.classes[className], inheritedBy)
+      class.superClass = inheritedBy
     end
     for key, value in pairs(class) do
       class[key] = nil
@@ -48,10 +49,10 @@ Class.new = function(className, inheritedBy, params)
     if class.inherit then
       class.inherit(class, params)
     end
-    class.superclass = inheritedBy
+    class.superClass = inheritedBy
   else
     setmetatable(Class.classes[className], Object)
-    class.superclass = Class
+    class.superClass = Class
   end
 
   -- contract

@@ -5,6 +5,7 @@ local Person = Class.new("Person", "ActiveRecord")
 local ActiveRecord = require('charon.ActiveRecord')
 
 test.beforeAll = function()
+  ActiveRecord.reset()
   ActiveRecord.config = "config/active_record_sqlite.json"
 end
 

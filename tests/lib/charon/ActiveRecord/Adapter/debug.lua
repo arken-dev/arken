@@ -5,6 +5,7 @@ local Person  = Class.new("Person", "ActiveRecord")
 local test    = {}
 
 test.beforeAll = function()
+  ActiveRecord.reset()
   ActiveRecord.config = "config/active_record_sqlite.json"
   local sql = [[
   CREATE TABLE IF NOT EXISTS person (
@@ -30,9 +31,11 @@ end
 test.should_return_debug_if_true = function()
   local adapter = Person.adapter()
   local value
+
   Adapter.output = function(str)
     value = str
   end
+
   ActiveRecord.debug = true
   local cursor  = adapter:execute('SELECT * FROM person')
   ActiveRecord.debug = false

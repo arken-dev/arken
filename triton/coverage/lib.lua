@@ -40,7 +40,10 @@ function triton_run(fileName)
   end
   local modelName = dirName:gsub("./tests/lib/", ""):gsub("/", ".")
   local iterator  = QDirIterator.new(dirName)
-  package.loaded[modelName] = nil
+
+  if modelName == 'charon.coverage' then
+    package.loaded[modelName] = nil
+  end
 
   while(iterator:hasNext()) do
     iterator:next()

@@ -56,5 +56,4 @@ json.pretty = function(dt, lf, id, ac, ec)
     return table.concat(r)
 end
 
-
 return json

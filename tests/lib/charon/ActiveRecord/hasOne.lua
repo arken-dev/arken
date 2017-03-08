@@ -10,6 +10,7 @@ Employee.hasOne {
 }
 
 test.beforeAll = function()
+  ActiveRecord.reset()
   ActiveRecord.config = "config/active_record_sqlite.json"
   local sql = [[
   CREATE TABLE IF NOT EXISTS employee (

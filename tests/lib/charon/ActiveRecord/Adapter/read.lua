@@ -4,6 +4,7 @@ local Class    = require('charon.oop.Class')
 local Employee = Class.new("EmployeeMaster", "ActiveRecord")
 
 test.beforeAll = function()
+  ActiveRecord.reset()
   ActiveRecord.config = "config/active_record_sqlite.json"
   local sql = [[
   CREATE TABLE IF NOT EXISTS employee_master (

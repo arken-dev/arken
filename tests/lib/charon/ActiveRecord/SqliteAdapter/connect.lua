@@ -5,6 +5,7 @@ local ActiveRecord = require('charon.ActiveRecord')
 local Adapter = require('charon.ActiveRecord.SqliteAdapter')
 
 test.beforeAll = function()
+  ActiveRecord.reset()
   ActiveRecord.config = "util/config/active_record_sqlite_database_invalid.json"
 end
 

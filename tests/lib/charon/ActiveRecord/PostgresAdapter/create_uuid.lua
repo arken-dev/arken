@@ -6,6 +6,7 @@ Person.tableName = string.format("person_%s", os.uuid():replaceAll('-', '_'))
 Person.primaryKey = 'uuid'
 
 test.beforeAll = function()
+  ActiveRecord.reset()
   ActiveRecord.config = "config/active_record_postgres.json"
   local sql = [[
   CREATE TABLE %s (

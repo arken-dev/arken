@@ -117,8 +117,8 @@ ActiveRecord.inherit = function(class)
     local adapter = adapter_name or config.adapter
     return Class.lookup(adapter).new{
       record_class = class,
-      tableName   = class.tableName,
-      primaryKey  = class.primaryKey,
+      tableName    = class.tableName,
+      primaryKey   = class.primaryKey,
       user         = config.user,
       password     = config.password,
       database     = config.database,

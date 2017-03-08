@@ -5,6 +5,7 @@ local Person = Class.new("Person", "ActiveRecord")
 Person.tableName = string.format('person_%s', os.uuid():replaceChar('-', '_'))
 
 test.beforeAll = function()
+  ActiveRecord.reset()
   ActiveRecord.config = "config/active_record_sqlite.json"
   local sql = string.format([[
   CREATE TABLE IF NOT EXISTS %s (

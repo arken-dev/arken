@@ -2,6 +2,7 @@ local ActiveRecord = require 'charon.ActiveRecord'
 local test = {}
 
 test.should_error_if_file_not_exists = function()
+  ActiveRecord.reset()
   ActiveRecord.config = "config/file_not_exists.json"
   local status, message = pcall(ActiveRecord.loadConfig)
   assert( status == false )

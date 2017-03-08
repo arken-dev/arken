@@ -5,6 +5,7 @@ local ActiveRecord = require('charon.ActiveRecord')
 local Adapter = require('charon.ActiveRecord.MysqlAdapter')
 
 test.beforeAll = function()
+  ActiveRecord.reset()
   ActiveRecord.config = "util/config/active_record_mysql_database_invalid.json"
 end
 

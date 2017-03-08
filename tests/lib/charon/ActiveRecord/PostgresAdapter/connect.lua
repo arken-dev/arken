@@ -5,6 +5,7 @@ local ActiveRecord = require('charon.ActiveRecord')
 local Adapter = require('charon.ActiveRecord.PostgresAdapter')
 
 test.beforeAll = function()
+  ActiveRecord.reset()
   ActiveRecord.config = "util/config/active_record_postgres_database_invalid.json"
 end
 

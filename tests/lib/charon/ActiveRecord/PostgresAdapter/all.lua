@@ -5,6 +5,7 @@ local Person = Class.new("Person", "ActiveRecord")
 Person.tableName = string.format("person_%s", os.uuid():replaceAll('-', '_'))
 
 test.beforeAll = function()
+  ActiveRecord.reset()
   ActiveRecord.config = "config/active_record_postgres.json"
   local sql = [[
   CREATE TABLE %s (

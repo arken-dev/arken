@@ -5,6 +5,7 @@ local Person = Class.new("Person", "ActiveRecord")
 Person.tableName = "person_create"
 
 test.beforeAll = function()
+  ActiveRecord.reset()
   ActiveRecord.config = "config/active_record_mysql.json"
   local sql = [[
   CREATE TABLE person_create (

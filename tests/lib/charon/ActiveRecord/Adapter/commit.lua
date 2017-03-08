@@ -1,11 +1,12 @@
 local ActiveRecord = require('charon.ActiveRecord')
-local test    = {}
+local test = {}
 
-test.before = function()
+test.beforeAll = function()
+  ActiveRecord.reset()
   ActiveRecord.config = "config/active_record_sqlite.json"
 end
 
-test.after = function()
+test.afterAll = function()
   ActiveRecord.config = nil
 end
 

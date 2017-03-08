@@ -4,6 +4,7 @@ local Class  = require('charon.oop.Class')
 local ActiveRecord = require('charon.ActiveRecord')
 
 test.beforeAll = function()
+  ActiveRecord.reset()
   ActiveRecord.config = "config/active_record_postgres.json"
   ActiveRecord.adapter(true)
 end
