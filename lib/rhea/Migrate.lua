@@ -26,18 +26,28 @@ function Migrate:run()
   end
   table.sort(list)
 
-  for _, file_name in ipairs(list) do
-    local index1  = file_name:lastIndexOf('/') + 1
-    local index2  = file_name:indexOf('_') - index1
-    local version = file_name:mid(index1, index2)
+  for _, fileName in ipairs(list) do
+    local index1  = fileName:lastIndexOf('/') + 1
+    local index2  = fileName:indexOf('_') - index1
+    local version = fileName:mid(index1, index2)
 
     if self.list[version] then
         Migrate.output(string.format("%s version ok", version))
     else
-      local sql = os.read(file_name)
-      --print(sql)
-      ActiveRecord.adapter():execute(sql)
-      ActiveRecord.adapter():execute(string.format([[INSERT INTO schema_migration VALUES ('%s')]], version))
+
+      if fileName:suffix() == 'sql' then
+        local sql = os.read(fileName)
+        ActiveRecord.adapter():execute(sql)
+        local sql = [[INSERT INTO schema_migration VALUES ('%s')]]
+        ActiveRecord.adapter():execute(string.format(sql, version))
+      end
+
+      if fileName:suffix() == 'lua' then
+        dofile(fileName)
+        local sql = [[INSERT INTO schema_migration VALUES ('%s')]]
+        ActiveRecord.adapter():execute(string.format(sql, version))
+      end
+
     end
   end
   Migrate.output("migrations finished")
