@@ -73,7 +73,7 @@ end
 
 function Controller:redirect(params)
   local url    = self:url(params)
-  local host   = request.field("Host")
+  local host   = self:env():field("Host")
   local header = "Location: http://" .. host .. url
   return 302, {header}, nil
 end
@@ -189,8 +189,8 @@ end
 
 function Controller:render_json(params)
   local data = json.encode(params.value)
-  if request.params().json_callback then
-    data = string.format('%s(%s)', request.params().json_callback, data)
+  if self:params().json_callback then
+    data = string.format('%s(%s)', self:params().json_callback, data)
   end
   return 200, {'Content-Type: application/json; charset=UTF-8'}, data
 end
