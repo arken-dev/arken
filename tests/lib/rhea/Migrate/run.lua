@@ -1,7 +1,7 @@
 local rhea         = require 'rhea'
 local json         = require 'charon.json'
-local Migrate      = require('rhea.Migrate')
-local ActiveRecord = require('charon.ActiveRecord')
+local Migrate      = require 'rhea.Migrate'
+local ActiveRecord = require 'charon.ActiveRecord'
 
 local test = {}
 local res  = {}

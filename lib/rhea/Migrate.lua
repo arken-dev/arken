@@ -65,7 +65,7 @@ Migrate.help.generate = [[
 
 function Migrate:generate(params)
   local QDateTime = require('QDateTime')
-  local timestamp = QDateTime.currentDateTime():toString('yyyyMdhhmmss')
+  local timestamp = Migrate.timestamp or QDateTime.currentDateTime():toString('yyyyMdhhmmss')
   local name      = tostring(params[1]):underscore()
   if name == 'nil' then
     error('arg for migrate name')
@@ -74,11 +74,11 @@ function Migrate:generate(params)
   if params.sql then
     ext = 'sql'
   end
-  if not os.exists('db/migrate') then
-    os.mkdir('db/migrate')
+  if not os.exists(Migrate.dir) then
+    os.mkpath(Migrate.dir)
   end
-  local fileName = string.format('db/migrate/%s_%s.%s', timestamp, name, ext)
-  print('create ' .. fileName )
+  local fileName = string.format(Migrate.dir .. '/%s_%s.%s', timestamp, name, ext)
+  Migrate.output('create ' .. fileName )
   os.touch(fileName)
 end
 
