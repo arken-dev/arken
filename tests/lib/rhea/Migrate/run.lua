@@ -69,9 +69,10 @@ test.should_1_output  = function()
   local params = {}
   params[0] = 'migrate:run'
   rhea.run(params)
-  assert( #result == 2, json.encode(result) )
+  assert( #result == 3, json.encode(result) )
   assert( result[1] == '20170114133130 execute...', result[1] )
-  assert( result[2] == 'migrations finished', result[1] )
+  assert( result[2] == '20170308223601.lua execute...', result[2] )
+  assert( result[3] == 'migrations finished', result[3] )
 end
 
 test.should_output_two_runs  = function()
@@ -80,9 +81,10 @@ test.should_output_two_runs  = function()
   rhea.run(params)
   result = {}
   rhea.run(params)
-  assert( #result == 2, #result )
+  assert( #result == 3, #result )
   assert( result[1] == '20170114133130 version ok', result[1] )
-  assert( result[2] == 'migrations finished', result[2] )
+  assert( result[2] == '20170308223601.lua version ok', result[2] )
+  assert( result[3] == 'migrations finished', result[3] )
 end
 
 return test
