@@ -90,7 +90,11 @@ coverage.line = function(row, flag)
   if coverage.default == -1 and (line:contains("]]") or line == "]]") then
     coverage.comment = "end with ]]"
     coverage.default = nil
-    result = 1
+    if coverage.level == 0 or line == ']]' then
+      result = 1
+    else
+      return flag
+    end
   end
 
   if result ~= nil then
