@@ -81,4 +81,15 @@ function Converter:inspect(field)
   end
 end
 
+-------------------------------------------------------------------------------
+-- MERGE
+-------------------------------------------------------------------------------
+
+function Converter:merge(tbl)
+  for k, v in pairs(tbl) do   
+    self[k] = v
+  end
+  return self
+end
+
 return Converter
