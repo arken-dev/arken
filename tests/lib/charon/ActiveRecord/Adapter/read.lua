@@ -144,7 +144,7 @@ test.should_return_string_date_with_trace = function()
   assert( p ~= p2 )
   assert( type(p.created_at) == 'string' )
   assert( type(p:read('birthday')) == 'userdata' )
-  assert( p2:read('birthday'):toString():left(10) == p2.birthday:replaceChar('-', '/'), p2:read('birthday'):toString() )
+  assert( p2:read('birthday'):toString():left(10) == p2.birthday:replace('-', '/'), p2:read('birthday'):toString() )
 end
 
 test.should_return_string_datetime_with_bar = function()
@@ -172,7 +172,7 @@ test.should_return_string_datetime_with_tarce = function()
   assert( p ~= p2 )
   assert( type(p.date_meeting) == 'string' )
   assert( type(p:read('date_meeting')) == 'userdata' )
-  assert( p2:read('date_meeting'):toString():left(19) == p2.date_meeting:replaceChar('-', '/'), p2:read('date_meeting'):toString() )
+  assert( p2:read('date_meeting'):toString():left(19) == p2.date_meeting:replace('-', '/'), p2:read('date_meeting'):toString() )
 end
 
 test.should_return_string_datetime_blank = function()

@@ -60,7 +60,7 @@ test.should_migrate_helper = function()
   params[0] = 'migrate'
   params[1] = '--help'
   rhea.run(params)
-  local result = result[1]:reduce()
+  local result = result[1]:simplified()
   assert( result:contains('run #') == true, result[1] )
   assert( result:contains('generate #') == true, result[1] )
 end
