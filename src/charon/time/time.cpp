@@ -4,7 +4,6 @@
 // license that can be found in the LICENSE file.
 
 #include <charon/base>
-#include <iostream>
 
 using charon::time::Time;
 
@@ -45,7 +44,6 @@ Time * Time::parse(const char * str)
   if(str[8] == '.') {
     strcat(format, ".z");
   }
-  std::cout << format;
   Time result = Time::fromString(str, format);
   if( result.isValid() ) {
     return new Time(result);
