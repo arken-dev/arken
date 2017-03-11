@@ -8,17 +8,8 @@
 #
 # ------------------------------------------------------------------------------
 
-set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/clib/charon)
+set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/clib/charon/time)
 
-add_subdirectory(base)
-add_subdirectory(base64)
-add_subdirectory(bytearray)
-add_subdirectory(bytearraylist)
-add_subdirectory(digest)
-add_subdirectory(http)
-add_subdirectory(net)
+add_subdirectory(date)
+add_subdirectory(datetime)
 add_subdirectory(time)
-add_subdirectory(odebug)
-add_subdirectory(regex)
-add_subdirectory(utf8)
-add_subdirectory(thread)

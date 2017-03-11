@@ -15,6 +15,9 @@
 #include <charon/http.h>
 #include <charon/regex.h>
 #include <charon/thread.h>
+#include <charon/time/date.h>
+#include <charon/time/datetime.h>
+#include <charon/time/time.h>
 
 using charon::os;
 using charon::string;

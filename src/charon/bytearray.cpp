@@ -53,6 +53,12 @@ ByteArray ByteArray::toUpper(void)
   return (ByteArray) QByteArray::toUpper();
 }
 
+ByteArray& ByteArray::prepend(const char *str)
+{
+  QByteArray::prepend(str);
+  return *this;
+}
+
 ByteArray& ByteArray::append(const char *str)
 {
   QByteArray::append(str);

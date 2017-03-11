@@ -36,6 +36,7 @@ class ByteArray : public QByteArray
   ByteArray leftTrimmed(void);
   ByteArray rightTrimmed(void);
   ByteArray toUpper(void);
+  ByteArray &prepend(const char * s);
   ByteArray &append(const char *s);
   ByteArray &append(const QByteArray &a);
   ByteArray &operator=(const ByteArray &a);
