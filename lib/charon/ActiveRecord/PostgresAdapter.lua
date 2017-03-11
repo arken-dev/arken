@@ -40,9 +40,9 @@ function ActiveRecord_PostgresAdapter:escape(value)
     return " NULL "
   else
     if(type(value) == 'number') then
-      return tostring(value) --:replaceChar('.', ''):replaceChar(',', '.')
+      return tostring(value) --:replace('.', ''):replace(',', '.')
     else
-      return "'" .. tostring(value):replaceAll("'", "''") .. "'"
+      return "'" .. tostring(value):replace("'", "''") .. "'"
     end
   end
 end
@@ -184,19 +184,19 @@ function ActiveRecord_PostgresAdapter:parserDefault(format, value)
 end
 
 function ActiveRecord_PostgresAdapter.stringParserDefault(value)
-  return value:replaceAll("::character varying", ""):replaceChar("'", "")
+  return value:replace("::character varying", ""):replace("'", "")
 end
 
 function ActiveRecord_PostgresAdapter.timeParserDefault(value)
-  return value:replaceAll("::time without time zone", ""):replaceChar("'", "")
+  return value:replace("::time without time zone", ""):replace("'", "")
 end
 
 function ActiveRecord_PostgresAdapter.datetimeParserDefault(value)
-  return value:replaceAll("::timestamp without time zone", ""):replaceChar("'", "")
+  return value:replace("::timestamp without time zone", ""):replace("'", "")
 end
 
 function ActiveRecord_PostgresAdapter.dateParserDefault(value)
-  return value:replaceAll("::date", ""):replaceChar("'", "")
+  return value:replace("::date", ""):replace("'", "")
 end
 
 function ActiveRecord_PostgresAdapter.numberParserDefault(value)

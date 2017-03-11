@@ -170,7 +170,7 @@ function M.buildQuery(tab, sep, key)
       end
     end
   end
-  return table.concat(query, sep):replaceAll("[", "%5B"):replaceAll("]", "%5D")
+  return table.concat(query, sep):replace("[", "%5B"):replace("]", "%5D")
 end
 
 --- Parses the querystring to a table

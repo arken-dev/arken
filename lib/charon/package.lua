@@ -42,7 +42,7 @@ end
 package.pathToFilename = function(path)
   if package.isPathUnknow(path) then
     for str in string.gmatch(package.path, "([^;]+)") do
-      local file_name = tostring(str:gsub("?", path:replaceChar('.', '/')))
+      local file_name = tostring(str:gsub("?", path:replace('.', '/')))
       if os.exists(file_name) then
         package.cache[path] = file_name
         break

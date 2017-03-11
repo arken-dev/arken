@@ -59,7 +59,7 @@ function test.process(file_name)
           local list  = string.split(traceback, "\n")
           for i = 1, list:size() do
             if list:at(i):contains(file_name) then
-              trace = trace .. list:at(i):reduce() .. '\n'
+              trace = trace .. list:at(i):simplified() .. '\n'
             end
           end
           trace = trace .. '\n\n' .. traceback

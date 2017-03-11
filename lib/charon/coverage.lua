@@ -60,7 +60,7 @@ coverage.reset = function()
 end
 
 coverage.line = function(row, flag)
-  local line = row:trim()
+  local line = row:trimmed()
   local result = nil
   coverage.comment = nil
 

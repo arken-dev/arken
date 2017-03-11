@@ -30,11 +30,11 @@ class ByteArray : public QByteArray
   ByteArray camelCase(void);
   ByteArray capitalize(void);
   ByteArray underscore(void);
-  ByteArray reduce(void);
+  ByteArray simplified(void);
   ByteArray normalize(void);
-  ByteArray trim(void);
-  ByteArray trimLeft(void);
-  ByteArray trimRight(void);
+  ByteArray trimmed(void);
+  ByteArray leftTrimmed(void);
+  ByteArray rightTrimmed(void);
   ByteArray toUpper(void);
   ByteArray &append(const char *s);
   ByteArray &append(const QByteArray &a);

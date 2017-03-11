@@ -51,7 +51,7 @@ local callisto = function(file)
     buffer = buffer .. rodape
     buffer = buffer .. '\n\nFinished in ' .. string.format("%.3f", os.microtime() - init) .. ' seconds\n'
     test.output(buffer)
-    return icon, buffer:replaceAll('\n', '<br>')
+    return icon, buffer:replace('\n', '<br>')
 end
 
 return callisto

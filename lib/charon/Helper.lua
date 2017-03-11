@@ -441,7 +441,7 @@ end
 -- nl2br
 -- converte em uma string todos os \n para <br>
 function Helper:nl2br(value)
-  return tostring(value):replaceAll('\n', '<br>')
+  return tostring(value):replace('\n', '<br>')
 end
 
 return Helper

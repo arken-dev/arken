@@ -28,24 +28,24 @@ ByteArray ByteArray::underscore(void)
   return ByteArray(string::underscore(this->data()));
 }
 
-ByteArray ByteArray::reduce(void)
+ByteArray ByteArray::simplified(void)
 {
-  return ByteArray(string::reduce(this->data()));
+  return ByteArray(string::simplified(this->data()));
 }
 
-ByteArray ByteArray::trim(void)
+ByteArray ByteArray::trimmed(void)
 {
-  return ByteArray(string::trim(this->data()));
+  return ByteArray(string::trimmed(this->data()));
 }
 
-ByteArray ByteArray::trimLeft(void)
+ByteArray ByteArray::leftTrimmed(void)
 {
-  return ByteArray(string::trimLeft(this->data()));
+  return ByteArray(string::leftTrimmed(this->data()));
 }
 
-ByteArray ByteArray::trimRight(void)
+ByteArray ByteArray::rightTrimmed(void)
 {
-  return ByteArray(string::trimRight(this->data()));
+  return ByteArray(string::rightTrimmed(this->data()));
 }
 
 ByteArray ByteArray::toUpper(void)

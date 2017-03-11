@@ -56,7 +56,7 @@ function Converter:toNumber(field, default)
   else
     value = tostring(value)
     if value:contains(',') then
-      value = value:replaceChar('.', ''):replaceChar(',', '.')
+      value = value:replace('.', ''):replace(',', '.')
     end
 
     return tonumber(value) or default

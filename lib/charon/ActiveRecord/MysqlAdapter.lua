@@ -157,11 +157,11 @@ function ActiveRecord_MysqlAdapter:parserDefault(format, value)
 end
 
 function ActiveRecord_MysqlAdapter.stringParserDefault(value)
-  return value:replaceAll("::character varying", ""):replaceChar("'", "")
+  return value:replace("::character varying", ""):replace("'", "")
 end
 
 function ActiveRecord_MysqlAdapter.timeParserDefault(value)
-  return value:replaceAll("::time without time zone", ""):replaceChar("'", "")
+  return value:replace("::time without time zone", ""):replace("'", "")
 end
 
 function ActiveRecord_MysqlAdapter.datetimeParserDefault(value)

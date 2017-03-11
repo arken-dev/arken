@@ -43,7 +43,7 @@ format.boolean = function(value)
 end
 
 format.number = function(value)
-  return tostring(value) --:replaceChar('.', ''):replaceChar(',', '.')
+  return tostring(value) --:replace('.', ''):replace(',', '.')
 end
 
 format.string = function(value)
@@ -83,7 +83,7 @@ ActiveRecord_Adapter.finders['boolean'] = function(value)
 end
 
 ActiveRecord_Adapter.finders['number'] = function(value)
-  return " = " .. tostring(value):replaceChar('.', ''):replaceChar(',', '.')
+  return " = " .. tostring(value):replace('.', ''):replace(',', '.')
 end
 
 ActiveRecord_Adapter.finders['table'] = function(value)
@@ -116,7 +116,7 @@ function ActiveRecord_Adapter:escape(value)
     return " NULL "
   else
     if(type(value) == 'number') then
-      return tostring(value) --:replaceChar('.', ''):replaceChar(',', '.')
+      return tostring(value) --:replace('.', ''):replace(',', '.')
     else
       return "'" .. tostring(value):escape() .. "'"
     end
@@ -152,7 +152,7 @@ function ActiveRecord_Adapter:where(values, flag)
   if type(join) == 'table' then
     local tmp = join[1]
     for index, value in pairs(join) do
-      tmp = string.replaceAll(tmp, '$' .. index, format[type(value)](value))
+      tmp = string.replace(tmp, '$' .. index, format[type(value)](value))
     end
     join = tmp
   end
@@ -162,7 +162,7 @@ function ActiveRecord_Adapter:where(values, flag)
     if where ~= '' then
       where = ' WHERE ' .. where
       for index, value in pairs(values) do
-        where = string.replaceAll(where, '$' .. index, format[type(value)](value))
+        where = string.replace(where, '$' .. index, format[type(value)](value))
       end
       result = where
     end
@@ -476,7 +476,7 @@ function ActiveRecord_Adapter:sql(name, params)
 
   if binding then
     for index, value in pairs(binding) do
-      sql = string.replaceAll(sql, '$' .. index, format[type(value)](value))
+      sql = string.replace(sql, '$' .. index, format[type(value)](value))
     end
   end
 
@@ -566,7 +566,7 @@ end
 
 function ActiveRecord_Adapter.read_value_number(value)
   if tostring(value):contains(',') then
-    return tonumber(value:replaceChar('.', ''):replaceChar(',', '.'))
+    return tonumber(value:replace('.', ''):replace(',', '.'))
   else
     return tonumber(value)
   end

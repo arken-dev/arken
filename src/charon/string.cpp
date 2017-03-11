@@ -155,6 +155,26 @@ bool string::contains(const char * string, const char * str)
   return 0;
 }
 
+char * string::chop(const char * string, int n)
+{
+  char * result;
+  int len = strlen(string);
+
+  if ( n > len ) {
+    result = '\0';
+  } else {
+    int size = len - n;
+    result = new char[size+1];
+    int i;
+    for( i = 0; i < size; i ++ ) {
+      result[i] = string[i];
+    }
+    result[i] = '\0';
+  }
+
+  return result;
+}
+
 char * string::escape(const char * string)
 {
   int i, j;
@@ -470,7 +490,7 @@ char * string::normalize(const char *string)
   return result;
 }
 
-char * string::padLeft(const char * string, size_t size, const char * pad)
+char * string::leftJustified(const char * string, size_t size, const char * pad)
 {
   size_t str_len = strlen(string);
   size_t pad_len = strlen(pad);
@@ -502,7 +522,7 @@ char * string::padLeft(const char * string, size_t size, const char * pad)
   return result;
 }
 
-char * string::padRight(const char * string, size_t size, const char * pad)
+char * string::rightJustified(const char * string, size_t size, const char * pad)
 {
   size_t str_len = strlen(string);
   size_t pad_len = strlen(pad);
@@ -553,7 +573,7 @@ char * string::repeated(const char *string, int times)
   return result;
 }
 
-char * string::replaceChar(const char *string, const char before, const char after)
+char * string::replace(const char *string, const char before, const char after)
 {
   int i, j;
   int string_len = strlen(string);
@@ -594,7 +614,7 @@ char * string::right(const char *string, int len)
   return result;
 }
 
-static inline bool reduce_special_char(const char chr)
+static inline bool simplified_special_char(const char chr)
 {
   if( chr >= 0 and chr <= 32 ) {
     return true;
@@ -603,7 +623,7 @@ static inline bool reduce_special_char(const char chr)
   }
 }
 
-char * string::reduce(const char *string)
+char * string::simplified(const char *string)
 {
   int i = 0;
   int j = 0;
@@ -613,11 +633,11 @@ char * string::reduce(const char *string)
 
   len = strlen(string);
 
-  while(reduce_special_char(string[i])) {
+  while(simplified_special_char(string[i])) {
     i++;
   }
 
-  while(reduce_special_char(string[len-1])) {
+  while(simplified_special_char(string[len-1])) {
     len--;
   }
 
@@ -627,7 +647,7 @@ char * string::reduce(const char *string)
   } else {
     result = new char[len + 1];
     while(i < len) {
-      if( reduce_special_char(string[i]) ) {
+      if( simplified_special_char(string[i]) ) {
         if( f ) {
           i++;
         } else {
@@ -651,7 +671,7 @@ char * string::reduce(const char *string)
 }
 
 //http://stackoverflow.com/questions/779875/what-is-the-function-to-replace-string-in-c
-char * string::replaceAll(const char * original, const char * pattern, const char * replacement )
+char * string::replace(const char * original, const char * pattern, const char * replacement )
 {
   size_t const replen = strlen(replacement);
   size_t const patlen = strlen(pattern);
@@ -794,7 +814,7 @@ static inline bool trim_special_char(const char chr)
   }
 }
 
-char * string::trim(const char *string)
+char * string::trimmed(const char *string)
 {
   int i = 0;
   int j = 0;
@@ -828,7 +848,7 @@ char * string::trim(const char *string)
   return result;
 }
 
-char * string::trimLeft(const char *string)
+char * string::leftTrimmed(const char *string)
 {
   int i = 0;
   int j = 0;
@@ -858,7 +878,7 @@ char * string::trimLeft(const char *string)
   return result;
 }
 
-char * string::trimRight(const char *string)
+char * string::rightTrimmed(const char *string)
 {
   int i = 0;
   int j = 0;

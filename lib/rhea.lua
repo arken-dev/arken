@@ -62,7 +62,7 @@ rhea.help = function(module)
 
     for k, v in pairs(module.help) do
       local space = string.rep(' ', size - #k)
-      help = help .. k .. space .. ' # ' .. v:trim():replaceAll('\n', margem) .. '\n'
+      help = help .. k .. space .. ' # ' .. v:trimmed():replace('\n', margem) .. '\n'
     end
 
     rhea.output(help)
@@ -76,7 +76,7 @@ rhea.run = function(args)
   local list = tostring(package.path):split(';')
   for i = 1, list:size() do
     local str = list:at(i)
-    str = str:replaceAll("/?.lua", ""):replaceChar('.', '/')
+    str = str:replace("/?.lua", ""):replace('.', '/')
     str = os.abspath(str)
     str = str .. '/rhea'
     if os.exists(str) then
@@ -98,7 +98,7 @@ rhea.run = function(args)
     local action = nil
 
     if last > 0 then
-      name   = task:left(last-1):replaceChar(":", ".")
+      name   = task:left(last-1):replace(":", ".")
       action = task:mid(last+1, -1)
     end
 
@@ -117,7 +117,7 @@ rhea.run = function(args)
         if object.help[action] then
           local help   = object.help[action]
           local margem = '\n' .. string.rep(' ', #action + 1)
-          rhea.output(action .. ' # ' .. help:trim():replaceAll('\n', margem))
+          rhea.output(action .. ' # ' .. help:trimmed():replace('\n', margem))
         else
           rhea.output(action .. ": undocumented")
         end
