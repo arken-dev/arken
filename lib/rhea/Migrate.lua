@@ -79,7 +79,9 @@ function Migrate:generate(params)
   end
   local fileName = string.format(Migrate.dir .. '/%s_%s.%s', timestamp, name, ext)
   Migrate.output('create ' .. fileName )
-  os.touch(fileName)
+  local file = io.open(fileName, 'w')
+  file:write(string.format('-- migrate %s_%s.%s', timestamp, name, ext))
+  file:close()
 end
 
 return Migrate
