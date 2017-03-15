@@ -11,7 +11,7 @@ test.afterAll = function()
 end
 
 test.should_execute_commit_after_begin = function()
-  local adapter = ActiveRecord.loadAdapter()
+  local adapter = ActiveRecord.factoryAdapter()
   adapter:begin()
   local value = adapter:commit()
   assert(type(value) == 'number', value)
@@ -19,7 +19,7 @@ end
 
 test.should_clear_errors = function()
   local Adapter = require('charon.ActiveRecord.Adapter')
-  local adapter = ActiveRecord.loadAdapter()
+  local adapter = ActiveRecord.factoryAdapter()
   Adapter.errors.value = 'true'
   adapter:begin()
   assert(Adapter.errors.value == 'true')
@@ -29,7 +29,7 @@ end
 
 test.should_clear_cache = function()
   local Adapter = require('charon.ActiveRecord.Adapter')
-  local adapter = ActiveRecord.loadAdapter()
+  local adapter = ActiveRecord.factoryAdapter()
   Adapter.cache.value = 'true'
   adapter:begin()
   assert(Adapter.cache.value == 'true')
@@ -39,7 +39,7 @@ end
 
 test.should_clear_neat = function()
   local Adapter = require('charon.ActiveRecord.Adapter')
-  local adapter = ActiveRecord.loadAdapter()
+  local adapter = ActiveRecord.factoryAdapter()
   Adapter.neat.value = 'true'
   adapter:begin()
   assert(Adapter.neat.value == 'true')

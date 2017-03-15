@@ -103,22 +103,23 @@ ActiveRecord.inherit = function(class)
   class.adapter = function(force)
     local adapterInstance = class.adapterInstance
     if class[adapterInstance] == nil or force then
-      class[adapterInstance] = class.loadAdapter()
+      class[adapterInstance] = class.factoryAdapter()
     end
     return class[adapterInstance]
   end
 
   -----------------------------------------------------------------------------
-  -- ActiveRecord#loadAdapter()
+  -- ActiveRecord#factoryAdapter()
   -----------------------------------------------------------------------------
 
-  class.loadAdapter = function(adapter_name)
+  class.factoryAdapter = function(params)
+    local params  = params or {}
     local config  = class.loadConfig()
-    local adapter = adapter_name or config.adapter
+    local adapter = params.adapter or config.adapter
     return Class.lookup(adapter).new{
       record_class = class,
-      tableName    = class.tableName,
-      primaryKey   = class.primaryKey,
+      tableName    = params.tableName  or class.tableName,
+      primaryKey   = params.primaryKey or class.primaryKey,
       user         = config.user,
       password     = config.password,
       database     = config.database,

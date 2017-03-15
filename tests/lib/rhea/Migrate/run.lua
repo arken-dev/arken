@@ -24,7 +24,7 @@ test.before = function()
 end
 
 test.after = function()
-  local adapter = ActiveRecord.loadAdapter()
+  local adapter = ActiveRecord.factoryAdapter()
   adapter:execute("DROP TABLE IF EXISTS schema_migration")
 end
 
@@ -47,7 +47,7 @@ test.should_insert_timestamp_in_schema_migrations = function()
   local params = {}
   params[0] = 'migrate:run'
   rhea.run(params)
-  local adapter = ActiveRecord.loadAdapter()
+  local adapter = ActiveRecord.factoryAdapter()
   local cursor  = adapter:execute('SELECT * FROM schema_migration')
   local row     = cursor:fetch('a', {})
   assert( type(cursor), type(cursor) )
