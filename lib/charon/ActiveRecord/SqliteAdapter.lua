@@ -125,12 +125,14 @@ function ActiveRecord_SqliteAdapter:columns()
     local sql    = string.format("pragma table_info(%s)", self.tableName)
     local result = {}
     local cursor = self:execute(sql)
+    -- row: cid pk type name notnull
     for row in cursor:each() do
       local format = self:parserFormat(row.type)
       result[row.name] = {
         default  = self:parserDefault(format, row.dflt_value),
-        not_null = row.notnull == 1,
-        format   = format
+        notNull  = row.notnull == 1,
+        format   = format,
+        primaryKey = row.pk == 1
       }
     end
     self.instanceColumns = result

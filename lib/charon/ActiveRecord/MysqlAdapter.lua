@@ -137,9 +137,10 @@ function ActiveRecord_MysqlAdapter:columns()
     for row in cursor:each() do
       local format = self:parserFormat(row.Type)
       result[row.Field] = {
-        default  = self:parserDefault(format, row.Default),
-        not_null = row.Null == 'NO',
-        format   = format
+        default    = self:parserDefault(format, row.Default),
+        notNull    = row.Null == 'NO',
+        format     = format,
+        primaryKey = row.Key == 'PRI'
       }
     end
     self.instanceColumns = result

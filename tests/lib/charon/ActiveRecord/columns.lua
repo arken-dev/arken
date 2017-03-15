@@ -42,7 +42,7 @@ end
 test.should_return_not_null = function()
   local columns = Person.columns()
   assert(columns.id.format == 'number', json.encode(columns.id))
-  assert(columns.id.not_null == true, json.encode(columns.id))
+  assert(columns.id.notNull == true, json.encode(columns.id))
 end
 
 return test

@@ -146,9 +146,10 @@ end
 function ActiveRecord_PostgresAdapter:columns()
   if self.instanceColumns == nil then
     sql = [[
-      SELECT a.attname, format_type(a.atttypid, a.atttypmod), d.adsrc, a.attnotnull
-        FROM pg_attribute a LEFT JOIN pg_attrdef d
-          ON a.attrelid = d.adrelid AND a.attnum = d.adnum
+      SELECT a.attname, format_type(a.atttypid, a.atttypmod), d.adsrc, a.attnotnull, i.indisprimary
+        FROM pg_attribute a
+        LEFT JOIN pg_attrdef d ON a.attrelid = d.adrelid AND a.attnum = d.adnum
+        LEFT JOIN pg_index i ON a.attrelid = i.indrelid  AND a.attnum = ANY(i.indkey) AND i.indisprimary
         WHERE a.attrelid = ']] .. self.tableName .. [['::regclass
           AND a.attnum > 0 AND NOT a.attisdropped
         ORDER BY a.attnum
@@ -159,9 +160,10 @@ function ActiveRecord_PostgresAdapter:columns()
     for row in cursor:each({}) do
       local format = self:parserFormat(row.format_type)
       result[row.attname] = {
-        default  = self:parserDefault(format, row.adsrc),
-        not_null = toboolean(row.attnotnull),
-        format   = format
+        default    = self:parserDefault(format, row.adsrc),
+        notNull    = toboolean(row.attnotnull),
+        format     = format,
+        primaryKey = row.indisprimary == 't'
       }
     end
     self.instanceColumns = result

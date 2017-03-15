@@ -60,7 +60,7 @@ end
 test.should_return_not_null = function()
   local columns = Person.columns()
   assert(columns.id.format == 'number', json.encode(columns.id))
-  assert(columns.id.not_null == true, json.encode(columns.id))
+  assert(columns.id.notNull == true, json.encode(columns.id))
 end
 
 test.should_error_if_format_not_exists = function()
@@ -134,6 +134,12 @@ test.should_boolean_with_default_nil = function()
   local columns = Person.columns()
   assert(columns.cancel.format == 'boolean', columns.cancel.format)
   assert(columns.cancel.default == nil, tostring(columns.cancel.default))
+end
+
+test.should_return_primary_key_flag = function()
+  local columns = Person.columns()
+  assert(columns.id.primaryKey == true, 'primary key not found')
+  assert(columns.name.primaryKey == false, 'name is not primary key')
 end
 
 return test

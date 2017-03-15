@@ -59,7 +59,7 @@ end
 test.should_return_not_null = function()
   local columns = SqliteTypes.columns()
   assert(columns.id.format == 'number', json.encode(columns.id))
-  assert(columns.id.not_null == true, json.encode(columns.id))
+  assert(columns.id.notNull == true, json.encode(columns.id))
 end
 
 test.should_error_if_format_not_exists = function()
@@ -121,6 +121,12 @@ test.should_datetime_with_default = function()
   local columns = SqliteTypes.columns()
   assert(columns.time_with_default.format == 'time', columns.time_with_default.format)
   assert(columns.time_with_default.default == '14:50:30', tostring(columns.time_with_default.default))
+end
+
+test.should_return_primary_key_flag = function()
+  local columns = SqliteTypes.columns()
+  assert(columns.id.primaryKey == true, 'primary key not found')
+  assert(columns.name.primaryKey == false, 'name is not primary key')
 end
 
 return test

@@ -101,7 +101,7 @@ end
 function ActiveRecord_Adapter:defaultValues(record)
   record.newRecord = true
   for column, properties in pairs(self:columns()) do
-    if record[column] == nil then -- and properties.not_null then
+    if record[column] == nil then -- and properties.notNull then
       record[column] = properties.default
     end
   end
