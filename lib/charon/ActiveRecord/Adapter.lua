@@ -676,4 +676,12 @@ function ActiveRecord_Adapter.datetimeParserValue(value)
   end
 end
 
+--------------------------------------------------------------------------------
+-- GET
+--------------------------------------------------------------------------------
+
+function ActiveRecord_Adapter:tables()
+  error('not implemented')
+end
+
 return ActiveRecord_Adapter

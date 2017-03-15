@@ -263,4 +263,25 @@ function ActiveRecord_MysqlAdapter:prepareMigration()
   return list
 end
 
+-------------------------------------------------------------------------------
+-- TABLES
+-------------------------------------------------------------------------------
+
+function ActiveRecord_MysqlAdapter:tables()
+  local list = {}
+  local sql  = string.format(
+    "SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA = '%s'", self.database
+  )
+
+  local cursor = self:execute(sql)
+  for row in cursor:each() do
+    table.insert(list, row.TABLE_NAME)
+  end
+
+  table.sort(list)
+
+  cursor:close()
+  return list
+end
+
 return ActiveRecord_MysqlAdapter

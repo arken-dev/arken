@@ -270,4 +270,23 @@ function ActiveRecord_SqliteAdapter:prepareMigration()
   return list
 end
 
+-------------------------------------------------------------------------------
+-- TABLES
+-------------------------------------------------------------------------------
+
+function ActiveRecord_SqliteAdapter:tables()
+  local list = {}
+  local sql  = [[SELECT name FROM sqlite_master WHERE type='table']]
+
+  local cursor = self:execute(sql)
+  for row in cursor:each() do
+    table.insert(list, row.name)
+  end
+
+  table.sort(list)
+
+  cursor:close()
+  return list
+end
+
 return ActiveRecord_SqliteAdapter

@@ -313,4 +313,28 @@ function ActiveRecord_PostgresAdapter:prepareMigration()
   return list
 end
 
+-------------------------------------------------------------------------------
+-- TABLES
+-------------------------------------------------------------------------------
+
+function ActiveRecord_PostgresAdapter:tables()
+  local list = {}
+  local sql  = string.format([[
+    SELECT table_schema, table_name
+    FROM information_schema.tables
+    WHERE table_schema = 'public' ORDER BY table_name
+  ]])
+
+  local cursor = self:execute(sql)
+  for row in cursor:each() do
+    table.insert(list, row.table_name)
+  end
+
+  table.sort(list)
+
+  cursor:close()
+  return list
+end
+
+
 return ActiveRecord_PostgresAdapter
