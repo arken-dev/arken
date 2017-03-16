@@ -3,6 +3,7 @@
 -- Use of this source code is governed by a BSD-style
 -- license that can be found in the LICENSE file.
 
+local Array     = require('charon.Array')
 local driver    = require('luasql.postgres')
 local isblank   = require('charon.isblank')
 local toboolean = require('charon.toboolean')
@@ -84,8 +85,8 @@ function ActiveRecord_PostgresAdapter:insert(record)
   end
   sql = sql .. '(' .. col .. ') VALUES (' .. val .. ') '
 
-  if record.primaryKey then
-    sql = sql .. ' RETURNING ' .. record.primaryKey
+  if self.primaryKey then
+    sql = sql .. ' RETURNING ' .. self.primaryKey
   end
 
   return sql
@@ -135,13 +136,15 @@ function ActiveRecord_PostgresAdapter:create(record)
   record:populate(record) -- TODO otimizar
   local sql    = self:insert(record)
   local cursor = self:execute(sql)
-  local row    = cursor:fetch({}, 'a')
-  record.id    = tonumber(row[self.primaryKey])
-  record.newRecord = false
-  local key = record:cacheKey()
-  Adapter.cache[key] = record
-  Adapter.neat[key]  = record:dup()
-  return record
+  if type(cursor) ~= 'number' then
+    local row    = cursor:fetch({}, 'a')
+    record.id    = tonumber(row[self.primaryKey])
+    record.newRecord = false
+    local key = record:cacheKey()
+    Adapter.cache[key] = record
+    Adapter.neat[key]  = record:dup()
+    return record
+  end
 end
 
 --------------------------------------------------------------------------------
@@ -323,7 +326,7 @@ end
 -------------------------------------------------------------------------------
 
 function ActiveRecord_PostgresAdapter:tables()
-  local list = {}
+  local list = Array.new()
   local sql  = string.format([[
     SELECT table_schema, table_name
     FROM information_schema.tables
