@@ -82,8 +82,13 @@ function ActiveRecord_PostgresAdapter:insert(record)
       end
     end
   end
+  sql = sql .. '(' .. col .. ') VALUES (' .. val .. ') '
 
-  return sql ..  '(' .. col .. ') VALUES (' .. val .. ') ' .. ' RETURNING ' .. record.primaryKey
+  if record.primaryKey then
+    sql = sql .. ' RETURNING ' .. record.primaryKey
+  end
+
+  return sql
 end
 
 --------------------------------------------------------------------------------
@@ -322,7 +327,9 @@ function ActiveRecord_PostgresAdapter:tables()
   local sql  = string.format([[
     SELECT table_schema, table_name
     FROM information_schema.tables
-    WHERE table_schema = 'public' ORDER BY table_name
+    WHERE table_schema = 'public'
+    AND table_type = 'BASE TABLE'
+    ORDER BY table_name
   ]])
 
   local cursor = self:execute(sql)
