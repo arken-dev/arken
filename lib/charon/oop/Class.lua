@@ -69,6 +69,10 @@ Class.new = function(className, inheritedBy, params)
     end
   end
 
+  function class:super(method, ...)
+    return self.superClass[method](self, ...)
+  end
+
   return class
 end
 
