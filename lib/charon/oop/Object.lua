@@ -5,7 +5,7 @@
 
 -- Object
 -- primitives ajustes for main objects
-Object = Object or {}
+local Object = Object or {}
 
 ------------------------------------------------------------------------------
 -- METAMETHOD __index

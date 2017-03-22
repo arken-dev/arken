@@ -1,5 +1,6 @@
-local Class = require('charon.oop.Class')
-local test  = {}
+local Object = require('charon.oop.Object')
+local Class  = require('charon.oop.Class')
+local test   = {}
 
 test.should_execute_initialize_instances = function()
   local tbl = {}
