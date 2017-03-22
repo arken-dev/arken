@@ -125,4 +125,8 @@ function Object:__tostring()
   return ""
 end
 
+function Object:pcall(method, ...)
+  return pcall(self[method], self, ...)
+end
+
 return Object
