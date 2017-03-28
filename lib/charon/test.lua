@@ -34,10 +34,12 @@ function test.process(file_name)
   local after     = specs.after     or function() end
   local beforeAll = specs.beforeAll or function() end
   local afterAll  = specs.afterAll  or function() end
+  local states    = specs.states
   specs.before    = nil
   specs.after     = nil
   specs.beforeAll = nil
   specs.afterAll  = nil
+  specs.states    = nil
   status, message = pcall(beforeAll)
   if status == false then
     error(message)
@@ -94,6 +96,26 @@ function test.process(file_name)
   status, message = pcall(afterAll)
   if status == false then
     error(message)
+  end
+
+  if states then
+    if type(states) == 'table' then
+      for _, state in ipairs(states) do
+        local flag = true
+        for pattern in io.lines("tests/states/" .. state) do
+          print(pattern)
+          for description, _ in pairs(specs) do
+            if description:match('^' .. pattern .. '$') then
+              flag = false
+              break
+            end
+          end
+          if flag then
+            results[pattern] = { status = 'pending' }
+          end
+        end
+      end
+    end
   end
 
   return results
