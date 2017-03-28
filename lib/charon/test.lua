@@ -101,8 +101,8 @@ function test.process(file_name)
   if states then
     if type(states) == 'table' then
       for _, state in ipairs(states) do
-        local flag = true
         for pattern in io.lines("tests/states/" .. state) do
+          local flag = true
           print(pattern)
           for description, _ in pairs(specs) do
             if description:match('^' .. pattern .. '$') then
