@@ -53,19 +53,9 @@ end
 --------------------------------------------------------------------------------
 
 function ActiveRecord_PostgresAdapter:insert(record)
-  self:bang(record)
   local sql = 'INSERT INTO ' .. self.tableName .. ' '
   local col = ''
   local val = ''
-  if self:columns().created_at then
-    record.created_at = self:createTimestamp()
-  end
-  if self:columns().updated_at then
-    record.updated_at = record.created_at
-  end
-  if self:columns().uuid then
-    record.uuid = os.uuid()
-  end
   for column, value in pairs(record) do
     if not self:isReserved(column) then
     --for column, properties in pairs(self:columns(table)) do
@@ -83,7 +73,7 @@ function ActiveRecord_PostgresAdapter:insert(record)
       end
     end
   end
-  sql = sql .. '(' .. col .. ') VALUES (' .. val .. ') '
+  sql = sql .. '(' .. col .. ') VALUES (' .. val .. ')'
 
   if self.primaryKey then
     sql = sql .. ' RETURNING ' .. self.primaryKey
@@ -134,6 +124,19 @@ end
 
 function ActiveRecord_PostgresAdapter:create(record)
   record:populate(record) -- TODO otimizar
+
+  if self:columns().created_at then
+    record.created_at = self:createTimestamp()
+  end
+  if self:columns().updated_at then
+    record.updated_at = record.created_at
+  end
+  if self:columns().uuid then
+    record.uuid = os.uuid()
+  end
+
+  self:bang(record)
+
   local sql    = self:insert(record)
   local cursor = self:execute(sql)
   if type(cursor) ~= 'number' then
@@ -345,6 +348,5 @@ function ActiveRecord_PostgresAdapter:tables()
   cursor:close()
   return list
 end
-
 
 return ActiveRecord_PostgresAdapter

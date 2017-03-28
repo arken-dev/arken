@@ -1,0 +1,116 @@
+{
+  "updated_at": {
+    "primaryKey": false,
+    "format": "timestamp",
+    "notNull": false
+  },
+  "timestamp_with_default": {
+    "primaryKey": false,
+    "format": "timestamp",
+    "notNull": false,
+    "default": "2015-03-11 13:35:10"
+  },
+  "id": {
+    "primaryKey": true,
+    "format": "number",
+    "notNull": true
+  },
+  "date_with_default": {
+    "primaryKey": false,
+    "format": "date",
+    "notNull": false,
+    "default": "2015-03-15"
+  },
+  "cancel": {
+    "primaryKey": false,
+    "format": "boolean",
+    "notNull": false,
+    "default": false
+  },
+  "total": {
+    "primaryKey": false,
+    "format": "number",
+    "notNull": false
+  },
+  "observation_with_default": {
+    "primaryKey": false,
+    "format": "string",
+    "notNull": false,
+    "default": "hello !!!"
+  },
+  "total_with_default": {
+    "primaryKey": false,
+    "format": "number",
+    "notNull": false,
+    "default": 135.35
+  },
+  "last_hour": {
+    "primaryKey": false,
+    "format": "time",
+    "notNull": false
+  },
+  "frete": {
+    "primaryKey": false,
+    "format": "number",
+    "notNull": false
+  },
+  "cancel_default_true": {
+    "primaryKey": false,
+    "format": "boolean",
+    "notNull": false,
+    "default": true
+  },
+  "created_at": {
+    "primaryKey": false,
+    "format": "timestamp",
+    "notNull": false
+  },
+  "last_access": {
+    "primaryKey": false,
+    "format": "timestamp",
+    "notNull": false
+  },
+  "observation": {
+    "primaryKey": false,
+    "format": "string",
+    "notNull": false
+  },
+  "time_with_default": {
+    "primaryKey": false,
+    "format": "time",
+    "notNull": false,
+    "default": "14:50:30"
+  },
+  "sub_total": {
+    "primaryKey": false,
+    "format": "number",
+    "notNull": false
+  },
+  "datetime_with_default": {
+    "primaryKey": false,
+    "format": "datetime",
+    "notNull": false,
+    "default": "2016-05-29 14:50:30"
+  },
+  "date_meeting": {
+    "primaryKey": false,
+    "format": "datetime",
+    "notNull": false
+  },
+  "cancel_default_false": {
+    "primaryKey": false,
+    "format": "boolean",
+    "notNull": false,
+    "default": false
+  },
+  "name": {
+    "primaryKey": false,
+    "format": "string",
+    "notNull": false
+  },
+  "birthday": {
+    "primaryKey": false,
+    "format": "date",
+    "notNull": false
+  }
+}

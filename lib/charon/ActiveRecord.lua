@@ -6,7 +6,10 @@
 local json    = require("charon.json")
 local Class   = require("charon.oop.Class")
 ActiveRecord  = Class.new("ActiveRecord")
-ActiveRecord.time = 0
+
+ActiveRecord.time     = 0
+ActiveRecord.schema   = false
+ActiveRecord.fixtures = false
 
 -------------------------------------------------------------------------------
 -- ActiveRecord#inherit

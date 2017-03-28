@@ -616,7 +616,7 @@ static int env_connect(lua_State *L)
   sourcename = luaL_checkstring(L, 2);
 
 #if SQLITE_VERSION_NUMBER > 3006013
-  res = sqlite3_open_v2(sourcename, &conn, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, NULL);
+  res = sqlite3_open_v2(sourcename, &conn, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_NOMUTEX | SQLITE_OPEN_SHAREDCACHE | SQLITE_OPEN_URI, NULL);
 #else
   res = sqlite3_open(sourcename, &conn);
 #endif
@@ -734,6 +734,8 @@ static int create_environment (lua_State *L)
 */
 LUASQL_API int luaopen_luasql_sqlite3(lua_State *L)
 {
+  sqlite3_enable_shared_cache(1);
+
   struct luaL_Reg driver[] = {
     {"sqlite3", create_environment},
     {NULL, NULL},

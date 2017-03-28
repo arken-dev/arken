@@ -1,0 +1,23 @@
+CREATE TABLE IF NOT EXISTS adapter_types (
+updated_at timestamp,
+timestamp_with_default timestamp DEFAULT '2015-03-11 13:35:10',
+id INTEGER PRIMARY KEY AUTOINCREMENT  NOT NULL,
+date_with_default date DEFAULT '2015-03-15',
+cancel boolean DEFAULT 0,
+total number,
+time_with_default time DEFAULT '14:50:30',
+total_with_default number DEFAULT 135.35,
+last_hour time,
+frete number,
+cancel_default_true boolean DEFAULT 1,
+created_at timestamp,
+last_access timestamp,
+observation string,
+observation_with_default string DEFAULT 'hello !!!',
+sub_total number,
+datetime_with_default datetime DEFAULT '2016-05-29 14:50:30',
+cancel_default_false boolean DEFAULT 0,
+date_meeting datetime,
+name string,
+birthday date
+)

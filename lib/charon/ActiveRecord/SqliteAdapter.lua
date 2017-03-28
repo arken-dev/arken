@@ -8,6 +8,7 @@ local isblank   = require('charon.isblank')
 local toboolean = require('charon.toboolean')
 local Class     = require('charon.oop.Class')
 local Adapter   = require('charon.ActiveRecord.Adapter')
+local json      = require('charon.json')
 
 local ActiveRecord_SqliteAdapter = Class.new("ActiveRecord.SqliteAdapter", Adapter)
 
@@ -30,20 +31,29 @@ function ActiveRecord_SqliteAdapter:connect()
 end
 
 --------------------------------------------------------------------------------
+-- ESCAPE
+--------------------------------------------------------------------------------
+
+function ActiveRecord_SqliteAdapter:escape(value)
+  if value == nil then
+    return " NULL "
+  else
+    if(type(value) == 'number') then
+      return tostring(value) --:replace('.', ''):replace(',', '.')
+    else
+      return "'" .. tostring(value):replace("'", "''") .. "'"
+    end
+  end
+end
+
+--------------------------------------------------------------------------------
 -- INSERT
 --------------------------------------------------------------------------------
 
 function ActiveRecord_SqliteAdapter:insert(record)
-  self:bang(record)
   local sql = 'INSERT INTO ' .. self.tableName .. ' '
   local col = ''
   local val = ''
-  if self:columns().created_at then
-    record.created_at = self:createTimestamp()
-  end
-  if self:columns().updated_at then
-    record.updated_at = record.created_at
-  end
   for column, value in pairs(record) do
     if not self:isReserved(column) then
     --for column, properties in pairs(self:columns(table)) do
@@ -61,7 +71,7 @@ function ActiveRecord_SqliteAdapter:insert(record)
       end
     end
   end
-  return sql ..  '(' .. col .. ') VALUES (' .. val .. ') '
+  return sql ..  '(' .. col .. ') VALUES (' .. val .. ')'
 end
 
 --------------------------------------------------------------------------------
@@ -105,6 +115,15 @@ end
 --------------------------------------------------------------------------------
 
 function ActiveRecord_SqliteAdapter:create(record)
+  self:bang(record)
+
+  if self:columns().created_at then
+    record.created_at = self:createTimestamp()
+  end
+  if self:columns().updated_at then
+    record.updated_at = record.created_at
+  end
+
   record:populate(record) -- TODO otimizar
   local sql    = self:insert(record)
   local cursor = self:execute(sql)
@@ -122,21 +141,25 @@ end
 
 function ActiveRecord_SqliteAdapter:columns()
   if self.instanceColumns == nil then
-    local sql    = string.format("pragma table_info(%s)", self.tableName)
-    local result = {}
-    local cursor = self:execute(sql)
-    -- row: cid pk type name notnull
-    for row in cursor:each() do
-      local format = self:parserFormat(row.type)
-      result[row.name] = {
-        default  = self:parserDefault(format, row.dflt_value),
-        notNull  = row.notnull == 1,
-        format   = format,
-        primaryKey = row.pk == 1
-      }
+    if ActiveRecord.schema then
+       self.instanceColumns = json.decode( os.read( ActiveRecord.schema .. '/' .. self.tableName .. '.json' ) )
+    else
+      local sql    = string.format("pragma table_info(%s)", self.tableName)
+      local result = {}
+      local cursor = self:execute(sql)
+      -- row: cid pk type name notnull
+      for row in cursor:each() do
+        local format = self:parserFormat(row.type)
+        result[row.name] = {
+          default    = self:parserDefault(format, row.dflt_value),
+          notNull    = (row.notnull == 1),
+          format     = format,
+          primaryKey = (row.pk == 1)
+        }
+      end
+      self.instanceColumns = result
+      cursor:close()
     end
-    self.instanceColumns = result
-    cursor:close()
   end
   return self.instanceColumns
 end
@@ -287,6 +310,74 @@ function ActiveRecord_SqliteAdapter:tables()
 
   cursor:close()
   return list
+end
+
+--------------------------------------------------------------------------------
+-- SCHEMA
+--------------------------------------------------------------------------------
+
+function ActiveRecord_SqliteAdapter:schema()
+  local sql  = 'CREATE TABLE IF NOT EXISTS ' .. self.tableName .. ' (\n'
+  local flag = false
+
+  for column, properties in pairs(self:columns()) do
+    if flag == true then
+      sql = sql .. ',\n'
+    else
+      flag = true
+    end
+
+    if properties.primaryKey then
+      sql = sql .. column .. ' INTEGER PRIMARY KEY AUTOINCREMENT '
+    else
+      sql = sql .. column .. ' ' .. properties.format
+    end
+
+    if properties.notNull == true then
+      sql = sql .. ' NOT NULL'
+    end
+
+    if properties.default ~= nil then
+      sql = sql .. ' DEFAULT ' .. self:schemaProcessDefault(properties)
+    end
+  end
+
+  sql = sql .. '\n)'
+
+  return sql
+end
+
+function ActiveRecord_SqliteAdapter:schemaProcessDefault(properties)
+
+  if properties.format == 'date' then
+    return "'" .. properties.default .. "'"
+  end
+
+  if properties.format == 'datetime' then
+    return "'" .. properties.default .. "'"
+  end
+
+  if properties.format == 'timestamp' then
+    return "'" .. properties.default .. "'"
+  end
+
+  if properties.format == 'time' then
+    return "'" .. properties.default .. "'"
+  end
+
+  if properties.format == 'boolean' then
+    if properties.default then
+      return 1
+    else
+      return 0
+    end
+  end
+
+  if properties.format == 'string' then
+    return "'" .. properties.default .. "'"
+  end
+
+  return properties.default
 end
 
 return ActiveRecord_SqliteAdapter

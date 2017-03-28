@@ -5,6 +5,9 @@
 
 CHARON_ENV = os.getenv("CHARON_ENV") or "test"
 
+--local ActiveRecord = require("charon.ActiveRecord")
+--ActiveRecord.adapter().loader()
+
 local test  = require 'charon.test'
 
 local callisto = function(file)

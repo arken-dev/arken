@@ -2,6 +2,7 @@ CHARON_ENV = os.getenv("CHARON_ENV") or "test"
 
 local QDirIterator = require 'QDirIterator'
 local QFileInfo    = require 'QFileInfo'
+local ActiveRecord = require "charon.ActiveRecord"
 
 local test     = require 'charon.test'
 local template = require 'charon.template'
@@ -33,6 +34,7 @@ function triton_start()
 end
 
 function triton_run(fileName)
+  --os.exit()
   local tests     = {}
   local dirName   = fileName:replace(".lua", ""):replace("app", "tests")
   local modelName = dirName:replace("./tests/models/", ""):replace("/", ".")

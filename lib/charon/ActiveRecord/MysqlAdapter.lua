@@ -38,16 +38,10 @@ end
 --------------------------------------------------------------------------------
 
 function ActiveRecord_MysqlAdapter:insert(record)
-  self:bang(record)
+
   local sql = 'INSERT INTO ' .. self.tableName .. ' '
   local col = ''
   local val = ''
-  if self:columns().created_at then
-    record.created_at = self:createTimestamp()
-  end
-  if self:columns().updated_at then
-    record.updated_at = record.created_at
-  end
   for column, value in pairs(record) do
     if not self:isReserved(column) then
     --for column, properties in pairs(self:columns(table)) do
@@ -66,7 +60,7 @@ function ActiveRecord_MysqlAdapter:insert(record)
     end
   end
 
-  return sql ..  '(' .. col .. ') VALUES (' .. val .. ') '
+  return sql ..  '(' .. col .. ') VALUES (' .. val .. ')'
 end
 
 --------------------------------------------------------------------------------
@@ -110,6 +104,15 @@ end
 --------------------------------------------------------------------------------
 
 function ActiveRecord_MysqlAdapter:create(record)
+  self:bang(record)
+
+  if self:columns().created_at then
+    record.created_at = self:createTimestamp()
+  end
+  if self:columns().updated_at then
+    record.updated_at = record.created_at
+  end
+
   record:populate(record) -- TODO otimizar
   local sql    = self:insert(record)
   local cursor = self:execute(sql)

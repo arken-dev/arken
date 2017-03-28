@@ -677,11 +677,27 @@ function ActiveRecord_Adapter.datetimeParserValue(value)
 end
 
 --------------------------------------------------------------------------------
--- GET
+-- TABLES
 --------------------------------------------------------------------------------
 
 function ActiveRecord_Adapter:tables()
   error('not implemented')
+end
+
+--------------------------------------------------------------------------------
+-- SCHEMA
+--------------------------------------------------------------------------------
+
+function ActiveRecord_Adapter:schema()
+  error('not implemented')
+end
+
+-------------------------------------------------------------------------------
+-- LOADER
+-------------------------------------------------------------------------------
+
+ActiveRecord_Adapter.loader = function()
+  -- default empty loader for tests
 end
 
 return ActiveRecord_Adapter
