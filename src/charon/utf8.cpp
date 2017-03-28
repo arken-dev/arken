@@ -26,6 +26,15 @@ char * utf8::lower(const char * string)
   return result;
 }
 
+char * utf8::format(const char * string)
+{
+  QByteArray tmp = QString(string).toLocal8Bit();
+  char * result = new char[tmp.size() + 1];
+  strcpy(result, tmp);
+  result[tmp.size()] = '\0';
+  return result;
+}
+
 int utf8::len(const char * string)
 {
    int i = 0, j = 0;

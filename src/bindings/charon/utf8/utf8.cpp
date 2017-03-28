@@ -21,6 +21,12 @@ static int lua_charon_utf8_upper( lua_State *L ) {
   return 1;
 }
 
+static int lua_charon_utf8_format( lua_State *L ) {
+  const char * string = luaL_checkstring(L, 1);
+  lua_pushstring( L, utf8::format(string) );
+  return 1;
+}
+
 static int lua_charon_utf8_len( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   lua_pushinteger( L, utf8::len(string) );
@@ -33,6 +39,7 @@ extern "C" {
     static const luaL_reg Map[] = {
       {"lower", lua_charon_utf8_lower},
       {"upper", lua_charon_utf8_upper},
+      {"format", lua_charon_utf8_format},
       {"len",   lua_charon_utf8_len},
       {NULL, NULL}
     };

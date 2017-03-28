@@ -8,6 +8,7 @@ class utf8 {
   public:
   static char * upper(const char * string);
   static char * lower(const char * string);
+  static char * format(const char * string);
   static int len(const char * string);
 };
 
