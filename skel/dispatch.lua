@@ -1,5 +1,5 @@
 local dispatcher = require 'charon.dispatcher'
 
-function dispatch()
-  return dispatcher.dispatch()
+function dispatch(env)
+  return dispatcher.dispatch(env)
 end
