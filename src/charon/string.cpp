@@ -161,7 +161,8 @@ char * string::chop(const char * string, int n)
   int len = strlen(string);
 
   if ( n > len ) {
-    result = '\0';
+    result = new char[1];
+    result[0] = '\0';
   } else {
     int size = len - n;
     result = new char[size+1];
