@@ -15,7 +15,7 @@ ActiveRecord_Adapter.reserved = {
   binding = true, order = true, limit = true
 }
 
-ActiveRecord_Adapter.errors = {}
+ActiveRecord_Adapter.errors = Array.new()
 ActiveRecord_Adapter.cache  = {}
 ActiveRecord_Adapter.neat   = {}
 ActiveRecord_Adapter.cursor = {}
@@ -366,7 +366,7 @@ end
 --------------------------------------------------------------------------------
 
 function ActiveRecord_Adapter:rollback()
-  ActiveRecord_Adapter.errors = {}
+  ActiveRecord_Adapter.errors = Array.new()
   ActiveRecord_Adapter.cache  = {}
   return self:execute("ROLLBACK")
 end
@@ -376,7 +376,7 @@ end
 --------------------------------------------------------------------------------
 
 function ActiveRecord_Adapter:commit()
-  ActiveRecord_Adapter.errors = {}
+  ActiveRecord_Adapter.errors = Array.new()
   ActiveRecord_Adapter.cache  = {}
   ActiveRecord_Adapter.neat   = {}
   return self:execute("COMMIT")

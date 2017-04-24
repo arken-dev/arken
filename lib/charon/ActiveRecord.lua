@@ -5,6 +5,7 @@
 
 local json    = require("charon.json")
 local Class   = require("charon.oop.Class")
+local Array   = require("charon.Array")
 ActiveRecord  = Class.new("ActiveRecord")
 
 ActiveRecord.time     = 0
@@ -219,7 +220,7 @@ end
 -------------------------------------------------------------------------------
 
 function ActiveRecord:initialize()
-  self.errors = {}
+  self.errors = Array.new()
   if self.newRecord == nil then
     self.adapter():defaultValues(self)
   end
