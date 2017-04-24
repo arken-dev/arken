@@ -18,4 +18,12 @@ function Array:size()
   return #self
 end
 
+function Array:count()
+  local count = 0
+  for k, v in pairs(self) do
+    count = count + 1
+  end
+  return count
+end
+
 return Array
