@@ -221,6 +221,27 @@ lua_DateInstanceMethodIsValid( lua_State *L ) {
   return 1;
 }
 
+static int
+lua_DateInstanceMethodDay( lua_State *L ) {
+  Date *dt = checkDate( L );
+  lua_pushinteger(L, dt->day());
+  return 1;
+}
+
+static int
+lua_DateInstanceMethodMonth( lua_State *L ) {
+  Date *dt   = checkDate( L );
+  lua_pushinteger(L, dt->month());
+  return 1;
+}
+
+static int
+lua_DateInstanceMethodYear( lua_State *L ) {
+  Date *dt   = checkDate( L );
+  lua_pushinteger(L, dt->year());
+  return 1;
+}
+
 static const
 luaL_reg DateInstanceMethods[] = {
   {"isValid", lua_DateInstanceMethodIsValid},
@@ -229,6 +250,9 @@ luaL_reg DateInstanceMethods[] = {
   {"addMonths", lua_DateInstanceMethodAddMonths},
   {"addDays", lua_DateInstanceMethodAddDays},
   {"beginningOfMonth", lua_DateInstanceMethodBeginningOfMonth},
+  {"day", lua_DateInstanceMethodDay},
+  {"month", lua_DateInstanceMethodMonth},
+  {"year", lua_DateInstanceMethodYear},
   {"endOfMonth", lua_DateInstanceMethodEndOfMonth},
   {"toString", lua_DateInstanceMethodToString},
   {"__lt", lua_DateInstanceMethodLessThan},
