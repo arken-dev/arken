@@ -129,7 +129,7 @@ function ActiveRecord_PostgresAdapter:create(record)
     record.created_at = self:createTimestamp()
   end
   if self:columns().updated_at then
-    record.updated_at = record.created_at
+    record.updated_at = record.created_at or self:createTimestamp()
   end
   if self:columns().uuid then
     record.uuid = os.uuid()
