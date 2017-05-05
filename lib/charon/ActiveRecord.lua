@@ -213,6 +213,17 @@ ActiveRecord.inherit = function(class)
     return class.adapter():query(sql)
   end
 
+  -------------------------------------------------------------------------------
+  -- ActiveRecord#create
+  -------------------------------------------------------------------------------
+
+  function class.create(record)
+    if record.className == nil then
+      record = class.new(record)
+    end
+    return class.adapter():create(record)
+  end
+
 end
 
 -------------------------------------------------------------------------------
@@ -224,14 +235,6 @@ function ActiveRecord:initialize()
   if self.newRecord == nil then
     self.adapter():defaultValues(self)
   end
-end
-
--------------------------------------------------------------------------------
--- ActiveRecord#create
--------------------------------------------------------------------------------
-
-function ActiveRecord:create()
-  return self.adapter():create(self)
 end
 
 -------------------------------------------------------------------------------
