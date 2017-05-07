@@ -15,11 +15,12 @@ ActiveRecord_Adapter.reserved = {
   binding = true, order = true, limit = true
 }
 
-ActiveRecord_Adapter.errors = Array.new()
-ActiveRecord_Adapter.cache  = {}
-ActiveRecord_Adapter.neat   = {}
-ActiveRecord_Adapter.cursor = {}
-ActiveRecord_Adapter.output = print
+ActiveRecord_Adapter.errors  = Array.new()
+ActiveRecord_Adapter.cache   = {}
+ActiveRecord_Adapter.neat    = {}
+ActiveRecord_Adapter.cursor  = {}
+ActiveRecord_Adapter.pending = {}
+ActiveRecord_Adapter.output  = print
 
 ActiveRecord_Adapter.booleanValues = {
   ['t']     = true,
@@ -211,7 +212,8 @@ function ActiveRecord_Adapter:destroy(record)
   local values = {[self.primaryKey] = record[self.primaryKey]}
   local sql    = "DELETE FROM " .. self.tableName .. " " .. self:where(values)
   local result = self:execute(sql)
-  self.cache[record:cacheKey()] = false
+  self.cache[record:cacheKey()]   = false
+  self.pending[record:cacheKey()] = false
   return result
 end
 
@@ -248,6 +250,17 @@ function ActiveRecord_Adapter:find(params)
     local key = self.tableName .. '_' .. tostring(params[self.primaryKey])
     if ActiveRecord_Adapter.cache[key] then
       return ActiveRecord_Adapter.cache[key]
+    else
+       if ActiveRecord_Adapter.neat[key] and ActiveRecord_Adapter.cache[key] ~= false then
+         local neat = ActiveRecord_Adapter.neat[key]
+         local record = { newRecord = false }
+         for k, v in pairs(neat) do
+           record[k] = v
+         end
+         record = self.record_class.new(record)
+         ActiveRecord_Adapter.cache[key] = record
+         return record
+       end
     end
   end
 
@@ -366,8 +379,9 @@ end
 --------------------------------------------------------------------------------
 
 function ActiveRecord_Adapter:rollback()
-  ActiveRecord_Adapter.errors = Array.new()
-  ActiveRecord_Adapter.cache  = {}
+  ActiveRecord_Adapter.errors  = Array.new()
+  ActiveRecord_Adapter.cache   = {}
+  ActiveRecord_Adapter.pending = {}
   return self:execute("ROLLBACK")
 end
 
@@ -376,9 +390,10 @@ end
 --------------------------------------------------------------------------------
 
 function ActiveRecord_Adapter:commit()
-  ActiveRecord_Adapter.errors = Array.new()
-  ActiveRecord_Adapter.cache  = {}
-  ActiveRecord_Adapter.neat   = {}
+  ActiveRecord_Adapter.errors  = Array.new()
+  ActiveRecord_Adapter.cache   = {}
+  ActiveRecord_Adapter.neat    = {}
+  ActiveRecord_Adapter.pending = {}
   return self:execute("COMMIT")
 end
 
@@ -609,7 +624,7 @@ end
 function ActiveRecord_Adapter:changes(record)
   local changes = {}
   local key     = record:cacheKey()
-  local neat    = ActiveRecord_Adapter.neat[key] or {}
+  local neat    = ActiveRecord_Adapter.pending[key] or ActiveRecord_Adapter.neat[key] or {}
 
   for column, properties in pairs(self:columns()) do
     if record[column] ~= neat[column] then
@@ -626,7 +641,13 @@ end
 
 function ActiveRecord_Adapter:was(record)
   local key  = record:cacheKey()
-  return ActiveRecord_Adapter.neat[key] or {}
+  local neat = ActiveRecord_Adapter.pending[key] or ActiveRecord_Adapter.neat[key]
+  local was  = { }
+  for k, v in pairs(neat) do
+    was[k] = v
+  end
+
+  return was
 end
 
 -------------------------------------------------------------------------------

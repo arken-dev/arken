@@ -109,11 +109,12 @@ function ActiveRecord_PostgresAdapter:update(record)
   local where = ' WHERE ' .. self.primaryKey .. " = " .. self:escape(record[self.primaryKey])
   sql = sql .. col .. where
   result = self:execute(sql)
-  -- neat
-  local neat = Adapter.neat[record:cacheKey()] or {}
+  -- pending
+  local pending = Adapter.pending[record:cacheKey()] or {}
   for column, properties in pairs(self:columns()) do
-    neat[column] = record[column]
+    pending[column] = record[column]
   end
+  Adapter.pending[record:cacheKey()] = pending
 
   return result
 end
