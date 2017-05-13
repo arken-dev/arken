@@ -641,7 +641,7 @@ end
 
 function ActiveRecord_Adapter:was(record)
   local key  = record:cacheKey()
-  local neat = ActiveRecord_Adapter.pending[key] or ActiveRecord_Adapter.neat[key]
+  local neat = ActiveRecord_Adapter.pending[key] or ActiveRecord_Adapter.neat[key] or {}
   local was  = { }
   for k, v in pairs(neat) do
     was[k] = v
