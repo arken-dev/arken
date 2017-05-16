@@ -7,6 +7,7 @@ local Array = require('charon.Array')
 local Class = require('charon.oop.Class')
 local toboolean = require('charon.toboolean')
 local QDateTime = require('QDateTime')
+local Date = require('charon.time.Date')
 
 local ActiveRecord_Adapter = Class.new("ActiveRecord.Adapter")
 
@@ -569,9 +570,9 @@ end
 
 function ActiveRecord_Adapter.read_value_date(value)
   if value:sub(5, 5) == '-' then
-    return QDateTime.fromString(value:left(10), 'yyyy-MM-dd')
+    return Date.fromString(value:left(10), 'yyyy-MM-dd')
   else
-    return QDateTime.fromString(value:left(10), 'yyyy/MM/dd')
+    return Date.fromString(value:left(10), 'yyyy/MM/dd')
   end
 end
 
