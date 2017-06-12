@@ -233,6 +233,7 @@ function FormHelper:selectHash(field, list, options)
   local option   = "<option value=%q %s >%s</option>"
   local selected = ""
   local value    = self:buildValue(field)
+  local style    = options.style or "width:250px"
 
   if options.multiple then
     if options.multiple == true then
@@ -241,8 +242,8 @@ function FormHelper:selectHash(field, list, options)
     html = html .. string.format([[ multiple="multiple" size=%q ]], options.multiple)
   end
 
-  html = html .. [[ id=%q name=%q style="width:250px;">]]
-  html = string.format(html, self:buildId(field), self:buildName(field))
+  html = html .. [[ id=%q name=%q style=%q>]]
+  html = string.format(html, self:buildId(field), self:buildName(field), style)
 
   if options.blank then
     local blank = ""
