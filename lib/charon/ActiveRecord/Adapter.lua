@@ -504,9 +504,8 @@ end
 -------------------------------------------------------------------------------
 
 function ActiveRecord_Adapter:createTimestamp()
-  local clock = tostring(os.clock())
-  local index = clock:indexOf('.')
-  return os.date("%Y/%m/%d %H:%M:%S.") .. clock:mid(index+1, -1)
+  local _, float = math.modf(os.microtime())
+  return os.date("%Y/%m/%d %H:%M:%S") .. tostring(float):mid(2, -1)
 end
 
 -------------------------------------------------------------------------------
