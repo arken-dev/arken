@@ -26,7 +26,7 @@ function triton_start()
     local fileInfo = iterator:fileInfo()
     if fileInfo:filePath():endsWith(".lua") then
       local filePath = fileInfo:filePath()
-      print(filePath)
+      --print(filePath)
       table.insert(files, filePath)
       triton.enqueue(filePath)
     end
