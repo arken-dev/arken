@@ -118,7 +118,7 @@ lua_QDateTimeInstanceMethodEqual( lua_State *L ) {
   QDateTime *dt1 = checkQDateTime( L );
   QDateTime *dt2 = *(QDateTime **) luaL_checkudata(L, 2, "QDateTime.metatable");
 
-  lua_pushboolean(L, dt1->toMSecsSinceEpoch() == dt2->toMSecsSinceEpoch());
+  lua_pushboolean(L, dt1->toString("dd.MM.yyyy HH:mm") == dt2->toString("dd.MM.yyyy HH:mm"));
   return 1;
 }
 

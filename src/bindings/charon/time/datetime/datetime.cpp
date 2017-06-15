@@ -135,7 +135,7 @@ lua_DateTimeInstanceMethodEqual( lua_State *L ) {
   DateTime *dt1 = checkDateTime( L );
   DateTime *dt2 = *(DateTime **) luaL_checkudata(L, 2, "DateTime.metatable");
 
-  lua_pushboolean(L, dt1->toMSecsSinceEpoch() == dt2->toMSecsSinceEpoch());
+  lua_pushboolean(L, dt1->toString("dd.MM.yyyy HH:mm") == dt2->toString("dd.MM.yyyy HH:mm"));
   return 1;
 }
 
