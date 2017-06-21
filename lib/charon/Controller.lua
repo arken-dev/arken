@@ -188,11 +188,12 @@ end
 -------------------------------------------------------------------------------
 
 function Controller:render_json(params)
+  local code = params.code or 200
   local data = json.encode(params.value)
   if self:params().json_callback then
     data = string.format('%s(%s)', self:params().json_callback, data)
   end
-  return 200, {'Content-Type: application/json; charset=UTF-8'}, data
+  return code, {'Content-Type: application/json; charset=UTF-8'}, data
 end
 
 -------------------------------------------------------------------------------
