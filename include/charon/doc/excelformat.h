@@ -17,7 +17,7 @@
 #ifndef EXCELFORMAT_H
 #define EXCELFORMAT_H
 
-#include "basicexcel.hpp"
+#include <charon/doc/excel.h>
 
 namespace ExcelFormat {
 

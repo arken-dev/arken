@@ -17,13 +17,14 @@ include_directories(${PROJECT_SOURCE_DIR}/src/vendors/mongrel2/http11)
 file(GLOB src ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
 file(GLOB os ${CMAKE_CURRENT_SOURCE_DIR}/os/*.c)
 file(GLOB net ${CMAKE_CURRENT_SOURCE_DIR}/net/*.cpp)
+file(GLOB doc ${CMAKE_CURRENT_SOURCE_DIR}/doc/*.cpp)
 file(GLOB time ${CMAKE_CURRENT_SOURCE_DIR}/time/*.cpp)
 
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/deps)
 set(mongrel2 ${PROJECT_SOURCE_DIR}/src/vendors/mongrel2/http11/http11_parser.c)
 set(ap ${PROJECT_SOURCE_DIR}/src/vendors/ap/ap_base64.c)
 
-add_library( charon SHARED ${src} ${os} ${net} ${time} ${mongrel2} ${ap} )
+add_library( charon SHARED ${src} ${os} ${net} ${time} ${doc} ${mongrel2} ${ap} )
 
 find_package(Qt5Core)
 find_package(Qt5Network)

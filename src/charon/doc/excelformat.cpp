@@ -14,7 +14,7 @@
 	YOU CANNOT MAKE ANY USE OF THE WORK.
 */
 
-#include "include/excelformat.h"
+#include <charon/doc/excelformat.h>
 
 using namespace ExcelFormat;
 
