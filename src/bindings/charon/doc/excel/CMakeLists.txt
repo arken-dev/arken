@@ -8,6 +8,17 @@
 #
 # ------------------------------------------------------------------------------
 
-set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/clib/charon/doc)
+include_directories(.)
+include_directories(${PROJECT_SOURCE_DIR}/include)
+include_directories(${PROJECT_SOURCE_DIR}/deps/include)
 
-add_subdirectory(excel)
+add_library(
+  Excel SHARED excel.cpp
+)
+
+find_package(Qt5Core)
+find_package(Qt5Network)
+
+set_target_properties(Excel PROPERTIES PREFIX "")
+
+target_link_libraries(Excel Qt5::Core Qt5::Network charon lua)
