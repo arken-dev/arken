@@ -473,24 +473,24 @@ int lBasicExcel_RenameWorksheet(lua_State* L) {
 static const struct luaL_Reg BasicExcel_funcs[] = {
 	{ "__gc",				lBasicExcel___gc },
 
-	{ "CellFormat",			lBasicExcel_CellFormat },
+	{ "cellFormat",			lBasicExcel_CellFormat },
 
-	{ "New",				lBasicExcel_New },
-	{ "Load",				lBasicExcel_Load },
-	{ "Save",				lBasicExcel_Save },
-	{ "SaveAs",				lBasicExcel_SaveAs },
-	{ "Close",				lBasicExcel_Close },
+	{ "new",				lBasicExcel_New },
+	{ "load",				lBasicExcel_Load },
+	{ "save",				lBasicExcel_Save },
+	{ "saveAs",				lBasicExcel_SaveAs },
+	{ "close",				lBasicExcel_Close },
 
-	{ "GetTotalWorksheets",	lBasicExcel_GetTotalWorksheets },
-	{ "GetWorksheet",		lBasicExcel_GetWorksheet },
-	{ "AddWorksheet",		lBasicExcel_AddWorksheet },
-	{ "DeleteWorksheet",	lBasicExcel_DeleteWorksheet },
+	{ "getTotalWorksheets",	lBasicExcel_GetTotalWorksheets },
+	{ "getWorksheet",		lBasicExcel_GetWorksheet },
+	{ "addWorksheet",		lBasicExcel_AddWorksheet },
+	{ "deleteWorksheet",	lBasicExcel_DeleteWorksheet },
 
-	{ "GetAnsiSheetName",	lBasicExcel_GetAnsiSheetName },
-	{ "GetUnicodeSheetName",lBasicExcel_GetUnicodeSheetName },
-	{ "GetSheetName",		lBasicExcel_GetSheetName },
+	{ "getAnsiSheetName",	lBasicExcel_GetAnsiSheetName },
+	{ "getUnicodeSheetName",lBasicExcel_GetUnicodeSheetName },
+	{ "getSheetName",		lBasicExcel_GetSheetName },
 
-	{ "RenameWorksheet",   	lBasicExcel_RenameWorksheet },
+	{ "renameWorksheet",   	lBasicExcel_RenameWorksheet },
 	{ NULL, NULL },
 };
 
@@ -623,22 +623,22 @@ int lBasicExcelWorksheet_MergeCells(lua_State* L) {
 #endif // EXPERIMENTAL_CELL_MERGING
 
 static const struct luaL_Reg BasicExcelWorksheet_funcs[] = {
-	{ "GetAnsiSheetName",  	lBasicExcelWorksheet_GetAnsiSheetName },
-	{ "GetUnicodeSheetName",lBasicExcelWorksheet_GetUnicodeSheetName },
-	{ "GetSheetName",  		lBasicExcelWorksheet_GetSheetName },
-	{ "Rename",  			lBasicExcelWorksheet_Rename },
+	{ "getAnsiSheetName",  	lBasicExcelWorksheet_GetAnsiSheetName },
+	{ "getUnicodeSheetName",lBasicExcelWorksheet_GetUnicodeSheetName },
+	{ "getSheetName",  		lBasicExcelWorksheet_GetSheetName },
+	{ "rename",  			lBasicExcelWorksheet_Rename },
 
-	{ "GetTotalRows",  	  	lBasicExcelWorksheet_GetTotalRows },
-	{ "GetTotalCols",  	  	lBasicExcelWorksheet_GetTotalCols },
+	{ "getTotalRows",  	  	lBasicExcelWorksheet_GetTotalRows },
+	{ "getTotalCols",  	  	lBasicExcelWorksheet_GetTotalCols },
 
-	{ "Cell",  	  			lBasicExcelWorksheet_Cell },
-	{ "EraseCell",    		lBasicExcelWorksheet_EraseCell },
+	{ "cell",  	  			lBasicExcelWorksheet_Cell },
+	{ "eraseCell",    		lBasicExcelWorksheet_EraseCell },
 
-	{ "SetColWidth",  		lBasicExcelWorksheet_SetColWidth },
-	{ "GetColWidth",  		lBasicExcelWorksheet_GetColWidth },
+	{ "setColWidth",  		lBasicExcelWorksheet_SetColWidth },
+	{ "getColWidth",  		lBasicExcelWorksheet_GetColWidth },
 
 #ifdef EXPERIMENTAL_CELL_MERGING
-	{ "MergeCells",  		lBasicExcelWorksheet_MergeCells },
+	{ "mergeCells",  		lBasicExcelWorksheet_MergeCells },
 #endif // EXPERIMENTAL_CELL_MERGING
 	{ NULL, NULL },
 };
@@ -844,38 +844,37 @@ int lBasicExcelCell_SetMergedColumns(lua_State* L) {
 
 
 static const struct luaL_Reg BasicExcelCell_funcs[] = {
-	{ "Type",  				lBasicExcelCell_Type },
+	{ "type",  				lBasicExcelCell_Type },
 
-	{ "Get",  				lBasicExcelCell_Get },
-	{ "GetStringLength",   	lBasicExcelCell_GetStringLength },
+	{ "get",  				lBasicExcelCell_Get },
+	{ "getStringLength",   	lBasicExcelCell_GetStringLength },
 
-	{ "GetInteger",   		lBasicExcelCell_GetInteger },
-	{ "GetDouble",   		lBasicExcelCell_GetDouble },
-	{ "GetString",   		lBasicExcelCell_GetString },
-	{ "GetWString",   		lBasicExcelCell_GetWString },
+	{ "getInteger",   		lBasicExcelCell_GetInteger },
+	{ "getDouble",   		lBasicExcelCell_GetDouble },
+	{ "getString",   		lBasicExcelCell_GetString },
+	{ "getWString",   		lBasicExcelCell_GetWString },
 
-	{ "Set",  				lBasicExcelCell_Set },
+	{ "set",  				lBasicExcelCell_Set },
 
-	{ "SetInteger",    		lBasicExcelCell_SetInteger },
-	{ "SetDouble",    		lBasicExcelCell_SetDouble },
-	{ "SetRKValue",    		lBasicExcelCell_SetRKValue },
-	{ "SetString",    		lBasicExcelCell_SetString },
-	{ "SetWString",    		lBasicExcelCell_SetWString },
+	{ "setInteger",    		lBasicExcelCell_SetInteger },
+	{ "setDouble",    		lBasicExcelCell_SetDouble },
+	{ "setRKValue",    		lBasicExcelCell_SetRKValue },
+	{ "setString",    		lBasicExcelCell_SetString },
+	{ "setWString",    		lBasicExcelCell_SetWString },
 
-	{ "SetFormula",    		lBasicExcelCell_SetFormula },
+	{ "setFormula",    		lBasicExcelCell_SetFormula },
 
-	{ "GetXFormatIdx", 		lBasicExcelCell_GetXFormatIdx },
-	{ "SetXFormatIdx", 		lBasicExcelCell_SetXFormatIdx },
-	{ "SetFormat", 			lBasicExcelCell_SetFormat },
+	{ "getXFormatIdx", 		lBasicExcelCell_GetXFormatIdx },
+	{ "setXFormatIdx", 		lBasicExcelCell_SetXFormatIdx },
+	{ "setFormat", 			lBasicExcelCell_SetFormat },
 
-	{ "EraseContents", 	   	lBasicExcelCell_EraseContents },
+	{ "eraseContents", 	   	lBasicExcelCell_EraseContents },
 
-	{ "GetMergedRows", 	   	lBasicExcelCell_GetMergedRows },
-	{ "GetMergedColumns", 	lBasicExcelCell_GetMergedColumns },
+	{ "getMergedRows", 	   	lBasicExcelCell_GetMergedRows },
+	{ "getMergedColumns", 	lBasicExcelCell_GetMergedColumns },
 	
-	{ "SetMergedRows", 	   	lBasicExcelCell_SetMergedRows },
-	{ "SetMergedColumns", 	lBasicExcelCell_SetMergedColumns },
-	
+	{ "setMergedRows", 	   	lBasicExcelCell_SetMergedRows },
+	{ "setMergedColumns", 	lBasicExcelCell_SetMergedColumns },
 	{ NULL, NULL },
 };
 
@@ -1518,7 +1517,7 @@ static int lxls_wchar(lua_State* L) {
 
 
 static const struct luaL_Reg lxlslib[] = {
-	{ "new",			lxls_BasicExcel },
+	{ "workbook",			lxls_BasicExcel },
 	{ "font",			lxls_ExcelFont },
 	{ "MAKE_COLOR2",		lxls_MAKECOLOR2 },
 	{ "wchar",			lxls_wchar },
