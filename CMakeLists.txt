@@ -10,6 +10,8 @@
 
 cmake_minimum_required(VERSION 3.0)
 
+option(WITHOUT_QT "with(out) QT library")
+
 include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${PROJECT_SOURCE_DIR}/deps/include)
 
