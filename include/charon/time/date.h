@@ -20,6 +20,7 @@ class Date : public QDate
 
   Date() : QDate() { }
   Date(QDate date) : QDate(date) { }
+  Date(const charon::time::Date& date) : QDate(date) { }
 
   Date beginningOfMonth();
   Date endOfMonth();

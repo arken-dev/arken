@@ -208,6 +208,14 @@ lua_DateInstanceMethodEndOfMonth( lua_State *L ) {
 }
 
 static int
+lua_DateInstanceMethodDayOfWeek( lua_State *L ) {
+  Date *dt = checkDate( L );
+  lua_pushinteger(L, dt->dayOfWeek());
+
+  return 1;
+}
+
+static int
 lua_DateInstanceMethodIsNull( lua_State *L ) {
   Date *dt   = checkDate( L );
   lua_pushboolean(L, dt->isNull());
@@ -253,6 +261,7 @@ luaL_reg DateInstanceMethods[] = {
   {"day", lua_DateInstanceMethodDay},
   {"month", lua_DateInstanceMethodMonth},
   {"year", lua_DateInstanceMethodYear},
+  {"dayOfWeek", lua_DateInstanceMethodDayOfWeek},
   {"endOfMonth", lua_DateInstanceMethodEndOfMonth},
   {"toString", lua_DateInstanceMethodToString},
   {"__lt", lua_DateInstanceMethodLessThan},

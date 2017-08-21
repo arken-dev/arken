@@ -7,6 +7,7 @@
 #include <charon/base>
 
 using charon::time::DateTime;
+using charon::time::Date;
 
 /**
  * checkDateTime
@@ -157,6 +158,18 @@ lua_DateTimeInstanceMethodAddDays( lua_State *L ) {
   DateTime **ptr = (DateTime **)lua_newuserdata(L, sizeof(DateTime*));
   *ptr= new DateTime(other);
   luaL_getmetatable(L, "DateTime.metatable");
+  lua_setmetatable(L, -2);
+
+  return 1;
+}
+
+static int
+lua_DateTimeInstanceMethodDate( lua_State *L ) {
+  DateTime *dt   = checkDateTime( L );
+
+  Date **ptr = (Date **)lua_newuserdata(L, sizeof(Date*));
+  *ptr= new Date(dt->date());
+  luaL_getmetatable(L, "Date.metatable");
   lua_setmetatable(L, -2);
 
   return 1;
@@ -395,6 +408,7 @@ luaL_reg DateTimeInstanceMethods[] = {
   {"addMonths", lua_DateTimeInstanceMethodAddMonths},
   {"addMSecs", lua_DateTimeInstanceMethodAddMSecs},
   {"addDays", lua_DateTimeInstanceMethodAddDays},
+  {"date", lua_DateTimeInstanceMethodDate},
   {"beginningOfDay", lua_DateTimeInstanceMethodBeginningOfDay},
   {"endOfDay", lua_DateTimeInstanceMethodEndOfDay},
   {"beginningOfMonth", lua_DateTimeInstanceMethodBeginningOfMonth},
