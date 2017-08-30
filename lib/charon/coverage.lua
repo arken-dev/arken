@@ -147,6 +147,10 @@ coverage.line = function(row, flag)
       return 1
     end
 
+    if line == 'break' then
+      return 1
+    end
+
     if line:endsWith(' end') or line == 'end' then
       coverage.level = coverage.level + -1
       return 1
