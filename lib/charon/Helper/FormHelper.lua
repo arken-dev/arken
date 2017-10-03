@@ -19,8 +19,8 @@ function FormHelper:url(params)
   local controller = params.controller or self.controller.controllerName or 'index'
   local action     = params.action or self.controller.actionName or 'index'
 
-  if dispatcher.prefix then
-    controller = dispatcher.prefix .. '/' .. controller
+  if self.controller.prefix then
+    controller = self.controller.prefix .. '/' .. controller
   end
 
   params.action = nil
@@ -178,8 +178,7 @@ function FormHelper:submitSave()
 end
 
 function FormHelper:submitCancel()
-  local helper = require 'charon.Helper'
-  return helper:link{ img = 'icons/botao_cancelar.png', url = self:url{ action = 'cancel' }, remote = true }
+  return self.helper:link{ img = 'icons/botao_cancelar.png', url = self:url{ action = 'cancel' }, remote = true }
 end
 
 --------------------------------------------------------------------------------

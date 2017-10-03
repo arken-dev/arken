@@ -10,6 +10,7 @@ local json       = require "charon.json"
 
 local Controller = Class.new("Controller", "charon.net.HttpRequest")
 
+Controller.prefix        = ""
 Controller.prefixHelpers = "app.helpers"
 Controller.prefixViews   = "app/views"
 
@@ -39,7 +40,7 @@ function Controller:resolvHelper()
   local file = self.prefixHelpers .. "." .. self.controllerName
   if os.exists(file:replace('.', '/') .. '.lua')  then
     local tmp = require(file)
-    tmp.controller_path = self.controller_path
+    tmp.controllerPath = self.controllerPath
     tmp.controllerName = self.controllerName
     tmp.actionName     = self.actionName
     tmp.__index = tmp
@@ -47,7 +48,7 @@ function Controller:resolvHelper()
     helper = tmp
   else
     local tmp = {}
-    tmp.controller_path = self.controller_path
+    tmp.controllerPath = self.controllerPath
     tmp.controllerName = self.controllerName
     tmp.actionName     = self.actionName
     tmp.__index = tmp
