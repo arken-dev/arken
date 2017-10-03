@@ -10,7 +10,7 @@ local json       = require "charon.json"
 
 local Controller = Class.new("Controller", "charon.net.HttpRequest")
 
-Controller.prefix        = ""
+Controller.prefix        = "/app"
 Controller.prefixHelpers = "app.helpers"
 Controller.prefixViews   = "app/views"
 
