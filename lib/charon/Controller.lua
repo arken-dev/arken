@@ -40,22 +40,15 @@ function Controller:resolvHelper()
   local file = self.prefixHelpers .. "." .. self.controllerName
   if os.exists(file:replace('.', '/') .. '.lua')  then
     local tmp = require(file)
-    tmp.controllerPath = self.controllerPath
-    tmp.controllerName = self.controllerName
-    tmp.actionName     = self.actionName
     tmp.__index = tmp
     setmetatable(tmp, helper)
     helper = tmp
   else
     local tmp = {}
-    tmp.controllerPath = self.controllerPath
-    tmp.controllerName = self.controllerName
-    tmp.actionName     = self.actionName
     tmp.__index = tmp
     setmetatable(tmp, helper)
     helper = tmp
   end
-  helper.controller = self
 
   return helper
 end
@@ -64,8 +57,14 @@ function Controller:helper()
   if helpers[self.controllerName] == nil or CHARON_ENV ~= 'production' then
     helpers[self.controllerName] = self:resolvHelper()
   end
+  local tmp = helpers[self.controllerName]
 
-  return helpers[self.controllerName]
+  tmp.controllerPath = self.controllerPath
+  tmp.controllerName = self.controllerName
+  tmp.actionName     = self.actionName
+  tmp.controller     = self
+
+  return tmp
 end
 
 function Controller:url(params)
