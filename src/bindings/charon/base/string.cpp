@@ -97,7 +97,12 @@ static int lua_charon_string_escapeHtml( lua_State *L ) {
 static int lua_charon_string_indexOf( lua_State *L ) {
   const char *string = luaL_checkstring(L, 1);
   const char *str    = luaL_checkstring(L, 2);
-  int result = string::indexOf(string, str);
+  int start = 0;
+  if(lua_gettop(L) == 3) { /* número de argumentos */
+    start =  lua_tointeger(L, 3) - 1;
+  }
+
+  int result = string::indexOf(string, str, start);
   if( result > -1 ) {
     result ++;
   }
