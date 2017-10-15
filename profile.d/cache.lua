@@ -1,0 +1,1 @@
+cache = require('charon.cache')
