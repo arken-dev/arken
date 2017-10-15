@@ -20,12 +20,10 @@ LIBS += -L ../../../deps -llua -lcharon -lcurl
 
 # Input
 SOURCES += main.cpp    \
-    mirandacache.cpp   \
     mirandaserver.cpp  \
     mirandaservice.cpp \
     mirandastate.cpp   \
     mirandatask.cpp    \
-    miranda_cache_register.cpp     \
     miranda_json_encode.c          \
     miranda_server_register.cpp    \
     miranda_service_register.cpp   \

@@ -5,15 +5,16 @@
 
 #include <lua/lua.hpp>
 #include <charon/base>
+#include <charon/cache>
 #include <QDebug>
 #include <QThread>
 #include "mirandastate.h"
 
-using charon::ByteArray;
 
-extern "C" {
-  char * miranda_json_encode(lua_State *l);
-}
+using charon::ByteArray;
+using charon::cache;
+
+char * json_lock_encode(lua_State *L);
 
 static int
 miranda_server_gc(lua_State *L) {
@@ -52,7 +53,7 @@ miranda_server_task(lua_State *L) {
     MirandaState::insert(uuid, lua_tostring(L, 2));
   }
   */
-  MirandaState::insert(uuid, miranda_json_encode(L));
+  cache::insert(uuid, json_lock_encode(L));
   MirandaState::createTask( file_name, uuid );
   lua_pushstring(L, uuid);
   delete[] uuid;

@@ -5,24 +5,26 @@
 
 #include <lua/lua.hpp>
 #include <charon/base>
+#include <charon/cache>
 #include <QDebug>
 #include <QThread>
 #include "mirandastate.h"
 
 extern "C" {
-#include <json.h>
+  #include <json.h>
 }
-
-using charon::ByteArray;
 
 char * json_lock_encode(lua_State *l);
 void json_lock_decode(lua_State *l, const char * data);
+
+using charon::ByteArray;
+using charon::cache;
 
 static int
 miranda_task_value(lua_State *L) {
 
   const char * uuid = luaL_checkstring(L, 1);
-  const char * data = MirandaState::value(uuid);
+  const char * data = cache::value(uuid);
 
   json_lock_decode(L, data);
 
@@ -34,7 +36,7 @@ miranda_task_start(lua_State *L) {
   const char * file_name = luaL_checkstring(L, 1);
   const char * uuid = os::uuid();
   char * result = json_lock_encode(L);
-  MirandaState::insert(uuid, result);
+  cache::insert(uuid, result);
   MirandaState::createTask( file_name, uuid );
   lua_pushstring(L, uuid);
   delete[] uuid;
@@ -45,7 +47,7 @@ static int
 miranda_task_pool(lua_State *L) {
   const char * file_name = luaL_checkstring(L, 1);
   const char * uuid = os::uuid();
-  MirandaState::insert(uuid, json_lock_encode(L));
+  cache::insert(uuid, json_lock_encode(L));
   MirandaState::taskPool( file_name, uuid );
   lua_pushstring(L, uuid);
   delete[] uuid;
@@ -56,7 +58,7 @@ miranda_task_pool(lua_State *L) {
 static int
 miranda_task_insert(lua_State *L) {
   const char * uuid = luaL_checkstring(L, 1);
-  MirandaState::insert(uuid, json_lock_encode(L));
+  cache::insert(uuid, json_lock_encode(L));
   return 0;
 }
 
