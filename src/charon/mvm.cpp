@@ -144,7 +144,7 @@ mvm::data::data()
     lua_pcall(m_State, 0, 0, 0);
   }
 
-  qDebug() << "create Lua State";
+  qDebug() << "mvm create Lua State";
 }
 
 mvm::data::~data()
@@ -170,4 +170,9 @@ charon::instance::instance(mvm::data * data)
 charon::instance::~instance()
 {
   mvm::push(m_data);
+}
+
+lua_State * instance::state()
+{
+  return m_data->state();
 }

@@ -23,7 +23,6 @@ QReadWriteLock lock;
 
 void miranda_server_register(lua_State * L);
 void miranda_service_register(lua_State * L);
-void miranda_task_register(lua_State * L);
 
 MirandaState::MirandaState()
 {
@@ -36,7 +35,6 @@ MirandaState::MirandaState()
 
   miranda_server_register(m_State);
   miranda_service_register(m_State);
-  miranda_task_register(m_State);
 
   if( strcmp(os::name(), "windows") == 0 ) {
     s_charonPath = s_charonPath.capitalize();

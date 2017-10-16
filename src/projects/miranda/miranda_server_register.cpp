@@ -6,6 +6,7 @@
 #include <lua/lua.hpp>
 #include <charon/base>
 #include <charon/cache>
+#include <charon/mvm>
 #include <QDebug>
 #include <QThread>
 #include "mirandastate.h"
@@ -13,6 +14,7 @@
 
 using charon::ByteArray;
 using charon::cache;
+using charon::mvm;
 
 char * json_lock_encode(lua_State *L);
 
@@ -26,6 +28,7 @@ miranda_server_gc(lua_State *L) {
 static int
 miranda_server_reload(lua_State *) {
   MirandaState::reload();
+  mvm::reload();
   qDebug() << "reload: " << MirandaState::version() ;
   return 0;
 }
