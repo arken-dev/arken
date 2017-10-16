@@ -35,10 +35,6 @@ public:
   static int  clear();
   static int  version();
   static int  gc();
-  static void insert(const char * key, const char * value);
-  static void insert(const char * key, const char * value, int expires);
-  static const char * value(const char * key);
-  static int remove(const char * key);
   static void servicesLoad();
   static void servicesReload();
   static void servicesAppend(MirandaService *service);
