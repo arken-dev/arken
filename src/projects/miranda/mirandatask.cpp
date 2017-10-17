@@ -5,6 +5,7 @@
 
 #include <lua/lua.hpp>
 #include <charon/base>
+#include <charon/mvm>
 #include <charon/net/httpbody.h>
 #include "mirandatask.h"
 #include <iostream>
@@ -13,6 +14,7 @@
 
 using charon::net::HttpBody;
 using charon::net::HttpEnv;
+using charon::mvm;
 
 MirandaTask::MirandaTask(qintptr descriptor)
 {
@@ -21,9 +23,12 @@ MirandaTask::MirandaTask(qintptr descriptor)
 
 void MirandaTask::run()
 {
-  MirandaState * state;
+
   QTcpSocket socket;
   QByteArray buffer;
+
+  //charon instance
+  charon::instance i = mvm::instance();
 
   // socket
   socket.setSocketDescriptor(m_descriptor);
@@ -37,17 +42,11 @@ void MirandaTask::run()
   }
   //std::cout << buffer.data();
 
-  // stack pop lua state
-  state = MirandaState::pop();
-
   // Parse Request
   //this->parseRequest(state, buffer);
 
   // Process Request
-  this->processRequest(state, buffer);
-
-  // stack push lua state
-  MirandaState::push(state);
+  this->processRequest(i.state(), buffer);
 
   //socket
   int bytes = 0;
@@ -61,16 +60,11 @@ void MirandaTask::run()
   socket.close();
 }
 
-void MirandaTask::processRequest(MirandaState * state, QByteArray &buffer)
+void MirandaTask::processRequest(lua_State * L, QByteArray &buffer)
 {
   int code;
   size_t len;
   const char * result;
-  lua_State * L;
-
-  L = state->instance();
-
-
 
   // Process Request
   // TODO return is not validate
@@ -145,7 +139,7 @@ void MirandaTask::processRequest(MirandaState * state, QByteArray &buffer)
   //delete http_request;
 }
 
-void MirandaTask::parseRequest(MirandaState *state, QByteArray &buffer)
+void MirandaTask::parseRequest(lua_State * L, QByteArray &buffer)
 {
   int index  = 0;
   int last   = 0;
@@ -154,9 +148,6 @@ void MirandaTask::parseRequest(MirandaState *state, QByteArray &buffer)
   int tmp    = 0;
   int query  = 0;
   QByteArray row;
-  lua_State * L;
-
-  L = state->instance();
 
   nrec = buffer.count("\r\n") + 1;
 

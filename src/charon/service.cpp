@@ -3,27 +3,28 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+#include <QDebug>
 #include <lua/lua.hpp>
 #include <charon/base>
 #include <charon/cache>
-#include <charon/task>
 #include <charon/mvm>
+#include <charon/service>
 
 using namespace charon;
 
 using charon::cache;
+using charon::mvm;
 
-QThreadPool * task::s_pool = 0;
-QList<task::worker *> * task::s_workers = new QList<task::worker *>;
-QMutex task::s_mutex;
+QList<service::worker *> * service::s_workers = new QList<service::worker *>;
+QMutex service::s_mutex;
 
-char * task::start(const char * fileName, const char * data)
+char * service::start(const char * fileName)
 {
   char * uuid = os::uuid();
-  cache::insert(uuid, data);
-  task::worker * worker = new task::worker(uuid, fileName, data);
+  cache::insert(uuid, "");
+  service::worker * worker = new service::worker(uuid, fileName);
 
-  task::gc();
+  service::gc();
 
   worker->start();
   s_workers->append(worker);
@@ -31,12 +32,12 @@ char * task::start(const char * fileName, const char * data)
   return uuid;
 }
 
-int task::gc()
+int service::gc()
 {
   int result = 0;
   QMutexLocker ml(&s_mutex);
   for(int i = 0; i < s_workers->size(); i++) {
-    task::worker * wkr = s_workers->at(i);
+    service::worker * wkr = s_workers->at(i);
     if( wkr->isFinished() && wkr->finishedAt() > 30 ) {
       s_workers->removeOne(wkr);
       delete wkr;
@@ -46,39 +47,15 @@ int task::gc()
   return result;
 }
 
-char * task::pool(const char * fileName, const char * data)
-{
-  char * uuid = os::uuid();
-  cache::insert(uuid, data);
-  if( s_pool == 0 ) {
-    s_pool = new QThreadPool;
-    s_pool->setMaxThreadCount(os::cores());
-  }
-
-  s_pool->start(new task::worker(uuid, fileName, data));
-
-  return uuid;
-}
-
-const char * task::value(const char * uuid)
-{
-  return cache::value(uuid);
-}
-
-void task::insert(const char * uuid, const char * data)
-{
-  cache::insert(uuid, data);
-}
-
-task::worker::worker(const char * uuid, const char * fileName, const char * data)
+service::worker::worker(const char * uuid, const char * fileName)
 {
   m_microtime = 0;
-  m_uuid     = uuid;
-  m_fileName = fileName;
-  m_data     = data;
+  m_uuid      = uuid;
+  m_fileName  = fileName;
+  m_version   = mvm::version();
 }
 
-double task::worker::finishedAt()
+double service::worker::finishedAt()
 {
   if( m_microtime == 0 ) {
     return 0;
@@ -87,13 +64,39 @@ double task::worker::finishedAt()
   }
 }
 
-task::worker::~worker()
+bool service::worker::loop(int secs)
+{
+  int i = 0;
+
+  while( i < secs ) {
+
+    QThread::msleep(1000);
+
+    if(isShutdown()) {
+      return false;
+    }
+
+    i++;
+  }
+
+  return true;
+}
+
+bool service::worker::isShutdown()
+{
+  if( m_version != mvm::version() ) {
+    return true;
+  }
+  return false;
+}
+
+service::worker::~worker()
 {
   qDebug() << "destructor service ..." << m_fileName;
   cache::remove(m_uuid.data());
 }
 
-void task::worker::run()
+void service::worker::run()
 {
   int rv;
   charon::instance i = mvm::instance();
@@ -101,7 +104,11 @@ void task::worker::run()
 
   // CHARON_TASK
   lua_pushstring(luaState, m_uuid);
-  lua_setglobal(luaState, "CHARON_TASK");
+  lua_setglobal(luaState, "CHARON_SERVICE");
+
+  //allocate
+  lua_pushlightuserdata(luaState, this);
+  lua_setglobal(luaState, "__charon_service");
 
   //call
   rv = luaL_loadfile(luaState, m_fileName.data());
@@ -118,10 +125,16 @@ void task::worker::run()
 
   // clear CHARON_TASK
   lua_pushboolean(luaState, false);
-  lua_setglobal(luaState, "CHARON_TASK");
+  lua_setglobal(luaState, "CHARON_SERVICE");
+
+  // clear this
+  lua_pushnil(luaState);
+  lua_setglobal(luaState, "__charon_service");
 
   // lua gc
   lua_gc(luaState, LUA_GCCOLLECT, 0);
+
+  service::start(this->m_fileName);
 
   // microtime
   m_microtime = os::microtime();

@@ -16,9 +16,6 @@ using charon::cache;
 
 QMutex MirandaService::s_mutex;
 
-void miranda_server_register(lua_State * L);
-void miranda_service_register(lua_State * L);
-
 MirandaService::MirandaService(QByteArray fileName)
 {
   m_fileName   = fileName;

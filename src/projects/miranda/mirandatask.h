@@ -13,6 +13,7 @@
 #include <QObject>
 #include <QStack>
 #include <QByteArray>
+#include <charon/mvm>
 #include "mirandaserver.h"
 #include "mirandastate.h"
 
@@ -28,8 +29,8 @@ public:
 protected:
   qintptr m_descriptor;
   void run();
-  void parseRequest(MirandaState * state, QByteArray &buffer);
-  void processRequest(MirandaState * state, QByteArray &buffer);
+  void parseRequest(lua_State * L, QByteArray &buffer);
+  void processRequest(lua_State * L, QByteArray &buffer);
 };
 
 #endif // MIRANDATASK_H

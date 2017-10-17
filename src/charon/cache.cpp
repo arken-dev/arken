@@ -31,12 +31,24 @@ const char * cache::value(const char * key)
 void cache::insert(const char *key, const char * value, int expires)
 {
   QMutexLocker ml(&s_mutex);
+  cache::data * cache = s_cache->value(key, 0);
+
+  if( cache != 0 ) {
+    delete cache;
+  }
+
   s_cache->insert(key, new data(value, expires));
 }
 
 int cache::remove(const char * key)
 {
   QMutexLocker ml(&s_mutex);
+  cache::data * cache = s_cache->value(key, 0);
+
+  if( cache != 0 ) {
+    delete cache;
+  }
+
   return s_cache->remove(key);
 }
 
