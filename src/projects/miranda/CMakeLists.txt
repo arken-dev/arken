@@ -17,19 +17,9 @@ add_executable(
     miranda
     main.cpp
     mirandaserver.cpp
-    mirandaservice.cpp
-    mirandastate.cpp
     mirandatask.cpp
-    miranda_json_encode.c
-    ../../lua/json/json_lock.cpp
-    ../../lua/json/json.c
-    ../../lua/json/strbuf.c
-    ../../lua/json/g_fmt.c
-    ../../lua/json/dtoa.c
     mirandaserver.h
     mirandatask.h
-    mirandastate.h
-    ../../lua/json/json.h
 )
 
 find_package(Qt5Core)

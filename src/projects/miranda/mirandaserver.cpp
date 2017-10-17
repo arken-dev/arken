@@ -5,13 +5,16 @@
 
 #include "mirandaserver.h"
 #include "mirandatask.h"
-#include "mirandastate.h"
+#include <charon/mvm>
 #include <QFile>
 #include <QJsonObject>
 #include <iostream>
 
 MirandaServer::MirandaServer(QCoreApplication *app)
 {
+
+  charon::mvm::init(app);
+
   QFile config("config/miranda.json");
   if( config.exists() ) {
     config.open(QIODevice::ReadOnly);
@@ -52,7 +55,6 @@ MirandaServer::MirandaServer(QCoreApplication *app)
     }
   }
 
-  MirandaState::init(app);
 }
 
 void MirandaServer::start()

@@ -21,10 +21,8 @@ LIBS += -L ../../../deps -llua -lcharon -lcurl
 # Input
 SOURCES += main.cpp    \
     mirandaserver.cpp  \
-    mirandaservice.cpp \
     mirandastate.cpp   \
     mirandatask.cpp    \
-    miranda_json_encode.c          \
     miranda_request_register.cpp   \
     ../../lua/json/json_lock.cpp   \
     ../../lua/json/json.c   \
