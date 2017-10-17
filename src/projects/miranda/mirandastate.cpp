@@ -6,8 +6,10 @@
 #include "mirandastate.h"
 #include <QDebug>
 #include <QStack>
+#include <charon/service>
 
 using charon::ByteArray;
+using charon::service;
 
 int        MirandaState::s_gc          = 0;
 qint64     MirandaState::s_version     = 0;
@@ -21,9 +23,6 @@ QThreadPool * MirandaState::s_pool = 0;
 QReadWriteLock lock;
 
 
-void miranda_server_register(lua_State * L);
-void miranda_service_register(lua_State * L);
-
 MirandaState::MirandaState()
 {
   int rv;
@@ -32,9 +31,6 @@ MirandaState::MirandaState()
   m_State = luaL_newstate();
 
   luaL_openlibs(m_State);
-
-  miranda_server_register(m_State);
-  miranda_service_register(m_State);
 
   if( strcmp(os::name(), "windows") == 0 ) {
     s_charonPath = s_charonPath.capitalize();
@@ -128,7 +124,7 @@ void MirandaState::servicesLoad()
       QFileInfo fileInfo = iterator.fileInfo();
       if( fileInfo.suffix() == "lua" ) {
         qDebug() << "load: " << fileInfo.filePath();
-        MirandaState::createService(fileInfo.filePath().toLocal8Bit());
+        service::start(fileInfo.filePath().toLocal8Bit());
       }
     }
   } else {

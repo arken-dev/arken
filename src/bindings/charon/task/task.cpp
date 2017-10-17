@@ -47,6 +47,12 @@ charon_task_insert(lua_State *L) {
   return 0;
 }
 
+static int
+charon_task_gc(lua_State *L) {
+  lua_pushinteger(L, task::gc());
+  return 1;
+}
+
 extern "C" {
   int luaopen_charon_task( lua_State *L ) {
     static const luaL_reg Map[] = {
@@ -54,6 +60,7 @@ extern "C" {
       {"pool",    charon_task_pool},
       {"value",   charon_task_value},
       {"insert",  charon_task_insert},
+      {"gc",      charon_task_gc},
       {NULL, NULL}
     };
     luaL_newmetatable(L, "task");

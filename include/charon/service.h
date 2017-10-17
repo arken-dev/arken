@@ -3,48 +3,43 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#ifndef CHARONTASK_H
-#define CHARONTASK_H
+#ifndef CHARONSERVICE_H
+#define CHARONSERVICE_H
 
+#include <charon/base>
+#include <charon/cache>
 #include <QRunnable>
 #include <QThread>
 #include <QMutex>
 
-using charon::ByteArray;
-
 namespace charon
 {
+  class service {
 
-  class task {
-    private:
-    static QThreadPool * s_pool;
-    task() {};
-    ~task() {};
     public:
-    static char * start( const char * fileName, const char * data );
-    static char * pool( const char * fileName, const char * data );
-    static const char * value( const char * uuid );
-    static void   insert( const char * uuid, const char * data );
+    static char * start( const char * fileName);
     static int gc();
 
     class worker: public QThread, public QRunnable
     {
-      friend class task;
+      friend class service;
       ByteArray m_fileName;
-      ByteArray m_data;
       ByteArray m_uuid;
       double    m_microtime;
-      worker(const char * uuid, const char * fileName, const char * data);
+      int       m_version;
+      worker(const char * uuid, const char * fileName);
       ~worker();
       void run();
+      bool isShutdown();
       double finishedAt();
+      public:
+      bool loop(int secs);
     };
 
     static QMutex s_mutex;
     static QList<worker *> * s_workers;
 
   };
-
 }
 
-#endif // CHARONTASK_H
+#endif // CHARONSERVICE_H

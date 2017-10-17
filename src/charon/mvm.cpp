@@ -27,8 +27,7 @@ void mvm::init(QCoreApplication *app)
   s_profilePath = s_charonPath;
   s_profilePath.append("/profile.lua");
 
-  s_dispatchPath = s_charonPath;
-  s_dispatchPath.append("/dispatch.lua");
+  s_dispatchPath.append("dispatch.lua");
 }
 
 instance mvm::instance()
@@ -73,6 +72,7 @@ mvm::data * mvm::takeFirst()
 void mvm::reload()
 {
   s_version++;
+  mvm::clear();
 }
 
 int mvm::version()
@@ -97,6 +97,8 @@ int mvm::gc()
 
     data = takeFirst();
   }
+
+  push(data);
 
   return i;
 }
