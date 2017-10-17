@@ -33,17 +33,9 @@ void MirandaTask::run()
   // socket
   socket.setSocketDescriptor(m_descriptor);
 
-  //if ( socket.waitForConnected(-1) ) {
-  //  qDebug() << "connect !!!";
-  //}
-
   if ( socket.waitForReadyRead(-1) ) {
     buffer = socket.readAll();
   }
-  //std::cout << buffer.data();
-
-  // Parse Request
-  //this->parseRequest(state, buffer);
 
   // Process Request
   this->processRequest(i.state(), buffer);
@@ -78,16 +70,11 @@ void MirandaTask::processRequest(lua_State * L, QByteArray &buffer)
 
   buffer.clear();
 
-
   /* error */
   if( lua_pcall(L, 1, 3, 0 ) != 0 ) {
     code = 500;
     buffer.append(httpStatus(code));
     buffer.append("\r\n");
-
-    if (lua_istable( L, -1 )) {
-
-    }
 
     if (lua_isstring( L, -1 )) {
       result = lua_tolstring( L, -1, &len );
@@ -137,59 +124,6 @@ void MirandaTask::processRequest(lua_State * L, QByteArray &buffer)
     }
   }
   //delete http_request;
-}
-
-void MirandaTask::parseRequest(lua_State * L, QByteArray &buffer)
-{
-  int index  = 0;
-  int last   = 0;
-  int nrec   = 0;
-  int method = 0;
-  int tmp    = 0;
-  int query  = 0;
-  QByteArray row;
-
-  nrec = buffer.count("\r\n") + 1;
-
-  //lua table
-  lua_createtable(L, 0, nrec);
-
-  //row
-  last   = buffer.indexOf("\r\n", index);
-  row    = buffer.mid(index, last-index);
-  index  = last + 2;
-  method = row.indexOf(' ');
-  query  = row.indexOf('?');
-
-  //Method
-  lua_pushstring(L, "Method");
-  lua_pushstring(L, row.mid(0, method));
-  lua_settable(L, -3);
-
-  //Path
-  lua_pushstring(L, "Path");
-  if( row.contains("?") ) {
-    lua_pushstring(L, row.mid(method+1, query-method-1));
-  } else {
-    lua_pushstring(L, row.mid(method+1, row.lastIndexOf(' ')-method-1));
-  }
-  lua_settable(L, -3);
-
-  //Query-String
-  lua_pushstring(L, "Query-String");
-  lua_pushstring(L, row.mid(query+1, row.lastIndexOf(' ')-query-1));
-  lua_settable(L, -3);
-
-  while( index < buffer.size() ) {
-    last  = buffer.indexOf("\r\n", index);
-    row   = buffer.mid(index, last-index);
-    index = last + 2;
-    tmp   = row.indexOf(":");
-    lua_pushstring(L, row.mid(0, tmp));
-    lua_pushstring(L, row.mid(tmp+2, row.size()));
-    lua_settable(L, -3);
-  }
-  lua_setglobal(L, "request");
 }
 
 QByteArray MirandaTask::httpStatus(int code)

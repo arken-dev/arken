@@ -15,7 +15,6 @@
 #include <QByteArray>
 #include <charon/mvm>
 #include "mirandaserver.h"
-#include "mirandastate.h"
 
 class MirandaServer;
 
@@ -29,7 +28,6 @@ public:
 protected:
   qintptr m_descriptor;
   void run();
-  void parseRequest(lua_State * L, QByteArray &buffer);
   void processRequest(lua_State * L, QByteArray &buffer);
 };
 

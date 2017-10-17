@@ -5,14 +5,12 @@
 
 #include <QDebug>
 #include <QtCore>
-#include <charon/mvm>
 #include <QCoreApplication>
 #include "mirandaserver.h"
 
 int main(int argc, char * argv[])
 {
    QCoreApplication *app = new QCoreApplication(argc, argv);
-   charon::mvm::init(app);
    MirandaServer server(app);
    server.start();
 
