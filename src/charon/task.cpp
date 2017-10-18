@@ -46,6 +46,20 @@ int task::gc()
   return result;
 }
 
+int task::wait()
+{
+  int result = 0;
+  QMutexLocker ml(&s_mutex);
+  for(int i = 0; i < s_workers->size(); i++) {
+    task::worker * wkr = s_workers->at(i);
+    if( ! wkr->isFinished() ) {
+      wkr->wait();
+      result++;
+    }
+  }
+  return result;
+}
+
 char * task::pool(const char * fileName, const char * data)
 {
   char * uuid = os::uuid();
