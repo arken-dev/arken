@@ -60,7 +60,7 @@ void MirandaTask::processRequest(QByteArray &buffer)
   lua_getglobal(L, "dispatch");
 
   HttpEnv **ptr = (HttpEnv **)lua_newuserdata(L, sizeof(HttpEnv*));
-  *ptr= new HttpEnv(buffer);
+  *ptr= new HttpEnv(buffer.data(), buffer.size());
   luaL_getmetatable(L, "HttpEnv.metatable");
   lua_setmetatable(L, -2);
 

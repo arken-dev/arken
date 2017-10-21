@@ -7,9 +7,6 @@ extern "C" {
   #include <http11/http11_parser.h>
 }
 
-#include <iostream>
-#include <QJsonObject>
-#include <QJsonDocument>
 #include <charon/base>
 
 using namespace charon::net;
@@ -135,9 +132,14 @@ on_query_string_cb(void *data, const char *at, size_t length)
   p->setQueryString(tmp);
 }
 
-HttpEnv::HttpEnv(QByteArray data)
+HttpEnv::HttpEnv(const char * data, size_t len)
 {
-  m_data = data;
+
+  m_data = new char[len + 1];
+  strcpy(m_data, data);
+  m_data[len] = '\0';
+  m_len  = len;
+
   http_parser * parser = (http_parser *) malloc(sizeof(http_parser));
   http_parser_init(parser);
 
@@ -151,7 +153,7 @@ HttpEnv::HttpEnv(QByteArray data)
   parser->header_done    = on_header_done_cb;
 
   parser->data = this;
-  //free(http_parser);
+
   m_fragment      = NULL;
   m_requestPath   = NULL;
   m_queryString   = NULL;
@@ -161,12 +163,14 @@ HttpEnv::HttpEnv(QByteArray data)
   m_headerDone    = NULL;
   m_headerDoneLength = 0u;
 
-  http_parser_execute(parser, m_data.data(), m_data.size(), 0);
+  http_parser_execute(parser, data, len, 0);
   free(parser);
 }
 
 HttpEnv::~HttpEnv()
 {
+  if(m_data != NULL)
+    delete m_data;
   if(m_fragment != NULL)
     delete m_fragment;
   if(m_requestPath != NULL)
@@ -185,41 +189,43 @@ HttpEnv::~HttpEnv()
 
 void HttpEnv::setField(const char * field, const char * value)
 {
-  m_fields.insert(QByteArray(field), value);
+  std::string fl(field);
+  std::string vl(value);
+  m_fields[fl] = vl;
 }
 
-void HttpEnv::setFragment(const char * fragment)
+void HttpEnv::setFragment(char * fragment)
 {
   m_fragment = fragment;
 }
 
-void HttpEnv::setHeaderDone(const char * headerDone, size_t length)
+void HttpEnv::setHeaderDone(char * headerDone, size_t length)
 {
   m_headerDoneLength = length;
   m_headerDone = headerDone;
 }
 
-void HttpEnv::setQueryString(const char * queryString)
+void HttpEnv::setQueryString(char * queryString)
 {
   m_queryString = queryString;
 }
 
-void HttpEnv::setRequestPath(const char * requestPath)
+void HttpEnv::setRequestPath(char * requestPath)
 {
   m_requestPath = requestPath;
 }
 
-void HttpEnv::setRequestMethod(const char * requestMethod)
+void HttpEnv::setRequestMethod(char * requestMethod)
 {
   m_requestMethod = requestMethod;
 }
 
-void HttpEnv::setRequestUri(const char * requestUri)
+void HttpEnv::setRequestUri(char * requestUri)
 {
   m_requestUri = requestUri;
 }
 
-void HttpEnv::setHttpVersion(const char * httpVersion)
+void HttpEnv::setHttpVersion(char * httpVersion)
 {
   m_httpVersion = httpVersion;
 }
@@ -267,33 +273,11 @@ const char * HttpEnv::fragment()
 
 const char * HttpEnv::field(const char * field)
 {
-  return m_fields.value(QByteArray(field));
+  std::string str(field);
+  return m_fields[str].c_str();
 }
 
-char * HttpEnv::data()
+const char * HttpEnv::data()
 {
-  char * result = new char[m_data.size() + 1];
-  strcpy(result, m_data.data());
-  result[m_data.size()] = '\0';
-  return result;
-}
-
-QByteArray HttpEnv::toJson()
-{
-  QJsonObject json;
-  json["fragment"]      = m_fragment;
-  json["requestPath"]   = m_requestPath;
-  json["queryString"]   = m_queryString;
-  json["requestMethod"] = m_requestMethod;
-  json["requestUri"]    = m_requestUri;
-  json["httpVersion"]   = m_httpVersion;
-  json["headerDone"]    = m_headerDone;
-
-  QList<QByteArray> list = m_fields.keys();
-  for (int i = 0; i < list.size(); ++i) {
-    QByteArray key = list.at(i);
-    json[key] = m_fields[key].data();
-  }
-  QJsonDocument document(json);
-  return document.toJson();
+  return m_data;
 }
