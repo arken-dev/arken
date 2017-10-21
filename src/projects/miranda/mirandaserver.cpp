@@ -3,12 +3,12 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#include "mirandaserver.h"
-#include "mirandatask.h"
-#include <charon/mvm>
+#include <mirandaserver.h>
+#include <mirandatask.h>
+#include <charon/base>
+#include <QDebug>
 #include <QFile>
 #include <QJsonObject>
-#include <iostream>
 
 MirandaServer::MirandaServer(QCoreApplication *app)
 {

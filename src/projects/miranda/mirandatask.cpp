@@ -5,12 +5,8 @@
 
 #include <lua/lua.hpp>
 #include <charon/base>
-#include <charon/mvm>
-#include <charon/net/httpbody.h>
-#include "mirandatask.h"
-#include <iostream>
-#include <QThread>
-#include <QMutex>
+#include <mirandatask.h>
+#include <QTcpSocket>
 
 using charon::net::HttpBody;
 using charon::net::HttpEnv;
@@ -27,18 +23,15 @@ void MirandaTask::run()
   QTcpSocket socket;
   QByteArray buffer;
 
-  //charon instance
-  charon::instance i = mvm::instance();
-
   // socket
   socket.setSocketDescriptor(m_descriptor);
 
   if ( socket.waitForReadyRead(-1) ) {
-    buffer = socket.readAll();
+    buffer.append(socket.readAll());
   }
 
   // Process Request
-  this->processRequest(i.state(), buffer);
+  this->processRequest(buffer);
 
   //socket
   int bytes = 0;
@@ -52,11 +45,14 @@ void MirandaTask::run()
   socket.close();
 }
 
-void MirandaTask::processRequest(lua_State * L, QByteArray &buffer)
+void MirandaTask::processRequest(QByteArray &buffer)
 {
   int code;
   size_t len;
   const char * result;
+  //charon instance
+  charon::instance i = mvm::instance();
+  lua_State * L = i.state();
 
   // Process Request
   // TODO return is not validate
@@ -123,7 +119,7 @@ void MirandaTask::processRequest(lua_State * L, QByteArray &buffer)
       buffer.append("\r\n");
     }
   }
-  //delete http_request;
+
 }
 
 QByteArray MirandaTask::httpStatus(int code)
