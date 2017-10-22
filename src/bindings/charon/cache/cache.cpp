@@ -31,6 +31,7 @@ static int lua_charon_cache_insert( lua_State *L ) {
   }
   char * value = json_lock_encode(L);
   cache::insert(key, value, expires);
+  delete[] value;
   return 1;
 }
 

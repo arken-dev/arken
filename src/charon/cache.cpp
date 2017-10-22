@@ -54,7 +54,12 @@ int cache::remove(const char * key)
 
 cache::data::data(const char * value, int expires)
 {
-  m_value = value;
+
+  int size = strlen(value);
+  m_value  = new char[size + 1];
+  strcpy(m_value, value);
+  m_value[size] = '\0';
+
   if( expires < 0 ) {
     m_expires = -1;
   } else {
