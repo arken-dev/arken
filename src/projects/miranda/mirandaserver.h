@@ -6,16 +6,9 @@
 #ifndef MIRANDASERVER_H
 #define MIRANDASERVER_H
 
-#include <QObject>
-#include <QDebug>
+#include <QCoreApplication>
 #include <QThreadPool>
 #include <QTcpServer>
-#include <QCoreApplication>
-#include <QDir>
-#include <QFileInfo>
-#include "mirandatask.h"
-
-class MirandaTask;
 
 class MirandaServer : public QTcpServer
 {

@@ -26,6 +26,7 @@ namespace charon
     static const char * value( const char * uuid );
     static void   insert( const char * uuid, const char * data );
     static int gc();
+    static int wait();
 
     class worker: public QThread, public QRunnable
     {

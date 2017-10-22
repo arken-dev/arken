@@ -6,29 +6,18 @@
 #ifndef MIRANDATASK_H
 #define MIRANDATASK_H
 
-#include <lua/lua.hpp>
-
-#include <QRunnable>
-#include <QTcpSocket>
 #include <QObject>
-#include <QStack>
-#include <QByteArray>
-#include <charon/mvm>
-#include "mirandaserver.h"
-
-class MirandaServer;
+#include <QRunnable>
 
 class MirandaTask : public QObject, public QRunnable
 {
 
 public:
   MirandaTask(qintptr descriptor);
-  QByteArray httpStatus(int code);
 
 protected:
   qintptr m_descriptor;
   void run();
-  void processRequest(lua_State * L, QByteArray &buffer);
 };
 
 #endif // MIRANDATASK_H
