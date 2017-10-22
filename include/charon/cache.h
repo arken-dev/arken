@@ -29,7 +29,7 @@ class cache {
     bool isExpires();
 
     private:
-    const char * m_value;
+    char * m_value;
     double m_expires;
   };
 
