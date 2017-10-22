@@ -10,6 +10,8 @@
 #include <QFile>
 #include <QJsonObject>
 
+using charon::service;
+
 MirandaServer::MirandaServer(QCoreApplication *app)
 {
 
@@ -53,6 +55,22 @@ MirandaServer::MirandaServer(QCoreApplication *app)
       qDebug() << "file dispatch.lua not found exit... ";
       throw;
     }
+  }
+
+  // SERVICES
+  QString dir("app/services");
+  if( QFile::exists(dir) ) {
+    QDirIterator iterator(dir);
+    while(iterator.hasNext()) {
+      iterator.next();
+      QFileInfo fileInfo = iterator.fileInfo();
+      if( fileInfo.suffix() == "lua" ) {
+        qDebug() << "load: " << fileInfo.filePath();
+        service::start(fileInfo.filePath().toLocal8Bit());
+      }
+    }
+  } else {
+    qDebug() << "services dir not exists";
   }
 
 }

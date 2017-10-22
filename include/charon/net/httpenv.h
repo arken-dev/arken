@@ -6,8 +6,6 @@
 #ifndef __CHARON_NET_HTTP_ENV__
 #define __CHARON_NET_HTTP_ENV__
 
-#include <QHash>
-
 namespace charon {
 namespace net {
 

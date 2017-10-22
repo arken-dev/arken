@@ -8,19 +8,16 @@
 
 #include <QObject>
 #include <QRunnable>
-#include <QByteArray>
 
 class MirandaTask : public QObject, public QRunnable
 {
 
 public:
   MirandaTask(qintptr descriptor);
-  QByteArray httpStatus(int code);
 
 protected:
   qintptr m_descriptor;
   void run();
-  void processRequest(QByteArray &buffer);
 };
 
 #endif // MIRANDATASK_H
