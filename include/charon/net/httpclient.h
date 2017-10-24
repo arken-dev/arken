@@ -18,6 +18,9 @@ namespace net {
 
 class HttpClient
 {
+  private:
+  char * perform(char * memory);
+
   public:
   HttpClient(const char * url);
   ~HttpClient();
