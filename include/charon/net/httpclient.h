@@ -18,6 +18,9 @@ namespace net {
 
 class HttpClient
 {
+  private:
+  char * perform(char * memory);
+
   public:
   HttpClient(const char * url);
   ~HttpClient();
@@ -31,8 +34,8 @@ class HttpClient
   char * performPut();
   char * performDelete();
 
-  const char * m_url;
-  const char * m_body;
+  char * m_url;
+  char * m_body;
   bool m_verbose;
   curl_slist * m_chunk_list;
   CURL * m_curl;
