@@ -9,6 +9,7 @@
 #include <charon/net/httpclient.h>
 #include <charon/net/httpenv.h>
 #include <charon/net/httphandle.h>
+#include <charon/net/httputil.h>
 #include <charon/base64.h>
 #include <charon/bytearray.h>
 #include <charon/bytearraylist.h>

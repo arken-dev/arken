@@ -6,7 +6,6 @@ namespace net {
   {
     public:
     static char * sync(const char * data, int size, int * num);
-    static const char * status(int code);
   };
 }
 }
