@@ -32,7 +32,14 @@ WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp)
 
 HttpClient::HttpClient(const char * url)
 {
-  m_url = url;
+  size_t size;
+  size = strlen(url);
+  m_url = new char[size + 1];
+  strcpy(m_url, url);
+  m_url[size] = '\0';
+
+  m_body = "";
+
   m_chunk.memory = (char *) malloc(1);  // will be grown as needed by the realloc above
   m_chunk.memory[0] = '\0';
   m_chunk.size = 0;    // no data at this point
@@ -57,6 +64,11 @@ HttpClient::~HttpClient()
 
   // we're done with libcurl, so clean it up
   curl_global_cleanup();
+
+  delete[] m_url;
+  if( m_body != 0 ) {
+    delete[] m_body;
+  }
 }
 
 void HttpClient::appendHeader(const char * header)
@@ -77,7 +89,11 @@ bool HttpClient::verbose()
 
 void HttpClient::setBody(const char * body)
 {
-   m_body = body;
+  size_t size;
+  size = strlen(body);
+  m_body = new char[size + 1];
+  strcpy(m_body, body);
+  m_body[size] = '\0';
 }
 
 const char * HttpClient::body()
