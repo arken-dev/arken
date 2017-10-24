@@ -189,7 +189,7 @@ end
 
 function Controller:render_json(params)
   local code = params.code or 200
-  local data = json.encode(params.value)
+  local data = params.raw or json.encode(params.value)
   if self:params().json_callback then
     data = string.format('%s(%s)', self:params().json_callback, data)
   end
