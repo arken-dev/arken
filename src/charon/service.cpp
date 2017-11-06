@@ -90,6 +90,11 @@ bool service::worker::isShutdown()
   return false;
 }
 
+const char * service::worker::uuid()
+{
+  return m_uuid.data();
+}
+
 service::worker::~worker()
 {
   qDebug() << "destructor service ..." << m_fileName;

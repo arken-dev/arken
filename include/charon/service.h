@@ -34,6 +34,7 @@ namespace charon
       double finishedAt();
       public:
       bool loop(int secs);
+      const char * uuid();
     };
 
     static QMutex s_mutex;
