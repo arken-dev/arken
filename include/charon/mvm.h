@@ -6,9 +6,9 @@
 #ifndef CHARONMVM_H
 #define CHARONMVM_H
 
+#include <deque>
 #include <lua/lua.hpp>
 #include <charon/base>
-
 
 namespace charon
 {
@@ -44,7 +44,7 @@ class mvm {
   static ByteArray s_profilePath;
   static ByteArray s_dispatchPath;
   static QMutex    s_mutex;
-  static QStack<mvm::data *> * s_stack;
+  static std::deque<mvm::data *> * s_container;
   private:
 
   static void push(mvm::data *);
@@ -69,7 +69,6 @@ class instance {
   instance(mvm::data * data);
   ~instance();
   lua_State * state();
-
 };
 
 }

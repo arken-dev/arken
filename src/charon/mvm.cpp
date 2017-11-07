@@ -17,7 +17,7 @@ ByteArray  mvm::s_charonPath   = "";
 ByteArray  mvm::s_profilePath  = "";
 ByteArray  mvm::s_dispatchPath = "";
 QMutex     mvm::s_mutex;
-QStack<mvm::data *> * mvm::s_stack   = new QStack<mvm::data *>;
+std::deque<mvm::data *> * mvm::s_container   = new std::deque<mvm::data *>;
 
 void mvm::init(QCoreApplication *app)
 {
@@ -35,10 +35,11 @@ instance mvm::instance()
   QMutexLocker ml(&s_mutex);
   mvm::data * data ;
 
-  if( s_stack->isEmpty() ) {
+  if( s_container->empty() ) {
     data = new mvm::data();
   } else {
-    data = s_stack->pop();
+    data = s_container->front();
+    s_container->pop_front();
     if( s_version != data->version() ) {
       delete data;
       data = new mvm::data();
@@ -54,7 +55,7 @@ void mvm::push(mvm::data * data)
       delete data;
   } else {
     QMutexLocker ml(&s_mutex);
-    s_stack->push(data);
+    s_container->push_front(data);
   }
 }
 
@@ -62,11 +63,12 @@ mvm::data * mvm::takeFirst()
 {
   QMutexLocker ml(&s_mutex);
 
-  if( s_stack->isEmpty() ) {
+  if( s_container->empty() ) {
     return new mvm::data();
   }
-
-  return s_stack->takeFirst();
+  mvm::data * data = s_container->front();
+  s_container->pop_front();
+  return data;
 }
 
 void mvm::reload()
@@ -92,13 +94,13 @@ int mvm::gc()
     lua_gc(data->state(), LUA_GCCOLLECT, 0);
     data->m_gc = s_gc;
 
-    push(data);
+    s_container->push_back(data);
     i++;
 
     data = takeFirst();
   }
 
-  push(data);
+  s_container->push_back(data);
 
   return i;
 }
@@ -108,9 +110,11 @@ int mvm::clear()
   int result = 0;
   QMutexLocker ml(&s_mutex);
   s_version++;
-  while( !s_stack->isEmpty() ) {
+  while( !s_container->empty() ) {
     result++;
-    delete s_stack->pop();
+    mvm::data * data = s_container->front();
+    s_container->pop_front();
+    delete data;
   }
   return result;
 }
