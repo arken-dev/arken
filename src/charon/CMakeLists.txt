@@ -26,8 +26,22 @@ if(WITH_LIBUUID)
   set(uuid ${CMAKE_CURRENT_SOURCE_DIR}/os/libuuid.cpp)
 endif(WITH_LIBUUID)
 
+# ------------------------------------------------------------------------------
+# MD5
+# ------------------------------------------------------------------------------
+option(WITH_NATIVE_DIGEST "with(out) native digest option")
+
+set(digest ${CMAKE_CURRENT_SOURCE_DIR}/digest/qt.cpp)
+set(package-digest "")
+
+if(WITH_NATIVE_DIGEST)
+  set(digest ${CMAKE_CURRENT_SOURCE_DIR}/digest/native.cpp)
+  file(GLOB package-digest ${PROJECT_SOURCE_DIR}/src/packages/digest/*.c)
+endif(WITH_NATIVE_DIGEST)
+
 include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${PROJECT_SOURCE_DIR}/deps/include)
+include_directories(${PROJECT_SOURCE_DIR}/src/packages)
 include_directories(${PROJECT_SOURCE_DIR}/src/vendors/ap)
 include_directories(${PROJECT_SOURCE_DIR}/src/vendors/mongrel2)
 include_directories(${PROJECT_SOURCE_DIR}/src/vendors/mongrel2/http11)
@@ -41,7 +55,7 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/deps)
 set(mongrel2 ${PROJECT_SOURCE_DIR}/src/vendors/mongrel2/http11/http11_parser.c)
 set(ap ${PROJECT_SOURCE_DIR}/src/vendors/ap/ap_base64.c)
 
-add_library( charon SHARED ${src} ${os} ${net} ${time} ${mongrel2} ${ap} ${uuid})
+add_library( charon SHARED ${src} ${os} ${net} ${time} ${mongrel2} ${ap} ${uuid} ${digest} ${package-digest})
 
 find_package(Qt5Core)
 find_package(Qt5Network)
