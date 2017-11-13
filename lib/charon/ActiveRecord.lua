@@ -5,6 +5,7 @@
 
 local json    = require("charon.json")
 local Class   = require("charon.oop.Class")
+local Array   = require("charon.Array")
 ActiveRecord  = Class.new("ActiveRecord")
 
 ActiveRecord.time     = 0
@@ -135,13 +136,14 @@ ActiveRecord.inherit = function(class)
   -----------------------------------------------------------------------------
 
   class.loadConfig = function()
-    local config = class.config or "config/active_record.json"
+    local template = require 'charon.template'
+    local config   = class.config or "config/active_record.json"
 
     if not os.exists(config) then
       error("file " .. config .. " not exists")
     end
 
-    local raw  = os.read(config)
+    local raw  = template.execute(config)
     local env  = CHARON_ENV or 'development'
     local data = json.decode(raw)
     if type(data) == 'table' then
@@ -212,6 +214,17 @@ ActiveRecord.inherit = function(class)
     return class.adapter():query(sql)
   end
 
+  -------------------------------------------------------------------------------
+  -- ActiveRecord#create
+  -------------------------------------------------------------------------------
+
+  function class.create(record)
+    if record.className == nil then
+      record = class.new(record)
+    end
+    return class.adapter():create(record)
+  end
+
 end
 
 -------------------------------------------------------------------------------
@@ -219,18 +232,10 @@ end
 -------------------------------------------------------------------------------
 
 function ActiveRecord:initialize()
-  self.errors = {}
+  self.errors = Array.new()
   if self.newRecord == nil then
     self.adapter():defaultValues(self)
   end
-end
-
--------------------------------------------------------------------------------
--- ActiveRecord#create
--------------------------------------------------------------------------------
-
-function ActiveRecord:create()
-  return self.adapter():create(self)
 end
 
 -------------------------------------------------------------------------------
@@ -320,6 +325,14 @@ end
 
 function ActiveRecord:changes()
   return self.adapter():changes(self)
+end
+
+-------------------------------------------------------------------------------
+-- WAS
+-------------------------------------------------------------------------------
+
+function ActiveRecord:was()
+  return self.adapter():was(self)
 end
 
 -------------------------------------------------------------------------------

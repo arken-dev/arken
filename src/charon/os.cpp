@@ -22,6 +22,10 @@
 #include <charon/base>
 #include <iostream>
 
+extern "C" {
+#include <charon/os/microtime.h>
+}
+
 char * os::abspath(const char * path)
 {
   QFileInfo info(path);
@@ -234,7 +238,8 @@ bool os::link(const char * source, const char * destination, bool force = false)
 
 double os::microtime()
 {
-  return QDateTime::currentMSecsSinceEpoch() / 1000.0;
+  //return QDateTime::currentMSecsSinceEpoch() / 1000.0;
+  return charon_os_microtime();
 }
 
 bool os::mkdir(const char * dirname)
@@ -341,15 +346,6 @@ bool os::touch(const char * path)
 
   fs.close();
   return flag;
-}
-
-char * os::uuid()
-{
-  QUuid uuid = QUuid::createUuid();
-  char * result = new char[37];
-  strcpy(result, uuid.toByteArray().mid(1, 36).data());
-  result[37] = '\0';
-  return result;
 }
 
 char * os::read(const char * path)

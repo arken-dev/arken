@@ -10,6 +10,7 @@ local json       = require "charon.json"
 
 local Controller = Class.new("Controller", "charon.net.HttpRequest")
 
+Controller.prefix        = ""
 Controller.prefixHelpers = "app.helpers"
 Controller.prefixViews   = "app/views"
 
@@ -39,22 +40,15 @@ function Controller:resolvHelper()
   local file = self.prefixHelpers .. "." .. self.controllerName
   if os.exists(file:replace('.', '/') .. '.lua')  then
     local tmp = require(file)
-    tmp.controller_path = self.controller_path
-    tmp.controllerName = self.controllerName
-    tmp.actionName     = self.actionName
     tmp.__index = tmp
     setmetatable(tmp, helper)
     helper = tmp
   else
     local tmp = {}
-    tmp.controller_path = self.controller_path
-    tmp.controllerName = self.controllerName
-    tmp.actionName     = self.actionName
     tmp.__index = tmp
     setmetatable(tmp, helper)
     helper = tmp
   end
-  helper.controller = self
 
   return helper
 end
@@ -63,8 +57,14 @@ function Controller:helper()
   if helpers[self.controllerName] == nil or CHARON_ENV ~= 'production' then
     helpers[self.controllerName] = self:resolvHelper()
   end
+  local tmp = helpers[self.controllerName]
 
-  return helpers[self.controllerName]
+  tmp.controllerPath = self.controllerPath
+  tmp.controllerName = self.controllerName
+  tmp.actionName     = self.actionName
+  tmp.controller     = self
+
+  return tmp
 end
 
 function Controller:url(params)
@@ -188,11 +188,12 @@ end
 -------------------------------------------------------------------------------
 
 function Controller:render_json(params)
+  local code = params.code or 200
   local data = json.encode(params.value)
   if self:params().json_callback then
     data = string.format('%s(%s)', self:params().json_callback, data)
   end
-  return 200, {'Content-Type: application/json; charset=UTF-8'}, data
+  return code, {'Content-Type: application/json; charset=UTF-8'}, data
 end
 
 -------------------------------------------------------------------------------

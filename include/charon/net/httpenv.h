@@ -6,39 +6,37 @@
 #ifndef __CHARON_NET_HTTP_ENV__
 #define __CHARON_NET_HTTP_ENV__
 
-#include <QByteArray>
-#include <QHash>
-
 namespace charon {
 namespace net {
 
 class HttpEnv
 {
 
-  QByteArray m_data;
-  QHash<QByteArray, QByteArray> m_fields;
+  std::map<std::string, std::string> m_fields;
 
-  const char * m_fragment;
-  const char * m_requestPath;
-  const char * m_queryString;
-  const char * m_requestMethod;
-  const char * m_requestUri;
-  const char * m_httpVersion;
-  const char * m_headerDone;
+  char * m_data;
+  char * m_fragment;
+  char * m_requestPath;
+  char * m_queryString;
+  char * m_requestMethod;
+  char * m_requestUri;
+  char * m_httpVersion;
+  char * m_headerDone;
   size_t m_headerDoneLength;
+  size_t m_len;
 
   public:
-  HttpEnv(QByteArray data);
+  HttpEnv(const char * data, size_t len);
   ~HttpEnv();
 
   void  setField(const char * fragment, const char * value);
-  void  setFragment(const char * fragment);
-  void  setQueryString(const char * queryString);
-  void  setRequestPath(const char * requestPath);
-  void  setRequestMethod(const char * requestMethod);
-  void  setRequestUri(const char * requestUri);
-  void  setHttpVersion(const char * httpVersion);
-  void  setHeaderDone(const char * headerDone, size_t length);
+  void  setFragment(char * fragment);
+  void  setQueryString(char * queryString);
+  void  setRequestPath(char * requestPath);
+  void  setRequestMethod(char * requestMethod);
+  void  setRequestUri(char * requestUri);
+  void  setHttpVersion(char * httpVersion);
+  void  setHeaderDone(char * headerDone, size_t length);
 
   const char * fragment();
   const char * queryString();
@@ -47,10 +45,9 @@ class HttpEnv
   const char * requestUri();
   const char * httpVersion();
   const char * headerDone();
-  size_t headerDoneLength();
   const char * field(const char *);
-  char * data();
-  QByteArray toJson();
+  const char * data();
+  size_t headerDoneLength();
 
 };
 

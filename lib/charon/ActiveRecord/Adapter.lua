@@ -7,6 +7,7 @@ local Array = require('charon.Array')
 local Class = require('charon.oop.Class')
 local toboolean = require('charon.toboolean')
 local QDateTime = require('QDateTime')
+local Date = require('charon.time.Date')
 
 local ActiveRecord_Adapter = Class.new("ActiveRecord.Adapter")
 
@@ -15,11 +16,12 @@ ActiveRecord_Adapter.reserved = {
   binding = true, order = true, limit = true
 }
 
-ActiveRecord_Adapter.errors = {}
-ActiveRecord_Adapter.cache  = {}
-ActiveRecord_Adapter.neat   = {}
-ActiveRecord_Adapter.cursor = {}
-ActiveRecord_Adapter.output = print
+ActiveRecord_Adapter.errors  = Array.new()
+ActiveRecord_Adapter.cache   = {}
+ActiveRecord_Adapter.neat    = {}
+ActiveRecord_Adapter.cursor  = {}
+ActiveRecord_Adapter.pending = {}
+ActiveRecord_Adapter.output  = print
 
 ActiveRecord_Adapter.booleanValues = {
   ['t']     = true,
@@ -211,7 +213,8 @@ function ActiveRecord_Adapter:destroy(record)
   local values = {[self.primaryKey] = record[self.primaryKey]}
   local sql    = "DELETE FROM " .. self.tableName .. " " .. self:where(values)
   local result = self:execute(sql)
-  self.cache[record:cacheKey()] = false
+  self.cache[record:cacheKey()]   = false
+  self.pending[record:cacheKey()] = false
   return result
 end
 
@@ -248,6 +251,17 @@ function ActiveRecord_Adapter:find(params)
     local key = self.tableName .. '_' .. tostring(params[self.primaryKey])
     if ActiveRecord_Adapter.cache[key] then
       return ActiveRecord_Adapter.cache[key]
+    else
+       if ActiveRecord_Adapter.neat[key] and ActiveRecord_Adapter.cache[key] ~= false then
+         local neat = ActiveRecord_Adapter.neat[key]
+         local record = { newRecord = false }
+         for k, v in pairs(neat) do
+           record[k] = v
+         end
+         record = self.record_class.new(record)
+         ActiveRecord_Adapter.cache[key] = record
+         return record
+       end
     end
   end
 
@@ -366,8 +380,9 @@ end
 --------------------------------------------------------------------------------
 
 function ActiveRecord_Adapter:rollback()
-  ActiveRecord_Adapter.errors = {}
-  ActiveRecord_Adapter.cache  = {}
+  ActiveRecord_Adapter.errors  = Array.new()
+  ActiveRecord_Adapter.cache   = {}
+  ActiveRecord_Adapter.pending = {}
   return self:execute("ROLLBACK")
 end
 
@@ -376,9 +391,10 @@ end
 --------------------------------------------------------------------------------
 
 function ActiveRecord_Adapter:commit()
-  ActiveRecord_Adapter.errors = {}
-  ActiveRecord_Adapter.cache  = {}
-  ActiveRecord_Adapter.neat   = {}
+  ActiveRecord_Adapter.errors  = Array.new()
+  ActiveRecord_Adapter.cache   = {}
+  ActiveRecord_Adapter.neat    = {}
+  ActiveRecord_Adapter.pending = {}
   return self:execute("COMMIT")
 end
 
@@ -488,9 +504,7 @@ end
 -------------------------------------------------------------------------------
 
 function ActiveRecord_Adapter:createTimestamp()
-  local clock = tostring(os.clock())
-  local index = clock:indexOf('.')
-  return os.date("%Y/%m/%d %H:%M:%S.") .. clock:mid(index+1, -1)
+  return os.date("%Y/%m/%d %H:%M:%S") .. string.format("%.6f", os.microtime()):mid(11, -1)
 end
 
 -------------------------------------------------------------------------------
@@ -554,9 +568,9 @@ end
 
 function ActiveRecord_Adapter.read_value_date(value)
   if value:sub(5, 5) == '-' then
-    return QDateTime.fromString(value:left(10), 'yyyy-MM-dd')
+    return Date.fromString(value:left(10), 'yyyy-MM-dd')
   else
-    return QDateTime.fromString(value:left(10), 'yyyy/MM/dd')
+    return Date.fromString(value:left(10), 'yyyy/MM/dd')
   end
 end
 
@@ -609,7 +623,7 @@ end
 function ActiveRecord_Adapter:changes(record)
   local changes = {}
   local key     = record:cacheKey()
-  local neat    = ActiveRecord_Adapter.neat[key] or {}
+  local neat    = ActiveRecord_Adapter.pending[key] or ActiveRecord_Adapter.neat[key] or {}
 
   for column, properties in pairs(self:columns()) do
     if record[column] ~= neat[column] then
@@ -618,6 +632,21 @@ function ActiveRecord_Adapter:changes(record)
   end
 
   return changes
+end
+
+-------------------------------------------------------------------------------
+-- WAS
+-------------------------------------------------------------------------------
+
+function ActiveRecord_Adapter:was(record)
+  local key  = record:cacheKey()
+  local neat = ActiveRecord_Adapter.pending[key] or ActiveRecord_Adapter.neat[key] or {}
+  local was  = { }
+  for k, v in pairs(neat) do
+    was[k] = v
+  end
+
+  return was
 end
 
 -------------------------------------------------------------------------------
@@ -653,7 +682,11 @@ function ActiveRecord_Adapter.dateParserValue(value)
 end
 
 function ActiveRecord_Adapter.numberParserValue(value)
-  return tonumber(value)
+  if tostring(value):contains(',') then
+    return tonumber(value:replace('.', ''):replace(',', '.'))
+  else
+    return tonumber(value)
+  end
 end
 
 function ActiveRecord_Adapter.booleanParserValue(value)

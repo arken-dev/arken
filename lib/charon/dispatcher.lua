@@ -37,7 +37,7 @@ dispatcher.parsePath  = function(env)
   if last == 1 or actionName == '' then
     actionName = "index"
   end
-  return controllerName, actionName, controllerPath
+  return controllerName, actionName:camelCase(true), controllerPath
 end
 
 -------------------------------------------------------------------------------
@@ -76,9 +76,9 @@ dispatcher.dispatchController = function(env)
     _env = env
   }
   if object[actionName .. "Action"] then
-    return object:pexecute(actionName:camelCase(true) .. "Action")
+    return object:pexecute(actionName .. "Action")
   else
-    return 500, {}, "action: \"" .. actionName:camelCase(true) .. "Action\" not found"
+    return 500, {}, "action: \"" .. actionName .. "Action\" not found"
   end
 end
 

@@ -11,7 +11,6 @@
 int main(int argc, char * argv[])
 {
    QCoreApplication *app = new QCoreApplication(argc, argv);
-
    MirandaServer server(app);
    server.start();
 

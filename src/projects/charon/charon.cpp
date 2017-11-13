@@ -4,6 +4,7 @@
 // license that can be found in the LICENSE file.
 
 #include <charon/base>
+#include <charon/mvm>
 
 void Charon::args(lua_State * L, int argc, char * argv[])
 {

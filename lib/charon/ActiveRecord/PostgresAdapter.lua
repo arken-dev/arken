@@ -109,11 +109,12 @@ function ActiveRecord_PostgresAdapter:update(record)
   local where = ' WHERE ' .. self.primaryKey .. " = " .. self:escape(record[self.primaryKey])
   sql = sql .. col .. where
   result = self:execute(sql)
-  -- neat
-  local neat = Adapter.neat[record:cacheKey()] or {}
+  -- pending
+  local pending = Adapter.pending[record:cacheKey()] or {}
   for column, properties in pairs(self:columns()) do
-    neat[column] = record[column]
+    pending[column] = record[column]
   end
+  Adapter.pending[record:cacheKey()] = pending
 
   return result
 end
@@ -129,7 +130,7 @@ function ActiveRecord_PostgresAdapter:create(record)
     record.created_at = self:createTimestamp()
   end
   if self:columns().updated_at then
-    record.updated_at = record.created_at
+    record.updated_at = record.created_at or self:createTimestamp()
   end
   if self:columns().uuid then
     record.uuid = os.uuid()

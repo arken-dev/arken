@@ -19,8 +19,8 @@ function FormHelper:url(params)
   local controller = params.controller or self.controller.controllerName or 'index'
   local action     = params.action or self.controller.actionName or 'index'
 
-  if dispatcher.prefix then
-    controller = dispatcher.prefix .. '/' .. controller
+  if self.controller.prefix then
+    controller = self.controller.prefix .. '/' .. controller
   end
 
   params.action = nil
@@ -153,7 +153,7 @@ function FormHelper:dateField(field, options)
   options.onkeyup    = options.onkeyup    or "format_invert(this, '**/**/****')"
   options.style      = options.style      or "width:80px;text-align:right"
 
-  local value = self:buildValue(field)
+  local value = tostring( self:buildValue(field) )
 
   if value:sub(5, 5) == '/' then
     local list = value:split('/')
@@ -178,8 +178,7 @@ function FormHelper:submitSave()
 end
 
 function FormHelper:submitCancel()
-  local helper = require 'charon.Helper'
-  return helper:link{ img = 'icons/botao_cancelar.png', url = self:url{ action = 'cancel' }, remote = true }
+  return self.helper:link{ img = 'icons/botao_cancelar.png', url = self:url{ action = 'cancel' }, remote = true }
 end
 
 --------------------------------------------------------------------------------
@@ -233,6 +232,7 @@ function FormHelper:selectHash(field, list, options)
   local option   = "<option value=%q %s >%s</option>"
   local selected = ""
   local value    = self:buildValue(field)
+  local style    = options.style or "width:250px"
 
   if options.multiple then
     if options.multiple == true then
@@ -241,8 +241,8 @@ function FormHelper:selectHash(field, list, options)
     html = html .. string.format([[ multiple="multiple" size=%q ]], options.multiple)
   end
 
-  html = html .. [[ id=%q name=%q style="width:250px;">]]
-  html = string.format(html, self:buildId(field), self:buildName(field))
+  html = html .. [[ id=%q name=%q style=%q>]]
+  html = string.format(html, self:buildId(field), self:buildName(field), style)
 
   if options.blank then
     local blank = ""

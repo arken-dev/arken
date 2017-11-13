@@ -161,7 +161,8 @@ char * string::chop(const char * string, int n)
   int len = strlen(string);
 
   if ( n > len ) {
-    result = '\0';
+    result = new char[1];
+    result[0] = '\0';
   } else {
     int size = len - n;
     result = new char[size+1];
@@ -328,16 +329,16 @@ bool string::endsWith(const char * string, const char * str)
   return true;
 }
 
-int string::indexOf(const char * string, const char * str)
+int string::indexOf(const char * string, const char * str, int i)
 {
   int result;
-  int i, j, c;
+  int j, c;
   int string_len = strlen(string);
   int str_len    = strlen(str);
 
   result = -1;
 
-  for(i = 0; i < string_len; i++) {
+  for(; i < string_len; i++) {
     c = 0;
     for(j = 0 ; j < str_len; j++) {
       if( string[i+j] != str[j] ) {

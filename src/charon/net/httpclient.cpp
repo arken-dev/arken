@@ -7,7 +7,10 @@
 #include <curl/curl.h>
 #include <cstdlib>
 #include <cstring>
+#include <charon/base>
+#include <QDebug>
 
+using charon::string;
 using namespace charon::net;
 
 static size_t
@@ -32,7 +35,15 @@ WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp)
 
 HttpClient::HttpClient(const char * url)
 {
-  m_url = url;
+  size_t size;
+  size = strlen(url);
+  m_url = new char[size + 1];
+  strcpy(m_url, url);
+  m_url[size] = '\0';
+
+  m_verbose = false;
+  m_body = new char[1]();
+
   m_chunk.memory = (char *) malloc(1);  // will be grown as needed by the realloc above
   m_chunk.memory[0] = '\0';
   m_chunk.size = 0;    // no data at this point
@@ -57,6 +68,9 @@ HttpClient::~HttpClient()
 
   // we're done with libcurl, so clean it up
   curl_global_cleanup();
+
+  delete[] m_url;
+  delete[] m_body;
 }
 
 void HttpClient::appendHeader(const char * header)
@@ -77,7 +91,11 @@ bool HttpClient::verbose()
 
 void HttpClient::setBody(const char * body)
 {
-   m_body = body;
+  size_t size;
+  size = strlen(body);
+  m_body = new char[size + 1];
+  strcpy(m_body, body);
+  m_body[size] = '\0';
 }
 
 const char * HttpClient::body()
@@ -97,6 +115,7 @@ char * HttpClient::performGet()
 
   // we pass our 'chunk' struct to the callback function
   curl_easy_setopt(m_curl, CURLOPT_WRITEDATA, (void *)& m_chunk);
+  curl_easy_setopt(m_curl, CURLOPT_HEADER, 1);
 
   // some servers don't like requests that are made without a user-agent field, so we provide one
   curl_easy_setopt(m_curl, CURLOPT_USERAGENT, "libcurl-agent/1.0");
@@ -112,10 +131,7 @@ char * HttpClient::performGet()
 
   m_chunk.memory[m_chunk.size] = '\0';
 
-  char * result = (char *) malloc( (m_chunk.size + 1) * sizeof(char) );
-  strcpy(result, m_chunk.memory);
-
-  return result;
+  return perform(m_chunk.memory);
 }
 
 char * HttpClient::performPost()
@@ -136,6 +152,7 @@ char * HttpClient::performPost()
 
   // we pass our 'chunk' struct to the callback function
   curl_easy_setopt(m_curl, CURLOPT_WRITEDATA, (void *)& m_chunk);
+  curl_easy_setopt(m_curl, CURLOPT_HEADER, 1);
 
   // some servers don't like requests that are made without a user-agent field, so we provide one
   curl_easy_setopt(m_curl, CURLOPT_USERAGENT, "libcurl-agent/1.0");
@@ -151,10 +168,7 @@ char * HttpClient::performPost()
 
   m_chunk.memory[m_chunk.size] = '\0';
 
-  char * result = (char *) malloc( (m_chunk.size + 1) * sizeof(char) );
-  strcpy(result, m_chunk.memory);
-
-  return result;
+  return perform(m_chunk.memory);
 }
 
 char * HttpClient::performPut()
@@ -175,6 +189,7 @@ char * HttpClient::performPut()
 
   // we pass our 'chunk' struct to the callback function
   curl_easy_setopt(m_curl, CURLOPT_WRITEDATA, (void *)& m_chunk);
+  curl_easy_setopt(m_curl, CURLOPT_HEADER, 1);
 
   // some servers don't like requests that are made without a user-agent field, so we provide one
   curl_easy_setopt(m_curl, CURLOPT_USERAGENT, "libcurl-agent/1.0");
@@ -190,10 +205,7 @@ char * HttpClient::performPut()
 
   m_chunk.memory[m_chunk.size] = '\0';
 
-  char * result = (char *) malloc( (m_chunk.size + 1) * sizeof(char) );
-  strcpy(result, m_chunk.memory);
-
-  return result;
+  return perform(m_chunk.memory);
 }
 
 char * HttpClient::performDelete()
@@ -211,6 +223,7 @@ char * HttpClient::performDelete()
 
   // we pass our 'chunk' struct to the callback function
   curl_easy_setopt(m_curl, CURLOPT_WRITEDATA, (void *)& m_chunk);
+  curl_easy_setopt(m_curl, CURLOPT_HEADER, 1);
 
   // some servers don't like requests that are made without a user-agent field, so we provide one
   curl_easy_setopt(m_curl, CURLOPT_USERAGENT, "libcurl-agent/1.0");
@@ -226,8 +239,25 @@ char * HttpClient::performDelete()
 
   m_chunk.memory[m_chunk.size] = '\0';
 
-  char * result = (char *) malloc( (m_chunk.size + 1) * sizeof(char) );
-  strcpy(result, m_chunk.memory);
+  return perform(m_chunk.memory);
+}
 
-  return result;
+char * HttpClient::perform(char * memory)
+{
+  int      index = string::indexOf(memory, "\r\n\r\n");
+  char * headers = string::mid(memory, 0, index);
+  if( string::contains(headers, "Location") ) {
+    index = string::indexOf(headers, "Location:");
+    char * tmp = string::mid(headers, index+9, string::indexOf(headers, "\r\n", index+9));
+    char * url = string::simplified(tmp);
+    HttpClient client = HttpClient(url);
+    client.setVerbose(m_verbose);
+    delete[] url;
+    delete[] tmp;
+    delete[] headers;
+    return client.performGet();
+  } else {
+    delete[] headers;
+    return string::mid(memory, index+4, -1);
+  }
 }

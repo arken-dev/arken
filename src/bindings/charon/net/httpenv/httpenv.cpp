@@ -29,7 +29,7 @@ lua_HttpEnvClassMethodNew( lua_State *L ) {
   size_t len;
   const char *data  = luaL_checklstring(L, 1, &len);
   HttpEnv **ptr = (HttpEnv **)lua_newuserdata(L, sizeof(HttpEnv*));
-  *ptr= new HttpEnv(QByteArray(data, len));
+  *ptr= new HttpEnv(data, len);
   luaL_getmetatable(L, "HttpEnv.metatable");
   lua_setmetatable(L, -2);
   return 1;
@@ -132,13 +132,6 @@ lua_HttpEnvInstanceMethodHeaderDoneLength( lua_State *L ) {
 }
 
 static int
-lua_HttpEnvInstanceMethodToJson( lua_State *L ) {
-  HttpEnv *udata = checkHttpEnv( L );
-  lua_pushstring(L, udata->toJson());
-  return 1;
-}
-
-static int
 lua_HttpEnvInstanceMethodDestruct( lua_State *L ) {
   HttpEnv *udata = checkHttpEnv( L );
   delete udata;
@@ -157,7 +150,6 @@ luaL_reg HttpEnvInstanceMethods[] = {
   {"requestMethod", lua_HttpEnvInstanceMethodRequestMethod},
   {"requestPath", lua_HttpEnvInstanceMethodRequestPath},
   {"queryString", lua_HttpEnvInstanceMethodQueryString},
-  {"toJson", lua_HttpEnvInstanceMethodToJson},
   {"__gc", lua_HttpEnvInstanceMethodDestruct},
   {NULL, NULL}
 };

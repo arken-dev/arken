@@ -3,15 +3,20 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#include "mirandaserver.h"
-#include "mirandatask.h"
-#include "mirandastate.h"
+#include <mirandaserver.h>
+#include <mirandatask.h>
+#include <charon/base>
+#include <QDebug>
 #include <QFile>
 #include <QJsonObject>
-#include <iostream>
+
+using charon::service;
 
 MirandaServer::MirandaServer(QCoreApplication *app)
 {
+
+  charon::mvm::init(app);
+
   QFile config("config/miranda.json");
   if( config.exists() ) {
     config.open(QIODevice::ReadOnly);
@@ -52,7 +57,22 @@ MirandaServer::MirandaServer(QCoreApplication *app)
     }
   }
 
-  MirandaState::init(app);
+  // SERVICES
+  QString dir("app/services");
+  if( QFile::exists(dir) ) {
+    QDirIterator iterator(dir);
+    while(iterator.hasNext()) {
+      iterator.next();
+      QFileInfo fileInfo = iterator.fileInfo();
+      if( fileInfo.suffix() == "lua" ) {
+        qDebug() << "load: " << fileInfo.filePath();
+        service::start(fileInfo.filePath().toLocal8Bit());
+      }
+    }
+  } else {
+    qDebug() << "services dir not exists";
+  }
+
 }
 
 void MirandaServer::start()
