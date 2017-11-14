@@ -5,8 +5,7 @@
 
 #include <charon/base>
 #include <charon/mvm>
-#include <QStack>
-#include <QMutex>
+#include <mutex>
 
 using namespace charon;
 using charon::ByteArray;
@@ -16,8 +15,8 @@ int        mvm::s_version      = 0;
 ByteArray  mvm::s_charonPath   = "";
 ByteArray  mvm::s_profilePath  = "";
 ByteArray  mvm::s_dispatchPath = "";
-QMutex     mvm::s_mutex;
 std::deque<mvm::data *> * mvm::s_container   = new std::deque<mvm::data *>;
+std::mutex mtx;
 
 void mvm::init(QCoreApplication *app)
 {
@@ -32,9 +31,9 @@ void mvm::init(QCoreApplication *app)
 
 instance mvm::instance()
 {
-  QMutexLocker ml(&s_mutex);
   mvm::data * data ;
 
+  mtx.lock();
   if( s_container->empty() ) {
     data = new mvm::data();
   } else {
@@ -45,7 +44,7 @@ instance mvm::instance()
       data = new mvm::data();
     }
   }
-
+  mtx.unlock();
   return charon::instance(data);
 }
 
@@ -54,20 +53,22 @@ void mvm::push(mvm::data * data)
   if( s_version != data->m_version ) {
       delete data;
   } else {
-    QMutexLocker ml(&s_mutex);
+    mtx.lock();
     s_container->push_front(data);
+    mtx.unlock();
   }
 }
 
 mvm::data * mvm::takeFirst()
 {
-  QMutexLocker ml(&s_mutex);
+  mtx.lock();
 
   if( s_container->empty() ) {
     return new mvm::data();
   }
   mvm::data * data = s_container->front();
   s_container->pop_front();
+  mtx.unlock();
   return data;
 }
 
@@ -108,7 +109,7 @@ int mvm::gc()
 int mvm::clear()
 {
   int result = 0;
-  QMutexLocker ml(&s_mutex);
+  mtx.lock();
   s_version++;
   while( !s_container->empty() ) {
     result++;
@@ -116,6 +117,7 @@ int mvm::clear()
     s_container->pop_front();
     delete data;
   }
+  mtx.unlock();
   return result;
 }
 

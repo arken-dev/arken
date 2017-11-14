@@ -43,7 +43,6 @@ class mvm {
   static ByteArray s_charonPath;
   static ByteArray s_profilePath;
   static ByteArray s_dispatchPath;
-  static QMutex    s_mutex;
   static std::deque<mvm::data *> * s_container;
   private:
 
