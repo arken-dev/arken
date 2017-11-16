@@ -40,6 +40,8 @@ class mvm {
 
   static int s_gc;
   static int s_version;
+  static int      s_argc;
+  static char * * s_argv;
   static ByteArray s_charonPath;
   static ByteArray s_profilePath;
   static ByteArray s_dispatchPath;
@@ -53,7 +55,7 @@ class mvm {
   ~mvm() {};
 
   public:
-  static void init(QCoreApplication *app);
+  static void init(int argc, char ** argv);
   static void reload();
   static int  version();
   static int  gc();

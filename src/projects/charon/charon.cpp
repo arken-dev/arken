@@ -6,6 +6,8 @@
 #include <charon/base>
 #include <charon/mvm>
 
+using charon::mvm;
+
 void Charon::args(lua_State * L, int argc, char * argv[])
 {
 
@@ -70,7 +72,6 @@ void Charon::profile(lua_State * L, const char * path)
 
 lua_State * Charon::init(int argc, char * argv[], const char * path)
 {
-
   lua_State *L = lua_open();
   if( L == 0 ) {
     return 0;

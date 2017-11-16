@@ -15,8 +15,6 @@ using charon::service;
 MirandaServer::MirandaServer(QCoreApplication *app)
 {
 
-  charon::mvm::init(app);
-
   QFile config("config/miranda.json");
   if( config.exists() ) {
     config.open(QIODevice::ReadOnly);

@@ -7,10 +7,9 @@
 #include <charon/base>
 #include <charon/mvm>
 #include <iostream>
-#include <QtCore>
-#include <QCoreApplication>
 
 using charon::ByteArray;
+using charon::mvm;
 
 int charonFileLoad(lua_State *L, QFile &file)
 {
@@ -134,12 +133,11 @@ int main(int argc, char * argv[])
   ByteArray task;
   QString    dirPath;
   QFile      file(argv[1]);
-  QCoreApplication app(argc, argv);
-  charon::mvm::init(&app);
+  mvm::init(argc, argv);
   lua_State  * L;
-  charonPath = app.applicationFilePath().toLocal8Bit().data();
 
-  L = Charon::init(argc, argv, charonPath);
+  charon::instance i = mvm::instance();
+  L = i.state();
   if (L == 0) {
     fprintf(stderr, "failure allocate memory\n");
     return 1;
