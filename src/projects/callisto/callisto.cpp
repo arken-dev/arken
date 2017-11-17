@@ -12,8 +12,9 @@
 
 using charon::ByteArray;
 using charon::ByteArrayList;
+using charon::mvm;
 
-Callisto::Callisto(int argc, char * argv[], const char * path, QObject *parent) : QObject(parent)
+Callisto::Callisto(int argc, char * argv[], QObject *parent) : QObject(parent)
 {
   int rv;
 
@@ -46,7 +47,9 @@ Callisto::Callisto(int argc, char * argv[], const char * path, QObject *parent) 
   //m_dialog->setParams(argc, argv);
 
   // instance
-  m_luaState = Charon::init(argc, argv, path);
+  mvm::init(argc, argv);
+  charon::instance i = mvm::instance();
+  m_luaState = i.release();
 
   lua_settop(m_luaState, 0);
   lua_getglobal(m_luaState, "CHARON_PATH");
