@@ -29,11 +29,13 @@ class mvm {
     lua_State * m_State;
     int         m_version;
     int         m_gc;
+    bool        m_release = false;
 
     public:
     data();
     ~data();
     lua_State * state();
+    lua_State * release();
     int version();
   };
 
@@ -70,6 +72,8 @@ class instance {
   instance(mvm::data * data);
   ~instance();
   lua_State * state();
+  lua_State * release();
+
 };
 
 }

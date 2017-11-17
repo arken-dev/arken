@@ -182,13 +182,22 @@ mvm::data::data()
 
 mvm::data::~data()
 {
-  lua_close(m_State);
+  if( m_release == false ) {
+    lua_close(m_State);
+  }
 }
 
 lua_State * mvm::data::state()
 {
   return m_State;
 }
+
+lua_State * mvm::data::release()
+{
+  m_release = true;
+  return m_State;
+}
+
 
 int mvm::data::version()
 {
@@ -202,10 +211,19 @@ charon::instance::instance(mvm::data * data)
 
 charon::instance::~instance()
 {
-  mvm::push(m_data);
+  if( m_data->m_release ) {
+    delete m_data;
+  } else {
+    mvm::push(m_data);
+  }
 }
 
 lua_State * instance::state()
 {
   return m_data->state();
+}
+
+lua_State * instance::release()
+{
+  return m_data->release();
 }
