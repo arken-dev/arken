@@ -14,15 +14,17 @@
 
 using charon::ByteArray;
 using charon::ByteArrayList;
+using charon::mvm;
 
 int main(int argc, char * argv[])
 {
 
   int threads = os::cores();
   QCoreApplication app(argc, argv);
-  QByteArray path  = app.applicationFilePath().toLocal8Bit().data();
+  mvm::init(argc, argv);
+  charon::instance i = mvm::instance();
+  lua_State * L = i.state();
 
-  lua_State * L = Charon::init(argc, argv, path);
   triton_register(L);
 
   if( argc == 1 ) {
@@ -70,7 +72,7 @@ int main(int argc, char * argv[])
    */
   QList<Triton *> list;
   for(int i = 0; i < threads; i++ ) {
-    list.append(new Triton(argc, argv, path, fileName));
+    list.append(new Triton(argc, argv, fileName));
   }
 
   for(int i = 0; i < threads; i++ ) {
