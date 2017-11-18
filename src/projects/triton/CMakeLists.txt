@@ -12,7 +12,7 @@ include_directories(.)
 include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${PROJECT_SOURCE_DIR}/deps/include)
 
-add_executable( triton main.cpp triton.cpp triton_register.cpp ../charon/charon.cpp )
+add_executable( triton main.cpp triton.cpp triton_register.cpp )
 
 find_package(Qt5Core)
 find_package(Qt5Network)
