@@ -50,13 +50,17 @@ ActiveRecord.inherit = function(class)
 
   class.hasMany = function(params)
     class[params.name] = function(self)
-      local record     = Class.lookup(params.record)
-      local conditions = params.conditions or {}
-      conditions[params.foreignKey] = self[record.primaryKey]
-      if params.order then
-        conditions.order = params.order
-      end
+      if self[class.primaryKey] == nil then
+        return nil
+      else
+        local record     = Class.lookup(params.record)
+        local conditions = params.conditions or {}
+        conditions[params.foreignKey] = self[record.primaryKey]
+        if params.order then
+          conditions.order = params.order
+        end
       return record.all(conditions)
+      end
     end
   end
 
