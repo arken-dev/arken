@@ -43,8 +43,12 @@ ActiveRecord.inherit = function(class)
 
   class.hasOne = function(params)
     class[params.name] = function(self)
-      local  record = Class.lookup(params.record)
-      return record.find{[params.foreignKey] = self[self.primaryKey]}
+      if self[class.primaryKey] == nil then
+        return nil
+      else
+        local  record = Class.lookup(params.record)
+        return record.find{[params.foreignKey] = self[self.primaryKey]}
+      end
     end
   end
 
