@@ -63,7 +63,7 @@ ActiveRecord.inherit = function(class)
         if params.order then
           conditions.order = params.order
         end
-      return record.all(conditions)
+        return record.all(conditions)
       end
     end
   end
