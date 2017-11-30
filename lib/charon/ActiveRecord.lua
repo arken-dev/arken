@@ -104,7 +104,7 @@ ActiveRecord.inherit = function(class)
   -- ActiveRecord#reset()
   -----------------------------------------------------------------------------
 
-  class.reset= function()
+  class.reset = function()
     class[class.adapterInstance] = nil
   end
 
