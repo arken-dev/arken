@@ -1,7 +1,6 @@
 #ifndef _CHARON_BASE_
 #define _CHARON_BASE_
 
-#include <charon/charon.h>
 #include <charon/math.h>
 #include <charon/os.h>
 #include <charon/string.h>
@@ -13,7 +12,6 @@
 #include <charon/base64.h>
 #include <charon/bytearray.h>
 #include <charon/bytearraylist.h>
-#include <charon/charon.h>
 #include <charon/digest.h>
 #include <charon/http.h>
 #include <charon/mvm.h>

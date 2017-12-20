@@ -29,7 +29,6 @@ class Triton : public QObject, public QRunnable
   private:
   int m_argc;
   char ** m_argv;
-  const char * m_path;
   QByteArray m_fileName;
   lua_State * m_state;
   static QHash<QByteArray, QByteArray *> * s_result;
@@ -38,7 +37,7 @@ class Triton : public QObject, public QRunnable
   static QMutex s_mutex;
 
   public:
-  Triton(int argc, char * argv[], const char * path, QByteArray fileName);
+  Triton(int argc, char * argv[], QByteArray fileName);
   ~Triton();
   void run();
   static void init(QStringList list);

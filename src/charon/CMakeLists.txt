@@ -54,8 +54,19 @@ file(GLOB time ${CMAKE_CURRENT_SOURCE_DIR}/time/*.cpp)
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/deps)
 set(mongrel2 ${PROJECT_SOURCE_DIR}/src/vendors/mongrel2/http11/http11_parser.c)
 set(ap ${PROJECT_SOURCE_DIR}/src/vendors/ap/ap_base64.c)
+set( os-executablePath ${CMAKE_CURRENT_SOURCE_DIR}/os/executablePath_${CMAKE_SYSTEM_NAME}.cpp )
 
-add_library( charon SHARED ${src} ${os} ${net} ${time} ${mongrel2} ${ap} ${uuid} ${digest} ${package-digest})
+add_library(
+  charon SHARED
+  ${src}
+  ${os} ${os-executablePath} ${uuid}
+  ${net}
+  ${time}
+  ${mongrel2}
+  ${ap}
+  ${digest}
+  ${package-digest}
+)
 
 find_package(Qt5Core)
 find_package(Qt5Network)

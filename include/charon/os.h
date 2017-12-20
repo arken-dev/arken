@@ -21,6 +21,7 @@ namespace charon {
     static uint     ctime(const char * path);
     static char   * dirpath(const char * path);
     static bool     exists(const char * path);
+    static char   * executablePath();
     static ByteArrayList * glob(const char * dir);
     static ByteArrayList * glob(const char * dir, bool sub);
     static ByteArrayList * glob(const char * dir, const char * regex);

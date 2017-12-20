@@ -11,7 +11,6 @@
 #include <dialog.h>
 
 #include <QObject>
-#include <QApplication>
 #include <QString>
 #include <QFileSystemWatcher>
 
@@ -30,7 +29,7 @@ public slots:
   void showDirectoryModified(const QString &str);
 
 public:
-  Callisto(int argc, char * argv[], const char * path, QObject *parent = 0);
+  Callisto(int argc, char * argv[], QObject *parent = 0);
   ~Callisto();
   QFileSystemWatcher * m_watcher;
   Dialog * m_dialog;

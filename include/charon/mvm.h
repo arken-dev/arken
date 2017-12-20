@@ -29,21 +29,24 @@ class mvm {
     lua_State * m_State;
     int         m_version;
     int         m_gc;
+    bool        m_release = false;
 
     public:
     data();
     ~data();
     lua_State * state();
+    lua_State * release();
     int version();
   };
 
 
   static int s_gc;
   static int s_version;
+  static int      s_argc;
+  static char * * s_argv;
   static ByteArray s_charonPath;
   static ByteArray s_profilePath;
   static ByteArray s_dispatchPath;
-  static QMutex    s_mutex;
   static std::deque<mvm::data *> * s_container;
   private:
 
@@ -54,7 +57,7 @@ class mvm {
   ~mvm() {};
 
   public:
-  static void init(QCoreApplication *app);
+  static void init(int argc, char ** argv);
   static void reload();
   static int  version();
   static int  gc();
@@ -69,6 +72,8 @@ class instance {
   instance(mvm::data * data);
   ~instance();
   lua_State * state();
+  lua_State * release();
+
 };
 
 }
