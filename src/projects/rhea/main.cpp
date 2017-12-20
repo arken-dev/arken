@@ -7,7 +7,6 @@
 #include <lua/lua.hpp>
 #include <charon/base>
 
-using charon::ByteArray;
 using charon::mvm;
 
 int main(int argc, char * argv[])
