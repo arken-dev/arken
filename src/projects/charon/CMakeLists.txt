@@ -11,7 +11,7 @@
 include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${PROJECT_SOURCE_DIR}/deps/include)
 
-add_executable( charon-bin main.cpp charon.cpp )
+add_executable( charon-bin main.cpp )
 set_target_properties(charon-bin PROPERTIES OUTPUT_NAME charon)
 
 find_package(Qt5Core)

@@ -82,6 +82,13 @@ static int lua_charon_os_exists( lua_State *L ) {
   return 1;
 }
 
+static int lua_charon_os_executablePath( lua_State *L ) {
+  char * result = os::executablePath();
+  lua_pushstring( L, result );
+  delete[] result;
+  return 1;
+}
+
 static int lua_charon_os_glob( lua_State *L ) {
   ByteArrayList * list = 0;
   const char  * path = luaL_checkstring(L, 1);
@@ -268,6 +275,7 @@ int luaopen_charon_os( lua_State *L ) {
     {"ctime",      lua_charon_os_ctime},
     {"dirpath",    lua_charon_os_dirpath},
     {"exists",     lua_charon_os_exists},
+    {"executablePath", lua_charon_os_executablePath},
     {"glob",       lua_charon_os_glob},
     {"home",       lua_charon_os_home},
     {"hostname",   lua_charon_os_hostname},

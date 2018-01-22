@@ -12,7 +12,7 @@ include_directories(.)
 include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${PROJECT_SOURCE_DIR}/deps/include)
 
-add_executable( rhea main.cpp ../charon/charon.cpp )
+add_executable( rhea main.cpp )
 
 find_package(Qt5Core)
 find_package(Qt5Network)

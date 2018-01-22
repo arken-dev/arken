@@ -24,7 +24,6 @@ add_executable(
   main.cpp
   dialog.cpp
   callisto.cpp
-  ../charon/charon.cpp
   dialog.h
   callisto.h
   rescource.qrc

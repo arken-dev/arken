@@ -6,16 +6,14 @@
 #include <iostream>
 #include <lua/lua.hpp>
 #include <charon/base>
-#include <QtCore>
-#include <QCoreApplication>
 
-using charon::ByteArray;
+using charon::mvm;
 
 int main(int argc, char * argv[])
 {
-  QCoreApplication app(argc, argv);
-
-  lua_State * L = Charon::init(argc, argv, app.applicationFilePath().toLocal8Bit().data());
+  mvm::init(argc, argv);
+  charon::instance i = mvm::instance();
+  lua_State * L = i.state();
 
   lua_settop(L, 0);
   int rv;

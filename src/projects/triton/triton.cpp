@@ -9,20 +9,22 @@
 
 using charon::ByteArray;
 using charon::ByteArrayList;
+using charon::mvm;
 
 QHash<QByteArray, QByteArray *> * Triton::s_result = new QHash<QByteArray, QByteArray *>();
 QHash<QByteArray, int> * Triton::s_total = new QHash<QByteArray, int>();
 QQueue<QByteArray *> * Triton::s_queue = new QQueue<QByteArray *>();
 QMutex Triton::s_mutex;
 
-Triton::Triton(int argc, char * argv[], const char * path, QByteArray fileName)
+Triton::Triton(int argc, char * argv[], QByteArray fileName)
 {
   m_argc = argc;
   m_argv = argv;
-  m_path = path;
   m_fileName = fileName;
 
-  m_state = Charon::init(m_argc, m_argv, m_path);
+  charon::instance i = mvm::instance();
+  m_state = i.release();
+
   triton_register(m_state);
   lua_settop(m_state, 0);
 }

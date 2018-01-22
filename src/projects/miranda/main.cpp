@@ -7,9 +7,14 @@
 #include <QtCore>
 #include <QCoreApplication>
 #include "mirandaserver.h"
+#include <charon/base>
+
+using charon::mvm;
 
 int main(int argc, char * argv[])
 {
+
+   mvm::init(argc, argv);
    QCoreApplication *app = new QCoreApplication(argc, argv);
    MirandaServer server(app);
    server.start();

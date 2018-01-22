@@ -11,14 +11,19 @@ using namespace charon;
 static int lua_charon_digest_md5( lua_State *L ) {
   size_t size;
   const char *path = luaL_checklstring(L, 1, &size);
-  lua_pushlstring( L, digest::md5(path, size), 32 );
+  char * result = digest::md5(path, size);
+  lua_pushlstring( L, result, 32 );
+  delete[] result;
+
   return 1;
 }
 
 static int lua_charon_digest_sha1( lua_State *L ) {
   size_t size;
   const char *path = luaL_checklstring(L, 1, &size);
-  lua_pushlstring( L, digest::sha1(path, size), 40 );
+  char * result = digest::sha1(path, size);
+  lua_pushlstring( L, result, 40 );
+  delete[] result;
   return 1;
 }
 
