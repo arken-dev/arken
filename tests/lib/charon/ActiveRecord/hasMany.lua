@@ -71,6 +71,7 @@ end
 
 test.should_return_empty_table = function()
   local employee = Employee.new{ name = "John" }
+  employee:save()
   assert( #employee:tasks() == 0 )
 end
 

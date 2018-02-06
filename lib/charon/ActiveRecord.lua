@@ -43,20 +43,28 @@ ActiveRecord.inherit = function(class)
 
   class.hasOne = function(params)
     class[params.name] = function(self)
-      local  record = Class.lookup(params.record)
-      return record.find{[params.foreignKey] = self[self.primaryKey]}
+      if self[class.primaryKey] == nil then
+        return nil
+      else
+        local  record = Class.lookup(params.record)
+        return record.find{[params.foreignKey] = self[self.primaryKey]}
+      end
     end
   end
 
   class.hasMany = function(params)
     class[params.name] = function(self)
-      local record     = Class.lookup(params.record)
-      local conditions = params.conditions or {}
-      conditions[params.foreignKey] = self[record.primaryKey]
-      if params.order then
-        conditions.order = params.order
+      if self[class.primaryKey] == nil then
+        return nil
+      else
+        local record     = Class.lookup(params.record)
+        local conditions = params.conditions or {}
+        conditions[params.foreignKey] = self[record.primaryKey]
+        if params.order then
+          conditions.order = params.order
+        end
+        return record.all(conditions)
       end
-      return record.all(conditions)
     end
   end
 
@@ -96,7 +104,7 @@ ActiveRecord.inherit = function(class)
   -- ActiveRecord#reset()
   -----------------------------------------------------------------------------
 
-  class.reset= function()
+  class.reset = function()
     class[class.adapterInstance] = nil
   end
 
