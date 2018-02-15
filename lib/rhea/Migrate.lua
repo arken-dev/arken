@@ -63,7 +63,8 @@ Migrate.help.generate = [[
   generate migrate
 ]]
 
-function Migrate:generate(params)
+function Migrate:generate()
+  local params    = self:params()
   local QDateTime = require('QDateTime')
   local timestamp = Migrate.timestamp or QDateTime.currentDateTime():toString('yyyyMMddhhmmss')
   local name      = tostring(params[1]):underscore()
