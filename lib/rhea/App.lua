@@ -12,7 +12,7 @@ App.help.create = [[
   create app in dir
 ]]
 
-function App:create(params)
+function App:create()
   local dirName = os.pwd() .. '/' .. params[1]
   if os.exists(dirName) then
     error(dirName .. ' exists')
