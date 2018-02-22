@@ -21,6 +21,7 @@ Json         = require('charon.jsonp')
 Array        = require('charon.Array')
 Date         = require('charon.time.Date')
 DateTime     = require('charon.time.DateTime')
+cache        = require('charon.cache')
 ActiveRecord = require "charon.ActiveRecord"
 
 -------------------------------------------------------------------------------
