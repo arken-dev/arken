@@ -142,6 +142,7 @@ function ActiveRecord_Adapter:where(values, flag)
   local result = ""
   local col    = ""
   local join   = values.join
+  local group  = values.group
   local order  = values.order
   local limit  = values.limit
 --[[
@@ -186,6 +187,9 @@ function ActiveRecord_Adapter:where(values, flag)
   end
   if join then
     result = join .. result
+  end
+  if group then
+    result = result .. ' GROUP BY ' .. group
   end
   if order then
     result = result .. ' ORDER BY ' .. order
