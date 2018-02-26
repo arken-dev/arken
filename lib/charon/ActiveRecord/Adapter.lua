@@ -143,6 +143,7 @@ function ActiveRecord_Adapter:where(values, flag)
   local col    = ""
   local join   = values.join
   local group  = values.group
+  local having = values.having
   local order  = values.order
   local limit  = values.limit
 --[[
@@ -190,6 +191,9 @@ function ActiveRecord_Adapter:where(values, flag)
   end
   if group then
     result = result .. ' GROUP BY ' .. group
+  end
+  if having then
+    result = result .. ' HAVING ' .. having
   end
   if order then
     result = result .. ' ORDER BY ' .. order
