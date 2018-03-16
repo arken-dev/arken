@@ -50,15 +50,17 @@ instance mvm::instance()
 
   mtx.lock();
   if( container::empty() ) {
+    mtx.unlock();
     data = new mvm::data();
   } else {
     data = container::pop();
+    mtx.unlock();
     if( s_version != data->version() ) {
       delete data;
       data = new mvm::data();
     }
   }
-  mtx.unlock();
+
   return charon::instance(data);
 }
 
@@ -77,6 +79,7 @@ mvm::data * mvm::takeFirst()
 {
   mtx.lock();
   if( container::empty() ) {
+    mtx.unlock();
     return new mvm::data();
   }
   mvm::data * data = container::pop();
