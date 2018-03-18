@@ -41,6 +41,7 @@ class mvm {
 
     private:
     static void push(mvm::data *);
+    static void back(mvm::data *);
     static mvm::data * pop();
     static bool empty();
   };

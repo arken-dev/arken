@@ -16,6 +16,11 @@ void mvm::container::push(mvm::data * data)
   s_container->enqueue(data);
 }
 
+void mvm::container::back(mvm::data * data)
+{
+  s_container->enqueue(data);
+}
+
 mvm::data * mvm::container::pop()
 {
   return s_container->dequeue();

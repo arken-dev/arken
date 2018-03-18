@@ -110,13 +110,13 @@ int mvm::gc()
     lua_gc(data->state(), LUA_GCCOLLECT, 0);
     data->m_gc = s_gc;
 
-    container::push(data);
+    container::back(data);
     i++;
 
     data = takeFirst();
   }
 
-  container::push(data);
+  container::back(data);
 
   return i;
 }

@@ -16,6 +16,11 @@ void mvm::container::push(mvm::data * data)
   s_container->push(data);
 }
 
+void mvm::container::back(mvm::data * data)
+{
+  s_container->append(data);
+}
+
 mvm::data * mvm::container::pop()
 {
   return s_container->pop();
