@@ -42,6 +42,8 @@ void mvm::init(int argc, char ** argv)
   s_profilePath.append("/profile.lua");
 
   s_dispatchPath.append("dispatch.lua");
+
+  container::init();
 }
 
 instance mvm::instance()
