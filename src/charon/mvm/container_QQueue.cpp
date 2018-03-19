@@ -11,6 +11,11 @@ using namespace charon;
 
 static QQueue<mvm::data *> * s_container = new QQueue<mvm::data *>;
 
+void mvm::container::init()
+{
+
+}
+
 void mvm::container::push(mvm::data * data)
 {
   s_container->enqueue(data);

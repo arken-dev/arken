@@ -11,6 +11,11 @@ using namespace charon;
 
 static std::deque<mvm::data *> * s_container = new std::deque<mvm::data *>;
 
+void mvm::container::init()
+{
+
+}
+
 void mvm::container::push(mvm::data * data)
 {
   s_container->push_front(data);

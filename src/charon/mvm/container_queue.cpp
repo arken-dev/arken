@@ -11,6 +11,11 @@ using namespace charon;
 
 static std::queue<mvm::data *> * s_container = new std::queue<mvm::data *>;
 
+void mvm::container::init()
+{
+
+}
+
 void mvm::container::push(mvm::data * data)
 {
   s_container->push_back(data);

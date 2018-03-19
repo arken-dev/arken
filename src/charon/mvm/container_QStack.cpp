@@ -11,6 +11,11 @@ using namespace charon;
 
 static QStack<mvm::data *> * s_container = new QStack<mvm::data *>;
 
+void mvm::container::init()
+{
+
+}
+
 void mvm::container::push(mvm::data * data)
 {
   s_container->push(data);

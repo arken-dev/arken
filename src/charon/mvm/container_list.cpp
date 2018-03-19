@@ -11,6 +11,11 @@ using namespace charon;
 
 static std::list<mvm::data *> * s_container = new std::list<mvm::data *>;
 
+void mvm::container::init()
+{
+
+}
+
 void mvm::container::push(mvm::data * data)
 {
   s_container->push_front(data);
