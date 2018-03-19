@@ -19,7 +19,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11 -O2 -finline-functions"
 
 set(MVM_CONTAINER "stack" CACHE STRING
   "container implementation used by mvm")
-set_property(CACHE MVM_CONTAINER PROPERTY STRINGS stack queue QStack QQueue)
+set_property(CACHE MVM_CONTAINER PROPERTY STRINGS stack queue vector QStack QQueue)
 
 if (NOT WIN32)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC ")
