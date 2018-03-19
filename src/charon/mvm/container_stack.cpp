@@ -5,15 +5,15 @@
 
 #include <charon/base>
 #include <charon/mvm>
-#include <stack>
+#include <deque>
 
 using namespace charon;
 
-static std::stack<mvm::data *> * s_container = new std::stack<mvm::data *>;
+static std::deque<mvm::data *> * s_container = new std::deque<mvm::data *>;
 
 void mvm::container::push(mvm::data * data)
 {
-  s_container->push(data);
+  s_container->push_front(data);
 }
 
 void mvm::container::back(mvm::data * data)
@@ -23,8 +23,8 @@ void mvm::container::back(mvm::data * data)
 
 mvm::data * mvm::container::pop()
 {
-  mvm::data * data = s_container->top();
-  s_container->pop();
+  mvm::data * data = s_container->front();
+  s_container->pop_front();
   return data;
 }
 
