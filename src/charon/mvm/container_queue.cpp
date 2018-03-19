@@ -9,7 +9,7 @@
 
 using namespace charon;
 
-static std::queue<mvm::data *> * s_container = new std::queue<mvm::data *>;
+static std::deque<mvm::data *> * s_container = new std::deque<mvm::data *>;
 
 void mvm::container::init()
 {
