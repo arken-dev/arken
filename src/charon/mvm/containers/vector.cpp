@@ -25,7 +25,7 @@ void mvm::container::push(mvm::data * data)
 
 void mvm::container::back(mvm::data * data)
 {
-  s_container->push_back(data);
+  s_container->insert(s_container->begin(), data);
 }
 
 mvm::data * mvm::container::pop()
