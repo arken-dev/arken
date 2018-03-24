@@ -22,7 +22,7 @@ set(MVM_CONTAINER "stack" CACHE STRING
 
 set_property(
   CACHE MVM_CONTAINER PROPERTY STRINGS
-  deque_stack deque_queue list_stack list_queue vector QStack QQueue
+  array deque_stack deque_queue list_stack list_queue vector QStack QQueue
 )
 
 if (NOT WIN32)
