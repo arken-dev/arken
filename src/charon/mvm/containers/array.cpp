@@ -9,9 +9,9 @@
 
 using namespace charon;
 
-static int s_capacity = 20;
+static int s_capacity = 30;
 static int s_count    = 0;
-static mvm::data * s_container[20];
+static mvm::data * s_container[30];
 
 void mvm::container::init()
 {
