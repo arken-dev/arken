@@ -23,7 +23,6 @@ void mvm::container::push(mvm::data * data)
   //if( s_count > s_capacity ) {
     // realloc memory
   //}
-  //s_container[s_count++] = data;
   *s_pointer++ = data;
 }
 
