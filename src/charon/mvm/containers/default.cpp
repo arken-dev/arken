@@ -24,8 +24,7 @@ void mvm::container::push(mvm::data * data)
     // realloc memory
   //}
   //s_container[s_count++] = data;
-  *s_pointer = data;
-   s_pointer++;
+  *s_pointer++ = data;
 }
 
 void mvm::container::back(mvm::data * data)
@@ -44,8 +43,7 @@ void mvm::container::back(mvm::data * data)
 
 mvm::data * mvm::container::pop()
 {
-  s_pointer--;
-  return *s_pointer;
+  return *--s_pointer;
 }
 
 bool mvm::container::empty()
