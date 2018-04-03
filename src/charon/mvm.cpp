@@ -26,6 +26,7 @@ std::unordered_map<std::thread::id, mvm::data *> s_map;
 
 void mvm::init(int argc, char ** argv)
 {
+  s_map.reserve(1000);
   s_argc  = argc;
   s_argv  = new char*[argc+1];
   for( int i=0; i < argc; i++ ) {
