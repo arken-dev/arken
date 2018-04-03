@@ -17,12 +17,12 @@ include_directories(${PROJECT_SOURCE_DIR}/deps/include)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11 -O2 -finline-functions")
 
-set(MVM_CONTAINER "default" CACHE STRING
+set(MVM_CONTAINER "deque-stack" CACHE STRING
   "container implementation used by mvm")
 
 set_property(
   CACHE MVM_CONTAINER PROPERTY STRINGS
-  default array deque_stack deque_queue list_stack list_queue vector QStack QQueue
+  deque-stack deque-queue list-stack list-queue vector QStack QQueue
 )
 
 if (NOT WIN32)
