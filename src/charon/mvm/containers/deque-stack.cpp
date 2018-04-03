@@ -5,20 +5,32 @@
 
 #include <charon/base>
 #include <charon/mvm>
-#include <QQueue>
+#include <deque>
 
 using namespace charon;
 
-static QQueue<mvm::data *> * s_container = new QQueue<mvm::data *>;
+static std::deque<mvm::data *> * s_container = new std::deque<mvm::data *>;
+
+void mvm::container::init()
+{
+
+}
 
 void mvm::container::push(mvm::data * data)
 {
-  s_container->enqueue(data);
+  s_container->push_front(data);
+}
+
+void mvm::container::back(mvm::data * data)
+{
+  s_container->push_back(data);
 }
 
 mvm::data * mvm::container::pop()
 {
-  return s_container->dequeue();
+  mvm::data * data = s_container->front();
+  s_container->pop_front();
+  return data;
 }
 
 bool mvm::container::empty()

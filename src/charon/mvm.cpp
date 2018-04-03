@@ -42,6 +42,8 @@ void mvm::init(int argc, char ** argv)
   s_profilePath.append("/profile.lua");
 
   s_dispatchPath.append("dispatch.lua");
+
+  container::init();
 }
 
 instance mvm::instance()
@@ -50,15 +52,17 @@ instance mvm::instance()
 
   mtx.lock();
   if( container::empty() ) {
+    mtx.unlock();
     data = new mvm::data();
   } else {
     data = container::pop();
+    mtx.unlock();
     if( s_version != data->version() ) {
       delete data;
       data = new mvm::data();
     }
   }
-  mtx.unlock();
+
   return charon::instance(data);
 }
 
@@ -77,6 +81,7 @@ mvm::data * mvm::takeFirst()
 {
   mtx.lock();
   if( container::empty() ) {
+    mtx.unlock();
     return new mvm::data();
   }
   mvm::data * data = container::pop();
@@ -107,13 +112,13 @@ int mvm::gc()
     lua_gc(data->state(), LUA_GCCOLLECT, 0);
     data->m_gc = s_gc;
 
-    container::push(data);
+    container::back(data);
     i++;
 
     data = takeFirst();
   }
 
-  container::push(data);
+  container::back(data);
 
   return i;
 }

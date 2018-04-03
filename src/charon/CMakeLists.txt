@@ -55,7 +55,7 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/deps)
 set(mongrel2 ${PROJECT_SOURCE_DIR}/src/vendors/mongrel2/http11/http11_parser.c)
 set(ap ${PROJECT_SOURCE_DIR}/src/vendors/ap/ap_base64.c)
 set( os-executablePath ${CMAKE_CURRENT_SOURCE_DIR}/os/executablePath_${CMAKE_SYSTEM_NAME}.cpp )
-set( mvm-container ${CMAKE_CURRENT_SOURCE_DIR}/mvm/container_${MVM_CONTAINER}.cpp )
+set( mvm-container ${CMAKE_CURRENT_SOURCE_DIR}/mvm/containers/${MVM_CONTAINER}.cpp )
 
 add_library(
   charon SHARED

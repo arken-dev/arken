@@ -5,22 +5,30 @@
 
 #include <charon/base>
 #include <charon/mvm>
-#include <stack>
+#include <QStack>
 
 using namespace charon;
 
-static std::stack<mvm::data *> * s_container = new std::stack<mvm::data *>;
+static QStack<mvm::data *> * s_container = new QStack<mvm::data *>;
+
+void mvm::container::init()
+{
+
+}
 
 void mvm::container::push(mvm::data * data)
 {
   s_container->push(data);
 }
 
+void mvm::container::back(mvm::data * data)
+{
+  s_container->append(data);
+}
+
 mvm::data * mvm::container::pop()
 {
-  mvm::data * data = s_container->top();
-  s_container->pop();
-  return data;
+  return s_container->pop();
 }
 
 bool mvm::container::empty()
