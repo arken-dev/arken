@@ -69,6 +69,7 @@ class mvm {
   static int  gc();
   static int  clear();
   static charon::instance instance();
+  static mvm::data * map();
 
 };
 

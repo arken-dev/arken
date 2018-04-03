@@ -8,6 +8,8 @@
 #include <cstring>
 #include <iostream>
 #include <mutex>
+#include <thread>
+#include <unordered_map>
 
 using namespace charon;
 using charon::ByteArray;
@@ -20,6 +22,7 @@ ByteArray  mvm::s_charonPath   = "";
 ByteArray  mvm::s_profilePath  = "";
 ByteArray  mvm::s_dispatchPath = "";
 std::mutex mtx;
+std::unordered_map<std::thread::id, mvm::data *> s_map;
 
 void mvm::init(int argc, char ** argv)
 {
@@ -44,6 +47,20 @@ void mvm::init(int argc, char ** argv)
   s_dispatchPath.append("dispatch.lua");
 
   container::init();
+}
+
+mvm::data * mvm::map()
+{
+  mvm::data * data;
+  std::thread::id key = std::this_thread::get_id();
+  if (s_map.count(key)) {
+    return s_map[key];
+  } else {
+    std::cout << "create...";
+    data = new mvm::data();
+    s_map[key] = data;
+    return data;
+  }
 }
 
 instance mvm::instance()

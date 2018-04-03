@@ -10,6 +10,7 @@ using namespace charon::net;
 
 using charon::net::HttpBody;
 using charon::net::HttpUtil;
+using charon::mvm;
 
 char * HttpHandle::sync(const char * data, int size, int * num)
 {
@@ -18,8 +19,9 @@ char * HttpHandle::sync(const char * data, int size, int * num)
   const char * result;
   std::string buffer;
   //charon instance
-  charon::instance i = mvm::instance();
-  lua_State * L = i.state();
+  //charon::instance i = mvm::instance();
+  mvm::data * d = mvm::map();
+  lua_State * L = d->state();
 
   // Process Request
   // TODO return is not validate

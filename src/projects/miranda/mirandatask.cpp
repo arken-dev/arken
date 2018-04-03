@@ -7,6 +7,8 @@
 #include <charon/base>
 #include <mirandatask.h>
 #include <QTcpSocket>
+#include <thread>
+#include <iostream>
 
 using charon::net::HttpHandle;
 
@@ -22,6 +24,8 @@ void MirandaTask::run()
   QByteArray buffer;
   int size;
   char * result;
+
+  std::cout << "thread id" << std::this_thread::get_id() << '\n';
 
   // socket
   socket.setSocketDescriptor(m_descriptor);
