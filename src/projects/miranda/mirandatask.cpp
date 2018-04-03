@@ -25,8 +25,6 @@ void MirandaTask::run()
   int size;
   char * result;
 
-  std::cout << "thread id" << std::this_thread::get_id() << '\n';
-
   // socket
   socket.setSocketDescriptor(m_descriptor);
 

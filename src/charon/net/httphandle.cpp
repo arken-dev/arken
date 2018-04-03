@@ -20,6 +20,7 @@ char * HttpHandle::sync(const char * data, int size, int * num)
   std::string buffer;
   //charon instance
   //charon::instance i = mvm::instance();
+  //lua_State * L = i.state();
   mvm::data * d = mvm::map();
   lua_State * L = d->state();
 
