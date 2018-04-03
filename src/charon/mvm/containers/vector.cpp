@@ -6,7 +6,6 @@
 #include <charon/base>
 #include <charon/mvm>
 #include <vector>
-#include <iostream>
 
 using namespace charon;
 
@@ -15,7 +14,6 @@ static std::vector<mvm::data *> * s_container = new std::vector<mvm::data *>;
 void mvm::container::init()
 {
   s_container->reserve(20);
-  std::cout << "capacity " << s_container->capacity();
 }
 
 void mvm::container::push(mvm::data * data)
