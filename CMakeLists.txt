@@ -15,7 +15,15 @@ option(WITHOUT_QT "with(out) QT library")
 include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${PROJECT_SOURCE_DIR}/deps/include)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11 -O2")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11 -O2 -finline-functions")
+
+set(MVM_CONTAINER "deque-stack" CACHE STRING
+  "container implementation used by mvm")
+
+set_property(
+  CACHE MVM_CONTAINER PROPERTY STRINGS
+  deque-stack deque-queue list-stack list-queue vector QStack QQueue
+)
 
 if (NOT WIN32)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC ")
