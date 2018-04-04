@@ -7,8 +7,6 @@
 #include <charon/base>
 #include <mirandatask.h>
 #include <QTcpSocket>
-#include <thread>
-#include <iostream>
 
 using charon::net::HttpHandle;
 
