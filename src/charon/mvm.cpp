@@ -55,30 +55,26 @@ mvm::data * mvm::map()
   mvm::data * data;
   std::thread::id key = std::this_thread::get_id();
   if (s_map.count(key)) {
-    return s_map[key];
+    data = s_map[key];
+    if( s_version != data->version() ) {
+      delete data;
+      data = takeFirst();
+      s_map[key] = data;
+    }
   } else {
-    std::cout << "create...";
-    data = new mvm::data();
+    data = takeFirst();
     s_map[key] = data;
-    return data;
   }
+  return data;
 }
 
 instance mvm::instance()
 {
-  mvm::data * data ;
+  mvm::data * data  = takeFirst();
 
-  mtx.lock();
-  if( container::empty() ) {
-    mtx.unlock();
+  if( s_version != data->version() ) {
+    delete data;
     data = new mvm::data();
-  } else {
-    data = container::pop();
-    mtx.unlock();
-    if( s_version != data->version() ) {
-      delete data;
-      data = new mvm::data();
-    }
   }
 
   return charon::instance(data);
