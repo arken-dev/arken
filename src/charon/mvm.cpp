@@ -48,19 +48,11 @@ void mvm::init(int argc, char ** argv)
 
 instance mvm::instance()
 {
-  mvm::data * data ;
+  mvm::data * data  = takeFirst();
 
-  mtx.lock();
-  if( container::empty() ) {
-    mtx.unlock();
+  if( s_version != data->version() ) {
+    delete data;
     data = new mvm::data();
-  } else {
-    data = container::pop();
-    mtx.unlock();
-    if( s_version != data->version() ) {
-      delete data;
-      data = new mvm::data();
-    }
   }
 
   return charon::instance(data);
