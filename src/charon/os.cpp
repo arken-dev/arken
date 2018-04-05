@@ -7,6 +7,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <fstream>
+#include <thread>
 
 #include <QCoreApplication>
 #include <QDateTime>
@@ -110,9 +111,9 @@ bool os::copy(const char * source, const char * destination, bool force = false)
   return true;
 }
 
-int os::cores()
+unsigned int os::cores()
 {
-  return QThread::idealThreadCount();
+  return std::thread::hardware_concurrency();
 }
 
 bool os::chdir(const char * dirpath)
