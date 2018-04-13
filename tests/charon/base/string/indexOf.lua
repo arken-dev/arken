@@ -30,4 +30,13 @@ test['should return -1 if string not found'] = function()
   assert( str:indexOf('other') == -1 )
 end
 
+test['should return with value start'] = function()
+  local str = "/app/mycontroller/action/"
+  assert( str:indexOf('/') == 1 )
+  assert( str:indexOf('/', 1) == 1 )
+  assert( str:indexOf('/', 2) == 5 )
+  assert( str:indexOf('/', 11) == 18 )
+  assert( str:indexOf('/', 21) == 25 )
+end
+
 return test

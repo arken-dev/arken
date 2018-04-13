@@ -136,13 +136,14 @@ ActiveRecord.inherit = function(class)
   -----------------------------------------------------------------------------
 
   class.loadConfig = function()
-    local config = class.config or "config/active_record.json"
+    local template = require 'charon.template'
+    local config   = class.config or "config/active_record.json"
 
     if not os.exists(config) then
       error("file " .. config .. " not exists")
     end
 
-    local raw  = os.read(config)
+    local raw  = template.execute(config)
     local env  = CHARON_ENV or 'development'
     local data = json.decode(raw)
     if type(data) == 'table' then

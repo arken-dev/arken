@@ -4,7 +4,6 @@
 // license that can be found in the LICENSE file.
 
 #include "mirandastate.h"
-#include "mirandacache.h"
 #include <QDebug>
 #include <QStack>
 
@@ -18,15 +17,12 @@ QMutex     MirandaState::s_mutex;
 
 QStack<MirandaState *> * MirandaState::s_stack   = new QStack<MirandaState *>;
 QList<MirandaService*> * MirandaState::s_service = new QList<MirandaService *>;
-QHash<ByteArray, MirandaCache *> * MirandaState::s_cache = new QHash<ByteArray, MirandaCache *>;
 QThreadPool * MirandaState::s_pool = 0;
 QReadWriteLock lock;
 
 
-void miranda_cache_register(lua_State * L);
 void miranda_server_register(lua_State * L);
 void miranda_service_register(lua_State * L);
-void miranda_task_register(lua_State * L);
 
 MirandaState::MirandaState()
 {
@@ -37,10 +33,8 @@ MirandaState::MirandaState()
 
   luaL_openlibs(m_State);
 
-  miranda_cache_register(m_State);
   miranda_server_register(m_State);
   miranda_service_register(m_State);
-  miranda_task_register(m_State);
 
   if( strcmp(os::name(), "windows") == 0 ) {
     s_charonPath = s_charonPath.capitalize();
@@ -246,39 +240,4 @@ lua_State * MirandaState::instance()
 int MirandaState::version()
 {
   return s_version;
-}
-
-const char * MirandaState::value(const char * key)
-{
-  QMutexLocker ml(&s_mutex);
-  MirandaCache * cache = s_cache->value(key, 0);
-
-  if( cache == 0 ) {
-    return 0;
-  }
-
-  if ( cache->isExpires() ) {
-    s_cache->remove(key);
-    return 0;
-  } else {
-    return cache->data();
-  }
-
-}
-
-void MirandaState::insert(const char * key, const char * value)
-{
-  insert(key, value, -1);
-}
-
-void MirandaState::insert(const char * key, const char * value, int expires)
-{
-  QMutexLocker ml(&s_mutex);
-  s_cache->insert(key, new MirandaCache(value, expires));
-}
-
-int MirandaState::remove(const char * key)
-{
-  QMutexLocker ml(&s_mutex);
-  return s_cache->remove(key);
 }

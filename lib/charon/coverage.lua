@@ -124,6 +124,10 @@ coverage.line = function(row, flag)
       return 1
     end
 
+    if line == '}' or line == ')' then
+      return 1
+    end
+
     if line:contains('function') then
       coverage.level = coverage.level + 1
       return 1
@@ -140,6 +144,10 @@ coverage.line = function(row, flag)
     end
 
     if line:endsWith(' else') or line == 'else' then
+      return 1
+    end
+
+    if line == 'break' then
       return 1
     end
 

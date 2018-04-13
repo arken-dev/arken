@@ -16,7 +16,6 @@
 #include <QHash>
 
 #include "mirandaservice.h"
-#include "mirandacache.h"
 
 using charon::ByteArray;
 
@@ -36,17 +35,12 @@ public:
   static int  clear();
   static int  version();
   static int  gc();
-  static void insert(const char * key, const char * value);
-  static void insert(const char * key, const char * value, int expires);
-  static const char * value(const char * key);
-  static int remove(const char * key);
   static void servicesLoad();
   static void servicesReload();
   static void servicesAppend(MirandaService *service);
   static void createService(QByteArray fileName);
   static void createTask(QByteArray fileName, const char * uuid);
   static void taskPool(QByteArray fileName, const char * uuid);
-  static QHash<ByteArray, MirandaCache *> * s_cache;
 
   lua_State * instance();
 

@@ -249,13 +249,13 @@ end
 function Helper:javascript(file_name)
   local html = [[<script src="%s%s?%i" type="text/javascript"></script>]]
   file_name  = string.format("/javascripts/%s.js", file_name)
-  return string.format(html, dispatcher.prefix, file_name, self:fileTimestamp(file_name))
+  return string.format(html, self.controller.prefix, file_name, self:fileTimestamp(file_name))
 end
 
 function Helper:stylesheet(file_name)
   local html = [[<link href="%s%s?%i" media="screen" rel="stylesheet" type="text/css" />]]
   file_name  = string.format("/stylesheets/%s.css", file_name)
-  return string.format(html, dispatcher.prefix, file_name, self:fileTimestamp(file_name))
+  return string.format(html, self.controller.prefix, file_name, self:fileTimestamp(file_name))
 end
 
 function Helper:img(file_name, options)
@@ -263,12 +263,12 @@ function Helper:img(file_name, options)
   local title   = options.title or file_name:left(file_name:lastIndexOf('.') - 1)
   local html    = [[<img src="%s%s?%i" title="%s" />]]
   file_name     = string.format("/images/%s", file_name)
-  return string.format(html, dispatcher.prefix, file_name, self:fileTimestamp(file_name), title)
+  return string.format(html, self.controller.prefix, file_name, self:fileTimestamp(file_name), title)
 end
 
 function Helper:imgPath(file_name)
   local html    = '%s?%i'
-  file_name     = string.format("%s/images/%s", dispatcher.prefix, file_name)
+  file_name     = string.format("%s/images/%s", self.controller.prefix, file_name)
   return string.format(html, file_name, self:fileTimestamp(file_name))
 end
 
@@ -279,7 +279,7 @@ function Helper:formCreate(instance_or_name, name)
   else
     data = instance_or_name
   end
-  return Form.new{ data = data, name = (name or 'form'), controller = self.controller }
+  return Form.new{ data = data, name = (name or 'form'), controller = self.controller, helper = self }
 end
 
 function Helper:url(params)
@@ -291,8 +291,8 @@ function Helper:url(params)
   local controller = params.controller or self.controllerName or 'index'
   local action     = params.action or 'index'
 
-  if dispatcher.prefix then
-    controller = dispatcher.prefix .. '/' .. controller
+  if self.controller.prefix then
+    controller = self.controller.prefix .. '/' .. controller
   end
 
   params.action = nil

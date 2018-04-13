@@ -20,7 +20,7 @@ namespace charon {
     static char * chop(const char * string, int n);
     static char * escape(const char * string);
     static char * escapeHtml(const char * string);
-    static int    indexOf(const char * string, const char * str);
+    static int    indexOf(const char * string, const char * str, int i = 0);
     static char * insert(const char * string, int len, const char * ba);
     static bool   endsWith(const char * string, const char * ba);
     static int    lastIndexOf(const char * string, const char * str);

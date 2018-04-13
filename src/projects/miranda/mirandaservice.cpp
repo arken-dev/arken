@@ -5,19 +5,19 @@
 
 #include <lua/lua.hpp>
 #include <charon/base>
+#include <charon/cache>
 #include <QDebug>
 #include <QFile>
 #include <QList>
 #include "mirandastate.h"
 
 using charon::ByteArray;
+using charon::cache;
 
 QMutex MirandaService::s_mutex;
 
-void miranda_cache_register(lua_State * L);
 void miranda_server_register(lua_State * L);
 void miranda_service_register(lua_State * L);
-void miranda_task_register(lua_State * L);
 
 MirandaService::MirandaService(QByteArray fileName)
 {
@@ -41,7 +41,7 @@ MirandaService::MirandaService(QByteArray fileName, QByteArray uuid)
 MirandaService::~MirandaService()
 {
   qDebug() << "destructor service ..." << m_fileName;
-  MirandaState::s_cache->remove(m_uuid.data());
+  cache::remove(m_uuid.data());
 }
 
 bool MirandaService::loop(int secs)
@@ -116,25 +116,6 @@ void MirandaService::run() {
 
   // stack push lua state
   MirandaState::push(state);
-
-  // close lua state
-  //lua_close(luaState);
-  /*
-  //debug cache
-  int total = 0;
-  QList<ByteArray> list = MirandaState::s_cache->keys();
-  qDebug() << "TOTAL DE ITENS NO CACHE " << list.size() << "\n\n";
-
-  for(int i = 0; i < list.size(); i++ ) {
-    ByteArray key   = list.at(i);
-    ByteArray value = MirandaState::s_cache->value(key);
-    qDebug() << "key " << key << '\n';
-    total += value.size();
-  }
-
-  qDebug() << "TOTAL CACHE ====================================\n\n";
-  qDebug() << total << "\n\n\n";
-  */
 
   if( m_service && QFile::exists( m_fileName ) ) {
     MirandaState::createService(m_fileName);

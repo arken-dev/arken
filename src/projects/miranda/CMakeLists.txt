@@ -16,16 +16,13 @@ include_directories(${PROJECT_SOURCE_DIR}/src/lua/json)
 add_executable(
     miranda
     main.cpp
-    mirandacache.cpp
     mirandaserver.cpp
     mirandaservice.cpp
     mirandastate.cpp
     mirandatask.cpp
-    miranda_cache_register.cpp
     miranda_json_encode.c
     miranda_server_register.cpp
     miranda_service_register.cpp
-    miranda_task_register.cpp
     ../../lua/json/json_lock.cpp
     ../../lua/json/json.c
     ../../lua/json/strbuf.c
@@ -40,5 +37,5 @@ add_executable(
 find_package(Qt5Core)
 find_package(Qt5Network)
 
-target_link_libraries( miranda Qt5::Core lua charon curl )
+target_link_libraries( miranda Qt5::Core lua charon curl json )
 target_link_libraries( miranda Qt5::Network )

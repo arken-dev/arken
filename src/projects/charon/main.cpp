@@ -5,6 +5,7 @@
 
 #include <lua/lua.hpp>
 #include <charon/base>
+#include <charon/mvm>
 #include <iostream>
 #include <QtCore>
 #include <QCoreApplication>
@@ -134,6 +135,7 @@ int main(int argc, char * argv[])
   QString    dirPath;
   QFile      file(argv[1]);
   QCoreApplication app(argc, argv);
+  charon::mvm::init(&app);
   lua_State  * L;
   charonPath = app.applicationFilePath().toLocal8Bit().data();
 
