@@ -311,9 +311,10 @@ bool os::rmpath(const char * dirpath)
   return dir.rmpath(dirpath);
 }
 
-void os::sleep(double secs)
+void os::sleep(double msecs)
 {
-  QThread::msleep(secs*1000);
+  int value = int(msecs * 1000);
+  std::this_thread::sleep_for(std::chrono::milliseconds(value));
 }
 
 char * os::target(const char * path)
