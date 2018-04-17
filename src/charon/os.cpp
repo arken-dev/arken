@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <fstream>
 #include <thread>
+#include <chrono>
 
 #include <QCoreApplication>
 #include <QDateTime>
@@ -22,10 +23,6 @@
 
 #include <charon/base>
 #include <iostream>
-
-extern "C" {
-#include <charon/os/microtime.h>
-}
 
 char * os::abspath(const char * path)
 {
@@ -239,8 +236,8 @@ bool os::link(const char * source, const char * destination, bool force = false)
 
 double os::microtime()
 {
-  //return QDateTime::currentMSecsSinceEpoch() / 1000.0;
-  return charon_os_microtime();
+  long value = std::chrono::high_resolution_clock::now().time_since_epoch() / std::chrono::microseconds(1);
+  return value / 1.0e6;
 }
 
 bool os::mkdir(const char * dirname)
