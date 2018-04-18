@@ -6,7 +6,6 @@
 #ifndef CHARONMVM_H
 #define CHARONMVM_H
 
-#include <deque>
 #include <lua/lua.hpp>
 #include <charon/base>
 
@@ -16,12 +15,10 @@ namespace charon
 class instance;
 
 class mvm {
-
   friend class instance;
 
   public:
   class data {
-
     friend class mvm;
     friend class instance;
 
@@ -39,6 +36,16 @@ class mvm {
     int version();
   };
 
+  class container {
+    friend class mvm;
+
+    private:
+    static void init();
+    static void push(mvm::data *);
+    static void back(mvm::data *);
+    static mvm::data * pop();
+    static bool empty();
+  };
 
   static int s_gc;
   static int s_version;
@@ -47,9 +54,8 @@ class mvm {
   static ByteArray s_charonPath;
   static ByteArray s_profilePath;
   static ByteArray s_dispatchPath;
-  static std::deque<mvm::data *> * s_container;
-  private:
 
+  private:
   static void push(mvm::data *);
   static mvm::data * takeFirst();
 
@@ -67,6 +73,8 @@ class mvm {
 };
 
 class instance {
+
+
   mvm::data * m_data;
   public:
   instance(mvm::data * data);
