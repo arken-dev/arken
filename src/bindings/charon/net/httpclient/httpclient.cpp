@@ -125,6 +125,14 @@ lua_HttpClientInstanceMethodPerformDelete( lua_State *L ) {
 }
 
 static int
+lua_HttpClientInstanceMethodUrlRedirect( lua_State *L ) {
+  HttpClient *udata = checkHttpClient( L );
+  const char * urlRedirect = udata->urlRedirect();
+  lua_pushstring(L, urlRedirect);
+  return 1;
+}
+
+static int
 lua_HttpClientInstanceMethodDestruct( lua_State *L ) {
   HttpClient *udata = checkHttpClient( L );
   delete udata;
@@ -142,6 +150,7 @@ luaL_reg HttpClientInstanceMethods[] = {
   {"performPost", lua_HttpClientInstanceMethodPerformPost},
   {"performPut", lua_HttpClientInstanceMethodPerformPut},
   {"performDelete", lua_HttpClientInstanceMethodPerformDelete},
+  {"urlRedirect", lua_HttpClientInstanceMethodUrlRedirect},
   {"__gc", lua_HttpClientInstanceMethodDestruct},
   {NULL, NULL}
 };
