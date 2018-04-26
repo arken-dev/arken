@@ -8,7 +8,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <charon/base>
-#include <QDebug>
+#include <iostream>
 
 using charon::string;
 using namespace charon::net;
@@ -246,10 +246,13 @@ char * HttpClient::perform(char * memory)
 {
   int      index = string::indexOf(memory, "\r\n\r\n");
   char * headers = string::mid(memory, 0, index);
-  if( string::contains(headers, "Location") ) {
+  if( string::contains(headers, "\r\nLocation") ) {
     index = string::indexOf(headers, "Location:");
-    char * tmp = string::mid(headers, index+9, string::indexOf(headers, "\r\n", index+9));
-    char * url = string::simplified(tmp);
+    char * tmp = string::mid(headers, index+9, string::indexOf(headers, "\r\n", index+9) - (index+9));
+    char * url = string::trimmed(tmp);
+    if( m_verbose ) {
+      std::cout << "redirect: " << url << "\n";
+    }
     HttpClient client = HttpClient(url);
     client.setVerbose(m_verbose);
     delete[] url;
