@@ -19,6 +19,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11 -O2 -finline-functions"
 
 set(MVM_CONTAINER "deque-stack" CACHE STRING
   "container implementation used by mvm")
+option(MVM_CONTAINER "MVM CONTAINER" 'deque-stack')
 
 set_property(
   CACHE MVM_CONTAINER PROPERTY STRINGS
@@ -41,6 +42,6 @@ find_package(lua)
 endif (WIN32)
 
 add_subdirectory( src/charon )
-add_subdirectory( src/projects)
+add_subdirectory( src/projects )
 add_subdirectory( src/bindings )
 add_subdirectory( src/lua )

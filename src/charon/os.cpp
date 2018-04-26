@@ -7,6 +7,8 @@
 #include <string.h>
 #include <stdio.h>
 #include <fstream>
+#include <thread>
+#include <chrono>
 
 #include <QCoreApplication>
 #include <QDateTime>
@@ -21,10 +23,6 @@
 
 #include <charon/base>
 #include <iostream>
-
-extern "C" {
-#include <charon/os/microtime.h>
-}
 
 char * os::abspath(const char * path)
 {
@@ -110,9 +108,9 @@ bool os::copy(const char * source, const char * destination, bool force = false)
   return true;
 }
 
-int os::cores()
+unsigned int os::cores()
 {
-  return QThread::idealThreadCount();
+  return std::thread::hardware_concurrency();
 }
 
 bool os::chdir(const char * dirpath)
@@ -238,8 +236,8 @@ bool os::link(const char * source, const char * destination, bool force = false)
 
 double os::microtime()
 {
-  //return QDateTime::currentMSecsSinceEpoch() / 1000.0;
-  return charon_os_microtime();
+  long value = std::chrono::high_resolution_clock::now().time_since_epoch() / std::chrono::microseconds(1);
+  return value / 1.0e6;
 }
 
 bool os::mkdir(const char * dirname)
@@ -310,9 +308,10 @@ bool os::rmpath(const char * dirpath)
   return dir.rmpath(dirpath);
 }
 
-void os::sleep(double secs)
+void os::sleep(double msecs)
 {
-  QThread::msleep(secs*1000);
+  int value = int(msecs * 1000);
+  std::this_thread::sleep_for(std::chrono::milliseconds(value));
 }
 
 char * os::target(const char * path)
