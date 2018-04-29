@@ -307,6 +307,14 @@ static int lua_charon_string_truncate( lua_State *L ) {
   return 1;
 }
 
+static int lua_charon_string_dasherize( lua_State *L ) {
+  const char * string = luaL_checkstring(L, 1);
+  char       * result = string::dasherize(string);
+  lua_pushstring(L, result);
+  delete[] result;
+  return 1;
+}
+
 static int lua_charon_string_underscore( lua_State *L ) {
   const char *string = luaL_checkstring(L, 1);
   char      * result = string::underscore(string);
@@ -326,6 +334,7 @@ int luaopen_charon_string( lua_State *L ) {
     {"endsWith",       lua_charon_string_endsWith},
     {"escape",         lua_charon_string_escape},
     {"escapeHtml",     lua_charon_string_escapeHtml},
+    {"dasherize",      lua_charon_string_dasherize},
     {"indexOf",        lua_charon_string_indexOf},
     {"insert",         lua_charon_string_insert},
     {"left",           lua_charon_string_left},
