@@ -176,6 +176,84 @@ char * string::chop(const char * string, int n)
   return result;
 }
 
+static inline int charon_string_dasherize_special_char(const char *string, int i)
+{
+  if(string[i] == '/' || string[i] == '_' || string[i] == '.' || string[i] == ' ') {
+    return 1;
+  } else {
+    return 0;
+  }
+}
+
+static inline int charon_string_dasherize_len(const char *string, int len)
+{
+  int i, j = 0, flag1 = 1, flag2 = 1;
+  for(i = 0; i < len; i++) {
+    if(isupper(string[i])) {
+      if(flag1 == 0) {
+        j++;
+      }
+      flag2 = 0;
+      j++;
+    } else {
+      if(charon_string_dasherize_special_char(string, i)) {
+        if(flag2 == 0) {
+          j++;
+          flag2 = 1;
+          flag1 = 1;
+        }
+      } else {
+        flag1 = 0;
+        flag2 = 0;
+        j++;
+      }
+    }
+  }
+  if(charon_string_dasherize_special_char(string, i-1)) {
+    j--;
+  }
+
+  j++;
+  return j;
+}
+
+char * string::dasherize(const char *string)
+{
+  int len = strlen(string);
+  int i, j = 0, flag1 = 1, flag2 = 1;
+  char * res = new char[charon_string_dasherize_len(string,len)+1];
+  for(i = 0; i < len; i++) {
+    if(isupper(string[i])) {
+      if(flag1 == 0) {
+        res[j] = '-';
+        j++;
+      }
+      res[j] = tolower(string[i]);
+      flag2 = 0;
+      j++;
+    } else {
+      if(charon_string_dasherize_special_char(string, i)) {
+        if(flag2 == 0) {
+          res[j] = '-';
+          j++;
+          flag2 = 1;
+          flag1 = 1;
+        }
+      } else {
+        res[j] = string[i];
+        flag1 = 0;
+        flag2 = 0;
+        j++;
+      }
+    }
+  }
+  if(charon_string_dasherize_special_char(string, i-1)) {
+    j--;
+  }
+  res[j] = '\0';
+
+  return res;
+}
 char * string::escape(const char * string)
 {
   int i, j;

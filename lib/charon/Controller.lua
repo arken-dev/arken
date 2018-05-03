@@ -16,8 +16,25 @@ Controller.prefixViews   = "app/views"
 
 local helpers = {}
 
+-------------------------------------------------------------------------------
+-- RENDER
+-------------------------------------------------------------------------------
+
 function Controller:render(params)
   return self['render_' .. params.output](self, params)
+end
+
+-------------------------------------------------------------------------------
+-- SEND
+-------------------------------------------------------------------------------
+
+function Controller:send(params)
+  local code, headers, body = self['render_' .. params.output](self, params)
+  if code == 200 then
+    local filename = params.filename or (self.className:underscore():replace("_", "-") .. "." .. params.output)
+    table.insert( headers, "Content-Disposition: attachment;filename=" .. filename .. "; charset=UTF-8" )
+  end
+  return code, headers, body
 end
 
 -------------------------------------------------------------------------------
@@ -151,6 +168,45 @@ function Controller:render_html(params)
   end
 end
 
+function Controller:renderTemplate(params, ext)
+  local file   = nil
+
+  if params.template == nil then
+    if params.view == nil then
+      file = self.prefixViews .. "/" .. self.controllerName .. "/" .. self.actionName .. "." .. ext
+    else
+      file = self.prefixViews .. "/" .. self.controllerName .. "/" .. params.view .. "." .. ext
+    end
+  else
+    file = self.prefixViews .. "/" .. params.template .. "." .. ext
+  end
+
+  if self.layout and params.layout ~= false then
+    local flag, result
+    if params.value then
+      flag   = true
+      result = params.value
+    else
+      flag, result = pcall(template.execute, file, self, self:helper(), CHARON_ENV ~= 'production')
+    end
+    if flag then
+      self._yield = result
+    else
+      return 500, {'Content-Type: text/plain'}, file .. '\n\n' .. result .. '\n\n' .. template.debug(file)
+    end
+
+    file = self.prefixViews .. "/layouts/" .. self.layout .. "." .. ext
+  end
+
+  local flag, result = pcall(template.execute, file, self, self:helper(), CHARON_ENV ~= 'production')
+  if flag then
+    return true, result
+  else
+    return false, file .. '\n\n' .. result .. '\n\n' .. template.debug(file)
+  end
+end
+
+
 function Controller:partial(params)
   params = params or {}
   local file   = nil
@@ -179,8 +235,17 @@ end
 -------------------------------------------------------------------------------
 
 function Controller:render_text(params)
-  local code = params.code or 200
-  return code, {'Content-Type: text/plain'}, params.value
+  local code    = params.code or 200
+  local body    = params.value
+  local headers = {'Content-Type: text/plain'}
+  local flag    = true
+  if body == nil then
+    flag, body = self:renderTemplate(params, 'txt')
+    if not flag then
+      code = 500
+    end
+  end
+  return code, headers, body
 end
 
 -------------------------------------------------------------------------------

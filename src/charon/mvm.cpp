@@ -19,7 +19,6 @@ int        mvm::s_version      = 0;
 ByteArray  mvm::s_charonPath   = "";
 ByteArray  mvm::s_profilePath  = "";
 ByteArray  mvm::s_dispatchPath = "";
-std::deque<mvm::data *> * mvm::s_container = new std::deque<mvm::data *>;
 std::mutex mtx;
 
 void mvm::init(int argc, char ** argv)
@@ -43,24 +42,19 @@ void mvm::init(int argc, char ** argv)
   s_profilePath.append("/profile.lua");
 
   s_dispatchPath.append("dispatch.lua");
+
+  container::init();
 }
 
 instance mvm::instance()
 {
-  mvm::data * data ;
+  mvm::data * data  = takeFirst();
 
-  mtx.lock();
-  if( s_container->empty() ) {
+  if( s_version != data->version() ) {
+    delete data;
     data = new mvm::data();
-  } else {
-    data = s_container->front();
-    s_container->pop_front();
-    if( s_version != data->version() ) {
-      delete data;
-      data = new mvm::data();
-    }
   }
-  mtx.unlock();
+
   return charon::instance(data);
 }
 
@@ -70,7 +64,7 @@ void mvm::push(mvm::data * data)
       delete data;
   } else {
     mtx.lock();
-    s_container->push_front(data);
+    container::push(data);
     mtx.unlock();
   }
 }
@@ -78,11 +72,11 @@ void mvm::push(mvm::data * data)
 mvm::data * mvm::takeFirst()
 {
   mtx.lock();
-  if( s_container->empty() ) {
+  if( container::empty() ) {
+    mtx.unlock();
     return new mvm::data();
   }
-  mvm::data * data = s_container->front();
-  s_container->pop_front();
+  mvm::data * data = container::pop();
   mtx.unlock();
   return data;
 }
@@ -110,13 +104,13 @@ int mvm::gc()
     lua_gc(data->state(), LUA_GCCOLLECT, 0);
     data->m_gc = s_gc;
 
-    s_container->push_back(data);
+    container::back(data);
     i++;
 
     data = takeFirst();
   }
 
-  s_container->push_back(data);
+  container::back(data);
 
   return i;
 }
@@ -126,10 +120,9 @@ int mvm::clear()
   int result = 0;
   mtx.lock();
   s_version++;
-  while( !s_container->empty() ) {
+  while( !container::empty() ) {
     result++;
-    mvm::data * data = s_container->front();
-    s_container->pop_front();
+    mvm::data * data = container::pop();
     delete data;
   }
   mtx.unlock();

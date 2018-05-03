@@ -114,7 +114,7 @@ function Helper:dateField(field, value, options)
   local html     = Helper:textField(field, value, options)
   local calendar = [[<script>jQuery.calendar('#%s')</script>]]
 
-  return html .. string.format(calendar, field, options)
+  return html .. string.format(calendar, field:normalize(), options)
 end
 
 function Helper:negativeLabel()
