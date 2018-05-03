@@ -204,6 +204,7 @@ function Helper:selectHash(field, list, value, options)
   local html     = "<select "
   local option   = "<option value=%q %s >%s</option>"
   local selected = ""
+  local style    = options.style or "width:250px"
 
   if options.multiple then
     if options.multiple == true then
@@ -212,8 +213,8 @@ function Helper:selectHash(field, list, value, options)
     html = html .. string.format([[ multiple="multiple" size=%q ]], options.multiple)
   end
 
-  html = html .. [[ id=%q name=%q style="width:250px;">]]
-  html = string.format(html, field:normalize(), field)
+  html = html .. [[ id=%q name=%q style=%q>]]
+  html = string.format(html, field:normalize(), field, style)
   if options.blank then
     local blank = ""
     if type(options.blank) == 'string' then
