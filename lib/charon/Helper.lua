@@ -212,8 +212,9 @@ function Helper:selectHash(field, list, value, options)
     html = html .. string.format([[ multiple="multiple" size=%q ]], options.multiple)
   end
 
-  html = html .. [[ id=%q name=%q style="width:250px;">]]
-  html = string.format(html, field:normalize(), field)
+  local style = options.style or "width:250px;"
+  html = html .. [[ id=%q name=%q style="%s">]]
+  html = string.format(html, field:normalize(), field, style)
   if options.blank then
     local blank = ""
     if type(options.blank) == 'string' then
