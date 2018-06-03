@@ -70,6 +70,15 @@ static int lua_charon_string_contains( lua_State *L ) {
   return 1;
 }
 
+static int lua_charon_string_count( lua_State *L ) {
+  const char *str1 = luaL_checkstring(L, 1);
+  const char *str2 = luaL_checkstring(L, 2);
+  int result       = string::count(str1, str2);
+  lua_pushinteger(L, result);
+  return 1;
+}
+
+
 static int lua_charon_string_endsWith( lua_State *L ) {
   const char *string = luaL_checkstring(L, 1);
   const char *str    = luaL_checkstring(L, 2);
@@ -331,6 +340,7 @@ int luaopen_charon_string( lua_State *L ) {
     {"center",         lua_charon_string_center},
     {"contains",       lua_charon_string_contains},
     {"chop",           lua_charon_string_chop},
+    {"count",          lua_charon_string_count},
     {"endsWith",       lua_charon_string_endsWith},
     {"escape",         lua_charon_string_escape},
     {"escapeHtml",     lua_charon_string_escapeHtml},

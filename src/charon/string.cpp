@@ -155,6 +155,22 @@ bool string::contains(const char * string, const char * str)
   return 0;
 }
 
+int string::count(const char * str1, const char * str2)
+{
+  size_t len1   = strlen(str1);
+  size_t len2   = strlen(str2);
+  int result    = 0;
+
+  for( size_t i=0; i < len1; i++ ) {
+    if (strncmp(&str1[i], str2, len2) == 0)
+    {
+      result++;
+    }
+  }
+
+  return result;
+}
+
 char * string::chop(const char * string, int n)
 {
   char * result;

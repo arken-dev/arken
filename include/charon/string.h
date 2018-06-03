@@ -18,6 +18,7 @@ namespace charon {
     static char * center(const char * string, size_t size, const char * pad);
     static bool   contains(const char * string, const char * str);
     static char * chop(const char * string, int n);
+    static int    count(const char * str1, const char * str2);
     static char * dasherize(const char *string);
     static char * escape(const char * string);
     static char * escapeHtml(const char * string);
