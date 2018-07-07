@@ -236,8 +236,8 @@ bool os::link(const char * source, const char * destination, bool force = false)
 
 double os::microtime()
 {
-  long value = std::chrono::high_resolution_clock::now().time_since_epoch() / std::chrono::microseconds(1);
-  return value / 1.0e6;
+  uint64_t value = std::chrono::high_resolution_clock::now().time_since_epoch() / std::chrono::microseconds(1);
+  return (double) value / 1.0e6;
 }
 
 bool os::mkdir(const char * dirname)
