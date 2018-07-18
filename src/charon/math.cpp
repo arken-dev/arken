@@ -56,6 +56,84 @@ double math::floor(double number)
   return std::floor(number);
 }
 
+char * math::format(double value, int decimals, char dec_point, char thousands_sep)
+{
+  int size = 65;
+  if( value > 1e80) {
+    decimals = 2;
+    size = 512;
+  }
+  char fmt[65];
+  sprintf(fmt, "%%.%if\n", decimals);
+
+  char tmp[size];
+  char * res;
+  size_t slen  = sprintf(tmp, fmt, math::round(value, decimals));
+  size_t index = string::indexOf(tmp, ".");
+  size_t idx   = index;
+  size_t len   = index;
+  size_t t     = 0;
+
+  if( decimals == 0 ) {
+    idx = slen-1;
+    len = slen-1;
+    index = slen-1;
+  } else {
+    idx = index;
+    len = index;
+  }
+
+  if(thousands_sep) {
+    int ts = len;
+    if( value < 0 ) {
+      ts--;
+    }
+    t = math::floor(ts/3.0);
+    if (ts % 3 == 0) {
+      t--;
+    }
+    len += t;
+    idx += t;
+  }
+
+  if (decimals == 0) {
+    res = new char[len+1];
+  } else {
+    len += decimals + 1;
+    res  = new char[len+1];
+    if ( dec_point == 0 ) {
+      dec_point = '.';
+    }
+
+    // copy decimals
+    for(int i=decimals; i > 0; i--) {
+      res[idx+i] = tmp[index+i];
+    }
+
+    // copy decimal point
+    res[idx] = dec_point;
+  }
+
+  //copy thousands
+  int j = idx-1;
+  int i = index-1;
+  int f = 0;
+  for(; i >= 0; i--) {
+    if( t > 0 && f == 3 ) {
+      f = 0;
+      t--;
+      res[j--] = thousands_sep;
+    }
+
+    res[j] = tmp[i];
+    j--;
+    f++;
+  }
+  res[len] = '\0';
+
+  return res;
+}
+
 double math::fmod(double number, double denom)
 {
   return std::fmod(number, denom);
