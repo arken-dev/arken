@@ -139,8 +139,15 @@ function FormHelper:floatField(field, options)
 
   if type(value) == 'string' and value:contains(',') then
     value = tonumber( value:replace('.', ''):replace(',', '.') )
+  else
+    value = tonumber(value)
   end
-  options.value = math.format(value, decimal, separator, thousands)
+
+  if value == nil then
+    options.value = ""
+  else
+    options.value = math.format(value, decimal, separator, thousands)
+  end
 
   return self:textField(field, options)
 end
@@ -157,8 +164,15 @@ function FormHelper:intField(field, options)
 
   if type(value) == 'string' and value:contains(',') then
     value = tonumber( value:replace('.', ''):replace(',', '.') )
+  else
+    value = tonumber(value)
   end
-  options.value = math.format(value, 0, ' ', thousands)
+
+  if value == nil then
+    options.value = ""
+  else
+    options.value = math.format(value, decimal, separator, thousands)
+  end
 
   return self:textField(field, options)
 end
