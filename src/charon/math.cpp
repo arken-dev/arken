@@ -63,12 +63,19 @@ char * math::format(double value, int decimals, char dec_point, char thousands_s
     decimals = 2;
     size = 512;
   }
-  char fmt[65];
-  sprintf(fmt, "%%.%if\n", decimals);
 
   char tmp[size];
+  size_t slen;
+
+  if( decimals > 6 || decimals == 0) {
+    char fmt[65];
+    sprintf(fmt, "%%.%if\n", decimals);
+    slen = sprintf(tmp, fmt, math::round(value, decimals));
+  } else {
+    slen = sprintf(tmp, "%f", math::round(value, decimals));
+  }
+
   char * res;
-  size_t slen  = sprintf(tmp, fmt, math::round(value, decimals));
   size_t index = string::indexOf(tmp, ".");
   size_t idx   = index;
   size_t len   = index;
@@ -88,7 +95,7 @@ char * math::format(double value, int decimals, char dec_point, char thousands_s
     if( value < 0 ) {
       ts--;
     }
-    t = math::floor(ts/3.0);
+    t = ts/3;
     if (ts % 3 == 0) {
       t--;
     }

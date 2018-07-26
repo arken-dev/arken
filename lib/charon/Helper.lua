@@ -90,6 +90,14 @@ function Helper:floatField(field, value, options)
   options.onkeypress = options.onkeypress or "inputPress( this, event )"
   options.onkeyup    = options.onkeyup    or "format_invert(this, '**.***.***,**')"
   options.style      = options.style      or "width:95px;text-align:right"
+
+  local decimal   = options.decimal   or 2
+  local separator = options.separator or ','
+  local thousands = options.thousands or '.'
+  if type(value) == 'string' and value:contains(',') then
+    value = tonumber( value:replace('.', ''):replace(',', '.') )
+  end
+  value = math.format(value, decimal, separator, thousands)
   return Helper:textField(field, value, options)
 end
 
@@ -100,6 +108,13 @@ function Helper:intField(field, value, options)
   options.onkeypress = options.onkeypress or "inputPress( this, event )"
   options.onkeyup    = options.onkeyup    or "format_invert(this, '***.***.***')"
   options.style      = options.style      or "width:95px;text-align:right"
+
+  local thousands = options.thousands or '.'
+  if type(value) == 'string' and value:contains(',') then
+    value = tonumber( value:replace('.', ''):replace(',', '.') )
+  end
+  value = math.format(value, 0, ' ', thousands)
+
   return Helper:textField(field, value, options)
 end
 
