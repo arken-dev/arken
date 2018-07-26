@@ -96,8 +96,16 @@ function Helper:floatField(field, value, options)
   local thousands = options.thousands or '.'
   if type(value) == 'string' and value:contains(',') then
     value = tonumber( value:replace('.', ''):replace(',', '.') )
+  else
+    value = tonumber(value)
   end
-  value = math.format(value, decimal, separator, thousands)
+
+  if value == nil then
+    options.value = ""
+  else
+    options.value = math.format(value, decimal, separator, thousands)
+  end
+
   return Helper:textField(field, value, options)
 end
 
@@ -109,11 +117,17 @@ function Helper:intField(field, value, options)
   options.onkeyup    = options.onkeyup    or "format_invert(this, '***.***.***')"
   options.style      = options.style      or "width:95px;text-align:right"
 
-  local thousands = options.thousands or '.'
   if type(value) == 'string' and value:contains(',') then
     value = tonumber( value:replace('.', ''):replace(',', '.') )
+  else
+    value = tonumber(value)
   end
-  value = math.format(value, 0, ' ', thousands)
+
+  if value == nil then
+    options.value = ""
+  else
+    options.value = math.format(value, decimal, separator, thousands)
+  end
 
   return Helper:textField(field, value, options)
 end
