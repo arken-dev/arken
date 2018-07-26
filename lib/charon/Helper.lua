@@ -90,6 +90,14 @@ function Helper:floatField(field, value, options)
   options.onkeypress = options.onkeypress or "inputPress( this, event )"
   options.onkeyup    = options.onkeyup    or "format_invert(this, '**.***.***,**')"
   options.style      = options.style      or "width:95px;text-align:right"
+
+  local decimal   = options.decimal   or 2
+  local separator = options.separator or ','
+  local thousands = options.thousands or '.'
+  if type(value) == 'string' and value:contains(',') then
+    value = tonumber( value:replace('.', ''):replace(',', '.') )
+  end
+  value = math.format(value, decimal, separator, thousands)
   return Helper:textField(field, value, options)
 end
 
@@ -100,6 +108,13 @@ function Helper:intField(field, value, options)
   options.onkeypress = options.onkeypress or "inputPress( this, event )"
   options.onkeyup    = options.onkeyup    or "format_invert(this, '***.***.***')"
   options.style      = options.style      or "width:95px;text-align:right"
+
+  local thousands = options.thousands or '.'
+  if type(value) == 'string' and value:contains(',') then
+    value = tonumber( value:replace('.', ''):replace(',', '.') )
+  end
+  value = math.format(value, 0, ' ', thousands)
+
   return Helper:textField(field, value, options)
 end
 
@@ -204,7 +219,7 @@ function Helper:selectHash(field, list, value, options)
   local html     = "<select "
   local option   = "<option value=%q %s >%s</option>"
   local selected = ""
-  local style    = options.style or "width:250px"
+  local style    = options.style or "width:250px;"
 
   if options.multiple then
     if options.multiple == true then
@@ -215,6 +230,7 @@ function Helper:selectHash(field, list, value, options)
 
   html = html .. [[ id=%q name=%q style=%q>]]
   html = string.format(html, field:normalize(), field, style)
+
   if options.blank then
     local blank = ""
     if type(options.blank) == 'string' then
