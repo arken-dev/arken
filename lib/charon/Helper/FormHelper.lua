@@ -223,6 +223,7 @@ function FormHelper:selectList(field, list, field_value, field_description, opti
   local option   = "<option value=%q %s >%s</option>"
   local selected = ""
   local value    = self:buildValue(field)
+  local style    = options.style or 'width:250px;'
 
   if options.multiple then
     if options.multiple == true then
@@ -231,8 +232,8 @@ function FormHelper:selectList(field, list, field_value, field_description, opti
     html = html .. string.format([[ multiple="multiple" size=%q ]], options.multiple)
   end
 
-  html = html .. [[ id=%q name=%q style="width:250px;">]]
-  html = string.format(html, self:buildId(field), self:buildName(field))
+  html = html .. [[ id=%q name=%q style=%q>]]
+  html = string.format(html, self:buildId(field), self:buildName(field), style)
 
   if options.blank then
     local blank = ""
@@ -401,6 +402,24 @@ function FormHelper:boolField(field, options)
   end
 
   return html
+end
+
+function FormHelper:toggleField(field, options)
+  local options = options or {}
+  local label   = options.label or 'yes'
+  local value   = self:buildValue(field)
+  local html    = [[<input type="checkbox" name=%q value="true" %s]]
+  local checked = ""
+
+  if options.title then
+    html = html .. string.format(" title=%q", options.title)
+  end
+
+  if toboolean(value) == true then
+    checked = "checked"
+  end
+
+  return string.format(html, self:buildName(field), checked) .. ' />' .. label
 end
 
 return FormHelper

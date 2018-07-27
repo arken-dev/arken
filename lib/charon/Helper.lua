@@ -192,6 +192,23 @@ function Helper:boolField(field, value, options)
   return html
 end
 
+function Helper:toggleField(field, value, options)
+  local options = options or {}
+  local label   = options.label or 'yes'
+  local html    = [[<input type="checkbox" name=%q value="true" %s]]
+  local checked = ""
+
+  if options.title then
+    html = html .. string.format(" title=%q", options.title)
+  end
+
+  if toboolean(value) == true then
+    checked = "checked"
+  end
+
+  return string.format(html, field, checked, label) .. ' />' .. label
+end
+
 function Helper:selectList(field, list, field_value, field_description, value, options)
   options = options or {}
   local html     = "<select "
