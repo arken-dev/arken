@@ -108,7 +108,7 @@ static int lua_charon_string_indexOf( lua_State *L ) {
   const char *str    = luaL_checkstring(L, 2);
   int start = 0;
   if(lua_gettop(L) == 3) { /* número de argumentos */
-    start =  lua_tointeger(L, 3) - 1;
+    start = lua_tointeger(L, 3) - 1;
   }
 
   int result = string::indexOf(string, str, start);
@@ -257,11 +257,20 @@ static int lua_charon_string_replace( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   const char * before = luaL_checklstring(L, 2, &len1);
   const char * after  = luaL_checklstring(L, 3, &len2);
+  int start = 0;
+
+  if(lua_gettop(L) > 3) { /* número de argumentos */
+    start = luaL_checkinteger(L, 4);
+    if( start >= 0 ) {
+      start = start - 1;
+    }
+  }
+
   char * result;
   if( len1 == 1 && len2 == 1) {
-    result = string::replace(string, before[0], after[0]);
+    result = string::replace(string, before[0], after[0], start);
   } else {
-    result = string::replace(string, before, after);
+    result = string::replace(string, before, after, start);
   }
   lua_pushstring(L, result);  /* push result */
   delete[] result;

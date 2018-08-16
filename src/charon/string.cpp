@@ -668,13 +668,23 @@ char * string::repeated(const char *string, int times)
   return result;
 }
 
-char * string::replace(const char *string, const char before, const char after)
+char * string::replace(const char *string, const char before, const char after, int start)
 {
   int i, j;
   int string_len = strlen(string);
   char * result  = new char[string_len + 1];
 
-  for(i = 0, j = 0; i < string_len; i++) {
+  if ( start < 0 ) {
+    start = string_len + start;
+  }
+
+  if ( start > 0 ) {
+    for( int k = 0; k < start; k++) {
+      result[k] = string[k];
+    }
+  }
+
+  for(i = start, j = start; i < string_len; i++) {
     if( string[i] == before) {
       if( after != '\0' ) {
         result[j] = after;
@@ -766,7 +776,7 @@ char * string::simplified(const char *string)
 }
 
 //http://stackoverflow.com/questions/779875/what-is-the-function-to-replace-string-in-c
-char * string::replace(const char * original, const char * pattern, const char * replacement )
+char * string::replace(const char * original, const char * pattern, const char * replacement, int start)
 {
   size_t const replen = strlen(replacement);
   size_t const patlen = strlen(pattern);
@@ -789,10 +799,20 @@ char * string::replace(const char * original, const char * pattern, const char *
 
     if (returned != NULL)
     {
+      if ( start < 0 ) {
+        start = orilen + start;
+      }
+
+      if ( start > 0 ) {
+        for( int k = 0; k < start; k++) {
+          returned[k] = original[k];
+        }
+      }
+
       // copy the original string, 
       // replacing all the instances of the pattern
-      char * retptr = returned;
-      for (oriptr = original; (patloc = strstr(oriptr, pattern)); oriptr = patloc + patlen)
+      char * retptr = returned + start;
+      for (oriptr = original + start; (patloc = strstr(oriptr, pattern)); oriptr = patloc + patlen)
       {
         size_t const skplen = patloc - oriptr;
         // copy the section until the occurence of the pattern
