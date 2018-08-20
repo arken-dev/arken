@@ -117,6 +117,9 @@ function Helper:intField(field, value, options)
   options.onkeyup    = options.onkeyup    or "format_invert(this, '***.***.***')"
   options.style      = options.style      or "width:95px;text-align:right"
 
+  local decimal   = options.decimal   or 2
+  local separator = options.separator or ','
+  local thousands = options.thousands or '.'
   if type(value) == 'string' and value:contains(',') then
     value = tonumber( value:replace('.', ''):replace(',', '.') )
   else
