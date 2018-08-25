@@ -28,7 +28,7 @@ checkDateTime( lua_State *L, int i ) {
  */
 
 static int
-lua_DateTimeClassMethodCurrentMSecsSinceEpoch( lua_State *L )
+charon_DateTimeClassMethodCurrentMSecsSinceEpoch( lua_State *L )
 {
   qint64 mSecs = DateTime::currentMSecsSinceEpoch();
   lua_pushnumber(L, mSecs);
@@ -36,7 +36,7 @@ lua_DateTimeClassMethodCurrentMSecsSinceEpoch( lua_State *L )
 }
 
 static int
-lua_DateTimeClassMethodCurrentDateTime( lua_State *L ) {
+charon_DateTimeClassMethodCurrentDateTime( lua_State *L ) {
   DateTime **ptr = (DateTime **)lua_newuserdata(L, sizeof(DateTime*));
   *ptr= new DateTime(DateTime::currentDateTime());
   luaL_getmetatable(L, "DateTime.metatable");
@@ -45,7 +45,7 @@ lua_DateTimeClassMethodCurrentDateTime( lua_State *L ) {
 }
 
 static int
-lua_DateTimeClassMethodFromString( lua_State *L ) {
+charon_DateTimeClassMethodFromString( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   const char * format = luaL_checkstring(L, 2);
   DateTime **ptr = (DateTime **)lua_newuserdata(L, sizeof(DateTime*));
@@ -56,7 +56,7 @@ lua_DateTimeClassMethodFromString( lua_State *L ) {
 }
 
 static int
-lua_DateTimeClassMethodParse( lua_State *L ) {
+charon_DateTimeClassMethodParse( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   DateTime * dt = DateTime::parse(string);
   if( dt == 0 ) {
@@ -72,10 +72,10 @@ lua_DateTimeClassMethodParse( lua_State *L ) {
 
 
 static const luaL_reg DateTimeClassMethods[] = {
-  {"parse", lua_DateTimeClassMethodParse},
-  {"fromString", lua_DateTimeClassMethodFromString},
-  {"currentDateTime", lua_DateTimeClassMethodCurrentDateTime},
-  {"currentMSecsSinceEpoch", lua_DateTimeClassMethodCurrentMSecsSinceEpoch},
+  {"parse", charon_DateTimeClassMethodParse},
+  {"fromString", charon_DateTimeClassMethodFromString},
+  {"currentDateTime", charon_DateTimeClassMethodCurrentDateTime},
+  {"currentMSecsSinceEpoch", charon_DateTimeClassMethodCurrentMSecsSinceEpoch},
   {NULL, NULL}
 };
 
@@ -92,14 +92,14 @@ registerDateTimeClassMethods( lua_State *L ) {
  */
 
 static int
-lua_DateTimeInstanceMethodDestruct( lua_State *L ) {
+charon_DateTimeInstanceMethodDestruct( lua_State *L ) {
   DateTime *udata = checkDateTime( L );
   delete udata;
   return 0;
 }
 
 static int
-lua_DateTimeInstanceMethodToString( lua_State *L ) {
+charon_DateTimeInstanceMethodToString( lua_State *L ) {
   DateTime *dt    = checkDateTime( L );
   const char * str;
   if(lua_isstring(L, 2)) {
@@ -113,7 +113,7 @@ lua_DateTimeInstanceMethodToString( lua_State *L ) {
 }
 
 static int
-lua_DateTimeInstanceMethodConcat( lua_State *L ) {
+charon_DateTimeInstanceMethodConcat( lua_State *L ) {
   DateTime *dt;
   QString concat;
   const char * str;
@@ -132,7 +132,7 @@ lua_DateTimeInstanceMethodConcat( lua_State *L ) {
 }
 
 static int
-lua_DateTimeInstanceMethodEqual( lua_State *L ) {
+charon_DateTimeInstanceMethodEqual( lua_State *L ) {
   DateTime *dt1 = checkDateTime( L );
   DateTime *dt2 = *(DateTime **) luaL_checkudata(L, 2, "DateTime.metatable");
 
@@ -141,7 +141,7 @@ lua_DateTimeInstanceMethodEqual( lua_State *L ) {
 }
 
 static int
-lua_DateTimeInstanceMethodLessThan( lua_State *L ) {
+charon_DateTimeInstanceMethodLessThan( lua_State *L ) {
   DateTime *dt1 = checkDateTime( L );
   DateTime *dt2 = *(DateTime **) luaL_checkudata(L, 2, "DateTime.metatable");
 
@@ -150,7 +150,7 @@ lua_DateTimeInstanceMethodLessThan( lua_State *L ) {
 }
 
 static int
-lua_DateTimeInstanceMethodAddDays( lua_State *L ) {
+charon_DateTimeInstanceMethodAddDays( lua_State *L ) {
   DateTime *dt   = checkDateTime( L );
   qint64 days     = luaL_checkinteger(L, 2);
   DateTime other = dt->addDays(days);
@@ -164,7 +164,7 @@ lua_DateTimeInstanceMethodAddDays( lua_State *L ) {
 }
 
 static int
-lua_DateTimeInstanceMethodDate( lua_State *L ) {
+charon_DateTimeInstanceMethodDate( lua_State *L ) {
   DateTime *dt   = checkDateTime( L );
 
   Date **ptr = (Date **)lua_newuserdata(L, sizeof(Date*));
@@ -176,7 +176,7 @@ lua_DateTimeInstanceMethodDate( lua_State *L ) {
 }
 
 static int
-lua_DateTimeInstanceMethodAddMSecs( lua_State *L ) {
+charon_DateTimeInstanceMethodAddMSecs( lua_State *L ) {
   DateTime *dt   = checkDateTime( L );
   qint64 days     = luaL_checkinteger(L, 2);
   DateTime other = dt->addMSecs(days);
@@ -190,7 +190,7 @@ lua_DateTimeInstanceMethodAddMSecs( lua_State *L ) {
 }
 
 static int
-lua_DateTimeInstanceMethodAddMonths( lua_State *L ) {
+charon_DateTimeInstanceMethodAddMonths( lua_State *L ) {
   DateTime *dt   = checkDateTime( L );
   int     months  = luaL_checkinteger(L, 2);
   DateTime other = dt->addMonths(months);
@@ -204,7 +204,7 @@ lua_DateTimeInstanceMethodAddMonths( lua_State *L ) {
 }
 
 static int
-lua_DateTimeInstanceMethodAddSecs( lua_State *L ) {
+charon_DateTimeInstanceMethodAddSecs( lua_State *L ) {
   DateTime *dt   = checkDateTime( L );
   qint64 secs     = luaL_checkinteger(L, 2);
   DateTime other = dt->addSecs(secs);
@@ -218,7 +218,7 @@ lua_DateTimeInstanceMethodAddSecs( lua_State *L ) {
 }
 
 static int
-lua_DateTimeInstanceMethodAddYears( lua_State *L ) {
+charon_DateTimeInstanceMethodAddYears( lua_State *L ) {
   DateTime *dt   = checkDateTime( L );
   int    years    = luaL_checkinteger(L, 2);
   DateTime other = dt->addYears(years);
@@ -232,7 +232,7 @@ lua_DateTimeInstanceMethodAddYears( lua_State *L ) {
 }
 
 static int
-lua_DateTimeInstanceMethodBeginningOfDay( lua_State *L ) {
+charon_DateTimeInstanceMethodBeginningOfDay( lua_State *L ) {
   DateTime *dt   = checkDateTime( L );
   DateTime other = dt->beginningOfDay();
 
@@ -245,7 +245,7 @@ lua_DateTimeInstanceMethodBeginningOfDay( lua_State *L ) {
 }
 
 static int
-lua_DateTimeInstanceMethodEndOfDay( lua_State *L ) {
+charon_DateTimeInstanceMethodEndOfDay( lua_State *L ) {
   DateTime *dt   = checkDateTime( L );
   DateTime other = dt->endOfDay();
 
@@ -258,7 +258,7 @@ lua_DateTimeInstanceMethodEndOfDay( lua_State *L ) {
 }
 
 static int
-lua_DateTimeInstanceMethodBeginningOfMonth( lua_State *L ) {
+charon_DateTimeInstanceMethodBeginningOfMonth( lua_State *L ) {
   DateTime *dt   = checkDateTime( L );
   DateTime other = dt->beginningOfMonth();
 
@@ -271,7 +271,7 @@ lua_DateTimeInstanceMethodBeginningOfMonth( lua_State *L ) {
 }
 
 static int
-lua_DateTimeInstanceMethodEndOfMonth( lua_State *L ) {
+charon_DateTimeInstanceMethodEndOfMonth( lua_State *L ) {
   DateTime *dt   = checkDateTime( L );
   DateTime other = dt->endOfMonth();
 
@@ -284,35 +284,35 @@ lua_DateTimeInstanceMethodEndOfMonth( lua_State *L ) {
 }
 
 static int
-lua_DateTimeInstanceMethodIsDaylightTime( lua_State *L ) {
+charon_DateTimeInstanceMethodIsDaylightTime( lua_State *L ) {
   DateTime *dt   = checkDateTime( L );
   lua_pushboolean(L, dt->isDaylightTime());
   return 1;
 }
 
 static int
-lua_DateTimeInstanceMethodIsNull( lua_State *L ) {
+charon_DateTimeInstanceMethodIsNull( lua_State *L ) {
   DateTime *dt   = checkDateTime( L );
   lua_pushboolean(L, dt->isNull());
   return 1;
 }
 
 static int
-lua_DateTimeInstanceMethodIsValid( lua_State *L ) {
+charon_DateTimeInstanceMethodIsValid( lua_State *L ) {
   DateTime *dt   = checkDateTime( L );
   lua_pushboolean(L, dt->isValid());
   return 1;
 }
 
 static int
-lua_DateTimeInstanceMethodOffsetFromUtc( lua_State *L ) {
+charon_DateTimeInstanceMethodOffsetFromUtc( lua_State *L ) {
   DateTime *dt   = checkDateTime( L );
   lua_pushinteger(L, dt->offsetFromUtc());
   return 1;
 }
 
 static int
-lua_DateTimeInstanceMethodSetMSecsSinceEpoch( lua_State *L ) {
+charon_DateTimeInstanceMethodSetMSecsSinceEpoch( lua_State *L ) {
   DateTime *dt   = checkDateTime( L );
   qint64 msecs    = luaL_checkinteger(L, 2);
   dt->setMSecsSinceEpoch(msecs);
@@ -321,7 +321,7 @@ lua_DateTimeInstanceMethodSetMSecsSinceEpoch( lua_State *L ) {
 }
 
 static int
-lua_DateTimeInstanceMethodSetOffsetFromUtc( lua_State *L ) {
+charon_DateTimeInstanceMethodSetOffsetFromUtc( lua_State *L ) {
   DateTime *dateTime = checkDateTime( L );
   int offsetSeconds   = luaL_checkinteger(L, 2);
   dateTime->setOffsetFromUtc(offsetSeconds);
@@ -330,7 +330,7 @@ lua_DateTimeInstanceMethodSetOffsetFromUtc( lua_State *L ) {
 }
 
 static int
-lua_DateTimeInstanceMethodSetTime_t( lua_State *L ) {
+charon_DateTimeInstanceMethodSetTime_t( lua_State *L ) {
   DateTime *dateTime  = checkDateTime( L );
   unsigned int seconds = luaL_checkinteger(L, 2);
   dateTime->setTime_t(seconds);
@@ -339,7 +339,7 @@ lua_DateTimeInstanceMethodSetTime_t( lua_State *L ) {
 }
 
 static int
-lua_DateTimeInstanceMethodTimeZoneAbbreviation( lua_State *L ) {
+charon_DateTimeInstanceMethodTimeZoneAbbreviation( lua_State *L ) {
   DateTime *dateTime  = checkDateTime( L );
   lua_pushstring(L, dateTime->timeZoneAbbreviation().toLocal8Bit().data());
 
@@ -347,7 +347,7 @@ lua_DateTimeInstanceMethodTimeZoneAbbreviation( lua_State *L ) {
 }
 
 static int
-lua_DateTimeInstanceMethodToMSecsSinceEpoch( lua_State *L ) {
+charon_DateTimeInstanceMethodToMSecsSinceEpoch( lua_State *L ) {
   DateTime *dateTime  = checkDateTime( L );
   qint64 msecs         = dateTime->toMSecsSinceEpoch();
   lua_pushnumber(L, msecs);
@@ -356,7 +356,7 @@ lua_DateTimeInstanceMethodToMSecsSinceEpoch( lua_State *L ) {
 }
 
 static int
-lua_DateTimeInstanceMethodToOffsetFromUtc( lua_State *L ) {
+charon_DateTimeInstanceMethodToOffsetFromUtc( lua_State *L ) {
   DateTime *dateTime = checkDateTime( L );
   int offsetSeconds   = luaL_checkinteger(L , 2);
   DateTime other     = dateTime->toOffsetFromUtc(offsetSeconds);
@@ -369,7 +369,7 @@ lua_DateTimeInstanceMethodToOffsetFromUtc( lua_State *L ) {
 }
 
 static int
-lua_DateTimeInstanceMethodToTime_t( lua_State *L ) {
+charon_DateTimeInstanceMethodToTime_t( lua_State *L ) {
   DateTime *dateTime  = checkDateTime( L );
   uint time            = dateTime->toTime_t();
   lua_pushnumber(L, time);
@@ -378,7 +378,7 @@ lua_DateTimeInstanceMethodToTime_t( lua_State *L ) {
 }
 
 static int
-lua_DateTimeInstanceMethodToUTC( lua_State *L ) {
+charon_DateTimeInstanceMethodToUTC( lua_State *L ) {
   DateTime *dateTime = checkDateTime( L );
   DateTime other     = dateTime->toUTC();
   DateTime **ptr     = (DateTime **)lua_newuserdata(L, sizeof(DateTime*));
@@ -391,34 +391,34 @@ lua_DateTimeInstanceMethodToUTC( lua_State *L ) {
 
 static const
 luaL_reg DateTimeInstanceMethods[] = {
-  {"toUTC", lua_DateTimeInstanceMethodToUTC},
-  {"toTime_t", lua_DateTimeInstanceMethodToTime_t},
-  {"toOffsetFromUtc", lua_DateTimeInstanceMethodToOffsetFromUtc},
-  {"toMSecsSinceEpoch", lua_DateTimeInstanceMethodToMSecsSinceEpoch},
-  {"timeZoneAbbreviation", lua_DateTimeInstanceMethodTimeZoneAbbreviation},
-  {"setTime_t", lua_DateTimeInstanceMethodSetTime_t},
-  {"setOffsetFromUtc", lua_DateTimeInstanceMethodSetOffsetFromUtc},
-  {"setMSecsSinceEpoch", lua_DateTimeInstanceMethodSetMSecsSinceEpoch},
-  {"offsetFromUtc", lua_DateTimeInstanceMethodOffsetFromUtc},
-  {"isValid", lua_DateTimeInstanceMethodIsValid},
-  {"isNull", lua_DateTimeInstanceMethodIsNull},
-  {"isDaylightTime", lua_DateTimeInstanceMethodIsDaylightTime},
-  {"addYears", lua_DateTimeInstanceMethodAddYears},
-  {"addSecs", lua_DateTimeInstanceMethodAddSecs},
-  {"addMonths", lua_DateTimeInstanceMethodAddMonths},
-  {"addMSecs", lua_DateTimeInstanceMethodAddMSecs},
-  {"addDays", lua_DateTimeInstanceMethodAddDays},
-  {"date", lua_DateTimeInstanceMethodDate},
-  {"beginningOfDay", lua_DateTimeInstanceMethodBeginningOfDay},
-  {"endOfDay", lua_DateTimeInstanceMethodEndOfDay},
-  {"beginningOfMonth", lua_DateTimeInstanceMethodBeginningOfMonth},
-  {"endOfMonth", lua_DateTimeInstanceMethodEndOfMonth},
-  {"toString", lua_DateTimeInstanceMethodToString},
-  {"__lt", lua_DateTimeInstanceMethodLessThan},
-  {"__eq", lua_DateTimeInstanceMethodEqual},
-  {"__tostring", lua_DateTimeInstanceMethodToString},
-  {"__concat", lua_DateTimeInstanceMethodConcat},
-  {"__gc", lua_DateTimeInstanceMethodDestruct},
+  {"toUTC", charon_DateTimeInstanceMethodToUTC},
+  {"toTime_t", charon_DateTimeInstanceMethodToTime_t},
+  {"toOffsetFromUtc", charon_DateTimeInstanceMethodToOffsetFromUtc},
+  {"toMSecsSinceEpoch", charon_DateTimeInstanceMethodToMSecsSinceEpoch},
+  {"timeZoneAbbreviation", charon_DateTimeInstanceMethodTimeZoneAbbreviation},
+  {"setTime_t", charon_DateTimeInstanceMethodSetTime_t},
+  {"setOffsetFromUtc", charon_DateTimeInstanceMethodSetOffsetFromUtc},
+  {"setMSecsSinceEpoch", charon_DateTimeInstanceMethodSetMSecsSinceEpoch},
+  {"offsetFromUtc", charon_DateTimeInstanceMethodOffsetFromUtc},
+  {"isValid", charon_DateTimeInstanceMethodIsValid},
+  {"isNull", charon_DateTimeInstanceMethodIsNull},
+  {"isDaylightTime", charon_DateTimeInstanceMethodIsDaylightTime},
+  {"addYears", charon_DateTimeInstanceMethodAddYears},
+  {"addSecs", charon_DateTimeInstanceMethodAddSecs},
+  {"addMonths", charon_DateTimeInstanceMethodAddMonths},
+  {"addMSecs", charon_DateTimeInstanceMethodAddMSecs},
+  {"addDays", charon_DateTimeInstanceMethodAddDays},
+  {"date", charon_DateTimeInstanceMethodDate},
+  {"beginningOfDay", charon_DateTimeInstanceMethodBeginningOfDay},
+  {"endOfDay", charon_DateTimeInstanceMethodEndOfDay},
+  {"beginningOfMonth", charon_DateTimeInstanceMethodBeginningOfMonth},
+  {"endOfMonth", charon_DateTimeInstanceMethodEndOfMonth},
+  {"toString", charon_DateTimeInstanceMethodToString},
+  {"__lt", charon_DateTimeInstanceMethodLessThan},
+  {"__eq", charon_DateTimeInstanceMethodEqual},
+  {"__tostring", charon_DateTimeInstanceMethodToString},
+  {"__concat", charon_DateTimeInstanceMethodConcat},
+  {"__gc", charon_DateTimeInstanceMethodDestruct},
   {NULL, NULL}
 };
 

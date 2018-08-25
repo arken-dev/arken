@@ -9,7 +9,7 @@
 using charon::ByteArray;
 using charon::ByteArrayList;
 
-static int lua_charon_os_abspath( lua_State *L ) {
+static int charon_os_abspath( lua_State *L ) {
   const char * path = luaL_checkstring(L, 1);
   char * result = os::abspath(path);
   lua_pushstring( L, result );
@@ -17,7 +17,7 @@ static int lua_charon_os_abspath( lua_State *L ) {
   return 1;
 }
 
-static int lua_charon_os_basename( lua_State *L ) {
+static int charon_os_basename( lua_State *L ) {
   const char * path = luaL_checkstring(L, 1);
   char * result = os::basename(path);
   lua_pushstring( L, result );
@@ -25,13 +25,13 @@ static int lua_charon_os_basename( lua_State *L ) {
   return 1;
 }
 
-static int lua_charon_os_atime( lua_State *L ) {
+static int charon_os_atime( lua_State *L ) {
   const char * path = luaL_checkstring(L, 1);
   lua_pushnumber( L, os::atime(path) );
   return 1;
 }
 
-static int lua_charon_os_compare( lua_State *L ) {
+static int charon_os_compare( lua_State *L ) {
   const char * path1 = luaL_checkstring(L, 1);
   const char * path2 = luaL_checkstring(L, 2);
 
@@ -39,7 +39,7 @@ static int lua_charon_os_compare( lua_State *L ) {
   return 1;
 }
 
-static int lua_charon_os_copy( lua_State *L ) {
+static int charon_os_copy( lua_State *L ) {
   const char * source      = luaL_checkstring(L, 1);
   const char * destination = luaL_checkstring(L, 2);
   bool force = false;
@@ -51,24 +51,24 @@ static int lua_charon_os_copy( lua_State *L ) {
   return 1;
 }
 
-static int lua_charon_os_cores( lua_State *L ) {
+static int charon_os_cores( lua_State *L ) {
   lua_pushnumber( L, os::cores() );
   return 1;
 }
 
-static int lua_charon_os_chdir( lua_State *L ) {
+static int charon_os_chdir( lua_State *L ) {
   const char * path = luaL_checkstring(L, 1);
   lua_pushnumber( L, os::chdir(path) );
   return 1;
 }
 
-static int lua_charon_os_ctime( lua_State *L ) {
+static int charon_os_ctime( lua_State *L ) {
   const char * path = luaL_checkstring(L, 1);
   lua_pushnumber( L, os::ctime(path) );
   return 1;
 }
 
-static int lua_charon_os_dirpath( lua_State *L ) {
+static int charon_os_dirpath( lua_State *L ) {
   const char * path = luaL_checkstring(L, 1);
   char * result = os::dirpath(path);
   lua_pushstring( L, result );
@@ -76,20 +76,20 @@ static int lua_charon_os_dirpath( lua_State *L ) {
   return 1;
 }
 
-static int lua_charon_os_exists( lua_State *L ) {
+static int charon_os_exists( lua_State *L ) {
   const char * path = luaL_checkstring(L, 1);
   lua_pushboolean( L, os::exists(path) );
   return 1;
 }
 
-static int lua_charon_os_executablePath( lua_State *L ) {
+static int charon_os_executablePath( lua_State *L ) {
   char * result = os::executablePath();
   lua_pushstring( L, result );
   delete[] result;
   return 1;
 }
 
-static int lua_charon_os_glob( lua_State *L ) {
+static int charon_os_glob( lua_State *L ) {
   ByteArrayList * list = 0;
   const char  * path = luaL_checkstring(L, 1);
 
@@ -117,39 +117,39 @@ static int lua_charon_os_glob( lua_State *L ) {
   return 1;
 }
 
-static int lua_charon_os_home( lua_State *L ) {
+static int charon_os_home( lua_State *L ) {
   char * result = os::home();
   lua_pushstring( L, result );
   delete[] result;
   return 1;
 }
 
-static int lua_charon_os_hostname( lua_State *L ) {
+static int charon_os_hostname( lua_State *L ) {
   char * result = os::hostname();
   lua_pushstring( L, result );
   delete[] result;
   return 1;
 }
 
-static int lua_charon_os_isfile( lua_State *L ) {
+static int charon_os_isfile( lua_State *L ) {
   const char * path = luaL_checkstring(L, 1);
   lua_pushboolean( L, os::isfile(path) );
   return 1;
 }
 
-static int lua_charon_os_isdir( lua_State *L ) {
+static int charon_os_isdir( lua_State *L ) {
   const char * path = luaL_checkstring(L, 1);
   lua_pushboolean( L, os::isdir(path) );
   return 1;
 }
 
-static int lua_charon_os_islink( lua_State *L ) {
+static int charon_os_islink( lua_State *L ) {
   const char * path = luaL_checkstring(L, 1);
   lua_pushboolean( L, os::islink(path) );
   return 1;
 }
 
-static int lua_charon_os_link( lua_State *L ) {
+static int charon_os_link( lua_State *L ) {
   const char * source      = luaL_checkstring(L, 1);
   const char * destination = luaL_checkstring(L, 2);
   bool force = false;
@@ -161,61 +161,61 @@ static int lua_charon_os_link( lua_State *L ) {
   return 1;
 }
 
-static int lua_charon_os_microtime( lua_State *L ) {
+static int charon_os_microtime( lua_State *L ) {
   lua_pushnumber( L, os::microtime() );
   return 1;
 }
 
-static int lua_charon_os_mkdir( lua_State *L ) {
+static int charon_os_mkdir( lua_State *L ) {
   const char * dirname = luaL_checkstring(L, 1);
   lua_pushboolean( L, os::mkdir(dirname) );
   return 1;
 }
 
-static int lua_charon_os_mkpath( lua_State *L ) {
+static int charon_os_mkpath( lua_State *L ) {
   const char * dirpath = luaL_checkstring(L, 1);
   lua_pushboolean( L, os::mkpath(dirpath) );
   return 1;
 }
 
-static int lua_charon_os_name( lua_State *L ) {
+static int charon_os_name( lua_State *L ) {
   char * result = os::name();
   lua_pushstring( L, result );
   delete[] result;
   return 1;
 }
 
-static int lua_charon_os_pwd( lua_State *L ) {
+static int charon_os_pwd( lua_State *L ) {
   char * result = os::pwd();
   lua_pushstring( L, result );
   delete[] result;
   return 1;
 }
 
-static int lua_charon_os_pid( lua_State *L ) {
+static int charon_os_pid( lua_State *L ) {
   lua_pushnumber( L, os::pid() );
   return 1;
 }
 
-static int lua_charon_os_rmdir( lua_State *L ) {
+static int charon_os_rmdir( lua_State *L ) {
   const char * dirname = luaL_checkstring(L, 1);
   lua_pushboolean( L, os::rmdir(dirname) );
   return 1;
 }
 
-static int lua_charon_os_rmpath( lua_State *L ) {
+static int charon_os_rmpath( lua_State *L ) {
   const char * dirpath = luaL_checkstring(L, 1);
   lua_pushboolean( L, os::rmpath(dirpath) );
   return 1;
 }
 
-static int lua_charon_os_sleep( lua_State *L ) {
+static int charon_os_sleep( lua_State *L ) {
   double secs = luaL_checknumber(L, 1);
   os::sleep( secs );
   return 0;
 }
 
-static int lua_charon_os_target( lua_State *L ) {
+static int charon_os_target( lua_State *L ) {
   const char * path = luaL_checkstring(L, 1);
   char * result = os::target(path);
   lua_pushstring( L, result );
@@ -223,27 +223,27 @@ static int lua_charon_os_target( lua_State *L ) {
   return 1;
 }
 
-static int lua_charon_os_temp( lua_State *L ) {
+static int charon_os_temp( lua_State *L ) {
   char * result = os::temp();
   lua_pushstring( L, result );
   delete[] result;
   return 1;
 }
 
-static int lua_charon_os_touch( lua_State *L ) {
+static int charon_os_touch( lua_State *L ) {
   const char * path = luaL_checkstring(L, 1);
   lua_pushboolean( L, os::touch(path) );
   return 1;
 }
 
-static int lua_charon_os_uuid( lua_State *L ) {
+static int charon_os_uuid( lua_State *L ) {
   char * result = os::uuid();
   lua_pushstring( L, result );
   delete[] result;
   return 1;
 }
 
-static int lua_charon_os_read( lua_State *L ) {
+static int charon_os_read( lua_State *L ) {
   size_t size = -1;
   const char * path = luaL_checkstring(L, 1);
   const char * raw  = os::read(path, &size);
@@ -256,7 +256,7 @@ static int lua_charon_os_read( lua_State *L ) {
   return 1;
 }
 
-static int lua_charon_os_root( lua_State *L ) {
+static int charon_os_root( lua_State *L ) {
   char * result = os::root();
   lua_pushstring( L, result );
   delete[] result;
@@ -265,39 +265,39 @@ static int lua_charon_os_root( lua_State *L ) {
 
 int luaopen_charon_os( lua_State *L ) {
   static const luaL_reg Map[] = {
-    {"abspath",    lua_charon_os_abspath},
-    {"atime",      lua_charon_os_atime},
-    {"basename",   lua_charon_os_basename},
-    {"compare",    lua_charon_os_compare},
-    {"copy",       lua_charon_os_copy},
-    {"cores",      lua_charon_os_cores},
-    {"chdir",      lua_charon_os_chdir},
-    {"ctime",      lua_charon_os_ctime},
-    {"dirpath",    lua_charon_os_dirpath},
-    {"exists",     lua_charon_os_exists},
-    {"executablePath", lua_charon_os_executablePath},
-    {"glob",       lua_charon_os_glob},
-    {"home",       lua_charon_os_home},
-    {"hostname",   lua_charon_os_hostname},
-    {"isfile",     lua_charon_os_isfile},
-    {"isdir",      lua_charon_os_isdir},
-    {"islink",     lua_charon_os_islink},
-    {"link",       lua_charon_os_link},
-    {"microtime",  lua_charon_os_microtime},
-    {"mkdir",      lua_charon_os_mkdir},
-    {"mkpath",     lua_charon_os_mkpath},
-    {"name",       lua_charon_os_name},
-    {"pid",        lua_charon_os_pid},
-    {"pwd",        lua_charon_os_pwd},
-    {"rmdir",      lua_charon_os_rmdir},
-    {"rmpath",     lua_charon_os_rmpath},
-    {"read",       lua_charon_os_read},
-    {"target",     lua_charon_os_target},
-    {"temp",       lua_charon_os_temp},
-    {"touch",      lua_charon_os_touch},
-    {"sleep",      lua_charon_os_sleep},
-    {"uuid",       lua_charon_os_uuid},
-    {"root",       lua_charon_os_root},
+    {"abspath",    charon_os_abspath},
+    {"atime",      charon_os_atime},
+    {"basename",   charon_os_basename},
+    {"compare",    charon_os_compare},
+    {"copy",       charon_os_copy},
+    {"cores",      charon_os_cores},
+    {"chdir",      charon_os_chdir},
+    {"ctime",      charon_os_ctime},
+    {"dirpath",    charon_os_dirpath},
+    {"exists",     charon_os_exists},
+    {"executablePath", charon_os_executablePath},
+    {"glob",       charon_os_glob},
+    {"home",       charon_os_home},
+    {"hostname",   charon_os_hostname},
+    {"isfile",     charon_os_isfile},
+    {"isdir",      charon_os_isdir},
+    {"islink",     charon_os_islink},
+    {"link",       charon_os_link},
+    {"microtime",  charon_os_microtime},
+    {"mkdir",      charon_os_mkdir},
+    {"mkpath",     charon_os_mkpath},
+    {"name",       charon_os_name},
+    {"pid",        charon_os_pid},
+    {"pwd",        charon_os_pwd},
+    {"rmdir",      charon_os_rmdir},
+    {"rmpath",     charon_os_rmpath},
+    {"read",       charon_os_read},
+    {"target",     charon_os_target},
+    {"temp",       charon_os_temp},
+    {"touch",      charon_os_touch},
+    {"sleep",      charon_os_sleep},
+    {"uuid",       charon_os_uuid},
+    {"root",       charon_os_root},
     {NULL, NULL}
   };
   luaL_register(L, "os", Map);

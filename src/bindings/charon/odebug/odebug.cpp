@@ -6,7 +6,7 @@
 #include <lua/lua.hpp>
 #include <charon/base>
 
-static int lua_charon_odebug_info( lua_State *L ) {
+static int charon_odebug_info( lua_State *L ) {
   lua_Debug info;
 
   lua_getstack(L, 2, &info);
@@ -21,7 +21,7 @@ static int lua_charon_odebug_info( lua_State *L ) {
 extern "C" {
   int luaopen_charon_odebug( lua_State *L ) {
     static const luaL_reg Map[] = {
-      {"info", lua_charon_odebug_info},
+      {"info", charon_odebug_info},
       {NULL, NULL}
     };
     luaL_newmetatable(L, "odebug");
