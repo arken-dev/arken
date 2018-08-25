@@ -27,7 +27,7 @@ checkTime( lua_State *L, int i ) {
  */
 
 static int
-lua_TimeClassMethodCurrentTime( lua_State *L ) {
+charon_TimeClassMethodCurrentTime( lua_State *L ) {
   Time **ptr = (Time **)lua_newuserdata(L, sizeof(Time*));
   *ptr = new Time(Time::currentTime());
   luaL_getmetatable(L, "Time.metatable");
@@ -36,7 +36,7 @@ lua_TimeClassMethodCurrentTime( lua_State *L ) {
 }
 
 static int
-lua_TimeClassMethodFromString( lua_State *L ) {
+charon_TimeClassMethodFromString( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   const char * format = luaL_checkstring(L, 2);
   Time **ptr = (Time **)lua_newuserdata(L, sizeof(Time*));
@@ -47,7 +47,7 @@ lua_TimeClassMethodFromString( lua_State *L ) {
 }
 
 static int
-lua_TimeClassMethodParse( lua_State *L ) {
+charon_TimeClassMethodParse( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   Time * time = Time::parse(string);
   if( time == 0 ) {
@@ -62,9 +62,9 @@ lua_TimeClassMethodParse( lua_State *L ) {
 }
 
 static const luaL_reg TimeClassMethods[] = {
-  {"parse", lua_TimeClassMethodParse},
-  {"fromString", lua_TimeClassMethodFromString},
-  {"currentTime", lua_TimeClassMethodCurrentTime},
+  {"parse", charon_TimeClassMethodParse},
+  {"fromString", charon_TimeClassMethodFromString},
+  {"currentTime", charon_TimeClassMethodCurrentTime},
   {NULL, NULL}
 };
 
@@ -81,14 +81,14 @@ registerTimeClassMethods( lua_State *L ) {
  */
 
 static int
-lua_TimeInstanceMethodDestruct( lua_State *L ) {
+charon_TimeInstanceMethodDestruct( lua_State *L ) {
   Time *udata = checkTime( L );
   delete udata;
   return 0;
 }
 
 static int
-lua_TimeInstanceMethodToString( lua_State *L ) {
+charon_TimeInstanceMethodToString( lua_State *L ) {
   Time *dt    = checkTime( L );
   const char * str;
   if(lua_isstring(L, 2)) {
@@ -102,7 +102,7 @@ lua_TimeInstanceMethodToString( lua_State *L ) {
 }
 
 static int
-lua_TimeInstanceMethodConcat( lua_State *L ) {
+charon_TimeInstanceMethodConcat( lua_State *L ) {
   Time *dt;
   QString concat;
   const char * str;
@@ -121,7 +121,7 @@ lua_TimeInstanceMethodConcat( lua_State *L ) {
 }
 
 static int
-lua_TimeInstanceMethodEqual( lua_State *L ) {
+charon_TimeInstanceMethodEqual( lua_State *L ) {
   Time *dt1 = checkTime( L );
   Time *dt2 = *(Time **) luaL_checkudata(L, 2, "Time.metatable");
 
@@ -130,7 +130,7 @@ lua_TimeInstanceMethodEqual( lua_State *L ) {
 }
 
 static int
-lua_TimeInstanceMethodLessThan( lua_State *L ) {
+charon_TimeInstanceMethodLessThan( lua_State *L ) {
   Time *dt1 = checkTime( L );
   Time *dt2 = *(Time **) luaL_checkudata(L, 2, "Time.metatable");
 
@@ -139,7 +139,7 @@ lua_TimeInstanceMethodLessThan( lua_State *L ) {
 }
 
 static int
-lua_TimeInstanceMethodAddSecs( lua_State *L ) {
+charon_TimeInstanceMethodAddSecs( lua_State *L ) {
   Time *dt    = checkTime( L );
   qint64 days = luaL_checkinteger(L, 2);
   Time other  = dt->addSecs(days);
@@ -153,14 +153,14 @@ lua_TimeInstanceMethodAddSecs( lua_State *L ) {
 }
 
 static int
-lua_TimeInstanceMethodIsNull( lua_State *L ) {
+charon_TimeInstanceMethodIsNull( lua_State *L ) {
   Time *dt   = checkTime( L );
   lua_pushboolean(L, dt->isNull());
   return 1;
 }
 
 static int
-lua_TimeInstanceMethodIsValid( lua_State *L ) {
+charon_TimeInstanceMethodIsValid( lua_State *L ) {
   Time *dt   = checkTime( L );
   lua_pushboolean(L, dt->isValid());
   return 1;
@@ -168,15 +168,15 @@ lua_TimeInstanceMethodIsValid( lua_State *L ) {
 
 static const
 luaL_reg TimeInstanceMethods[] = {
-  {"isValid", lua_TimeInstanceMethodIsValid},
-  {"isNull", lua_TimeInstanceMethodIsNull},
-  {"addSecs", lua_TimeInstanceMethodAddSecs},
-  {"toString", lua_TimeInstanceMethodToString},
-  {"__lt", lua_TimeInstanceMethodLessThan},
-  {"__eq", lua_TimeInstanceMethodEqual},
-  {"__tostring", lua_TimeInstanceMethodToString},
-  {"__concat", lua_TimeInstanceMethodConcat},
-  {"__gc", lua_TimeInstanceMethodDestruct},
+  {"isValid", charon_TimeInstanceMethodIsValid},
+  {"isNull", charon_TimeInstanceMethodIsNull},
+  {"addSecs", charon_TimeInstanceMethodAddSecs},
+  {"toString", charon_TimeInstanceMethodToString},
+  {"__lt", charon_TimeInstanceMethodLessThan},
+  {"__eq", charon_TimeInstanceMethodEqual},
+  {"__tostring", charon_TimeInstanceMethodToString},
+  {"__concat", charon_TimeInstanceMethodConcat},
+  {"__gc", charon_TimeInstanceMethodDestruct},
   {NULL, NULL}
 };
 

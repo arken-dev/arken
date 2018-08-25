@@ -26,7 +26,7 @@ checkHttpBody( lua_State *L ) {
  */
 
 static int
-lua_HttpBodyClassMethodLoadFile( lua_State *L ) {
+charon_HttpBodyClassMethodLoadFile( lua_State *L ) {
   const char * path = luaL_checkstring(L, 1);
   HttpBody **ptr = (HttpBody **)lua_newuserdata(L, sizeof(HttpBody*));
   *ptr = HttpBody::loadFile(path);
@@ -36,7 +36,7 @@ lua_HttpBodyClassMethodLoadFile( lua_State *L ) {
 }
 
 static int
-lua_HttpBodyClassMethodLoadBuffer( lua_State *L ) {
+charon_HttpBodyClassMethodLoadBuffer( lua_State *L ) {
   size_t size;
   const char * buffer = luaL_checklstring(L, 1, &size);
   HttpBody **ptr = (HttpBody **)lua_newuserdata(L, sizeof(HttpBody*));
@@ -48,8 +48,8 @@ lua_HttpBodyClassMethodLoadBuffer( lua_State *L ) {
 
 
 static const luaL_reg HttpBodyClassMethods[] = {
-  {"loadFile",   lua_HttpBodyClassMethodLoadFile},
-  {"loadBuffer", lua_HttpBodyClassMethodLoadBuffer},
+  {"loadFile",   charon_HttpBodyClassMethodLoadFile},
+  {"loadBuffer", charon_HttpBodyClassMethodLoadBuffer},
   {NULL, NULL}
 };
 
@@ -66,7 +66,7 @@ registerHttpBodyClassMethods( lua_State *L ) {
  */
 
 static int
-lua_HttpBodyInstanceMethodRead( lua_State *L ) {
+charon_HttpBodyInstanceMethodRead( lua_State *L ) {
   HttpBody *udata  = checkHttpBody( L );
   const char * buffer = udata->read();
   lua_pushlstring(L, buffer, udata->size());
@@ -74,14 +74,14 @@ lua_HttpBodyInstanceMethodRead( lua_State *L ) {
 }
 
 static int
-lua_HttpBodyInstanceMethodSize( lua_State *L ) {
+charon_HttpBodyInstanceMethodSize( lua_State *L ) {
   HttpBody *udata  = checkHttpBody( L );
   lua_pushnumber(L, udata->size());
   return 1;
 }
 
 static int
-lua_HttpBodyInstanceMethodRelease( lua_State *L ) {
+charon_HttpBodyInstanceMethodRelease( lua_State *L ) {
   HttpBody *udata  = checkHttpBody( L );
   udata->release();
   return 0;
@@ -89,7 +89,7 @@ lua_HttpBodyInstanceMethodRelease( lua_State *L ) {
 
 
 static int
-lua_HttpBodyInstanceMethodDestruct( lua_State *L ) {
+charon_HttpBodyInstanceMethodDestruct( lua_State *L ) {
   HttpBody *udata = checkHttpBody( L );
   delete udata;
   return 0;
@@ -97,10 +97,10 @@ lua_HttpBodyInstanceMethodDestruct( lua_State *L ) {
 
 static const
 luaL_reg HttpBodyInstanceMethods[] = {
-  {"size",    lua_HttpBodyInstanceMethodSize},
-  {"read",    lua_HttpBodyInstanceMethodRead},
-  {"release", lua_HttpBodyInstanceMethodRelease},
-  {"__gc",    lua_HttpBodyInstanceMethodDestruct},
+  {"size",    charon_HttpBodyInstanceMethodSize},
+  {"read",    charon_HttpBodyInstanceMethodRead},
+  {"release", charon_HttpBodyInstanceMethodRelease},
+  {"__gc",    charon_HttpBodyInstanceMethodDestruct},
   {NULL, NULL}
 };
 

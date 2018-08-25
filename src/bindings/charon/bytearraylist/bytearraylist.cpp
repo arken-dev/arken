@@ -21,7 +21,7 @@ checkByteArrayList( lua_State *L ) {
  */
 
 static int
-lua_ByteArrayListClassMethodNew( lua_State *L ) {
+charon_ByteArrayListClassMethodNew( lua_State *L ) {
   ByteArrayList **ptr = (ByteArrayList **)lua_newuserdata(L, sizeof(ByteArrayList*));
   *ptr= new ByteArrayList(ByteArrayList());
   luaL_getmetatable(L, "ByteArrayList.metatable");
@@ -30,7 +30,7 @@ lua_ByteArrayListClassMethodNew( lua_State *L ) {
 }
 
 static const luaL_reg ByteArrayListClassMethods[] = {
-  {"new", lua_ByteArrayListClassMethodNew},
+  {"new", charon_ByteArrayListClassMethodNew},
   {NULL, NULL}
 };
 
@@ -47,14 +47,14 @@ registerByteArrayListClassMethods( lua_State *L ) {
  */
 
 static int
-lua_ByteArrayListInstanceMethodDestruct( lua_State *L ) {
+charon_ByteArrayListInstanceMethodDestruct( lua_State *L ) {
   ByteArrayList *udata = checkByteArrayList( L );
   delete udata;
   return 0;
 }
 
 static int
-lua_ByteArrayListInstanceMethodAt( lua_State *L ) {
+charon_ByteArrayListInstanceMethodAt( lua_State *L ) {
   ByteArrayList * udata  = checkByteArrayList( L );
   int pos = luaL_checkint(L, 2);
   int len;
@@ -82,7 +82,7 @@ charon_byte_array_list_each( lua_State *L ) {
 }
 
 static int
-lua_ByteArrayListInstanceMethodEach( lua_State *L ) {
+charon_ByteArrayListInstanceMethodEach( lua_State *L ) {
   ByteArrayList * udata  = checkByteArrayList( L );
   lua_pushlightuserdata(L, udata);
   lua_pushcclosure(L, charon_byte_array_list_each, 1);
@@ -90,21 +90,21 @@ lua_ByteArrayListInstanceMethodEach( lua_State *L ) {
 }
 
 static int
-lua_ByteArrayListInstanceMethodFirst( lua_State *L ) {
+charon_ByteArrayListInstanceMethodFirst( lua_State *L ) {
   ByteArrayList * udata  = checkByteArrayList( L );
   lua_pushstring(L, udata->first());
   return 1;
 }
 
 static int
-lua_ByteArrayListInstanceMethodLast( lua_State *L ) {
+charon_ByteArrayListInstanceMethodLast( lua_State *L ) {
   ByteArrayList * udata  = checkByteArrayList( L );
   lua_pushstring(L, udata->last());
   return 1;
 }
 
 static int
-lua_ByteArrayListInstanceMethodReplace( lua_State *L ) {
+charon_ByteArrayListInstanceMethodReplace( lua_State *L ) {
   ByteArrayList * udata  = checkByteArrayList( L );
   int pos = luaL_checkint(L, 2);
   const char * value = luaL_checkstring(L, 3);
@@ -113,7 +113,7 @@ lua_ByteArrayListInstanceMethodReplace( lua_State *L ) {
 }
 
 static int
-lua_ByteArrayListInstanceMethodJoin( lua_State *L ) {
+charon_ByteArrayListInstanceMethodJoin( lua_State *L ) {
   ByteArrayList * udata     = checkByteArrayList( L );
   const char  * separator = luaL_checkstring(L, 2);
   char * result = udata->join(separator);
@@ -124,7 +124,7 @@ lua_ByteArrayListInstanceMethodJoin( lua_State *L ) {
 
 
 static int
-lua_ByteArrayListInstanceMethodAppend( lua_State *L ) {
+charon_ByteArrayListInstanceMethodAppend( lua_State *L ) {
   ByteArrayList * udata  = checkByteArrayList( L );
   const char * value = luaL_checkstring(L, 2);
   udata->append(value);
@@ -133,7 +133,7 @@ lua_ByteArrayListInstanceMethodAppend( lua_State *L ) {
 }
 
 static int
-lua_ByteArrayListInstanceMethodSize( lua_State *L ) {
+charon_ByteArrayListInstanceMethodSize( lua_State *L ) {
   ByteArrayList * udata  = checkByteArrayList( L );
   lua_pushinteger(L, udata->size());
   return 1;
@@ -141,15 +141,15 @@ lua_ByteArrayListInstanceMethodSize( lua_State *L ) {
 
 static const
 luaL_reg ByteArrayListInstanceMethods[] = {
-  {"append", lua_ByteArrayListInstanceMethodAppend},
-  {"at", lua_ByteArrayListInstanceMethodAt},
-  {"each",    lua_ByteArrayListInstanceMethodEach},
-  {"first", lua_ByteArrayListInstanceMethodFirst},
-  {"last", lua_ByteArrayListInstanceMethodLast},
-  {"join", lua_ByteArrayListInstanceMethodJoin},
-  {"size", lua_ByteArrayListInstanceMethodSize},
-  {"replace", lua_ByteArrayListInstanceMethodReplace},
-  {"__gc", lua_ByteArrayListInstanceMethodDestruct},
+  {"append", charon_ByteArrayListInstanceMethodAppend},
+  {"at", charon_ByteArrayListInstanceMethodAt},
+  {"each",    charon_ByteArrayListInstanceMethodEach},
+  {"first", charon_ByteArrayListInstanceMethodFirst},
+  {"last", charon_ByteArrayListInstanceMethodLast},
+  {"join", charon_ByteArrayListInstanceMethodJoin},
+  {"size", charon_ByteArrayListInstanceMethodSize},
+  {"replace", charon_ByteArrayListInstanceMethodReplace},
+  {"__gc", charon_ByteArrayListInstanceMethodDestruct},
   {NULL, NULL}
 };
 

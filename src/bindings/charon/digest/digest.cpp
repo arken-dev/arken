@@ -8,7 +8,7 @@
 
 using namespace charon;
 
-static int lua_charon_digest_md5( lua_State *L ) {
+static int charon_digest_md5( lua_State *L ) {
   size_t size;
   const char *path = luaL_checklstring(L, 1, &size);
   char * result = digest::md5(path, size);
@@ -18,7 +18,7 @@ static int lua_charon_digest_md5( lua_State *L ) {
   return 1;
 }
 
-static int lua_charon_digest_sha1( lua_State *L ) {
+static int charon_digest_sha1( lua_State *L ) {
   size_t size;
   const char *path = luaL_checklstring(L, 1, &size);
   char * result = digest::sha1(path, size);
@@ -30,8 +30,8 @@ static int lua_charon_digest_sha1( lua_State *L ) {
 extern "C" {
   int luaopen_charon_digest( lua_State *L ) {
     static const luaL_reg Map[] = {
-      {"md5", lua_charon_digest_md5},
-      {"sha1", lua_charon_digest_sha1},
+      {"md5", charon_digest_md5},
+      {"sha1", charon_digest_sha1},
       {NULL, NULL}
     };
     luaL_newmetatable(L, "digest");

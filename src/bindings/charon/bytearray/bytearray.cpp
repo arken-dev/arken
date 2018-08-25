@@ -23,7 +23,7 @@ checkByteArray( lua_State *L ) {
  */
 
 static int
-lua_ByteArrayClassMethodNew( lua_State *L ) {
+charon_ByteArrayClassMethodNew( lua_State *L ) {
   size_t len;
   const char *str = (char *) lua_tolstring(L, 1, &len);
   ByteArray **ptr = (ByteArray **)lua_newuserdata(L, sizeof(ByteArray*));
@@ -34,7 +34,7 @@ lua_ByteArrayClassMethodNew( lua_State *L ) {
 }
 
 static const luaL_reg ByteArrayClassMethods[] = {
-  {"new", lua_ByteArrayClassMethodNew},
+  {"new", charon_ByteArrayClassMethodNew},
   {NULL, NULL}
 };
 
@@ -51,21 +51,21 @@ registerByteArrayClassMethods( lua_State *L ) {
  */
 
 static int
-lua_ByteArrayInstanceMethodDestruct( lua_State *L ) {
+charon_ByteArrayInstanceMethodDestruct( lua_State *L ) {
   ByteArray *udata = checkByteArray( L );
   delete udata;
   return 0;
 }
 
 static int
-lua_ByteArrayInstanceMethodToString( lua_State *L ) {
+charon_ByteArrayInstanceMethodToString( lua_State *L ) {
   ByteArray *udata = checkByteArray( L );
   lua_pushlstring(L, udata->data(), udata->size());
   return 1;
 }
 
 static int
-lua_ByteArrayInstanceMethodConcat( lua_State *L ) {
+charon_ByteArrayInstanceMethodConcat( lua_State *L ) {
   ByteArray *udata  = checkByteArray( L );
   const char *str = lua_tostring(L, 2);
   udata->append(str);
@@ -74,14 +74,14 @@ lua_ByteArrayInstanceMethodConcat( lua_State *L ) {
 }
 
 static int
-lua_ByteArrayInstanceMethodToUpper( lua_State *L ) {
+charon_ByteArrayInstanceMethodToUpper( lua_State *L ) {
   ByteArray *udata  = checkByteArray( L );
   lua_pushstring(L, udata->toUpper());
   return 1;
 }
 
 static int
-lua_ByteArrayInstanceMethodReplace( lua_State *L ) {
+charon_ByteArrayInstanceMethodReplace( lua_State *L ) {
   ByteArray * udata  = checkByteArray( L );
   const char * before = lua_tostring(L, 2);
   const char * after  = lua_tostring(L, 3);
@@ -91,81 +91,81 @@ lua_ByteArrayInstanceMethodReplace( lua_State *L ) {
 }
 
 static int
-lua_ByteArrayInstanceMethodNormalize( lua_State *L ) {
+charon_ByteArrayInstanceMethodNormalize( lua_State *L ) {
   ByteArray *udata  = checkByteArray( L );
   lua_pushstring(L, udata->normalize());
   return 1;
 }
 
 static int
-lua_ByteArrayInstanceMethodTrimmed( lua_State *L ) {
+charon_ByteArrayInstanceMethodTrimmed( lua_State *L ) {
   ByteArray *udata  = checkByteArray( L );
   lua_pushstring(L, udata->trimmed());
   return 1;
 }
 
 static int
-lua_ByteArrayInstanceMethodLeftTrimmed( lua_State *L ) {
+charon_ByteArrayInstanceMethodLeftTrimmed( lua_State *L ) {
   ByteArray *udata  = checkByteArray( L );
   lua_pushstring(L, udata->leftTrimmed());
   return 1;
 }
 
 static int
-lua_ByteArrayInstanceMethodRightTrimmed( lua_State *L ) {
+charon_ByteArrayInstanceMethodRightTrimmed( lua_State *L ) {
   ByteArray *udata  = checkByteArray( L );
   lua_pushstring(L, udata->rightTrimmed());
   return 1;
 }
 
 static int
-lua_ByteArrayInstanceMethodSimplified( lua_State *L ) {
+charon_ByteArrayInstanceMethodSimplified( lua_State *L ) {
   ByteArray *udata  = checkByteArray( L );
   lua_pushstring(L, udata->simplified());
   return 1;
 }
 
 static int
-lua_ByteArrayInstanceMethodAppend( lua_State *L ) {
+charon_ByteArrayInstanceMethodAppend( lua_State *L ) {
   ByteArray *udata  = checkByteArray( L );
-  const char *str    = lua_tostring(L, 2);
+  const char *str   = lua_tostring(L, 2);
   udata->append(str);
   lua_pushvalue(L, -2);
   return 1;
 }
 
 static int
-lua_ByteArrayInstanceMethodPrepend( lua_State *L ) {
+charon_ByteArrayInstanceMethodPrepend( lua_State *L ) {
   ByteArray *udata  = checkByteArray( L );
-  const char *str    = lua_tostring(L, 2);
+  const char *str   = lua_tostring(L, 2);
   udata->prepend(str);
   lua_pushvalue(L, -2);
   return 1;
 }
 
 static int
-lua_ByteArrayInstanceMethodCamelCase( lua_State *L ) {
+charon_ByteArrayInstanceMethodCamelCase( lua_State *L ) {
   ByteArray *udata  = checkByteArray( L );
   lua_pushstring(L, udata->camelCase());
   return 1;
 }
 
 static int
-lua_ByteArrayInstanceMethodCapitalize( lua_State *L ) {
+charon_ByteArrayInstanceMethodCapitalize( lua_State *L ) {
   ByteArray *udata  = checkByteArray( L );
   lua_pushstring(L, udata->capitalize());
   return 1;
 }
 
 static int
-lua_ByteArrayInstanceMethodUnderscore( lua_State *L ) {
+charon_ByteArrayInstanceMethodUnderscore( lua_State *L ) {
   ByteArray *udata  = checkByteArray( L );
   lua_pushstring(L, udata->underscore());
   return 1;
 }
 
 static int
-lua_ByteArrayInstanceMethodLastIndexOf( lua_State *L ) {
+charon_ByteArrayInstanceMethodLastIndexOf( lua_State *L ) {
   ByteArray *udata  = checkByteArray( L );
   const char *str    = lua_tostring(L, 2);
   lua_pushnumber(L, udata->lastIndexOf(str[0]));
@@ -173,7 +173,7 @@ lua_ByteArrayInstanceMethodLastIndexOf( lua_State *L ) {
 }
 
 static int
-lua_ByteArrayInstanceMethodMid( lua_State *L ) {
+charon_ByteArrayInstanceMethodMid( lua_State *L ) {
   ByteArray *udata  = checkByteArray( L );
   int pos =  luaL_checkinteger(L, 2);
   int len;
@@ -189,14 +189,14 @@ lua_ByteArrayInstanceMethodMid( lua_State *L ) {
 }
 
 static int
-lua_ByteArrayInstanceMethodSize( lua_State *L ) {
+charon_ByteArrayInstanceMethodSize( lua_State *L ) {
   ByteArray *udata  = checkByteArray( L );
   lua_pushnumber(L, udata->size());
   return 1;
 }
 
 static int
-lua_ByteArrayInstanceMethodRight( lua_State *L ) {
+charon_ByteArrayInstanceMethodRight( lua_State *L ) {
   ByteArray *udata  = checkByteArray( L );
   int len =  luaL_checkinteger(L, 2);
   lua_pushstring(L, udata->right(len));
@@ -204,7 +204,7 @@ lua_ByteArrayInstanceMethodRight( lua_State *L ) {
 }
 
 static int
-lua_ByteArrayInstanceMethodResize( lua_State *L ) {
+charon_ByteArrayInstanceMethodResize( lua_State *L ) {
   ByteArray *udata  = checkByteArray( L );
   int len =  luaL_checkinteger(L, 2);
   udata->resize(len);
@@ -212,7 +212,7 @@ lua_ByteArrayInstanceMethodResize( lua_State *L ) {
 }
 
 static int
-lua_ByteArrayInstanceMethodSqueeze( lua_State *L ) {
+charon_ByteArrayInstanceMethodSqueeze( lua_State *L ) {
   ByteArray *udata  = checkByteArray( L );
   udata->squeeze();
   return 0;
@@ -221,27 +221,27 @@ lua_ByteArrayInstanceMethodSqueeze( lua_State *L ) {
 
 static const
 luaL_reg ByteArrayInstanceMethods[] = {
-  {"camelCase", lua_ByteArrayInstanceMethodCamelCase},
-  {"capitalize", lua_ByteArrayInstanceMethodCapitalize},
-  {"right", lua_ByteArrayInstanceMethodRight},
-  {"size", lua_ByteArrayInstanceMethodSize},
-  {"mid", lua_ByteArrayInstanceMethodMid},
-  {"lastIndexOf", lua_ByteArrayInstanceMethodLastIndexOf},
-  {"toUpper", lua_ByteArrayInstanceMethodToUpper},
-  {"prepend", lua_ByteArrayInstanceMethodPrepend},
-  {"append", lua_ByteArrayInstanceMethodAppend},
-  {"trimmed",   lua_ByteArrayInstanceMethodTrimmed},
-  {"leftTrimmed",  lua_ByteArrayInstanceMethodLeftTrimmed},
-  {"rightTrimmed", lua_ByteArrayInstanceMethodRightTrimmed},
-  {"normalize", lua_ByteArrayInstanceMethodNormalize},
-  {"replace",   lua_ByteArrayInstanceMethodReplace},
-  {"simplified", lua_ByteArrayInstanceMethodSimplified},
-  {"underscore", lua_ByteArrayInstanceMethodUnderscore},
-  {"resize", lua_ByteArrayInstanceMethodResize},
-  {"squeeze", lua_ByteArrayInstanceMethodSqueeze},
-  {"__concat", lua_ByteArrayInstanceMethodConcat},
-  {"__tostring", lua_ByteArrayInstanceMethodToString},
-  {"__gc", lua_ByteArrayInstanceMethodDestruct},
+  {"camelCase", charon_ByteArrayInstanceMethodCamelCase},
+  {"capitalize", charon_ByteArrayInstanceMethodCapitalize},
+  {"right", charon_ByteArrayInstanceMethodRight},
+  {"size", charon_ByteArrayInstanceMethodSize},
+  {"mid", charon_ByteArrayInstanceMethodMid},
+  {"lastIndexOf", charon_ByteArrayInstanceMethodLastIndexOf},
+  {"toUpper", charon_ByteArrayInstanceMethodToUpper},
+  {"prepend", charon_ByteArrayInstanceMethodPrepend},
+  {"append", charon_ByteArrayInstanceMethodAppend},
+  {"trimmed",   charon_ByteArrayInstanceMethodTrimmed},
+  {"leftTrimmed",  charon_ByteArrayInstanceMethodLeftTrimmed},
+  {"rightTrimmed", charon_ByteArrayInstanceMethodRightTrimmed},
+  {"normalize", charon_ByteArrayInstanceMethodNormalize},
+  {"replace",   charon_ByteArrayInstanceMethodReplace},
+  {"simplified", charon_ByteArrayInstanceMethodSimplified},
+  {"underscore", charon_ByteArrayInstanceMethodUnderscore},
+  {"resize", charon_ByteArrayInstanceMethodResize},
+  {"squeeze", charon_ByteArrayInstanceMethodSqueeze},
+  {"__concat", charon_ByteArrayInstanceMethodConcat},
+  {"__tostring", charon_ByteArrayInstanceMethodToString},
+  {"__gc", charon_ByteArrayInstanceMethodDestruct},
   {NULL, NULL}
 };
 

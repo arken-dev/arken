@@ -9,25 +9,25 @@
 
 using charon::utf8;
 
-static int lua_charon_utf8_lower( lua_State *L ) {
+static int charon_utf8_lower( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   lua_pushstring( L, utf8::lower(string) );
   return 1;
 }
 
-static int lua_charon_utf8_upper( lua_State *L ) {
+static int charon_utf8_upper( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   lua_pushstring( L, utf8::upper(string) );
   return 1;
 }
 
-static int lua_charon_utf8_format( lua_State *L ) {
+static int charon_utf8_format( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   lua_pushstring( L, utf8::format(string) );
   return 1;
 }
 
-static int lua_charon_utf8_len( lua_State *L ) {
+static int charon_utf8_len( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   lua_pushinteger( L, utf8::len(string) );
   return 1;
@@ -37,10 +37,10 @@ static int lua_charon_utf8_len( lua_State *L ) {
 extern "C" {
   int luaopen_charon_utf8( lua_State *L ) {
     static const luaL_reg Map[] = {
-      {"lower", lua_charon_utf8_lower},
-      {"upper", lua_charon_utf8_upper},
-      {"format", lua_charon_utf8_format},
-      {"len",   lua_charon_utf8_len},
+      {"lower", charon_utf8_lower},
+      {"upper", charon_utf8_upper},
+      {"format", charon_utf8_format},
+      {"len",   charon_utf8_len},
       {NULL, NULL}
     };
     luaL_newmetatable(L, "utf8");
