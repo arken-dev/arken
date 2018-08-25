@@ -101,8 +101,9 @@ dispatcher.dispatch = function(env)
   local reload  = 0
   local code, headers, body
   if CHARON_ENV == 'development' then
-    local fileName = dispatcher.public .. env:requestPath():mid(#dispatcher.prefix+1, -1)
-    if fileName ~= (dispatcher.public .. "/") and os.exists(fileName) then
+    local requestPath = env:requestPath()
+    local fileName    = dispatcher.public .. requestPath:mid(#dispatcher.prefix+1, -1)
+    if requestPath ~= '/' and os.exists(fileName) then
       return dispatcher.dispatchLocal(fileName)
     else
       reload = package.reload()
