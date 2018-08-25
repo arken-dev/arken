@@ -37,6 +37,8 @@ int main(int argc, char * argv[])
   fileName.append(argv[1]);
 
   int rv;
+
+  lua_settop(L, 0);
   lua_getglobal(L, "require");
   lua_pushstring(L, fileName);
 
@@ -46,8 +48,13 @@ int main(int argc, char * argv[])
     return rv;
   }
 
-  lua_settop(L, 0);
-  lua_getglobal(L, "triton_start");
+  if(!lua_istable(L, -1)) {
+    luaL_error(L, "table not found");
+  }
+
+  lua_pushstring(L, "start");
+  lua_gettable(L, -2);
+
   if( lua_pcall(L, 0, 0, 0) != 0 ) {
     fprintf(stderr, " %s\n", lua_tostring(L, -1));
   }
@@ -81,11 +88,15 @@ int main(int argc, char * argv[])
 
   pool->waitForDone();
 
-  lua_settop(L, 0);
-  lua_getglobal(L, "triton_stop");
+  if(!lua_istable(L, -1)) {
+    luaL_error(L, "no final nao e table table not found");
+  }
+
+  lua_pushstring(L, "stop");
+  lua_gettable(L, -2);
+
   if( lua_pcall(L, 0, 0, 0) != 0 ) {
-    fprintf(stderr, "%s\n", lua_tostring(L, -1));
-    throw;
+    fprintf(stderr, " %s\n", lua_tostring(L, -1));
   }
 
   return 0;

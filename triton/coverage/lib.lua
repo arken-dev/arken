@@ -8,12 +8,13 @@ local coverage     = require 'charon.coverage'
 local json         = require 'charon.jsonp'
 local start        = os.microtime()
 local files        = {}
+local M = {}
 
 -------------------------------------------------------------------------------
--- TRITON START
+-- START
 -------------------------------------------------------------------------------
 
-function triton_start()
+function M.start()
   local dir = 'coverage'
   if not os.exists(dir) then
     os.mkdir(dir)
@@ -32,7 +33,11 @@ function triton_start()
   end
 end
 
-function triton_run(fileName)
+-------------------------------------------------------------------------------
+-- RUN
+-------------------------------------------------------------------------------
+
+function M.run(fileName)
   local tests     = {}
   local dirName   = fileName:gsub(".lua", ""):replace("./", "./tests/")
   if not os.exists(dirName) then
@@ -88,10 +93,10 @@ function triton_run(fileName)
 end
 
 -------------------------------------------------------------------------------
--- TRITON STOP
+-- STOP
 -------------------------------------------------------------------------------
 
-function triton_stop()
+function M.stop()
   print('')
   local dir    = 'coverage'
   local tpl    = CHARON_PATH .. "/lib/charon/coverage/templates/index.html"
@@ -107,3 +112,5 @@ function triton_stop()
   print(string.format(result, triton.total('tests'), triton.total('failure'), triton.total('pending')))
   print(string.format("Finished in %.2f seconds", os.microtime() - start))
 end
+
+return M
