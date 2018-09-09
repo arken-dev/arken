@@ -8,6 +8,8 @@
 #include <cstring>
 #include <iostream>
 #include <mutex>
+#include <thread>
+#include <map>
 
 using namespace charon;
 using charon::ByteArray;
@@ -16,10 +18,72 @@ int        mvm::s_argc         = 0;
 char **    mvm::s_argv         = 0;
 int        mvm::s_gc           = 0;
 int        mvm::s_version      = 0;
+int        mvm::s_pool         = 0;
 ByteArray  mvm::s_charonPath   = "";
 ByteArray  mvm::s_profilePath  = "";
 ByteArray  mvm::s_dispatchPath = "";
-std::mutex mtx;
+static std::mutex mtx;
+static std::map <std::string, int> s_config;
+
+void mvm_pool()
+{
+  while( true ) {
+    mtx.lock();
+    int count = s_config.at("pool.size") - mvm::s_pool;
+    mtx.unlock();
+    if (count > 0) {
+      for(int i=0; i < count; i++) {
+        mvm::push( new mvm::data() );
+      }
+    }
+    os::sleep(s_config.at("pool.pause"));
+  }
+}
+
+void mvm_gc()
+{
+  while( true ) {
+    mvm::print("gc ...\n");
+    mvm::gc();
+    os::sleep(s_config.at("gc.pause"));
+  }
+}
+
+void mvm::set(std::string key, int value)
+{
+  mtx.lock();
+  s_config[key] = value;
+  mtx.unlock();
+}
+
+
+void mvm::print(const char * value)
+{
+  mtx.lock();
+  std::cout << value;
+  mtx.unlock();
+}
+
+void mvm::config()
+{
+  mvm::set("gc.pause",   60);
+  mvm::set("pool.pause", 30);
+  mvm::set("pool.size",   5);
+
+  const char * fileName = "config/mvm.lua";
+  if( os::exists(fileName) ) {
+    charon::instance i = mvm::instance();
+    lua_State * L = i.state();
+    lua_settop(L, 0);
+    lua_getglobal(L, "dofile");
+    lua_pushstring(L, fileName);
+    int rv = lua_pcall(L, 1, 1, 0);
+    if (rv) {
+      fprintf(stderr, "%s\n", lua_tostring(L, -1));
+      throw;
+    }
+  }
+}
 
 void mvm::init(int argc, char ** argv)
 {
@@ -44,6 +108,12 @@ void mvm::init(int argc, char ** argv)
   s_dispatchPath.append("dispatch.lua");
 
   container::init();
+
+  mvm::config();
+
+  new std::thread(mvm_pool);
+  new std::thread(mvm_gc);
+
 }
 
 instance mvm::instance()
@@ -61,10 +131,23 @@ instance mvm::instance()
 void mvm::push(mvm::data * data)
 {
   if( s_version != data->m_version ) {
-      delete data;
+    delete data;
   } else {
     mtx.lock();
     container::push(data);
+    s_pool ++;
+    mtx.unlock();
+  }
+}
+
+void mvm::back(mvm::data * data)
+{
+  if( s_version != data->m_version ) {
+    delete data;
+  } else {
+    mtx.lock();
+    container::back(data);
+    s_pool ++;
     mtx.unlock();
   }
 }
@@ -77,6 +160,7 @@ mvm::data * mvm::takeFirst()
     return new mvm::data();
   }
   mvm::data * data = container::pop();
+  s_pool--;
   mtx.unlock();
   return data;
 }
@@ -92,6 +176,11 @@ int mvm::version()
   return s_version;
 }
 
+int mvm::pool()
+{
+  return s_pool;
+}
+
 int mvm::gc()
 {
   int i = 0;
@@ -104,13 +193,13 @@ int mvm::gc()
     lua_gc(data->state(), LUA_GCCOLLECT, 0);
     data->m_gc = s_gc;
 
-    container::back(data);
+    mvm::back(data);
     i++;
 
     data = takeFirst();
   }
 
-  container::back(data);
+  mvm::back(data);
 
   return i;
 }
@@ -123,6 +212,7 @@ int mvm::clear()
   while( !container::empty() ) {
     result++;
     mvm::data * data = container::pop();
+    s_pool--;
     delete data;
   }
   mtx.unlock();
@@ -170,7 +260,7 @@ mvm::data::data()
     lua_pcall(m_State, 0, 0, 0);
   }
 
-  std::cout << "mvm create Lua State\n";
+  mvm::print("mvm create Lua State\n");
 }
 
 mvm::data::~data()
