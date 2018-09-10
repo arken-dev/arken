@@ -89,7 +89,7 @@ int charonConsoleLoad(lua_State *L)
 
   while(true) {
     sprintf(cmd, "charon %i> ", level);
-    mvm::print(cmd);
+    mvm::log(cmd);
 
     std::getline(std::cin, line);
     row = line.c_str();
