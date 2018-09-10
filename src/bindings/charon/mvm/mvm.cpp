@@ -41,6 +41,13 @@ charon_mvm_set(lua_State *L) {
   return 0;
 }
 
+static int
+charon_mvm_at(lua_State *L) {
+  const char *key = luaL_checkstring(L, 1);
+  lua_pushnumber(L, mvm::at(key));
+  return 1;
+}
+
 
 static int
 charon_mvm_pool(lua_State *L) {
@@ -57,6 +64,7 @@ extern "C" {
       {"clear",   charon_mvm_clear},
       {"pool",    charon_mvm_pool},
       {"set",     charon_mvm_set},
+      {"at",      charon_mvm_at},
       {NULL, NULL}
     };
     luaL_newmetatable(L, "mvm");

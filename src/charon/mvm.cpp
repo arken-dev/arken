@@ -28,24 +28,34 @@ static std::map <std::string, int> s_config;
 void mvm_pool()
 {
   while( true ) {
+    int log = mvm::at("pool.log");
+    if( log ) {
+      mvm::log("pool...\n");
+    }
     mtx.lock();
-    int count = s_config.at("pool.size") - mvm::s_pool;
+    int count = mvm::at("pool.size") - mvm::s_pool;
     mtx.unlock();
     if (count > 0) {
       for(int i=0; i < count; i++) {
+        if( log ) {
+          mvm::log("pool push\n");
+        }
         mvm::push( new mvm::data() );
       }
     }
-    os::sleep(s_config.at("pool.pause"));
+    mvm::pause("pool.pause");
   }
 }
 
 void mvm_gc()
 {
   while( true ) {
-    mvm::print("gc ...\n");
+    int log = mvm::at("gc.log");
+    if( log ) {
+      mvm::log("gc ...\n");
+    }
     mvm::gc();
-    os::sleep(s_config.at("gc.pause"));
+    mvm::pause("gc.pause");
   }
 }
 
@@ -56,8 +66,27 @@ void mvm::set(std::string key, int value)
   mtx.unlock();
 }
 
+int mvm::at(std::string key)
+{
+  return s_config[key];
+}
 
-void mvm::print(const char * value)
+bool mvm::pause(std::string key)
+{
+  int value = 0;
+  while( true ) {
+    os::sleep(1);
+    value ++;
+    int pause = mvm::at(key);
+    if ( value >= pause ) {
+      break;
+    }
+  }
+  return false;
+}
+
+
+void mvm::log(const char * value)
 {
   mtx.lock();
   std::cout << value;
@@ -66,9 +95,13 @@ void mvm::print(const char * value)
 
 void mvm::config()
 {
+
+  // defaults values
   mvm::set("gc.pause",   60);
+  mvm::set("gc.log",      0);
   mvm::set("pool.pause", 30);
   mvm::set("pool.size",   5);
+  mvm::set("pool.log",    0);
 
   const char * fileName = "config/mvm.lua";
   if( os::exists(fileName) ) {
@@ -260,7 +293,11 @@ mvm::data::data()
     lua_pcall(m_State, 0, 0, 0);
   }
 
-  mvm::print("mvm create Lua State\n");
+  int log = mvm::at("pool.log");
+  if( log ) {
+    mvm::log("mvm create Lua State\n");
+  }
+
 }
 
 mvm::data::~data()

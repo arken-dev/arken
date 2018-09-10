@@ -67,8 +67,10 @@ class mvm {
   public:
   static void init(int argc, char ** argv);
   static void config();
-  static void print(const char * value);
+  static void log(const char * value);
   static void set(std::string key, int value);
+  static int  at(std::string key);
+  static bool pause(std::string key);
   static void reload();
   static int  version();
   static int  pool();
