@@ -37,7 +37,7 @@ class Triton : public QObject, public QRunnable
   static QMutex s_mutex;
 
   public:
-  Triton(int argc, char * argv[], QByteArray fileName);
+  Triton(int argc, char * argv[], QByteArray fileName, int number);
   ~Triton();
   void run();
   static void init(QStringList list);
