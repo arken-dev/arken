@@ -53,8 +53,8 @@ rhea.parseName = function(arg)
     lastIndexName = 0
   end
   local space  = arg:mid(1, lastIndexName-1)
-  local name   = arg:mid(lastIndexName+1, (lastIndexMethod - (lastIndexName+1)) )
-  local method = arg:mid(lastIndexMethod+1, -1)
+  local name   = arg:sub(lastIndexName+1, lastIndexMethod-1)
+  local method = arg:sub(lastIndexMethod+1)
   if lastIndexName > 0 then
     space = space .. "."
   else
