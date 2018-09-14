@@ -46,6 +46,23 @@ rhea.parseArgs = function(args)
   return params
 end
 
+rhea.parseName = function(arg)
+  local lastIndexMethod = arg:lastIndexOf(":")
+  local lastIndexName   = arg:lastIndexOf(".")
+  if lastIndexName < 0 then
+    lastIndexName = 0
+  end
+  local space  = arg:mid(1, lastIndexName-1)
+  local name   = arg:mid(lastIndexName+1, (lastIndexMethod - (lastIndexName+1)) )
+  local method = arg:mid(lastIndexMethod+1, -1)
+  if lastIndexName > 0 then
+    space = space .. "."
+  else
+    space = ""
+  end
+  return (space .. name:camelCase()), method
+end
+
 rhea.help = function(module)
   local help = ""
   local size = 0
@@ -73,16 +90,16 @@ rhea.run = function(args)
   local path = {}
 
   if args[0] == nil then
-  local list = tostring(package.path):split(';')
-  for i = 1, list:size() do
-    local str = list:at(i)
-    str = str:replace("/?.lua", ""):replace('.', '/')
-    str = os.abspath(str)
-    str = str .. '/rhea'
-    if os.exists(str) then
-      table.insert(path, str)
+    local list = tostring(package.path):split(';')
+    for i = 1, list:size() do
+      local str = list:at(i)
+      str = str:replace("/?.lua", ""):replace('.', '/')
+      str = os.abspath(str)
+      str = str .. '/rhea'
+      if os.exists(str) then
+        table.insert(path, str)
+      end
     end
-  end
     for _, str in ipairs(path) do
       local list = os.glob(str, "\\.lua$", false)
       for i = 1, list:size() do
@@ -92,19 +109,8 @@ rhea.run = function(args)
       end
     end
   else
-    local task   = args[0]
-    local last   = task:lastIndexOf(":")
-    local name   = args[0]
-    local action = nil
-
-    if last > 0 then
-      name   = task:left(last-1):replace(":", ".")
-      action = task:mid(last+1, -1)
-    end
-
-    local module, result
-      local rhea_name = 'rhea.' .. name:camelCase()
-      local module = require(rhea_name)
+    local name, action = rhea.parseName(arg[0])
+    local module = require('rhea.' .. name)
 
     -------------------------------------------------------------------------------
     -- EXECUTE
