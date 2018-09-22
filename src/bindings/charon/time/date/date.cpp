@@ -27,7 +27,7 @@ checkDate( lua_State *L, int i ) {
  */
 
 static int
-lua_DateClassMethodCurrentDate( lua_State *L ) {
+charon_DateClassMethodCurrentDate( lua_State *L ) {
   Date **ptr = (Date **)lua_newuserdata(L, sizeof(Date*));
   *ptr= new Date(Date::currentDate());
   luaL_getmetatable(L, "Date.metatable");
@@ -36,7 +36,7 @@ lua_DateClassMethodCurrentDate( lua_State *L ) {
 }
 
 static int
-lua_DateClassMethodFromString( lua_State *L ) {
+charon_DateClassMethodFromString( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   const char * format = luaL_checkstring(L, 2);
   Date **ptr = (Date **)lua_newuserdata(L, sizeof(Date*));
@@ -47,7 +47,7 @@ lua_DateClassMethodFromString( lua_State *L ) {
 }
 
 static int
-lua_DateClassMethodParse( lua_State *L ) {
+charon_DateClassMethodParse( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   Date * dt = Date::parse(string);
   if( dt == 0 ) {
@@ -63,9 +63,9 @@ lua_DateClassMethodParse( lua_State *L ) {
 
 
 static const luaL_reg DateClassMethods[] = {
-  {"parse",       lua_DateClassMethodParse},
-  {"fromString",  lua_DateClassMethodFromString},
-  {"currentDate", lua_DateClassMethodCurrentDate},
+  {"parse",       charon_DateClassMethodParse},
+  {"fromString",  charon_DateClassMethodFromString},
+  {"currentDate", charon_DateClassMethodCurrentDate},
   {NULL, NULL}
 };
 
@@ -82,14 +82,14 @@ registerDateClassMethods( lua_State *L ) {
  */
 
 static int
-lua_DateInstanceMethodDestruct( lua_State *L ) {
+charon_DateInstanceMethodDestruct( lua_State *L ) {
   Date *udata = checkDate( L );
   delete udata;
   return 0;
 }
 
 static int
-lua_DateInstanceMethodToString( lua_State *L ) {
+charon_DateInstanceMethodToString( lua_State *L ) {
   Date *dt    = checkDate( L );
   const char * str;
   if(lua_isstring(L, 2)) {
@@ -103,7 +103,7 @@ lua_DateInstanceMethodToString( lua_State *L ) {
 }
 
 static int
-lua_DateInstanceMethodConcat( lua_State *L ) {
+charon_DateInstanceMethodConcat( lua_State *L ) {
   Date *dt;
   QString concat;
   const char * str;
@@ -122,7 +122,7 @@ lua_DateInstanceMethodConcat( lua_State *L ) {
 }
 
 static int
-lua_DateInstanceMethodEqual( lua_State *L ) {
+charon_DateInstanceMethodEqual( lua_State *L ) {
   Date *dt1 = checkDate( L );
   Date *dt2 = *(Date **) luaL_checkudata(L, 2, "Date.metatable");
 
@@ -131,7 +131,7 @@ lua_DateInstanceMethodEqual( lua_State *L ) {
 }
 
 static int
-lua_DateInstanceMethodLessThan( lua_State *L ) {
+charon_DateInstanceMethodLessThan( lua_State *L ) {
   Date *dt1 = checkDate( L );
   Date *dt2 = *(Date **) luaL_checkudata(L, 2, "Date.metatable");
 
@@ -140,7 +140,7 @@ lua_DateInstanceMethodLessThan( lua_State *L ) {
 }
 
 static int
-lua_DateInstanceMethodAddDays( lua_State *L ) {
+charon_DateInstanceMethodAddDays( lua_State *L ) {
   Date *dt   = checkDate( L );
   qint64 days     = luaL_checkinteger(L, 2);
   Date other = dt->addDays(days);
@@ -154,7 +154,7 @@ lua_DateInstanceMethodAddDays( lua_State *L ) {
 }
 
 static int
-lua_DateInstanceMethodAddMonths( lua_State *L ) {
+charon_DateInstanceMethodAddMonths( lua_State *L ) {
   Date *dt   = checkDate( L );
   int     months  = luaL_checkinteger(L, 2);
   Date other = dt->addMonths(months);
@@ -168,7 +168,7 @@ lua_DateInstanceMethodAddMonths( lua_State *L ) {
 }
 
 static int
-lua_DateInstanceMethodAddYears( lua_State *L ) {
+charon_DateInstanceMethodAddYears( lua_State *L ) {
   Date *dt   = checkDate( L );
   int    years    = luaL_checkinteger(L, 2);
   Date other = dt->addYears(years);
@@ -182,7 +182,7 @@ lua_DateInstanceMethodAddYears( lua_State *L ) {
 }
 
 static int
-lua_DateInstanceMethodBeginningOfMonth( lua_State *L ) {
+charon_DateInstanceMethodBeginningOfMonth( lua_State *L ) {
   Date *dt   = checkDate( L );
   Date other = dt->beginningOfMonth();
 
@@ -195,7 +195,7 @@ lua_DateInstanceMethodBeginningOfMonth( lua_State *L ) {
 }
 
 static int
-lua_DateInstanceMethodEndOfMonth( lua_State *L ) {
+charon_DateInstanceMethodEndOfMonth( lua_State *L ) {
   Date *dt   = checkDate( L );
   Date other = dt->endOfMonth();
 
@@ -208,7 +208,7 @@ lua_DateInstanceMethodEndOfMonth( lua_State *L ) {
 }
 
 static int
-lua_DateInstanceMethodDayOfWeek( lua_State *L ) {
+charon_DateInstanceMethodDayOfWeek( lua_State *L ) {
   Date *dt = checkDate( L );
   lua_pushinteger(L, dt->dayOfWeek());
 
@@ -216,35 +216,35 @@ lua_DateInstanceMethodDayOfWeek( lua_State *L ) {
 }
 
 static int
-lua_DateInstanceMethodIsNull( lua_State *L ) {
+charon_DateInstanceMethodIsNull( lua_State *L ) {
   Date *dt   = checkDate( L );
   lua_pushboolean(L, dt->isNull());
   return 1;
 }
 
 static int
-lua_DateInstanceMethodIsValid( lua_State *L ) {
+charon_DateInstanceMethodIsValid( lua_State *L ) {
   Date *dt   = checkDate( L );
   lua_pushboolean(L, dt->isValid());
   return 1;
 }
 
 static int
-lua_DateInstanceMethodDay( lua_State *L ) {
+charon_DateInstanceMethodDay( lua_State *L ) {
   Date *dt = checkDate( L );
   lua_pushinteger(L, dt->day());
   return 1;
 }
 
 static int
-lua_DateInstanceMethodMonth( lua_State *L ) {
+charon_DateInstanceMethodMonth( lua_State *L ) {
   Date *dt   = checkDate( L );
   lua_pushinteger(L, dt->month());
   return 1;
 }
 
 static int
-lua_DateInstanceMethodYear( lua_State *L ) {
+charon_DateInstanceMethodYear( lua_State *L ) {
   Date *dt   = checkDate( L );
   lua_pushinteger(L, dt->year());
   return 1;
@@ -252,23 +252,23 @@ lua_DateInstanceMethodYear( lua_State *L ) {
 
 static const
 luaL_reg DateInstanceMethods[] = {
-  {"isValid", lua_DateInstanceMethodIsValid},
-  {"isNull", lua_DateInstanceMethodIsNull},
-  {"addYears", lua_DateInstanceMethodAddYears},
-  {"addMonths", lua_DateInstanceMethodAddMonths},
-  {"addDays", lua_DateInstanceMethodAddDays},
-  {"beginningOfMonth", lua_DateInstanceMethodBeginningOfMonth},
-  {"day", lua_DateInstanceMethodDay},
-  {"month", lua_DateInstanceMethodMonth},
-  {"year", lua_DateInstanceMethodYear},
-  {"dayOfWeek", lua_DateInstanceMethodDayOfWeek},
-  {"endOfMonth", lua_DateInstanceMethodEndOfMonth},
-  {"toString", lua_DateInstanceMethodToString},
-  {"__lt", lua_DateInstanceMethodLessThan},
-  {"__eq", lua_DateInstanceMethodEqual},
-  {"__tostring", lua_DateInstanceMethodToString},
-  {"__concat", lua_DateInstanceMethodConcat},
-  {"__gc", lua_DateInstanceMethodDestruct},
+  {"isValid", charon_DateInstanceMethodIsValid},
+  {"isNull", charon_DateInstanceMethodIsNull},
+  {"addYears", charon_DateInstanceMethodAddYears},
+  {"addMonths", charon_DateInstanceMethodAddMonths},
+  {"addDays", charon_DateInstanceMethodAddDays},
+  {"beginningOfMonth", charon_DateInstanceMethodBeginningOfMonth},
+  {"day", charon_DateInstanceMethodDay},
+  {"month", charon_DateInstanceMethodMonth},
+  {"year", charon_DateInstanceMethodYear},
+  {"dayOfWeek", charon_DateInstanceMethodDayOfWeek},
+  {"endOfMonth", charon_DateInstanceMethodEndOfMonth},
+  {"toString", charon_DateInstanceMethodToString},
+  {"__lt", charon_DateInstanceMethodLessThan},
+  {"__eq", charon_DateInstanceMethodEqual},
+  {"__tostring", charon_DateInstanceMethodToString},
+  {"__concat", charon_DateInstanceMethodConcat},
+  {"__gc", charon_DateInstanceMethodDestruct},
   {NULL, NULL}
 };
 

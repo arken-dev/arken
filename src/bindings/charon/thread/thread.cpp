@@ -23,7 +23,7 @@ checkThread( lua_State *L ) {
  */
 
 static int
-lua_ThreadClassMethodNew( lua_State *L ) {
+charon_ThreadClassMethodNew( lua_State *L ) {
 
   /* PATH */
   lua_getglobal(L, "CHARON_PATH");
@@ -40,7 +40,7 @@ lua_ThreadClassMethodNew( lua_State *L ) {
 }
 
 static const luaL_reg ThreadClassMethods[] = {
-  {"new", lua_ThreadClassMethodNew},
+  {"new", charon_ThreadClassMethodNew},
   {NULL, NULL}
 };
 
@@ -57,21 +57,21 @@ registerThreadClassMethods( lua_State *L ) {
  */
 
 static int
-lua_ThreadInstanceMethodDestruct( lua_State *L ) {
+charon_ThreadInstanceMethodDestruct( lua_State *L ) {
   Thread *thread = checkThread( L );
   delete thread;
   return 0;
 }
 
 static int
-lua_ThreadInstanceMethodStart( lua_State *L ) {
+charon_ThreadInstanceMethodStart( lua_State *L ) {
   Thread *thread = checkThread( L );
   thread->start();
   return 0;
 }
 
 static int
-lua_ThreadInstanceMethodSetProperty( lua_State *L ) {
+charon_ThreadInstanceMethodSetProperty( lua_State *L ) {
   bool result = false;
   bool flag   = true;
 
@@ -99,7 +99,7 @@ lua_ThreadInstanceMethodSetProperty( lua_State *L ) {
 }
 
 static int
-lua_ThreadInstanceMethodWait( lua_State *L ) {
+charon_ThreadInstanceMethodWait( lua_State *L ) {
   Thread *thread = checkThread( L );
   bool result  = thread->wait();
   lua_pushboolean(L, result);
@@ -107,7 +107,7 @@ lua_ThreadInstanceMethodWait( lua_State *L ) {
 }
 
 static int
-lua_ThreadInstanceMethodProperty( lua_State *L ) {
+charon_ThreadInstanceMethodProperty( lua_State *L ) {
 
   bool flag = true;
   Thread *thread = checkThread( L );
@@ -138,11 +138,11 @@ lua_ThreadInstanceMethodProperty( lua_State *L ) {
 
 static const
 luaL_reg ThreadInstanceMethods[] = {
-  {"wait", lua_ThreadInstanceMethodWait},
-  {"setProperty", lua_ThreadInstanceMethodSetProperty},
-  {"property", lua_ThreadInstanceMethodProperty},
-  {"start", lua_ThreadInstanceMethodStart},
-  {"__gc", lua_ThreadInstanceMethodDestruct},
+  {"wait", charon_ThreadInstanceMethodWait},
+  {"setProperty", charon_ThreadInstanceMethodSetProperty},
+  {"property", charon_ThreadInstanceMethodProperty},
+  {"start", charon_ThreadInstanceMethodStart},
+  {"__gc", charon_ThreadInstanceMethodDestruct},
   {NULL, NULL}
 };
 

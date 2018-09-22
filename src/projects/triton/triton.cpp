@@ -16,7 +16,7 @@ QHash<QByteArray, int> * Triton::s_total = new QHash<QByteArray, int>();
 QQueue<QByteArray *> * Triton::s_queue = new QQueue<QByteArray *>();
 QMutex Triton::s_mutex;
 
-Triton::Triton(int argc, char * argv[], QByteArray fileName)
+Triton::Triton(int argc, char * argv[], QByteArray fileName, int number)
 {
   m_argc = argc;
   m_argv = argv;
@@ -26,6 +26,10 @@ Triton::Triton(int argc, char * argv[], QByteArray fileName)
   m_state = i.release();
 
   triton_register(m_state);
+
+  lua_pushinteger(m_state, number);
+  lua_setglobal(m_state, "TRITON_NUMBER");
+
   lua_settop(m_state, 0);
 }
 
@@ -42,7 +46,7 @@ void Triton::run()
   lua_pushstring(m_state, m_fileName);
 
   int rv;
-  rv = lua_pcall(m_state, 1, 0, 0);
+  rv = lua_pcall(m_state, 1, 1, 0);
   if (rv) {
     fprintf(stderr, "%s\n", lua_tostring(m_state, -1));
     throw;
@@ -53,8 +57,9 @@ void Triton::run()
     if( file_name == 0 ) {
       break;
     }
-    lua_settop(m_state, 0);
-    lua_getglobal(m_state, "triton_run");
+
+    lua_pushstring(m_state, "run");
+    lua_gettable(m_state, -2);
 
     lua_pushstring(m_state, *file_name);
 

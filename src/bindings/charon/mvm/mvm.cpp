@@ -33,6 +33,28 @@ charon_mvm_version(lua_State *L) {
   return 1;
 }
 
+static int
+charon_mvm_set(lua_State *L) {
+  const char *key = luaL_checkstring(L, 1);
+  int value = luaL_checkinteger(L, 2);
+  mvm::set(key, value);
+  return 0;
+}
+
+static int
+charon_mvm_at(lua_State *L) {
+  const char *key = luaL_checkstring(L, 1);
+  lua_pushnumber(L, mvm::at(key));
+  return 1;
+}
+
+
+static int
+charon_mvm_pool(lua_State *L) {
+  lua_pushnumber(L, mvm::pool());
+  return 1;
+}
+
 extern "C" {
   int luaopen_charon_mvm( lua_State *L ) {
     static const luaL_reg Map[] = {
@@ -40,6 +62,9 @@ extern "C" {
       {"version", charon_mvm_version},
       {"reload",  charon_mvm_reload},
       {"clear",   charon_mvm_clear},
+      {"pool",    charon_mvm_pool},
+      {"set",     charon_mvm_set},
+      {"at",      charon_mvm_at},
       {NULL, NULL}
     };
     luaL_newmetatable(L, "mvm");

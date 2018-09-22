@@ -2,12 +2,13 @@ CHARON_ENV = os.getenv("CHARON_ENV") or "test"
 
 local test  = require 'charon.test'
 local start = os.microtime()
+local M = {}
 
 -------------------------------------------------------------------------------
--- TRITON START
+-- START
 -------------------------------------------------------------------------------
 
-function triton_start()
+function M.start()
   local list = os.glob("tests/models", ".*.lua$", true)
   for i = 1, list:size() do
     print(list:at(i))
@@ -16,10 +17,10 @@ function triton_start()
 end
 
 -------------------------------------------------------------------------------
--- TRITON RUN
+-- RUN
 -------------------------------------------------------------------------------
 
-function triton_run(file)
+function M.run(file)
 
   local results = test.execute({file})
   local titulo  = ""
@@ -51,12 +52,14 @@ function triton_run(file)
 end
 
 -------------------------------------------------------------------------------
--- TRITON STOP
+-- STOP
 -------------------------------------------------------------------------------
 
-function triton_stop()
+function M.stop()
   local result = "%i tests, %i pendings, %i failures"
   print('\n' .. triton.result('message'))
   print(string.format(result, triton.total('test'), triton.total('failure'), triton.total('pending')))
   print(string.format("Finished in %.2f seconds", os.microtime() - start))
 end
+
+return M

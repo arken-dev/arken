@@ -11,7 +11,7 @@ void   json_lock_decode(lua_State *L, const char * data);
 
 using charon::cache;
 
-static int lua_charon_cache_value( lua_State *L ) {
+static int charon_cache_value( lua_State *L ) {
   const char * key   = luaL_checkstring(L, 1);
   const char * value = cache::value(key);
   if( value == 0 ) {
@@ -22,7 +22,7 @@ static int lua_charon_cache_value( lua_State *L ) {
   return 1;
 }
 
-static int lua_charon_cache_insert( lua_State *L ) {
+static int charon_cache_insert( lua_State *L ) {
   const char * key   = luaL_checkstring(L, 1);
   int expires = -1;
   if(lua_gettop(L) == 3) { /* número de argumentos */
@@ -35,7 +35,7 @@ static int lua_charon_cache_insert( lua_State *L ) {
   return 1;
 }
 
-static int lua_charon_cache_remove( lua_State *L ) {
+static int charon_cache_remove( lua_State *L ) {
   const char * key   = luaL_checkstring(L, 1);
   lua_pushinteger(L, cache::remove(key));
   return 1;
@@ -44,9 +44,9 @@ static int lua_charon_cache_remove( lua_State *L ) {
 extern "C" {
   int luaopen_charon_cache( lua_State *L ) {
     static const luaL_reg Map[] = {
-      {"value",  lua_charon_cache_value},
-      {"insert", lua_charon_cache_insert},
-      {"remove", lua_charon_cache_remove},
+      {"value",  charon_cache_value},
+      {"insert", charon_cache_insert},
+      {"remove", charon_cache_remove},
       {NULL, NULL}
     };
     luaL_newmetatable(L, "cache");

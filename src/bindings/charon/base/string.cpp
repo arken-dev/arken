@@ -10,7 +10,7 @@
 using charon::ByteArray;
 using charon::ByteArrayList;
 
-static int lua_charon_string_append( lua_State *L ) {
+static int charon_string_append( lua_State *L ) {
   const char *string = luaL_checkstring(L, 1);
   const char *str    = luaL_checkstring(L, 2);
   char *result = string::append(string, str);
@@ -19,7 +19,7 @@ static int lua_charon_string_append( lua_State *L ) {
   return 1;
 }
 
-static int lua_charon_string_camelCase( lua_State *L ) {
+static int charon_string_camelCase( lua_State *L ) {
   char * result;
   const char *string = luaL_checkstring(L, 1);
   bool  flag = false;
@@ -35,7 +35,7 @@ static int lua_charon_string_camelCase( lua_State *L ) {
   return 1;
 }
 
-static int lua_charon_string_capitalize( lua_State *L ) {
+static int charon_string_capitalize( lua_State *L ) {
   const char *string = luaL_checkstring(L, 1);
   char *result = string::capitalize(string);
   lua_pushstring(L, result);
@@ -43,7 +43,7 @@ static int lua_charon_string_capitalize( lua_State *L ) {
   return 1;
 }
 
-static int lua_charon_string_center( lua_State *L ) {
+static int charon_string_center( lua_State *L ) {
   const char *string = luaL_checkstring(L, 1);
   int size           = luaL_checkinteger(L, 2);
   const char *pad    = luaL_checkstring(L, 3);
@@ -53,7 +53,7 @@ static int lua_charon_string_center( lua_State *L ) {
   return 1;
 }
 
-static int lua_charon_string_chop( lua_State *L ) {
+static int charon_string_chop( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   int n =  luaL_checkinteger(L, 2);
   char * result = string::chop(string, n);
@@ -62,7 +62,7 @@ static int lua_charon_string_chop( lua_State *L ) {
   return 1;
 }
 
-static int lua_charon_string_contains( lua_State *L ) {
+static int charon_string_contains( lua_State *L ) {
   const char *string = luaL_checkstring(L, 1);
   const char *str    = luaL_checkstring(L, 2);
   bool result        = string::contains(string, str);
@@ -70,7 +70,7 @@ static int lua_charon_string_contains( lua_State *L ) {
   return 1;
 }
 
-static int lua_charon_string_count( lua_State *L ) {
+static int charon_string_count( lua_State *L ) {
   const char *str1 = luaL_checkstring(L, 1);
   const char *str2 = luaL_checkstring(L, 2);
   int result       = string::count(str1, str2);
@@ -79,7 +79,7 @@ static int lua_charon_string_count( lua_State *L ) {
 }
 
 
-static int lua_charon_string_endsWith( lua_State *L ) {
+static int charon_string_endsWith( lua_State *L ) {
   const char *string = luaL_checkstring(L, 1);
   const char *str    = luaL_checkstring(L, 2);
   bool result        = string::endsWith(string, str);
@@ -87,7 +87,7 @@ static int lua_charon_string_endsWith( lua_State *L ) {
   return 1;
 }
 
-static int lua_charon_string_escape( lua_State *L ) {
+static int charon_string_escape( lua_State *L ) {
   const char *string = luaL_checkstring(L, 1);
   char * result      = string::escape(string);
   lua_pushstring(L, result);
@@ -95,7 +95,7 @@ static int lua_charon_string_escape( lua_State *L ) {
   return 1;
 }
 
-static int lua_charon_string_escapeHtml( lua_State *L ) {
+static int charon_string_escapeHtml( lua_State *L ) {
   const char *string = luaL_checkstring(L, 1);
   char * result      = string::escapeHtml(string);
   lua_pushstring(L, result);
@@ -103,7 +103,7 @@ static int lua_charon_string_escapeHtml( lua_State *L ) {
   return 1;
 }
 
-static int lua_charon_string_indexOf( lua_State *L ) {
+static int charon_string_indexOf( lua_State *L ) {
   const char *string = luaL_checkstring(L, 1);
   const char *str    = luaL_checkstring(L, 2);
   int start = 0;
@@ -119,7 +119,7 @@ static int lua_charon_string_indexOf( lua_State *L ) {
   return 1;
 }
 
-static int lua_charon_string_insert( lua_State *L ) {
+static int charon_string_insert( lua_State *L ) {
   const char *string = luaL_checkstring(L, 1);
   int len            = luaL_checkinteger(L, 2);
   const char *ba     = luaL_checkstring(L, 3);
@@ -129,7 +129,7 @@ static int lua_charon_string_insert( lua_State *L ) {
   return 1;
 }
 
-static int lua_charon_string_lastIndexOf( lua_State *L ) {
+static int charon_string_lastIndexOf( lua_State *L ) {
   const char *string = luaL_checkstring(L, 1);
   const char *str    = luaL_checkstring(L, 2);
   int result = string::lastIndexOf(string, str);
@@ -140,7 +140,7 @@ static int lua_charon_string_lastIndexOf( lua_State *L ) {
   return 1;
 }
 
-static int lua_charon_string_left( lua_State *L ) {
+static int charon_string_left( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   int    len    =  luaL_checkinteger(L, 2);
   char * result = string::left(string, len);
@@ -149,7 +149,7 @@ static int lua_charon_string_left( lua_State *L ) {
   return 1;
 }
 
-static int lua_charon_string_mid( lua_State *L ) {
+static int charon_string_mid( lua_State *L ) {
   const char *string = luaL_checkstring(L, 1);
   int pos      =  luaL_checkinteger(L, 2);
   int len;
@@ -164,7 +164,7 @@ static int lua_charon_string_mid( lua_State *L ) {
   return 1;
 }
 
-static int lua_charon_string_normalize( lua_State *L ) {
+static int charon_string_normalize( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   char * result       = string::normalize(string);
   lua_pushstring(L, result);  /* push result */
@@ -172,7 +172,7 @@ static int lua_charon_string_normalize( lua_State *L ) {
   return 1;
 }
 
-static int lua_charon_string_leftJustified( lua_State *L ) {
+static int charon_string_leftJustified( lua_State *L ) {
   const char *string = luaL_checkstring(L, 1);
   int size           = luaL_checkinteger(L, 2);
   const char *pad    = luaL_checkstring(L, 3);
@@ -182,7 +182,7 @@ static int lua_charon_string_leftJustified( lua_State *L ) {
   return 1;
 }
 
-static int lua_charon_string_rightJustified( lua_State *L ) {
+static int charon_string_rightJustified( lua_State *L ) {
   const char *string = luaL_checkstring(L, 1);
   int size           = luaL_checkinteger(L, 2);
   const char *pad    = luaL_checkstring(L, 3);
@@ -192,7 +192,7 @@ static int lua_charon_string_rightJustified( lua_State *L ) {
   return 1;
 }
 
-static int lua_charon_string_repeated( lua_State *L ) {
+static int charon_string_repeated( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   int    times  =  luaL_checkinteger(L, 2);
   char * result = string::repeated(string, times);
@@ -201,7 +201,7 @@ static int lua_charon_string_repeated( lua_State *L ) {
   return 1;
 }
 
-static int lua_charon_string_right( lua_State *L ) {
+static int charon_string_right( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   int    len    =  luaL_checkinteger(L, 2);
   char * result = string::right(string, len);
@@ -210,7 +210,7 @@ static int lua_charon_string_right( lua_State *L ) {
   return 1;
 }
 
-static int lua_charon_string_simplified( lua_State *L ) {
+static int charon_string_simplified( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   char * result = string::simplified(string);
   lua_pushstring(L, result);  /* push result */
@@ -218,7 +218,7 @@ static int lua_charon_string_simplified( lua_State *L ) {
   return 1;
 }
 
-static int lua_charon_string_startsWith( lua_State *L ) {
+static int charon_string_startsWith( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   const char * ba     = luaL_checkstring(L, 2);
   bool result         = string::startsWith(string, ba);
@@ -226,7 +226,7 @@ static int lua_charon_string_startsWith( lua_State *L ) {
   return 1;
 }
 
-static int lua_charon_string_suffix( lua_State *L ) {
+static int charon_string_suffix( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   char chr = '.';
   char * result;
@@ -239,7 +239,7 @@ static int lua_charon_string_suffix( lua_State *L ) {
   return 1;
 }
 
-static int lua_charon_string_split( lua_State *L ) {
+static int charon_string_split( lua_State *L ) {
   size_t len;
   const char  * string  = luaL_checklstring(L, 1, &len);
   const char  * pattern = luaL_checkstring(L, 2);
@@ -252,7 +252,7 @@ static int lua_charon_string_split( lua_State *L ) {
   return 1;
 }
 
-static int lua_charon_string_replace( lua_State *L ) {
+static int charon_string_replace( lua_State *L ) {
   size_t len1, len2;
   const char * string = luaL_checkstring(L, 1);
   const char * before = luaL_checklstring(L, 2, &len1);
@@ -277,7 +277,7 @@ static int lua_charon_string_replace( lua_State *L ) {
   return 1;
 }
 
-static int lua_charon_string_trimmed( lua_State *L ) {
+static int charon_string_trimmed( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   char * result       = string::trimmed(string);
   lua_pushstring(L, result);  /* push result */
@@ -285,7 +285,7 @@ static int lua_charon_string_trimmed( lua_State *L ) {
   return 1;
 }
 
-static int lua_charon_string_leftTrimmed( lua_State *L ) {
+static int charon_string_leftTrimmed( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   char * result       = string::leftTrimmed(string);
   lua_pushstring(L, result);  /* push result */
@@ -293,7 +293,7 @@ static int lua_charon_string_leftTrimmed( lua_State *L ) {
   return 1;
 }
 
-static int lua_charon_string_rightTrimmed( lua_State *L ) {
+static int charon_string_rightTrimmed( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   char * result       = string::rightTrimmed(string);
   lua_pushstring(L, result);  /* push result */
@@ -301,7 +301,7 @@ static int lua_charon_string_rightTrimmed( lua_State *L ) {
   return 1;
 }
 
-static int lua_charon_string_truncate( lua_State *L ) {
+static int charon_string_truncate( lua_State *L ) {
   const char *string = luaL_checkstring(L, 1);
   int pos = luaL_checkinteger(L, 2);
   const char * omission;
@@ -325,7 +325,7 @@ static int lua_charon_string_truncate( lua_State *L ) {
   return 1;
 }
 
-static int lua_charon_string_dasherize( lua_State *L ) {
+static int charon_string_dasherize( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   char       * result = string::dasherize(string);
   lua_pushstring(L, result);
@@ -333,7 +333,7 @@ static int lua_charon_string_dasherize( lua_State *L ) {
   return 1;
 }
 
-static int lua_charon_string_underscore( lua_State *L ) {
+static int charon_string_underscore( lua_State *L ) {
   const char *string = luaL_checkstring(L, 1);
   char      * result = string::underscore(string);
   lua_pushstring(L, result);
@@ -343,37 +343,37 @@ static int lua_charon_string_underscore( lua_State *L ) {
 
 int luaopen_charon_string( lua_State *L ) {
   static const luaL_reg Map[] = {
-    {"append",         lua_charon_string_append},
-    {"camelCase",      lua_charon_string_camelCase},
-    {"capitalize",     lua_charon_string_capitalize},
-    {"center",         lua_charon_string_center},
-    {"contains",       lua_charon_string_contains},
-    {"chop",           lua_charon_string_chop},
-    {"count",          lua_charon_string_count},
-    {"endsWith",       lua_charon_string_endsWith},
-    {"escape",         lua_charon_string_escape},
-    {"escapeHtml",     lua_charon_string_escapeHtml},
-    {"dasherize",      lua_charon_string_dasherize},
-    {"indexOf",        lua_charon_string_indexOf},
-    {"insert",         lua_charon_string_insert},
-    {"left",           lua_charon_string_left},
-    {"lastIndexOf",    lua_charon_string_lastIndexOf},
-    {"mid",            lua_charon_string_mid},
-    {"normalize",      lua_charon_string_normalize},
-    {"leftJustified",  lua_charon_string_leftJustified},
-    {"rightJustified", lua_charon_string_rightJustified},
-    {"simplified",     lua_charon_string_simplified},
-    {"repeated",       lua_charon_string_repeated},
-    {"replace",        lua_charon_string_replace},
-    {"right",          lua_charon_string_right},
-    {"startsWith",     lua_charon_string_startsWith},
-    {"split",          lua_charon_string_split},
-    {"suffix",         lua_charon_string_suffix},
-    {"trimmed",        lua_charon_string_trimmed},
-    {"leftTrimmed",    lua_charon_string_leftTrimmed},
-    {"rightTrimmed",   lua_charon_string_rightTrimmed},
-    {"truncate",       lua_charon_string_truncate},
-    {"underscore",     lua_charon_string_underscore},
+    {"append",         charon_string_append},
+    {"camelCase",      charon_string_camelCase},
+    {"capitalize",     charon_string_capitalize},
+    {"center",         charon_string_center},
+    {"contains",       charon_string_contains},
+    {"chop",           charon_string_chop},
+    {"count",          charon_string_count},
+    {"endsWith",       charon_string_endsWith},
+    {"escape",         charon_string_escape},
+    {"escapeHtml",     charon_string_escapeHtml},
+    {"dasherize",      charon_string_dasherize},
+    {"indexOf",        charon_string_indexOf},
+    {"insert",         charon_string_insert},
+    {"left",           charon_string_left},
+    {"lastIndexOf",    charon_string_lastIndexOf},
+    {"mid",            charon_string_mid},
+    {"normalize",      charon_string_normalize},
+    {"leftJustified",  charon_string_leftJustified},
+    {"rightJustified", charon_string_rightJustified},
+    {"simplified",     charon_string_simplified},
+    {"repeated",       charon_string_repeated},
+    {"replace",        charon_string_replace},
+    {"right",          charon_string_right},
+    {"startsWith",     charon_string_startsWith},
+    {"split",          charon_string_split},
+    {"suffix",         charon_string_suffix},
+    {"trimmed",        charon_string_trimmed},
+    {"leftTrimmed",    charon_string_leftTrimmed},
+    {"rightTrimmed",   charon_string_rightTrimmed},
+    {"truncate",       charon_string_truncate},
+    {"underscore",     charon_string_underscore},
     {NULL, NULL}
   };
   luaL_register(L, "string", Map);

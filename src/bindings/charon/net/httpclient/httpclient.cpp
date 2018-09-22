@@ -22,7 +22,7 @@ checkHttpClient( lua_State *L ) {
  */
 
 static int
-lua_HttpClientClassMethodNew( lua_State *L ) {
+charon_HttpClientClassMethodNew( lua_State *L ) {
   const char * url = luaL_checkstring(L, 1);
   HttpClient **ptr = (HttpClient **)lua_newuserdata(L, sizeof(HttpClient*));
   *ptr = new HttpClient(url);
@@ -32,7 +32,7 @@ lua_HttpClientClassMethodNew( lua_State *L ) {
 }
 
 static const luaL_reg HttpClientClassMethods[] = {
-  {"new", lua_HttpClientClassMethodNew},
+  {"new", charon_HttpClientClassMethodNew},
   {NULL, NULL}
 };
 
@@ -49,7 +49,7 @@ registerHttpClientClassMethods( lua_State *L ) {
  */
 
 static int
-lua_HttpClientInstanceMethodAppendHeader( lua_State *L ) {
+charon_HttpClientInstanceMethodAppendHeader( lua_State *L ) {
   HttpClient *udata  = checkHttpClient( L );
   const char * header = luaL_checkstring(L, 2);
   udata->appendHeader(header);
@@ -57,7 +57,7 @@ lua_HttpClientInstanceMethodAppendHeader( lua_State *L ) {
 }
 
 static int
-lua_HttpClientInstanceMethodSetVerbose( lua_State *L ) {
+charon_HttpClientInstanceMethodSetVerbose( lua_State *L ) {
   HttpClient *udata  = checkHttpClient( L );
   bool verbose = lua_toboolean(L, 2);
   udata->setVerbose(verbose);
@@ -65,7 +65,7 @@ lua_HttpClientInstanceMethodSetVerbose( lua_State *L ) {
 }
 
 static int
-lua_HttpClientInstanceMethodVerbose( lua_State *L ) {
+charon_HttpClientInstanceMethodVerbose( lua_State *L ) {
   HttpClient *udata  = checkHttpClient( L );
   bool verbose = udata->verbose();
   lua_pushinteger(L, verbose);
@@ -73,7 +73,7 @@ lua_HttpClientInstanceMethodVerbose( lua_State *L ) {
 }
 
 static int
-lua_HttpClientInstanceMethodSetBody( lua_State *L ) {
+charon_HttpClientInstanceMethodSetBody( lua_State *L ) {
   HttpClient *udata = checkHttpClient( L );
   const char * body  = luaL_checkstring(L, 2);
   udata->setBody(body);
@@ -81,7 +81,7 @@ lua_HttpClientInstanceMethodSetBody( lua_State *L ) {
 }
 
 static int
-lua_HttpClientInstanceMethodBody( lua_State *L ) {
+charon_HttpClientInstanceMethodBody( lua_State *L ) {
   HttpClient *udata = checkHttpClient( L );
   const char * body = udata->body();
   lua_pushstring(L, body);
@@ -89,7 +89,7 @@ lua_HttpClientInstanceMethodBody( lua_State *L ) {
 }
 
 static int
-lua_HttpClientInstanceMethodPerformGet( lua_State *L ) {
+charon_HttpClientInstanceMethodPerformGet( lua_State *L ) {
   HttpClient *udata = checkHttpClient( L );
   char * get = udata->performGet();
   lua_pushstring(L, get);
@@ -98,7 +98,7 @@ lua_HttpClientInstanceMethodPerformGet( lua_State *L ) {
 }
 
 static int
-lua_HttpClientInstanceMethodPerformPost( lua_State *L ) {
+charon_HttpClientInstanceMethodPerformPost( lua_State *L ) {
   HttpClient *udata = checkHttpClient( L );
   char * post = udata->performPost();
   lua_pushstring(L, post);
@@ -107,7 +107,7 @@ lua_HttpClientInstanceMethodPerformPost( lua_State *L ) {
 }
 
 static int
-lua_HttpClientInstanceMethodPerformPut( lua_State *L ) {
+charon_HttpClientInstanceMethodPerformPut( lua_State *L ) {
   HttpClient *udata = checkHttpClient( L );
   char * put = udata->performPut();
   lua_pushstring(L, put);
@@ -116,7 +116,7 @@ lua_HttpClientInstanceMethodPerformPut( lua_State *L ) {
 }
 
 static int
-lua_HttpClientInstanceMethodPerformDelete( lua_State *L ) {
+charon_HttpClientInstanceMethodPerformDelete( lua_State *L ) {
   HttpClient *udata = checkHttpClient( L );
   char * del = udata->performDelete();
   lua_pushstring(L, del);
@@ -125,7 +125,7 @@ lua_HttpClientInstanceMethodPerformDelete( lua_State *L ) {
 }
 
 static int
-lua_HttpClientInstanceMethodUrlRedirect( lua_State *L ) {
+charon_HttpClientInstanceMethodUrlRedirect( lua_State *L ) {
   HttpClient *udata = checkHttpClient( L );
   const char * urlRedirect = udata->urlRedirect();
   lua_pushstring(L, urlRedirect);
@@ -133,7 +133,7 @@ lua_HttpClientInstanceMethodUrlRedirect( lua_State *L ) {
 }
 
 static int
-lua_HttpClientInstanceMethodDestruct( lua_State *L ) {
+charon_HttpClientInstanceMethodDestruct( lua_State *L ) {
   HttpClient *udata = checkHttpClient( L );
   delete udata;
   return 0;
@@ -141,17 +141,17 @@ lua_HttpClientInstanceMethodDestruct( lua_State *L ) {
 
 static const
 luaL_reg HttpClientInstanceMethods[] = {
-  {"appendHeader", lua_HttpClientInstanceMethodAppendHeader},
-  {"setVerbose", lua_HttpClientInstanceMethodSetVerbose},
-  {"verbose", lua_HttpClientInstanceMethodVerbose},
-  {"setBody", lua_HttpClientInstanceMethodSetBody},
-  {"body", lua_HttpClientInstanceMethodBody},
-  {"performGet", lua_HttpClientInstanceMethodPerformGet},
-  {"performPost", lua_HttpClientInstanceMethodPerformPost},
-  {"performPut", lua_HttpClientInstanceMethodPerformPut},
-  {"performDelete", lua_HttpClientInstanceMethodPerformDelete},
-  {"urlRedirect", lua_HttpClientInstanceMethodUrlRedirect},
-  {"__gc", lua_HttpClientInstanceMethodDestruct},
+  {"appendHeader", charon_HttpClientInstanceMethodAppendHeader},
+  {"setVerbose", charon_HttpClientInstanceMethodSetVerbose},
+  {"verbose", charon_HttpClientInstanceMethodVerbose},
+  {"setBody", charon_HttpClientInstanceMethodSetBody},
+  {"body", charon_HttpClientInstanceMethodBody},
+  {"performGet", charon_HttpClientInstanceMethodPerformGet},
+  {"performPost", charon_HttpClientInstanceMethodPerformPost},
+  {"performPut", charon_HttpClientInstanceMethodPerformPut},
+  {"performDelete", charon_HttpClientInstanceMethodPerformDelete},
+  {"urlRedirect", charon_HttpClientInstanceMethodUrlRedirect},
+  {"__gc", charon_HttpClientInstanceMethodDestruct},
   {NULL, NULL}
 };
 

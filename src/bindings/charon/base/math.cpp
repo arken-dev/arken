@@ -7,7 +7,7 @@
 #include <charon/base>
 #include <cmath>
 
-static int lua_charon_math_round( lua_State *L ) {
+static int charon_math_round( lua_State *L ) {
   double number    = luaL_checknumber(L, 1);
   int    precision = luaL_checkint(L, 2);
   double result    = math::round(number, precision);
@@ -15,7 +15,7 @@ static int lua_charon_math_round( lua_State *L ) {
   return 1;
 }
 
-static int lua_charon_math_truncate( lua_State *L ) {
+static int charon_math_truncate( lua_State *L ) {
   double number    = luaL_checknumber(L, 1);
   int    precision = luaL_checkint(L, 2);
   double result    = math::truncate(number, precision);
@@ -23,7 +23,7 @@ static int lua_charon_math_truncate( lua_State *L ) {
   return 1;
 }
 
-static int lua_charon_math_format( lua_State *L ) {
+static int charon_math_format( lua_State *L ) {
   double number = luaL_checknumber(L, 1);
   int params    = lua_gettop(L);
   int decimal;
@@ -60,9 +60,9 @@ static int lua_charon_math_format( lua_State *L ) {
 
 int luaopen_charon_math( lua_State *L ) {
   static const luaL_reg Map[] = {
-    {"round",    lua_charon_math_round},
-    {"truncate", lua_charon_math_truncate},
-    {"format",   lua_charon_math_format},
+    {"round",    charon_math_round},
+    {"truncate", charon_math_truncate},
+    {"format",   charon_math_format},
     {NULL, NULL}
   };
   luaL_register(L, "math", Map);
