@@ -65,8 +65,8 @@ Migrate.help.generate = [[
 
 function Migrate:generate()
   local params    = self:params()
-  local QDateTime = require('QDateTime')
-  local timestamp = Migrate.timestamp or QDateTime.currentDateTime():toString('yyyyMMddhhmmss')
+  local DateTime  = require('charon.time.DateTime')
+  local timestamp = Migrate.timestamp or DateTime.currentDateTime():toString('yyyyMMddhhmmss')
   local name      = tostring(params[1]):underscore()
   if name == 'nil' then
     error('arg for migrate name')
