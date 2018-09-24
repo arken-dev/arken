@@ -1,14 +1,11 @@
 CHARON_ENV = os.getenv("CHARON_ENV") or "test"
 
-local QDirIterator = require 'QDirIterator'
-local QFileInfo    = require 'QFileInfo'
 local ActiveRecord = require "charon.ActiveRecord"
-
-local test     = require 'charon.test'
-local template = require 'charon.template'
-local coverage = require 'charon.coverage'
-local start    = os.microtime()
-local files    = {}
+local test         = require 'charon.test'
+local template     = require 'charon.template'
+local coverage     = require 'charon.coverage'
+local start        = os.microtime()
+local files        = {}
 local M = {}
 
 -------------------------------------------------------------------------------
@@ -21,13 +18,10 @@ function M.start()
     os.mkdir(dir)
   end
 
-  local iterator = QDirIterator.new('./app/models', {"Subdirectories"})
-  while(iterator:hasNext()) do
-    iterator:next()
-    local fileInfo = iterator:fileInfo()
-    if fileInfo:filePath():endsWith(".lua") then
-      local filePath = fileInfo:filePath()
-      --print(filePath)
+  local list = os.glob('./app/models', true)
+  for i = 1, list:size() do
+    local filePath = list:at(i)
+    if filePath:endsWith(".lua") then
       table.insert(files, filePath)
       triton.enqueue(filePath)
     end
@@ -39,14 +33,14 @@ function M.run(fileName)
   local tests     = {}
   local dirName   = fileName:replace(".lua", ""):replace("app", "tests")
   local modelName = dirName:replace("./tests/models/", ""):replace("/", ".")
-  local iterator  = QDirIterator.new(dirName)
+
+  local list = os.glob(dirName)
   package.loaded[modelName] = nil
 
-  while(iterator:hasNext()) do
-    iterator:next()
-    local fileInfo = iterator:fileInfo()
-    if fileInfo:filePath():endsWith(".lua") then
-      table.insert(tests, fileInfo:filePath())
+  for i = 1, list:size() do
+    local filePath = list:at(i)
+    if filePath:endsWith(".lua") then
+      table.insert(tests, filePath)
     end
   end
 
