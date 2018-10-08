@@ -1,8 +1,8 @@
 local empty = require('charon.empty')
 local test  = {}
 
-test['should return true for 0'] = function()
-  assert( empty(0) == true )
+test['should return false for 0'] = function()
+  assert( empty(0) == false )
 end
 
 test['should return false for "0"'] = function()
@@ -13,8 +13,8 @@ test['should return false for 1'] = function()
   assert( empty(1) == false )
 end
 
-test['should return true for false'] = function()
-  assert( empty(false) == true )
+test['should return false for boolean false'] = function()
+  assert( empty(false) == false )
 end
 
 test['should return false for string false'] = function()
@@ -39,7 +39,7 @@ test['should return false for string'] = function()
 end
 
 test['should return true for boolen false'] = function()
-  assert( empty(false) == true )
+  assert( empty(false) == false )
 end
 
 return test
