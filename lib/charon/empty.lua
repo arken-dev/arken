@@ -7,7 +7,7 @@ local empty = function(value)
   if type(value) == 'table' then
     return next(value) == nil
   else
-    return ( value == false or value == 0 or value == '' or value == nil )
+    return ( value == '' or value == nil )
   end
 end
 
