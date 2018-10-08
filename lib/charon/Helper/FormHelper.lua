@@ -161,6 +161,7 @@ function FormHelper:intField(field, options)
   options.style      = options.style      or "width:95px;text-align:right"
   local value        = options.value      or self:buildValue(field)
   local thousands    = options.thousands  or '.'
+  local separator    = options.separator  or ','
 
   if type(value) == 'string' and value:contains(',') then
     value = tonumber( value:replace('.', ''):replace(',', '.') )
@@ -171,7 +172,7 @@ function FormHelper:intField(field, options)
   if value == nil then
     options.value = ""
   else
---    options.value = math.format(value, decimal, separator, thousands)
+    options.value = math.format(value, 0, separator, thousands)
   end
 
   return self:textField(field, options)

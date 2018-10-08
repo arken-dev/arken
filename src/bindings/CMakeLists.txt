@@ -9,4 +9,4 @@
 # ------------------------------------------------------------------------------
 
 add_subdirectory( charon )
-add_subdirectory( qt )
+#add_subdirectory( qt )

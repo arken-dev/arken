@@ -1,7 +1,5 @@
 CHARON_ENV = os.getenv("CHARON_ENV") or "test"
 
-local QDirIterator = require 'QDirIterator'
-local QFileInfo    = require 'QFileInfo'
 local test         = require 'charon.test'
 local template     = require 'charon.template'
 local coverage     = require 'charon.coverage'
@@ -40,17 +38,16 @@ function M.run(fileName)
     triton.append("message", string.format("warning: directory %s not exists\n", dirName))
   end
   local libName  = dirName:replace("tests/lib/", ""):replace("/", "."):replace('.lua', '')
-  local iterator = QDirIterator.new(dirName)
+  local list = os.glob(dirName, true)
 
   if libName == 'charon.coverage' then
     package.loaded[libName] = nil
   end
 
-  while(iterator:hasNext()) do
-    iterator:next()
-    local fileInfo = iterator:fileInfo()
-    if fileInfo:filePath():endsWith(".lua") then
-      table.insert(tests, fileInfo:filePath())
+  for i = 1, list:size() do
+    local filePath = list:at(i)
+    if filePath:endsWith(".lua") then
+      table.insert(tests, filePath)
     end
   end
 
