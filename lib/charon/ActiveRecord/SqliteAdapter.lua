@@ -4,7 +4,6 @@
 -- license that can be found in the LICENSE file.
 
 local driver    = require "luasql.sqlite3"
-local isblank   = require('charon.isblank')
 local toboolean = require('charon.toboolean')
 local Class     = require('charon.oop.Class')
 local Adapter   = require('charon.ActiveRecord.Adapter')
@@ -57,7 +56,7 @@ function ActiveRecord_SqliteAdapter:insert(record)
   for column, value in pairs(record) do
     if not self:isReserved(column) then
     --for column, properties in pairs(self:columns(table)) do
-      if not (column == self.primaryKey and isblank(record[self.primaryKey]))  then
+      if not (column == self.primaryKey and empty(record[self.primaryKey]))  then
         --local value = record[column]
         if #col > 0 then
           col = col .. ', '

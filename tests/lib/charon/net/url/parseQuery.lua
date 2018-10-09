@@ -9,6 +9,13 @@ test.should_return_table_of_parse = function()
   assert(result.val2 == 'strval', json.encode(result))
 end
 
+test.should_return_value_of_query_with_data_format = function()
+  local result = url.parseQuery("date1=01%2F10%2F2018&date2=31%2F10%2F2018&x=36&y=4")
+  assert(type(result) == 'table')
+  assert(result.date1 == '01/10/2018', result.date1)
+  assert(result.date2 == '31/10/2018', result.date2)
+end
+
 test.should_return_table_if_nil = function()
   local result = url.parseQuery(nil)
   assert(type(result) == 'table')
