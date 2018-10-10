@@ -171,7 +171,7 @@ function FormHelper:intField(field, options)
   if value == nil then
     options.value = ""
   else
-    options.value = math.format(value, decimal, separator, thousands)
+--    options.value = math.format(value, decimal, separator, thousands)
   end
 
   return self:textField(field, options)
