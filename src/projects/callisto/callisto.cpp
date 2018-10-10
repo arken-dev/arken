@@ -25,8 +25,7 @@ Callisto::Callisto(int argc, char * argv[], QObject *parent) : QObject(parent)
 
   m_file = argv[1];
 
-  m_watcher = new QFileSystemWatcher ;
-  qDebug() << "m_file " << m_file;
+  m_watcher = new QFileSystemWatcher;
 
   m_watcher->addPath(m_file);
 
@@ -83,9 +82,7 @@ Callisto::~Callisto()
 
 void Callisto::showFileModified(const QString &str)
 {
-  qDebug() << "1showFileModified\n";
   qDebug() << str.toLocal8Bit().data();
-  qDebug() << "size" << str.size();
 
   QString title = str.right(str.size() - str.indexOf("specs"));
   QThread::msleep(200);

@@ -18,15 +18,20 @@ local test     = {}
 test.output    = io.write
 
 function test.process(file_name)
-  local results   = {}
   local status, specs = pcall(dofile, file_name)
-  -- arquivo com erro de sintaxe
   if not status then
     test.output(file_name)
     test.output(specs)
     results[file_name] = { status = 'failure', msg = specs }
     return results
+  else
+    return test.run(specs)
   end
+end
+
+function test.run(specs)
+  local results   = {}
+  -- arquivo com erro de sintaxe
   if specs == nil then
     error "empty tests..."
   end

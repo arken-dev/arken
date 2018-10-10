@@ -3,11 +3,11 @@
 -- Use of this source code is governed by a BSD-style
 -- license that can be found in the LICENSE file.
 
-local Array = require('charon.Array')
-local Class = require('charon.oop.Class')
+local Array     = require('charon.Array')
+local Class     = require('charon.oop.Class')
 local toboolean = require('charon.toboolean')
-local QDateTime = require('QDateTime')
-local Date = require('charon.time.Date')
+local Date      = require('charon.time.Date')
+local DateTime  = require('charon.time.DateTime')
 
 local ActiveRecord_Adapter = Class.new("ActiveRecord.Adapter")
 
@@ -563,14 +563,14 @@ function ActiveRecord_Adapter.read_value_string(value)
 end
 
 function ActiveRecord_Adapter.read_value_timestamp(value)
-  return QDateTime.fromString(value:mid(1, value:indexOf('.') + 3), 'yyyy/MM/dd hh:mm:ss.zzz')
+  return DateTime.fromString(value:mid(1, value:indexOf('.') + 3), 'yyyy/MM/dd hh:mm:ss.zzz')
 end
 
 function ActiveRecord_Adapter.read_value_datetime(value)
   if value:sub(5, 5) == '-' then
-    return QDateTime.fromString(value:left(19), 'yyyy-MM-dd hh:mm:ss')
+    return DateTime.fromString(value:left(19), 'yyyy-MM-dd hh:mm:ss')
   else
-    return QDateTime.fromString(value:left(19), 'yyyy/MM/dd hh:mm:ss')
+    return DateTime.fromString(value:left(19), 'yyyy/MM/dd hh:mm:ss')
   end
 end
 

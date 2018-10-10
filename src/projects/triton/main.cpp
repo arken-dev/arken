@@ -79,7 +79,7 @@ int main(int argc, char * argv[])
    */
   QList<Triton *> list;
   for(int i = 0; i < threads; i++ ) {
-    list.append(new Triton(argc, argv, fileName));
+    list.append(new Triton(argc, argv, fileName, i));
   }
 
   for(int i = 0; i < threads; i++ ) {

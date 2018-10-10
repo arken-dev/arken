@@ -7,6 +7,7 @@
 #include <charon/base>
 #include <charon/mvm>
 #include <iostream>
+#include <cstdio>
 
 using charon::ByteArray;
 using charon::mvm;
@@ -81,12 +82,14 @@ int charonConsoleLoad(lua_State *L)
 {
   int rv = 0;
   int level = 0;
+  char cmd[255];
   std::string line;
   ByteArray  row;
   ByteArray  buffer;
 
   while(true) {
-    std::cout << "charon" << level << "> ";
+    sprintf(cmd, "charon %i> ", level);
+    mvm::log(cmd);
 
     std::getline(std::cin, line);
     row = line.c_str();
@@ -136,6 +139,7 @@ int main(int argc, char * argv[])
   mvm::init(argc, argv);
   lua_State  * L;
 
+  os::sleep(0.1); // waiting mvm output log
   charon::instance i = mvm::instance();
   L = i.state();
   if (L == 0) {

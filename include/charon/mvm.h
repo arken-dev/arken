@@ -41,14 +41,17 @@ class mvm {
 
     private:
     static void init();
-    static void push(mvm::data *);
     static void back(mvm::data *);
     static mvm::data * pop();
     static bool empty();
+
+    public:
+    static void push(mvm::data *);
   };
 
   static int s_gc;
   static int s_version;
+  static int s_pool;
   static int      s_argc;
   static char * * s_argv;
   static ByteArray s_charonPath;
@@ -56,7 +59,6 @@ class mvm {
   static ByteArray s_dispatchPath;
 
   private:
-  static void push(mvm::data *);
   static mvm::data * takeFirst();
 
   mvm() {};
@@ -64,10 +66,18 @@ class mvm {
 
   public:
   static void init(int argc, char ** argv);
+  static void config();
+  static void log(const char * value);
+  static void set(std::string key, int value);
+  static int  at(std::string key);
+  static bool pause(std::string key);
   static void reload();
   static int  version();
+  static int  pool();
   static int  gc();
   static int  clear();
+  static void push(mvm::data *);
+  static void back(mvm::data *);
   static charon::instance instance();
 
 };
