@@ -4,6 +4,7 @@
 -- license that can be found in the LICENSE file.
 
 local driver    = require "luasql.sqlite3"
+local empty     = require('charon.empty')
 local toboolean = require('charon.toboolean')
 local Class     = require('charon.oop.Class')
 local Adapter   = require('charon.ActiveRecord.Adapter')
