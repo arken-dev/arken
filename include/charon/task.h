@@ -3,8 +3,8 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#ifndef CHARONTASK_H
-#define CHARONTASK_H
+#ifndef _CHARON_TASK_
+#define _CHARON_TASK_
 
 #include <thread>
 #include <mutex>
@@ -18,24 +18,25 @@ namespace charon
   class task {
     private:
 
-    class worker {
-      char * m_uuid;
-      char * m_fileName;
+    class work {
+      std::string m_uuid;
+      std::string m_fileName;
       public:
-      char * uuid();
-      char * fileName();
-      worker(char * uuid,  char * fileName);
-      ~worker();
+      const char * uuid();
+      const char * fileName();
+      work(const char * uuid, const char * fileName);
     };
 
     static std::vector<std::thread> * workers;
-    static std::queue<task::worker *> * queue;
+    static std::queue<task::work *> * queue;
     static std::mutex * mtx;
+
     task() {};
     ~task() {};
     static void run();
+
     public:
-    static const char * start( const char * fileName, const char * data );
+    static char * start( const char * fileName, const char * data );
     static const char * value( const char * uuid );
     static void insert( const char * uuid, const char * data );
 
@@ -43,4 +44,4 @@ namespace charon
 
 }
 
-#endif // CHARONTASK_H
+#endif // _CHARON_TASK_
