@@ -4,6 +4,7 @@
 -- license that can be found in the LICENSE file.
 
 local Array     = require('charon.Array')
+local empty     = require('charon.empty')
 local driver    = require('luasql.postgres')
 local toboolean = require('charon.toboolean')
 local Class     = require('charon.oop.Class')

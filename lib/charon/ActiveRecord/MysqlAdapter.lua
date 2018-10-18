@@ -5,6 +5,7 @@
 
 local mysql     = require "luasql.mysql"
 local json      = require('charon.json')
+local empty     = require('charon.empty')
 local toboolean = require('charon.toboolean')
 local Class     = require('charon.oop.Class')
 local Adapter   = require('charon.ActiveRecord.Adapter')

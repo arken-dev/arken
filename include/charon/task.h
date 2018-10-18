@@ -6,43 +6,38 @@
 #ifndef CHARONTASK_H
 #define CHARONTASK_H
 
-#include <QRunnable>
-#include <QThread>
-#include <QMutex>
-
-using charon::ByteArray;
+#include <thread>
+#include <mutex>
+#include <vector>
+#include <queue>
+#include <string>
 
 namespace charon
 {
 
   class task {
     private:
-    static QThreadPool * s_pool;
-    task() {};
-    ~task() {};
-    public:
-    static char * start( const char * fileName, const char * data );
-    static char * pool( const char * fileName, const char * data );
-    static const char * value( const char * uuid );
-    static void   insert( const char * uuid, const char * data );
-    static int gc();
-    static int wait();
 
-    class worker: public QThread, public QRunnable
-    {
-      friend class task;
-      ByteArray m_fileName;
-      ByteArray m_data;
-      ByteArray m_uuid;
-      double    m_microtime;
-      worker(const char * uuid, const char * fileName, const char * data);
+    class worker {
+      char * m_uuid;
+      char * m_fileName;
+      public:
+      char * uuid();
+      char * fileName();
+      worker(char * uuid,  char * fileName);
       ~worker();
-      void run();
-      double finishedAt();
     };
 
-    static QMutex s_mutex;
-    static QList<worker *> * s_workers;
+    static std::vector<std::thread> * workers;
+    static std::queue<task::worker *> * queue;
+    static std::mutex * mtx;
+    task() {};
+    ~task() {};
+    static void run();
+    public:
+    static const char * start( const char * fileName, const char * data );
+    static const char * value( const char * uuid );
+    static void insert( const char * uuid, const char * data );
 
   };
 

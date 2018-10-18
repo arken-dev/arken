@@ -13,63 +13,81 @@ using namespace charon;
 
 using charon::cache;
 
-QThreadPool * task::s_pool = 0;
-QList<task::worker *> * task::s_workers = new QList<task::worker *>;
-QMutex task::s_mutex;
+std::vector<std::thread>   * task::workers = new std::vector<std::thread>;
+std::queue<task::worker *> * task::queue   = new std::queue<task::worker *>;
+std::mutex                 * task::mtx     = new std::mutex;
 
-char * task::start(const char * fileName, const char * data)
+void task::run()
 {
-  char * uuid = os::uuid();
-  cache::insert(uuid, data);
-  task::worker * worker = new task::worker(uuid, fileName, data);
 
-  task::gc();
+  while( true ) {
+     task::worker * wkr = 0;
 
-  worker->start();
-  s_workers->append(worker);
+    mtx->lock();
+    if(! queue->empty() ) {
+      wkr = queue->front();
+      queue->pop();
+    }
+    mtx->unlock();
 
-  return uuid;
-}
+    if( wkr ) {
 
-int task::gc()
-{
-  int result = 0;
-  QMutexLocker ml(&s_mutex);
-  for(int i = 0; i < s_workers->size(); i++) {
-    task::worker * wkr = s_workers->at(i);
-    if( wkr->isFinished() && wkr->finishedAt() > 30 ) {
-      s_workers->removeOne(wkr);
+      charon::instance i = mvm::instance();
+      lua_State * L = i.state();
+      lua_settop(L, 0);
+
+      // CHARON_TASK
+      lua_pushstring(L, wkr->uuid());
+      lua_setglobal(L, "CHARON_TASK");
+
+      int rv;
+
+      //TODO .lua end file use dofile not use require ???
+      lua_getglobal(L, "dofile");
+      lua_pushstring(L, wkr->fileName());
       delete wkr;
-      result++;
-    }
-  }
-  return result;
-}
 
-int task::wait()
-{
-  int result = 0;
-  QMutexLocker ml(&s_mutex);
-  for(int i = 0; i < s_workers->size(); i++) {
-    task::worker * wkr = s_workers->at(i);
-    if( ! wkr->isFinished() ) {
-      wkr->wait();
-      result++;
-    }
-  }
-  return result;
-}
+      rv = lua_pcall(L, 1, 0, 0);
+      if (rv) {
+        fprintf(stderr, "erro no inicio: %s\n", lua_tostring(L, -1));
+      }
 
-char * task::pool(const char * fileName, const char * data)
+      // clear CHARON_TASK
+      lua_pushboolean(L, false);
+      lua_setglobal(L, "CHARON_TASK");
+      // lua gc
+      lua_gc(L, LUA_GCCOLLECT, 0);
+    } //if
+
+    // TODO future ???
+    os::sleep(0.10);
+
+  } // while
+
+} // task::worker
+
+const char * task::start(const char * fileName, const char * data)
 {
   char * uuid = os::uuid();
-  cache::insert(uuid, data);
-  if( s_pool == 0 ) {
-    s_pool = new QThreadPool;
-    s_pool->setMaxThreadCount(os::cores());
-  }
+  size_t size = strlen(fileName);
+  char * f = new char[size+37];
+  strcpy(f, fileName);
+  f[size] = '\0';
 
-  s_pool->start(new task::worker(uuid, fileName, data));
+  cache::insert(uuid, data);
+
+  mtx->lock();
+  if( workers->size() == 0 ) {
+    // TODO fix static 5 pool size
+    for(int i = 0; i < 5; i++ ) {
+      workers->push_back(std::thread(task::run));
+    }
+  }
+  mtx->unlock();
+
+  mtx->lock();
+  queue->push(new task::worker(uuid, f));
+  mtx->unlock();
 
   return uuid;
 }
@@ -84,59 +102,24 @@ void task::insert(const char * uuid, const char * data)
   cache::insert(uuid, data);
 }
 
-task::worker::worker(const char * uuid, const char * fileName, const char * data)
+task::worker::worker(char * uuid, char * fileName)
 {
-  m_microtime = 0;
   m_uuid     = uuid;
   m_fileName = fileName;
-  m_data     = data;
-}
-
-double task::worker::finishedAt()
-{
-  if( m_microtime == 0 ) {
-    return 0;
-  } else {
-    return os::microtime() - m_microtime;
-  }
 }
 
 task::worker::~worker()
 {
-  qDebug() << "destructor service ..." << m_fileName;
-  cache::remove(m_uuid.data());
+  delete[] m_uuid;
+  delete[] m_fileName;
 }
 
-void task::worker::run()
+char * task::worker::uuid()
 {
-  int rv;
-  charon::instance i = mvm::instance();
-  lua_State * luaState = i.state();
+  return m_uuid;
+}
 
-  // CHARON_TASK
-  lua_pushstring(luaState, m_uuid);
-  lua_setglobal(luaState, "CHARON_TASK");
-
-  //call
-  rv = luaL_loadfile(luaState, m_fileName.data());
-  if (rv) {
-    fprintf(stderr, "%s\n", lua_tostring(luaState, -1));
-    return;
-  }
-
-  rv = lua_pcall(luaState, 0, 0, lua_gettop(luaState) - 1);
-  if (rv) {
-    fprintf(stderr, "%s\n", lua_tostring(luaState, -1));
-    return;
-  }
-
-  // clear CHARON_TASK
-  lua_pushboolean(luaState, false);
-  lua_setglobal(luaState, "CHARON_TASK");
-
-  // lua gc
-  lua_gc(luaState, LUA_GCCOLLECT, 0);
-
-  // microtime
-  m_microtime = os::microtime();
+char * task::worker::fileName()
+{
+  return m_fileName;
 }
