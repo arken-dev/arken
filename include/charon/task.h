@@ -11,6 +11,7 @@
 #include <vector>
 #include <queue>
 #include <string>
+#include <condition_variable>
 
 namespace charon
 {
@@ -30,15 +31,21 @@ namespace charon
     static std::vector<std::thread> * workers;
     static std::queue<task::work *> * queue;
     static std::mutex * mtx;
+    static std::condition_variable * condition;
+    static uint32_t max;
+    static uint32_t actives;
 
     task() {};
     ~task() {};
     static void run();
 
     public:
+    static task::work * get();
     static char * start( const char * fileName, const char * data );
     static const char * value( const char * uuid );
     static void insert( const char * uuid, const char * data );
+    static void wait();
+    static void set(uint32_t max);
 
   };
 
