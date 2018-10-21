@@ -3,7 +3,6 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#include <QDebug>
 #include <lua/lua.hpp>
 #include <charon/base>
 #include <charon/cache>
@@ -11,68 +10,37 @@
 #include <charon/service>
 
 using namespace charon;
-
 using charon::cache;
 using charon::mvm;
-
-QList<service::worker *> * service::s_workers = new QList<service::worker *>;
-QMutex service::s_mutex;
 
 char * service::start(const char * fileName)
 {
   char * uuid = os::uuid();
-  cache::insert(uuid, "");
-  service::worker * worker = new service::worker(uuid, fileName);
 
-  service::gc();
+  char * uuidCopy = new char[strlen(uuid)+1];
+  strcpy(uuidCopy, uuid);
+  char * fileNameCopy = new char[strlen(fileName)+1];
+  strcpy(fileNameCopy, fileName);
 
-  worker->start();
-  s_workers->append(worker);
+  new std::thread(service::run, uuidCopy, fileNameCopy);
 
   return uuid;
 }
 
-int service::gc()
+service::service()
 {
-  int result = 0;
-  QMutexLocker ml(&s_mutex);
-  for(int i = 0; i < s_workers->size(); i++) {
-    service::worker * wkr = s_workers->at(i);
-    if( wkr->isFinished() && wkr->finishedAt() > 30 ) {
-      s_workers->removeOne(wkr);
-      delete wkr;
-      result++;
-    }
-  }
-  return result;
+  m_version = mvm::version();
 }
 
-service::worker::worker(const char * uuid, const char * fileName)
-{
-  m_microtime = 0;
-  m_uuid      = uuid;
-  m_fileName  = fileName;
-  m_version   = mvm::version();
-}
-
-double service::worker::finishedAt()
-{
-  if( m_microtime == 0 ) {
-    return 0;
-  } else {
-    return os::microtime() - m_microtime;
-  }
-}
-
-bool service::worker::loop(int secs)
+bool service::loop(int secs)
 {
   int i = 0;
 
   while( i < secs ) {
 
-    QThread::msleep(1000);
+    os::sleep(1);
 
-    if(isShutdown()) {
+    if(m_version != mvm::version()) {
       return false;
     }
 
@@ -82,65 +50,57 @@ bool service::worker::loop(int secs)
   return true;
 }
 
-bool service::worker::isShutdown()
+void service::run(char * uuid, char * fileName)
 {
-  if( m_version != mvm::version() ) {
-    return true;
-  }
-  return false;
-}
 
-const char * service::worker::uuid()
-{
-  return m_uuid.data();
-}
+  while( true )
+  {
 
-service::worker::~worker()
-{
-  qDebug() << "destructor service ..." << m_fileName;
-  cache::remove(m_uuid.data());
-}
+    {
 
-void service::worker::run()
-{
-  int rv;
-  charon::instance i = mvm::instance();
-  lua_State * luaState = i.state();
+    int rv;
 
-  // CHARON_TASK
-  lua_pushstring(luaState, m_uuid);
-  lua_setglobal(luaState, "CHARON_SERVICE");
+    charon::instance i = mvm::instance();
+    lua_State * L = i.state();
+    lua_settop(L, 0);
 
-  //allocate
-  lua_pushlightuserdata(luaState, this);
-  lua_setglobal(luaState, "__charon_service");
+    // global __charon_service
+    lua_pushlightuserdata(L, new service());
+    lua_setglobal(L, "__charon_service");
 
-  //call
-  rv = luaL_loadfile(luaState, m_fileName.data());
-  if (rv) {
-    fprintf(stderr, "%s\n", lua_tostring(luaState, -1));
-    return;
-  }
+    // CHARON_UUID
+    lua_pushstring(L, uuid);
+    lua_setglobal(L, "CHARON_UUID");
 
-  rv = lua_pcall(luaState, 0, 0, lua_gettop(luaState) - 1);
-  if (rv) {
-    fprintf(stderr, "%s\n", lua_tostring(luaState, -1));
-    return;
-  }
+    //TODO .lua end file use dofile not use require ???
+    lua_getglobal(L, "dofile");
+    lua_pushstring(L, fileName);
 
-  // clear CHARON_TASK
-  lua_pushboolean(luaState, false);
-  lua_setglobal(luaState, "CHARON_SERVICE");
+    rv = lua_pcall(L, 1, 0, 0);
+    if (rv) {
+      fprintf(stderr, "erro no inicio: %s\n", lua_tostring(L, -1));
+    }
 
-  // clear this
-  lua_pushnil(luaState);
-  lua_setglobal(luaState, "__charon_service");
+    // clear global __charon_service
+    lua_getglobal(L, "__charon_service");
+    service * srv = (service *) lua_touserdata(L, -1);
+    lua_pushnil(L);
+    lua_setglobal(L, "__charon_service");
+    delete srv;
 
-  // lua gc
-  lua_gc(luaState, LUA_GCCOLLECT, 0);
+    // clear CHARON_TASK
+    lua_pushboolean(L, false);
+    lua_setglobal(L, "CHARON_UUID");
 
-  service::start(this->m_fileName);
+    // lua gc
+    lua_gc(L, LUA_GCCOLLECT, 0);
 
-  // microtime
-  m_microtime = os::microtime();
+    }
+
+    // waiting for initialize next loop service
+    os::sleep(1);
+    std::cout << "reinitialize service " << fileName << std::endl;
+
+  } // while
+
 }
