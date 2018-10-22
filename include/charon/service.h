@@ -10,6 +10,8 @@
 #include <charon/cache>
 #include <thread>
 #include <iostream>
+#include <mutex>
+#include <vector>
 
 namespace charon
 {
@@ -18,9 +20,15 @@ namespace charon
     private:
     static void run(char * uuid, char * fileName);
     int m_version;
+    static int           s_version;
+    static char        * s_dirName;
+    static std::mutex  * s_mutex;
+    static std::vector<std::string> * s_services;
 
     public:
     static char * start(const char * fileName);
+    static void load(const char * dirName);
+    static void load();
     bool loop(int secs);
     service();
 
