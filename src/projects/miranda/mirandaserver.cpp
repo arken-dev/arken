@@ -56,8 +56,11 @@ MirandaServer::MirandaServer(QCoreApplication *app)
   }
 
   // SERVICES
-  QString dir("app/services");
-  if( QFile::exists(dir) ) {
+  //QString dir("app/services");
+  if( os::exists("app/services") ) {
+    qDebug() << "aqui mesmo";
+    charon::service::load("app/services");
+    /*
     QDirIterator iterator(dir);
     while(iterator.hasNext()) {
       iterator.next();
@@ -67,6 +70,7 @@ MirandaServer::MirandaServer(QCoreApplication *app)
         service::start(fileInfo.filePath().toLocal8Bit());
       }
     }
+    */
   } else {
     qDebug() << "services dir not exists";
   }

@@ -8,37 +8,29 @@
 
 #include <charon/base>
 #include <charon/cache>
-#include <QRunnable>
-#include <QThread>
-#include <QMutex>
+#include <thread>
+#include <iostream>
+#include <mutex>
+#include <vector>
 
 namespace charon
 {
   class service {
 
+    private:
+    static void run(char * uuid, char * fileName);
+    int m_version;
+    static int           s_version;
+    static char        * s_dirName;
+    static std::mutex  * s_mutex;
+    static std::vector<std::string> * s_services;
+
     public:
-    static char * start( const char * fileName);
-    static int gc();
-
-    class worker: public QThread, public QRunnable
-    {
-      friend class service;
-      ByteArray m_fileName;
-      ByteArray m_uuid;
-      double    m_microtime;
-      int       m_version;
-      worker(const char * uuid, const char * fileName);
-      ~worker();
-      void run();
-      bool isShutdown();
-      double finishedAt();
-      public:
-      bool loop(int secs);
-      const char * uuid();
-    };
-
-    static QMutex s_mutex;
-    static QList<worker *> * s_workers;
+    static char * start(const char * fileName);
+    static void load(const char * dirName);
+    static void load();
+    bool loop(int secs);
+    service();
 
   };
 }
