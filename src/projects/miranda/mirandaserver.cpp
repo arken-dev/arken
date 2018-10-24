@@ -58,19 +58,7 @@ MirandaServer::MirandaServer(QCoreApplication *app)
   // SERVICES
   //QString dir("app/services");
   if( os::exists("app/services") ) {
-    qDebug() << "aqui mesmo";
     charon::service::load("app/services");
-    /*
-    QDirIterator iterator(dir);
-    while(iterator.hasNext()) {
-      iterator.next();
-      QFileInfo fileInfo = iterator.fileInfo();
-      if( fileInfo.suffix() == "lua" ) {
-        qDebug() << "load: " << fileInfo.filePath();
-        service::start(fileInfo.filePath().toLocal8Bit());
-      }
-    }
-    */
   } else {
     qDebug() << "services dir not exists";
   }
