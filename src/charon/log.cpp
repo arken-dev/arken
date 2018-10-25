@@ -52,8 +52,8 @@ Log::~Log()
 void Log::append(const char * value)
 {
   this->lock();
-  m_container->append(value);
-  m_container->append("\n");
+  m_containers[m_fileName]->append(value);
+  m_containers[m_fileName]->append("\n");
   this->unlock();
 }
 
@@ -103,19 +103,17 @@ void Log::fatal(const char * value)
 void Log::dump()
 {
   m.lock();
-  std::string * tmp = m_container;
+  std::string * tmp = m_containers[m_fileName];
   m_container = new std::string("");
   m_containers[m_fileName]  = m_container;
-  m.unlock();
 
   // write file
-  m_dumps[m_fileName]->lock();
   std::ofstream file;
   file.open (m_fileName, std::ofstream::out | std::ofstream::app);
   file << *tmp;
   file.close();
   delete tmp;
-  m_dumps[m_fileName]->unlock();
+  m.unlock();
 }
 
 void Log::lock()
