@@ -18,9 +18,6 @@ namespace charon
 
     private:
     std::string m_fileName;
-    std::string * m_container;
-    std::mutex  * m_mutex;
-    std::mutex  * m_dump;
 
     static std::map<std::string, int>           m_references;
     static std::map<std::string, std::string *> m_containers;
