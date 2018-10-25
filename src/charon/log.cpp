@@ -17,21 +17,15 @@ static std::mutex m;
 
 Log::Log(const char * fileName)
 {
-  m_fileName = fileName;
   m.lock();
+  m_fileName = fileName;
   if ( m_references.count(m_fileName) == 0 ) {
     m_references[m_fileName]    = 0;
     m_mutexes[m_fileName]       = new std::mutex;
     m_dumps[m_fileName]         = new std::mutex;
     m_containers[m_fileName]    = new std::string("");
-    //m_containers[m_fileName]->reserve(1048576000);
-
   }
-
   m_references[m_fileName]++;
-  m_container = m_containers[m_fileName];
-  m_mutex     = m_mutexes[m_fileName];
-  m_dump      = m_dumps[m_fileName];
   m.unlock();
 }
 
@@ -106,14 +100,16 @@ void Log::dump()
   std::string * tmp = m_containers[m_fileName];
   m_container = new std::string("");
   m_containers[m_fileName]  = m_container;
+  m.unlock();
 
+  m_dumps[m_fileName]->lock();
   // write file
   std::ofstream file;
   file.open (m_fileName, std::ofstream::out | std::ofstream::app);
   file << *tmp;
   file.close();
   delete tmp;
-  m.unlock();
+  m_dumps[m_fileName]->unlock();
 }
 
 void Log::lock()
