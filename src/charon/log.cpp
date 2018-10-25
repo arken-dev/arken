@@ -102,11 +102,11 @@ void Log::fatal(const char * value)
 
 void Log::dump()
 {
-  this->lock();
+  m.lock();
   std::string * tmp = m_container;
   m_container = new std::string("");
   m_containers[m_fileName]  = m_container;
-  this->unlock();
+  m.unlock();
 
   // write file
   m_dumps[m_fileName]->lock();
