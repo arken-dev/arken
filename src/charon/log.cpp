@@ -9,10 +9,10 @@
 
 using namespace charon;
 
-std::map<std::string, int>           Log::m_references;
-std::map<std::string, std::string *> Log::m_containers;
-std::map<std::string, std::mutex  *> Log::m_mutexes;
-std::map<std::string, std::mutex  *> Log::m_dumps;
+std::unordered_map<std::string, int>           Log::m_references;
+std::unordered_map<std::string, std::string *> Log::m_containers;
+std::unordered_map<std::string, std::mutex  *> Log::m_mutexes;
+std::unordered_map<std::string, std::mutex  *> Log::m_dumps;
 static std::mutex m;
 
 Log::Log(const char * fileName)

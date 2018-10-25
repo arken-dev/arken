@@ -8,7 +8,7 @@
 
 #include <fstream>
 #include <mutex>
-#include <map>
+#include <unordered_map>
 
 namespace charon
 {
@@ -19,10 +19,10 @@ namespace charon
     private:
     std::string m_fileName;
 
-    static std::map<std::string, int>           m_references;
-    static std::map<std::string, std::string *> m_containers;
-    static std::map<std::string, std::mutex  *> m_mutexes;
-    static std::map<std::string, std::mutex  *> m_dumps;
+    static std::unordered_map<std::string, int>           m_references;
+    static std::unordered_map<std::string, std::string *> m_containers;
+    static std::unordered_map<std::string, std::mutex  *> m_mutexes;
+    static std::unordered_map<std::string, std::mutex  *> m_dumps;
 
     void lock();
     void unlock();
