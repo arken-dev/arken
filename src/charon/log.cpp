@@ -98,8 +98,7 @@ void Log::dump()
 {
   m.lock();
   std::string * tmp = m_containers[m_fileName];
-  m_container = new std::string("");
-  m_containers[m_fileName]  = m_container;
+  m_containers[m_fileName]  = new std::string("");
   m.unlock();
 
   m_dumps[m_fileName]->lock();
