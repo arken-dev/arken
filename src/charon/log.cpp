@@ -76,12 +76,12 @@ void Log::debug(const char * value)
 
 void Log::info(const char * value)
 {
-  this->log("INFO|", value);
+  this->log("INFO |", value);
 }
 
 void Log::warn(const char * value)
 {
-  this->log("WARN|", value);
+  this->log("WARN |", value);
 }
 
 void Log::error(const char * value)
