@@ -31,6 +31,7 @@ Log::Log(const char * fileName)
 
 Log::~Log()
 {
+  m.lock();
   m_references[m_fileName]--;
   if( m_references[m_fileName] == 0 ) {
     delete m_mutexes[m_fileName];
@@ -41,6 +42,7 @@ Log::~Log()
     m_dumps.erase(m_fileName);
     m_references.erase(m_fileName);
   }
+  m.unlock();
 }
 
 void Log::append(const char * value)
