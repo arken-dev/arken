@@ -3,8 +3,8 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#ifndef _CSTRING_LIST_HEADER_
-#define _CSTRING_LIST_HEADER_
+#ifndef _CHARON_BYTE_ARRAY_LIST_
+#define _CHARON_BYTE_ARRAY_LIST_
 
 #include <QByteArray>
 

@@ -5,8 +5,9 @@
 
 #include <cstring>
 
-#ifndef _CHTTP_BODY_HEADER_
-#define _CHTTP_BODY_HEADER_
+#ifndef _CHARON_NET_HTTP_BODY_
+#define _CHARON_NET_HTTP_BODY_
+
 namespace charon {
 namespace net {
 
@@ -31,4 +32,5 @@ class HttpBody
 
 }
 }
+
 #endif

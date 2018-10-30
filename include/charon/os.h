@@ -3,6 +3,9 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+#ifndef _CHARON_OS_
+#define _CHARON_OS_
+
 #include <QtCore>
 #include <charon/ByteArrayList>
 
@@ -50,3 +53,5 @@ namespace charon {
     static char   * root();
   };
 }
+
+#endif
