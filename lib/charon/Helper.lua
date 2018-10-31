@@ -217,7 +217,7 @@ function Helper:selectList(field, list, field_value, field_description, value, o
   local html     = "<select "
   local option   = "<option value=%q %s >%s</option>"
   local selected = ""
-  local style    = options.style or "width:250px"
+  options = options or {}
 
   if options.multiple then
     if options.multiple == true then
@@ -226,8 +226,13 @@ function Helper:selectList(field, list, field_value, field_description, value, o
     html = html .. string.format([[ multiple="multiple" size=%q ]], options.multiple)
   end
 
-  html = html .. [[ id=%q name=%q style=%q>]]
-  html = string.format(html, field:normalize(), field, style)
+  html = html .. string.format([[ id=%q name=%q ]], field:normalize(), field)
+
+  for key, value in pairs(options) do
+    html = html .. string.format(key .. '=%q ', value)
+  end
+  html = html .. '>'
+
   if options.blank then
     local blank = ""
     if type(options.blank) == 'string' then
