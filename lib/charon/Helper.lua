@@ -235,7 +235,7 @@ function Helper:selectList(field, list, field_value, field_description, value, o
     end
     html = html .. string.format(option, "", "", blank)
   end
-  for row in list:each() do
+  for _, row in ipairs(list) do
     if row[field_value] == value then
       selected = 'selected'
     else
