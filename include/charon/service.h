@@ -19,7 +19,8 @@ namespace charon
 
     private:
     static void run(char * uuid, char * fileName);
-    int m_version;
+    int  m_version;
+    bool m_quit;
     static int           s_version;
     static char        * s_dirName;
     static std::mutex  * s_mutex;
@@ -30,6 +31,7 @@ namespace charon
     static void load(const char * dirName);
     static void load();
     bool loop(int secs);
+    void quit();
     service();
 
   };
