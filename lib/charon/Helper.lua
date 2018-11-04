@@ -27,34 +27,25 @@ function Helper:hiddenField(field, value)
   return string.format(html, field:normalize(), field, value)
 end
 
+function Helper:htmlOptions(options)
+  options = options or {}
+
+  local html = ""
+  for key, value in pairs(options) do
+    html = html .. string.format(' %s=%q', key, value)
+  end
+
+  return html
+end
+
 function Helper:textField(field, value, options)
   local value   = value   or ""
   local options = options or {}
   local style   = options.style or "width:250px"
-  local html    = [[<input type="text" id="%s" name="%s" value=%q style=%q]]
-  local html    = string.format(html, field:normalize(), field, value, style)
-
-  if options.onblur then
-    html = html .. string.format(" onblur=%q ", options.onblur)
-  end
-
-  if options.onfocus then
-    html = html .. string.format(" onfocus=%q ", options.onfocus)
-  end
-
-  if options.onkeypress then
-    html = html .. string.format(" onkeypress=%q ", options.onkeypress)
-  end
-
-  if options.onkeyup then
-    html = html .. string.format(" onkeyup=%q ", options.onkeyup)
-  end
-
-  if options.disabled then
-    html = html .. ' disabled'
-  end
-
-  return (html .. ' />')
+  local html    = [[<input type="text" id="%s" name="%s" value=%q]]
+  local html    = string.format(html, field:normalize(), field, value)
+  local html = html .. self:htmlOptions(options)
+  return (html .. '/>')
 end
 
 function Helper:textArea(field, value, options)
@@ -62,8 +53,9 @@ function Helper:textArea(field, value, options)
   local options = options or {}
   local style   = options.style or "width:250px;height:65px"
   local html    = [[<textarea id="%s" name="%s" style=%q]]
-  local html    = string.format(html, field:normalize(), field, style)
-
+  html    = string.format(html, field:normalize(), field, style)
+  html = html .. self:htmlOptions(options)
+--[[
   if options.onblur then
     html = html .. string.format(" onblur=%q ", options.onblur)
   end
@@ -79,7 +71,7 @@ function Helper:textArea(field, value, options)
   if options.onkeyup then
     html = html .. string.format(" onkeyup=%q ", options.onkeyup)
   end
-
+]]
   return html .. string.format('>%s</textarea>', value)
 end
 
@@ -101,12 +93,12 @@ function Helper:floatField(field, value, options)
   end
 
   if value == nil then
-    options.value = ""
+    value = ""
   else
-    options.value = math.format(value, decimal, separator, thousands)
+    value = math.format(value, decimal, separator, thousands)
   end
 
-  return Helper:textField(field, value, options)
+  return self:textField(field, value, options)
 end
 
 function Helper:intField(field, value, options)
@@ -117,7 +109,7 @@ function Helper:intField(field, value, options)
   options.onkeyup    = options.onkeyup    or "format_invert(this, '***.***.***')"
   options.style      = options.style      or "width:95px;text-align:right"
 
-  local decimal   = options.decimal   or 2
+  local decimal   = options.decimal   or 0
   local separator = options.separator or ','
   local thousands = options.thousands or '.'
   if type(value) == 'string' and value:contains(',') then
@@ -127,12 +119,12 @@ function Helper:intField(field, value, options)
   end
 
   if value == nil then
-    options.value = ""
+    value = ""
   else
-    options.value = math.format(value, decimal, separator, thousands)
+    value = math.format(value, decimal, separator, thousands)
   end
 
-  return Helper:textField(field, value, options)
+  return self:textField(field, value, options)
 end
 
 function Helper:dateField(field, value, options)
@@ -143,7 +135,7 @@ function Helper:dateField(field, value, options)
   options.onkeyup    = options.onkeyup    or "format_invert(this, '**/**/****')"
   options.style      = options.style      or "width:80px;text-align:right"
 
-  local html     = Helper:textField(field, value, options)
+  local html     = self:textField(field, value, options)
   local calendar = [[<script>jQuery.calendar('#%s')</script>]]
 
   return html .. string.format(calendar, field:normalize(), options)
@@ -212,37 +204,46 @@ function Helper:toggleField(field, value, options)
   return string.format(html, field, checked, label) .. ' />' .. label
 end
 
+-------------------------------------------------------------------------------
+-- SELECT LIST
+-------------------------------------------------------------------------------
+
+Helper.selectListOptions = {}
+
 function Helper:selectList(field, list, field_value, field_description, value, options)
-  options = options or {}
-  local html     = "<select "
-  local option   = "<option value=%q %s >%s</option>"
+  local html     = "<select"
+  local option   = "<option value=%q%s>%s</option>"
   local selected = ""
-  options = options or {}
+  options = options or Helper.selectListOptions
+  local disabled = options.disabled
+  options.disabled = nil
+  local blank = options.blank
+  options.blank = nil
+
+
+  html = html .. string.format([[ id=%q name=%q]], field:normalize(), field)
 
   if options.multiple then
     if options.multiple == true then
       options.multiple = 5
     end
-    html = html .. string.format([[ multiple="multiple" size=%q ]], options.multiple)
+    html = html .. string.format([[ multiple="multiple" size=%q]], options.multiple)
+    options.multiple = nil
   end
 
-  html = html .. string.format([[ id=%q name=%q ]], field:normalize(), field)
+  html = html .. self:htmlOptions(options)
 
-  for key, value in pairs(options) do
-    html = html .. string.format(key .. '=%q ', value)
-  end
   html = html .. '>'
 
-  if options.blank then
-    local blank = ""
-    if type(options.blank) == 'string' then
-      blank = options.blank
+  if blank then
+    if blank == true then
+      blank = ''
     end
     html = html .. string.format(option, "", "", blank)
   end
   for _, row in ipairs(list) do
     if row[field_value] == value then
-      selected = 'selected'
+      selected = ' selected '
     else
       selected = ''
     end
@@ -265,10 +266,12 @@ function Helper:selectHash(field, list, value, options)
       options.multiple = 5
     end
     html = html .. string.format([[ multiple="multiple" size=%q ]], options.multiple)
+    options.multiple = nil
   end
 
-  html = html .. [[ id=%q name=%q style=%q>]]
+  html = html .. [[ id=%q name=%q >]]
   html = string.format(html, field:normalize(), field, style)
+  html = html .. self:htmlOptions(options)
 
   if options.blank then
     local blank = ""
