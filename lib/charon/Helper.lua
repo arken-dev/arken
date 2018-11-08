@@ -260,6 +260,9 @@ function Helper:selectHash(field, list, value, options)
   local option   = "<option value=%q %s >%s</option>"
   local selected = ""
   local style    = options.style or "width:250px;"
+  local blank = options.blank
+  options.blank = nil
+
 
   if options.multiple then
     if options.multiple == true then
@@ -273,10 +276,9 @@ function Helper:selectHash(field, list, value, options)
   html = string.format(html, field:normalize(), field, style)
   html = html .. self:htmlOptions(options)
 
-  if options.blank then
-    local blank = ""
-    if type(options.blank) == 'string' then
-      blank = options.blank
+  if blank then
+    if blank == true then
+      blank = ''
     end
     html = html .. string.format(option, "", "", blank)
   end
