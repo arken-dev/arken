@@ -7,8 +7,8 @@ test.should_return_html_not_checked = function()
   local controller = {controllerName = 'form', actionName = 'save'}
   local form = FormHelper.new{ name = 'form', controller = controller, data = data }
   local result = form:selectHash('id', list )
-  local html   = [[<select  id="form_id" name="form[id]" style="width:250px;"><option value="1"  >description</option></select>]]
-  assert( result == html, result )
+  local html   = '<select  id="form_id" name="form[id]" style="width:250px"><option value="1"  >description</option></select>'
+  assert( result == html, result:replace(' ', '*') .. '\n' .. html:replace(' ', '*') )
 end
 
 test.should_return_html_checked = function()
@@ -17,7 +17,7 @@ test.should_return_html_checked = function()
   local controller = {controllerName = 'form', actionName = 'save'}
   local form = FormHelper.new{ name = 'form', controller = controller, data = data }
   local result = form:selectHash('id', list )
-  local html   = [[<select  id="form_id" name="form[id]" style="width:250px;"><option value="1" selected >description</option></select>]]
+  local html   = '<select  id="form_id" name="form[id]" style="width:250px"><option value="1" selected >description</option></select>'
   assert( result == html, result )
 end
 
@@ -27,7 +27,7 @@ test.should_return_html_multiple_true = function()
   local controller = {controllerName = 'form', actionName = 'save'}
   local form = FormHelper.new{ name = 'form', controller = controller, data = data }
   local result = form:selectHash('id', list, { multiple = true } )
-  local html   = [[<select  multiple="multiple" size="5"  id="form_id" name="form[id]" style="width:250px;"><option value="1"  >description</option></select>]]
+  local html   = '<select  multiple="multiple" size="5"  id="form_id" name="form[id]" style="width:250px"><option value="1"  >description</option></select>'
   assert( result == html, result )
 end
 
@@ -37,7 +37,7 @@ test.should_return_html_multiple_number = function()
   local controller = {controllerName = 'form', actionName = 'save'}
   local form = FormHelper.new{ name = 'form', controller = controller, data = data }
   local result = form:selectHash('id', list, { multiple = 7 } )
-  local html   = [[<select  multiple="multiple" size="7"  id="form_id" name="form[id]" style="width:250px;"><option value="1"  >description</option></select>]]
+  local html   = '<select  multiple="multiple" size="7"  id="form_id" name="form[id]" style="width:250px"><option value="1"  >description</option></select>'
   assert( result == html, result )
 end
 
@@ -47,7 +47,7 @@ test.should_return_html_with_blank = function()
   local controller = {controllerName = 'form', actionName = 'save'}
   local form = FormHelper.new{ name = 'form', controller = controller, data = data }
   local result = form:selectHash('id', list, { blank = true } )
-  local html   = [[<select  id="form_id" name="form[id]" style="width:250px;"><option value=""  ></option><option value="1"  >description</option></select>]]
+  local html   = '<select  id="form_id" name="form[id]" style="width:250px"><option value=""  ></option><option value="1"  >description</option></select>'
   assert( result == html, result )
 end
 
@@ -57,7 +57,7 @@ test.should_return_html_with_blank = function()
   local controller = {controllerName = 'form', actionName = 'save'}
   local form = FormHelper.new{ name = 'form', controller = controller, data = data }
   local result = form:selectHash('id', list, { blank = 'SELECT...' } )
-  local html   = [[<select  id="form_id" name="form[id]" style="width:250px;"><option value=""  >SELECT...</option><option value="1"  >description</option></select>]]
+  local html   = '<select  id="form_id" name="form[id]" style="width:250px"><option value=""  >SELECT...</option><option value="1"  >description</option></select>'
   assert( result == html, result )
 end
 

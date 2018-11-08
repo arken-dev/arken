@@ -3,8 +3,8 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#ifndef _CHTTP_CLIENT_HEADER_
-#define _CHTTP_CLIENT_HEADER_
+#ifndef _CHARON_NET_HTTP_CLIENT_
+#define _CHARON_NET_HTTP_CLIENT_
 
 #include <curl/curl.h>
 

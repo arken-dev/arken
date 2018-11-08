@@ -9,10 +9,10 @@
 
 using namespace charon;
 
-std::map<std::string, int>           Log::m_references;
-std::map<std::string, std::string *> Log::m_containers;
-std::map<std::string, std::mutex  *> Log::m_mutexes;
-std::map<std::string, std::mutex  *> Log::m_dumps;
+std::unordered_map<std::string, int>           Log::m_references;
+std::unordered_map<std::string, std::string *> Log::m_containers;
+std::unordered_map<std::string, std::mutex  *> Log::m_mutexes;
+std::unordered_map<std::string, std::mutex  *> Log::m_dumps;
 static std::mutex m;
 
 Log::Log(const char * fileName)
@@ -31,6 +31,7 @@ Log::Log(const char * fileName)
 
 Log::~Log()
 {
+  m.lock();
   m_references[m_fileName]--;
   if( m_references[m_fileName] == 0 ) {
     delete m_mutexes[m_fileName];
@@ -41,6 +42,7 @@ Log::~Log()
     m_dumps.erase(m_fileName);
     m_references.erase(m_fileName);
   }
+  m.unlock();
 }
 
 void Log::append(const char * value)

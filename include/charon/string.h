@@ -3,6 +3,9 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+#ifndef _CHARON_STRING_
+#define _CHARON_STRING_
+
 #include <cstdlib>
 #include <cstring>
 #include <cctype>
@@ -50,3 +53,5 @@ namespace charon {
     static char * underscore(const char *string);
   };
 }
+
+#endif

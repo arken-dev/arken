@@ -3,8 +3,8 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#ifndef CHARONMVM_H
-#define CHARONMVM_H
+#ifndef _CHARON_MVM_
+#define _CHARON_MVM_
 
 #include <lua/lua.hpp>
 #include <charon/base>
