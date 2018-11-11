@@ -58,6 +58,10 @@ double math::floor(double number)
 
 char * math::format(double value, int decimals, char dec_point, char thousands_sep)
 {
+  if( isnan(value) ) {
+    value = 0;
+  }
+
   int size = 65;
   if( value > 1e80) {
     decimals = 2;
