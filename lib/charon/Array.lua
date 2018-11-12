@@ -26,4 +26,15 @@ function Array:count()
   return count
 end
 
+function Array:join(str)
+  local raw = ''
+  for _, value in pairs(self) do
+    if not empty(raw) then
+      raw = raw .. str
+      raw = raw .. tostring(value)
+    end
+  end
+  return raw
+end
+
 return Array
