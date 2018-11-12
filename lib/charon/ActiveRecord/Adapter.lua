@@ -54,7 +54,7 @@ end
 
 format.table = function(value)
   local result =  ''
-  for _, v in ipairs(value) do
+  for _, v in pairs(value) do
     if result:len() > 0 then
       result = result .. ','
     end
