@@ -195,7 +195,7 @@ function M.parseQuery(str, sep)
     key = key:gsub('%[([^%]]*)%]', function(v)
         -- extract keys between balanced brackets
         if string.find(v, "^-?%d+$") then
-          v = tonumber(v)
+          v = tostring(v)
         else
           v = decode(v)
         end

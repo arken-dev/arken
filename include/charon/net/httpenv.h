@@ -3,8 +3,8 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#ifndef __CHARON_NET_HTTP_ENV__
-#define __CHARON_NET_HTTP_ENV__
+#ifndef _CHARON_NET_HTTP_ENV_
+#define _CHARON_NET_HTTP_ENV_
 
 namespace charon {
 namespace net {

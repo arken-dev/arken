@@ -3,8 +3,8 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#ifndef CHARONCACHE_H
-#define CHARONCACHE_H
+#ifndef _CHARON_CACHE_
+#define _CHARON_CACHE_
 
 #include <QMutex>
 #include <QHash>

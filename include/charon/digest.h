@@ -3,6 +3,9 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+#ifndef _CHARON_DIGEST_
+#define _CHARON_DIGEST_
+
 namespace charon
 {
 
@@ -15,3 +18,5 @@ class digest {
 };
 
 }
+
+#endif
