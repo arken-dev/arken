@@ -71,4 +71,11 @@ test.should_return_array_inside_array = function()
   assert(result.var[2][1] == 'John')
 end
 
+test.should_return_array_with_array_encoded = function()
+  local query  = "data=11%2F11%2F2018&deposito_id%5B%5D=11&deposito_id%5B%5D=21&deposito_id%5B%5D=2&deposito_id%5B%5D=3&deposito_id%5B%5D=4&deposito_id%5B%5D=1&tabela_id=1&codigo=&produto=&familia_id=&fabricante_id=&descricao=true&total_estoque=true&venda=true&exportar=&x=22&y=10"
+  local result = url.parseQuery(query)
+  assert( type(result.deposito_id) == 'table', json.encode(result.deposito_id))
+  assert( result.deposito_id[1] == '11', result.deposito_id[1])
+end
+
 return test
