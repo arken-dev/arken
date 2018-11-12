@@ -3,8 +3,8 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#ifndef CHARONSERVICE_H
-#define CHARONSERVICE_H
+#ifndef _CHARON_SERVICE_
+#define _CHARON_SERVICE_
 
 #include <charon/base>
 #include <charon/cache>
@@ -19,7 +19,8 @@ namespace charon
 
     private:
     static void run(char * uuid, char * fileName);
-    int m_version;
+    int  m_version;
+    bool m_quit;
     static int           s_version;
     static char        * s_dirName;
     static std::mutex  * s_mutex;
@@ -30,6 +31,7 @@ namespace charon
     static void load(const char * dirName);
     static void load();
     bool loop(int secs);
+    void quit();
     service();
 
   };

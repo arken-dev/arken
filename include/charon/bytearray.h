@@ -3,8 +3,8 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#ifndef _CBYTE_ARRAY_HEADER_
-#define _CBYTE_ARRAY_HEADER_
+#ifndef _CHARON_BYTE_ARRAY_
+#define _CHARON_BYTE_ARRAY_
 
 #include <QtCore>
 #include <charon/base>

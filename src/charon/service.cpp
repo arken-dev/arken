@@ -74,7 +74,13 @@ char * service::start(const char * fileName)
 
 service::service()
 {
+  m_quit    = false;
   m_version = mvm::version();
+}
+
+void service::quit()
+{
+  m_quit = true;
 }
 
 bool service::loop(int secs)
@@ -85,7 +91,7 @@ bool service::loop(int secs)
 
     os::sleep(1);
 
-    if(m_version != mvm::version()) {
+    if(m_quit || m_version != mvm::version()) {
       return false;
     }
 
@@ -101,8 +107,6 @@ void service::run(char * uuid, char * fileName)
   while( true )
   {
 
-    {
-
     int rv;
 
     charon::instance i = mvm::instance();
@@ -110,7 +114,8 @@ void service::run(char * uuid, char * fileName)
     lua_settop(L, 0);
 
     // global __charon_service
-    lua_pushlightuserdata(L, new service());
+    service * srv = new service();
+    lua_pushlightuserdata(L, srv);
     lua_setglobal(L, "__charon_service");
 
     // CHARON_UUID
@@ -127,11 +132,8 @@ void service::run(char * uuid, char * fileName)
     }
 
     // clear global __charon_service
-    lua_getglobal(L, "__charon_service");
-    service * srv = (service *) lua_touserdata(L, -1);
     lua_pushnil(L);
     lua_setglobal(L, "__charon_service");
-    delete srv;
 
     // clear CHARON_TASK
     lua_pushboolean(L, false);
@@ -139,8 +141,6 @@ void service::run(char * uuid, char * fileName)
 
     // lua gc
     lua_gc(L, LUA_GCCOLLECT, 0);
-
-    }
 
     // check new services
     service::s_mutex->lock();
@@ -154,11 +154,13 @@ void service::run(char * uuid, char * fileName)
     }
 
     // check (service) fileName exists
-    if (os::exists(fileName)) {
+    if (srv->m_quit == false && os::exists(fileName)) {
       // waiting for initialize next loop service
       os::sleep(1);
       std::cout << "restart service " << fileName << std::endl;
+      delete srv;
     } else {
+      std::cout << "quit service " << fileName << std::endl;
       service::s_mutex->lock();
       s_services->erase(
         remove(s_services->begin(), s_services->end(), std::string(fileName)), s_services->end()
@@ -166,6 +168,7 @@ void service::run(char * uuid, char * fileName)
       service::s_mutex->unlock();
       delete[] fileName;
       delete[] uuid;
+      delete srv;
       return;
     }
 

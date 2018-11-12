@@ -3,6 +3,9 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+#ifndef _CHARON_MATH_
+#define _CHARON_MATH_
+
 namespace charon {
   class math {
     public:
@@ -22,3 +25,5 @@ namespace charon {
     static char * format(double number, int decimals=0, char dec_point='.', char thousands_sep=',');
   };
 }
+
+#endif

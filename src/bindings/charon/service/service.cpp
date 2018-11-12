@@ -19,6 +19,15 @@ charon_service_loop(lua_State * L) {
 }
 
 static int
+charon_service_quit(lua_State * L) {
+  lua_getglobal(L, "__charon_service");
+  service * srv = (service *) lua_touserdata(L, -1);
+  srv->quit();
+  return 0;
+}
+
+
+static int
 charon_service_start(lua_State *L) {
   const char * fileName = luaL_checkstring(L, 1);
   char * uuid = service::start( fileName );
@@ -30,6 +39,7 @@ charon_service_start(lua_State *L) {
 extern "C" {
   int luaopen_charon_service( lua_State *L ) {
     static const luaL_reg Map[] = {
+      {"quit",    charon_service_quit},
       {"loop",    charon_service_loop},
       {"start",   charon_service_start},
       {NULL, NULL}
