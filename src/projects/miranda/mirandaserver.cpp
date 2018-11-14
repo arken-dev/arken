@@ -11,6 +11,7 @@
 #include <QJsonObject>
 
 using charon::service;
+using charon::Log;
 
 MirandaServer::MirandaServer(QCoreApplication *app)
 {
@@ -61,6 +62,12 @@ MirandaServer::MirandaServer(QCoreApplication *app)
     charon::service::load("app/services");
   } else {
     qDebug() << "services dir not exists";
+  }
+
+  if( os::exists("logs") ) {
+    Log l = Log("logs/miranda.log");
+    l.info("iniciando miranda");
+    l.dump();
   }
 
 }
