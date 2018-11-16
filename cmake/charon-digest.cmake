@@ -3,7 +3,7 @@ set(CHARON_DIGEST "" CACHE STRING
 
 set_property(
   CACHE CHARON_DIGEST PROPERTY STRINGS
-  "" qt embedded
+  "" qt embedded libssl
 )
 
 if(CHARON_DIGEST STREQUAL "")
