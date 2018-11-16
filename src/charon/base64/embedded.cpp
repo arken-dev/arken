@@ -6,7 +6,7 @@
 #include <charon/base>
 
 extern "C" {
-  #include <ap_base64.h>
+  #include <base64/ap_base64.h>
 }
 
 using namespace charon;
