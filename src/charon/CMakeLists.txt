@@ -31,11 +31,8 @@ add_library(
   ${digest}
   ${digest-embedded}
   ${mvm-container}
-<<<<<<< HEAD
   ${os} ${os-executablePath} ${uuid}
   ${doc}
-=======
->>>>>>> master
   ${net}
   ${os} ${os-executablePath} ${os-uuid}
   ${regex}
