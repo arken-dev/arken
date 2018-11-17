@@ -85,7 +85,7 @@ void MirandaServer::start()
   }
   QFile log(m_pid);
   if ( log.open(QIODevice::WriteOnly) ) {
-    log.write(QByteArray::number(os::pid()));
+    log.write(QByteArray::number((qint64) os::pid()));
     log.close();
   } else {
     qDebug() << m_pid << " not open";
