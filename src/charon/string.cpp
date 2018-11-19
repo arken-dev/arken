@@ -886,6 +886,7 @@ char *  string::suffix(const char * raw, char chr)
   for( i = len; i > 0; i--) {
     if( raw[i] == chr ) {
       point = i;
+      break;
     }
   }
 
