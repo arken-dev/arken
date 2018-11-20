@@ -1,4 +1,5 @@
 #include <charon/base>
+#include <QUuid>
 
 char * os::uuid()
 {

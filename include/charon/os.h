@@ -38,8 +38,8 @@ namespace charon {
     static double   microtime();
     static bool     mkdir(const char * dirname);
     static bool     mkpath(const char * dirpath);
-    static char   * name();
-    static qint64   pid();
+    static const char * name();
+    static uint64_t pid();
     static char   * pwd();
     static bool     rmdir(const char * dirname);
     static bool     rmpath(const char * dirpath);

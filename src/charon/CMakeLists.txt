@@ -34,7 +34,7 @@ add_library(
   ${os} ${os-executablePath} ${uuid}
   ${doc}
   ${net}
-  ${os} ${os-executablePath} ${os-uuid}
+  ${os} ${os-executablePath} ${os-filesystem} ${os-name} ${os-pid} ${os-uuid}
   ${regex}
   ${time}
   ${mongrel2}
