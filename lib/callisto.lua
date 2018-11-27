@@ -8,7 +8,7 @@ local test   = require('charon.test')
 local buffer = ""
 
 print = function(value)
-  buffer = buffer .. value .. '\n'
+  buffer = buffer .. tostring(value) .. '\n'
 end
 
 local callisto = function(file)

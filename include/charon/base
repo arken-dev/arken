@@ -14,11 +14,11 @@
 #include <charon/bytearraylist.h>
 #include <charon/digest.h>
 #include <charon/http.h>
+#include <charon/log.h>
 #include <charon/mvm.h>
 #include <charon/regex.h>
 #include <charon/service.h>
 #include <charon/task.h>
-#include <charon/thread.h>
 #include <charon/time/date.h>
 #include <charon/time/datetime.h>
 #include <charon/time/time.h>

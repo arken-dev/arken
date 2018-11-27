@@ -55,9 +55,13 @@ void task::run()
     lua_State * L = i.state();
     lua_settop(L, 0);
 
-    // CHARON_TASK
+    // CHARON_TASK (deprecate)
     lua_pushstring(L, work->uuid());
     lua_setglobal(L, "CHARON_TASK");
+
+    // CHARON_UUID
+    lua_pushstring(L, work->uuid());
+    lua_setglobal(L, "CHARON_UUID");
 
     int rv;
 

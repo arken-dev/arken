@@ -11,6 +11,7 @@
 #include <QJsonObject>
 
 using charon::service;
+using charon::Log;
 
 MirandaServer::MirandaServer(QCoreApplication *app)
 {
@@ -63,6 +64,12 @@ MirandaServer::MirandaServer(QCoreApplication *app)
     qDebug() << "services dir not exists";
   }
 
+  if( os::exists("logs") ) {
+    Log l = Log("logs/miranda.log");
+    l.info("iniciando miranda");
+    l.dump();
+  }
+
 }
 
 void MirandaServer::start()
@@ -78,7 +85,7 @@ void MirandaServer::start()
   }
   QFile log(m_pid);
   if ( log.open(QIODevice::WriteOnly) ) {
-    log.write(QByteArray::number(os::pid()));
+    log.write(QByteArray::number((qint64) os::pid()));
     log.close();
   } else {
     qDebug() << m_pid << " not open";

@@ -25,7 +25,7 @@ function template.compile(file_name)
   buffer = buffer .. "  local __buffer = ''\n"
   buffer = buffer .. "   __buffer = __buffer .. [[\n"
 
-  while i < len do
+  while i <= len do
 
     if data:sub(i, i+2) == '<%=' then
       buffer = buffer .. "]] .. tostring("

@@ -179,9 +179,8 @@ static int charon_os_mkpath( lua_State *L ) {
 }
 
 static int charon_os_name( lua_State *L ) {
-  char * result = os::name();
+  const char * result = os::name();
   lua_pushstring( L, result );
-  delete[] result;
   return 1;
 }
 
