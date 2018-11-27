@@ -252,10 +252,17 @@ char * HttpClient::performDelete()
   return perform(m_chunk.memory);
 }
 
+int HttpClient::status()
+{
+  return m_status;
+}
+
 char * HttpClient::perform(char * memory)
 {
-  int      index = string::indexOf(memory, "\r\n\r\n");
-  char * headers = string::mid(memory, 0, index);
+  int      index  = string::indexOf(memory, "\r\n\r\n");
+  char * headers  = string::mid(memory, 0, index);
+  int indexStatus = string::indexOf(memory, " ");
+  m_status = atoi(string::mid(memory, indexStatus + 1, indexStatus + 4 ));
   if( string::contains(headers, "\r\nLocation") ) {
     index = string::indexOf(headers, "Location:");
     char * tmp = string::mid(headers, index+9, string::indexOf(headers, "\r\n", index+9) - (index+9));

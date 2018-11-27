@@ -133,6 +133,13 @@ charon_HttpClientInstanceMethodUrlRedirect( lua_State *L ) {
 }
 
 static int
+charon_HttpClientInstanceMethodStatus( lua_State *L ) {
+  HttpClient *udata = checkHttpClient( L );
+  lua_pushinteger(L, udata->status());
+  return 1;
+}
+
+static int
 charon_HttpClientInstanceMethodDestruct( lua_State *L ) {
   HttpClient *udata = checkHttpClient( L );
   delete udata;
@@ -150,6 +157,7 @@ luaL_reg HttpClientInstanceMethods[] = {
   {"performPost", charon_HttpClientInstanceMethodPerformPost},
   {"performPut", charon_HttpClientInstanceMethodPerformPut},
   {"performDelete", charon_HttpClientInstanceMethodPerformDelete},
+  {"status",        charon_HttpClientInstanceMethodStatus},
   {"urlRedirect", charon_HttpClientInstanceMethodUrlRedirect},
   {"__gc", charon_HttpClientInstanceMethodDestruct},
   {NULL, NULL}
