@@ -34,11 +34,13 @@ class HttpClient
   char * performPut();
   char * performDelete();
   const char * urlRedirect();
+  int    status();
 
-  char * m_url;
-  char * m_body;
-  char * m_urlRedirect;
-  bool m_verbose;
+  char   * m_url;
+  char   * m_body;
+  char   * m_urlRedirect;
+  bool     m_verbose;
+  uint32_t m_status;
   curl_slist * m_chunk_list;
   CURL * m_curl;
   MemoryStruct m_chunk;

@@ -26,13 +26,26 @@ charon_task_start(lua_State *L) {
   char * data = json_lock_encode(L);
   const char * uuid = task::start( fileName, data );
   lua_pushstring(L, uuid);
+  delete[] data;
   return 1;
 }
 
 static int
 charon_task_insert(lua_State *L) {
-  const char * uuid = luaL_checkstring(L, 1);
-  task::insert(uuid, json_lock_encode(L));
+  const char * uuid;
+  char * data = 0;
+  if(lua_gettop(L) == 2) { // número de argumentos
+    uuid = luaL_checkstring(L, 1);
+    data = json_lock_encode(L);
+  } else {
+    data = json_lock_encode(L);
+    lua_getglobal(L, "CHARON_UUID");
+    uuid = lua_tostring(L, -1);
+  }
+  task::insert(uuid, data);
+  if( data ) {
+    delete[] data;
+  }
   return 0;
 }
 

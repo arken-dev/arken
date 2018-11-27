@@ -127,7 +127,8 @@ function Controller:render_js(params)
 end
 
 function Controller:render_html(params)
-  if params.value and params.layout == false then
+
+  if params.value and not params.layout then
     return 200, {'Content-Type: text/html'}, params.value
   end
 
