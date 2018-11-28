@@ -217,7 +217,7 @@ char * HttpClient::performPut()
 
   parseStatus(m_chunk.memory);
 
-  return 0;
+  return new char[1]();
 }
 
 char * HttpClient::performDelete()
@@ -262,7 +262,11 @@ int HttpClient::status()
 void HttpClient::parseStatus(char * memory)
 {
   int indexStatus = string::indexOf(memory, " ");
-  m_status = atoi(string::mid(memory, indexStatus + 1, indexStatus + 4 ));
+  if( indexStatus > -1 ) {
+    m_status = atoi(string::mid(memory, indexStatus + 1, indexStatus + 4 ));
+  } else {
+    m_status = 0;
+  }
 }
 
 char * HttpClient::perform(char * memory)
