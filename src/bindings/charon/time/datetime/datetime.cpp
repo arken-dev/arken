@@ -27,6 +27,7 @@ checkDateTime( lua_State *L, int i ) {
  * ClassMethods
  */
 
+// desabilitar esse metodo ! e colocar ele como implementação alternativa de microtime ?
 static int
 charon_DateTimeClassMethodCurrentMSecsSinceEpoch( lua_State *L )
 {
