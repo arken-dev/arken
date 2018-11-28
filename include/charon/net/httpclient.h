@@ -20,6 +20,7 @@ class HttpClient
 {
   private:
   char * perform(char * memory);
+  void parseStatus(char * memory);
 
   public:
   HttpClient(const char * url);
