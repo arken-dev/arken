@@ -528,7 +528,7 @@ char * string::mid(const char * string, int pos, int len = -1)
   if ( len < 0 ) {
     len = string_len;
   }
-  if ( pos > string_len ) {
+  if ( pos >= string_len ) {
     len = 0;
   }
   result = new char[len + 1];

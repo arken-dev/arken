@@ -39,4 +39,9 @@ test['should return empty string if index is major and len is negative'] = funct
   assert( str:mid(4, -4) == "", 'resultado ' .. str:mid(4, -4))
 end
 
+test['should return empty string if index is a equal string size and pos is -1'] = function()
+  local str = 'abcd'
+  assert( str:mid(5, -1) == "" )
+end
+
 return test
