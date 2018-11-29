@@ -19,32 +19,30 @@ namespace net {
 class HttpClient
 {
   private:
-  char * perform(char * memory);
-  void parseStatus(char * memory);
+  char * perform();
 
   public:
   HttpClient(const char * url);
   ~HttpClient();
   void appendHeader(const char * header);
   void setVerbose(bool verbose);
-  bool verbose();
   void setBody(const char * body);
   const char * body();
   char * performGet();
   char * performPost();
   char * performPut();
   char * performDelete();
-  const char * urlRedirect();
   int    status();
+  char * data();
 
-  char   * m_url;
-  char   * m_body;
-  char   * m_urlRedirect;
-  bool     m_verbose;
-  uint32_t m_status;
-  curl_slist * m_chunk_list;
-  CURL * m_curl;
-  MemoryStruct m_chunk;
+  //private:
+  curl_slist * m_list;
+  CURL       * m_curl;
+  char       * m_url;
+  char       * m_body;
+  uint32_t     m_status;
+  char       * m_data;
+  size_t       m_size;
 };
 
 }
