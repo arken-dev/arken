@@ -125,9 +125,24 @@ charon_HttpClientInstanceMethodData( lua_State *L ) {
 }
 
 static int
+charon_HttpClientInstanceMethodMessage( lua_State *L ) {
+  HttpClient * udata   = checkHttpClient( L );
+  const char * message = udata->message();
+  lua_pushstring(L, message);
+  return 1;
+}
+
+static int
 charon_HttpClientInstanceMethodStatus( lua_State *L ) {
   HttpClient *udata = checkHttpClient( L );
   lua_pushinteger(L, udata->status());
+  return 1;
+}
+
+static int
+charon_HttpClientInstanceMethodFailure( lua_State *L ) {
+  HttpClient *udata = checkHttpClient( L );
+  lua_pushboolean(L, udata->failure());
   return 1;
 }
 
@@ -150,6 +165,8 @@ luaL_reg HttpClientInstanceMethods[] = {
   {"performDelete", charon_HttpClientInstanceMethodPerformDelete},
   {"status",        charon_HttpClientInstanceMethodStatus},
   {"data",        charon_HttpClientInstanceMethodData},
+  {"failure",     charon_HttpClientInstanceMethodFailure},
+  {"message",     charon_HttpClientInstanceMethodMessage},
   {"__gc", charon_HttpClientInstanceMethodDestruct},
   {NULL, NULL}
 };
