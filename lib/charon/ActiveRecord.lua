@@ -147,7 +147,7 @@ ActiveRecord.inherit = function(class)
     local template = require 'charon.template'
 --    local config   = class.config or "config/active_record.json"
     local config   = "config/active_record.json"
-    io.write("\n\n" .. JSON.pretty(config) .. "\n\n")
+--    io.write("\n\n" .. JSON.pretty(config) .. "\n\n")
 
     if not os.exists(config) then
       error("file " .. config .. " not exists")
