@@ -42,10 +42,11 @@ HttpClient::HttpClient(const char * url)
   m_url[size] = '\0';
 
   m_body = new char[1]();
-
   m_data = new char[1]();  // will be grown as needed by the realloc above
   m_size = 0;                   // no data at this point
   m_list = NULL;
+  m_failure = false;
+  m_message = new char[1]();
 
   //curl_global_init(CURL_GLOBAL_ALL);
 
@@ -126,8 +127,9 @@ char * HttpClient::performGet()
 
   // check for errors
   if(res != CURLE_OK) {
-    fprintf(stderr, "curl_easy_perform() failed: %s\n",
-            curl_easy_strerror(res));
+    m_failure = true;
+    m_message = curl_easy_strerror(res);
+    return new char[1]();
   }
 
   return perform();
@@ -151,8 +153,9 @@ char * HttpClient::performPost()
 
   // check for errors
   if(res != CURLE_OK) {
-    fprintf(stderr, "curl_easy_perform() failed: %s\n",
-            curl_easy_strerror(res));
+    m_failure = true;
+    m_message = curl_easy_strerror(res);
+    return new char[1]();
   }
 
   return perform();
@@ -176,8 +179,9 @@ char * HttpClient::performPut()
 
   // check for errors
   if(res != CURLE_OK) {
-    fprintf(stderr, "curl_easy_perform() failed: %s\n",
-            curl_easy_strerror(res));
+    m_failure = true;
+    m_message = curl_easy_strerror(res);
+    return new char[1]();
   }
 
   return new char[1]();
@@ -198,8 +202,9 @@ char * HttpClient::performDelete()
 
   // check for errors
   if(res != CURLE_OK) {
-    fprintf(stderr, "curl_easy_perform() failed: %s\n",
-            curl_easy_strerror(res));
+    m_failure = true;
+    m_message = curl_easy_strerror(res);
+    return new char[1]();
   }
 
   return perform();
@@ -213,6 +218,16 @@ int HttpClient::status()
 char * HttpClient::data()
 {
   return m_data;
+}
+
+const char * HttpClient::message()
+{
+  return m_message;
+}
+
+bool HttpClient::failure()
+{
+  return m_failure;
 }
 
 char * HttpClient::perform()

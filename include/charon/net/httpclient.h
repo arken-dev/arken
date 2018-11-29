@@ -34,15 +34,19 @@ class HttpClient
   char * performDelete();
   int    status();
   char * data();
+  const char * message();
+  bool failure();
 
   //private:
   curl_slist * m_list;
   CURL       * m_curl;
   char       * m_url;
   char       * m_body;
-  uint32_t     m_status;
   char       * m_data;
-  size_t       m_size;
+  const char * m_message;
+  bool         m_failure;
+  uint32_t     m_status;
+  uint64_t     m_size;
 };
 
 }
