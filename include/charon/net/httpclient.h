@@ -8,11 +8,6 @@
 
 #include <curl/curl.h>
 
-struct MemoryStruct {
-  char * memory;
-  size_t size;
-};
-
 namespace charon {
 namespace net {
 

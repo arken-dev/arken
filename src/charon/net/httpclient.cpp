@@ -21,8 +21,9 @@ WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp)
 
   client->m_data = (char *) realloc(client->m_data, client->m_size + realsize + 1);
   if(client->m_data == NULL) {
-    // out of memory!
-    printf("not enough memory (realloc returned NULL)\n");
+    // out of memory
+    client->m_failure = true;
+    client->m_message = "not enough memory (realloc returned NULL)";
     return 0;
   }
 
@@ -175,9 +176,9 @@ bool HttpClient::failure()
 
 char * HttpClient::perform()
 {
-  char * body;
-  int    index;
-  CURLcode res;
+  char    * body;
+  int       index;
+  CURLcode  res;
 
   // set our custom set of headers
   curl_easy_setopt(m_curl, CURLOPT_HTTPHEADER, m_list);
@@ -185,8 +186,13 @@ char * HttpClient::perform()
   // perform
   res = curl_easy_perform(m_curl);
 
+  // out of memory
+  if ( m_failure ) {
+    return new char[1]();
+  }
+
   // check for errors
-  if(res != CURLE_OK) {
+  if( res != CURLE_OK ) {
     m_failure = true;
     m_message = curl_easy_strerror(res);
     return new char[1]();
