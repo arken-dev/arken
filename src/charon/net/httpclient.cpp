@@ -117,17 +117,11 @@ const char * HttpClient::body()
 
 char * HttpClient::performGet()
 {
-
-  /* set our custom set of headers */
-  curl_easy_setopt(m_curl, CURLOPT_HTTPHEADER, m_list);
-
   return perform();
 }
 
 char * HttpClient::performPost()
 {
-  /* set our custom set of headers */
-  curl_easy_setopt(m_curl, CURLOPT_HTTPHEADER, m_list);
 
   /* POST */
   curl_easy_setopt(m_curl, CURLOPT_CUSTOMREQUEST, "POST");
@@ -140,8 +134,6 @@ char * HttpClient::performPost()
 
 char * HttpClient::performPut()
 {
-  /* set our custom set of headers */
-  curl_easy_setopt(m_curl, CURLOPT_HTTPHEADER, m_list);
 
   /* PUT */
   curl_easy_setopt(m_curl, CURLOPT_CUSTOMREQUEST, "PUT");
@@ -154,8 +146,6 @@ char * HttpClient::performPut()
 
 char * HttpClient::performDelete()
 {
-  /* set our custom set of headers */
-  curl_easy_setopt(m_curl, CURLOPT_HTTPHEADER, m_list);
 
   /* DELETE */
   curl_easy_setopt(m_curl, CURLOPT_CUSTOMREQUEST, "DELETE");
@@ -188,6 +178,9 @@ char * HttpClient::perform()
   char * body;
   int    index;
   CURLcode res;
+
+  // set our custom set of headers
+  curl_easy_setopt(m_curl, CURLOPT_HTTPHEADER, m_list);
 
   // perform
   res = curl_easy_perform(m_curl);
