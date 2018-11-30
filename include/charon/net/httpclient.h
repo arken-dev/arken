@@ -19,7 +19,7 @@ class HttpClient
   char       * m_url;
   char       * m_body;
   char       * m_data;
-  const char * m_message;
+  char       * m_message;
   bool         m_failure;
   uint32_t     m_status;
   uint64_t     m_size;
