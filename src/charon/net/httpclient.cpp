@@ -117,30 +117,17 @@ const char * HttpClient::body()
 
 char * HttpClient::performGet()
 {
-  CURLcode res;
 
   /* set our custom set of headers */
-  res = curl_easy_setopt(m_curl, CURLOPT_HTTPHEADER, m_list);
+  curl_easy_setopt(m_curl, CURLOPT_HTTPHEADER, m_list);
 
-  // get it!
-  res = curl_easy_perform(m_curl);
-
-  // check for errors
-  if(res != CURLE_OK) {
-    m_failure = true;
-    m_message = curl_easy_strerror(res);
-    return new char[1]();
-  }
-
-  return perform();
+  return perform( curl_easy_perform(m_curl) );
 }
 
 char * HttpClient::performPost()
 {
-  CURLcode res;
-
   /* set our custom set of headers */
-  res = curl_easy_setopt(m_curl, CURLOPT_HTTPHEADER, m_list);
+  curl_easy_setopt(m_curl, CURLOPT_HTTPHEADER, m_list);
 
   /* POST */
   curl_easy_setopt(m_curl, CURLOPT_CUSTOMREQUEST, "POST");
@@ -148,25 +135,13 @@ char * HttpClient::performPost()
   curl_easy_setopt(m_curl, CURLOPT_POSTFIELDS, m_body);
   curl_easy_setopt(m_curl, CURLOPT_POSTFIELDSIZE, strlen(m_body));
 
-  // post it!
-  res = curl_easy_perform(m_curl);
-
-  // check for errors
-  if(res != CURLE_OK) {
-    m_failure = true;
-    m_message = curl_easy_strerror(res);
-    return new char[1]();
-  }
-
-  return perform();
+  return perform( curl_easy_perform(m_curl) );
 }
 
 char * HttpClient::performPut()
 {
-  CURLcode res;
-
   /* set our custom set of headers */
-  res = curl_easy_setopt(m_curl, CURLOPT_HTTPHEADER, m_list);
+  curl_easy_setopt(m_curl, CURLOPT_HTTPHEADER, m_list);
 
   /* PUT */
   curl_easy_setopt(m_curl, CURLOPT_CUSTOMREQUEST, "PUT");
@@ -174,43 +149,18 @@ char * HttpClient::performPut()
   curl_easy_setopt(m_curl, CURLOPT_POSTFIELDS, m_body);
   curl_easy_setopt(m_curl, CURLOPT_POSTFIELDSIZE, strlen(m_body));
 
-  // put it!
-  res = curl_easy_perform(m_curl);
-
-  // check for errors
-  if(res != CURLE_OK) {
-    m_failure = true;
-    m_message = curl_easy_strerror(res);
-    return new char[1]();
-  }
-
-//  return new char[1]();
-  // Tem que passar pelo perform para preencher o status
-  // e para caso o status não seja 204 retornara o body
-  return perform();
+  return perform( curl_easy_perform(m_curl) );
 }
 
 char * HttpClient::performDelete()
 {
-  CURLcode res;
-
   /* set our custom set of headers */
-  res = curl_easy_setopt(m_curl, CURLOPT_HTTPHEADER, m_list);
+  curl_easy_setopt(m_curl, CURLOPT_HTTPHEADER, m_list);
 
   /* DELETE */
   curl_easy_setopt(m_curl, CURLOPT_CUSTOMREQUEST, "DELETE");
 
-  // delete it!
-  res = curl_easy_perform(m_curl);
-
-  // check for errors
-  if(res != CURLE_OK) {
-    m_failure = true;
-    m_message = curl_easy_strerror(res);
-    return new char[1]();
-  }
-
-  return perform();
+  return perform( curl_easy_perform(m_curl) );
 }
 
 int HttpClient::status()
@@ -233,10 +183,17 @@ bool HttpClient::failure()
   return m_failure;
 }
 
-char * HttpClient::perform()
+char * HttpClient::perform(CURLcode res)
 {
   char * body;
   int    index;
+
+  // check for errors
+  if(res != CURLE_OK) {
+    m_failure = true;
+    m_message = curl_easy_strerror(res);
+    return new char[1]();
+  }
 
   if( m_size ) {
 
