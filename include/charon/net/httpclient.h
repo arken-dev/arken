@@ -14,25 +14,6 @@ namespace net {
 class HttpClient
 {
   private:
-  char * perform();
-
-  public:
-  HttpClient(const char * url);
-  ~HttpClient();
-  void appendHeader(const char * header);
-  void setVerbose(bool verbose);
-  void setBody(const char * body);
-  const char * body();
-  char * performGet();
-  char * performPost();
-  char * performPut();
-  char * performDelete();
-  int    status();
-  char * data();
-  const char * message();
-  bool failure();
-
-  //private:
   curl_slist * m_list;
   CURL       * m_curl;
   char       * m_url;
@@ -42,6 +23,29 @@ class HttpClient
   bool         m_failure;
   uint32_t     m_status;
   uint64_t     m_size;
+  char       * perform();
+  static
+  uint64_t     callback(void *contents, size_t size, size_t nmemb, void *userp);
+
+  public:
+  HttpClient(const char * url);
+  ~HttpClient();
+  void appendHeader(const char * header);
+  void setVerbose(bool verbose);
+  void setBody(const char * body);
+  char * performGet();
+  char * performPost();
+  char * performPut();
+  char * performDelete();
+  const
+  char * body();
+  const
+  char * data();
+  const
+  char * message();
+  int    status();
+  bool   failure();
+
 };
 
 }

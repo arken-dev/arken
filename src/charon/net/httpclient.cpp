@@ -13,15 +13,15 @@
 using charon::string;
 using namespace charon::net;
 
-static size_t
-WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp)
+
+uint64_t HttpClient::callback(void *contents, size_t size, size_t nmemb, void *userp)
 {
   size_t realsize = size * nmemb;
   HttpClient * client = (HttpClient *)userp;
 
   client->m_data = (char *) realloc(client->m_data, client->m_size + realsize + 1);
+  // out of memory
   if(client->m_data == NULL) {
-    // out of memory
     client->m_failure = true;
     client->m_message = "not enough memory (realloc returned NULL)";
     return 0;
@@ -36,19 +36,18 @@ WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp)
 
 HttpClient::HttpClient(const char * url)
 {
-  size_t size;
-  size = strlen(url);
-  m_url = new char[size + 1];
+  //url
+  m_url = new char[strlen(url) + 1];
   strcpy(m_url, url);
-  m_url[size] = '\0';
 
-  m_body = new char[1]();
-  m_data = new char[1]();  // will be grown as needed by the realloc above
-  m_size = 0;                   // no data at this point
-  m_list = NULL;
+  m_body    = NULL;
+  m_data    = NULL;
+  m_message = NULL;
+  m_size    = 0;
+  m_list    = 0;
   m_failure = false;
-  m_message = new char[1]();
 
+  // init globlal
   //curl_global_init(CURL_GLOBAL_ALL);
 
   // init the curl session
@@ -61,7 +60,7 @@ HttpClient::HttpClient(const char * url)
   curl_easy_setopt(m_curl, CURLOPT_FOLLOWLOCATION, 1L);
 
   // send all data to this function
-  curl_easy_setopt(m_curl, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
+  curl_easy_setopt(m_curl, CURLOPT_WRITEFUNCTION, HttpClient::callback);
 
   // we pass our 'chunk' struct to the callback function
   curl_easy_setopt(m_curl, CURLOPT_WRITEDATA, (void *)this);
@@ -83,9 +82,11 @@ HttpClient::~HttpClient()
   curl_global_cleanup();
 
   // free memory
-  delete[] m_data;
   delete[] m_url;
-  delete[] m_body;
+  if( m_data )    delete[] m_data;
+  if( m_body )    delete[] m_body;
+  if( m_message ) delete[] m_message;
+
 }
 
 void HttpClient::appendHeader(const char * header)
@@ -159,7 +160,7 @@ int HttpClient::status()
   return m_status;
 }
 
-char * HttpClient::data()
+const char * HttpClient::data()
 {
   return m_data;
 }
