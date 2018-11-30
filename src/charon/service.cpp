@@ -15,11 +15,13 @@ using charon::mvm;
 
 int           service::s_version  = mvm::version();
 char        * service::s_dirName  = 0;
+bool          service::s_exit     = false;
 std::mutex  * service::s_mutex    = new std::mutex;
 std::vector<std::string> * service::s_services = new std::vector<std::string>;
 
 void service::load(const char * dirName)
 {
+  service::s_exit = false;
   if( ! s_dirName ) {
     s_dirName = new char(strlen(dirName)+1);
     strcpy(s_dirName, dirName);
@@ -83,6 +85,11 @@ void service::quit()
   m_quit = true;
 }
 
+void service::exit()
+{
+  s_exit = true;
+}
+
 bool service::loop(int secs)
 {
   int i = 0;
@@ -91,7 +98,7 @@ bool service::loop(int secs)
 
     os::sleep(1);
 
-    if(m_quit || m_version != mvm::version()) {
+    if(s_exit || m_quit || m_version != mvm::version()) {
       return false;
     }
 
@@ -104,7 +111,7 @@ bool service::loop(int secs)
 void service::run(char * uuid, char * fileName)
 {
 
-  while( true )
+  while( service::s_exit == false )
   {
 
     int rv;
@@ -154,7 +161,7 @@ void service::run(char * uuid, char * fileName)
     }
 
     // check (service) fileName exists
-    if (srv->m_quit == false && os::exists(fileName)) {
+    if (s_exit == false && srv->m_quit == false && os::exists(fileName)) {
       // waiting for initialize next loop service
       os::sleep(1);
       std::cout << "restart service " << fileName << std::endl;
