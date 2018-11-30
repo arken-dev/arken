@@ -23,7 +23,7 @@ uint64_t HttpClient::callback(void *contents, size_t size, size_t nmemb, void *u
   // out of memory
   if(client->m_data == NULL) {
     client->m_failure = true;
-    client->m_message = "not enough memory (realloc returned NULL)";
+    client->m_message = (char *) "not enough memory (realloc returned NULL)";
     return 0;
   }
 
@@ -195,7 +195,9 @@ char * HttpClient::perform()
   // check for errors
   if( res != CURLE_OK ) {
     m_failure = true;
-    m_message = curl_easy_strerror(res);
+    const char * message = curl_easy_strerror(res);
+    m_message = new char[strlen(message)+1];
+    strcpy(m_message, message);
     return new char[1]();
   }
 
