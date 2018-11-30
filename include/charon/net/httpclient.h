@@ -8,40 +8,44 @@
 
 #include <curl/curl.h>
 
-struct MemoryStruct {
-  char * memory;
-  size_t size;
-};
-
 namespace charon {
 namespace net {
 
 class HttpClient
 {
   private:
-  char * perform(char * memory);
+  curl_slist * m_list;
+  CURL       * m_curl;
+  char       * m_url;
+  char       * m_body;
+  char       * m_data;
+  char       * m_message;
+  bool         m_failure;
+  uint32_t     m_status;
+  uint64_t     m_size;
+  char       * perform();
+  static
+  uint64_t     callback(void *contents, size_t size, size_t nmemb, void *userp);
 
   public:
   HttpClient(const char * url);
   ~HttpClient();
   void appendHeader(const char * header);
   void setVerbose(bool verbose);
-  bool verbose();
   void setBody(const char * body);
-  const char * body();
   char * performGet();
   char * performPost();
   char * performPut();
   char * performDelete();
-  const char * urlRedirect();
+  const
+  char * body();
+  const
+  char * data();
+  const
+  char * message();
+  int    status();
+  bool   failure();
 
-  char * m_url;
-  char * m_body;
-  char * m_urlRedirect;
-  bool m_verbose;
-  curl_slist * m_chunk_list;
-  CURL * m_curl;
-  MemoryStruct m_chunk;
 };
 
 }

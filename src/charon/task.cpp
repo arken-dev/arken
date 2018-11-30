@@ -78,6 +78,11 @@ void task::run()
     // clear CHARON_TASK
     lua_pushboolean(L, false);
     lua_setglobal(L, "CHARON_TASK");
+
+    // clear CHARON_UUID
+    lua_pushboolean(L, false);
+    lua_setglobal(L, "CHARON_UUID");
+
     // lua gc
     lua_gc(L, LUA_GCCOLLECT, 0);
 

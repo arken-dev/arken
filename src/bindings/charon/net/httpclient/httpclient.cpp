@@ -50,7 +50,7 @@ registerHttpClientClassMethods( lua_State *L ) {
 
 static int
 charon_HttpClientInstanceMethodAppendHeader( lua_State *L ) {
-  HttpClient *udata  = checkHttpClient( L );
+  HttpClient * udata  = checkHttpClient( L );
   const char * header = luaL_checkstring(L, 2);
   udata->appendHeader(header);
   return 0;
@@ -65,16 +65,8 @@ charon_HttpClientInstanceMethodSetVerbose( lua_State *L ) {
 }
 
 static int
-charon_HttpClientInstanceMethodVerbose( lua_State *L ) {
-  HttpClient *udata  = checkHttpClient( L );
-  bool verbose = udata->verbose();
-  lua_pushinteger(L, verbose);
-  return 1;
-}
-
-static int
 charon_HttpClientInstanceMethodSetBody( lua_State *L ) {
-  HttpClient *udata = checkHttpClient( L );
+  HttpClient * udata = checkHttpClient( L );
   const char * body  = luaL_checkstring(L, 2);
   udata->setBody(body);
   return 0;
@@ -82,53 +74,75 @@ charon_HttpClientInstanceMethodSetBody( lua_State *L ) {
 
 static int
 charon_HttpClientInstanceMethodBody( lua_State *L ) {
-  HttpClient *udata = checkHttpClient( L );
-  const char * body = udata->body();
+  HttpClient * udata = checkHttpClient( L );
+  const char * body  = udata->body();
   lua_pushstring(L, body);
   return 1;
 }
 
 static int
 charon_HttpClientInstanceMethodPerformGet( lua_State *L ) {
-  HttpClient *udata = checkHttpClient( L );
-  char * get = udata->performGet();
-  lua_pushstring(L, get);
-  delete[] get;
+  HttpClient * udata = checkHttpClient( L );
+  char * result = udata->performGet();
+  lua_pushstring(L, result);
+  delete[] result;
   return 1;
 }
 
 static int
 charon_HttpClientInstanceMethodPerformPost( lua_State *L ) {
   HttpClient *udata = checkHttpClient( L );
-  char * post = udata->performPost();
-  lua_pushstring(L, post);
-  delete[] post;
+  char * result = udata->performPost();
+  lua_pushstring(L, result);
+  delete[] result;
   return 1;
 }
 
 static int
 charon_HttpClientInstanceMethodPerformPut( lua_State *L ) {
   HttpClient *udata = checkHttpClient( L );
-  char * put = udata->performPut();
-  lua_pushstring(L, put);
-  delete[] put;
+  char * result = udata->performPut();
+  lua_pushstring(L, result);
+  delete[] result;
   return 1;
 }
 
 static int
 charon_HttpClientInstanceMethodPerformDelete( lua_State *L ) {
   HttpClient *udata = checkHttpClient( L );
-  char * del = udata->performDelete();
-  lua_pushstring(L, del);
-  delete[] del;
+  char * result = udata->performDelete();
+  lua_pushstring(L, result);
+  delete[] result;
   return 0;
 }
 
 static int
-charon_HttpClientInstanceMethodUrlRedirect( lua_State *L ) {
+charon_HttpClientInstanceMethodData( lua_State *L ) {
+  HttpClient * udata = checkHttpClient( L );
+  const char * data  = udata->data();
+  lua_pushstring(L, data);
+  return 1;
+}
+
+static int
+charon_HttpClientInstanceMethodMessage( lua_State *L ) {
+  HttpClient * udata   = checkHttpClient( L );
+  const char * message = udata->message();
+  lua_pushstring(L, message);
+  return 1;
+}
+
+static int
+charon_HttpClientInstanceMethodStatus( lua_State *L ) {
   HttpClient *udata = checkHttpClient( L );
-  const char * urlRedirect = udata->urlRedirect();
-  lua_pushstring(L, urlRedirect);
+  lua_pushinteger(L, udata->status());
+  return 1;
+}
+
+static int
+charon_HttpClientInstanceMethodFailure( lua_State *L ) {
+  HttpClient *udata = checkHttpClient( L );
+  lua_pushboolean(L, udata->failure());
   return 1;
 }
 
@@ -143,14 +157,16 @@ static const
 luaL_reg HttpClientInstanceMethods[] = {
   {"appendHeader", charon_HttpClientInstanceMethodAppendHeader},
   {"setVerbose", charon_HttpClientInstanceMethodSetVerbose},
-  {"verbose", charon_HttpClientInstanceMethodVerbose},
   {"setBody", charon_HttpClientInstanceMethodSetBody},
   {"body", charon_HttpClientInstanceMethodBody},
   {"performGet", charon_HttpClientInstanceMethodPerformGet},
   {"performPost", charon_HttpClientInstanceMethodPerformPost},
   {"performPut", charon_HttpClientInstanceMethodPerformPut},
   {"performDelete", charon_HttpClientInstanceMethodPerformDelete},
-  {"urlRedirect", charon_HttpClientInstanceMethodUrlRedirect},
+  {"status",        charon_HttpClientInstanceMethodStatus},
+  {"data",        charon_HttpClientInstanceMethodData},
+  {"failure",     charon_HttpClientInstanceMethodFailure},
+  {"message",     charon_HttpClientInstanceMethodMessage},
   {"__gc", charon_HttpClientInstanceMethodDestruct},
   {NULL, NULL}
 };
