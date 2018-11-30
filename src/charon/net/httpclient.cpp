@@ -184,7 +184,10 @@ char * HttpClient::performPut()
     return new char[1]();
   }
 
-  return new char[1]();
+//  return new char[1]();
+  // Tem que passar pelo perform para preencher o status
+  // e para caso o status não seja 204 retornara o body
+  return perform();
 }
 
 char * HttpClient::performDelete()
