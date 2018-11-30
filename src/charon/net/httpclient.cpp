@@ -121,7 +121,7 @@ char * HttpClient::performGet()
   /* set our custom set of headers */
   curl_easy_setopt(m_curl, CURLOPT_HTTPHEADER, m_list);
 
-  return perform( curl_easy_perform(m_curl) );
+  return perform();
 }
 
 char * HttpClient::performPost()
@@ -135,7 +135,7 @@ char * HttpClient::performPost()
   curl_easy_setopt(m_curl, CURLOPT_POSTFIELDS, m_body);
   curl_easy_setopt(m_curl, CURLOPT_POSTFIELDSIZE, strlen(m_body));
 
-  return perform( curl_easy_perform(m_curl) );
+  return perform();
 }
 
 char * HttpClient::performPut()
@@ -149,7 +149,7 @@ char * HttpClient::performPut()
   curl_easy_setopt(m_curl, CURLOPT_POSTFIELDS, m_body);
   curl_easy_setopt(m_curl, CURLOPT_POSTFIELDSIZE, strlen(m_body));
 
-  return perform( curl_easy_perform(m_curl) );
+  return perform();
 }
 
 char * HttpClient::performDelete()
@@ -160,7 +160,7 @@ char * HttpClient::performDelete()
   /* DELETE */
   curl_easy_setopt(m_curl, CURLOPT_CUSTOMREQUEST, "DELETE");
 
-  return perform( curl_easy_perform(m_curl) );
+  return perform();
 }
 
 int HttpClient::status()
@@ -183,10 +183,14 @@ bool HttpClient::failure()
   return m_failure;
 }
 
-char * HttpClient::perform(CURLcode res)
+char * HttpClient::perform()
 {
   char * body;
   int    index;
+  CURLcode res;
+
+  // perform
+  res = curl_easy_perform(m_curl);
 
   // check for errors
   if(res != CURLE_OK) {

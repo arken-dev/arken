@@ -19,7 +19,7 @@ namespace net {
 class HttpClient
 {
   private:
-  char * perform(CURLcode res);
+  char * perform();
 
   public:
   HttpClient(const char * url);
