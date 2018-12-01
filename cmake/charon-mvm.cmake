@@ -3,7 +3,7 @@ set(CHARON_MVM_CONTAINER "" CACHE STRING
 
 set_property(
   CACHE CHARON_MVM_CONTAINER PROPERTY STRINGS
-  "" deque-stack deque-queue list-stack list-queue vector QStack QQueue
+  "" deque-stack deque-queue list-stack list-queue vector QQueue
 )
 
 if(CHARON_MVM_CONTAINER STREQUAL "")
@@ -12,7 +12,7 @@ if(CHARON_MVM_CONTAINER STREQUAL "")
   elseif(CHARON_BACKEND STREQUAL "benchmark")
     set(CHARON_MVM_CONTAINER "deque-stack")
   else()
-    set(CHARON_MVM_CONTAINER "QStack")
+    set(CHARON_MVM_CONTAINER "QQueue")
   endif()
 endif()
 

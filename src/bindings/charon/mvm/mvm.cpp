@@ -28,6 +28,12 @@ charon_mvm_clear(lua_State *L) {
 }
 
 static int
+charon_mvm_uptime(lua_State *L) {
+  lua_pushnumber(L, mvm::uptime());
+  return 1;
+}
+
+static int
 charon_mvm_version(lua_State *L) {
   lua_pushnumber(L, mvm::version());
   return 1;
@@ -62,6 +68,7 @@ extern "C" {
       {"version", charon_mvm_version},
       {"reload",  charon_mvm_reload},
       {"clear",   charon_mvm_clear},
+      {"uptime",  charon_mvm_uptime},
       {"pool",    charon_mvm_pool},
       {"set",     charon_mvm_set},
       {"at",      charon_mvm_at},
