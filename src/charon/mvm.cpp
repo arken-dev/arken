@@ -19,6 +19,7 @@ char **    mvm::s_argv         = 0;
 int        mvm::s_gc           = 0;
 int        mvm::s_version      = 0;
 int        mvm::s_pool         = 0;
+double     mvm::s_uptime       = os::microtime();
 ByteArray  mvm::s_charonPath   = "";
 ByteArray  mvm::s_profilePath  = "";
 ByteArray  mvm::s_dispatchPath = "";
@@ -37,10 +38,7 @@ void mvm_pool()
     mtx.unlock();
     if (count > 0) {
       for(int i=0; i < count; i++) {
-        if( log ) {
-          mvm::log("pool push\n");
-        }
-        mvm::push( new mvm::data() );
+        mvm::push( new mvm::data(mvm::s_version) );
       }
     }
     mvm::pause("pool.pause");
@@ -151,11 +149,11 @@ void mvm::init(int argc, char ** argv)
 
 instance mvm::instance()
 {
-  mvm::data * data  = takeFirst();
+  mvm::data * data  = pop();
 
-  if( s_version != data->version() ) {
+  if( mvm::s_version != data->version() ) {
     delete data;
-    data = new mvm::data();
+    data = new mvm::data(mvm::s_version);
   }
 
   return charon::instance(data);
@@ -163,7 +161,7 @@ instance mvm::instance()
 
 void mvm::push(mvm::data * data)
 {
-  if( s_version != data->m_version ) {
+  if( mvm::s_version != data->m_version ) {
     delete data;
   } else {
     mtx.lock();
@@ -175,7 +173,7 @@ void mvm::push(mvm::data * data)
 
 void mvm::back(mvm::data * data)
 {
-  if( s_version != data->m_version ) {
+  if( mvm::s_version > data->m_version ) {
     delete data;
   } else {
     mtx.lock();
@@ -185,12 +183,12 @@ void mvm::back(mvm::data * data)
   }
 }
 
-mvm::data * mvm::takeFirst()
+mvm::data * mvm::pop()
 {
   mtx.lock();
   if( container::empty() ) {
     mtx.unlock();
-    return new mvm::data();
+    return new mvm::data(mvm::s_version);
   }
   mvm::data * data = container::pop();
   s_pool--;
@@ -200,13 +198,33 @@ mvm::data * mvm::takeFirst()
 
 void mvm::reload()
 {
-  s_version++;
-  mvm::clear();
+  int log = mvm::at("pool.log");
+  int version = mvm::s_version + 1;
+
+  if( log ) {
+    char buffer[30];
+    sprintf(buffer, "reload: pool size %i\n", s_pool);
+    mvm::log(buffer);
+  }
+
+  while( true ) {
+    mvm::data * data = mvm::pop();
+    if( data->version() == version ) {
+      break;
+    } else {
+      if( log ) {
+        mvm::log("mvm delete\n");
+      }
+      delete data;
+      mvm::back(new mvm::data(version));
+    }
+  }
+  mvm::s_version = version;
 }
 
 int mvm::version()
 {
-  return s_version;
+  return mvm::s_version;
 }
 
 int mvm::pool()
@@ -220,7 +238,7 @@ int mvm::gc()
   mvm::data * data;
 
   s_gc ++;
-  data = takeFirst();
+  data = pop();
 
   while( data->m_gc != s_gc ) {
     lua_gc(data->state(), LUA_GCCOLLECT, 0);
@@ -229,7 +247,7 @@ int mvm::gc()
     mvm::back(data);
     i++;
 
-    data = takeFirst();
+    data = pop();
   }
 
   mvm::back(data);
@@ -241,7 +259,7 @@ int mvm::clear()
 {
   int result = 0;
   mtx.lock();
-  s_version++;
+  mvm::s_version++;
   while( !container::empty() ) {
     result++;
     mvm::data * data = container::pop();
@@ -252,10 +270,15 @@ int mvm::clear()
   return result;
 }
 
-mvm::data::data()
+double mvm::uptime()
+{
+  return os::microtime() - mvm::s_uptime;
+}
+
+mvm::data::data(int version)
 {
   int rv;
-  m_version = s_version;
+  m_version = version;
   m_gc      = s_gc;
   m_State   = luaL_newstate();
 
@@ -295,7 +318,7 @@ mvm::data::data()
 
   int log = mvm::at("pool.log");
   if( log ) {
-    mvm::log("mvm create Lua State\n");
+    mvm::log("mvm create\n");
   }
 
 }

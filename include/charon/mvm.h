@@ -29,7 +29,7 @@ class mvm {
     bool        m_release = false;
 
     public:
-    data();
+    data(int version);
     ~data();
     lua_State * state();
     lua_State * release();
@@ -49,9 +49,10 @@ class mvm {
     static void push(mvm::data *);
   };
 
-  static int s_gc;
-  static int s_version;
-  static int s_pool;
+  static double   s_uptime;
+  static int      s_gc;
+  static int      s_version;
+  static int      s_pool;
   static int      s_argc;
   static char * * s_argv;
   static ByteArray s_charonPath;
@@ -59,7 +60,7 @@ class mvm {
   static ByteArray s_dispatchPath;
 
   private:
-  static mvm::data * takeFirst();
+  static mvm::data * pop();
 
   mvm() {};
   ~mvm() {};
@@ -78,6 +79,7 @@ class mvm {
   static int  clear();
   static void push(mvm::data *);
   static void back(mvm::data *);
+  static double uptime();
   static charon::instance instance();
 
 };
