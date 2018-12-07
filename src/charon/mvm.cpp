@@ -210,6 +210,7 @@ void mvm::reload()
   while( true ) {
     mvm::data * data = mvm::pop();
     if( data->version() == version ) {
+      mvm::push(data);
       break;
     } else {
       if( log ) {
