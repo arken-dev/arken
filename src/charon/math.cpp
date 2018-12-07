@@ -58,8 +58,17 @@ double math::floor(double number)
 
 char * math::format(double value, int decimals, char dec_point, char thousands_sep)
 {
-  if( isnan(value) ) {
-    value = 0;
+
+  if( ! std::isnormal(value) ) {
+
+    if( std::isnan(value) ) {
+      return new char[4]{'n', 'a', 'n', '\0'};
+    }
+
+    if( std::isinf(value) ) {
+      return new char[4]{'i', 'n', 'f', '\0'};
+    }
+
   }
 
   int size = 65;
