@@ -285,8 +285,13 @@ mvm::data::data(int version)
 
   luaL_openlibs(m_State);
 
+  // CHARON_PATH
   lua_pushstring(m_State, s_charonPath);
   lua_setglobal(m_State, "CHARON_PATH");
+
+  // CHARON_UUID
+  lua_pushboolean(m_State, false);
+  lua_setglobal(m_State, "CHARON_UUID");
 
   //---------------------------------------------
   int top, i;
@@ -341,7 +346,6 @@ lua_State * mvm::data::release()
   m_release = true;
   return m_State;
 }
-
 
 int mvm::data::version()
 {

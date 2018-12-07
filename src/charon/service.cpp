@@ -90,13 +90,24 @@ void service::exit()
   s_exit = true;
 }
 
-bool service::loop(int secs)
+bool service::loop(int secs, lua_State * state)
 {
   int i = 0;
 
   while( i < secs ) {
 
-    os::sleep(1);
+    if( i == 0 ) {
+      double mtime = os::microtime();
+      if( state )  {
+        lua_gc(state, LUA_GCCOLLECT, 0);
+      }
+      double sleep = 1 - (os::microtime() - mtime);
+      if( sleep > 0 ) {
+        os::sleep(sleep);
+      }
+    } else {
+      os::sleep(1);
+    }
 
     if(s_exit || m_quit || m_version != mvm::version()) {
       return false;

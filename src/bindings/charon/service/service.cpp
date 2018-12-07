@@ -14,7 +14,7 @@ charon_service_loop(lua_State * L) {
   lua_getglobal(L, "__charon_service");
   service * srv = (service *) lua_touserdata(L, -1);
   int secs = luaL_checkint(L, 1);
-  lua_pushboolean(L, srv->loop(secs));
+  lua_pushboolean(L, srv->loop(secs, L));
   return 1;
 }
 
