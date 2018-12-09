@@ -32,6 +32,7 @@ namespace charon {
     static char * left(const char *string, int len);
     static char * leftJustified(const char * string, size_t size, const char * pad);
     static char * mid(const char * string, int pos, int len);
+    static char * md5(const char * string);
     static char * normalize(const char * string);
     static char * simplified(const char *buffer);
     static char * repeated(const char *buffer, int times);
@@ -39,6 +40,7 @@ namespace charon {
     static char * replace(const char * string, const char before, const char after, int start = 0);
     static char * right(const char *buffer, int len);
     static char * rightJustified(const char * string, size_t size, const char * pad);
+    static char * sha1(const char * string);
     static ByteArrayList * split(const char * string, const char * pattern);
     static ByteArrayList * split(const char * string, size_t len, const char * pattern);
     static char * suffix(const char * raw);

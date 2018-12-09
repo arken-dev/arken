@@ -1164,3 +1164,13 @@ char * string::underscore(const char *string)
 
   return res;
 }
+
+char * string::md5(const char * str)
+{
+  return digest::md5(str);
+}
+
+char * string::sha1(const char * str)
+{
+  return digest::sha1(str);
+}

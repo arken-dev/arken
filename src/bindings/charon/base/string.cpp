@@ -62,6 +62,23 @@ static int charon_string_chop( lua_State *L ) {
   return 1;
 }
 
+
+static int charon_string_md5( lua_State *L ) {
+  const char * str = luaL_checkstring(L, 1);
+  char * result = string::md5(str);
+  lua_pushstring(L, result);  /* push result */
+  delete[] result;
+  return 1;
+}
+
+static int charon_string_sha1( lua_State *L ) {
+  const char * str = luaL_checkstring(L, 1);
+  char * result = string::sha1(str);
+  lua_pushstring(L, result);  /* push result */
+  delete[] result;
+  return 1;
+}
+
 static int charon_string_contains( lua_State *L ) {
   const char *string = luaL_checkstring(L, 1);
   const char *str    = luaL_checkstring(L, 2);
@@ -359,6 +376,7 @@ int luaopen_charon_string( lua_State *L ) {
     {"left",           charon_string_left},
     {"lastIndexOf",    charon_string_lastIndexOf},
     {"mid",            charon_string_mid},
+    {"md5",            charon_string_md5},
     {"normalize",      charon_string_normalize},
     {"leftJustified",  charon_string_leftJustified},
     {"rightJustified", charon_string_rightJustified},
@@ -366,6 +384,7 @@ int luaopen_charon_string( lua_State *L ) {
     {"repeated",       charon_string_repeated},
     {"replace",        charon_string_replace},
     {"right",          charon_string_right},
+    {"sha1",           charon_string_sha1},
     {"startsWith",     charon_string_startsWith},
     {"split",          charon_string_split},
     {"suffix",         charon_string_suffix},
