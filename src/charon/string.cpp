@@ -6,7 +6,8 @@
 #include <charon/base>
 #include <QDebug>
 
-using charon::ByteArrayList;
+using ByteArrayList = charon::ByteArrayList;
+using digest        = charon::digest;
 
 char * string::append(const char * string, const char * ba)
 {
@@ -35,11 +36,6 @@ static bool inline string_camelCase_special_char(char chr)
   } else {
     return false;
   }
-}
-
-char * string::camelCase(const char * string)
-{
-  return string::camelCase(string, false);
 }
 
 char * string::camelCase(const char * string, bool lcfirst)
@@ -1024,17 +1020,7 @@ char * string::rightTrimmed(const char *string)
   return result;
 }
 
-char * string::truncate(const char *string, int pos)
-{
-  return string::truncate(string, pos, "...");
-}
-
-char * string::truncate(const char *string, int pos, const char *omission)
-{
-  return string::truncate(string, pos, omission, ' ');
-}
-
-char * string::truncate(const char *string, int pos, const char * omission, char separator)
+char * string::truncate(const char *string, int pos, const char * omission, const char separator)
 {
   char * result;
   int i, string_len, omission_len;
@@ -1173,4 +1159,250 @@ char * string::md5(const char * str)
 char * string::sha1(const char * str)
 {
   return digest::sha1(str);
+}
+
+//-----------------------------------------------------------------------------
+// CLASS
+//-----------------------------------------------------------------------------
+
+string::string()
+{
+  m_size = 0;
+  m_data = 0;
+}
+
+string::string(const char * data)
+{
+  m_size = strlen(data);
+  m_capacity = m_size;
+  m_data = new char[m_size+1];
+  strcpy(m_data, data);
+}
+
+string::string(char * data)
+{
+  m_data = data;
+  m_size = strlen(data);
+  m_capacity = m_size;
+}
+
+string * string::consume(char * data)
+{
+  charon::string * tmp = new string;
+  tmp->m_data = data;
+  tmp->m_size = strlen(data);
+  tmp->m_capacity = tmp->m_size;
+  return tmp;
+}
+
+string::~string()
+{
+  delete[] m_data;
+}
+
+void string::append(const char * data)
+{
+  size_t len = strlen(data);
+
+  if( (m_size + len) >= m_capacity ) {
+    char * tmp = m_data;
+    m_capacity = m_size + len + 1000000;
+    m_data     = new char[m_capacity];
+    for(size_t i = 0; i < m_size; i++) {
+      m_data[i] = tmp[i];
+    }
+    delete[] tmp;
+  }
+
+  for(size_t i=0; i < len; i++, m_size++) {
+    m_data[m_size] = data[i];
+  }
+  m_data[m_size] = '\0';
+}
+
+
+string * string::camelCase(bool lcfirst)
+{
+  return charon::string::consume(string::camelCase(m_data, lcfirst));
+}
+
+string * string::capitalize()
+{
+  return charon::string::consume(string::capitalize(m_data));
+}
+
+string * string::center(size_t size, const char * pad)
+{
+  return charon::string::consume(string::center(m_data, size, pad));
+}
+
+bool string::contains(const char * str)
+{
+  return charon::string::contains(m_data, str);
+}
+
+string * string::chop(int n)
+{
+  return charon::string::consume(string::chop(m_data, n));
+}
+
+int string::count(const char * str)
+{
+  return string::count(m_data, str);
+}
+
+string * string::dasherize()
+{
+  return charon::string::consume(string::dasherize(m_data));
+}
+
+string * string::escape()
+{
+  return charon::string::consume(string::escape(m_data));
+}
+
+string * string::escapeHtml()
+{
+  return charon::string::consume(string::escapeHtml(m_data));
+}
+
+int string::indexOf(const char * str, int i)
+{
+  return string::indexOf(m_data, str, i);
+}
+
+string * string::insert(int len, const char * ba)
+{
+  return charon::string::consume(string::insert(m_data, len, ba));
+}
+
+bool string::endsWith(const char * ba)
+{
+  return string::endsWith(m_data, ba);
+}
+
+int string::lastIndexOf(const char * str)
+{
+  return string::lastIndexOf(m_data, str);
+}
+
+string * string::left(int len)
+{
+  return string::consume( string::left(m_data, len) );
+}
+
+string * string::leftJustified(size_t size, const char * pad)
+{
+  return string::consume( string::leftJustified(m_data, size, pad) );
+}
+
+string * string::mid(int pos, int len)
+{
+  return string::consume( string::mid(m_data, pos, len) );
+}
+
+string * string::md5()
+{
+  return charon::string::consume(string::md5(m_data));
+}
+
+string * string::normalize()
+{
+  return charon::string::consume(string::normalize(m_data));
+}
+
+string * string::simplified()
+{
+  return charon::string::consume(string::simplified(m_data));
+}
+
+string * string::repeated(int times)
+{
+  return charon::string::consume(string::repeated(m_data, times));
+}
+
+string * string::replace(const char * before, const char * after, int start)
+{
+  return charon::string::consume(string::replace(m_data, before, after, start));
+}
+
+string * string::replace(const char before, const char after, int start)
+{
+  return charon::string::consume(string::replace(m_data, before, after, start));
+}
+
+string * string::right(int len)
+{
+  return charon::string::consume(string::right(m_data, len));
+}
+
+string * string::rightJustified(size_t size, const char * pad)
+{
+  return charon::string::consume(string::rightJustified(m_data, size, pad));
+}
+
+string * string::sha1()
+{
+  return charon::string::consume(string::sha1(m_data));
+}
+
+string * string::suffix(const char chr)
+{
+  return charon::string::consume(string::suffix(m_data, chr));
+}
+
+char * string::data() const
+{
+  return this->m_data;
+}
+
+string * string::trimmed()
+{
+  return charon::string::consume(string::trimmed(m_data));
+}
+
+string * string::leftTrimmed()
+{
+  return charon::string::consume(string::leftTrimmed(m_data));
+}
+
+string * string::rightTrimmed()
+{
+  return charon::string::consume(string::rightTrimmed(m_data));
+}
+
+bool string::startsWith(const char * str)
+{
+  return string::startsWith(m_data, str);
+}
+
+string * string::truncate(int pos, const char *omission, const char separator)
+{
+  return charon::string::consume(string::truncate(m_data, pos, omission, separator));
+}
+
+string * string::underscore()
+{
+  return charon::string::consume(string::underscore(m_data));
+}
+
+ByteArrayList * string::split(const char * pattern)
+{
+  return string::split(m_data, m_size, pattern);
+}
+
+uint64_t string::size()
+{
+  return m_size;
+}
+
+std::ostream & operator<<(std::ostream & os, const charon::string * str)
+{
+   os << str->data();
+   return os;
+}
+std::ostream & operator<<(std::ostream & os, const charon::string & str)
+{
+   os << str.data();
+   return os;
 }
