@@ -34,6 +34,8 @@ namespace charon {
     static char * chop(const char * string, int n);
     static int    count(const char * str1, const char * str2);
     static char * dasherize(const char *string);
+    static char * encode64(const char *string);
+    static char * decode64(const char *string);
     static char * escape(const char * string);
     static char * escapeHtml(const char * string);
     static int    indexOf(const char * string, const char * str, int i = 0);
@@ -81,6 +83,8 @@ namespace charon {
     string * chop(int n);
     int      count(const char * str2);
     string * dasherize();
+    string * encode64();
+    string * decode64();
     string * escape();
     string * escapeHtml();
     int      indexOf(const char * str, int i = 0);

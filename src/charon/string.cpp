@@ -8,6 +8,7 @@
 
 using ByteArrayList = charon::ByteArrayList;
 using digest        = charon::digest;
+using base64        = charon::base64;
 
 char * string::append(const char * string, const char * ba)
 {
@@ -266,6 +267,17 @@ char * string::dasherize(const char *string)
 
   return res;
 }
+
+char * string::encode64(const char * str)
+{
+  return base64::encode(str);
+}
+
+char * string::decode64(const char * str)
+{
+  return base64::decode(str);
+}
+
 char * string::escape(const char * string)
 {
   int i, j;
@@ -1259,6 +1271,16 @@ int string::count(const char * str)
 string * string::dasherize()
 {
   return charon::string::consume(string::dasherize(m_data));
+}
+
+string * string::decode64()
+{
+  return charon::string::consume(string::decode64(m_data));
+}
+
+string * string::encode64()
+{
+  return charon::string::consume(string::encode64(m_data));
 }
 
 string * string::escape()

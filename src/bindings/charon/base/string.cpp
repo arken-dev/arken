@@ -125,6 +125,24 @@ charon_string_contains( lua_State *L ) {
 }
 
 static int
+charon_string_decode64( lua_State *L ) {
+  const char *str = luaL_checkstring(L, 1);
+  char * result   = string::decode64(str);
+  lua_pushstring(L, result);
+  delete[] result;
+  return 1;
+}
+
+static int
+charon_string_encode64( lua_State *L ) {
+  const char *str = luaL_checkstring(L, 1);
+  char * result   = string::encode64(str);
+  lua_pushstring(L, result);
+  delete[] result;
+  return 1;
+}
+
+static int
 charon_string_count( lua_State *L ) {
   const char *str1 = luaL_checkstring(L, 1);
   const char *str2 = luaL_checkstring(L, 2);
@@ -433,6 +451,8 @@ StringClassMethods[] = {
   {"endsWith",       charon_string_endsWith},
   {"escape",         charon_string_escape},
   {"escapeHtml",     charon_string_escapeHtml},
+  {"encode64",       charon_string_encode64},
+  {"decode64",       charon_string_decode64},
   {"dasherize",      charon_string_dasherize},
   {"indexOf",        charon_string_indexOf},
   {"insert",         charon_string_insert},
@@ -718,6 +738,26 @@ charon_StringInstanceMethodRightJustified( lua_State *L ) {
 }
 
 static int
+charon_StringInstanceMethodEncode64( lua_State *L ) {
+  string * udata = checkString( L );
+  string **ptr   = (string **)lua_newuserdata(L, sizeof(string*));
+  *ptr = udata->encode64();
+  luaL_getmetatable(L, "string.metatable");
+  lua_setmetatable(L, -2);
+  return 1;
+}
+
+static int
+charon_StringInstanceMethodDecode64( lua_State *L ) {
+  string * udata = checkString( L );
+  string **ptr   = (string **)lua_newuserdata(L, sizeof(string*));
+  *ptr = udata->decode64();
+  luaL_getmetatable(L, "string.metatable");
+  lua_setmetatable(L, -2);
+  return 1;
+}
+
+static int
 charon_StringInstanceMethodSha1( lua_State *L ) {
   string * udata = checkString( L );
   string **ptr   = (string **)lua_newuserdata(L, sizeof(string*));
@@ -864,6 +904,8 @@ luaL_reg StringInstanceMethods[] = {
   {"count",          charon_StringInstanceMethodCount},
   {"dasherize",      charon_StringInstanceMethodDasherize},
   {"escape",         charon_StringInstanceMethodEscape},
+  {"decode64",       charon_StringInstanceMethodDecode64},
+  {"encode64",       charon_StringInstanceMethodEncode64},
   {"escapeHtml",     charon_StringInstanceMethodEscapeHtml},
   {"indexOf",        charon_StringInstanceMethodIndexOf},
   {"endsWith",       charon_StringInstanceMethodEndsWith},
