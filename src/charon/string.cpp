@@ -1167,23 +1167,27 @@ char * string::sha1(const char * str)
 
 string::string()
 {
-  m_size = 0;
-  m_data = 0;
+  m_reserve  = 1024;
+  m_size     = 0;
+  m_data     = new char[m_reserve]();
+  m_capacity = m_size;
 }
 
 string::string(const char * data)
 {
-  m_size = strlen(data);
-  m_capacity = m_size;
-  m_data = new char[m_size+1];
+  m_reserve   = 1024;
+  m_size      = strlen(data);
+  m_capacity  = m_size;
+  m_data      = new char[m_size+1];
   strcpy(m_data, data);
 }
 
-string::string(char * data)
+string::string(size_t reserve)
 {
-  m_data = data;
-  m_size = strlen(data);
-  m_capacity = m_size;
+  m_reserve   = reserve;
+  m_size      = 0;
+  m_data      = new char[m_reserve]();
+  m_capacity  = m_size;
 }
 
 string * string::consume(char * data)
@@ -1206,7 +1210,7 @@ void string::append(const char * data)
 
   if( (m_size + len) >= m_capacity ) {
     char * tmp = m_data;
-    m_capacity = m_size + len + 1000000;
+    m_capacity = m_size + len + m_reserve;
     m_data     = new char[m_capacity];
     for(size_t i = 0; i < m_size; i++) {
       m_data[i] = tmp[i];
@@ -1217,6 +1221,7 @@ void string::append(const char * data)
   for(size_t i=0; i < len; i++, m_size++) {
     m_data[m_size] = data[i];
   }
+
   m_data[m_size] = '\0';
 }
 
@@ -1329,6 +1334,16 @@ string * string::replace(const char * before, const char * after, int start)
 string * string::replace(const char before, const char after, int start)
 {
   return charon::string::consume(string::replace(m_data, before, after, start));
+}
+
+void string::reserve(size_t reserve)
+{
+  m_reserve = reserve;
+}
+
+size_t string::reserve()
+{
+  return m_reserve;
 }
 
 string * string::right(int len)

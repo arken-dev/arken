@@ -22,9 +22,19 @@ checkString ( lua_State *L ) {
 
 static int
 charon_string_new( lua_State *L ) {
-  const char *str = (char *) luaL_checkstring(L, 1);
+  string * str;
+  if(lua_gettop(L) == 0) { // number of arguments
+    str = new string();
+  } else {
+    if( lua_isnumber(L, 1) ) {
+      str = new string(lua_tointeger(L, 1));
+    } else {
+      const char *s = (char *) luaL_checkstring(L, 1);
+      str = new string(s);
+    }
+  }
   string **ptr = (string **)lua_newuserdata(L, sizeof(string*));
-  *ptr = new string(str);
+  *ptr = str;
   luaL_getmetatable(L, "string.metatable");
   lua_setmetatable(L, -2);
   return 1;
@@ -672,6 +682,19 @@ charon_StringInstanceMethodRepeated( lua_State *L ) {
 }
 
 static int
+charon_StringInstanceMethodReserve( lua_State *L ) {
+  string * udata = checkString( L );
+  if(lua_gettop(L) > 1) { // number of arguments
+   int reserve = luaL_checklong(L, 2);
+    udata->reserve(reserve);
+    return 0;
+  } else {
+    lua_pushnumber(L, udata->reserve());
+    return 1;
+  }
+}
+
+static int
 charon_StringInstanceMethodRight( lua_State *L ) {
   string *  udata = checkString( L );
   int len = luaL_checkinteger(L, 2);
@@ -853,6 +876,7 @@ luaL_reg StringInstanceMethods[] = {
   {"normalize",      charon_StringInstanceMethodNormalize},
   {"repeated",       charon_StringInstanceMethodRepeated},
   {"replace",        charon_StringInstanceMethodReplace},
+  {"reserve",        charon_StringInstanceMethodReserve},
   {"right",          charon_StringInstanceMethodRight},
   {"rightJustified", charon_StringInstanceMethodRightJustified},
   {"sha1",           charon_StringInstanceMethodSha1},

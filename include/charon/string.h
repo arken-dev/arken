@@ -19,6 +19,7 @@ namespace charon {
     char   * m_data;
     size_t   m_size;
     size_t   m_capacity;
+    size_t   m_reserve;
 
     //-------------------------------------------------------------------------
     // CLASS METHODS
@@ -68,8 +69,8 @@ namespace charon {
 
     static string * consume(char * str);
     string();
-    string(char * str);
     string(const char * str);
+    string(size_t reserve);
     ~string();
 
     void     append(const char * str);
@@ -95,6 +96,8 @@ namespace charon {
     string * repeated(int times);
     string * replace(const char * before, const char * after, int start = 0);
     string * replace(const char before, const char after, int start = 0);
+    void     reserve(size_t reserve);
+    size_t   reserve();
     string * right(int len);
     string * rightJustified(size_t size, const char * pad);
     string * sha1();
