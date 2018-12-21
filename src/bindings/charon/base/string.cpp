@@ -864,8 +864,16 @@ charon_StringInstanceMethodAppend( lua_State *L ) {
   string * udata   = checkString( L );
   const char * str = luaL_checkstring(L, 2);
   udata->append(str);
-  luaL_getmetatable(L, "string.metatable");
-  lua_setmetatable(L, -2);
+  lua_pushvalue(L, -2);
+  return 1;
+}
+
+static int
+charon_StringInstanceMethodPrepend( lua_State *L ) {
+  string * udata   = checkString( L );
+  const char * str = luaL_checkstring(L, 2);
+  udata->prepend(str);
+  lua_pushvalue(L, -2);
   return 1;
 }
 
@@ -916,6 +924,7 @@ luaL_reg StringInstanceMethods[] = {
   {"insert",         charon_StringInstanceMethodInsert},
   {"md5",            charon_StringInstanceMethodMd5},
   {"normalize",      charon_StringInstanceMethodNormalize},
+  {"prepend",        charon_StringInstanceMethodPrepend},
   {"repeated",       charon_StringInstanceMethodRepeated},
   {"replace",        charon_StringInstanceMethodReplace},
   {"reserve",        charon_StringInstanceMethodReserve},

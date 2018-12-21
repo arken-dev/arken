@@ -75,7 +75,7 @@ namespace charon {
     string(size_t reserve);
     ~string();
 
-    void     append(const char * str);
+    string * append(const char * str);
     string * camelCase(bool lcfirst = false);
     string * capitalize();
     string * center(size_t size, const char * pad);
@@ -96,6 +96,7 @@ namespace charon {
     string * mid(int pos, int len);
     string * md5();
     string * normalize();
+    string * prepend(const char * str);
     string * simplified();
     string * repeated(int times);
     string * replace(const char * before, const char * after, int start = 0);
