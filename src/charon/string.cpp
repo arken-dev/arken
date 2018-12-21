@@ -1255,7 +1255,7 @@ string * string::prepend(const char * data)
   }
 
   delete[] m_data;
-  m_size = m_size+len;
+  m_size = len;
   m_data = tmp;
   m_data[m_size] = '\0';
 
