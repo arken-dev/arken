@@ -31,7 +31,7 @@ namespace charon
     static char * start(const char * fileName);
     static void load(const char * dirName);
     static void load();
-    bool loop(int secs);
+    bool loop(int secs, lua_State * state = 0);
     void quit();
     void exit();
     service();

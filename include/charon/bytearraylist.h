@@ -6,10 +6,12 @@
 #ifndef _CHARON_BYTE_ARRAY_LIST_
 #define _CHARON_BYTE_ARRAY_LIST_
 
-#include <QByteArray>
+#include <charon/base>
 
 namespace charon
 {
+
+class string;
 
 class ByteArrayList
 {
@@ -18,7 +20,7 @@ class ByteArrayList
   int m_size;
   int m_resource;
   int m_cursor;
-  QByteArray ** m_array;
+  string ** m_array;
 
   public:
   ByteArrayList();

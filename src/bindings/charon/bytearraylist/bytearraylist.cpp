@@ -73,7 +73,7 @@ charon_byte_array_list_each( lua_State *L ) {
   luaL_checktype(L, i, LUA_TLIGHTUSERDATA);
   ByteArrayList * ba  = (ByteArrayList *) lua_touserdata(L, i);
   const char * result = ba->each();
-  if( result == 0 ) {
+  if( result == NULL ) {
     lua_pushnil(L);
   } else {
     lua_pushstring(L, result);

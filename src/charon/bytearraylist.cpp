@@ -15,7 +15,7 @@ void ByteArrayList::init()
     m_resource *= 2;
   }
 
-  QByteArray * *array = new QByteArray*[m_resource];
+  string **array = new string*[m_resource];
 
   if( m_size > 0 ) {
     for(int i = 0; i < m_size; i++) {
@@ -71,7 +71,7 @@ void ByteArrayList::replace(int pos, const char * value)
 
   //char * tmp = new char[strlen(value)+1];
   //strcpy(tmp, value);
-  m_array[pos] = new QByteArray(value);//tmp;
+  m_array[pos] = new string(value);//tmp;
 }
 
 ByteArrayList & ByteArrayList::append(const char * value)
@@ -81,7 +81,7 @@ ByteArrayList & ByteArrayList::append(const char * value)
   }
   //char * tmp = new char[strlen(value)+1];
   //strcpy(tmp, value);
-  m_array[m_size] = new QByteArray(value);//tmp;
+  m_array[m_size] = new string(value);//tmp;
   ++m_size;
   return *this;
 }
@@ -94,7 +94,7 @@ ByteArrayList & ByteArrayList::append(const char * value, int len)
   //char * tmp = new char[len+1];
   //strncpy(tmp, value, len);
   //tmp[len] = '\0';
-  m_array[m_size] = new QByteArray(value, len);//tmp;
+  m_array[m_size] = new string(value, len);//tmp;
   ++m_size;
   return *this;
 }
@@ -106,7 +106,7 @@ ByteArrayList & ByteArrayList::operator<<(const char * value)
   }
   //char * tmp = new char[strlen(value)+1];
   //strcpy(tmp, value);
-  m_array[m_size] = new QByteArray(value);//tmp;
+  m_array[m_size] = new string(value);//tmp;
   ++m_size;
   return *this;
 }
@@ -121,7 +121,7 @@ const char * ByteArrayList::at(int pos)
   if( pos > m_size ) {
     return 0;
   }
-  QByteArray * ba = m_array[pos];
+  string * ba = m_array[pos];
   if( ba == 0 || ba->size() == 0 ) {
     return 0;
   } else {
@@ -135,7 +135,7 @@ const char * ByteArrayList::at(int pos, int * len)
     * len = 0;
     return 0;
   }
-  QByteArray * ba = m_array[pos];
+  string * ba = m_array[pos];
   if( ba == 0 || ba->size() == 0 ) {
     * len = 0;
     return 0;
@@ -194,10 +194,11 @@ char * ByteArrayList::join(const char * separator)
 
 const char * ByteArrayList::each()
 {
+  if( m_cursor >= m_size ) {
+    return NULL;
+  }
+
   const char * result = at(m_cursor);
   m_cursor++;
-  if( m_cursor > m_size ) {
-    m_cursor = 0;
-  }
   return result;
 }

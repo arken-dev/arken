@@ -7,8 +7,8 @@ apt-get install        \
   libmysqlclient-dev
 
 cd tmp
-curl http://luajit.org/download/LuaJIT-2.0.4.tar.gz -o tmp.tar.gz
-tar -xzvf tmp.tar.gz
+wget -c http://luajit.org/download/LuaJIT-2.0.4.tar.gz
+tar -xzvf LuaJIT-2.0.4.tar.gz
 cp ../bootstrap/debian/Makefile.jit LuaJIT-2.0.4/src/Makefile
 cd LuaJIT-2.0.4
 make
