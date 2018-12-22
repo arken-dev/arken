@@ -20,9 +20,9 @@ int        mvm::s_gc           = 0;
 int        mvm::s_version      = 0;
 int        mvm::s_pool         = 0;
 double     mvm::s_uptime       = os::microtime();
-ByteArray  mvm::s_charonPath   = "";
-ByteArray  mvm::s_profilePath  = "";
-ByteArray  mvm::s_dispatchPath = "";
+string     mvm::s_charonPath   = "";
+string     mvm::s_profilePath  = "";
+string     mvm::s_dispatchPath = "";
 static std::mutex mtx;
 static std::map <std::string, int> s_config;
 
@@ -127,7 +127,7 @@ void mvm::init(int argc, char ** argv)
   }
   s_charonPath = os::executablePath();
   int lastIndexOf = s_charonPath.lastIndexOf("bin");
-  s_charonPath.truncate(lastIndexOf-1);
+  s_charonPath = s_charonPath.left(lastIndexOf-1);
 
   if( strcmp(os::name(), "windows") == 0 ) {
     s_charonPath = s_charonPath.capitalize();
