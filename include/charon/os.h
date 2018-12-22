@@ -6,12 +6,8 @@
 #ifndef _CHARON_OS_
 #define _CHARON_OS_
 
-#include <QtCore>
-#include <charon/ByteArrayList>
 #include <charon/base>
 
-
-using charon::ByteArrayList;
 using List = charon::string::List;
 
 namespace charon {

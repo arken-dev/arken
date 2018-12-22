@@ -6,8 +6,6 @@
 #ifndef _CHARON_REGEX_
 #define _CHARON_REGEX_
 
-#include <charon/ByteArrayList>
-
 using List = charon::string::List;
 
 namespace charon

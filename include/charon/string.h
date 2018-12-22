@@ -9,7 +9,6 @@
 #include <cstdlib>
 #include <cstring>
 #include <cctype>
-#include <charon/ByteArrayList>
 #include <iostream>
 
 namespace charon {
