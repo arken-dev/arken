@@ -110,7 +110,7 @@ static int charon_os_glob( lua_State *L ) {
 
   List **ptr = (List **)lua_newuserdata(L, sizeof(List*));
   *ptr = list;
-  luaL_getmetatable(L, "ByteArrayList.metatable");
+  luaL_getmetatable(L, "charon.string.List.metatable");
   lua_setmetatable(L, -2);
 
   return 1;

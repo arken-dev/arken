@@ -19,7 +19,6 @@ os.setlocale("C", "numeric")
 -------------------------------------------------------------------------------
 require 'charon.base'
 require 'charon.package'
-require 'charon.ByteArrayList'
 
 -------------------------------------------------------------------------------
 -- PROFILE.D
