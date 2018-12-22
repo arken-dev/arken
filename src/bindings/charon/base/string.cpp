@@ -7,9 +7,8 @@
 #include <charon/base>
 #include <iostream>
 
-using charon::ByteArray;
-using charon::ByteArrayList;
 using charon::string;
+using List = charon::string::List;
 
 string *
 checkString ( lua_State *L ) {
@@ -333,8 +332,8 @@ charon_string_split( lua_State *L ) {
   size_t len;
   const char  * string  = luaL_checklstring(L, 1, &len);
   const char  * pattern = luaL_checkstring(L, 2);
-  ByteArrayList * list    = string::split(string, len, pattern);
-  ByteArrayList **ptr = (ByteArrayList **)lua_newuserdata(L, sizeof(ByteArrayList*));
+  List * list = string::split(string, len, pattern);
+  List **ptr  = (List **)lua_newuserdata(L, sizeof(List*));
   *ptr = list;
   luaL_getmetatable(L, "ByteArrayList.metatable");
   lua_setmetatable(L, -2);
@@ -881,8 +880,8 @@ static int
 charon_StringInstanceMethodSplit( lua_State *L ) {
   string * udata = checkString( L );
   const char  * pattern = luaL_checkstring(L, 2);
-  ByteArrayList * list  = udata->split(pattern);
-  ByteArrayList **ptr   = (ByteArrayList **)lua_newuserdata(L, sizeof(ByteArrayList*));
+  List * list  = udata->split(pattern);
+  List **ptr   = (List **)lua_newuserdata(L, sizeof(List*));
   *ptr = list;
   luaL_getmetatable(L, "ByteArrayList.metatable");
   lua_setmetatable(L, -2);

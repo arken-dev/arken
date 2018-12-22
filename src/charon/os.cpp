@@ -48,14 +48,14 @@ unsigned int os::cores()
   return std::thread::hardware_concurrency();
 }
 
-ByteArrayList * os::glob(const char * dir)
+List * os::glob(const char * dir)
 {
   return os::glob(dir, false);
 }
 
-ByteArrayList * os::glob(const char * dir, bool sub)
+List * os::glob(const char * dir, bool sub)
 {
-  ByteArrayList * list = new ByteArrayList();
+  List * list = new List();
   QDirIterator::IteratorFlags flags;
 
   if( sub ) {
@@ -72,16 +72,16 @@ ByteArrayList * os::glob(const char * dir, bool sub)
   return list;
 }
 
-ByteArrayList * os::glob(const char * dir, const char * regex)
+List * os::glob(const char * dir, const char * regex)
 {
   return os::glob(dir, regex, false);
 }
 
-ByteArrayList * os::glob(const char * dir, const char * regex, bool sub)
+List * os::glob(const char * dir, const char * regex, bool sub)
 {
 
   QRegExp qregex(regex);
-  ByteArrayList * list = new ByteArrayList();
+  List * list = new List();
   QDirIterator::IteratorFlags flags;
 
   if( sub ) {
