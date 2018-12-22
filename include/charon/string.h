@@ -118,6 +118,8 @@ namespace charon {
     string * truncate(int pos, const char * omission = "...", const char separator = ' ');
     string * underscore();
     char   * data() const;
+    // explicit conversion
+    operator const char *() const { return m_data; }
   };
 }
 
