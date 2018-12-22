@@ -10,8 +10,6 @@
 #include <cstring>
 
 using namespace charon;
-using charon::ByteArray;
-using charon::ByteArrayList;
 
 bool regex::ematch(const char * string, const char * regex)
 {
@@ -28,10 +26,10 @@ int regex::index(const char * string, const char * regex, int offset)
   return QRegExp(regex).indexIn(string, offset);
 }
 
-ByteArrayList * regex::split(const char * string, const char * regex)
+List * regex::split(const char * string, const char * regex)
 {
   QRegExp qregex(regex);
-  ByteArrayList *list = new ByteArrayList();
+  List *list = new List();
   QString qstr(string);
   int older = 0;
   int poss  = 0;
@@ -61,10 +59,10 @@ char * regex::replace(const char * string, const char * regex, const char * afte
   return result;
 }
 
-ByteArrayList * regex::scan(const char * string, const char * regex)
+List * regex::scan(const char * string, const char * regex)
 {
   QRegExp qregex(regex);
-  ByteArrayList *list = new ByteArrayList();
+  List *list = new List();
   QString qstr(string);
   int older = 0;
   int poss  = 0;
