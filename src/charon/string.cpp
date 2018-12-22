@@ -857,10 +857,11 @@ ByteArrayList * string::split(const char * raw, size_t len, const char * pattern
       other = raw + flag;
       size = i - flag;
       if( size > 0 ) {
-        //char * tmp = new char[size+1];
-        //strncpy(tmp, other, size);
-        //tmp[size] = '\0';
-        list->append(other, size);
+        char * tmp = new char[size+1];
+        strncpy(tmp, other, size);
+        tmp[size] = '\0';
+        list->append(tmp, size);
+        delete[] tmp;
       }
       flag = i+patternlen;
     }
@@ -1185,6 +1186,16 @@ string::string()
   m_capacity = m_size;
 }
 
+string::string(const char * data, size_t size)
+{
+  m_reserve   = 1024;
+  m_size      = size;
+  m_capacity  = m_size;
+  m_data      = new char[m_size+1];
+  strcpy(m_data, data);
+  m_data[m_size] = '\0';
+}
+
 string::string(const char * data)
 {
   m_reserve   = 1024;
@@ -1192,6 +1203,7 @@ string::string(const char * data)
   m_capacity  = m_size;
   m_data      = new char[m_size+1];
   strcpy(m_data, data);
+  m_data[m_size] = '\0';
 }
 
 string::string(size_t reserve)
@@ -1452,7 +1464,12 @@ ByteArrayList * string::split(const char * pattern)
   return string::split(m_data, m_size, pattern);
 }
 
-uint64_t string::size()
+size_t string::size()
+{
+  return m_size;
+}
+
+size_t string::len()
 {
   return m_size;
 }

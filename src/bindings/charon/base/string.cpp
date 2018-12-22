@@ -13,7 +13,7 @@ using charon::string;
 
 string *
 checkString ( lua_State *L ) {
-  return *(string **) luaL_checkudata(L, 1, "string.metatable");
+  return *(string **) luaL_checkudata(L, 1, "charon.string.metatable");
 }
 
 //-----------------------------------------------------------------------------
@@ -35,7 +35,7 @@ charon_string_new( lua_State *L ) {
   }
   string **ptr = (string **)lua_newuserdata(L, sizeof(string*));
   *ptr = str;
-  luaL_getmetatable(L, "string.metatable");
+  luaL_getmetatable(L, "charon.string.metatable");
   lua_setmetatable(L, -2);
   return 1;
 }
@@ -495,7 +495,7 @@ charon_StringInstanceMethodCenter( lua_State *L ) {
   int size        = luaL_checkinteger(L, 2);
   const char *pad = luaL_checkstring(L, 3);
   *ptr = udata->center(size, pad);
-  luaL_getmetatable(L, "string.metatable");
+  luaL_getmetatable(L, "charon.string.metatable");
   lua_setmetatable(L, -2);
   return 1;
 }
@@ -522,7 +522,7 @@ charon_StringInstanceMethodChop( lua_State *L ) {
   int n = luaL_checkinteger(L, 2);
   string **ptr = (string **)lua_newuserdata(L, sizeof(string*));
   *ptr = udata->chop(n);
-  luaL_getmetatable(L, "string.metatable");
+  luaL_getmetatable(L, "charon.string.metatable");
   lua_setmetatable(L, -2);
   return 1;
 }
@@ -532,7 +532,7 @@ charon_StringInstanceMethodDasherize( lua_State *L ) {
   string * udata = checkString( L );
   string **ptr   = (string **)lua_newuserdata(L, sizeof(string*));
   *ptr = udata->dasherize();
-  luaL_getmetatable(L, "string.metatable");
+  luaL_getmetatable(L, "charon.string.metatable");
   lua_setmetatable(L, -2);
   return 1;
 }
@@ -542,7 +542,7 @@ charon_StringInstanceMethodEscape( lua_State *L ) {
   string * udata = checkString( L );
   string **ptr   = (string **)lua_newuserdata(L, sizeof(string*));
   *ptr = udata->escape();
-  luaL_getmetatable(L, "string.metatable");
+  luaL_getmetatable(L, "charon.string.metatable");
   lua_setmetatable(L, -2);
   return 1;
 }
@@ -552,7 +552,7 @@ charon_StringInstanceMethodEscapeHtml( lua_State *L ) {
   string * udata = checkString( L );
   string **ptr   = (string **)lua_newuserdata(L, sizeof(string*));
   *ptr = udata->escapeHtml();
-  luaL_getmetatable(L, "string.metatable");
+  luaL_getmetatable(L, "charon.string.metatable");
   lua_setmetatable(L, -2);
   return 1;
 }
@@ -580,7 +580,7 @@ charon_StringInstanceMethodInsert( lua_State *L ) {
   const char *ba = luaL_checkstring(L, 3);
   string **ptr = (string **)lua_newuserdata(L, sizeof(string*));
   *ptr = udata->insert(len-1, ba);
-  luaL_getmetatable(L, "string.metatable");
+  luaL_getmetatable(L, "charon.string.metatable");
   lua_setmetatable(L, -2);
   return 1;
 }
@@ -609,7 +609,7 @@ charon_StringInstanceMethodLeft( lua_State *L ) {
   string **ptr   = (string **)lua_newuserdata(L, sizeof(string*));
   int len        = luaL_checkinteger(L, 2);
   *ptr = udata->left(len);
-  luaL_getmetatable(L, "string.metatable");
+  luaL_getmetatable(L, "charon.string.metatable");
   lua_setmetatable(L, -2);
   return 1;
 }
@@ -621,7 +621,7 @@ charon_StringInstanceMethodLeftJustified( lua_State *L ) {
   size_t size      = luaL_checkinteger(L, 2);
   const char * pad = luaL_checkstring(L, 3);
   *ptr = udata->leftJustified(size, pad);
-  luaL_getmetatable(L, "string.metatable");
+  luaL_getmetatable(L, "charon.string.metatable");
   lua_setmetatable(L, -2);
   return 1;
 }
@@ -637,7 +637,7 @@ charon_StringInstanceMethodMid( lua_State *L ) {
 
   string **ptr = (string **)lua_newuserdata(L, sizeof(string*));
   *ptr = udata->mid(pos-1, len);
-  luaL_getmetatable(L, "string.metatable");
+  luaL_getmetatable(L, "charon.string.metatable");
   lua_setmetatable(L, -2);
   return 1;
 }
@@ -647,7 +647,7 @@ charon_StringInstanceMethodMd5( lua_State *L ) {
   string * udata = checkString( L );
   string **ptr   = (string **)lua_newuserdata(L, sizeof(string*));
   *ptr = udata->md5();
-  luaL_getmetatable(L, "string.metatable");
+  luaL_getmetatable(L, "charon.string.metatable");
   lua_setmetatable(L, -2);
   return 1;
 }
@@ -657,7 +657,7 @@ charon_StringInstanceMethodNormalize( lua_State *L ) {
   string * udata = checkString( L );
   string **ptr   = (string **)lua_newuserdata(L, sizeof(string*));
   *ptr = udata->normalize();
-  luaL_getmetatable(L, "string.metatable");
+  luaL_getmetatable(L, "charon.string.metatable");
   lua_setmetatable(L, -2);
   return 1;
 }
@@ -685,7 +685,7 @@ charon_StringInstanceMethodReplace( lua_State *L ) {
   }
   string **ptr   = (string **)lua_newuserdata(L, sizeof(string*));
   *ptr = result;
-  luaL_getmetatable(L, "string.metatable");
+  luaL_getmetatable(L, "charon.string.metatable");
   lua_setmetatable(L, -2);
   return 1;
 }
@@ -696,7 +696,7 @@ charon_StringInstanceMethodRepeated( lua_State *L ) {
   int times      = luaL_checkinteger(L, 2);
   string **ptr   = (string **)lua_newuserdata(L, sizeof(string*));
   *ptr = udata->repeated(times);
-  luaL_getmetatable(L, "string.metatable");
+  luaL_getmetatable(L, "charon.string.metatable");
   lua_setmetatable(L, -2);
   return 1;
 }
@@ -720,7 +720,7 @@ charon_StringInstanceMethodRight( lua_State *L ) {
   int len = luaL_checkinteger(L, 2);
   string ** ptr   = (string **)lua_newuserdata(L, sizeof(string*));
           * ptr   = udata->right(len);
-  luaL_getmetatable(L, "string.metatable");
+  luaL_getmetatable(L, "charon.string.metatable");
   lua_setmetatable(L, -2);
   return 1;
 }
@@ -732,7 +732,7 @@ charon_StringInstanceMethodRightJustified( lua_State *L ) {
   size_t size      = luaL_checkinteger(L, 2);
   const char * pad = luaL_checkstring(L, 3);
   *ptr = udata->rightJustified(size, pad);
-  luaL_getmetatable(L, "string.metatable");
+  luaL_getmetatable(L, "charon.string.metatable");
   lua_setmetatable(L, -2);
   return 1;
 }
@@ -742,7 +742,7 @@ charon_StringInstanceMethodEncode64( lua_State *L ) {
   string * udata = checkString( L );
   string **ptr   = (string **)lua_newuserdata(L, sizeof(string*));
   *ptr = udata->encode64();
-  luaL_getmetatable(L, "string.metatable");
+  luaL_getmetatable(L, "charon.string.metatable");
   lua_setmetatable(L, -2);
   return 1;
 }
@@ -752,7 +752,7 @@ charon_StringInstanceMethodDecode64( lua_State *L ) {
   string * udata = checkString( L );
   string **ptr   = (string **)lua_newuserdata(L, sizeof(string*));
   *ptr = udata->decode64();
-  luaL_getmetatable(L, "string.metatable");
+  luaL_getmetatable(L, "charon.string.metatable");
   lua_setmetatable(L, -2);
   return 1;
 }
@@ -762,7 +762,7 @@ charon_StringInstanceMethodSha1( lua_State *L ) {
   string * udata = checkString( L );
   string **ptr   = (string **)lua_newuserdata(L, sizeof(string*));
   *ptr = udata->sha1();
-  luaL_getmetatable(L, "string.metatable");
+  luaL_getmetatable(L, "charon.string.metatable");
   lua_setmetatable(L, -2);
   return 1;
 }
@@ -779,7 +779,7 @@ charon_StringInstanceMethodSuffix( lua_State *L ) {
   }
   string **ptr = (string **)lua_newuserdata(L, sizeof(string*));
   *ptr = result;
-  luaL_getmetatable(L, "string.metatable");
+  luaL_getmetatable(L, "charon.string.metatable");
   lua_setmetatable(L, -2);
   return 1;
 }
@@ -789,7 +789,7 @@ charon_StringInstanceMethodLeftTrimmed( lua_State *L ) {
   string *  udata = checkString( L );
   string ** ptr   = (string **)lua_newuserdata(L, sizeof(string*));
           * ptr   = udata->leftTrimmed();
-  luaL_getmetatable(L, "string.metatable");
+  luaL_getmetatable(L, "charon.string.metatable");
   lua_setmetatable(L, -2);
   return 1;
 }
@@ -799,7 +799,7 @@ charon_StringInstanceMethodTrimmed( lua_State *L ) {
   string *  udata = checkString( L );
   string ** ptr   = (string **)lua_newuserdata(L, sizeof(string*));
           * ptr   = udata->trimmed();
-  luaL_getmetatable(L, "string.metatable");
+  luaL_getmetatable(L, "charon.string.metatable");
   lua_setmetatable(L, -2);
   return 1;
 }
@@ -817,7 +817,7 @@ charon_StringInstanceMethodRightTrimmed( lua_State *L ) {
   string *  udata = checkString( L );
   string ** ptr   = (string **)lua_newuserdata(L, sizeof(string*));
           * ptr   = udata->rightTrimmed();
-  luaL_getmetatable(L, "string.metatable");
+  luaL_getmetatable(L, "charon.string.metatable");
   lua_setmetatable(L, -2);
   return 1;
 }
@@ -844,7 +844,7 @@ charon_StringInstanceMethodTruncate( lua_State *L ) {
   string * result = udata->truncate(pos, omission, separator);
   string ** ptr   = (string **)lua_newuserdata(L, sizeof(string*));
           * ptr   = result;
-  luaL_getmetatable(L, "string.metatable");
+  luaL_getmetatable(L, "charon.string.metatable");
   lua_setmetatable(L, -2);
   return 1;
 }
@@ -854,7 +854,7 @@ charon_StringInstanceMethodUnderscore( lua_State *L ) {
   string *  udata = checkString( L );
   string ** ptr   = (string **)lua_newuserdata(L, sizeof(string*));
           * ptr   = udata->underscore();
-  luaL_getmetatable(L, "string.metatable");
+  luaL_getmetatable(L, "charon.string.metatable");
   lua_setmetatable(L, -2);
   return 1;
 }
@@ -903,6 +903,20 @@ charon_StringInstanceMethodToSize( lua_State *L ) {
   return 1;
 }
 
+static int
+charon_StringInstanceMethodSize( lua_State *L ) {
+  string * udata = checkString( L );
+  lua_pushinteger(L, udata->size());
+  return 1;
+}
+
+static int
+charon_StringInstanceMethodLen( lua_State *L ) {
+  string * udata = checkString( L );
+  lua_pushinteger(L, udata->len());
+  return 1;
+}
+
 static const
 luaL_reg StringInstanceMethods[] = {
   {"append",         charon_StringInstanceMethodAppend},
@@ -922,6 +936,7 @@ luaL_reg StringInstanceMethods[] = {
   {"leftJustified",  charon_StringInstanceMethodLeftJustified},
   {"mid",            charon_StringInstanceMethodMid},
   {"insert",         charon_StringInstanceMethodInsert},
+  {"len",            charon_StringInstanceMethodLen},
   {"md5",            charon_StringInstanceMethodMd5},
   {"normalize",      charon_StringInstanceMethodNormalize},
   {"prepend",        charon_StringInstanceMethodPrepend},
@@ -931,6 +946,7 @@ luaL_reg StringInstanceMethods[] = {
   {"right",          charon_StringInstanceMethodRight},
   {"rightJustified", charon_StringInstanceMethodRightJustified},
   {"sha1",           charon_StringInstanceMethodSha1},
+  {"size",           charon_StringInstanceMethodSize},
   {"suffix",         charon_StringInstanceMethodSuffix},
   {"trimmed",        charon_StringInstanceMethodTrimmed},
   {"rightTrimmed",   charon_StringInstanceMethodRightTrimmed},
@@ -946,7 +962,7 @@ luaL_reg StringInstanceMethods[] = {
 
 void static
 registerStringInstanceMethods( lua_State *L ) {
-  luaL_newmetatable(L, "string.metatable");
+  luaL_newmetatable(L, "charon.string.metatable");
   luaL_register(L, NULL, StringInstanceMethods);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");

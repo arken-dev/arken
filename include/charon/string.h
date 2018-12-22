@@ -72,6 +72,7 @@ namespace charon {
     static string * consume(char * str);
     string();
     string(const char * str);
+    string(const char * str, size_t size);
     string(size_t reserve);
     ~string();
 
@@ -93,6 +94,7 @@ namespace charon {
     int      lastIndexOf(const char * str);
     string * left(int len);
     string * leftJustified(size_t size, const char * pad);
+    size_t   len();
     string * mid(int pos, int len);
     string * md5();
     string * normalize();
