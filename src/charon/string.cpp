@@ -1484,3 +1484,38 @@ std::ostream & operator<<(std::ostream & os, const charon::string & str)
    os << str.data();
    return os;
 }
+
+string & string::operator=(const string &a)
+{
+  m_reserve   = 1024;
+  m_size      = a.m_size;
+  m_capacity  = a.m_size;
+  m_data      = new char[m_size+1];
+  strcpy(m_data, a.m_data);
+  m_data[m_size] = '\0';
+  return *this;
+}
+
+string & string::operator=(const char * data)
+{
+  m_reserve   = 1024;
+  m_size      = strlen(data);
+  m_capacity  = m_size;
+  m_data      = new char[m_size+1];
+  strcpy(m_data, data);
+  m_data[m_size] = '\0';
+
+  return *this;
+}
+
+string & string::operator=(const string * str)
+{
+  m_reserve   = 1024;
+  m_size      = str->m_size;
+  m_capacity  = str->m_size;
+  m_data      = new char[m_size+1];
+  strcpy(m_data, str->m_data);
+  m_data[m_size] = '\0';
+
+  return *this;
+}

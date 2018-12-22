@@ -120,7 +120,12 @@ namespace charon {
     char   * data() const;
     // explicit conversion
     operator const char *() const { return m_data; }
+    string & operator=(const string &str);
+    string & operator=(const string *str);
+    string & operator=(const char   *str);
+
   };
+
 }
 
 std::ostream & operator<<(std::ostream & os, const charon::string & str);
