@@ -8,48 +8,49 @@
 
 using namespace charon;
 
-QMutex cache::s_mutex;
-QHash<ByteArray, cache::data *> * cache::s_cache = new QHash<ByteArray, cache::data *>;
+std::mutex cache::s_mutex;
+std::unordered_map<std::string, cache::data *> * cache::s_cache = new std::unordered_map<std::string, cache::data *>;
 
 const char * cache::value(const char * key)
 {
-  QMutexLocker ml(&s_mutex);
-  cache::data * cache = s_cache->value(key, 0);
+  std::unique_lock<std::mutex> lck(s_mutex);
 
-  if( cache == 0 ) {
-    return 0;
-  }
-
-  if ( cache->isExpires() ) {
-    s_cache->remove(key);
-    return 0;
+  if (s_cache->find(key) == s_cache->end()) {
+    return NULL;
   } else {
-    return cache->value();
+    cache::data * data = s_cache->at(key);
+    if ( data->isExpires() ) {
+      s_cache->erase(key);
+      delete data;
+      return NULL;
+    } else {
+      return data->value();
+    }
   }
 }
 
 void cache::insert(const char *key, const char * value, int expires)
 {
-  QMutexLocker ml(&s_mutex);
-  cache::data * cache = s_cache->value(key, 0);
+  std::unique_lock<std::mutex> lck(s_mutex);
 
-  if( cache != 0 ) {
-    delete cache;
+  if ( s_cache->count(key) ) {
+    cache::data * data = s_cache->at(key);
+    delete data;
   }
 
-  s_cache->insert(key, new data(value, expires));
+  (*s_cache)[key] = new data(value, expires);
 }
 
-int cache::remove(const char * key)
+void cache::remove(const char * key)
 {
-  QMutexLocker ml(&s_mutex);
-  cache::data * cache = s_cache->value(key, 0);
+  std::unique_lock<std::mutex> lck(s_mutex);
 
-  if( cache != 0 ) {
-    delete cache;
+  if ( s_cache->count(key) ) {
+    cache::data * data = s_cache->at(key);
+    delete data;
+    s_cache->erase(key);
   }
 
-  return s_cache->remove(key);
 }
 
 cache::data::data(const char * value, int expires)
