@@ -12,7 +12,6 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/clib/charon)
 
 add_subdirectory(base)
 add_subdirectory(base64)
-add_subdirectory(bytearray)
 add_subdirectory(cache)
 add_subdirectory(digest)
 add_subdirectory(http)

@@ -10,7 +10,6 @@
 #include <charon/net/httphandle.h>
 #include <charon/net/httputil.h>
 #include <charon/base64.h>
-#include <charon/bytearray.h>
 #include <charon/digest.h>
 #include <charon/http.h>
 #include <charon/log.h>
