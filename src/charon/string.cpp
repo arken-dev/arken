@@ -528,7 +528,7 @@ char * string::left(const char * string, int len)
   return result;
 }
 
-char * string::mid(const char * string, int pos, int len = -1)
+char * string::mid(const char * string, int pos, int len)
 {
   int i, j = 0;
   int string_len = strlen(string);

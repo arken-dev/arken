@@ -47,7 +47,7 @@ namespace charon {
     static int    lastIndexOf(const char * string, const char * str);
     static char * left(const char *string, int len);
     static char * leftJustified(const char * string, size_t size, const char * pad);
-    static char * mid(const char * string, int pos, int len);
+    static char * mid(const char * string, int pos, int len = -1);
     static char * md5(const char * string);
     static char * normalize(const char * string);
     static char * simplified(const char *buffer);
@@ -98,7 +98,7 @@ namespace charon {
     string * left(int len);
     string * leftJustified(size_t size, const char * pad);
     size_t   len();
-    string * mid(int pos, int len);
+    string * mid(int pos, int len = -1);
     string * md5();
     string * normalize();
     string * prepend(const char * str);
