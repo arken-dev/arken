@@ -37,8 +37,8 @@ class DateTime : public QDateTime
   DateTime addMSecs(long long msecs);
   DateTime addMonths(int months);
   DateTime addYears(int year);
-  ByteArray toString(const char * format);
-  ByteArray toString();
+  string toString(const char * format);
+  string toString();
 
 };
 

@@ -22,14 +22,14 @@ Time Time::fromString(const char * string,  const char * format)
   return QTime(QTime::fromString(QString(string), QString(format)));
 }
 
-ByteArray Time::toString(const char * format)
+string Time::toString(const char * format)
 {
-  return ByteArray(QTime::toString(format).toLocal8Bit().data());
+  return string(QTime::toString(format).toLocal8Bit().data());
 }
 
-ByteArray Time::toString()
+string Time::toString()
 {
-  return ByteArray(QTime::toString("hh:mm:ss.z").toLocal8Bit().data());
+  return string(QTime::toString("hh:mm:ss.z").toLocal8Bit().data());
 }
 
 Time * Time::parse(const char * str)
