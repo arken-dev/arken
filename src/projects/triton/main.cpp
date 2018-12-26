@@ -12,9 +12,7 @@
 #include <triton.h>
 #include <QJsonObject>
 
-using charon::ByteArray;
-using charon::ByteArrayList;
-using charon::mvm;
+using mvm = charon::mvm;
 
 int main(int argc, char * argv[])
 {

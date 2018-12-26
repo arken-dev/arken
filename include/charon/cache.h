@@ -6,8 +6,8 @@
 #ifndef _CHARON_CACHE_
 #define _CHARON_CACHE_
 
-#include <QMutex>
-#include <QHash>
+#include <mutex>
+#include <unordered_map>
 #include <charon/base>
 
 namespace charon
@@ -17,7 +17,7 @@ class cache {
   public:
   static const char * value(const char * key);
   static void insert(const char *key, const char * value, int expires = -1);
-  static int remove(const char * key);
+  static void remove(const char * key);
 
   private:
 
@@ -33,8 +33,8 @@ class cache {
     double m_expires;
   };
 
-  static QMutex s_mutex;
-  static QHash<ByteArray, data *> * s_cache;
+  static std::mutex s_mutex;
+  static std::unordered_map<std::string, data *> * s_cache;
 
 };
 

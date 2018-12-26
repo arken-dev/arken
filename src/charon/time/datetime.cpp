@@ -70,14 +70,14 @@ DateTime DateTime::fromString(const char * string,  const char * format)
   return QDateTime(QDateTime::fromString(QString(string), QString(format)));
 }
 
-ByteArray DateTime::toString(const char * format)
+string DateTime::toString(const char * format)
 {
-  return ByteArray(QDateTime::toString(format).toLocal8Bit().data());
+  return string(QDateTime::toString(format).toLocal8Bit().data());
 }
 
-ByteArray DateTime::toString()
+string DateTime::toString()
 {
-  return ByteArray(QDateTime::toString("yyyy/MM/dd hh:mm:ss.zzz").toLocal8Bit().data());
+  return string(QDateTime::toString("yyyy/MM/dd hh:mm:ss.zzz").toLocal8Bit().data());
 }
 
 DateTime * DateTime::parse(const char * str)

@@ -6,8 +6,7 @@
 #include <lua/lua.hpp>
 #include <charon/base>
 
-using charon::ByteArray;
-using charon::ByteArrayList;
+using List = charon::string::List;
 using charon::regex;
 
 static int charon_regex_match( lua_State *L ) {
@@ -51,13 +50,13 @@ static int charon_regex_replace( lua_State *L ) {
 }
 
 static int charon_regex_scan( lua_State *L ) {
-  ByteArrayList * list;
+  List * list;
   const char  * string = luaL_checkstring(L, 1);
   const char  * regex  = luaL_checkstring(L, 2);
   list = regex::scan(string, regex);
-  ByteArrayList **ptr = (ByteArrayList **)lua_newuserdata(L, sizeof(ByteArrayList*));
+  List **ptr = (List **)lua_newuserdata(L, sizeof(List*));
   *ptr = list;
-  luaL_getmetatable(L, "ByteArrayList.metatable");
+  luaL_getmetatable(L, "charon.string.List.metatable");
   lua_setmetatable(L, -2);
 
   return 1;
@@ -66,10 +65,10 @@ static int charon_regex_scan( lua_State *L ) {
 static int charon_regex_split( lua_State *L ) {
   const char  * string = luaL_checkstring(L, 1);
   const char  * regex  = luaL_checkstring(L, 2);
-  ByteArrayList * list   = regex::split(string, regex);
-  ByteArrayList **ptr = (ByteArrayList **)lua_newuserdata(L, sizeof(ByteArrayList*));
+  List * list   = regex::split(string, regex);
+  List **ptr = (List **)lua_newuserdata(L, sizeof(List*));
   *ptr = list;
-  luaL_getmetatable(L, "ByteArrayList.metatable");
+  luaL_getmetatable(L, "charon.string.List.metatable");
   lua_setmetatable(L, -2);
 
   return 1;

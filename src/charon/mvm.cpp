@@ -12,7 +12,6 @@
 #include <map>
 
 using namespace charon;
-using charon::ByteArray;
 
 int        mvm::s_argc         = 0;
 char **    mvm::s_argv         = 0;
@@ -20,9 +19,9 @@ int        mvm::s_gc           = 0;
 int        mvm::s_version      = 0;
 int        mvm::s_pool         = 0;
 double     mvm::s_uptime       = os::microtime();
-ByteArray  mvm::s_charonPath   = "";
-ByteArray  mvm::s_profilePath  = "";
-ByteArray  mvm::s_dispatchPath = "";
+string     mvm::s_charonPath   = "";
+string     mvm::s_profilePath  = "";
+string     mvm::s_dispatchPath = "";
 static std::mutex mtx;
 static std::map <std::string, int> s_config;
 
@@ -127,7 +126,7 @@ void mvm::init(int argc, char ** argv)
   }
   s_charonPath = os::executablePath();
   int lastIndexOf = s_charonPath.lastIndexOf("bin");
-  s_charonPath.truncate(lastIndexOf-1);
+  s_charonPath = s_charonPath.left(lastIndexOf-1);
 
   if( strcmp(os::name(), "windows") == 0 ) {
     s_charonPath = s_charonPath.capitalize();
@@ -210,6 +209,7 @@ void mvm::reload()
   while( true ) {
     mvm::data * data = mvm::pop();
     if( data->version() == version ) {
+      mvm::push(data);
       break;
     } else {
       if( log ) {
@@ -284,8 +284,13 @@ mvm::data::data(int version)
 
   luaL_openlibs(m_State);
 
+  // CHARON_PATH
   lua_pushstring(m_State, s_charonPath);
   lua_setglobal(m_State, "CHARON_PATH");
+
+  // CHARON_UUID
+  lua_pushboolean(m_State, false);
+  lua_setglobal(m_State, "CHARON_UUID");
 
   //---------------------------------------------
   int top, i;
@@ -340,7 +345,6 @@ lua_State * mvm::data::release()
   m_release = true;
   return m_State;
 }
-
 
 int mvm::data::version()
 {
