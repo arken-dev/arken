@@ -500,6 +500,13 @@ charon_StringInstanceMethodCenter( lua_State *L ) {
 }
 
 static int
+charon_StringInstanceMethodClear( lua_State *L ) {
+  string * udata  = checkString( L );
+  udata->clear();
+  return 0;
+}
+
+static int
 charon_StringInstanceMethodContains( lua_State *L ) {
   string * udata  = checkString( L );
   const char *pad = luaL_checkstring(L, 2);
@@ -921,6 +928,7 @@ luaL_reg StringInstanceMethods[] = {
   {"append",         charon_StringInstanceMethodAppend},
   {"center",         charon_StringInstanceMethodCenter},
   {"chop",           charon_StringInstanceMethodChop},
+  {"clear",          charon_StringInstanceMethodClear},
   {"contains",       charon_StringInstanceMethodContains},
   {"count",          charon_StringInstanceMethodCount},
   {"dasherize",      charon_StringInstanceMethodDasherize},

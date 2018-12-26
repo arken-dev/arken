@@ -1289,6 +1289,13 @@ string * string::center(size_t size, const char * pad)
   return charon::string::consume(string::center(m_data, size, pad));
 }
 
+void string::clear()
+{
+  delete[] m_data;
+  m_data = new char[1]();
+  m_size = 0;
+}
+
 bool string::contains(const char * str)
 {
   return charon::string::contains(m_data, str);
@@ -1473,6 +1480,10 @@ size_t string::len()
 {
   return m_size;
 }
+
+//-----------------------------------------------------------------------------
+// OPERATORS
+//-----------------------------------------------------------------------------
 
 std::ostream & operator<<(std::ostream & os, const charon::string * str)
 {

@@ -85,6 +85,7 @@ namespace charon {
     string * center(size_t size, const char * pad);
     bool     contains(const char * str);
     string * chop(int n);
+    void     clear();
     int      count(const char * str2);
     string * dasherize();
     string * encode64();
