@@ -10,6 +10,8 @@
 #include <QDateTime>
 #include <charon/base>
 
+using charon::ByteArray;
+
 namespace charon {
 namespace time {
 

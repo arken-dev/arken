@@ -9,6 +9,8 @@
 #include <QThread>
 #include <triton.h>
 
+using charon::ByteArray;
+
 static int
 triton_enqueue(lua_State *L) {
   const char * path = luaL_checkstring(L, 1);
