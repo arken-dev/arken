@@ -81,6 +81,7 @@ class mvm {
   static void back(mvm::data *);
   static double uptime();
   static charon::instance instance();
+  static const char * charonPath();
 
 };
 

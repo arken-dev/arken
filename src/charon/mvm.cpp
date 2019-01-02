@@ -124,9 +124,9 @@ void mvm::init(int argc, char ** argv)
     s_argv[i] = new char[len]();
     strcpy(s_argv[i], argv[i]);
   }
-  s_charonPath = os::executablePath();
+  s_charonPath    = os::executablePath();
   int lastIndexOf = s_charonPath.lastIndexOf("bin");
-  s_charonPath = s_charonPath.left(lastIndexOf-1);
+  s_charonPath    = s_charonPath.left(lastIndexOf-1);
 
   if( strcmp(os::name(), "windows") == 0 ) {
     s_charonPath = s_charonPath.capitalize();
@@ -273,6 +273,11 @@ int mvm::clear()
 double mvm::uptime()
 {
   return os::microtime() - mvm::s_uptime;
+}
+
+const char *  mvm::charonPath()
+{
+  return s_charonPath.data();
 }
 
 mvm::data::data(int version)
