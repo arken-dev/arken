@@ -65,7 +65,7 @@ function test.run(specs)
           local trace = ""
           local list  = string.split(traceback, "\n")
           for i = 1, list:size() do
-            if list:at(i):contains(file_name) then
+            if list:at(i):contains(tostring(file_name)) then
               trace = trace .. list:at(i):simplified() .. '\n'
             end
           end
