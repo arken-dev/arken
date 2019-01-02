@@ -9,7 +9,6 @@
 #include <iostream>
 #include <cstdio>
 
-using charon::ByteArray;
 using charon::mvm;
 
 int charonFileLoad(lua_State *L, QFile &file)
@@ -31,14 +30,14 @@ int charonFileLoad(lua_State *L, QFile &file)
   return rv;
 }
 
-void charonConsolePrintAround(ByteArray &buffer)
+void charonConsolePrintAround(string &buffer)
 {
-  buffer.remove(0, 1);
+  buffer = buffer.mid(1);
   buffer.prepend("print(");
   buffer.append(")");
 }
 
-bool charonConsoleIncrementLevel(ByteArray &row)
+bool charonConsoleIncrementLevel(string &row)
 {
   /* if */
   if(row.startsWith("if ") or row.contains(" if ")) {
@@ -63,7 +62,7 @@ bool charonConsoleIncrementLevel(ByteArray &row)
   return false;
 }
 
-bool charonConsoleDecrementLevel(ByteArray &row)
+bool charonConsoleDecrementLevel(string &row)
 {
   /* end */
   if(row.startsWith("end") or row.contains(" end ")) {
@@ -84,8 +83,8 @@ int charonConsoleLoad(lua_State *L)
   int level = 0;
   char cmd[255];
   std::string line;
-  ByteArray  row;
-  ByteArray  buffer;
+  string row;
+  string buffer;
 
   while(true) {
     sprintf(cmd, "charon %i> ", level);
@@ -101,7 +100,7 @@ int charonConsoleLoad(lua_State *L)
       buffer.append("\n");
     }
 
-    if (buffer.startsWith('=')) {
+    if (buffer.startsWith("=")) {
       charonConsolePrintAround(buffer);
     }
 
@@ -132,10 +131,9 @@ int charonConsoleLoad(lua_State *L)
 int main(int argc, char * argv[])
 {
   int rv = 0;
-  ByteArray charonPath;
-  ByteArray task;
-  QString    dirPath;
-  QFile      file(argv[1]);
+  string  charonPath;
+  string  task;
+  QFile   file(argv[1]);
   mvm::init(argc, argv);
   lua_State  * L;
 

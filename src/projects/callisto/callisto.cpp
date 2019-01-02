@@ -10,9 +10,8 @@
 #include <QThread>
 #include <charon/base>
 
-using charon::ByteArray;
-using charon::ByteArrayList;
 using charon::mvm;
+using List = charon::string::List;
 
 Callisto::Callisto(int argc, char * argv[], QObject *parent) : QObject(parent)
 {
@@ -29,12 +28,12 @@ Callisto::Callisto(int argc, char * argv[], QObject *parent) : QObject(parent)
 
   m_watcher->addPath(m_file);
 
-  ByteArrayList * split = string::split(m_file.toLocal8Bit(), "/");
+  List * split = string::split(m_file.toLocal8Bit(), "/");
   QByteArray dir = "app/";
   dir.append(split->at(1));
 
   if( os::exists(dir) ) {
-    ByteArrayList * list = os::glob(dir, "\\.lua$", true);
+    List * list = os::glob(dir, "\\.lua$", true);
     for(int i = 0; i < list->size(); i++) {
       qDebug() << list->at(i);
       m_watcher->addPath(list->at(i));

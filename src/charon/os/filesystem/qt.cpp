@@ -1,4 +1,5 @@
 #include <charon/base>
+#include <QtCore>
 #include <QCoreApplication>
 #include <QDateTime>
 #include <QDir>

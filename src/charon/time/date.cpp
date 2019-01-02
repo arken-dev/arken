@@ -46,14 +46,14 @@ Date Date::fromString(const char * string,  const char * format)
   return QDate(QDate::fromString(QString(string), QString(format)));
 }
 
-ByteArray Date::toString(const char * format)
+string Date::toString(const char * format)
 {
-  return ByteArray(QDate::toString(format).toLocal8Bit().data());
+  return string(QDate::toString(format).toLocal8Bit().data());
 }
 
-ByteArray Date::toString()
+string Date::toString()
 {
-  return ByteArray(QDate::toString("yyyy/MM/dd").toLocal8Bit().data());
+  return string(QDate::toString("yyyy/MM/dd").toLocal8Bit().data());
 }
 
 Date * Date::parse(const char * str)

@@ -7,9 +7,8 @@
 #include <QDebug>
 #include <charon/base>
 
-using charon::ByteArray;
-using charon::ByteArrayList;
-using charon::mvm;
+using mvm  = charon::mvm;
+using List = charon::string::List;
 
 QHash<QByteArray, QByteArray *> * Triton::s_result = new QHash<QByteArray, QByteArray *>();
 QHash<QByteArray, int> * Triton::s_total = new QHash<QByteArray, int>();
@@ -77,7 +76,7 @@ void Triton::init(QStringList list)
     for(int i=1; i < list.size(); i++) {
       QFileInfo fileInfo(list.at(i));
       if( fileInfo.isDir() ) {
-        ByteArrayList * l = os::glob(list.at(i).toLocal8Bit().data(), ".*.lua$", true);
+        List * l = os::glob(list.at(i).toLocal8Bit().data(), ".*.lua$", true);
         for(int j=0; j < l->size(); j++) {
           s_queue->append(new QByteArray(l->at(j)));
         }

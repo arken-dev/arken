@@ -32,8 +32,8 @@ class Date : public QDate
   Date addDays(long long days);
   Date addMonths(int months);
   Date addYears(int year);
-  ByteArray toString(const char * format);
-  ByteArray toString();
+  string toString(const char * format);
+  string toString();
 
 };
 

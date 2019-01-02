@@ -9,11 +9,11 @@
 #include <cstdlib>
 #include <cstring>
 #include <cctype>
-#include <charon/ByteArrayList>
 #include <iostream>
 
 namespace charon {
   class string {
+
 
     private:
     char   * m_data;
@@ -26,6 +26,9 @@ namespace charon {
     //-------------------------------------------------------------------------
 
     public:
+
+    class List;
+
     static char * append(const char * string, const char * str);
     static char * camelCase(const char * string, bool lcfirst = false);
     static char * capitalize(const char * string);
@@ -44,7 +47,7 @@ namespace charon {
     static int    lastIndexOf(const char * string, const char * str);
     static char * left(const char *string, int len);
     static char * leftJustified(const char * string, size_t size, const char * pad);
-    static char * mid(const char * string, int pos, int len);
+    static char * mid(const char * string, int pos, int len = -1);
     static char * md5(const char * string);
     static char * normalize(const char * string);
     static char * simplified(const char *buffer);
@@ -54,8 +57,8 @@ namespace charon {
     static char * right(const char * buffer, int len);
     static char * rightJustified(const char * string, size_t size, const char * pad);
     static char * sha1(const char * string);
-    static ByteArrayList * split(const char * string, const char * pattern);
-    static ByteArrayList * split(const char * string, size_t len, const char * pattern);
+    static List * split(const char * string, const char * pattern);
+    static List * split(const char * string, size_t len, const char * pattern);
     static char * suffix(const char * raw);
     static char * suffix(const char * raw, const char chr);
     static bool   startsWith(const char * string, const char *str);
@@ -82,6 +85,7 @@ namespace charon {
     string * center(size_t size, const char * pad);
     bool     contains(const char * str);
     string * chop(int n);
+    void     clear();
     int      count(const char * str2);
     string * dasherize();
     string * encode64();
@@ -95,7 +99,7 @@ namespace charon {
     string * left(int len);
     string * leftJustified(size_t size, const char * pad);
     size_t   len();
-    string * mid(int pos, int len);
+    string * mid(int pos, int len = -1);
     string * md5();
     string * normalize();
     string * prepend(const char * str);
@@ -109,7 +113,7 @@ namespace charon {
     string * rightJustified(size_t size, const char * pad);
     string * sha1();
     size_t   size();
-    ByteArrayList * split(const char * pattern);
+    List   * split(const char * pattern);
     string * suffix(const char chr = '.');
     bool     startsWith(const char *str);
     string * trimmed();
@@ -123,6 +127,33 @@ namespace charon {
     string & operator=(const string &str);
     string & operator=(const string *str);
     string & operator=(const char   *str);
+
+    class List
+    {
+      private:
+      void init();
+      int m_size;
+      int m_resource;
+      int m_cursor;
+      string ** m_array;
+
+      public:
+      List();
+      List(int resource);
+      ~List();
+      void replace(int pos, const char * value);
+      List &append(const char * value);
+      List &append(const char * value, int len);
+      List &operator << (const char * value);
+      const char *operator[](int pos);
+      const char *at(int pos);
+      const char *at(int pos, int * len);
+      const char *first();
+      const char *last();
+      const char *each();
+      char * join(const char * separator);
+      int size();
+    };
 
   };
 

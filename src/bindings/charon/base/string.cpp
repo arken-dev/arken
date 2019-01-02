@@ -7,9 +7,8 @@
 #include <charon/base>
 #include <iostream>
 
-using charon::ByteArray;
-using charon::ByteArrayList;
 using charon::string;
+using List = charon::string::List;
 
 string *
 checkString ( lua_State *L ) {
@@ -333,10 +332,10 @@ charon_string_split( lua_State *L ) {
   size_t len;
   const char  * string  = luaL_checklstring(L, 1, &len);
   const char  * pattern = luaL_checkstring(L, 2);
-  ByteArrayList * list    = string::split(string, len, pattern);
-  ByteArrayList **ptr = (ByteArrayList **)lua_newuserdata(L, sizeof(ByteArrayList*));
+  List * list = string::split(string, len, pattern);
+  List **ptr  = (List **)lua_newuserdata(L, sizeof(List*));
   *ptr = list;
-  luaL_getmetatable(L, "ByteArrayList.metatable");
+  luaL_getmetatable(L, "charon.string.List.metatable");
   lua_setmetatable(L, -2);
 
   return 1;
@@ -498,6 +497,13 @@ charon_StringInstanceMethodCenter( lua_State *L ) {
   luaL_getmetatable(L, "charon.string.metatable");
   lua_setmetatable(L, -2);
   return 1;
+}
+
+static int
+charon_StringInstanceMethodClear( lua_State *L ) {
+  string * udata  = checkString( L );
+  udata->clear();
+  return 0;
 }
 
 static int
@@ -881,10 +887,10 @@ static int
 charon_StringInstanceMethodSplit( lua_State *L ) {
   string * udata = checkString( L );
   const char  * pattern = luaL_checkstring(L, 2);
-  ByteArrayList * list  = udata->split(pattern);
-  ByteArrayList **ptr   = (ByteArrayList **)lua_newuserdata(L, sizeof(ByteArrayList*));
+  List * list  = udata->split(pattern);
+  List **ptr   = (List **)lua_newuserdata(L, sizeof(List*));
   *ptr = list;
-  luaL_getmetatable(L, "ByteArrayList.metatable");
+  luaL_getmetatable(L, "charon.string.List.metatable");
   lua_setmetatable(L, -2);
   return 1;
 }
@@ -922,6 +928,7 @@ luaL_reg StringInstanceMethods[] = {
   {"append",         charon_StringInstanceMethodAppend},
   {"center",         charon_StringInstanceMethodCenter},
   {"chop",           charon_StringInstanceMethodChop},
+  {"clear",          charon_StringInstanceMethodClear},
   {"contains",       charon_StringInstanceMethodContains},
   {"count",          charon_StringInstanceMethodCount},
   {"dasherize",      charon_StringInstanceMethodDasherize},
@@ -968,8 +975,168 @@ registerStringInstanceMethods( lua_State *L ) {
   lua_setfield(L, -1, "__index");
 }
 
+/**
+ * checkList
+ */
+
+List *
+checkList( lua_State *L ) {
+  return *(List **) luaL_checkudata(L, 1, "charon.string.List.metatable");
+}
+
+/**
+ * ClassMethods
+ */
+
+static int
+charon_string_ListClassMethodNew( lua_State *L ) {
+  List **ptr = (List **)lua_newuserdata(L, sizeof(List*));
+  *ptr= new List();
+  luaL_getmetatable(L, "charon.string.List.metatable");
+  lua_setmetatable(L, -2);
+  return 1;
+}
+
+static const luaL_reg charon_string_ListClassMethods[] = {
+  {"new", charon_string_ListClassMethodNew},
+  {NULL, NULL}
+};
+
+void static
+registerStringListClassMethods( lua_State *L ) {
+  luaL_newmetatable(L, "charon.string.List");
+  luaL_register(L, NULL, charon_string_ListClassMethods);
+  lua_pushvalue(L, -1);
+  lua_setfield(L, -1, "__index");
+}
+
+/**
+ * InstanceMethods
+ */
+
+static int
+charon_string_ListInstanceMethodDestruct( lua_State *L ) {
+  List *udata = checkList( L );
+  delete udata;
+  return 0;
+}
+
+static int
+charon_string_ListInstanceMethodAt( lua_State *L ) {
+  List * udata  = checkList( L );
+  int pos = luaL_checkint(L, 2);
+  int len;
+  const char * str = udata->at(pos-1, &len);
+  if( str == 0 ) {
+    lua_pushnil(L);
+  } else {
+    lua_pushlstring(L, str, len);
+  }
+  return 1;
+}
+
+static int
+charon_string_list_each( lua_State *L ) {
+  int i = lua_upvalueindex(1);
+  luaL_checktype(L, i, LUA_TLIGHTUSERDATA);
+  List * ba  = (List *) lua_touserdata(L, i);
+  const char * result = ba->each();
+  if( result == NULL ) {
+    lua_pushnil(L);
+  } else {
+    lua_pushstring(L, result);
+  }
+  return 1;
+}
+
+static int
+charon_string_ListInstanceMethodEach( lua_State *L ) {
+  List * udata  = checkList( L );
+  lua_pushlightuserdata(L, udata);
+  lua_pushcclosure(L, charon_string_list_each, 1);
+  return 1;
+}
+
+static int
+charon_string_ListInstanceMethodFirst( lua_State *L ) {
+  List * udata  = checkList( L );
+  lua_pushstring(L, udata->first());
+  return 1;
+}
+
+static int
+charon_string_ListInstanceMethodLast( lua_State *L ) {
+  List * udata  = checkList( L );
+  lua_pushstring(L, udata->last());
+  return 1;
+}
+
+static int
+charon_string_ListInstanceMethodReplace( lua_State *L ) {
+  List * udata  = checkList( L );
+  int pos = luaL_checkint(L, 2);
+  const char * value = luaL_checkstring(L, 3);
+  udata->replace(pos, value);
+  return 0;
+}
+
+static int
+charon_string_ListInstanceMethodJoin( lua_State *L ) {
+  List * udata   = checkList( L );
+  const char  * separator = luaL_checkstring(L, 2);
+  char * result = udata->join(separator);
+  lua_pushstring(L, result);
+  delete[] result;
+  return 1;
+}
+
+
+static int
+charon_string_ListInstanceMethodAppend( lua_State *L ) {
+  List * udata  = checkList( L );
+  const char * value = luaL_checkstring(L, 2);
+  udata->append(value);
+  lua_pushvalue(L, -2);
+  return 1;
+}
+
+static int
+charon_string_ListInstanceMethodSize( lua_State *L ) {
+  List * udata  = checkList( L );
+  lua_pushinteger(L, udata->size());
+  return 1;
+}
+
+static const
+luaL_reg charon_string_ListInstanceMethods[] = {
+  {"append",  charon_string_ListInstanceMethodAppend},
+  {"at",      charon_string_ListInstanceMethodAt},
+  {"each",    charon_string_ListInstanceMethodEach},
+  {"first",   charon_string_ListInstanceMethodFirst},
+  {"last",    charon_string_ListInstanceMethodLast},
+  {"join",    charon_string_ListInstanceMethodJoin},
+  {"size",    charon_string_ListInstanceMethodSize},
+  {"replace", charon_string_ListInstanceMethodReplace},
+  {"__gc",    charon_string_ListInstanceMethodDestruct},
+  {NULL, NULL}
+};
+
+void static
+registerStringListInstanceMethods( lua_State *L ) {
+  luaL_newmetatable(L, "charon.string.List.metatable");
+  luaL_register(L, NULL, charon_string_ListInstanceMethods);
+  lua_pushvalue(L, -1);
+  lua_setfield(L, -1, "__index");
+}
+
+//-----------------------------------------------------------------------------
+// REGISTERS
+//-----------------------------------------------------------------------------
+
 int luaopen_charon_string( lua_State *L ) {
   registerStringClassMethods(L);
   registerStringInstanceMethods(L);
+  registerStringListClassMethods(L);
+  registerStringListInstanceMethods(L);
   return 1;
 }

@@ -10,8 +10,9 @@
 #include <charon/service>
 
 using namespace charon;
-using charon::cache;
-using charon::mvm;
+using cache = charon::cache;
+using mvm   = charon::mvm;
+using List  = charon::string::List;
 
 int           service::s_version  = mvm::version();
 char        * service::s_dirName  = 0;
@@ -26,7 +27,8 @@ void service::load(const char * dirName)
     s_dirName = new char(strlen(dirName)+1);
     strcpy(s_dirName, dirName);
   }
-  ByteArrayList * list = os::glob(dirName, ".lua$");
+
+  List * list = os::glob(dirName, ".lua$");
   for( int i = 0; i < list->size(); i++ ) {
     service::start(list->at(i));
   }

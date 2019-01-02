@@ -6,6 +6,8 @@
 #ifndef _CHARON_NET_HTTP_ENV_
 #define _CHARON_NET_HTTP_ENV_
 
+#include <map>
+
 namespace charon {
 namespace net {
 

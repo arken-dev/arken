@@ -12,7 +12,6 @@
 #include <map>
 
 using namespace charon;
-using charon::ByteArray;
 
 int        mvm::s_argc         = 0;
 char **    mvm::s_argv         = 0;
