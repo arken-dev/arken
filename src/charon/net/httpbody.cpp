@@ -24,12 +24,9 @@ HttpBody::~HttpBody()
 
 HttpBody * HttpBody::loadFile(const char *path)
 {
-  string raw(os::read(path));
-
-  char * buffer = new char[raw.size() + 1];
-  memcpy( buffer, raw.data(), raw.size() );
-  buffer[raw.size()] = '\0';
-  return new HttpBody(buffer, raw.size());
+  size_t size;
+  char * buffer = os::read(path, &size);
+  return new HttpBody(buffer, size);
 }
 
 HttpBody * HttpBody::loadBuffer(const char * buffer, size_t size)
