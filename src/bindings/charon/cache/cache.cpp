@@ -37,8 +37,8 @@ static int charon_cache_insert( lua_State *L ) {
 
 static int charon_cache_remove( lua_State *L ) {
   const char * key   = luaL_checkstring(L, 1);
-  lua_pushinteger(L, cache::remove(key));
-  return 1;
+  cache::remove(key);
+  return 0;
 }
 
 extern "C" {

@@ -6,7 +6,9 @@
 #include <charon/base>
 #include <QDebug>
 
-using charon::ByteArrayList;
+using digest = charon::digest;
+using base64 = charon::base64;
+using List   = charon::string::List;
 
 char * string::append(const char * string, const char * ba)
 {
@@ -35,11 +37,6 @@ static bool inline string_camelCase_special_char(char chr)
   } else {
     return false;
   }
-}
-
-char * string::camelCase(const char * string)
-{
-  return string::camelCase(string, false);
 }
 
 char * string::camelCase(const char * string, bool lcfirst)
@@ -270,6 +267,17 @@ char * string::dasherize(const char *string)
 
   return res;
 }
+
+char * string::encode64(const char * str)
+{
+  return base64::encode(str);
+}
+
+char * string::decode64(const char * str)
+{
+  return base64::decode(str);
+}
+
 char * string::escape(const char * string)
 {
   int i, j;
@@ -520,7 +528,7 @@ char * string::left(const char * string, int len)
   return result;
 }
 
-char * string::mid(const char * string, int pos, int len = -1)
+char * string::mid(const char * string, int pos, int len)
 {
   int i, j = 0;
   int string_len = strlen(string);
@@ -829,14 +837,14 @@ char * string::replace(const char * original, const char * pattern, const char *
   }
 }
 
-ByteArrayList * string::split(const char * raw, const char * pattern)
+List * string::split(const char * raw, const char * pattern)
 {
   return string::split(raw, strlen(raw), pattern);
 }
 
-ByteArrayList * string::split(const char * raw, size_t len, const char * pattern)
+List * string::split(const char * raw, size_t len, const char * pattern)
 {
-  ByteArrayList *list = new ByteArrayList();
+  List *list = new List();
 
   const char * current = raw;
   const char * other   = raw;
@@ -849,10 +857,11 @@ ByteArrayList * string::split(const char * raw, size_t len, const char * pattern
       other = raw + flag;
       size = i - flag;
       if( size > 0 ) {
-        //char * tmp = new char[size+1];
-        //strncpy(tmp, other, size);
-        //tmp[size] = '\0';
-        list->append(other, size);
+        char * tmp = new char[size+1];
+        strncpy(tmp, other, size);
+        tmp[size] = '\0';
+        list->append(tmp, size);
+        delete[] tmp;
       }
       flag = i+patternlen;
     }
@@ -1024,17 +1033,7 @@ char * string::rightTrimmed(const char *string)
   return result;
 }
 
-char * string::truncate(const char *string, int pos)
-{
-  return string::truncate(string, pos, "...");
-}
-
-char * string::truncate(const char *string, int pos, const char *omission)
-{
-  return string::truncate(string, pos, omission, ' ');
-}
-
-char * string::truncate(const char *string, int pos, const char * omission, char separator)
+char * string::truncate(const char *string, int pos, const char * omission, const char separator)
 {
   char * result;
   int i, string_len, omission_len;
@@ -1163,4 +1162,577 @@ char * string::underscore(const char *string)
   res[j] = '\0';
 
   return res;
+}
+
+char * string::md5(const char * str)
+{
+  return digest::md5(str);
+}
+
+char * string::sha1(const char * str)
+{
+  return digest::sha1(str);
+}
+
+//-----------------------------------------------------------------------------
+// CLASS
+//-----------------------------------------------------------------------------
+
+string::string()
+{
+  m_reserve  = 1024;
+  m_size     = 0;
+  m_data     = new char[m_reserve]();
+  m_capacity = m_size;
+}
+
+string::string(const char * data, size_t size)
+{
+  m_reserve   = 1024;
+  m_size      = size;
+  m_capacity  = m_size;
+  m_data      = new char[m_size+1];
+  strcpy(m_data, data);
+  m_data[m_size] = '\0';
+}
+
+string::string(const char * data)
+{
+  m_reserve   = 1024;
+  m_size      = strlen(data);
+  m_capacity  = m_size;
+  m_data      = new char[m_size+1];
+  strcpy(m_data, data);
+  m_data[m_size] = '\0';
+}
+
+string::string(size_t reserve)
+{
+  m_reserve   = reserve;
+  m_size      = 0;
+  m_data      = new char[m_reserve]();
+  m_capacity  = m_size;
+}
+
+string * string::consume(char * data)
+{
+  charon::string * tmp = new string;
+  tmp->m_data = data;
+  tmp->m_size = strlen(data);
+  tmp->m_capacity = tmp->m_size;
+  return tmp;
+}
+
+string::~string()
+{
+  delete[] m_data;
+}
+
+string * string::append(const char * data)
+{
+  size_t len = strlen(data);
+
+  if( (m_size + len) >= m_capacity ) {
+    char * tmp = m_data;
+    m_capacity = m_size + len + m_reserve;
+    m_data     = new char[m_capacity];
+    for(size_t i = 0; i < m_size; i++) {
+      m_data[i] = tmp[i];
+    }
+    delete[] tmp;
+  }
+
+  for(size_t i=0; i < len; i++, m_size++) {
+    m_data[m_size] = data[i];
+  }
+
+  m_data[m_size] = '\0';
+
+  return this;
+}
+
+string * string::prepend(const char * data)
+{
+  size_t len = strlen(data);
+  m_capacity = m_size + len + m_reserve;
+  char * tmp = new char[m_capacity];
+
+
+  for(size_t i=0; i < len; i++) {
+    tmp[i] = data[i];
+  }
+
+  for(size_t i=0; i < m_size; i++, len++) {
+    tmp[len] = m_data[i];
+  }
+
+  delete[] m_data;
+  m_size = len;
+  m_data = tmp;
+  m_data[m_size] = '\0';
+
+  return this;
+}
+
+string * string::camelCase(bool lcfirst)
+{
+  return charon::string::consume(string::camelCase(m_data, lcfirst));
+}
+
+string * string::capitalize()
+{
+  return charon::string::consume(string::capitalize(m_data));
+}
+
+string * string::center(size_t size, const char * pad)
+{
+  return charon::string::consume(string::center(m_data, size, pad));
+}
+
+void string::clear()
+{
+  delete[] m_data;
+  m_data = new char[1]();
+  m_size = 0;
+}
+
+bool string::contains(const char * str)
+{
+  return charon::string::contains(m_data, str);
+}
+
+string * string::chop(int n)
+{
+  return charon::string::consume(string::chop(m_data, n));
+}
+
+int string::count(const char * str)
+{
+  return string::count(m_data, str);
+}
+
+string * string::dasherize()
+{
+  return charon::string::consume(string::dasherize(m_data));
+}
+
+string * string::decode64()
+{
+  return charon::string::consume(string::decode64(m_data));
+}
+
+string * string::encode64()
+{
+  return charon::string::consume(string::encode64(m_data));
+}
+
+string * string::escape()
+{
+  return charon::string::consume(string::escape(m_data));
+}
+
+string * string::escapeHtml()
+{
+  return charon::string::consume(string::escapeHtml(m_data));
+}
+
+int string::indexOf(const char * str, int i)
+{
+  return string::indexOf(m_data, str, i);
+}
+
+string * string::insert(int len, const char * ba)
+{
+  return charon::string::consume(string::insert(m_data, len, ba));
+}
+
+bool string::endsWith(const char * ba)
+{
+  return string::endsWith(m_data, ba);
+}
+
+int string::lastIndexOf(const char * str)
+{
+  return string::lastIndexOf(m_data, str);
+}
+
+string * string::left(int len)
+{
+  return string::consume( string::left(m_data, len) );
+}
+
+string * string::leftJustified(size_t size, const char * pad)
+{
+  return string::consume( string::leftJustified(m_data, size, pad) );
+}
+
+string * string::mid(int pos, int len)
+{
+  return string::consume( string::mid(m_data, pos, len) );
+}
+
+string * string::md5()
+{
+  return charon::string::consume(string::md5(m_data));
+}
+
+string * string::normalize()
+{
+  return charon::string::consume(string::normalize(m_data));
+}
+
+string * string::simplified()
+{
+  return charon::string::consume(string::simplified(m_data));
+}
+
+string * string::repeated(int times)
+{
+  return charon::string::consume(string::repeated(m_data, times));
+}
+
+string * string::replace(const char * before, const char * after, int start)
+{
+  return charon::string::consume(string::replace(m_data, before, after, start));
+}
+
+string * string::replace(const char before, const char after, int start)
+{
+  return charon::string::consume(string::replace(m_data, before, after, start));
+}
+
+void string::reserve(size_t reserve)
+{
+  m_reserve = reserve;
+}
+
+size_t string::reserve()
+{
+  return m_reserve;
+}
+
+string * string::right(int len)
+{
+  return charon::string::consume(string::right(m_data, len));
+}
+
+string * string::rightJustified(size_t size, const char * pad)
+{
+  return charon::string::consume(string::rightJustified(m_data, size, pad));
+}
+
+string * string::sha1()
+{
+  return charon::string::consume(string::sha1(m_data));
+}
+
+string * string::suffix(const char chr)
+{
+  return charon::string::consume(string::suffix(m_data, chr));
+}
+
+char * string::data() const
+{
+  return this->m_data;
+}
+
+string * string::trimmed()
+{
+  return charon::string::consume(string::trimmed(m_data));
+}
+
+string * string::leftTrimmed()
+{
+  return charon::string::consume(string::leftTrimmed(m_data));
+}
+
+string * string::rightTrimmed()
+{
+  return charon::string::consume(string::rightTrimmed(m_data));
+}
+
+bool string::startsWith(const char * str)
+{
+  return string::startsWith(m_data, str);
+}
+
+string * string::truncate(int pos, const char *omission, const char separator)
+{
+  return charon::string::consume(string::truncate(m_data, pos, omission, separator));
+}
+
+string * string::underscore()
+{
+  return charon::string::consume(string::underscore(m_data));
+}
+
+List * string::split(const char * pattern)
+{
+  return string::split(m_data, m_size, pattern);
+}
+
+size_t string::size()
+{
+  return m_size;
+}
+
+size_t string::len()
+{
+  return m_size;
+}
+
+//-----------------------------------------------------------------------------
+// OPERATORS
+//-----------------------------------------------------------------------------
+
+std::ostream & operator<<(std::ostream & os, const charon::string * str)
+{
+   os << str->data();
+   return os;
+}
+std::ostream & operator<<(std::ostream & os, const charon::string & str)
+{
+   os << str.data();
+   return os;
+}
+
+string & string::operator=(const string &a)
+{
+  delete[] m_data;
+
+  m_reserve   = 1024;
+  m_size      = a.m_size;
+  m_capacity  = a.m_size;
+  m_data      = new char[m_size+1];
+  strcpy(m_data, a.m_data);
+  m_data[m_size] = '\0';
+  return *this;
+}
+
+string & string::operator=(const char * data)
+{
+  delete[] m_data;
+
+  m_reserve   = 1024;
+  m_size      = strlen(data);
+  m_capacity  = m_size;
+  m_data      = new char[m_size+1];
+  strcpy(m_data, data);
+  m_data[m_size] = '\0';
+
+  return *this;
+}
+
+string & string::operator=(const string * str)
+{
+  delete[] m_data;
+
+  m_reserve   = 1024;
+  m_size      = str->m_size;
+  m_capacity  = str->m_size;
+  m_data      = new char[m_size+1];
+  strcpy(m_data, str->m_data);
+  m_data[m_size] = '\0';
+
+  return *this;
+}
+
+//-----------------------------------------------------------------------------
+// LIST
+//-----------------------------------------------------------------------------
+
+void string::List::init()
+{
+  m_cursor = 0;
+
+  if( m_size == m_resource ) {
+    m_resource *= 2;
+  }
+
+  string **array = new string*[m_resource];
+
+  if( m_size > 0 ) {
+    for(int i = 0; i < m_size; i++) {
+      array[i] = m_array[i];
+    }
+  }
+
+  if( m_array != 0 ) {
+    delete m_array;
+  }
+
+  m_array = array;
+
+  for(int i = m_size; i < m_resource; i++) {
+    m_array[i] = 0;
+  }
+}
+
+string::List::List()
+{
+
+  m_array = 0;
+  m_size  = 0;
+  m_resource = 10;
+  init();
+}
+
+string::List::List(int resource)
+{
+  m_array = 0;
+  m_size  = 0;
+  m_resource = resource;
+  init();
+}
+
+string::List::~List()
+{
+
+  for(int i = 0; i < m_size; i++) {
+    if( m_array[i] != 0 ) {
+      delete m_array[i];
+    }
+  }
+
+  delete[] m_array;
+}
+
+void string::List::replace(int pos, const char * value)
+{
+  if( m_array[pos] != 0 ) {
+    delete m_array[pos];
+  }
+
+  //char * tmp = new char[strlen(value)+1];
+  //strcpy(tmp, value);
+  m_array[pos] = new string(value);//tmp;
+}
+
+string::List & string::List::append(const char * value)
+{
+  if( m_size == m_resource ) {
+    init();
+  }
+  //char * tmp = new char[strlen(value)+1];
+  //strcpy(tmp, value);
+  m_array[m_size] = new string(value);//tmp;
+  ++m_size;
+  return *this;
+}
+
+string::List & string::List::append(const char * value, int len)
+{
+  if( m_size == m_resource ) {
+    init();
+  }
+  //char * tmp = new char[len+1];
+  //strncpy(tmp, value, len);
+  //tmp[len] = '\0';
+  m_array[m_size] = new string(value, len);//tmp;
+  ++m_size;
+  return *this;
+}
+
+string::List & string::List::operator<<(const char * value)
+{
+  if( m_size == m_resource ) {
+    init();
+  }
+  //char * tmp = new char[strlen(value)+1];
+  //strcpy(tmp, value);
+  m_array[m_size] = new string(value);//tmp;
+  ++m_size;
+  return *this;
+}
+
+const char * string::List::operator[](int pos)
+{
+  return at(pos); //m_array[pos]->data();
+}
+
+const char * string::List::at(int pos)
+{
+  if( pos > m_size ) {
+    return 0;
+  }
+  string * ba = m_array[pos];
+  if( ba == 0 || ba->size() == 0 ) {
+    return 0;
+  } else {
+    return m_array[pos]->data();
+  }
+}
+
+const char * string::List::at(int pos, int * len)
+{
+  if( pos > m_size ) {
+    * len = 0;
+    return 0;
+  }
+  string * ba = m_array[pos];
+  if( ba == 0 || ba->size() == 0 ) {
+    * len = 0;
+    return 0;
+  } else {
+    *len = ba->size();
+    return ba->data();
+  }
+}
+
+const char * string::List::first()
+{
+  return at(0);// m_array[0]->data();
+}
+
+const char * string::List::last()
+{
+  return at(m_size-1);//m_array[m_size-1]->data();
+}
+
+int string::List::size()
+{
+  return m_size;
+}
+
+char * string::List::join(const char * separator)
+{
+  char * result;
+  int size = 0;
+  int tmp_size = 0;
+  int result_size = 0;
+  int size_separator = strlen(separator);
+
+  for( int i = 0; i < m_size; i++ ) {
+    size += m_array[i]->size();
+    size += size_separator;
+  }
+
+  result = new char[size + 1];
+   for( int i = 0; i < m_size; i++ ) {
+     tmp_size = m_array[i]->size();
+     for( int j = 0; j < tmp_size; j++ ) {
+       result[result_size] = m_array[i]->data()[j];
+       result_size ++;
+     }
+     if( i < m_size -1 ) {
+       for( int h = 0; h < size_separator; h++ ) {
+         result[result_size] = separator[h];
+         result_size ++;
+       }
+     }
+  }
+  result[result_size] = '\0';
+
+  return result;
+}
+
+const char * string::List::each()
+{
+  if( m_cursor >= m_size ) {
+    return NULL;
+  }
+
+  const char * result = at(m_cursor);
+  m_cursor++;
+  return result;
 }

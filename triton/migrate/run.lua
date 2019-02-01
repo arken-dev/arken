@@ -17,7 +17,7 @@ function M.start()
       triton.enqueue(tostring(i))
     end
   else
-    error(fileName .. ' not exists')
+    error(file .. ' not exists')
   end
 end
 

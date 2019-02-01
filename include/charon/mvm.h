@@ -55,9 +55,9 @@ class mvm {
   static int      s_pool;
   static int      s_argc;
   static char * * s_argv;
-  static ByteArray s_charonPath;
-  static ByteArray s_profilePath;
-  static ByteArray s_dispatchPath;
+  static string s_charonPath;
+  static string s_profilePath;
+  static string s_dispatchPath;
 
   private:
   static mvm::data * pop();
@@ -81,6 +81,7 @@ class mvm {
   static void back(mvm::data *);
   static double uptime();
   static charon::instance instance();
+  static const char * charonPath();
 
 };
 

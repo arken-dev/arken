@@ -3,8 +3,8 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+#include <charon/base>
 #include <charon/net/httpbody.h>
-#include <QFile>
 
 using namespace charon::net;
 
@@ -24,15 +24,9 @@ HttpBody::~HttpBody()
 
 HttpBody * HttpBody::loadFile(const char *path)
 {
-  QFile file(path);
-  QByteArray raw;
-
-  file.open(QIODevice::ReadOnly);
-  raw = file.readAll();
-  char * buffer = new char[raw.size() + 1];
-  memcpy( buffer, raw.data(), raw.size() );
-  buffer[raw.size()] = '\0';
-  return new HttpBody(buffer, raw.size());
+  size_t size;
+  char * buffer = os::read(path, &size);
+  return new HttpBody(buffer, size);
 }
 
 HttpBody * HttpBody::loadBuffer(const char * buffer, size_t size)

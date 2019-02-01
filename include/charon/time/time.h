@@ -27,8 +27,8 @@ class Time : public QTime
 
   Time addSecs(int secs);
 
-  ByteArray toString(const char * format);
-  ByteArray toString();
+  string toString(const char * format);
+  string toString();
 
 };
 

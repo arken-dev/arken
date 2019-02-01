@@ -105,7 +105,7 @@ charon_DateInstanceMethodToString( lua_State *L ) {
 static int
 charon_DateInstanceMethodConcat( lua_State *L ) {
   Date *dt;
-  QString concat;
+  string concat;
   const char * str;
   const char * format = "yyyy-MM-dd";
   if(lua_isstring(L, 1)) {
@@ -117,7 +117,7 @@ charon_DateInstanceMethodConcat( lua_State *L ) {
     str = lua_tostring(L, 2);
     concat = dt->toString(format).append(str);
   }
-  lua_pushstring(L, concat.toLocal8Bit().data());
+  lua_pushstring(L, concat);
   return 1;
 }
 
