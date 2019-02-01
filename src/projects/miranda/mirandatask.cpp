@@ -26,6 +26,7 @@ void MirandaTask::run()
   // socket
   socket.setSocketDescriptor(m_descriptor);
 
+  //if( socket.waitForReadyRead(-1) ) {
   while ( socket.waitForReadyRead(100) ) {
     buffer.append(socket.readAll());
   }
