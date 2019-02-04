@@ -213,7 +213,7 @@ char * HttpClient::perform()
     }
 
     //parse body
-    index = string::indexOf(m_data, "\r\n\r\n");
+    index = string::lastIndexOf(m_data, "\r\n\r\n");
     if( index > 0 ) {
       body = string::mid(m_data, index+4, -1);
     } else {
