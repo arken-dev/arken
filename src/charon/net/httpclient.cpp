@@ -203,9 +203,9 @@ char * HttpClient::perform()
   }
 
   if( m_size ) {
-
     // parse status
-    index = string::indexOf(m_data, " ");
+    index = string::lastIndexOf(m_data, "HTTP");
+    index = string::indexOf(m_data, " ", index);
     if( index > -1 ) {
       m_status = atoi(string::mid(m_data, index + 1, index + 4));
     } else {
@@ -213,7 +213,7 @@ char * HttpClient::perform()
     }
 
     //parse body
-    index = string::indexOf(m_data, "\r\n\r\n");
+    index = string::lastIndexOf(m_data, "\r\n\r\n");
     if( index > 0 ) {
       body = string::mid(m_data, index+4, -1);
     } else {

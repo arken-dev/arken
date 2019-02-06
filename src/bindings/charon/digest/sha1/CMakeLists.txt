@@ -8,7 +8,17 @@
 #
 # ------------------------------------------------------------------------------
 
-set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/clib/charon/digest)
+include_directories(.)
+include_directories(${PROJECT_SOURCE_DIR}/include)
+include_directories(${PROJECT_SOURCE_DIR}/deps/include)
 
-add_subdirectory(md5)
-add_subdirectory(sha1)
+add_library(
+  sha1 SHARED sha1.cpp
+)
+
+find_package(Qt5Core)
+find_package(Qt5Network)
+
+set_target_properties(sha1 PROPERTIES PREFIX "")
+
+target_link_libraries(sha1 Qt5::Core Qt5::Network charon lua)
