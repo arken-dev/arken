@@ -13,6 +13,7 @@ class md5 {
   public:
   static char * hash(const char * value);
   static char * hash(const char * value, int length);
+  static char * file(const char * path);
 };
 
 }
