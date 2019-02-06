@@ -20,6 +20,7 @@ if(CHARON_DIGEST STREQUAL "embedded")
   file(GLOB digest-embedded ${PROJECT_SOURCE_DIR}/src/embedded/digest/*.c)
 endif()
 
-set( digest ${PROJECT_SOURCE_DIR}/src/charon/digest/${CHARON_DIGEST}.cpp )
+file(GLOB digest ${PROJECT_SOURCE_DIR}/src/charon/digest/*/${CHARON_DIGEST}.cpp)
+#file(GLOB_RECURSE digest ${PROJECT_SOURCE_DIR}/src/charon/digest/*/${CHARON_DIGEST}.cpp)
 
 message("CHARON DIGEST ${CHARON_DIGEST}")

@@ -6,8 +6,9 @@
 #include <charon/base>
 #include <QDebug>
 
-using digest = charon::digest;
 using base64 = charon::base64;
+using md5    = charon::digest::md5;
+using sha1   = charon::digest::sha1;
 using List   = charon::string::List;
 
 char * string::append(const char * string, const char * ba)
@@ -1166,12 +1167,12 @@ char * string::underscore(const char *string)
 
 char * string::md5(const char * str)
 {
-  return digest::md5(str);
+  return md5::hash(str);
 }
 
 char * string::sha1(const char * str)
 {
-  return digest::sha1(str);
+  return sha1::hash(str);
 }
 
 //-----------------------------------------------------------------------------
