@@ -128,33 +128,28 @@ char * os::read(const char * path)
 
 char * os::read(const char * path, size_t * size)
 {
-  char * result;
-  std::string buffer;
+  char * buffer;
 
   if (string::startsWith(path, "http://")) {
     HttpClient client(path);
-    char * perform = client.performGet();
-    buffer.append(perform);
-    delete[] perform;
+    buffer = client.performGet();
+    if( size ) {
+      *size = strlen(buffer);
+    }
   } else {
-    std::string line;
-    std::ifstream file(path);
-    if (file.is_open()) {
-      while ( getline (file, line) ) {
-        if( buffer.size() > 0 ) {
-          buffer.push_back('\n');
-        }
-        buffer.append(line);
-      }
-      file.close();
+    std::ifstream file;
+    int length;
+    file.open(path);
+    file.seekg(0, std::ios::end);
+    length = file.tellg();
+    file.seekg(0, std::ios::beg);
+    buffer = new char[length];
+    file.read(buffer, length);
+    file.close();
+    if( size ) {
+      *size = length;
     }
   }
 
-  if( size ) {
-    *size = buffer.size();
-  }
-
-  result = new char[buffer.size() + 1];
-  memcpy( result, buffer.c_str(), buffer.size() );
-  return result;
+  return buffer;
 }
