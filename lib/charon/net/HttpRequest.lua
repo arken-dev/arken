@@ -17,6 +17,8 @@ function HttpRequest:params(rebuild)
     if self._env:requestMethod() == 'POST' then
       if self._env:field('Content-Type'):startsWith('multipart/form-data;') then
         self._params = multipart.parse(self._env:headerDone())
+      elseif self._env:field('Content-Type'):startsWith('application/json;') then
+        self._params = json.decode(self._env:headerDone())
       else
         self._params = url.parseQuery(self._env:headerDone())
       end
