@@ -3,7 +3,6 @@ local cookie      = require 'charon.net.cookie'
 local multipart   = require 'charon.net.multi-part'
 local json        = require 'charon.json'
 local Class       = require 'charon.oop.Class'
-local empty       = require 'charon.empty'
 
 local HttpRequest = Class.new("charon.net.HttpRequest")
 
@@ -15,11 +14,9 @@ end
 
 function HttpRequest:params(rebuild)
   if self._params == nil or rebuild then
-    if not empty(self._env:headerDone())  then
+    if self._env:requestMethod() == 'POST' then
       if self._env:field('Content-Type'):startsWith('multipart/form-data;') then
         self._params = multipart.parse(self._env:headerDone())
-      elseif self._env:field('Content-Type'):startsWith('application/json;') then
-        self._params = json.decode(self._env:headerDone())
       else
         self._params = url.parseQuery(self._env:headerDone())
       end
