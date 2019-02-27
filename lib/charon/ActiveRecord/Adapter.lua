@@ -385,7 +385,9 @@ function ActiveRecord_Adapter:begin()
     self:execute("BEGIN")
   end
   ActiveRecord_Adapter.current_transaction = ActiveRecord_Adapter.current_transaction + 1
-  return self:execute(string.format("SAVEPOINT savepoint_%i", ActiveRecord_Adapter.current_transaction))
+  if ActiveRecord_Adapter.current_transaction > 0 then
+    return self:execute(string.format("SAVEPOINT savepoint_%i", ActiveRecord_Adapter.current_transaction))
+  end
 end
 
 --------------------------------------------------------------------------------
@@ -396,7 +398,10 @@ function ActiveRecord_Adapter:rollback()
   ActiveRecord_Adapter.errors  = Array.new()
   ActiveRecord_Adapter.cache   = {}
   ActiveRecord_Adapter.pending = {}
-  local sql    = string.format("ROLLBACK TO SAVEPOINT savepoint_%i", ActiveRecord_Adapter.current_transaction)
+  local sql = 'ROLLBACK'
+  if ActiveRecord_Adapter.current_transaction > 0 then
+    sql = string.format("ROLLBACK TO SAVEPOINT savepoint_%i", ActiveRecord_Adapter.current_transaction)
+  end
   local result = self:execute(sql)
   ActiveRecord_Adapter.current_transaction = ActiveRecord_Adapter.current_transaction - 1
   return result
