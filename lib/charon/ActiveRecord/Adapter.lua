@@ -22,6 +22,7 @@ ActiveRecord_Adapter.neat    = {}
 ActiveRecord_Adapter.cursor  = {}
 ActiveRecord_Adapter.pending = {}
 ActiveRecord_Adapter.output  = print
+ActiveRecord_Adapter.current_transaction = 0
 
 ActiveRecord_Adapter.booleanValues = {
   ['t']     = true,
@@ -380,7 +381,11 @@ end
 --------------------------------------------------------------------------------
 
 function ActiveRecord_Adapter:begin()
-  return self:execute("BEGIN")
+  if ActiveRecord_Adapter.current_transaction == 0 then
+    self:execute("BEGIN")
+  end
+  ActiveRecord_Adapter.current_transaction = ActiveRecord_Adapter.current_transaction + 1
+  return self:execute(string.format("SAVEPOINT savepoint_%i", ActiveRecord_Adapter.current_transaction))
 end
 
 --------------------------------------------------------------------------------
@@ -391,7 +396,10 @@ function ActiveRecord_Adapter:rollback()
   ActiveRecord_Adapter.errors  = Array.new()
   ActiveRecord_Adapter.cache   = {}
   ActiveRecord_Adapter.pending = {}
-  return self:execute("ROLLBACK")
+  local sql    = string.format("ROLLBACK TO SAVEPOINT savepoint_%i", ActiveRecord_Adapter.current_transaction)
+  local result = self:execute(sql)
+  ActiveRecord_Adapter.current_transaction = ActiveRecord_Adapter.current_transaction - 1
+  return result
 end
 
 --------------------------------------------------------------------------------
@@ -403,7 +411,10 @@ function ActiveRecord_Adapter:commit()
   ActiveRecord_Adapter.cache   = {}
   ActiveRecord_Adapter.neat    = {}
   ActiveRecord_Adapter.pending = {}
-  return self:execute("COMMIT")
+  ActiveRecord_Adapter.current_transaction = ActiveRecord_Adapter.current_transaction - 1
+  if ActiveRecord_Adapter.current_transaction == 0 then
+    return self:execute("COMMIT")
+  end
 end
 
 --------------------------------------------------------------------------------
