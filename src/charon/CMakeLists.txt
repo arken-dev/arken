@@ -30,7 +30,6 @@ add_library(
   ${digest}
   ${digest-embedded}
   ${mvm-container}
-  ${os} ${os-executablePath} ${uuid}
   ${net}
   ${os} ${os-executablePath} ${os-filesystem} ${os-name} ${os-pid} ${os-uuid}
   ${regex}
