@@ -21,13 +21,13 @@ if(CHARON_OS_FILESYSTEM STREQUAL "")
 endif()
 
 if(CHARON_OS_FILESYSTEM STREQUAL "boost")
-  message("CHARON OS FILESYSTEM boost not not available, force qt")
+  message("CHARON OS FILESYSTEM.....: boost not not available, force qt")
   set(CHARON_OS_FILESYSTEM "qt")
 endif()
 
 set(os-filesystem ${PROJECT_SOURCE_DIR}/src/charon/os/filesystem/${CHARON_OS_FILESYSTEM}.cpp)
 
-message("CHARON OS FILESYSTEM ${CHARON_OS_FILESYSTEM}")
+message("CHARON OS FILESYSTEM.....: ${CHARON_OS_FILESYSTEM}")
 
 # -----------------------------------------------------------------------------
 # EXECUTABLE PATH
@@ -69,7 +69,7 @@ endif()
 
 set(os-uuid ${PROJECT_SOURCE_DIR}/src/charon/os/uuid/${CHARON_OS_UUID}.cpp)
 
-message("CHARON OS UUID ${CHARON_OS_UUID}")
+message("CHARON OS UUID...........: ${CHARON_OS_UUID}")
 
 if(CHARON_OS_UUID STREQUAL "libuuid")
   message("CHARON OS UUID not contain embedded source require install uuid-dev")
