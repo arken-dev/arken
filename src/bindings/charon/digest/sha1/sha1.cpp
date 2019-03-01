@@ -17,10 +17,21 @@ static int charon_digest_sha1_hash( lua_State *L ) {
   return 1;
 }
 
+static int charon_digest_sha1_file( lua_State *L ) {
+  const char *path = luaL_checkstring(L, 1);
+  char * result = sha1::file(path);
+  lua_pushlstring( L, result, 40 );
+  delete[] result;
+
+  return 1;
+}
+
+
 extern "C" {
   int luaopen_charon_digest_sha1( lua_State *L ) {
     static const luaL_reg Map[] = {
       {"hash", charon_digest_sha1_hash},
+      {"file", charon_digest_sha1_file},
       {NULL, NULL}
     };
     luaL_newmetatable(L, "sha1");

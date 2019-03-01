@@ -38,6 +38,7 @@ function HttpClient:body()
 end
 
 function HttpClient:performPost()
+  self.headers = self.headers or {}
   local env = template.execute(CHARON_PATH .. "/lib/charon/test/HttpClient/post.tpl", self, {})
   if self.verbose then
     print(env)
@@ -48,6 +49,7 @@ function HttpClient:performPost()
 end
 
 function HttpClient:performGet()
+  self.headers = self.headers or {}
   local env = template.execute(CHARON_PATH .. "/lib/charon/test/HttpClient/get.tpl", self, {})
   if self.verbose then
     print(env)
@@ -58,6 +60,7 @@ function HttpClient:performGet()
 end
 
 function HttpClient:performPut()
+  self.headers = self.headers or {}
   local env = template.execute(CHARON_PATH .. "/lib/charon/test/HttpClient/put.tpl", self, {})
   if self.verbose then
     print(env)
@@ -68,6 +71,7 @@ function HttpClient:performPut()
 end
 
 function HttpClient:performDelete()
+  self.headers = self.headers or {}
   local env = template.execute(CHARON_PATH .. "/lib/charon/test/HttpClient/delete.tpl", self, {})
   if self.verbose then
     print(env)
