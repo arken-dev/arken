@@ -4,6 +4,7 @@ build/*
 clib/*
 tmp/*
 bin/*
+packages/*
 
 Makefile
 Makefile.*
