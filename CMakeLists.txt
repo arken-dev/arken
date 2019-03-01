@@ -15,6 +15,7 @@ cmake_minimum_required(VERSION 3.0)
 # ------------------------------------------------------------------------------
 
 LIST(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+include(charon)
 include(charon-backend)
 include(charon-base64)
 include(charon-digest)
@@ -50,3 +51,4 @@ add_subdirectory( src/charon )
 add_subdirectory( src/projects )
 add_subdirectory( src/bindings )
 add_subdirectory( src/lua )
+add_subdirectory( packages )
