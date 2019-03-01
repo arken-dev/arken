@@ -10,7 +10,7 @@ local json       = require "charon.json"
 
 local Controller = Class.new("Controller", "charon.net.HttpRequest")
 
-Controller.prefix        = ""
+Controller.prefix        = "/app"
 Controller.prefixHelpers = "app.helpers"
 Controller.prefixViews   = "app/views"
 
@@ -255,11 +255,14 @@ end
 
 function Controller:render_json(params)
   local code = params.code or 200
-  local data = json.encode(params.value)
-  if self:params().json_callback then
-    data = string.format('%s(%s)', self:params().json_callback, data)
+  local body = params.raw  or ""
+  if params.value then
+    body = json.encode( params.value )
   end
-  return code, {'Content-Type: application/json; charset=UTF-8'}, data
+  if self:params().json_callback then
+    body = string.format('%s(%s)', self:params().json_callback, body)
+  end
+  return code, {'Content-Type: application/json; charset=UTF-8'}, body
 end
 
 -------------------------------------------------------------------------------
