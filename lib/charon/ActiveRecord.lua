@@ -145,7 +145,7 @@ ActiveRecord.inherit = function(class)
 
   class.loadConfig = function()
     local template = require 'charon.template'
-    local config   = class.config or "config/active_record.json"
+    local config   = "config/active_record.json"
 
     if not os.exists(config) then
       error("file " .. config .. " not exists")
