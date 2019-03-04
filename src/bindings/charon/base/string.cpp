@@ -933,6 +933,13 @@ charon_StringInstanceMethodLen( lua_State *L ) {
   return 1;
 }
 
+static int
+charon_StringInstanceMethodDestruct( lua_State *L ) {
+  string * udata = checkString( L );
+  delete udata;
+  return 0;
+}
+
 static const
 luaL_reg StringInstanceMethods[] = {
   {"append",         charon_StringInstanceMethodAppend},
@@ -975,6 +982,7 @@ luaL_reg StringInstanceMethods[] = {
   {"startsWith",     charon_StringInstanceMethodStartsWith},
   {"__tostring",     charon_StringInstanceMethodToString},
   {"__len",          charon_StringInstanceMethodToSize},
+  {"__gc",           charon_StringInstanceMethodDestruct},
   {NULL, NULL}
 };
 
