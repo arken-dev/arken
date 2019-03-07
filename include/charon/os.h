@@ -8,7 +8,8 @@
 
 #include <charon/base>
 
-using List = charon::string::List;
+using List   = charon::string::List;
+using string = charon::string;
 
 namespace charon {
   class os {
@@ -47,8 +48,7 @@ namespace charon {
     static char   * temp();
     static bool     touch(const char * path);
     static char   * uuid();
-    static char   * read(const char * path);
-    static char   * read(const char * path, size_t * size);
+    static string read(const char * path);
     static char   * root();
   };
 }
