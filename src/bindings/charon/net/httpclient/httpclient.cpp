@@ -83,36 +83,32 @@ charon_HttpClientInstanceMethodBody( lua_State *L ) {
 static int
 charon_HttpClientInstanceMethodPerformGet( lua_State *L ) {
   HttpClient * udata = checkHttpClient( L );
-  char * result = udata->performGet();
-  lua_pushstring(L, result);
-  delete[] result;
+  string result = udata->performGet();
+  lua_pushlstring(L, result.data(), result.size());
   return 1;
 }
 
 static int
 charon_HttpClientInstanceMethodPerformPost( lua_State *L ) {
   HttpClient *udata = checkHttpClient( L );
-  char * result = udata->performPost();
-  lua_pushstring(L, result);
-  delete[] result;
+  string result = udata->performPost();
+  lua_pushlstring(L, result.data(), result.size());
   return 1;
 }
 
 static int
 charon_HttpClientInstanceMethodPerformPut( lua_State *L ) {
   HttpClient *udata = checkHttpClient( L );
-  char * result = udata->performPut();
-  lua_pushstring(L, result);
-  delete[] result;
+  string result = udata->performPut();
+  lua_pushlstring(L, result.data(), result.size());
   return 1;
 }
 
 static int
 charon_HttpClientInstanceMethodPerformDelete( lua_State *L ) {
   HttpClient *udata = checkHttpClient( L );
-  char * result = udata->performDelete();
-  lua_pushstring(L, result);
-  delete[] result;
+  string result = udata->performDelete();
+  lua_pushlstring(L, result.data(), result.size());
   return 0;
 }
 

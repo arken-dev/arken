@@ -14,6 +14,7 @@ namespace net {
 class HttpBody
 {
   private:
+  HttpBody(const char *buffer, size_t size);
   HttpBody(char *buffer, size_t size);
   bool   m_release;
   char * m_buffer;

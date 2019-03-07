@@ -17,6 +17,7 @@ moc_*
 qrc_*
 
 *.swp
+*.swo
 
 profile.d/*
 config/*

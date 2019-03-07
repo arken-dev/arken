@@ -14,23 +14,21 @@
 #include <fstream>
 
 using HttpClient = charon::net::HttpClient;
+using string = charon::string;
 
 bool os::compare(const char * path1, const char * path2)
 {
-  size_t size1;
-  size_t size2;
+  string buffer1;
+  string buffer2;
 
-  const char * buffer1;
-  const char * buffer2;
+  buffer1 = os::read(path1);
+  buffer2 = os::read(path2);
 
-  buffer1 = os::read(path1, &size1);
-  buffer2 = os::read(path2, &size2);
-
-  if( size1 != size2 ) {
+  if( buffer1.size() != buffer2.size() ) {
     return false;
   }
 
-  if( memcmp(buffer1, buffer2, size1) == 0 ) {
+  if( memcmp(buffer1.data(), buffer2.data(), buffer1.size()) == 0 ) {
     return true;
   } else {
     return false;
@@ -121,22 +119,14 @@ bool os::touch(const char * path)
   return flag;
 }
 
-char * os::read(const char * path)
+string os::read(const char * path)
 {
-  return os::read(path, 0);
-}
-
-char * os::read(const char * path, size_t * size)
-{
-  char * buffer;
 
   if (string::startsWith(path, "http://")) {
     HttpClient client(path);
-    buffer = client.performGet();
-    if( size ) {
-      *size = strlen(buffer);
-    }
+    return client.performGet();
   } else {
+    char * buffer;
     std::ifstream file;
     int length;
     file.open(path);
@@ -146,10 +136,7 @@ char * os::read(const char * path, size_t * size)
     buffer = new char[length];
     file.read(buffer, length);
     file.close();
-    if( size ) {
-      *size = length;
-    }
+    return string::consume( buffer, length );
   }
 
-  return buffer;
 }

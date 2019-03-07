@@ -7,6 +7,9 @@
 #define _CHARON_NET_HTTP_CLIENT_
 
 #include <curl/curl.h>
+#include <charon/base>
+
+using string = charon::string;
 
 namespace charon {
 namespace net {
@@ -23,7 +26,7 @@ class HttpClient
   bool         m_failure;
   uint32_t     m_status;
   uint64_t     m_size;
-  char       * perform();
+  string       perform();
   static
   uint64_t     callback(void *contents, size_t size, size_t nmemb, void *userp);
 
@@ -33,10 +36,10 @@ class HttpClient
   void appendHeader(const char * header);
   void setVerbose(bool verbose);
   void setBody(const char * body);
-  char * performGet();
-  char * performPost();
-  char * performPut();
-  char * performDelete();
+  string performGet();
+  string performPost();
+  string performPut();
+  string performDelete();
   const
   char * body();
   const
