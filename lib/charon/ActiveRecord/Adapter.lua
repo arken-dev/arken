@@ -8,6 +8,7 @@ local Class     = require('charon.oop.Class')
 local toboolean = require('charon.toboolean')
 local Date      = require('charon.time.Date')
 local DateTime  = require('charon.time.DateTime')
+local empty     = require('charon.empty')
 
 local ActiveRecord_Adapter = Class.new("ActiveRecord.Adapter")
 
@@ -471,9 +472,11 @@ end
 
 function ActiveRecord_Adapter:validateUnique(record, params)
   local value = record[params.column]
-  if value ~= nil and value ~= '' then
-    local result = self:all{ [params.column] = value }
-    if record[self.primaryKey] == nil and #result > 0 then
+  if not empty(value) then
+    local id     = tonumber( record[self.primaryKey] ) or 0
+    local where  = string.format(" %s != $id AND %s = $value ", self.primaryKey, params.column)
+    local result = self:all{ where = where, id = id, value = value }
+    if #result > 0 then
       record.errors[params.column] = params.message
     end
   end
