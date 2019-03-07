@@ -1218,6 +1218,7 @@ string::string(size_t reserve)
 string * string::consume(char * data)
 {
   charon::string * tmp = new string;
+  delete[] tmp->m_data;
   tmp->m_data = data;
   tmp->m_size = strlen(data);
   tmp->m_capacity = tmp->m_size;

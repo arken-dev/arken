@@ -774,6 +774,16 @@ charon_StringInstanceMethodSha1( lua_State *L ) {
 }
 
 static int
+charon_StringInstanceMethodSimplified( lua_State *L ) {
+  string *  udata = checkString( L );
+  string ** ptr   = (string **)lua_newuserdata(L, sizeof(string*));
+          * ptr   = udata->simplified();
+  luaL_getmetatable(L, "charon.string.metatable");
+  lua_setmetatable(L, -2);
+  return 1;
+}
+
+static int
 charon_StringInstanceMethodSuffix( lua_State *L ) {
   string * udata = checkString( L );
   string * result;
@@ -898,7 +908,7 @@ charon_StringInstanceMethodSplit( lua_State *L ) {
 static int
 charon_StringInstanceMethodToString( lua_State *L ) {
   string * udata = checkString( L );
-  lua_pushstring(L, udata->data());
+  lua_pushlstring(L, udata->data(), udata->size());
   return 1;
 }
 
@@ -921,6 +931,13 @@ charon_StringInstanceMethodLen( lua_State *L ) {
   string * udata = checkString( L );
   lua_pushinteger(L, udata->len());
   return 1;
+}
+
+static int
+charon_StringInstanceMethodDestruct( lua_State *L ) {
+  string * udata = checkString( L );
+  delete udata;
+  return 0;
 }
 
 static const
@@ -954,6 +971,7 @@ luaL_reg StringInstanceMethods[] = {
   {"rightJustified", charon_StringInstanceMethodRightJustified},
   {"sha1",           charon_StringInstanceMethodSha1},
   {"size",           charon_StringInstanceMethodSize},
+  {"simplified",     charon_StringInstanceMethodSimplified},
   {"suffix",         charon_StringInstanceMethodSuffix},
   {"trimmed",        charon_StringInstanceMethodTrimmed},
   {"rightTrimmed",   charon_StringInstanceMethodRightTrimmed},
@@ -964,6 +982,7 @@ luaL_reg StringInstanceMethods[] = {
   {"startsWith",     charon_StringInstanceMethodStartsWith},
   {"__tostring",     charon_StringInstanceMethodToString},
   {"__len",          charon_StringInstanceMethodToSize},
+  {"__gc",           charon_StringInstanceMethodDestruct},
   {NULL, NULL}
 };
 
