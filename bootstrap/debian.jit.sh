@@ -4,7 +4,8 @@ apt-get install        \
   curl                 \
   libcurl4-openssl-dev \
   libpq-dev            \
-  libmysqlclient-dev
+  libmysqlclient-dev   \
+  libzip-dev
 
 cd tmp
 wget -c http://luajit.org/download/LuaJIT-2.0.4.tar.gz
