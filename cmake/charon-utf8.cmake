@@ -23,4 +23,4 @@ endif()
 
 set( utf8 ${PROJECT_SOURCE_DIR}/src/charon/utf8/${CHARON_UTF8}.cpp )
 
-message("CHARON UTF8 ${CHARON_UTF8}")
+message("CHARON UTF8..............: ${CHARON_UTF8}")

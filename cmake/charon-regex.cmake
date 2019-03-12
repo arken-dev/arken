@@ -23,4 +23,4 @@ endif()
 
 set( regex ${PROJECT_SOURCE_DIR}/src/charon/regex/${CHARON_REGEX}.cpp )
 
-message("CHARON REGEX ${CHARON_REGEX}")
+message("CHARON REGEX.............: ${CHARON_REGEX}")

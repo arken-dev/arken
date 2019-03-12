@@ -23,4 +23,4 @@ endif()
 file(GLOB digest ${PROJECT_SOURCE_DIR}/src/charon/digest/*/${CHARON_DIGEST}.cpp)
 #file(GLOB_RECURSE digest ${PROJECT_SOURCE_DIR}/src/charon/digest/*/${CHARON_DIGEST}.cpp)
 
-message("CHARON DIGEST ${CHARON_DIGEST}")
+message("CHARON DIGEST............: ${CHARON_DIGEST}")

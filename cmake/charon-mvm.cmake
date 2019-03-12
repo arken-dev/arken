@@ -18,4 +18,4 @@ endif()
 
 set( mvm-container ${PROJECT_SOURCE_DIR}/src/charon/mvm/containers/${CHARON_MVM_CONTAINER}.cpp )
 
-message("CHARON MVM CONTAINER ${CHARON_MVM_CONTAINER}")
+message("CHARON MVM CONTAINER.....: ${CHARON_MVM_CONTAINER}")

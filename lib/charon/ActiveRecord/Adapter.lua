@@ -8,6 +8,7 @@ local Class     = require('charon.oop.Class')
 local toboolean = require('charon.toboolean')
 local Date      = require('charon.time.Date')
 local DateTime  = require('charon.time.DateTime')
+local empty     = require('charon.empty')
 
 local ActiveRecord_Adapter = Class.new("ActiveRecord.Adapter")
 
@@ -22,6 +23,7 @@ ActiveRecord_Adapter.neat    = {}
 ActiveRecord_Adapter.cursor  = {}
 ActiveRecord_Adapter.pending = {}
 ActiveRecord_Adapter.output  = print
+ActiveRecord_Adapter.current_transaction = 0
 
 ActiveRecord_Adapter.booleanValues = {
   ['t']     = true,
@@ -380,7 +382,13 @@ end
 --------------------------------------------------------------------------------
 
 function ActiveRecord_Adapter:begin()
-  return self:execute("BEGIN")
+  if ActiveRecord_Adapter.current_transaction == 0 then
+    self:execute("BEGIN")
+  end
+  ActiveRecord_Adapter.current_transaction = ActiveRecord_Adapter.current_transaction + 1
+  if ActiveRecord_Adapter.current_transaction > 0 then
+    return self:execute(string.format("SAVEPOINT savepoint_%i", ActiveRecord_Adapter.current_transaction))
+  end
 end
 
 --------------------------------------------------------------------------------
@@ -391,7 +399,13 @@ function ActiveRecord_Adapter:rollback()
   ActiveRecord_Adapter.errors  = Array.new()
   ActiveRecord_Adapter.cache   = {}
   ActiveRecord_Adapter.pending = {}
-  return self:execute("ROLLBACK")
+  local sql = 'ROLLBACK'
+  if ActiveRecord_Adapter.current_transaction > 0 then
+    sql = string.format("ROLLBACK TO SAVEPOINT savepoint_%i", ActiveRecord_Adapter.current_transaction)
+  end
+  local result = self:execute(sql)
+  ActiveRecord_Adapter.current_transaction = ActiveRecord_Adapter.current_transaction - 1
+  return result
 end
 
 --------------------------------------------------------------------------------
@@ -403,7 +417,10 @@ function ActiveRecord_Adapter:commit()
   ActiveRecord_Adapter.cache   = {}
   ActiveRecord_Adapter.neat    = {}
   ActiveRecord_Adapter.pending = {}
-  return self:execute("COMMIT")
+  ActiveRecord_Adapter.current_transaction = ActiveRecord_Adapter.current_transaction - 1
+  if ActiveRecord_Adapter.current_transaction == 0 then
+    return self:execute("COMMIT")
+  end
 end
 
 --------------------------------------------------------------------------------
@@ -471,9 +488,11 @@ end
 
 function ActiveRecord_Adapter:validateUnique(record, params)
   local value = record[params.column]
-  if value ~= nil and value ~= '' then
-    local result = self:all{ [params.column] = value }
-    if record[self.primaryKey] == nil and #result > 0 then
+  if not empty(value) then
+    local id     = tonumber( record[self.primaryKey] ) or 0
+    local where  = string.format(" %s != $id AND %s = $value ", self.primaryKey, params.column)
+    local result = self:all{ where = where, id = id, value = value }
+    if #result > 0 then
       record.errors[params.column] = params.message
     end
   end

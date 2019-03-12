@@ -118,36 +118,40 @@ const char * HttpClient::body()
   return m_body;
 }
 
-char * HttpClient::performGet()
+string HttpClient::performGet()
 {
   return perform();
 }
 
-char * HttpClient::performPost()
+string HttpClient::performPost()
 {
 
   /* POST */
   curl_easy_setopt(m_curl, CURLOPT_CUSTOMREQUEST, "POST");
   curl_easy_setopt(m_curl, CURLOPT_POST, 1);
-  curl_easy_setopt(m_curl, CURLOPT_POSTFIELDS, m_body);
-  curl_easy_setopt(m_curl, CURLOPT_POSTFIELDSIZE, strlen(m_body));
+  if( m_body ) {
+    curl_easy_setopt(m_curl, CURLOPT_POSTFIELDS, m_body);
+    curl_easy_setopt(m_curl, CURLOPT_POSTFIELDSIZE, strlen(m_body));
+  }
 
   return perform();
 }
 
-char * HttpClient::performPut()
+string HttpClient::performPut()
 {
 
   /* PUT */
   curl_easy_setopt(m_curl, CURLOPT_CUSTOMREQUEST, "PUT");
   curl_easy_setopt(m_curl, CURLOPT_POST, 1);
-  curl_easy_setopt(m_curl, CURLOPT_POSTFIELDS, m_body);
-  curl_easy_setopt(m_curl, CURLOPT_POSTFIELDSIZE, strlen(m_body));
+  if( m_body ) {
+    curl_easy_setopt(m_curl, CURLOPT_POSTFIELDS, m_body);
+    curl_easy_setopt(m_curl, CURLOPT_POSTFIELDSIZE, strlen(m_body));
+  }
 
   return perform();
 }
 
-char * HttpClient::performDelete()
+string HttpClient::performDelete()
 {
 
   /* DELETE */
@@ -176,7 +180,7 @@ bool HttpClient::failure()
   return m_failure;
 }
 
-char * HttpClient::perform()
+string HttpClient::perform()
 {
   char    * body;
   int       index;
@@ -190,7 +194,7 @@ char * HttpClient::perform()
 
   // out of memory
   if ( m_failure ) {
-    return new char[1]();
+    return string::consume( new char[1]() );
   }
 
   // check for errors
@@ -199,7 +203,7 @@ char * HttpClient::perform()
     const char * message = curl_easy_strerror(res);
     m_message = new char[strlen(message)+1];
     strcpy(m_message, message);
-    return new char[1]();
+    return string::consume( new char[1]() );
   }
 
   if( m_size ) {
@@ -215,14 +219,22 @@ char * HttpClient::perform()
     //parse body
     index = string::lastIndexOf(m_data, "\r\n\r\n");
     if( index > 0 ) {
-      body = string::mid(m_data, index+4, -1);
+      index += 4;
+      size_t size = (m_size-index);
+      if( size > 0 ) {
+        body = string::mid(m_data, index, size);
+        return string::consume( body, size );
+      } else {
+        body = new char[1]();
+        return string::consume( body );
+      }
     } else {
       body = new char[1]();
+      return string::consume( body );
     }
   } else {
     m_status = 0;
     body = new char[1]();
+    return string::consume( body );
   }
-
-  return body;
 }

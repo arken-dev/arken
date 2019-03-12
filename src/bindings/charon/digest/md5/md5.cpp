@@ -18,10 +18,21 @@ static int charon_digest_md5_hash( lua_State *L ) {
   return 1;
 }
 
+static int charon_digest_md5_file( lua_State *L ) {
+  const char *path = luaL_checkstring(L, 1);
+  char * result = md5::file(path);
+  lua_pushlstring( L, result, 32 );
+  delete[] result;
+
+  return 1;
+}
+
+
 extern "C" {
   int luaopen_charon_digest_md5( lua_State *L ) {
     static const luaL_reg Map[] = {
       {"hash", charon_digest_md5_hash},
+      {"file", charon_digest_md5_file},
       {NULL, NULL}
     };
     luaL_newmetatable(L, "md5");

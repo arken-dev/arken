@@ -33,7 +33,6 @@ static int charon_os_atime( lua_State *L ) {
 static int charon_os_compare( lua_State *L ) {
   const char * path1 = luaL_checkstring(L, 1);
   const char * path2 = luaL_checkstring(L, 2);
-
   lua_pushboolean( L, os::compare(path1, path2) );
   return 1;
 }
@@ -45,7 +44,6 @@ static int charon_os_copy( lua_State *L ) {
   if( lua_gettop(L) == 3) { /* número de argumentos */
     force = lua_toboolean(L, 3);
   }
-
   lua_pushboolean( L, os::copy(source, destination, force) );
   return 1;
 }
@@ -242,15 +240,9 @@ static int charon_os_uuid( lua_State *L ) {
 }
 
 static int charon_os_read( lua_State *L ) {
-  size_t size = -1;
   const char * path = luaL_checkstring(L, 1);
-  const char * raw  = os::read(path, &size);
-  if( size != -1u ) {
-    lua_pushlstring( L, raw, size );
-  } else {
-    lua_pushstring( L, raw );
-  }
-  delete[] raw;
+  string result = os::read(path);
+  lua_pushlstring( L, result.data(), result.size() );
   return 1;
 }
 

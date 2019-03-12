@@ -22,4 +22,4 @@ endif()
 
 set( base64 ${PROJECT_SOURCE_DIR}/src/charon/base64/${CHARON_BASE64}.cpp )
 
-message("CHARON BASE64 ${CHARON_BASE64}")
+message("CHARON BASE64............: ${CHARON_BASE64}")
