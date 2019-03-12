@@ -251,6 +251,17 @@ function Helper:selectList(field, list, field_value, field_description, value, o
     end
     html = html .. string.format(option, "", "", blank)
   end
+  if type(list) == 'userdata' then
+    local tmp = {}
+    for row in list:each() do
+      local r = {
+        [field_value]       = row[field_value],
+        [field_description] = row[field_description]
+      }
+      table.insert(tmp, r )
+    end
+    list = tmp
+  end
   for _, row in ipairs(list) do
     if row[field_value] == value then
       selected = ' selected '
