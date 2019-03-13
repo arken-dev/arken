@@ -122,7 +122,7 @@ bool os::touch(const char * path)
 string os::read(const char * path)
 {
 
-  if (string::startsWith(path, "http://")) {
+  if (string::startsWith(path, "http://") || string::startsWith(path, "https://") ) {
     HttpClient client(path);
     return client.performGet();
   } else {
