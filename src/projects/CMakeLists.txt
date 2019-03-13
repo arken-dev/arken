@@ -8,8 +8,4 @@
 #
 # ------------------------------------------------------------------------------
 
-#add_subdirectory( callisto )
 add_subdirectory( charon )
-#add_subdirectory( miranda )
-add_subdirectory( rhea )
-add_subdirectory( triton )
