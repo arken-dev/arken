@@ -2,7 +2,7 @@
 // All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
-
+#include<iostream>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -61,7 +61,7 @@ bool charon::compress::zip::decompress(const char * namefile, const char * outpu
             len = strlen(sb.name);
             if (sb.name[len - 1] == '/') {
                 if( dirname == 0 ) {
-                  dirname = new char[len];
+                  dirname = new char[len+1];
                   strcpy(dirname, sb.name);
                   dirname[len-1] = '\0';
                 }
@@ -104,11 +104,12 @@ bool charon::compress::zip::decompress(const char * namefile, const char * outpu
     }
 
     if( output ) {
-      printf("rename %s => %s", dirname, output);
+      //printf("rename %s => %s", dirname, output);
       rename(dirname, output);
     }
 
     if( dirname ) {
+      //std::cout << "limpando " << dirname;
       delete[] dirname;
     }
 

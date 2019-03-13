@@ -11,11 +11,28 @@
 
 using charon::mvm;
 
-int charonFileLoad(lua_State *L, QFile &file)
+int charonPackages(lua_State *L)
+{
+  string file = mvm::charonPath();
+  file.append("/src/projects/charon/packages.lua");
+
+  lua_getglobal(L, "dofile");
+  lua_pushstring(L, file);
+
+  int rv = lua_pcall(L, 1, 0, 0);
+  if (rv) {
+    fprintf(stderr, "%s\n", lua_tostring(L, -1));
+    return rv;
+  }
+
+  return 0;
+}
+
+int charonFileLoad(lua_State *L, const char * filename)
 {
   int rv;
 
-  rv = luaL_loadfile(L, file.fileName().toLocal8Bit());
+  rv = luaL_loadfile(L, filename);
   if (rv) {
     fprintf(stderr, "%s\n", lua_tostring(L, -1));
     return rv;
@@ -130,27 +147,26 @@ int charonConsoleLoad(lua_State *L)
 
 int main(int argc, char * argv[])
 {
+  mvm::init(argc, argv);
+  os::sleep(0.1); // waiting mvm output log
+
   int rv = 0;
   string  charonPath;
   string  task;
-  QFile   file(argv[1]);
-  mvm::init(argc, argv);
-  lua_State  * L;
-
-  os::sleep(0.1); // waiting mvm output log
+  string  arg1;
   charon::instance i = mvm::instance();
-  L = i.state();
-  if (L == 0) {
-    fprintf(stderr, "failure allocate memory\n");
-    return 1;
+  lua_State  * L = i.state();
+
+  if ( argc == 1 ) {
+    return charonConsoleLoad(L);
   }
 
-  if (file.fileName().isEmpty()) {
-    rv = charonConsoleLoad(L);
+  if( strcmp(argv[1], "--packages") == 0 ) {
+    return charonPackages(L);
   }
 
-  if(file.exists()) {
-    rv = charonFileLoad(L, file);
+  if( os::exists(argv[1]) ) {
+    return charonFileLoad(L, argv[1]);
   } else {
     fprintf(stderr, "No such file or directory %s\n", argv[1]);
     return 1;
