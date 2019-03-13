@@ -16,7 +16,11 @@ using charon::compress::zip;
 static int
 charon_compress_zip_descompress( lua_State *L ) {
   const char * filename = luaL_checkstring(L, 1);
-  lua_pushboolean(L, zip::decompress(filename) );
+  const char * output   = 0;
+  if(lua_gettop(L) == 2) { // number of arguments
+    output = luaL_checkstring(L, 2);
+  }
+  lua_pushboolean(L, zip::decompress(filename, output) );
   return 1;
 }
 

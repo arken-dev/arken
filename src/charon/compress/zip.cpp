@@ -34,9 +34,10 @@ static void safe_create_dir(const char *dir)
     }
 }
 
-bool charon::compress::zip::decompress(const char * namefile)
+bool charon::compress::zip::decompress(const char * namefile, const char * output)
 {
 
+    char * dirname = 0;
     const char *archive;
     struct ::zip *za;
     struct zip_file *zf;
@@ -59,6 +60,11 @@ bool charon::compress::zip::decompress(const char * namefile)
         if (zip_stat_index(za, i, 0, &sb) == 0) {
             len = strlen(sb.name);
             if (sb.name[len - 1] == '/') {
+                if( dirname == 0 ) {
+                  dirname = new char[len];
+                  strcpy(dirname, sb.name);
+                  dirname[len-1] = '\0';
+                }
                 safe_create_dir(sb.name);
             } else {
                 printf("decompress %s (%lu)\n", sb.name, sb.size);
@@ -95,6 +101,15 @@ bool charon::compress::zip::decompress(const char * namefile)
     if (zip_close(za) == -1) {
         fprintf(stderr, "can't close zip archive `%s'\n", archive);
         return false;
+    }
+
+    if( output ) {
+      printf("rename %s => %s", dirname, output);
+      rename(dirname, output);
+    }
+
+    if( dirname ) {
+      delete[] dirname;
     }
 
     return true;
