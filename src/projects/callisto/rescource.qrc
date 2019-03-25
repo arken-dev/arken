@@ -1,9 +1,0 @@
-<RCC>
-    <qresource prefix="/">
-        <file>images/close.png</file>
-        <file>images/topo-30.png</file>
-        <file>images/failure.png</file>
-        <file>images/ok.png</file>
-        <file>images/warning.png</file>
-    </qresource>
-</RCC>
