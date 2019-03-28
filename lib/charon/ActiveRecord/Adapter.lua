@@ -402,9 +402,9 @@ function ActiveRecord_Adapter:rollback()
   local sql = 'ROLLBACK'
   if ActiveRecord_Adapter.current_transaction > 0 then
     sql = string.format("ROLLBACK TO SAVEPOINT savepoint_%i", ActiveRecord_Adapter.current_transaction)
+    ActiveRecord_Adapter.current_transaction = ActiveRecord_Adapter.current_transaction - 1
   end
   local result = self:execute(sql)
-  ActiveRecord_Adapter.current_transaction = ActiveRecord_Adapter.current_transaction - 1
   return result
 end
 
