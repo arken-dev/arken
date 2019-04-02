@@ -11,19 +11,14 @@
 include_directories(.)
 include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${PROJECT_SOURCE_DIR}/deps/include)
-include_directories(${PROJECT_SOURCE_DIR}/src/lua/json)
 
-add_executable(
-    miranda
-    main.cpp
-    mirandaserver.cpp
-    mirandatask.cpp
-    mirandaserver.h
-    mirandatask.h
+add_library(
+  zip-binding SHARED zip.cpp
 )
 
 find_package(Qt5Core)
 find_package(Qt5Network)
 
-target_link_libraries( miranda Qt5::Core lua charon curl json )
-target_link_libraries( miranda Qt5::Network )
+set_target_properties(zip-binding PROPERTIES PREFIX "" OUTPUT_NAME zip)
+
+target_link_libraries(zip-binding charon lua)
