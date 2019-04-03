@@ -107,6 +107,7 @@ namespace charon {
     string normalize();
     string prepend(const char * str);
     string simplified();
+    char * release();
     string repeated(int times);
     string replace(const char * before, const char * after, int start = 0);
     string replace(const char before, const char after, int start = 0);

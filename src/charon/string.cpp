@@ -1466,6 +1466,14 @@ char * string::data() const
   return this->m_data;
 }
 
+char * string::release()
+{
+  char * tmp = this->m_data;
+  this->m_data = NULL;
+  return tmp;
+}
+
+
 string string::trimmed()
 {
   return charon::string::consume(string::trimmed(m_data));
