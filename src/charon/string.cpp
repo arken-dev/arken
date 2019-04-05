@@ -1261,7 +1261,16 @@ string::~string()
 string & string::append(const char * data)
 {
   size_t len = strlen(data);
+  return this->append(data, len);
+}
 
+string & string::append(std::string str)
+{
+  return this->append(str.c_str(), str.size());
+}
+
+string & string::append(const char * data, size_t len)
+{
   if( (m_size + len) >= m_capacity ) {
     char * tmp = m_data;
     m_capacity = m_size + len + m_reserve;
@@ -1280,6 +1289,7 @@ string & string::append(const char * data)
 
   return *this;
 }
+
 
 string string::prepend(const char * data)
 {
