@@ -83,6 +83,8 @@ namespace charon {
     ~string();
 
     string & append(const char * str);
+    string & append(const char * str, size_t len);
+    string & append(std::string str);
     string camelCase(bool lcfirst = false);
     string capitalize();
     string center(size_t size, const char * pad);

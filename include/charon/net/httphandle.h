@@ -11,7 +11,7 @@ namespace net {
   class HttpHandle
   {
     public:
-    static char * sync(const char * data, int size, int * num);
+    static std::string sync(const char * data, size_t size);
   };
 }
 }

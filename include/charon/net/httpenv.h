@@ -16,6 +16,7 @@ class HttpEnv
 
   std::map<std::string, std::string> m_fields;
 
+  const
   char * m_data;
   char * m_fragment;
   char * m_requestPath;
