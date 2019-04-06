@@ -1255,7 +1255,7 @@ string * string::consume(charon::string str)
 string::~string()
 {
   if( m_data )
-  delete[] m_data;
+    delete[] m_data;
 }
 
 string & string::append(const char * data)
@@ -1538,7 +1538,8 @@ std::ostream & operator<<(std::ostream & os, const charon::string & str)
 
 string & string::operator=(const string &a)
 {
-  delete[] m_data;
+  if( m_data )
+    delete[] m_data;
 
   m_reserve   = 1024;
   m_size      = a.m_size;
@@ -1551,7 +1552,8 @@ string & string::operator=(const string &a)
 
 string & string::operator=(const char * data)
 {
-  delete[] m_data;
+  if( m_data )
+    delete[] m_data;
 
   m_reserve   = 1024;
   m_size      = strlen(data);
@@ -1565,7 +1567,8 @@ string & string::operator=(const char * data)
 
 string & string::operator=(const string * str)
 {
-  delete[] m_data;
+  if( m_data )
+    delete[] m_data;
 
   m_reserve   = 1024;
   m_size      = str->m_size;
