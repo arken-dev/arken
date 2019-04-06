@@ -15,7 +15,7 @@ Config::Config(string path)
   if( !os::exists(path) ) {
     std::cout << path << " not found using default values" << std::endl;
     m_threads = os::cores();
-    m_port    = std::to_string(2345);
+    m_port    = 2345;
     m_address = "127.0.0.1";
     m_service = false;
     m_pid     = "tmp/pid/enceladus.pig";
@@ -63,7 +63,7 @@ Config::Config(string path)
 
   lua_pushstring(L, "port");
   lua_gettable(L, -2);
-  m_port = lua_tostring(L, -1);
+  m_port = lua_tointeger(L, -1);
   lua_pop(L, 1);
 
   //---------------------------------------------------------------------------
@@ -110,12 +110,12 @@ std::string Config::pid()
   return m_pid;
 }
 
-std::string Config::port()
+unsigned int Config::port()
 {
   return m_port;
 }
 
-int Config::threads()
+unsigned int Config::threads()
 {
   return m_threads;
 }
