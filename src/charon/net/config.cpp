@@ -53,7 +53,7 @@ Config::Config(string path)
 
   lua_pushstring(L, "port");
   lua_gettable(L, -2);
-  m_port = lua_tointeger(L, -1);
+  m_port = lua_tostring(L, -1);
   lua_pop(L, 1);
 
   //---------------------------------------------------------------------------
