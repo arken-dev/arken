@@ -14,17 +14,17 @@ namespace net {
 class Config
 {
   private:
-  string m_address;
-  string m_pid;
-  int    m_port;
+  std::string m_address;
+  std::string m_pid;
+  std::string m_port;
   int    m_threads;
   bool   m_service;
 
   public:
   Config(string path);
-  string address();
-  string pid();
-  int  port();
+  std::string address();
+  std::string pid();
+  std::string port();
   int  threads();
   bool service();
 };

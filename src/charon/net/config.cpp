@@ -90,17 +90,17 @@ Config::Config(string path)
   lua_pop(L, 1);
 }
 
-string Config::address()
+std::string Config::address()
 {
   return m_address;
 }
 
-string Config::pid()
+std::string Config::pid()
 {
   return m_pid;
 }
 
-int Config::port()
+std::string Config::port()
 {
   return m_port;
 }
