@@ -12,6 +12,16 @@ using namespace charon::net;
 
 Config::Config(string path)
 {
+  if( !os::exists(path) ) {
+    std::cout << path << " not found using default values" << std::endl;
+    m_threads = os::cores();
+    m_port    = std::to_string(2345);
+    m_address = "127.0.0.1";
+    m_service = false;
+    m_pid     = "tmp/pid/enceladus.pig";
+    return;
+  }
+
   string raw = os::read(path);
 
   // charon instance
