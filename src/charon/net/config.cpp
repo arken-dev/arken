@@ -18,7 +18,7 @@ Config::Config(string path)
     m_port    = 2345;
     m_address = "127.0.0.1";
     m_service = false;
-    m_pid     = "tmp/pid/enceladus.pig";
+    m_pid     = "tmp/pid/server.pid";
     return;
   }
 
@@ -54,7 +54,12 @@ Config::Config(string path)
 
   lua_pushstring(L, "address");
   lua_gettable(L, -2);
-  m_address = lua_tostring(L, -1);
+  if( lua_isnil(L, -1) ) {
+    std::cout << "warning address not found use 127.0.0.1" << std::endl;
+    m_address = "127.0.0.1";
+  } else {
+    m_address = lua_tostring(L, -1);
+  }
   lua_pop(L, 1);
 
   //---------------------------------------------------------------------------
@@ -63,7 +68,12 @@ Config::Config(string path)
 
   lua_pushstring(L, "port");
   lua_gettable(L, -2);
-  m_port = lua_tointeger(L, -1);
+  if( lua_isnil(L, -1) ) {
+    std::cout << "warning port not found use 2345" << std::endl;
+    m_port  = 2345;
+  } else {
+    m_port = lua_tointeger(L, -1);
+  }
   lua_pop(L, 1);
 
   //---------------------------------------------------------------------------
@@ -72,7 +82,12 @@ Config::Config(string path)
 
   lua_pushstring(L, "threads");
   lua_gettable(L, -2);
-  m_threads = lua_tointeger(L, -1);
+  if( lua_isnil(L, -1) ) {
+    m_threads = os::cores();
+    std::cout << "warning threads not found use " << m_threads << std::endl;
+  } else {
+    m_threads = lua_tointeger(L, -1);
+  }
   lua_pop(L, 1);
 
   //---------------------------------------------------------------------------
@@ -81,7 +96,12 @@ Config::Config(string path)
 
   lua_pushstring(L, "pid");
   lua_gettable(L, -2);
-  m_pid = lua_tostring(L, -1);
+  if( lua_isnil(L, -1) ) {
+    m_pid = "tmp/pid/server.pid";
+    std::cout << "warning pid not found use " << m_pid << std::endl;
+  } else {
+    m_pid = lua_tostring(L, -1);
+  }
   lua_pop(L, 1);
 
   //---------------------------------------------------------------------------
@@ -90,7 +110,12 @@ Config::Config(string path)
 
   lua_pushstring(L, "service");
   lua_gettable(L, -2);
-  m_service = lua_toboolean(L, -1);
+  if( lua_isnil(L, -1) ) {
+    m_service = false;
+    std::cout << "warning service not found use false" << std::endl;
+  } else {
+    m_service = lua_toboolean(L, -1);
+  }
   lua_pop(L, 1);
 
   //---------------------------------------------------------------------------
