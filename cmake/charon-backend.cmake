@@ -6,4 +6,4 @@ set_property(
   qt embedded benchmark
 )
 
-message("CHARON BACKEND ${CHARON_BACKEND}")
+message("CHARON BACKEND...........: ${CHARON_BACKEND}")

@@ -6,8 +6,9 @@
 #include <charon/base>
 #include <QDebug>
 
-using digest = charon::digest;
 using base64 = charon::base64;
+using md5    = charon::digest::md5;
+using sha1   = charon::digest::sha1;
 using List   = charon::string::List;
 
 char * string::append(const char * string, const char * ba)
@@ -1166,12 +1167,17 @@ char * string::underscore(const char *string)
 
 char * string::md5(const char * str)
 {
-  return digest::md5(str);
+  return md5::hash(str);
+}
+
+char * string::md5(const char * str, size_t len)
+{
+  return md5::hash(str, len);
 }
 
 char * string::sha1(const char * str)
 {
-  return digest::sha1(str);
+  return sha1::hash(str);
 }
 
 //-----------------------------------------------------------------------------
@@ -1182,7 +1188,7 @@ string::string()
 {
   m_reserve  = 1024;
   m_size     = 0;
-  m_data     = new char[m_reserve]();
+  m_data     = 0;
   m_capacity = m_size;
 }
 
@@ -1214,24 +1220,57 @@ string::string(size_t reserve)
   m_capacity  = m_size;
 }
 
-string * string::consume(char * data)
+string string::consume(char * data)
+{
+  charon::string tmp;
+  tmp.m_data = data;
+  tmp.m_size = strlen(data);
+  tmp.m_capacity = tmp.m_size;
+  return tmp;
+}
+
+string string::consume(char * data, size_t size)
+{
+  charon::string tmp;
+  tmp.m_data = data;
+  tmp.m_size = size;
+  tmp.m_capacity = tmp.m_size;
+  return tmp;
+}
+
+string * string::consume(charon::string str)
 {
   charon::string * tmp = new string;
-  tmp->m_data = data;
-  tmp->m_size = strlen(data);
+  tmp->m_data = str.m_data;
+  tmp->m_size = str.m_size;
   tmp->m_capacity = tmp->m_size;
+
+  str.m_data     = new char[1]();
+  str.m_size     = 0;
+  str.m_capacity = 0;
+
   return tmp;
 }
 
 string::~string()
 {
+  if( m_data )
   delete[] m_data;
 }
 
-string * string::append(const char * data)
+string & string::append(const char * data)
 {
   size_t len = strlen(data);
+  return this->append(data, len);
+}
 
+string & string::append(std::string str)
+{
+  return this->append(str.c_str(), str.size());
+}
+
+string & string::append(const char * data, size_t len)
+{
   if( (m_size + len) >= m_capacity ) {
     char * tmp = m_data;
     m_capacity = m_size + len + m_reserve;
@@ -1248,10 +1287,11 @@ string * string::append(const char * data)
 
   m_data[m_size] = '\0';
 
-  return this;
+  return *this;
 }
 
-string * string::prepend(const char * data)
+
+string string::prepend(const char * data)
 {
   size_t len = strlen(data);
   m_capacity = m_size + len + m_reserve;
@@ -1271,20 +1311,20 @@ string * string::prepend(const char * data)
   m_data = tmp;
   m_data[m_size] = '\0';
 
-  return this;
+  return *this;
 }
 
-string * string::camelCase(bool lcfirst)
+string string::camelCase(bool lcfirst)
 {
   return charon::string::consume(string::camelCase(m_data, lcfirst));
 }
 
-string * string::capitalize()
+string string::capitalize()
 {
   return charon::string::consume(string::capitalize(m_data));
 }
 
-string * string::center(size_t size, const char * pad)
+string string::center(size_t size, const char * pad)
 {
   return charon::string::consume(string::center(m_data, size, pad));
 }
@@ -1301,7 +1341,7 @@ bool string::contains(const char * str)
   return charon::string::contains(m_data, str);
 }
 
-string * string::chop(int n)
+string string::chop(int n)
 {
   return charon::string::consume(string::chop(m_data, n));
 }
@@ -1311,27 +1351,27 @@ int string::count(const char * str)
   return string::count(m_data, str);
 }
 
-string * string::dasherize()
+string string::dasherize()
 {
   return charon::string::consume(string::dasherize(m_data));
 }
 
-string * string::decode64()
+string string::decode64()
 {
   return charon::string::consume(string::decode64(m_data));
 }
 
-string * string::encode64()
+string string::encode64()
 {
   return charon::string::consume(string::encode64(m_data));
 }
 
-string * string::escape()
+string string::escape()
 {
   return charon::string::consume(string::escape(m_data));
 }
 
-string * string::escapeHtml()
+string string::escapeHtml()
 {
   return charon::string::consume(string::escapeHtml(m_data));
 }
@@ -1341,7 +1381,7 @@ int string::indexOf(const char * str, int i)
   return string::indexOf(m_data, str, i);
 }
 
-string * string::insert(int len, const char * ba)
+string string::insert(int len, const char * ba)
 {
   return charon::string::consume(string::insert(m_data, len, ba));
 }
@@ -1356,47 +1396,47 @@ int string::lastIndexOf(const char * str)
   return string::lastIndexOf(m_data, str);
 }
 
-string * string::left(int len)
+string string::left(int len)
 {
   return string::consume( string::left(m_data, len) );
 }
 
-string * string::leftJustified(size_t size, const char * pad)
+string string::leftJustified(size_t size, const char * pad)
 {
   return string::consume( string::leftJustified(m_data, size, pad) );
 }
 
-string * string::mid(int pos, int len)
+string string::mid(int pos, int len)
 {
   return string::consume( string::mid(m_data, pos, len) );
 }
 
-string * string::md5()
+string string::md5()
 {
-  return charon::string::consume(string::md5(m_data));
+  return charon::string::consume(md5::hash(m_data, m_size));
 }
 
-string * string::normalize()
+string string::normalize()
 {
   return charon::string::consume(string::normalize(m_data));
 }
 
-string * string::simplified()
+string string::simplified()
 {
   return charon::string::consume(string::simplified(m_data));
 }
 
-string * string::repeated(int times)
+string string::repeated(int times)
 {
   return charon::string::consume(string::repeated(m_data, times));
 }
 
-string * string::replace(const char * before, const char * after, int start)
+string string::replace(const char * before, const char * after, int start)
 {
   return charon::string::consume(string::replace(m_data, before, after, start));
 }
 
-string * string::replace(const char before, const char after, int start)
+string string::replace(const char before, const char after, int start)
 {
   return charon::string::consume(string::replace(m_data, before, after, start));
 }
@@ -1411,22 +1451,22 @@ size_t string::reserve()
   return m_reserve;
 }
 
-string * string::right(int len)
+string string::right(int len)
 {
   return charon::string::consume(string::right(m_data, len));
 }
 
-string * string::rightJustified(size_t size, const char * pad)
+string string::rightJustified(size_t size, const char * pad)
 {
   return charon::string::consume(string::rightJustified(m_data, size, pad));
 }
 
-string * string::sha1()
+string string::sha1()
 {
   return charon::string::consume(string::sha1(m_data));
 }
 
-string * string::suffix(const char chr)
+string string::suffix(const char chr)
 {
   return charon::string::consume(string::suffix(m_data, chr));
 }
@@ -1436,17 +1476,25 @@ char * string::data() const
   return this->m_data;
 }
 
-string * string::trimmed()
+char * string::release()
+{
+  char * tmp = this->m_data;
+  this->m_data = NULL;
+  return tmp;
+}
+
+
+string string::trimmed()
 {
   return charon::string::consume(string::trimmed(m_data));
 }
 
-string * string::leftTrimmed()
+string string::leftTrimmed()
 {
   return charon::string::consume(string::leftTrimmed(m_data));
 }
 
-string * string::rightTrimmed()
+string string::rightTrimmed()
 {
   return charon::string::consume(string::rightTrimmed(m_data));
 }
@@ -1456,12 +1504,12 @@ bool string::startsWith(const char * str)
   return string::startsWith(m_data, str);
 }
 
-string * string::truncate(int pos, const char *omission, const char separator)
+string string::truncate(int pos, const char *omission, const char separator)
 {
   return charon::string::consume(string::truncate(m_data, pos, omission, separator));
 }
 
-string * string::underscore()
+string string::underscore()
 {
   return charon::string::consume(string::underscore(m_data));
 }

@@ -8,6 +8,14 @@
 
 using namespace charon::net;
 
+HttpBody::HttpBody(const char * buffer, size_t size)
+{
+  m_release = false;
+  m_buffer  = new char[size];
+  m_size    = size;
+  strcpy(m_buffer, buffer);
+}
+
 HttpBody::HttpBody(char * buffer, size_t size)
 {
   m_release = false;
@@ -24,9 +32,8 @@ HttpBody::~HttpBody()
 
 HttpBody * HttpBody::loadFile(const char *path)
 {
-  size_t size;
-  char * buffer = os::read(path, &size);
-  return new HttpBody(buffer, size);
+  string buffer = os::read(path);
+  return new HttpBody(buffer.release(), buffer.size());
 }
 
 HttpBody * HttpBody::loadBuffer(const char * buffer, size_t size)

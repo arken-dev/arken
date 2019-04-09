@@ -4,7 +4,8 @@ apt-get install        \
   curl                 \
   libcurl4-openssl-dev \
   libpq-dev            \
-  libmysqlclient-dev
+  libmysqlclient-dev   \
+  libzip-dev
 
 cd tmp
 curl http://www.lua.org/ftp/lua-5.1.5.tar.gz -o tmp.tar.gz

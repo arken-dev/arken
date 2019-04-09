@@ -135,9 +135,7 @@ on_query_string_cb(void *data, const char *at, size_t length)
 HttpEnv::HttpEnv(const char * data, size_t len)
 {
 
-  m_data = new char[len + 1];
-  strcpy(m_data, data);
-  m_data[len] = '\0';
+  m_data = data;
   m_len  = len;
 
   http_parser * parser = (http_parser *) malloc(sizeof(http_parser));
@@ -169,21 +167,19 @@ HttpEnv::HttpEnv(const char * data, size_t len)
 
 HttpEnv::~HttpEnv()
 {
-  if(m_data != NULL)
-    delete m_data;
-  if(m_fragment != NULL)
+  if(m_fragment)
     delete m_fragment;
-  if(m_requestPath != NULL)
+  if(m_requestPath)
     delete m_requestPath;
-  if(m_queryString != NULL)
+  if(m_queryString)
     delete m_queryString;
-  if(m_requestMethod != NULL)
+  if(m_requestMethod)
     delete m_requestMethod;
-  if(m_requestUri != NULL)
+  if(m_requestUri)
     delete m_requestUri;
-  if(m_httpVersion != NULL)
+  if(m_httpVersion)
     delete m_httpVersion;
-  if(m_headerDone != NULL)
+  if(m_headerDone)
     delete m_headerDone;
 }
 

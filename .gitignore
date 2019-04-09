@@ -4,6 +4,7 @@ build/*
 clib/*
 tmp/*
 bin/*
+packages/*
 
 Makefile
 Makefile.*
@@ -16,6 +17,7 @@ moc_*
 qrc_*
 
 *.swp
+*.swo
 
 profile.d/*
 config/*

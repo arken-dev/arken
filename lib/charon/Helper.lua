@@ -48,6 +48,16 @@ function Helper:textField(field, value, options)
   return (html .. '/>')
 end
 
+function Helper:colorField(field, value, options)
+  local value   = value   or ""
+  local options = options or {}
+  local style   = options.style or "width:50px"
+  local html    = [[<input type="color" id="%s" name="%s" value=%q]]
+  local html    = string.format(html, field:normalize(), field, value)
+  local html = html .. self:htmlOptions(options)
+  return (html .. '/>')
+end
+
 function Helper:textArea(field, value, options)
   local value   = value   or ""
   local options = options or {}
@@ -240,6 +250,17 @@ function Helper:selectList(field, list, field_value, field_description, value, o
       blank = ''
     end
     html = html .. string.format(option, "", "", blank)
+  end
+  if type(list) == 'userdata' then
+    local tmp = {}
+    for row in list:each() do
+      local r = {
+        [field_value]       = row[field_value],
+        [field_description] = row[field_description]
+      }
+      table.insert(tmp, r )
+    end
+    list = tmp
   end
   for _, row in ipairs(list) do
     if row[field_value] == value then

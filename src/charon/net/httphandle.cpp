@@ -12,13 +12,14 @@ using namespace charon::net;
 using charon::net::HttpBody;
 using charon::net::HttpUtil;
 
-char * HttpHandle::sync(const char * data, int size, int * num)
+std::string HttpHandle::sync(const char * data, size_t size)
 {
   int code;
   size_t len;
   const char * result;
   std::string buffer;
-  //charon instance
+
+  // charon instance
   charon::instance i = mvm::instance();
   lua_State * L = i.state();
 
@@ -86,9 +87,5 @@ char * HttpHandle::sync(const char * data, int size, int * num)
     }
   }
 
-  char * content = new char[buffer.size() + 1];
-  memcpy(content, buffer.c_str(), buffer.size());
-  content[buffer.size()] = '\0';
-  *num = buffer.size();
-  return content;
+  return buffer;
 }

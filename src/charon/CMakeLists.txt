@@ -14,11 +14,11 @@ include_directories(${PROJECT_SOURCE_DIR}/src/vendors/ap)
 include_directories(${PROJECT_SOURCE_DIR}/src/vendors/mongrel2)
 include_directories(${PROJECT_SOURCE_DIR}/src/vendors/mongrel2/http11)
 
-file(GLOB src  ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
-file(GLOB os   ${CMAKE_CURRENT_SOURCE_DIR}/os/*.c)
-file(GLOB net  ${CMAKE_CURRENT_SOURCE_DIR}/net/*.cpp)
-file(GLOB doc  ${CMAKE_CURRENT_SOURCE_DIR}/doc/*.cpp)
-file(GLOB time ${CMAKE_CURRENT_SOURCE_DIR}/time/*.cpp)
+file(GLOB src      ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
+file(GLOB os       ${CMAKE_CURRENT_SOURCE_DIR}/os/*.c)
+file(GLOB net      ${CMAKE_CURRENT_SOURCE_DIR}/net/*.cpp)
+file(GLOB compress ${CMAKE_CURRENT_SOURCE_DIR}/compress/*.cpp)
+file(GLOB time     ${CMAKE_CURRENT_SOURCE_DIR}/time/*.cpp)
 
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/deps)
 set(mongrel2 ${PROJECT_SOURCE_DIR}/src/vendors/mongrel2/http11/http11_parser.c)
@@ -28,11 +28,10 @@ add_library(
   ${src}
   ${base64}
   ${base64-embedded}
+  ${compress}
   ${digest}
   ${digest-embedded}
   ${mvm-container}
-  ${os} ${os-executablePath} ${uuid}
-  ${doc}
   ${net}
   ${os} ${os-executablePath} ${os-filesystem} ${os-name} ${os-pid} ${os-uuid}
   ${regex}
@@ -46,6 +45,7 @@ find_package(Qt5Network)
 
 target_link_libraries(charon Qt5::Core)
 target_link_libraries(charon Qt5::Network)
+target_link_libraries(charon zip)
 target_link_libraries(charon curl)
 target_link_libraries(charon lua)
 if(CHARON_DIGEST STREQUAL "libssl")

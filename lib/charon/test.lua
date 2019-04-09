@@ -72,7 +72,7 @@ function test.run(specs)
           trace = trace .. '\n\n' .. traceback
 
           for k, v in pairs(message) do
-            text = text .. k .. ': ' .. v .. '\n'
+            text = text .. k .. ': ' .. tostring(v) .. '\n'
           end
           if trace then
             text = text .. '\n' .. trace
