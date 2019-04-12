@@ -97,7 +97,7 @@ void mvm::config()
   mvm::set("gc.pause",   60);
   mvm::set("gc.log",      0);
   mvm::set("pool.pause", 30);
-  mvm::set("pool.size",   5);
+  mvm::set("pool.size",   2);
   mvm::set("pool.log",    0);
 
   const char * fileName = "config/mvm.lua";
