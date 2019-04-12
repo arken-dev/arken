@@ -1306,7 +1306,9 @@ string string::prepend(const char * data)
     tmp[len] = m_data[i];
   }
 
-  delete[] m_data;
+  if( m_data )
+    delete[] m_data;
+
   m_size = len;
   m_data = tmp;
   m_data[m_size] = '\0';
@@ -1331,8 +1333,9 @@ string string::center(size_t size, const char * pad)
 
 void string::clear()
 {
-  delete[] m_data;
-  m_data = new char[1]();
+  if( m_data )
+    delete[] m_data;
+  m_data = 0;
   m_size = 0;
 }
 
