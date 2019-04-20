@@ -1291,12 +1291,11 @@ string & string::append(const char * data, size_t len)
 }
 
 
-string string::prepend(const char * data)
+string & string::prepend(const char * data)
 {
   size_t len = strlen(data);
   m_capacity = m_size + len + m_reserve;
   char * tmp = new char[m_capacity];
-
 
   for(size_t i=0; i < len; i++) {
     tmp[i] = data[i];
@@ -1306,8 +1305,7 @@ string string::prepend(const char * data)
     tmp[len] = m_data[i];
   }
 
-  if( m_data )
-    delete[] m_data;
+  delete[] m_data;
 
   m_size = len;
   m_data = tmp;
