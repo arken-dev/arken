@@ -1484,7 +1484,6 @@ char * string::release()
   return tmp;
 }
 
-
 string string::trimmed()
 {
   return charon::string::consume(string::trimmed(m_data));
