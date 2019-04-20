@@ -33,7 +33,7 @@ HttpBody::~HttpBody()
 HttpBody * HttpBody::loadFile(const char *path)
 {
   string buffer = os::read(path);
-  return new HttpBody(buffer.data(), buffer.size());
+  return new HttpBody(buffer.release(), buffer.size());
 }
 
 HttpBody * HttpBody::loadBuffer(const char * buffer, size_t size)
