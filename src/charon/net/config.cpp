@@ -12,6 +12,9 @@ using namespace charon::net;
 
 Config::Config(string path)
 {
+  if( !os::exists(path) && !path.endsWith("server.json") ) {
+    path = "config/server.json";
+  }
   if( !os::exists(path) ) {
     std::cout << path << " not found using default values" << std::endl;
     m_threads = os::cores();
@@ -20,6 +23,8 @@ Config::Config(string path)
     m_service = false;
     m_pid     = "tmp/pid/server.pid";
     return;
+  } else {
+    std::cout << "using " << path << std::endl;
   }
 
   string raw = os::read(path);
