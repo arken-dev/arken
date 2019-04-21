@@ -3,19 +3,31 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+#include <iostream>
+#include <fstream>
 #include <charon/net/config.h>
 #include <lua/lua.hpp>
 
-using mvm = charon::mvm;
+using mvm    = charon::mvm;
+using Config = charon::net::Config;
+using Log    = charon::Log;
 
 using namespace charon::net;
 
 Config::Config(string path)
 {
+  if ( ! os::exists("dispatch.lua") ) {
+    std::cerr << "dispatch.lua not found" << std::endl;
+    throw;
+  }
+
   if( !os::exists(path) && !path.endsWith("server.json") ) {
     path = "config/server.json";
   }
-  if( !os::exists(path) ) {
+
+  if( os::exists(path) ) {
+    std::cout << "using " << path << std::endl;
+  } else {
     std::cout << path << " not found using default values" << std::endl;
     m_threads = os::cores();
     m_port    = 2345;
@@ -64,6 +76,20 @@ Config::Config(string path)
     m_address = "127.0.0.1";
   } else {
     m_address = lua_tostring(L, -1);
+  }
+  lua_pop(L, 1);
+
+  //---------------------------------------------------------------------------
+  // LOGS
+  //---------------------------------------------------------------------------
+
+  lua_pushstring(L, "log");
+  lua_gettable(L, -2);
+  if( lua_isnil(L, -1) ) {
+    std::cout << "log path not found use logs/server.log" << std::endl;
+    m_log = "logs/server.log";
+  } else {
+    m_log = lua_tostring(L, -1);
   }
   lua_pop(L, 1);
 
@@ -128,6 +154,40 @@ Config::Config(string path)
   //---------------------------------------------------------------------------
 
   lua_pop(L, 1);
+
+
+  //---------------------------------------------------------------------------
+  // SERVICE
+  //---------------------------------------------------------------------------
+  if( m_service && os::exists("app/services")) {
+    charon::service::load("app/services");
+  }
+
+  //---------------------------------------------------------------------------
+  // LOGS
+  //---------------------------------------------------------------------------
+  Log log = Log(m_log.c_str());
+  log.info("iniciando server");
+  if( m_service ) {
+    if( os::exists("app/services") ) {
+      log.info("services started");
+    } else {
+      log.info("services dir not exists");
+    }
+  } else {
+    log.info("services not enable");
+  }
+  log.dump();
+
+  //---------------------------------------------------------------------------
+  // PID
+  //---------------------------------------------------------------------------
+  std::cout << "write pid: " << m_pid << std::endl;
+  std::ofstream pidfile;
+  pidfile.open(m_pid);
+  pidfile << os::pid();
+  pidfile.close();
+
 }
 
 std::string Config::address()
