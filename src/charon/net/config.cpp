@@ -16,7 +16,6 @@ using namespace charon::net;
 
 Config::Config(string path)
 {
-
   if ( ! os::exists("dispatch.lua") ) {
     std::cerr << "dispatch.lua not found" << std::endl;
     throw;
@@ -28,6 +27,123 @@ Config::Config(string path)
 
   if( os::exists(path) ) {
     std::cout << "using " << path << std::endl;
+
+    string raw = os::read(path);
+
+    // charon instance
+    charon::instance i = mvm::instance();
+    lua_State * L = i.state();
+
+    // Process Request
+    // TODO return is not validate
+    lua_settop(L, 0);
+    lua_getglobal(L,  "require");
+    lua_pushstring(L, "charon.json");
+    int rv = lua_pcall(L, 1, 1, 0);
+    if (rv) {
+      fprintf(stderr, "primeiro erro %s\n", lua_tostring(L, -1));
+      throw;
+    }
+
+    lua_pushstring(L, "decode");
+    lua_gettable(L, -2);
+
+    lua_pushstring(L, raw);
+
+    if( lua_pcall(L, 1, 1, 0) != 0 ) {
+      fprintf(stderr, "segundo erro %s\n", lua_tostring(L, -1));
+    }
+
+    //---------------------------------------------------------------------------
+    // ADDRESS
+    //---------------------------------------------------------------------------
+
+    lua_pushstring(L, "address");
+    lua_gettable(L, -2);
+    if( lua_isnil(L, -1) ) {
+      std::cout << "warning address not found use 127.0.0.1" << std::endl;
+      m_address = "127.0.0.1";
+    } else {
+      m_address = lua_tostring(L, -1);
+    }
+    lua_pop(L, 1);
+
+    //---------------------------------------------------------------------------
+    // LOGS
+    //---------------------------------------------------------------------------
+
+    lua_pushstring(L, "log");
+    lua_gettable(L, -2);
+    if( lua_isnil(L, -1) ) {
+      std::cout << "log path not found use logs/server.log" << std::endl;
+      m_log = "logs/server.log";
+    } else {
+      m_log = lua_tostring(L, -1);
+    }
+    lua_pop(L, 1);
+
+    //---------------------------------------------------------------------------
+    // PORT
+    //---------------------------------------------------------------------------
+
+    lua_pushstring(L, "port");
+    lua_gettable(L, -2);
+    if( lua_isnil(L, -1) ) {
+      std::cout << "warning port not found use 2345" << std::endl;
+      m_port  = 2345;
+    } else {
+      m_port = lua_tointeger(L, -1);
+    }
+    lua_pop(L, 1);
+
+    //---------------------------------------------------------------------------
+    // THREADS
+    //---------------------------------------------------------------------------
+
+    lua_pushstring(L, "threads");
+    lua_gettable(L, -2);
+    if( lua_isnil(L, -1) ) {
+      m_threads = os::cores();
+      std::cout << "warning threads not found use " << m_threads << std::endl;
+    } else {
+      m_threads = lua_tointeger(L, -1);
+    }
+    lua_pop(L, 1);
+
+    //---------------------------------------------------------------------------
+    // PID
+    //---------------------------------------------------------------------------
+
+    lua_pushstring(L, "pid");
+    lua_gettable(L, -2);
+    if( lua_isnil(L, -1) ) {
+      m_pid = "tmp/pid/server.pid";
+      std::cout << "warning pid not found use " << m_pid << std::endl;
+    } else {
+      m_pid = lua_tostring(L, -1);
+    }
+    lua_pop(L, 1);
+
+    //---------------------------------------------------------------------------
+    // SERVICE
+    //---------------------------------------------------------------------------
+
+    lua_pushstring(L, "service");
+    lua_gettable(L, -2);
+    if( lua_isnil(L, -1) ) {
+      m_service = false;
+      std::cout << "warning service not found use false" << std::endl;
+    } else {
+      m_service = lua_toboolean(L, -1);
+    }
+    lua_pop(L, 1);
+
+    //---------------------------------------------------------------------------
+    // REMOVE TABLE
+    //---------------------------------------------------------------------------
+
+    lua_pop(L, 1);
+
   } else {
     std::cout << path << " not found using default values" << std::endl;
     m_threads = os::cores();
@@ -38,126 +154,10 @@ Config::Config(string path)
     return;
   }
 
-  string raw = os::read(path);
-
-  // charon instance
-  charon::instance i = mvm::instance();
-  lua_State * L = i.state();
-
-  // Process Request
-  // TODO return is not validate
-  lua_settop(L, 0);
-  lua_getglobal(L,  "require");
-  lua_pushstring(L, "charon.json");
-  int rv = lua_pcall(L, 1, 1, 0);
-  if (rv) {
-    fprintf(stderr, "primeiro erro %s\n", lua_tostring(L, -1));
-    throw;
-  }
-
-  lua_pushstring(L, "decode");
-  lua_gettable(L, -2);
-
-  lua_pushstring(L, raw);
-
-  if( lua_pcall(L, 1, 1, 0) != 0 ) {
-    fprintf(stderr, "segundo erro %s\n", lua_tostring(L, -1));
-  }
-
-  //---------------------------------------------------------------------------
-  // ADDRESS
-  //---------------------------------------------------------------------------
-
-  lua_pushstring(L, "address");
-  lua_gettable(L, -2);
-  if( lua_isnil(L, -1) ) {
-    std::cout << "warning address not found use 127.0.0.1" << std::endl;
-    m_address = "127.0.0.1";
-  } else {
-    m_address = lua_tostring(L, -1);
-  }
-  lua_pop(L, 1);
-
-  //---------------------------------------------------------------------------
-  // LOGS
-  //---------------------------------------------------------------------------
-
-  lua_pushstring(L, "log");
-  lua_gettable(L, -2);
-  if( lua_isnil(L, -1) ) {
-    std::cout << "log path not found use logs/server.log" << std::endl;
-    m_log = "logs/server.log";
-  } else {
-    m_log = lua_tostring(L, -1);
-  }
-  lua_pop(L, 1);
-
-  //---------------------------------------------------------------------------
-  // PORT
-  //---------------------------------------------------------------------------
-
-  lua_pushstring(L, "port");
-  lua_gettable(L, -2);
-  if( lua_isnil(L, -1) ) {
-    std::cout << "warning port not found use 2345" << std::endl;
-    m_port  = 2345;
-  } else {
-    m_port = lua_tointeger(L, -1);
-  }
-  lua_pop(L, 1);
-
-  //---------------------------------------------------------------------------
-  // THREADS
-  //---------------------------------------------------------------------------
-
-  lua_pushstring(L, "threads");
-  lua_gettable(L, -2);
-  if( lua_isnil(L, -1) ) {
-    m_threads = os::cores();
-    std::cout << "warning threads not found use " << m_threads << std::endl;
-  } else {
-    m_threads = lua_tointeger(L, -1);
-  }
-  lua_pop(L, 1);
-
-  //---------------------------------------------------------------------------
-  // PID
-  //---------------------------------------------------------------------------
-
-  lua_pushstring(L, "pid");
-  lua_gettable(L, -2);
-  if( lua_isnil(L, -1) ) {
-    m_pid = "tmp/pid/server.pid";
-    std::cout << "warning pid not found use " << m_pid << std::endl;
-  } else {
-    m_pid = lua_tostring(L, -1);
-  }
-  lua_pop(L, 1);
-
   //---------------------------------------------------------------------------
   // SERVICE
   //---------------------------------------------------------------------------
 
-  lua_pushstring(L, "service");
-  lua_gettable(L, -2);
-  if( lua_isnil(L, -1) ) {
-    m_service = false;
-    std::cout << "warning service not found use false" << std::endl;
-  } else {
-    m_service = lua_toboolean(L, -1);
-  }
-  lua_pop(L, 1);
-
-  //---------------------------------------------------------------------------
-  // REMOVE TABLE
-  //---------------------------------------------------------------------------
-
-  lua_pop(L, 1);
-
-
-  //---------------------------------------------------------------------------
-  // SERVICE
-  //---------------------------------------------------------------------------
   if( m_service && os::exists("app/services")) {
     charon::service::load("app/services");
   }
@@ -165,6 +165,7 @@ Config::Config(string path)
   //---------------------------------------------------------------------------
   // LOGS
   //---------------------------------------------------------------------------
+
   Log log = Log(m_log.c_str());
   log.info("iniciando server");
   if( m_service ) {
@@ -181,6 +182,7 @@ Config::Config(string path)
   //---------------------------------------------------------------------------
   // PID
   //---------------------------------------------------------------------------
+
   std::cout << "write pid: " << m_pid << std::endl;
   std::ofstream pidfile;
   pidfile.open(m_pid);
