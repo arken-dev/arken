@@ -12,10 +12,19 @@ using namespace charon::net;
 
 Config::Config(string path)
 {
+
+  if ( ! os::exists("dispatch.lua") ) {
+    std::cerr << "dispatch.lua not found" << std::endl;
+    throw;
+  }
+
   if( !os::exists(path) && !path.endsWith("server.json") ) {
     path = "config/server.json";
   }
-  if( !os::exists(path) ) {
+
+  if( os::exists(path) ) {
+    std::cout << "using " << path << std::endl;
+  } else {
     std::cout << path << " not found using default values" << std::endl;
     m_threads = os::cores();
     m_port    = 2345;
@@ -23,8 +32,6 @@ Config::Config(string path)
     m_service = false;
     m_pid     = "tmp/pid/server.pid";
     return;
-  } else {
-    std::cout << "using " << path << std::endl;
   }
 
   string raw = os::read(path);
