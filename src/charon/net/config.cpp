@@ -151,7 +151,7 @@ Config::Config(string path)
     m_address = "127.0.0.1";
     m_service = false;
     m_pid     = "tmp/pid/server.pid";
-    return;
+    m_log     = "logs/server.log";
   }
 
   //---------------------------------------------------------------------------
@@ -161,6 +161,16 @@ Config::Config(string path)
   if( m_service && os::exists("app/services")) {
     charon::service::load("app/services");
   }
+
+  //---------------------------------------------------------------------------
+  // PID
+  //---------------------------------------------------------------------------
+
+  std::cout << "write pid: " << m_pid << std::endl;
+  std::ofstream pidfile;
+  pidfile.open(m_pid);
+  pidfile << os::pid();
+  pidfile.close();
 
   //---------------------------------------------------------------------------
   // LOGS
@@ -178,16 +188,6 @@ Config::Config(string path)
     log.info("services not enable");
   }
   log.dump();
-
-  //---------------------------------------------------------------------------
-  // PID
-  //---------------------------------------------------------------------------
-
-  std::cout << "write pid: " << m_pid << std::endl;
-  std::ofstream pidfile;
-  pidfile.open(m_pid);
-  pidfile << os::pid();
-  pidfile.close();
 
 }
 
