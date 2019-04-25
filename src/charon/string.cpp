@@ -859,7 +859,7 @@ List * string::split(const char * raw, size_t len, const char * pattern)
       size = i - flag;
       if( size > 0 ) {
         char * tmp = new char[size+1];
-        strncpy(tmp, other, size);
+        memcpy ( tmp, other, size );
         tmp[size] = '\0';
         list->append(tmp, size);
         delete[] tmp;
@@ -1198,7 +1198,7 @@ string::string(const char * data, size_t size)
   m_size      = size;
   m_capacity  = m_size;
   m_data      = new char[m_size+1];
-  strcpy(m_data, data);
+  memcpy (m_data, data, size );
   m_data[m_size] = '\0';
 }
 
