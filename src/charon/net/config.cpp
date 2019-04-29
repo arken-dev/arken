@@ -48,7 +48,7 @@ Config::Config(string path)
     lua_pushstring(L, "decode");
     lua_gettable(L, -2);
 
-    lua_pushstring(L, raw);
+    lua_pushlstring(L, raw.data(), raw.size());
 
     if( lua_pcall(L, 1, 1, 0) != 0 ) {
       fprintf(stderr, "segundo erro %s\n", lua_tostring(L, -1));
