@@ -12,7 +12,7 @@ if(CHARON_MVM_CONTAINER STREQUAL "")
   elseif(CHARON_BACKEND STREQUAL "benchmark")
     set(CHARON_MVM_CONTAINER "deque-stack")
   else()
-    set(CHARON_MVM_CONTAINER "QQueue")
+    set(CHARON_MVM_CONTAINER "deque-stack")
   endif()
 endif()
 
