@@ -1198,7 +1198,7 @@ string::string(const char * data, size_t size)
   m_size      = size;
   m_capacity  = m_size;
   m_data      = new char[m_size+1];
-  memcpy (m_data, data, size );
+  memcpy( m_data, data, size );
   m_data[m_size] = '\0';
 }
 
@@ -1218,6 +1218,16 @@ string::string(size_t reserve)
   m_size      = 0;
   m_data      = new char[m_reserve]();
   m_capacity  = m_size;
+}
+
+string::string(const charon::string & str)
+{
+  m_reserve   = str.m_reserve;
+  m_size      = str.m_size;
+  m_capacity  = str.m_capacity;
+  m_data      = new char[m_capacity+1];
+  memcpy( m_data, str.m_data, str.m_size );
+  m_data[m_size] = '\0';
 }
 
 string string::consume(char * data)
