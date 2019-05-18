@@ -68,6 +68,113 @@ charon_HttpEnvInstanceMethodField( lua_State *L ) {
 }
 
 static int
+charon_HttpEnvInstanceMethodSetField( lua_State *L ) {
+  HttpEnv *udata = checkHttpEnv( L );
+  const char * field = luaL_checkstring(L, 2);
+  const char * value = luaL_checkstring(L, 3);
+  udata->setField(field, value);
+  return 1;
+}
+
+static int
+charon_HttpEnvInstanceMethodSetFragment( lua_State *L ) {
+  HttpEnv *udata = checkHttpEnv( L );
+  size_t length;
+  const char * raw = luaL_checklstring(L, 2, &length);
+  char * tmp = new char[length+1];
+  for(size_t i=0; i < length; i++) {
+    tmp[i] = raw[i];
+  }
+  tmp[length] = '\0';
+  udata->setFragment(tmp);
+  return 1;
+}
+
+static int
+charon_HttpEnvInstanceMethodSetQueryString( lua_State *L ) {
+  HttpEnv *udata = checkHttpEnv( L );
+  size_t length;
+  const char * raw = luaL_checklstring(L, 2, &length);
+  char * tmp = new char[length+1];
+  for(size_t i=0; i < length; i++) {
+    tmp[i] = raw[i];
+  }
+  tmp[length] = '\0';
+  udata->setQueryString(tmp);
+  return 1;
+}
+
+static int
+charon_HttpEnvInstanceMethodSetRequestPath( lua_State *L ) {
+  HttpEnv *udata = checkHttpEnv( L );
+  size_t length;
+  const char * raw = luaL_checklstring(L, 2, &length);
+  char * tmp = new char[length+1];
+  for(size_t i=0; i < length; i++) {
+    tmp[i] = raw[i];
+  }
+  tmp[length] = '\0';
+  udata->setRequestPath(tmp);
+  return 1;
+}
+
+static int
+charon_HttpEnvInstanceMethodSetRequestMethod( lua_State *L ) {
+  HttpEnv *udata = checkHttpEnv( L );
+  size_t length;
+  const char * raw = luaL_checklstring(L, 2, &length);
+  char * tmp = new char[length+1];
+  for(size_t i=0; i < length; i++) {
+    tmp[i] = raw[i];
+  }
+  tmp[length] = '\0';
+  udata->setRequestMethod(tmp);
+  return 1;
+}
+
+static int
+charon_HttpEnvInstanceMethodSetRequestUri( lua_State *L ) {
+  HttpEnv *udata = checkHttpEnv( L );
+  size_t length;
+  const char * raw = luaL_checklstring(L, 2, &length);
+  char * tmp = new char[length+1];
+  for(size_t i=0; i < length; i++) {
+    tmp[i] = raw[i];
+  }
+  tmp[length] = '\0';
+  udata->setRequestUri(tmp);
+  return 1;
+}
+
+static int
+charon_HttpEnvInstanceMethodSetHttpVersion( lua_State *L ) {
+  HttpEnv *udata = checkHttpEnv( L );
+  size_t length;
+  const char * raw = luaL_checklstring(L, 2, &length);
+  char * tmp = new char[length+1];
+  for(size_t i=0; i < length; i++) {
+    tmp[i] = raw[i];
+  }
+  tmp[length] = '\0';
+  udata->setHttpVersion(tmp);
+  return 1;
+}
+
+static int
+charon_HttpEnvInstanceMethodSetHeaderDone( lua_State *L ) {
+  HttpEnv *udata = checkHttpEnv( L );
+  size_t length;
+  const char * raw = luaL_checklstring(L, 2, &length);
+  char * tmp = new char[length+1];
+  for(size_t i=0; i < length; i++) {
+    tmp[i] = raw[i];
+  }
+  tmp[length] = '\0';
+  udata->setHeaderDone(tmp, length);
+  return 1;
+}
+
+static int
 charon_HttpEnvInstanceMethodFragment( lua_State *L ) {
   HttpEnv *udata = checkHttpEnv( L );
   if( udata->fragment() == NULL ) {
@@ -142,6 +249,14 @@ static const
 luaL_reg HttpEnvInstanceMethods[] = {
   {"data", charon_HttpEnvInstanceMethodData},
   {"field", charon_HttpEnvInstanceMethodField},
+  {"setField", charon_HttpEnvInstanceMethodSetField},
+  {"setFragment", charon_HttpEnvInstanceMethodSetFragment},
+  {"setHeaderDone", charon_HttpEnvInstanceMethodSetHeaderDone},
+  {"setQueryString", charon_HttpEnvInstanceMethodSetQueryString},
+  {"setRequestPath", charon_HttpEnvInstanceMethodSetRequestPath},
+  {"setRequestMethod", charon_HttpEnvInstanceMethodSetRequestMethod},
+  {"setRequestUri", charon_HttpEnvInstanceMethodSetRequestUri},
+  {"setHttpVersion", charon_HttpEnvInstanceMethodSetHttpVersion},
   {"fragment", charon_HttpEnvInstanceMethodFragment},
   {"headerDone", charon_HttpEnvInstanceMethodHeaderDone},
   {"headerDoneLength", charon_HttpEnvInstanceMethodHeaderDoneLength},

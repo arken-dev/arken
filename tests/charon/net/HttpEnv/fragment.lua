@@ -8,4 +8,10 @@ test['first example'] = function()
   assert(parser:fragment() == nil)
 end
 
+test['should define fragment'] = function()
+  local parser = HttpEnv.new("")
+  parser:setFragment("teste fragment")
+  assert( parser:fragment() == "teste fragment", parser:fragment() )
+end
+
 return test
