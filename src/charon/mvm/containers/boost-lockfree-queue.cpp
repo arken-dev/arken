@@ -5,12 +5,13 @@
 
 #include <charon/base>
 #include <charon/mvm>
-#include <QQueue>
+
+// TODO spsc not works I accept your help
+#include <boost/lockfree/queue.hpp>
 
 using namespace charon;
 
-static QMutex s_mutex;
-static QQueue<mvm::data *> * s_container = new QQueue<mvm::data *>;
+static boost::lockfree::queue<mvm::data *> s_container{1024};
 
 void mvm::container::init()
 {
@@ -19,24 +20,22 @@ void mvm::container::init()
 
 void mvm::container::push(mvm::data * data)
 {
-  QMutexLocker ml(&s_mutex);
-  s_container->enqueue(data);
+  s_container.push(data);
 }
 
 void mvm::container::back(mvm::data * data)
 {
-  QMutexLocker ml(&s_mutex);
-  s_container->enqueue(data);
+  s_container.push(data);
 }
 
 mvm::data * mvm::container::pop()
 {
-  QMutexLocker ml(&s_mutex);
-  return s_container->dequeue();
+  mvm::data * data = 0;
+  s_container.pop(data);
+  return data;
 }
 
 bool mvm::container::empty()
 {
-  QMutexLocker ml(&s_mutex);
-  return s_container->empty();
+  return s_container.empty();
 }

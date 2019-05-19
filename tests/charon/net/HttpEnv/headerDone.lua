@@ -8,4 +8,10 @@ test['first example'] = function()
   assert(parser:headerDone() == nil)
 end
 
+test['should set headerDone'] = function()
+  local parser = HttpEnv.new("")
+  parser:setHeaderDone("test header done")
+  assert(parser:headerDone() == "test header done", parser:headerDone())
+end
+
 return test

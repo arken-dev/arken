@@ -13,15 +13,18 @@
 
 using namespace charon;
 
-int        mvm::s_argc         = 0;
-char **    mvm::s_argv         = 0;
-int        mvm::s_gc           = 0;
-int        mvm::s_version      = 0;
-int        mvm::s_pool         = 0;
-double     mvm::s_uptime       = os::microtime();
+int     mvm::s_argc(0);
+char ** mvm::s_argv(0);
+
+std::atomic<int>    mvm::s_gc(0);
+std::atomic<int>    mvm::s_version(0);
+std::atomic<int>    mvm::s_pool(0);
+std::atomic<double> mvm::s_uptime(os::microtime());
+
 string     mvm::s_charonPath   = "";
 string     mvm::s_profilePath  = "";
 string     mvm::s_dispatchPath = "";
+
 static std::mutex mtx;
 static std::map <std::string, int> s_config;
 
@@ -163,10 +166,8 @@ void mvm::push(mvm::data * data)
   if( mvm::s_version != data->m_version ) {
     delete data;
   } else {
-    mtx.lock();
     container::push(data);
     s_pool ++;
-    mtx.unlock();
   }
 }
 
@@ -175,23 +176,18 @@ void mvm::back(mvm::data * data)
   if( mvm::s_version > data->m_version ) {
     delete data;
   } else {
-    mtx.lock();
     container::back(data);
     s_pool ++;
-    mtx.unlock();
   }
 }
 
 mvm::data * mvm::pop()
 {
-  mtx.lock();
   if( container::empty() ) {
-    mtx.unlock();
     return new mvm::data(mvm::s_version);
   }
   mvm::data * data = container::pop();
   s_pool--;
-  mtx.unlock();
   return data;
 }
 
@@ -202,7 +198,7 @@ void mvm::reload()
 
   if( log ) {
     char buffer[30];
-    sprintf(buffer, "reload: pool size %i\n", s_pool);
+    sprintf(buffer, "reload: pool size %i\n", s_pool.load(std::memory_order_relaxed));
     mvm::log(buffer);
   }
 

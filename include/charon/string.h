@@ -80,6 +80,7 @@ namespace charon {
     string(const char * str);
     string(const char * str, size_t size);
     string(size_t reserve);
+    string(const charon::string &str);
     ~string();
 
     string & append(const char * str);
