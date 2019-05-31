@@ -57,8 +57,12 @@ Class.new = function(className, inheritedBy, params)
 
   -- contract
   function class.contract(name)
-    local contract = require('charon.contract')
-    contract.create(class, name)
+    --if class[name .. "Body"] then
+    --  error(string.format('contract %q in %s is already created', name, class.className))
+    --else
+      local contract = require('charon.contract')
+      contract.create(class, name)
+    --end
   end
 
   function class.mixin(path)

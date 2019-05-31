@@ -859,7 +859,7 @@ List * string::split(const char * raw, size_t len, const char * pattern)
       size = i - flag;
       if( size > 0 ) {
         char * tmp = new char[size+1];
-        strncpy(tmp, other, size);
+        memcpy ( tmp, other, size );
         tmp[size] = '\0';
         list->append(tmp, size);
         delete[] tmp;
@@ -1198,7 +1198,7 @@ string::string(const char * data, size_t size)
   m_size      = size;
   m_capacity  = m_size;
   m_data      = new char[m_size+1];
-  strcpy(m_data, data);
+  memcpy( m_data, data, size );
   m_data[m_size] = '\0';
 }
 
@@ -1218,6 +1218,16 @@ string::string(size_t reserve)
   m_size      = 0;
   m_data      = new char[m_reserve]();
   m_capacity  = m_size;
+}
+
+string::string(const charon::string & str)
+{
+  m_reserve   = str.m_reserve;
+  m_size      = str.m_size;
+  m_capacity  = str.m_capacity;
+  m_data      = new char[m_capacity+1];
+  memcpy( m_data, str.m_data, str.m_size );
+  m_data[m_size] = '\0';
 }
 
 string string::consume(char * data)
@@ -1291,12 +1301,11 @@ string & string::append(const char * data, size_t len)
 }
 
 
-string string::prepend(const char * data)
+string & string::prepend(const char * data)
 {
   size_t len = strlen(data);
   m_capacity = m_size + len + m_reserve;
   char * tmp = new char[m_capacity];
-
 
   for(size_t i=0; i < len; i++) {
     tmp[i] = data[i];
@@ -1307,6 +1316,7 @@ string string::prepend(const char * data)
   }
 
   delete[] m_data;
+
   m_size = len;
   m_data = tmp;
   m_data[m_size] = '\0';
@@ -1331,8 +1341,9 @@ string string::center(size_t size, const char * pad)
 
 void string::clear()
 {
-  delete[] m_data;
-  m_data = new char[1]();
+  if( m_data )
+    delete[] m_data;
+  m_data = 0;
   m_size = 0;
 }
 
@@ -1482,7 +1493,6 @@ char * string::release()
   this->m_data = NULL;
   return tmp;
 }
-
 
 string string::trimmed()
 {

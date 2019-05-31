@@ -16,6 +16,7 @@ class Config
   private:
   std::string  m_address;
   std::string  m_pid;
+  std::string  m_log;
   unsigned int m_port;
   unsigned int m_threads;
   bool         m_service;

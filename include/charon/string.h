@@ -80,6 +80,7 @@ namespace charon {
     string(const char * str);
     string(const char * str, size_t size);
     string(size_t reserve);
+    string(const charon::string &str);
     ~string();
 
     string & append(const char * str);
@@ -107,7 +108,7 @@ namespace charon {
     string mid(int pos, int len = -1);
     string md5();
     string normalize();
-    string prepend(const char * str);
+    string & prepend(const char * str);
     string simplified();
     char * release();
     string repeated(int times);

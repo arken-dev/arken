@@ -2,25 +2,25 @@ local HttpEnv = require "charon.net.HttpEnv"
 
 local test = {}
 
-test.should_return_nil_with_queryString = function()
+test['should return nil with query string'] = function()
   local header = os.read(CHARON_PATH .. '/tests/charon/net/HttpEnv/example-2.txt')
   local parser = HttpEnv.new(header)
   assert(parser:queryString() == nil)
 end
 
-test.should_return_nil_with_fragment = function()
+test['should return nil with fragment'] = function()
   local header = os.read(CHARON_PATH .. '/tests/charon/net/HttpEnv/example-2.txt')
   local parser = HttpEnv.new(header)
   assert(parser:fragment() == nil)
 end
 
-test.should_return_nil_with_requestPath = function()
+test['should return nil with requestPath'] = function()
   local header = os.read(CHARON_PATH .. '/tests/charon/net/HttpEnv/example-2.txt')
   local parser = HttpEnv.new(header)
   assert(parser:requestPath() == '/app/fornecedor/filtrar/indexPerform', parser:requestPath())
 end
 
-test.should_return_nil_with_requestMethod = function()
+test['should return nil with requestMethod'] = function()
   local header = os.read(CHARON_PATH .. '/tests/charon/net/HttpEnv/example-2.txt')
   local parser = HttpEnv.new(header)
   assert(parser:requestMethod() == 'POST', parser:requestMethod())

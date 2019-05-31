@@ -49,15 +49,16 @@ class mvm {
     static void push(mvm::data *);
   };
 
-  static double   s_uptime;
-  static int      s_gc;
-  static int      s_version;
-  static int      s_pool;
+  static std::atomic<double> s_uptime;
+  static std::atomic<int>    s_gc;
+  static std::atomic<int>    s_version;
+  static std::atomic<int>    s_pool;
+
   static int      s_argc;
-  static char * * s_argv;
-  static string s_charonPath;
-  static string s_profilePath;
-  static string s_dispatchPath;
+  static char  ** s_argv;
+  static string   s_charonPath;
+  static string   s_profilePath;
+  static string   s_dispatchPath;
 
   private:
   static mvm::data * pop();
