@@ -60,8 +60,7 @@ char * utf8::decode(const char * string, const char * charset)
 char * utf8::encode(const char * string, const char * charset)
 {
   QTextCodec *codec = QTextCodec::codecForName(charset);
-  QString    tmp = codec->fromUnicode(string);
-  QByteArray raw = tmp.toLocal8Bit();
+  QByteArray raw = codec->fromUnicode(string);
   char * result = new char[raw.size() + 1];
   strcpy(result, raw.data());
   result[raw.size()] = '\0';
