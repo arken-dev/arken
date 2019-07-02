@@ -28,16 +28,16 @@ static int charon_utf8_format( lua_State *L ) {
 }
 
 static int charon_utf8_decode( lua_State *L ) {
-  const char * charset = luaL_checkstring(L, 1);
-  const char * string  = luaL_checkstring(L, 2);
-  lua_pushstring( L, utf8::decode(charset, string) );
+  const char * string  = luaL_checkstring(L, 1);
+  const char * charset = luaL_checkstring(L, 2);
+  lua_pushstring( L, utf8::decode(string, charset) );
   return 1;
 }
 
 static int charon_utf8_encode( lua_State *L ) {
-  const char * charset = luaL_checkstring(L, 1);
-  const char * string  = luaL_checkstring(L, 2);
-  lua_pushstring( L, utf8::encode(charset, string) );
+  const char * string  = luaL_checkstring(L, 1);
+  const char * charset = luaL_checkstring(L, 2);
+  lua_pushstring( L, utf8::encode(string, charset) );
   return 1;
 }
 
