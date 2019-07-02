@@ -143,6 +143,26 @@ charon_string_encode64( lua_State *L ) {
 }
 
 static int
+charon_string_decode( lua_State *L ) {
+  const char *value   = luaL_checkstring(L, 1);
+  const char *charset = luaL_checkstring(L, 2);
+  char * result   = string::decode(value, charset);
+  lua_pushstring(L, result);
+  delete[] result;
+  return 1;
+}
+
+static int
+charon_string_encode( lua_State *L ) {
+  const char *value   = luaL_checkstring(L, 1);
+  const char *charset = luaL_checkstring(L, 2);
+  char * result   = string::encode(value, charset);
+  lua_pushstring(L, result);
+  delete[] result;
+  return 1;
+}
+
+static int
 charon_string_count( lua_State *L ) {
   const char *str1 = luaL_checkstring(L, 1);
   const char *str2 = luaL_checkstring(L, 2);
@@ -451,6 +471,8 @@ StringClassMethods[] = {
   {"endsWith",       charon_string_endsWith},
   {"escape",         charon_string_escape},
   {"escapeHtml",     charon_string_escapeHtml},
+  {"encode",         charon_string_encode},
+  {"decode",         charon_string_decode},
   {"encode64",       charon_string_encode64},
   {"decode64",       charon_string_decode64},
   {"dasherize",      charon_string_dasherize},
@@ -729,6 +751,24 @@ charon_StringInstanceMethodDecode64( lua_State *L ) {
 }
 
 static int
+charon_StringInstanceMethodEncode( lua_State *L ) {
+  string * udata = checkString( L );
+  const char * charset = luaL_checkstring(L, 2);
+  string result  = udata->encode(charset);
+  lua_pushlstring(L, result.data(), result.size());
+  return 1;
+}
+
+static int
+charon_StringInstanceMethodDecode( lua_State *L ) {
+  string * udata = checkString( L );
+  const char * charset = luaL_checkstring(L, 2);
+  string result  = udata->decode(charset);
+  lua_pushlstring(L, result.data(), result.size());
+  return 1;
+}
+
+static int
 charon_StringInstanceMethodSha1( lua_State *L ) {
   string * udata = checkString( L );
   string result  = udata->sha1();
@@ -897,6 +937,8 @@ luaL_reg StringInstanceMethods[] = {
   {"count",          charon_StringInstanceMethodCount},
   {"dasherize",      charon_StringInstanceMethodDasherize},
   {"escape",         charon_StringInstanceMethodEscape},
+  {"decode",         charon_StringInstanceMethodDecode},
+  {"encode",         charon_StringInstanceMethodEncode},
   {"decode64",       charon_StringInstanceMethodDecode64},
   {"encode64",       charon_StringInstanceMethodEncode64},
   {"escapeHtml",     charon_StringInstanceMethodEscapeHtml},

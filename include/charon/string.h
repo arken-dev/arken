@@ -39,6 +39,8 @@ namespace charon {
     static char * dasherize(const char *string);
     static char * encode64(const char *string);
     static char * decode64(const char *string);
+    static char * encode(const char *string, const char *charset);
+    static char * decode(const char *string, const char *charset);
     static char * escape(const char * string);
     static char * escapeHtml(const char * string);
     static int    indexOf(const char * string, const char * str, int i = 0);
@@ -96,6 +98,8 @@ namespace charon {
     string dasherize();
     string encode64();
     string decode64();
+    string encode(const char * charset);
+    string decode(const char * charset);
     string escape();
     string escapeHtml();
     int      indexOf(const char * str, int i = 0);

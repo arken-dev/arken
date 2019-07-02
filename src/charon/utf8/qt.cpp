@@ -46,7 +46,7 @@ int utf8::len(const char * string)
   return j;
 }
 
-char * utf8::decode(const char * charset, const char * string)
+char * utf8::decode(const char * string, const char * charset)
 {
   QTextCodec *codec = QTextCodec::codecForName(charset);
   QString    tmp = codec->toUnicode(string);
@@ -57,7 +57,7 @@ char * utf8::decode(const char * charset, const char * string)
   return result;
 }
 
-char * utf8::encode(const char * charset, const char * string)
+char * utf8::encode(const char * string, const char * charset)
 {
   QTextCodec *codec = QTextCodec::codecForName(charset);
   QString    tmp = codec->fromUnicode(string);
