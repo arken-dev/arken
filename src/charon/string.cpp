@@ -8,6 +8,7 @@
 
 using base64 = charon::base64;
 using md5    = charon::digest::md5;
+using utf8   = charon::utf8;
 using sha1   = charon::digest::sha1;
 using List   = charon::string::List;
 
@@ -278,6 +279,17 @@ char * string::decode64(const char * str)
 {
   return base64::decode(str);
 }
+
+char * string::encode(const char * string, const char * charset)
+{
+  return utf8::encode(string, charset);
+}
+
+char * string::decode(const char * string, const char * charset)
+{
+  return utf8::decode(string, charset);
+}
+
 
 char * string::escape(const char * string)
 {
@@ -1380,6 +1392,16 @@ string string::encode64()
 string string::escape()
 {
   return charon::string::consume(string::escape(m_data));
+}
+
+string string::encode(const char * charset)
+{
+  return charon::string::consume(string::encode(m_data, charset));
+}
+
+string string::decode(const char * charset)
+{
+  return charon::string::consume(string::decode(m_data, charset));
 }
 
 string string::escapeHtml()
