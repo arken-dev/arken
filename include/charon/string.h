@@ -62,8 +62,7 @@ namespace charon {
     static char * sha1(const char * string);
     static List * split(const char * string, const char * pattern);
     static List * split(const char * string, size_t len, const char * pattern);
-    static char * suffix(const char * raw);
-    static char * suffix(const char * raw, const char chr);
+    static char * suffix(const char * raw, const char chr = '.');
     static bool   startsWith(const char * string, const char *str);
     static char * trimmed(const char * string);
     static char * leftTrimmed(const char * string);

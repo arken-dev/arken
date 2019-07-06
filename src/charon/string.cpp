@@ -893,11 +893,6 @@ List * string::split(const char * raw, size_t len, const char * pattern)
   return list;
 }
 
-char * string::suffix(const char * raw)
-{
-  return string::suffix(raw, '.');
-}
-
 char *  string::suffix(const char * raw, char chr)
 {
   char * result = 0;
