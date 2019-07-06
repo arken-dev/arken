@@ -53,6 +53,7 @@ namespace charon {
     static char * md5(const char * string);
     static char * md5(const char * string, size_t len);
     static char * normalize(const char * string);
+    static char * prefix(const char * raw, const char chr = '.');
     static char * simplified(const char *buffer);
     static char * repeated(const char *buffer, int times);
     static char * replace(const char * string, const char * before, const char * after, int start = 0);
@@ -111,6 +112,7 @@ namespace charon {
     string mid(int pos, int len = -1);
     string md5();
     string normalize();
+    string prefix(const char chr = '.');
     string & prepend(const char * str);
     string simplified();
     char * release();
