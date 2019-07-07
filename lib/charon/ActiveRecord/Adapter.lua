@@ -12,8 +12,14 @@ local DateTime  = require('charon.time.DateTime')
 local ActiveRecord_Adapter = Class.new("ActiveRecord.Adapter")
 
 ActiveRecord_Adapter.reserved = {
-  newRecord = true, class = true, errors = true, join = true,
-  binding = true, order = true, limit = true
+  newRecord = true,
+  class     = true,
+  errors    = true,
+  join      = true,
+  binding   = true,
+  order     = true,
+  limit     = true,
+  offset    = true
 }
 
 ActiveRecord_Adapter.errors  = Array.new()
@@ -146,6 +152,8 @@ function ActiveRecord_Adapter:where(values, flag)
   local having = values.having
   local order  = values.order
   local limit  = values.limit
+  local offset = values.offset
+
 --[[
   values.join    = nil
   values.binding = nil
@@ -200,6 +208,9 @@ function ActiveRecord_Adapter:where(values, flag)
   end
   if limit then
     result = result .. ' LIMIT ' .. limit
+  end
+  if offset then
+    result = result .. ' OFFSET ' .. offset
   end
 
   return result
