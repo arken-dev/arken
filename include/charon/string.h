@@ -39,6 +39,8 @@ namespace charon {
     static char * dasherize(const char *string);
     static char * encode64(const char *string);
     static char * decode64(const char *string);
+    static char * encode(const char *string, const char *charset);
+    static char * decode(const char *string, const char *charset);
     static char * escape(const char * string);
     static char * escapeHtml(const char * string);
     static int    indexOf(const char * string, const char * str, int i = 0);
@@ -51,6 +53,7 @@ namespace charon {
     static char * md5(const char * string);
     static char * md5(const char * string, size_t len);
     static char * normalize(const char * string);
+    static char * prefix(const char * raw, const char chr = '.');
     static char * simplified(const char *buffer);
     static char * repeated(const char *buffer, int times);
     static char * replace(const char * string, const char * before, const char * after, int start = 0);
@@ -60,8 +63,7 @@ namespace charon {
     static char * sha1(const char * string);
     static List * split(const char * string, const char * pattern);
     static List * split(const char * string, size_t len, const char * pattern);
-    static char * suffix(const char * raw);
-    static char * suffix(const char * raw, const char chr);
+    static char * suffix(const char * raw, const char chr = '.');
     static bool   startsWith(const char * string, const char *str);
     static char * trimmed(const char * string);
     static char * leftTrimmed(const char * string);
@@ -96,6 +98,8 @@ namespace charon {
     string dasherize();
     string encode64();
     string decode64();
+    string encode(const char * charset);
+    string decode(const char * charset);
     string escape();
     string escapeHtml();
     int      indexOf(const char * str, int i = 0);
@@ -108,6 +112,7 @@ namespace charon {
     string mid(int pos, int len = -1);
     string md5();
     string normalize();
+    string prefix(const char chr = '.');
     string & prepend(const char * str);
     string simplified();
     char * release();

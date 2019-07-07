@@ -24,6 +24,7 @@
 #include <charon/time/date.h>
 #include <charon/time/datetime.h>
 #include <charon/time/time.h>
+#include <charon/utf8.h>
 
 using charon::os;
 using charon::string;

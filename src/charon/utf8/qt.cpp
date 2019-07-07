@@ -5,6 +5,7 @@
 
 #include <charon/base>
 #include <charon/utf8>
+#include <QTextCodec>
 
 using namespace charon;
 
@@ -45,3 +46,23 @@ int utf8::len(const char * string)
   return j;
 }
 
+char * utf8::decode(const char * string, const char * charset)
+{
+  QTextCodec *codec = QTextCodec::codecForName(charset);
+  QString    tmp = codec->toUnicode(string);
+  QByteArray raw = tmp.toLocal8Bit();
+  char * result = new char[raw.size() + 1];
+  strcpy(result, raw.data());
+  result[raw.size()] = '\0';
+  return result;
+}
+
+char * utf8::encode(const char * string, const char * charset)
+{
+  QTextCodec *codec = QTextCodec::codecForName(charset);
+  QByteArray raw = codec->fromUnicode(string);
+  char * result = new char[raw.size() + 1];
+  strcpy(result, raw.data());
+  result[raw.size()] = '\0';
+  return result;
+}
