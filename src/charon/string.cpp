@@ -893,11 +893,6 @@ List * string::split(const char * raw, size_t len, const char * pattern)
   return list;
 }
 
-char * string::suffix(const char * raw)
-{
-  return string::suffix(raw, '.');
-}
-
 char *  string::suffix(const char * raw, char chr)
 {
   char * result = 0;
@@ -924,6 +919,34 @@ char *  string::suffix(const char * raw, char chr)
 
   return result;
 }
+
+char *  string::prefix(const char * raw, char chr)
+{
+  char * result = 0;
+  int i, j;
+  int point = 0;
+  int len = strlen(raw);
+
+  for( i = 0; i < len; i++) {
+    if( raw[i] == chr ) {
+      point = i-1;
+      break;
+    }
+  }
+
+  if( point > 0 ) {
+    point++;
+    result = new char[point+1];
+    j = 0;
+    for( i = 0; i < point; i++, j++) {
+      result[j] = raw[i];
+    }
+    result[point] = '\0';
+  }
+
+  return result;
+}
+
 
 bool string::startsWith(const char *string, const char *str)
 {
@@ -1452,6 +1475,11 @@ string string::md5()
 string string::normalize()
 {
   return charon::string::consume(string::normalize(m_data));
+}
+
+string string::prefix(const char chr)
+{
+  return charon::string::consume(string::prefix(m_data, chr));
 }
 
 string string::simplified()

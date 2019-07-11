@@ -10,4 +10,10 @@ test.should_extension_after_char = function()
   assert(str:suffix('#') == ' a test')
 end
 
+test['should return nil of not identify char'] = function()
+  local str = "this is # a test"
+  local res = str:suffix('*')
+  assert(res == nil, string.format("%s => type(%s)", res, type(res)))
+end
+
 return test

@@ -133,9 +133,10 @@ string os::read(const char * path)
     file.seekg(0, std::ios::end);
     length = file.tellg();
     file.seekg(0, std::ios::beg);
-    buffer = new char[length];
+    buffer = new char[length+1];
     file.read(buffer, length);
     file.close();
+    buffer[length] = '\0';
     return string::consume( buffer, length );
   }
 
