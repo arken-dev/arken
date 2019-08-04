@@ -546,12 +546,19 @@ char * string::mid(const char * string, int pos, int len)
   int i, j = 0;
   int string_len = strlen(string);
   char * result;
+
   if ( len < 0 ) {
+    len = string_len + (len+1);
+  }
+
+  if ( len > string_len ) {
     len = string_len;
   }
-  if ( pos >= string_len ) {
+
+  if ( pos >= string_len || len < 0) {
     len = 0;
   }
+
   result = new char[len + 1];
   for(i = 0; i < len; i++, j++) {
     result[j] = string[pos+i];

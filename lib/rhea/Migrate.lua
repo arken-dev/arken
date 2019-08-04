@@ -27,27 +27,26 @@ function Migrate:run()
   table.sort(list)
 
   for _, fileName in ipairs(list) do
-    local index1  = fileName:lastIndexOf('/') + 1
-    local index2  = fileName:indexOf('_') - index1
-    local version = fileName:mid(index1, index2)
+    local index   = fileName:lastIndexOf('/') + 1
+    local version = fileName:mid(index, 14)
+    local suffix  = fileName:suffix()
 
     if self.list[version] then
-        Migrate.output(string.format("%s version ok", version))
+      Migrate.output(string.format("%s version ok", version))
     else
       Migrate.output(string.format("%s execute...", version))
-      if fileName:suffix() == 'sql' then
+
+      if suffix == 'sql' then
         local sql = os.read(fileName)
         ActiveRecord.adapter():execute(sql)
-        local sql = [[INSERT INTO schema_migration VALUES ('%s')]]
-        ActiveRecord.adapter():execute(string.format(sql, version))
       end
 
-      if fileName:suffix() == 'lua' then
+      if suffix == 'lua' then
         dofile(fileName)
-        local sql = [[INSERT INTO schema_migration VALUES ('%s')]]
-        ActiveRecord.adapter():execute(string.format(sql, version))
       end
 
+      local sql = [[INSERT INTO schema_migration VALUES ('%s')]]
+      ActiveRecord.adapter():execute(string.format(sql, version))
     end
   end
   Migrate.output("migrations finished")
@@ -64,8 +63,8 @@ Migrate.help.generate = [[
 ]]
 
 function Migrate:generate()
-  local params    = self:params()
   local DateTime  = require('charon.time.DateTime')
+  local params    = self:params()
   local timestamp = Migrate.timestamp or DateTime.currentDateTime():toString('yyyyMMddhhmmss')
   local name      = tostring(params[1]):underscore()
   if name == 'nil' then
