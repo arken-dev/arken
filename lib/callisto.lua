@@ -4,6 +4,7 @@
 -- license that can be found in the LICENSE file.
 
 CHARON_ENV   = os.getenv("CHARON_ENV") or "test"
+local empty  = require('charon.empty')
 local test   = require('charon.test')
 local buffer = ""
 
@@ -13,22 +14,26 @@ end
 
 local callisto = function(file)
 
+  if not os.exists(file) then
+    error(file .. " not exists")
+  end
+
   package.reload()
 
-  local init   = os.microtime()
-  local icon   = "ok"
+  local init      = os.microtime()
+  local icon      = "ok"
   local flag, res = pcall(dofile, file)
 
   if flag == false then
-    icon   = 'failure'
-    buffer = res
+    icon = 'failure'
+    return icon, res
   end
 
   if res == false then
     icon = 'failure'
   end
 
-  if res == nil then
+  if empty(res) then
     icon = 'warning'
   end
 

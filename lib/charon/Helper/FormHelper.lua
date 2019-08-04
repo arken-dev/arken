@@ -97,6 +97,33 @@ function FormHelper:textField(field, options)
   return (html .. ' />')
 end
 
+function FormHelper:passwordField(field, options)
+  options       = options or {}
+  local value   = options.value or self:buildValue(field)
+  local options = options or {}
+  local style   = options.style or "width:95px"
+  local html    = [[<input type="password" id="%s" name="%s" value=%q style=%q]]
+  local html    = string.format(html, self:buildId(field), self:buildName(field), value, style)
+
+  if options.onblur then
+    html = html .. string.format(" onblur=%q", options.onblur)
+  end
+
+  if options.onfocus then
+    html = html .. string.format(" onfocus=%q", options.onfocus)
+  end
+
+  if options.onkeypress then
+    html = html .. string.format(" onkeypress=%q", options.onkeypress)
+  end
+
+  if options.onkeyup then
+    html = html .. string.format(" onkeyup=%q", options.onkeyup)
+  end
+
+  return (html .. ' />')
+end
+
 function FormHelper:textArea(field, options)
   options       = options or {}
   local value   = options.value or self:buildValue(field)
