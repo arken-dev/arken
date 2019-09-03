@@ -286,6 +286,21 @@ charon_string_leftJustified( lua_State *L ) {
 }
 
 static int
+charon_string_prefix( lua_State *L ) {
+  const char * string = luaL_checkstring(L, 1);
+  char chr = '.';
+  char * result;
+  if(lua_gettop(L) == 2) { /* número de argumentos */
+    chr =  luaL_checkstring(L, 2)[0];
+  }
+  result = string::prefix(string, chr);
+  lua_pushstring(L, result);  /* push result */
+  delete[] result;
+  return 1;
+}
+
+
+static int
 charon_string_rightJustified( lua_State *L ) {
   const char *string = luaL_checkstring(L, 1);
   int size           = luaL_checkinteger(L, 2);
@@ -483,6 +498,7 @@ StringClassMethods[] = {
   {"md5",            charon_string_md5},
   {"mid",            charon_string_mid},
   {"normalize",      charon_string_normalize},
+  {"prefix",         charon_string_prefix},
   {"leftJustified",  charon_string_leftJustified},
   {"rightJustified", charon_string_rightJustified},
   {"simplified",     charon_string_simplified},
@@ -760,6 +776,20 @@ charon_StringInstanceMethodEncode( lua_State *L ) {
 }
 
 static int
+charon_StringInstanceMethodPrefix( lua_State *L ) {
+  string * udata = checkString( L );
+  string result;
+  if(lua_gettop(L) == 2) { // number of arguments
+    const char * chr = luaL_checkstring(L, 2);
+    result = udata->prefix(chr[0]);
+  } else {
+    result = udata->prefix();
+  }
+  lua_pushlstring(L, result.data(), result.size());
+  return 1;
+}
+
+static int
 charon_StringInstanceMethodDecode( lua_State *L ) {
   string * udata = checkString( L );
   const char * charset = luaL_checkstring(L, 2);
@@ -953,6 +983,7 @@ luaL_reg StringInstanceMethods[] = {
   {"md5",            charon_StringInstanceMethodMd5},
   {"normalize",      charon_StringInstanceMethodNormalize},
   {"prepend",        charon_StringInstanceMethodPrepend},
+  {"prefix",         charon_StringInstanceMethodPrefix},
   {"repeated",       charon_StringInstanceMethodRepeated},
   {"replace",        charon_StringInstanceMethodReplace},
   {"reserve",        charon_StringInstanceMethodReserve},

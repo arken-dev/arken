@@ -72,7 +72,7 @@ char * math::format(double value, int decimals, char dec_point, char thousands_s
   }
 
   int size = 65;
-  if( value > 1e80) {
+  if( value >= 1e80) {
     decimals = 2;
     size = 512;
   }

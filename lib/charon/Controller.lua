@@ -92,6 +92,9 @@ function Controller:redirect(params)
   local url    = self:url(params)
   local host   = self:env():field("Host")
   local header = "Location: http://" .. host .. url
+  if url:startsWith('http://') then
+    header = "Location: " .. url
+  end
   return 302, {header}, nil
 end
 

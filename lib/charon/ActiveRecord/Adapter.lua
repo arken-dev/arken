@@ -11,9 +11,17 @@ local DateTime  = require('charon.time.DateTime')
 
 local ActiveRecord_Adapter = Class.new("ActiveRecord.Adapter")
 
+ActiveRecord_Adapter.savePoint = 0
+
 ActiveRecord_Adapter.reserved = {
-  newRecord = true, class = true, errors = true, join = true,
-  binding = true, order = true, limit = true
+  newRecord = true,
+  class     = true,
+  errors    = true,
+  join      = true,
+  binding   = true,
+  order     = true,
+  limit     = true,
+  offset    = true
 }
 
 ActiveRecord_Adapter.errors  = Array.new()
@@ -146,6 +154,8 @@ function ActiveRecord_Adapter:where(values, flag)
   local having = values.having
   local order  = values.order
   local limit  = values.limit
+  local offset = values.offset
+
 --[[
   values.join    = nil
   values.binding = nil
@@ -200,6 +210,9 @@ function ActiveRecord_Adapter:where(values, flag)
   end
   if limit then
     result = result .. ' LIMIT ' .. limit
+  end
+  if offset then
+    result = result .. ' OFFSET ' .. offset
   end
 
   return result
@@ -380,7 +393,18 @@ end
 --------------------------------------------------------------------------------
 
 function ActiveRecord_Adapter:begin()
-  return self:execute("BEGIN")
+  if CHARON_ENV == 'test' then
+    if ActiveRecord_Adapter.savePoint == 0 then
+      self:execute("BEGIN")
+    end
+    if ActiveRecord_Adapter.savePoint > 0 then
+      local result = self:execute(string.format("SAVEPOINT savepoint_%i", ActiveRecord_Adapter.savePoint))
+    end
+    ActiveRecord_Adapter.savePoint = ActiveRecord_Adapter.savePoint + 1
+    return result
+  else
+    return self:execute("BEGIN")
+  end
 end
 
 --------------------------------------------------------------------------------
@@ -391,7 +415,17 @@ function ActiveRecord_Adapter:rollback()
   ActiveRecord_Adapter.errors  = Array.new()
   ActiveRecord_Adapter.cache   = {}
   ActiveRecord_Adapter.pending = {}
-  return self:execute("ROLLBACK")
+  if CHARON_ENV == 'test' then
+    ActiveRecord_Adapter.savePoint = ActiveRecord_Adapter.savePoint - 1
+    if ActiveRecord_Adapter.savePoint < 1 then
+      ActiveRecord_Adapter.savePoint = 0
+      return self:execute("ROLLBACK")
+    else
+      return self:execute(string.format("RELEASE SAVEPOINT savepoint_%i", ActiveRecord_Adapter.savePoint))
+    end
+  else
+    return self:execute("ROLLBACK")
+  end
 end
 
 --------------------------------------------------------------------------------
@@ -403,7 +437,11 @@ function ActiveRecord_Adapter:commit()
   ActiveRecord_Adapter.cache   = {}
   ActiveRecord_Adapter.neat    = {}
   ActiveRecord_Adapter.pending = {}
-  return self:execute("COMMIT")
+  if CHARON_ENV == 'test' then
+    ActiveRecord_Adapter.savePoint = ActiveRecord_Adapter.savePoint - 1
+  else
+    return self:execute("COMMIT")
+  end
 end
 
 --------------------------------------------------------------------------------
