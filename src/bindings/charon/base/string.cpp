@@ -28,8 +28,9 @@ charon_string_new( lua_State *L ) {
     if( lua_isnumber(L, 1) ) {
       str = new string(lua_tointeger(L, 1));
     } else {
-      const char *s = (char *) luaL_checkstring(L, 1);
-      str = new string(s);
+      size_t len;
+      const char *s = luaL_checklstring(L, 1, &len);
+      str = new string(s, len);
     }
   }
   string **ptr = (string **)lua_newuserdata(L, sizeof(string*));
