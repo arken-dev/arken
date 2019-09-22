@@ -193,7 +193,7 @@ char * string::chop(const char * string, int n)
 
 static inline int charon_string_dasherize_special_char(const char *string, int i)
 {
-  if(string[i] == '/' || string[i] == '_' || string[i] == '.' || string[i] == ' ') {
+  if(string[i] == '/' || string[i] == '_' || string[i] == '.' || string[i] == ' ' || string[i] == '-') {
     return 1;
   } else {
     return 0;
