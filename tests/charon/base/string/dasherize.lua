@@ -48,4 +48,10 @@ test.should_return_with_begin_and_after_and_middle_space = function()
   assert( res == "order-item", res )
 end
 
+test.should_return_width_unique_dash = function()
+  local str = "Scott Meyers - Overview of the New CPP Apr 2011"
+  local res = str:dasherize()
+  assert( res == "scott-meyers-overview-of-the-new-cpp-apr-2011", res )
+end
+
 return test
