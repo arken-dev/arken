@@ -290,6 +290,10 @@ char * string::decode(const char * string, const char * charset)
   return utf8::decode(string, charset);
 }
 
+bool string::equals(const char * str1, const char * str2)
+{
+  return strcmp(str1, str2) == 0;
+}
 
 char * string::escape(const char * string)
 {
@@ -1417,6 +1421,11 @@ string string::decode64()
 string string::encode64()
 {
   return charon::string::consume(string::encode64(m_data));
+}
+
+bool string::equals(const char * data)
+{
+  return string::equals(m_data, data);
 }
 
 string string::escape()

@@ -6,13 +6,14 @@
 #include <lua/lua.hpp>
 #include <charon/base>
 #include <iostream>
+#include <cstring>
 
 using charon::string;
 using List = charon::string::List;
 
 string *
-checkString ( lua_State *L ) {
-  return *(string **) luaL_checkudata(L, 1, "charon.string.metatable");
+checkString ( lua_State *L, int index = 1 ) {
+  return *(string **) luaL_checkudata(L, index, "charon.string.metatable");
 }
 
 //-----------------------------------------------------------------------------
@@ -160,6 +161,23 @@ charon_string_encode( lua_State *L ) {
   char * result   = string::encode(value, charset);
   lua_pushstring(L, result);
   delete[] result;
+  return 1;
+}
+
+static int
+charon_string_equals( lua_State *L ) {
+  if( lua_isuserdata(L, 2) ) {
+    const char * str = luaL_checkstring(L, 1);
+    string * udata = checkString( L, 2 );
+    bool result = udata->equals(str);
+    lua_pushboolean(L, result);
+  } else {
+    const char * str1 = luaL_checkstring(L, 1);
+    const char * str2 = luaL_checkstring(L, 2);
+    bool result = string::equals(str1, str2);
+    lua_pushboolean(L, result);
+  }
+
   return 1;
 }
 
@@ -490,6 +508,7 @@ StringClassMethods[] = {
   {"encode",         charon_string_encode},
   {"decode",         charon_string_decode},
   {"encode64",       charon_string_encode64},
+  {"equals",         charon_string_equals},
   {"decode64",       charon_string_decode64},
   {"dasherize",      charon_string_dasherize},
   {"indexOf",        charon_string_indexOf},
@@ -931,6 +950,19 @@ charon_StringInstanceMethodToString( lua_State *L ) {
 }
 
 static int
+charon_StringInstanceMethodEquals( lua_State *L ) {
+  string * udata = checkString( L );
+  if( lua_isuserdata(L, 2) ) {
+    string * odata = checkString( L, 2 );
+    lua_pushboolean(L, udata->equals(*odata));
+  } else {
+    const char * pattern = luaL_checkstring(L, 2);
+    lua_pushboolean(L, udata->equals(pattern));
+  }
+  return 1;
+}
+
+static int
 charon_StringInstanceMethodToLen( lua_State *L ) {
   string * udata = checkString( L );
   lua_pushinteger(L, udata->len());
@@ -975,6 +1007,7 @@ luaL_reg StringInstanceMethods[] = {
   {"escapeHtml",     charon_StringInstanceMethodEscapeHtml},
   {"indexOf",        charon_StringInstanceMethodIndexOf},
   {"endsWith",       charon_StringInstanceMethodEndsWith},
+  {"equals",         charon_StringInstanceMethodEquals},
   {"lastIndexOf",    charon_StringInstanceMethodLastIndexOf},
   {"left",           charon_StringInstanceMethodLeft},
   {"leftJustified",  charon_StringInstanceMethodLeftJustified},
