@@ -27,7 +27,6 @@ task::work * task::get()
   condition->wait(lck, []{ return !queue->empty(); });
   work = queue->front();
   queue->pop();
-  task::actives++;
   return work;
 }
 
@@ -104,6 +103,7 @@ char * task::start(const char * fileName, const char * data)
       workers->push_back(std::thread(task::run));
   }
   queue->push(new task::work(uuid, fileName));
+  task::actives++;
   condition->notify_one();
 
   return uuid;
