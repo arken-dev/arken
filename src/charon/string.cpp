@@ -545,14 +545,23 @@ char * string::left(const char * string, int len)
   return result;
 }
 
-char * string::mid(const char * string, size_t pos, int len, size_t string_len)
+char * string::mid(const char * string, int pos, int len, int string_len)
 {
   int i, j = 0;
   if( ! string_len) { string_len = strlen(string); };
+  //string_len = strlen(string);
   char * result;
 
   if ( len < 0 ) {
     len = (size_t) string_len + (len+1);
+  }
+
+  if ( len < 0 ) {
+    len = 0;
+  }
+
+  if ( (len * -1) > string_len ) {
+    len = 0;
   }
 
   if ( (size_t) len > string_len ) {
@@ -1480,7 +1489,7 @@ string string::leftJustified(size_t size, const char * pad)
 
 string string::mid(int pos, int len)
 {
-  return string::consume( string::mid(m_data, pos, len, m_size), len );
+  return string::consume( string::mid(m_data, pos, len, m_size) ); //, len );
 }
 
 string string::md5()

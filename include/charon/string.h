@@ -50,7 +50,7 @@ namespace charon {
     static int    lastIndexOf(const char * string, const char * str);
     static char * left(const char *string, int len);
     static char * leftJustified(const char * string, size_t size, const char * pad);
-    static char * mid(const char * string, size_t pos, int len = -1, size_t string_len = 0);
+    static char * mid(const char * string, int pos, int len = -1, int string_len = 0);
     static char * md5(const char * string);
     static char * md5(const char * string, size_t len);
     static char * normalize(const char * string);
