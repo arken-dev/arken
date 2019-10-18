@@ -563,7 +563,7 @@ end
 
 test['format nan to ???'] = function()
   local value = math.format(0/0, 2, ',', '.')
-  assert( value == '0,00', value )
+  assert( value == 'nan', value )
 end
 
 test['format 106.66666666667 to 106,67'] = function()

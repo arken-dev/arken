@@ -44,4 +44,51 @@ test['should return empty string if index is a equal string size and pos is -1']
   assert( str:mid(5, -1) == "" )
 end
 
+test['should return abcd with -1 len'] = function()
+  local str = 'abcd'
+  assert( str:mid(1, -1) == "abcd" )
+end
+
+test['should return abc with -2 len'] = function()
+  local str = 'abcd'
+  local res = str:mid(1, -2)
+  assert( res == "abc", res )
+end
+
+test['should return ab with -3 len'] = function()
+  local str = 'abcd'
+  local res = str:mid(1, -3)
+  assert( res == "ab", res )
+end
+
+test['should return ab with -4 len'] = function()
+  local str = 'abcd'
+  local res = str:mid(1, -4)
+  assert( res == "a", res )
+end
+
+test['should return empty with -5 len'] = function()
+  local str = 'abcd'
+  local res = str:mid(1, -5)
+  assert( res == "", res )
+end
+
+test['should return empty with -6 len'] = function()
+  local str = 'abcd'
+  local res = str:mid(1, -6)
+  assert( res == "", res )
+end
+
+test['should return full string with len is major'] = function()
+  local str = "MANUT PREV DEIONIZADOR"
+  local res = str:mid(1, 250)
+  assert( res == "MANUT PREV DEIONIZADOR", #str )
+end
+
+test['should return whitout first char'] = function()
+  local str = '= 1 + 1'
+  local res = str:mid(2)
+  assert( res == ' 1 + 1', res )
+end
+
 return test

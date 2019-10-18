@@ -7,10 +7,11 @@ local contract = {}
 
 --------------------------------------------------------------------------------
 -- CLEAR
+-- t is null when static methods without params
 --------------------------------------------------------------------------------
 
 contract.clear = function(t)
-  if type(t.errors) == 'table' then
+  if t and type(t.errors) == 'table' then
     for key, _ in pairs(t.errors) do
       t.errors[key] = nil
     end
