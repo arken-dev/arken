@@ -193,7 +193,7 @@ char * string::chop(const char * string, int n)
 
 static inline int charon_string_dasherize_special_char(const char *string, int i)
 {
-  if(string[i] == '/' || string[i] == '_' || string[i] == '.' || string[i] == ' ') {
+  if(string[i] == '/' || string[i] == '_' || string[i] == '.' || string[i] == ' ' || string[i] == '-') {
     return 1;
   } else {
     return 0;
@@ -290,6 +290,10 @@ char * string::decode(const char * string, const char * charset)
   return utf8::decode(string, charset);
 }
 
+bool string::equals(const char * str1, const char * str2)
+{
+  return strcmp(str1, str2) == 0;
+}
 
 char * string::escape(const char * string)
 {
@@ -541,17 +545,26 @@ char * string::left(const char * string, int len)
   return result;
 }
 
-char * string::mid(const char * string, int pos, int len)
+char * string::mid(const char * string, int pos, int len, int string_len)
 {
   int i, j = 0;
-  int string_len = strlen(string);
+  if( ! string_len) { string_len = strlen(string); };
+  //string_len = strlen(string);
   char * result;
 
   if ( len < 0 ) {
-    len = string_len + (len+1);
+    len = (size_t) string_len + (len+1);
   }
 
-  if ( len > string_len ) {
+  if ( len < 0 ) {
+    len = 0;
+  }
+
+  if ( (len * -1) > string_len ) {
+    len = 0;
+  }
+
+  if ( (size_t) len > string_len ) {
     len = string_len;
   }
 
@@ -1419,6 +1432,11 @@ string string::encode64()
   return charon::string::consume(string::encode64(m_data));
 }
 
+bool string::equals(const char * data)
+{
+  return string::equals(m_data, data);
+}
+
 string string::escape()
 {
   return charon::string::consume(string::escape(m_data));
@@ -1471,7 +1489,7 @@ string string::leftJustified(size_t size, const char * pad)
 
 string string::mid(int pos, int len)
 {
-  return string::consume( string::mid(m_data, pos, len) );
+  return string::consume( string::mid(m_data, pos, len, m_size) ); //, len );
 }
 
 string string::md5()

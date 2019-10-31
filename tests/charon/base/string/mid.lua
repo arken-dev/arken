@@ -85,4 +85,10 @@ test['should return full string with len is major'] = function()
   assert( res == "MANUT PREV DEIONIZADOR", #str )
 end
 
+test['should return whitout first char'] = function()
+  local str = '= 1 + 1'
+  local res = str:mid(2)
+  assert( res == ' 1 + 1', res )
+end
+
 return test
