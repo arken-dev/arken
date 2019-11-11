@@ -11,3 +11,4 @@
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/clib/charon/concurrent)
 
 add_subdirectory(task)
+add_subdirectory(channel)

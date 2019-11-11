@@ -24,6 +24,7 @@
 #include <charon/time/date.h>
 #include <charon/time/datetime.h>
 #include <charon/time/time.h>
+#include <charon/concurrent/channel.h>
 #include <charon/concurrent/task.h>
 #include <charon/utf8.h>
 
