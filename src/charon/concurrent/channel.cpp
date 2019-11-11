@@ -206,7 +206,7 @@ bool channel::empty()
 void channel::write(std::string message)
 {
   if( m_finished == false ) {
-    std::unique_lock<std::mutex> lck(*channel::mtx);
+    std::unique_lock<std::mutex> lck(*m_write_mtx);
     m_write->push(message);
     m_write_condition->notify_one();
   }
@@ -217,7 +217,7 @@ std::string channel::read()
   if( m_finished == true ) {
     return std::string("channel is finished");
   }
-  std::unique_lock<std::mutex> lck(*channel::mtx);
+  std::unique_lock<std::mutex> lck(*m_read_mtx);
   m_read_condition->wait(lck, [&]{ return !m_read->empty(); });
 
   std::string message = m_read->front();
