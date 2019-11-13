@@ -24,7 +24,12 @@ checkTask( lua_State *L ) {
 static int
 charon_task_start(lua_State *L) {
   const char * fileName = luaL_checkstring(L, 1);
-  char * data = json_lock_encode(L);
+  char * data;
+  if(lua_gettop(L) == 1) { /* número de argumentos */
+    data = new char[3]{'{','}','\0'};
+  } else {
+    data = json_lock_encode(L);
+  }
   string uuid = task::start( fileName, data );
   lua_pushlstring(L, uuid.data(), uuid.size());
   return 1;
