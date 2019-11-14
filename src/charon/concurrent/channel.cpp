@@ -83,7 +83,11 @@ void channel::run()
     if (rv) {
       fprintf(stderr, "erro no inicio: %s\n", lua_tostring(L, -1));
     }
-    this->m_client->m_finished = true;
+
+    m_write->push("channel is finished");
+    m_write_condition->notify_one();
+    m_client->m_finished = true;
+
     // GC
     lua_gc(L, LUA_GCCOLLECT, 0);
   } else {
