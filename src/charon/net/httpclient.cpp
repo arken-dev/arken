@@ -49,7 +49,7 @@ HttpClient::HttpClient(const char * url)
   m_failure = false;
 
   // init globlal
-  //curl_global_init(CURL_GLOBAL_ALL);
+  curl_global_init(CURL_GLOBAL_ALL);
 
   // init the curl session
   m_curl = curl_easy_init();
