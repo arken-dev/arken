@@ -83,7 +83,11 @@ void channel::run()
     if (rv) {
       fprintf(stderr, "erro no inicio: %s\n", lua_tostring(L, -1));
     }
-    this->m_client->m_finished = true;
+
+    m_write->push("channel is finished");
+    m_write_condition->notify_one();
+    m_client->m_finished = true;
+
     // GC
     lua_gc(L, LUA_GCCOLLECT, 0);
   } else {
@@ -199,14 +203,14 @@ channel::~channel()
 
 bool channel::empty()
 {
-  std::unique_lock<std::mutex> lck(*channel::mtx);
+  std::unique_lock<std::mutex> lck(*m_read_mtx);
   return m_read->empty();
 }
 
 void channel::write(std::string message)
 {
   if( m_finished == false ) {
-    std::unique_lock<std::mutex> lck(*channel::mtx);
+    std::unique_lock<std::mutex> lck(*m_write_mtx);
     m_write->push(message);
     m_write_condition->notify_one();
   }
@@ -214,10 +218,12 @@ void channel::write(std::string message)
 
 std::string channel::read()
 {
-  if( m_finished == true ) {
+  std::unique_lock<std::mutex> lck(*m_read_mtx);
+
+  if( m_finished == true && m_read->empty() ) {
     return std::string("channel is finished");
   }
-  std::unique_lock<std::mutex> lck(*channel::mtx);
+
   m_read_condition->wait(lck, [&]{ return !m_read->empty(); });
 
   std::string message = m_read->front();

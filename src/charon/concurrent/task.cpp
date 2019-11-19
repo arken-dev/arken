@@ -58,12 +58,20 @@ void task::run()
     int rv;
 
     lua_settop(L, 0);
-
-    lua_getglobal(L, "require");
-    lua_pushstring(L, m_fileName);
-    rv = lua_pcall(L, 1, 1, 0);
-    if (rv) {
-      fprintf(stderr, "%s\n", lua_tostring(L, -1));
+    if( m_fileName.endsWith(".lua") ) {
+      lua_getglobal(L, "dofile");
+      lua_pushstring(L, m_fileName);
+      rv = lua_pcall(L, 1, 1, 0);
+      if (rv) {
+        fprintf(stderr, "%s\n", lua_tostring(L, -1));
+      }
+    } else {
+      lua_getglobal(L, "require");
+      lua_pushstring(L, m_fileName);
+      rv = lua_pcall(L, 1, 1, 0);
+      if (rv) {
+        fprintf(stderr, "%s\n", lua_tostring(L, -1));
+      }
     }
 
     lua_pushlstring(L,  m_uuid, 37);
