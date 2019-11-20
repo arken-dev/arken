@@ -9,6 +9,18 @@ local toboolean = require 'charon.toboolean'
 
 FormHelper = Class.new("FormHelper")
 
+function FormHelper:htmlOptions(options)
+  options = options or {}
+
+  local html = ""
+  for key, value in pairs(options) do
+    html = html .. string.format(' %s=%q', key, value)
+  end
+
+  return html
+end
+
+
 function FormHelper:url(params)
 
   if type(params) == 'string' then
@@ -75,9 +87,9 @@ function FormHelper:textField(field, options)
   local value   = options.value or self:buildValue(field)
   local options = options or {}
   local style   = options.style or "width:250px"
-  local html    = [[<input type="text" id="%s" name="%s" value=%q style=%q]]
-  local html    = string.format(html, self:buildId(field), self:buildName(field), value, style)
-
+  local html    = [[<input type="text" id="%s" name="%s" value=%q ]]
+  local html    = string.format(html, self:buildId(field), self:buildName(field), value)
+--[[
   if options.onblur then
     html = html .. string.format(" onblur=%q", options.onblur)
   end
@@ -93,7 +105,8 @@ function FormHelper:textField(field, options)
   if options.onkeyup then
     html = html .. string.format(" onkeyup=%q", options.onkeyup)
   end
-
+]]
+  local html = html .. self:htmlOptions(options)
   return (html .. ' />')
 end
 
