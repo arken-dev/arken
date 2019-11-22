@@ -166,6 +166,10 @@ void mvm::push(mvm::data * data)
   if( mvm::s_version != data->m_version ) {
     delete data;
   } else {
+    if ( data->m_gc != mvm::s_gc ) {
+      lua_gc(data->state(), LUA_GCCOLLECT, 0);
+      data->m_gc = s_gc;
+    }
     container::push(data);
     s_pool ++;
   }
@@ -234,7 +238,7 @@ int mvm::gc()
   mvm::data * data;
 
   s_gc ++;
-  data = pop();
+  data = mvm::pop();
 
   while( data->m_gc != s_gc ) {
     lua_gc(data->state(), LUA_GCCOLLECT, 0);
@@ -243,7 +247,7 @@ int mvm::gc()
     mvm::back(data);
     i++;
 
-    data = pop();
+    data = mvm::pop();
   }
 
   mvm::back(data);
