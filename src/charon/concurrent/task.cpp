@@ -83,7 +83,12 @@ void task::run()
     }
 
     // GC
-    lua_gc(L, LUA_GCCOLLECT, 0);
+    if( m_release ) {
+      i.release();
+      lua_close(L);
+    } else {
+      lua_gc(L, LUA_GCCOLLECT, 0);
+    }
   } else {
     m_function(this->m_uuid);
   }
@@ -120,14 +125,14 @@ string task::push(task * task)
   return string(task->m_uuid);
 }
 
-string task::start(const char * fileName, const char * params)
+string task::start(const char * fileName, const char * params, bool release)
 {
-  return task::push(new task(fileName, params));
+  return task::push(new task(fileName, params, release));
 }
 
-string task::start(void (*func)( const char * uuid), const char * params)
+string task::start(void (*func)( const char * uuid), const char * params, bool release)
 {
-  return task::push(new task(func, params));
+  return task::push(new task(func, params, release));
 }
 
 void task::set(uint32_t max)
@@ -135,19 +140,21 @@ void task::set(uint32_t max)
   task::max = max;
 }
 
-task::task(const char * fileName, const char * params)
+task::task(const char * fileName, const char * params, bool release)
 {
   m_fileName = fileName;
   m_function = nullptr;
   m_uuid     = os::uuid();
   m_params   = params;
+  m_release  = release;
 }
 
-task::task(void (*func)(const char * uuid), const char * params)
+task::task(void (*func)(const char * uuid), const char * params, bool release)
 {
   m_function = func;
   m_uuid     = os::uuid();
   m_params   = params;
+  m_release  = release;
 }
 
 task::~task()
