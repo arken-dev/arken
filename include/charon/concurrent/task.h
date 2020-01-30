@@ -29,18 +29,19 @@ namespace concurrent {
     string m_uuid;
     string m_params;
     string m_fileName;
+    bool m_release;
     std::function<void( const char * )> m_function;
 
     void run();
 
     public:
-    task(const char * fileName, const char * params);
-    task(void (*func)( const char * uuid ), const char * params);
+    task(const char * fileName, const char * params, bool release);
+    task(void (*func)( const char * uuid ), const char * params, bool release);
     ~task();
     static void working();
     static task * get();
-    static string start(const char * fileName, const char * params);
-    static string start(void (* func)( const char *), const char * params);
+    static string start(const char * fileName, const char * params, bool release = false);
+    static string start(void (* func)( const char *), const char * params, bool release = false);
     static string push(task * task);
     static void wait();
     static void set(uint32_t max);
