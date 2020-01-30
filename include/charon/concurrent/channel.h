@@ -38,6 +38,7 @@ namespace concurrent {
     string m_params;
     string m_fileName;
     bool m_finished;
+    bool m_release;
     channel * m_client;
     std::function<void( channel * )> m_function;
     void run();
@@ -52,8 +53,8 @@ namespace concurrent {
       std::condition_variable * write_condition
     );
 
-    channel( const char * fileName, const char * params );
-    channel( void (*func)( channel * channel ), const char * params );
+    channel( const char * fileName, const char * params, bool release );
+    channel( void (*func)( channel * channel ), const char * params, bool release );
 
     ~channel();
     bool empty();
@@ -62,8 +63,8 @@ namespace concurrent {
 
     static void working();
     static channel * get(); // private ???
-    static channel * start(const char * fileName, const char * params);
-    static channel * start(void (* func)( channel *), const char * params);
+    static channel * start(const char * fileName, const char * params, bool release = false);
+    static channel * start(void (* func)( channel *), const char * params, bool release = false);
     static channel * push(channel * c); // private ???
     static void wait();
     static void set(uint32_t max);

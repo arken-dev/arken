@@ -89,7 +89,12 @@ void channel::run()
     m_client->m_finished = true;
 
     // GC
-    lua_gc(L, LUA_GCCOLLECT, 0);
+    if( m_release ) {
+      i.release();
+      lua_close(L);
+    } else {
+      lua_gc(L, LUA_GCCOLLECT, 0);
+    }
   } else {
     //m_function(this->m_uuid); execute m_function with m_channel
   }
@@ -147,9 +152,10 @@ channel::channel(
   m_write_condition = write_condition;
   m_function = nullptr;
   m_finished = false;
+  m_release   = false;
 }
 
-channel::channel(const char * fileName, const char * params)
+channel::channel(const char * fileName, const char * params, bool release)
 {
   m_read  = new std::queue<std::string>;
   m_write = new std::queue<std::string>;
@@ -162,9 +168,10 @@ channel::channel(const char * fileName, const char * params)
   m_params   = params;
   m_function = nullptr;
   m_finished = false;
+  m_release  = release;
 }
 
-channel::channel(void (*func)( channel * channel ), const char * params)
+channel::channel(void (*func)( channel * channel ), const char * params, bool release)
 {
   m_read  = new std::queue<std::string>;
   m_write = new std::queue<std::string>;
@@ -177,16 +184,17 @@ channel::channel(void (*func)( channel * channel ), const char * params)
   m_function = func;
   m_params   = params;
   m_finished = false;
+  m_release  = release;
 }
 
-channel * channel::start(const char * fileName, const char * params)
+channel * channel::start(const char * fileName, const char * params, bool release)
 {
-  return channel::push(new channel(fileName, params));
+  return channel::push(new channel(fileName, params, release));
 }
 
-channel * channel::start(void (*func)( channel * channel), const char * params)
+channel * channel::start(void (*func)( channel * channel), const char * params, bool release)
 {
-  return channel::push(new channel(func, params));
+  return channel::push(new channel(func, params, release));
 }
 
 void channel::set(uint32_t max)
