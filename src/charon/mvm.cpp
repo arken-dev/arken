@@ -336,6 +336,7 @@ mvm::data::data(int version)
 mvm::data::~data()
 {
   if( m_release == false ) {
+    s_pool --;
     lua_close(m_State);
   }
 }
