@@ -22,9 +22,20 @@ checkChannel( lua_State *L ) {
 
 static int
 charon_channel_start(lua_State *L) {
+  bool release = false;
   const char * fileName = luaL_checkstring(L, 1);
-  char * data = json_lock_encode(L);
-  channel * chn = channel::start( fileName, data );
+  char * data;
+
+  if(lua_gettop(L) == 1) { /* número de argumentos */
+    data = new char[3]{'{','}','\0'};
+  } else {
+    if(lua_gettop(L) == 3) { // number of arguments
+      release = lua_toboolean(L, 3);
+      lua_settop(L, 2);
+    }
+    data = json_lock_encode(L);
+  }
+  channel * chn = channel::start( fileName, data, release );
   channel **ptr = (channel **)lua_newuserdata(L, sizeof(channel*));
   *ptr = chn;
   luaL_getmetatable(L, "charon.concurrent.channel.metatable");
