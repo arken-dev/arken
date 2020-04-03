@@ -75,6 +75,8 @@ local function encode(str)
   return (str:gsub("([^A-Za-z0-9%_%.%-%~])", M.encodeUpper))
 end
 
+M.encode = encode
+
 -- for query values, prefer + instead of %20 for spaces
 local function encodeValue(str)
   local str = encode(str)
