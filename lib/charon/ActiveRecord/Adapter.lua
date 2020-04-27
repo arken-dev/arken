@@ -84,7 +84,7 @@ ActiveRecord_Adapter.finders['string'] = function(value)
   if value == 'NULL' or value == 'NOT NULL' then
     return ' IS ' .. value
   else
-    return " = '".. value .. "'"
+    return " = '".. value:replace("'", "''") .. "'"
   end
 end
 
