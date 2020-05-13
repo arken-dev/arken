@@ -77,6 +77,17 @@ ActiveRecord.inherit = function(class)
   end
 
   -----------------------------------------------------------------------------
+  -- ActiveRecord#last
+  -----------------------------------------------------------------------------
+
+  class.last = function(params)
+    params = params or {}
+    params.limit = 1
+    params.order = string.format("%s.%s DESC", class.tableName, class.primaryKey)
+    return class.adapter():find(params)
+  end
+
+  -----------------------------------------------------------------------------
   -- ActiveRecord#exists
   -----------------------------------------------------------------------------
 
