@@ -72,7 +72,7 @@ M.encodeUpper = function(v)
 end
 
 local function encode(str)
-  return (str:gsub("([^A-Za-z0-9%_%.%-%~])", M.encodeUpper))
+  return (tostring(str):gsub("([^A-Za-z0-9%_%.%-%~])", M.encodeUpper))
 end
 
 M.encode = encode
