@@ -189,9 +189,6 @@ function ActiveRecord_Adapter:where(values, flag)
         col = col .. index .. self.finders[type(value)](value)
       end
     end
-    if flag and #col == 0 then
-      error {"parameters for find empty", traceback = debug.traceback() }
-    end
     if col ~= '' then
       result = ' WHERE ' .. result .. col
     end
@@ -213,6 +210,10 @@ function ActiveRecord_Adapter:where(values, flag)
   end
   if offset then
     result = result .. ' OFFSET ' .. offset
+  end
+
+  if #result == 0 then
+    error {"parameters for find empty", traceback = debug.traceback() }
   end
 
   return result
