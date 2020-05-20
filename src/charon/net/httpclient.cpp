@@ -60,6 +60,8 @@ HttpClient::HttpClient(const char * url)
   // example.com is redirected, so we tell libcurl to follow redirection
   curl_easy_setopt(m_curl, CURLOPT_FOLLOWLOCATION, 1L);
 
+  curl_easy_setopt(m_curl, CURLOPT_TIMEOUT, 60L);
+
   // send all data to this function
   curl_easy_setopt(m_curl, CURLOPT_WRITEFUNCTION, HttpClient::callback);
 
