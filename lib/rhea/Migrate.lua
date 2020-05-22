@@ -1,10 +1,23 @@
 require 'charon.ActiveRecord'
 
-local Migrate = Class.new("Migrate")
+local Migrate = Class.new("rhea.Migrate")
 
 Migrate.help   = {}
 Migrate.dir    = nil
 Migrate.output = print
+
+-------------------------------------------------------------------------------
+-- DIR
+-------------------------------------------------------------------------------
+
+if os.exists('migrate') then
+  -- default dir in generate migrate
+  Migrate.dir = "migrate"
+end
+
+if os.exists('db/migrate') then
+  Migrate.dir = "db/migrate"
+end
 
 -------------------------------------------------------------------------------
 -- RUN
@@ -16,18 +29,6 @@ Migrate.help.run = [[
 
 function Migrate:runPrepare()
   self.list = ActiveRecord.adapter():prepareMigration()
-
-  if os.exists('migrate') then
-    Migrate.dir = "migrate"
-  end
-
-  if os.exists('db/migrate') then
-    Migrate.dir = "db/migrate"
-  end
-
-  if Migrate.dir == nil then
-    error('migrate dir not exists')
-  end
 end
 
 function Migrate:run()
@@ -78,7 +79,7 @@ function Migrate:generate()
   local DateTime  = require('charon.time.DateTime')
   local params    = self:params()
   local timestamp = Migrate.timestamp or DateTime.currentDateTime():toString('yyyyMMddhhmmss')
-  local name      = tostring(params[1]):underscore()
+  local name      = tostring(params[1]):dasherize()
   if name == 'nil' then
     error('arg for migrate name')
   end
@@ -86,8 +87,8 @@ function Migrate:generate()
   if params.sql then
     ext = 'sql'
   end
-  if not os.exists(Migrate.dir) then
-    os.mkpath(Migrate.dir)
+  if Migrate.dir == nil then
+    os.mkpath('migrate')
   end
   local fileName = string.format(Migrate.dir .. '/%s_%s.%s', timestamp, name, ext)
   Migrate.output('create ' .. fileName )
