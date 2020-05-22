@@ -111,6 +111,12 @@ rhea.run = function(args)
     local name, action = rhea.parseName(arg[0])
     local module = require('rhea.' .. name)
 
+    if action == 'help' then
+      rhea.output(module.className:underscore())
+      rhea.help(module)
+      os.exit()
+    end
+
     -------------------------------------------------------------------------------
     -- EXECUTE
     -------------------------------------------------------------------------------
