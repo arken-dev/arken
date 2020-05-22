@@ -3,7 +3,7 @@ require 'charon.ActiveRecord'
 local Migrate = Class.new("Migrate")
 
 Migrate.help   = {}
-Migrate.dir    = "db/migrate"
+Migrate.dir    = nil
 Migrate.output = print
 
 -------------------------------------------------------------------------------
@@ -16,6 +16,18 @@ Migrate.help.run = [[
 
 function Migrate:runPrepare()
   self.list = ActiveRecord.adapter():prepareMigration()
+
+  if os.exists('migrate') then
+    Migrate.dir = "migrate"
+  end
+
+  if os.exists('db/migrate') then
+    Migrate.dir = "db/migrate"
+  end
+
+  if Migrate.dir == nil then
+    error('migrate dir not exists')
+  end
 end
 
 function Migrate:run()
