@@ -564,7 +564,7 @@ char * string::mid(const char * string, int pos, int len, int string_len)
     len = 0;
   }
 
-  if ( (size_t) len > string_len ) {
+  if ( (size_t) len > (size_t) string_len ) {
     len = string_len;
   }
 
