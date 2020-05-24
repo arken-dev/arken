@@ -79,7 +79,7 @@ function Migrate:generate()
   local DateTime  = require('charon.time.DateTime')
   local params    = self:params()
   local timestamp = Migrate.timestamp or DateTime.currentDateTime():toString('yyyyMMddhhmmss')
-  local name      = tostring(params[1]):dasherize()
+  local name      = tostring(params[1]):underscore()
   if name == 'nil' then
     error('arg for migrate name')
   end
