@@ -1,10 +1,23 @@
 require 'charon.ActiveRecord'
 
-local Migrate = Class.new("Migrate")
+local Migrate = Class.new("rhea.Migrate")
 
 Migrate.help   = {}
-Migrate.dir    = "db/migrate"
+Migrate.dir    = nil
 Migrate.output = print
+
+-------------------------------------------------------------------------------
+-- DIR
+-------------------------------------------------------------------------------
+
+if os.exists('migrate') then
+  -- default dir in generate migrate
+  Migrate.dir = "migrate"
+end
+
+if os.exists('db/migrate') then
+  Migrate.dir = "db/migrate"
+end
 
 -------------------------------------------------------------------------------
 -- RUN
@@ -74,8 +87,8 @@ function Migrate:generate()
   if params.sql then
     ext = 'sql'
   end
-  if not os.exists(Migrate.dir) then
-    os.mkpath(Migrate.dir)
+  if Migrate.dir == nil then
+    os.mkpath('migrate')
   end
   local fileName = string.format(Migrate.dir .. '/%s_%s.%s', timestamp, name, ext)
   Migrate.output('create ' .. fileName )
