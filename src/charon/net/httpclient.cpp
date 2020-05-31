@@ -73,6 +73,12 @@ HttpClient::HttpClient(const char * url)
 
   // some servers don't like requests that are made without a user-agent field, so we provide one
   curl_easy_setopt(m_curl, CURLOPT_USERAGENT, "libcurl-agent/1.0");
+
+  // https://curl.haxx.se/docs/sslcerts.html
+  // Tell libcurl to not verify the peer. With libcurl you disable this with
+  // curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, FALSE);
+  // With the curl command line tool, you disable this with -k/--insecure.
+  curl_easy_setopt(m_curl, CURLOPT_SSL_VERIFYPEER, 0);
 }
 
 HttpClient::~HttpClient()
