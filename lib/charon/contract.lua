@@ -50,22 +50,22 @@ contract.create = function(table, name)
 
   -- check if not exists contract_prepare
   if table[prepare] == nil then
-    table[prepare] = function(t, params) end
+    table[prepare] = function(self, ...) end
   end
 
   -- check if not exists contract_validate
   if table[validate] == nil then
-    table[validate] = function(t, params) end
+    table[validate] = function(self, ...) end
   end
 
   -- check if not exists contract_before
   if table[before] == nil then
-    table[before] = function(t, params) end
+    table[before] = function(self, ...) end
   end
 
   -- check if not exists contract_before
   if table[after] == nil then
-    table[after] = function(t, params) end
+    table[after] = function(self, ...) end
   end
 
   -- contract is now "contract_body"
@@ -73,14 +73,14 @@ contract.create = function(table, name)
   table[body] = func
 
   -- contract current
-  table[name] = function(t, params)
-    contract.clear(t)
-    table[prepare](t, params)
-    local errors = table[validate](t, params) or t.errors
+  table[name] = function(self, ...)
+    contract.clear(self)
+    table[prepare](self, ...)
+    local errors = table[validate](self, ...) or self.errors
     contract.bang(errors)
-    table[before](t, params)
-    local result = table[body](t, params)
-    table[after](t, params)
+    table[before](self, ...)
+    local result = table[body](self, ...)
+    table[after](self, ...)
     return result
   end
 
