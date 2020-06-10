@@ -26,15 +26,46 @@ function Array:count()
   return count
 end
 
+function Array:keys()
+  local keys = Array.new()
+  for index, value in pairs(self) do
+     keys:insert(index)
+  end
+  return keys
+end
+
+function Array:contains(value)
+  for _, v in pairs(self) do
+    if value == v then
+      return true
+    end
+  end
+  return false
+end
+
+function Array:uniq()
+  local uniq = Array.new()
+  for i, value in pairs(self) do
+    if not uniq:contains(value) then
+      uniq:insert(value)
+    end
+  end
+  return uniq
+end
+
 function Array:join(str)
   local raw = ''
   for _, value in pairs(self) do
     if not empty(raw) then
       raw = raw .. str
-      raw = raw .. tostring(value)
     end
+    raw = raw .. tostring(value)
   end
   return raw
+end
+
+function Array:insert(value)
+  table.insert(self, value)
 end
 
 return Array
