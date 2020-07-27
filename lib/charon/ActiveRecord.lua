@@ -73,6 +73,8 @@ ActiveRecord.inherit = function(class)
   -----------------------------------------------------------------------------
 
   class.find = function(params)
+    params = params or {}
+    params.limit = 1
     return class.adapter():find(params)
   end
 
