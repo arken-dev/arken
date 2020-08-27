@@ -19,10 +19,11 @@ local ActiveRecord_PostgresAdapter = Class.new("ActiveRecord.PostgresAdapter", A
 ActiveRecord_PostgresAdapter.instanceConnection = nil
 
 function ActiveRecord_PostgresAdapter:connect()
+  local errmsg = nil
   if ActiveRecord_PostgresAdapter.instanceConnection == nil then
     local env = driver.postgres()
     ActiveRecord_PostgresAdapter.instanceConnection, errmsg = env:connect(
-      self.database, self.user, password, self.host
+      self.database, self.user, self.password, self.host
     )
     if errmsg ~= nil then
       ActiveRecord_PostgresAdapter.instanceConnection = nil
