@@ -55,6 +55,10 @@ Class.new = function(className, inheritedBy, params)
     class.superClass = Class
   end
 
+  function class:__tostring()
+    return string.format('%s Class', self.className)
+  end
+
   -- contract
   function class.contract(name)
     --if class[name .. "Body"] then
