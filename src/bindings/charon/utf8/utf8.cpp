@@ -47,22 +47,30 @@ static int charon_utf8_len( lua_State *L ) {
   return 1;
 }
 
+static void
+register_arken_utf8( lua_State *L ) {
+  static const luaL_reg Map[] = {
+    {"lower",  charon_utf8_lower},
+    {"upper",  charon_utf8_upper},
+    {"format", charon_utf8_format},
+    {"len",    charon_utf8_len},
+    {"decode", charon_utf8_decode},
+    {"encode", charon_utf8_encode},
+    {NULL, NULL}
+  };
+  luaL_newmetatable(L, "utf8");
+  luaL_register(L, NULL, Map);
+  lua_pushvalue(L, -1);
+  lua_setfield(L, -1, "__index");
+}
 
 extern "C" {
+  int luaopen_arken_utf8( lua_State *L ) {
+    register_arken_utf8( L );
+    return 1;
+  }
   int luaopen_charon_utf8( lua_State *L ) {
-    static const luaL_reg Map[] = {
-      {"lower",  charon_utf8_lower},
-      {"upper",  charon_utf8_upper},
-      {"format", charon_utf8_format},
-      {"len",    charon_utf8_len},
-      {"decode", charon_utf8_decode},
-      {"encode", charon_utf8_encode},
-      {NULL, NULL}
-    };
-    luaL_newmetatable(L, "utf8");
-    luaL_register(L, NULL, Map);
-    lua_pushvalue(L, -1);
-    lua_setfield(L, -1, "__index");
+    register_arken_utf8( L );
     return 1;
   }
 }

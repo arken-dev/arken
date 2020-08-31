@@ -116,4 +116,10 @@ extern "C" {
     registerChannelClassMethods(L);
     return 1;
   }
+  int
+  luaopen_arken_concurrent_channel( lua_State *L ) {
+    registerChannelInstanceMethods(L);
+    registerChannelClassMethods(L);
+    return 1;
+  }
 }

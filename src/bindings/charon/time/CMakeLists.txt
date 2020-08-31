@@ -9,6 +9,7 @@
 # ------------------------------------------------------------------------------
 
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/clib/charon/time)
+set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/clib/arken/time)
 
 add_subdirectory(date)
 add_subdirectory(datetime)

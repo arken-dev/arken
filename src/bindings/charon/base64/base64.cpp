@@ -38,4 +38,16 @@ extern "C" {
     lua_setfield(L, -1, "__index");
     return 1;
   }
+  int luaopen_arken_base64( lua_State *L ) {
+    static const luaL_reg Map[] = {
+      {"encode", charon_base64_encode},
+      {"decode", charon_base64_decode},
+      {NULL, NULL}
+    };
+    luaL_newmetatable(L, "base64");
+    luaL_register(L, NULL, Map);
+    lua_pushvalue(L, -1);
+    lua_setfield(L, -1, "__index");
+    return 1;
+  }
 }

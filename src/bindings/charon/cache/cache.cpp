@@ -42,6 +42,19 @@ static int charon_cache_remove( lua_State *L ) {
 }
 
 extern "C" {
+  int luaopen_arken_cache( lua_State *L ) {
+    static const luaL_reg Map[] = {
+      {"value",  charon_cache_value},
+      {"insert", charon_cache_insert},
+      {"remove", charon_cache_remove},
+      {NULL, NULL}
+    };
+    luaL_newmetatable(L, "cache");
+    luaL_register(L, NULL, Map);
+    lua_pushvalue(L, -1);
+    lua_setfield(L, -1, "__index");
+    return 1;
+  }
   int luaopen_charon_cache( lua_State *L ) {
     static const luaL_reg Map[] = {
       {"value",  charon_cache_value},

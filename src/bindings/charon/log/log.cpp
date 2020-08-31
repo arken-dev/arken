@@ -153,6 +153,12 @@ registerLogInstanceMethods( lua_State *L ) {
 
 extern "C" {
   int
+  luaopen_arken_Log( lua_State *L ) {
+    registerLogInstanceMethods(L);
+    registerLogClassMethods(L);
+    return 1;
+  }
+  int
   luaopen_charon_Log( lua_State *L ) {
     registerLogInstanceMethods(L);
     registerLogClassMethods(L);

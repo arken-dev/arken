@@ -9,6 +9,7 @@
 # ------------------------------------------------------------------------------
 
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/clib/charon)
+set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/clib/arken)
 
 add_subdirectory(base)
 add_subdirectory(base64)

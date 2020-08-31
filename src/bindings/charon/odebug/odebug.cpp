@@ -18,16 +18,25 @@ static int charon_odebug_info( lua_State *L ) {
   return 2;
 }
 
+void static
+register_arken_odebug( lua_State *L ) {
+  static const luaL_reg Map[] = {
+    {"info", charon_odebug_info},
+    {NULL, NULL}
+  };
+  luaL_newmetatable(L, "odebug");
+  luaL_register(L, NULL, Map);
+  lua_pushvalue(L, -1);
+  lua_setfield(L, -1, "__index");
+}
+
 extern "C" {
+  int luaopen_arken_odebug( lua_State *L ) {
+    register_arken_odebug( L );
+    return 1;
+  }
   int luaopen_charon_odebug( lua_State *L ) {
-    static const luaL_reg Map[] = {
-      {"info", charon_odebug_info},
-      {NULL, NULL}
-    };
-    luaL_newmetatable(L, "odebug");
-    luaL_register(L, NULL, Map);
-    lua_pushvalue(L, -1);
-    lua_setfield(L, -1, "__index");
+    register_arken_odebug( L );
     return 1;
   }
 }
