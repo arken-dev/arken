@@ -95,6 +95,18 @@ json_encode_data(lua_State *L) {
 }
 
 extern "C" {
+  int luaopen_arken_json( lua_State *L ) {
+    static const luaL_reg Map[] = {
+      {"decode", json_decode_data},
+      {"encode", json_encode_data},
+      {NULL, NULL}
+    };
+    luaL_newmetatable(L, "json");
+    luaL_register(L, NULL, Map);
+    lua_pushvalue(L, -1);
+    lua_setfield(L, -1, "__index");
+    return 1;
+  }
   int luaopen_charon_json( lua_State *L ) {
     static const luaL_reg Map[] = {
       {"decode", json_decode_data},
