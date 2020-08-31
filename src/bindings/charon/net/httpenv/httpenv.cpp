@@ -279,6 +279,13 @@ registerHttpEnvInstanceMethods( lua_State *L ) {
 
 extern "C" {
   int
+  luaopen_arken_net_HttpEnv( lua_State *L ) {
+    registerHttpEnvInstanceMethods(L);
+    registerHttpEnvClassMethods(L);
+    return 1;
+  }
+
+  int
   luaopen_charon_net_HttpEnv( lua_State *L ) {
     registerHttpEnvInstanceMethods(L);
     registerHttpEnvClassMethods(L);

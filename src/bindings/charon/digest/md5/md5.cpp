@@ -27,18 +27,26 @@ static int charon_digest_md5_file( lua_State *L ) {
   return 1;
 }
 
+void static
+register_arken_digest_md5( lua_State *L ) {
+  static const luaL_reg Map[] = {
+    {"hash", charon_digest_md5_hash},
+    {"file", charon_digest_md5_file},
+    {NULL, NULL}
+  };
+  luaL_newmetatable(L, "md5");
+  luaL_register(L, NULL, Map);
+  lua_pushvalue(L, -1);
+  lua_setfield(L, -1, "__index");
+}
 
 extern "C" {
+  int luaopen_arken_digest_md5( lua_State *L ) {
+    register_arken_digest_md5(L);
+    return 1;
+  }
   int luaopen_charon_digest_md5( lua_State *L ) {
-    static const luaL_reg Map[] = {
-      {"hash", charon_digest_md5_hash},
-      {"file", charon_digest_md5_file},
-      {NULL, NULL}
-    };
-    luaL_newmetatable(L, "md5");
-    luaL_register(L, NULL, Map);
-    lua_pushvalue(L, -1);
-    lua_setfield(L, -1, "__index");
+    register_arken_digest_md5(L);
     return 1;
   }
 }

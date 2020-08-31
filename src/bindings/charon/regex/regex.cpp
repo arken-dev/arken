@@ -74,22 +74,30 @@ static int charon_regex_split( lua_State *L ) {
   return 1;
 }
 
+static void
+register_arken_regex( lua_State *L ) {
+  static const luaL_reg Map[] = {
+    {"ematch",  charon_regex_ematch},
+    {"index",   charon_regex_index},
+    {"match",   charon_regex_match},
+    {"replace", charon_regex_replace},
+    {"split",   charon_regex_split},
+    {"scan",    charon_regex_scan},
+    {NULL, NULL}
+  };
+  luaL_newmetatable(L, "regex");
+  luaL_register(L, NULL, Map);
+  lua_pushvalue(L, -1);
+  lua_setfield(L, -1, "__index");
+}
 
 extern "C" {
+  int luaopen_arken_regex( lua_State *L ) {
+    register_arken_regex( L ); 
+    return 1;
+  }
   int luaopen_charon_regex( lua_State *L ) {
-    static const luaL_reg Map[] = {
-      {"ematch",  charon_regex_ematch},
-      {"index",   charon_regex_index},
-      {"match",   charon_regex_match},
-      {"replace", charon_regex_replace},
-      {"split",   charon_regex_split},
-      {"scan",    charon_regex_scan},
-      {NULL, NULL}
-    };
-    luaL_newmetatable(L, "regex");
-    luaL_register(L, NULL, Map);
-    lua_pushvalue(L, -1);
-    lua_setfield(L, -1, "__index");
+    register_arken_regex( L ); 
     return 1;
   }
 }

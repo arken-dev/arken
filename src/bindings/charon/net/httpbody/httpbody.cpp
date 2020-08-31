@@ -114,6 +114,13 @@ registerHttpBodyInstanceMethods( lua_State *L ) {
 
 extern "C" {
   int
+  luaopen_arken_net_HttpBody( lua_State *L ) {
+    registerHttpBodyInstanceMethods(L);
+    registerHttpBodyClassMethods(L);
+    return 1;
+  }
+
+  int
   luaopen_charon_net_HttpBody( lua_State *L ) {
     registerHttpBodyInstanceMethods(L);
     registerHttpBodyClassMethods(L);

@@ -62,21 +62,28 @@ charon_task_wait(lua_State *L) {
   return 0;
 }
 
+static int
+register_arken_task( lua_State *L ) {
+  static const luaL_reg Map[] = {
+    {"set",     charon_task_set},
+    {"start",   charon_task_start},
+    {"value",   charon_task_value},
+    {"insert",  charon_task_insert},
+    {"wait",    charon_task_wait},
+    {NULL, NULL}
+  };
+  luaL_newmetatable(L, "task");
+  luaL_register(L, NULL, Map);
+  lua_pushvalue(L, -1);
+  lua_setfield(L, -1, "__index");
+  return 1;
+}
 
 extern "C" {
+  int luaopen_arken_task( lua_State *L ) {
+    return register_arken_task( L );
+  }
   int luaopen_charon_task( lua_State *L ) {
-    static const luaL_reg Map[] = {
-      {"set",     charon_task_set},
-      {"start",   charon_task_start},
-      {"value",   charon_task_value},
-      {"insert",  charon_task_insert},
-      {"wait",    charon_task_wait},
-      {NULL, NULL}
-    };
-    luaL_newmetatable(L, "task");
-    luaL_register(L, NULL, Map);
-    lua_pushvalue(L, -1);
-    lua_setfield(L, -1, "__index");
-    return 1;
+    return register_arken_task( L );
   }
 }

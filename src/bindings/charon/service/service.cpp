@@ -50,21 +50,29 @@ charon_service_load(lua_State *L) {
   return 0;
 }
 
+static void
+register_arken_service( lua_State *L ) {
+  static const luaL_reg Map[] = {
+    {"quit",    charon_service_quit},
+    {"exit",    charon_service_exit},
+    {"loop",    charon_service_loop},
+    {"start",   charon_service_start},
+    {"load",    charon_service_load},
+    {NULL, NULL}
+  };
+  luaL_newmetatable(L, "service");
+  luaL_register(L, NULL, Map);
+  lua_pushvalue(L, -1);
+  lua_setfield(L, -1, "__index");
+}
 
 extern "C" {
+  int luaopen_arken_service( lua_State *L ) {
+    register_arken_service( L );
+    return 1;
+  }
   int luaopen_charon_service( lua_State *L ) {
-    static const luaL_reg Map[] = {
-      {"quit",    charon_service_quit},
-      {"exit",    charon_service_exit},
-      {"loop",    charon_service_loop},
-      {"start",   charon_service_start},
-      {"load",    charon_service_load},
-      {NULL, NULL}
-    };
-    luaL_newmetatable(L, "service");
-    luaL_register(L, NULL, Map);
-    lua_pushvalue(L, -1);
-    lua_setfield(L, -1, "__index");
+    register_arken_service( L );
     return 1;
   }
 }

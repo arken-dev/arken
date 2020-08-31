@@ -26,18 +26,25 @@ static int charon_digest_sha1_file( lua_State *L ) {
   return 1;
 }
 
+static void register_arken_digest_sha1( lua_State *L ) {
+  static const luaL_reg Map[] = {
+    {"hash", charon_digest_sha1_hash},
+    {"file", charon_digest_sha1_file},
+    {NULL, NULL}
+  };
+  luaL_newmetatable(L, "sha1");
+  luaL_register(L, NULL, Map);
+  lua_pushvalue(L, -1);
+  lua_setfield(L, -1, "__index");
+}
 
 extern "C" {
+  int luaopen_arken_digest_sha1( lua_State *L ) {
+    register_arken_digest_sha1(L);
+    return 1;
+  }
   int luaopen_charon_digest_sha1( lua_State *L ) {
-    static const luaL_reg Map[] = {
-      {"hash", charon_digest_sha1_hash},
-      {"file", charon_digest_sha1_file},
-      {NULL, NULL}
-    };
-    luaL_newmetatable(L, "sha1");
-    luaL_register(L, NULL, Map);
-    lua_pushvalue(L, -1);
-    lua_setfield(L, -1, "__index");
+    register_arken_digest_sha1(L);
     return 1;
   }
 }

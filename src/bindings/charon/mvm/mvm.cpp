@@ -61,23 +61,32 @@ charon_mvm_pool(lua_State *L) {
   return 1;
 }
 
+static void
+register_arken_mvm( lua_State *L ) {
+  static const luaL_reg Map[] = {
+    {"gc",      charon_mvm_gc},
+    {"version", charon_mvm_version},
+    {"reload",  charon_mvm_reload},
+    {"clear",   charon_mvm_clear},
+    {"uptime",  charon_mvm_uptime},
+    {"pool",    charon_mvm_pool},
+    {"set",     charon_mvm_set},
+    {"at",      charon_mvm_at},
+    {NULL, NULL}
+  };
+  luaL_newmetatable(L, "mvm");
+  luaL_register(L, NULL, Map);
+  lua_pushvalue(L, -1);
+  lua_setfield(L, -1, "__index");
+}
+
 extern "C" {
+  int luaopen_arken_mvm( lua_State *L ) {
+    register_arken_mvm(L);
+    return 1;
+  }
   int luaopen_charon_mvm( lua_State *L ) {
-    static const luaL_reg Map[] = {
-      {"gc",      charon_mvm_gc},
-      {"version", charon_mvm_version},
-      {"reload",  charon_mvm_reload},
-      {"clear",   charon_mvm_clear},
-      {"uptime",  charon_mvm_uptime},
-      {"pool",    charon_mvm_pool},
-      {"set",     charon_mvm_set},
-      {"at",      charon_mvm_at},
-      {NULL, NULL}
-    };
-    luaL_newmetatable(L, "mvm");
-    luaL_register(L, NULL, Map);
-    lua_pushvalue(L, -1);
-    lua_setfield(L, -1, "__index");
+    register_arken_mvm(L);
     return 1;
   }
 }

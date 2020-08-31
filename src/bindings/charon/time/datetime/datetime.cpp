@@ -433,6 +433,12 @@ registerDateTimeInstanceMethods( lua_State *L ) {
 
 extern "C" {
   int
+  luaopen_arken_time_DateTime( lua_State *L ) {
+    registerDateTimeInstanceMethods(L);
+    registerDateTimeClassMethods(L);
+    return 1;
+  }
+  int
   luaopen_charon_time_DateTime( lua_State *L ) {
     registerDateTimeInstanceMethods(L);
     registerDateTimeClassMethods(L);

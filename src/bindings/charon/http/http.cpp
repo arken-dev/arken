@@ -32,19 +32,27 @@ static int charon_http_put( lua_State *L ) {
   return 1;
 }
 
+static void register_arken_http( lua_State *L ) {
+  static const luaL_reg Map[] = {
+    {"read", charon_http_read},
+    {"get",  charon_http_get},
+    {"post", charon_http_post},
+    {"put",  charon_http_put},
+    {NULL, NULL}
+  };
+  luaL_newmetatable(L, "http");
+  luaL_register(L, NULL, Map);
+  lua_pushvalue(L, -1);
+  lua_setfield(L, -1, "__index");
+}
+
 extern "C" {
+  int luaopen_arken_http( lua_State *L ) {
+    register_arken_http(L);
+    return 1;
+  }
   int luaopen_charon_http( lua_State *L ) {
-    static const luaL_reg Map[] = {
-      {"read", charon_http_read},
-      {"get",  charon_http_get},
-      {"post", charon_http_post},
-      {"put",  charon_http_put},
-      {NULL, NULL}
-    };
-    luaL_newmetatable(L, "http");
-    luaL_register(L, NULL, Map);
-    lua_pushvalue(L, -1);
-    lua_setfield(L, -1, "__index");
+    register_arken_http(L);
     return 1;
   }
 }
