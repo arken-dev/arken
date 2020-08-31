@@ -9,6 +9,7 @@
 # ------------------------------------------------------------------------------
 
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/clib/charon/net)
+set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/clib/arken/net)
 
 add_subdirectory(httpbody)
 add_subdirectory(httpclient)
