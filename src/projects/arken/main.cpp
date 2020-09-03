@@ -89,6 +89,28 @@ bool charonConsoleDecrementLevel(string &row)
   return false;
 }
 
+void executeRoutine(lua_State *L)
+{
+  lua_settop(L, 0);
+  int rv;
+  lua_getglobal(L, "require");
+  lua_pushstring(L, "routine");
+  rv = lua_pcall(L, 1, 1, 0);
+  if (rv) {
+    fprintf(stderr, "erro no inicio: %s\n", lua_tostring(L, -1));
+    throw;
+  }
+
+  lua_getfield(L, -1, "run");
+  lua_getglobal(L, "arg");
+
+  if( lua_pcall(L, 1, 0, 0) != 0 ) {
+    fprintf(stderr, "%s\n", lua_tostring(L, -1));
+  } else {
+    //return 0;
+  }
+}
+
 /* TODO
  1) level for if, while etc
  2) set up
@@ -168,8 +190,13 @@ int main(int argc, char * argv[])
   if( os::exists(argv[1]) ) {
     return charonFileLoad(L, argv[1]);
   } else {
-    fprintf(stderr, "No such file or directory %s\n", argv[1]);
-    return 1;
+    if (string::contains(argv[1], ":")) {
+      executeRoutine(L);
+      std::cout << "routine...";
+    } else {
+      fprintf(stderr, "No such file or directory %s\n", argv[1]);
+      return 1;
+    }
   }
 
   return rv;
