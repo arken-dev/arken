@@ -94,7 +94,7 @@ rhea.run = function(args)
       local str = list:at(i)
       str = str:replace("/?.lua", ""):replace('.', '/')
       str = os.abspath(str)
-      str = str .. '/rhea'
+      str = str .. '/routine'
       if os.exists(str) then
         table.insert(path, str)
       end
@@ -109,7 +109,7 @@ rhea.run = function(args)
     end
   else
     local name, action = rhea.parseName(arg[0])
-    local module = require('rhea.' .. name)
+    local module = require('routine.' .. name)
 
     if action == 'help' then
       rhea.output(module.className:underscore())
