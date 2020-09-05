@@ -26,7 +26,7 @@ local helpOutput = function(module, search)
     end
 
     if flag then
-      Routines.output(module.className:underscore())
+      Routines.output(module.className:underscore():replace('routines_', ''))
       Routines.output(help)
     end
   end
