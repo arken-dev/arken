@@ -1,6 +1,6 @@
 require 'charon.ActiveRecord'
 
-local Migrate = Class.new("rhea.Migrate")
+local Migrate = Class.new("routines.Migrate")
 
 Migrate.help   = {}
 Migrate.dir    = nil
