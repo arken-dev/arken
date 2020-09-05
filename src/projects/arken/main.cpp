@@ -192,7 +192,6 @@ int main(int argc, char * argv[])
   } else {
     if (string::contains(argv[1], ":")) {
       executeRoutine(L);
-      std::cout << "routine...";
     } else {
       fprintf(stderr, "No such file or directory %s\n", argv[1]);
       return 1;
