@@ -11,23 +11,6 @@
 
 using charon::mvm;
 
-int charonPackages(lua_State *L)
-{
-  string file = mvm::charonPath();
-  file.append("/src/projects/charon/packages.lua");
-
-  lua_getglobal(L, "dofile");
-  lua_pushstring(L, file);
-
-  int rv = lua_pcall(L, 1, 0, 0);
-  if (rv) {
-    fprintf(stderr, "%s\n", lua_tostring(L, -1));
-    return rv;
-  }
-
-  return 0;
-}
-
 int charonFileLoad(lua_State *L, const char * filename)
 {
   int rv;
@@ -181,10 +164,6 @@ int main(int argc, char * argv[])
 
   if ( argc == 1 ) {
     return charonConsoleLoad(L);
-  }
-
-  if( strcmp(argv[1], "--packages") == 0 ) {
-    return charonPackages(L);
   }
 
   if( os::exists(argv[1]) ) {
