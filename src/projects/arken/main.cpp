@@ -94,7 +94,7 @@ void executeRoutine(lua_State *L)
   lua_settop(L, 0);
   int rv;
   lua_getglobal(L, "require");
-  lua_pushstring(L, "routine");
+  lua_pushstring(L, "arken.routine");
   rv = lua_pcall(L, 1, 1, 0);
   if (rv) {
     fprintf(stderr, "erro no inicio: %s\n", lua_tostring(L, -1));
