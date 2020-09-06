@@ -19,6 +19,7 @@ http://charonplatform.org
 - ./qt-opensource-linux-x64-5.7.1.run
 - install in /opt/Qt/5.7.1
 - add PATH var, ex PATH=/opt/Qt5.7.1/5.7/gcc_64/:$PATH
+- apt-get install libnotify-dev
 
 ### bootstrap (add libraries and install lua lib/include in deps directory)
 
