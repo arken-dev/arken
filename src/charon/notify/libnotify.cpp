@@ -9,10 +9,22 @@
 using namespace charon;
 
 
-void notify::send(string title, string message)
+void notify::send(string title, string message, string icon)
 {
+  if ( icon.equals("ok") ) {
+    icon = "dialog-information";
+  }
+
+  if ( icon.equals("failure") ) {
+    icon = "error";
+  }
+
+  if ( icon.equals("warning") ) {
+    icon = "dialog-warning";
+  }
+
   notify_init("Arken Notify");
-  NotifyNotification * Notify = notify_notification_new(title, message, "dialog-information");
+  NotifyNotification * Notify = notify_notification_new(title, message, icon);
   notify_notification_show(Notify, NULL);
   g_object_unref(G_OBJECT(Notify));
   notify_uninit();

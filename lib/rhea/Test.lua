@@ -97,7 +97,7 @@ function Test:notify()
       if ctime < tmp then
         ctime = tmp
         local icon, body = run(file)
-        notify.send(file, body)      
+        notify.send(file, body, icon)
         print('\n' .. body .. '\n')
       end
     end

@@ -12,7 +12,13 @@ using charon::notify;
 static int charon_notify_send( lua_State *L ) {
   const char * title = luaL_checkstring(L, 1);
   const char * body  = luaL_checkstring(L, 2);
-  notify::send(title, body);
+  if(lua_gettop(L) == 3) { // number of arguments
+    const char * icon = luaL_checkstring(L, 3);
+    notify::send(title, body, icon);
+  } else {
+    notify::send(title, body);
+  }
+
   return 0;
 }
 

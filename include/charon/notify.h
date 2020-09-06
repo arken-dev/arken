@@ -15,7 +15,7 @@ namespace charon
 
 class notify {
   public:
-  static void send(string title, string body);
+  static void send(string title, string body, string icon = "ok");
 };
 
 }
