@@ -8,6 +8,19 @@
 #
 # ------------------------------------------------------------------------------
 
+if(ARKEN_NOTIFY STREQUAL "libnotify")
+  find_package(PkgConfig REQUIRED)
+  find_package(GTK2 REQUIRED gtk)
+  PKG_SEARCH_MODULE(GDK_PIXBUF ${_pkgconfig_REQUIRED} "gdk-pixbuf-2.0")
+  pkg_check_modules(GLIB REQUIRED glib-2.0)
+  pkg_check_modules(LIB_NOTIFY REQUIRED libnotify)
+  PKG_CHECK_MODULES(GDK_PIXBUF, gio-2.0)
+  include_directories(${GLIB_INCLUDE_DIRS})
+  include_directories(${NOTIFY_INCLUDE_DIRS})
+  find_path(GDK_PIXBUF_INCLUDE_DIRS gdk-pixbuf/gdk-pixbuf.h)
+  include_directories(${GDK_PIXBUF_INCLUDE_DIRS})
+endif()
+
 include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${PROJECT_SOURCE_DIR}/deps/include)
 include_directories(${PROJECT_SOURCE_DIR}/src/vendors/ap)
@@ -34,6 +47,7 @@ add_library(
   ${digest-embedded}
   ${mvm-container}
   ${net}
+  ${arken-notify}
   ${os} ${os-executablePath} ${os-filesystem} ${os-name} ${os-pid} ${os-uuid}
   ${concurrent}
   ${regex}
@@ -51,6 +65,12 @@ target_link_libraries(charon zip)
 target_link_libraries(charon curl)
 target_link_libraries(charon lua)
 target_link_libraries(charon json)
+target_link_libraries(charon notify)
+
+if(ARKEN_NOTIFY STREQUAL "libnotify")
+  target_link_libraries(charon ${GLIB_LIBRARIES})
+  target_link_libraries(charon ${NOTIFY_LIBRARIES})
+endif()
 
 if(CHARON_DIGEST STREQUAL "libssl")
   target_link_libraries(charon ssl)

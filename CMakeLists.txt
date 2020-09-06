@@ -23,6 +23,7 @@ include(charon-mvm)
 include(charon-os)
 include(charon-regex)
 include(charon-utf8)
+include(arken-notify)
 
 option(WITHOUT_QT "with(out) QT library")
 
