@@ -101,7 +101,7 @@ function Test:notify()
         print('\n' .. body .. '\n')
       end
     end
-    os.sleep(0.25)
+    os.sleep(0.10)
   end
 end
 
