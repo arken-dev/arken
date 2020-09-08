@@ -84,7 +84,7 @@ end
 -------------------------------------------------------------------------------
 
 Test.help.notify = [[
-  test file with result notify
+  test file with notify result
 ]]
 
 function Test:notify()
@@ -96,12 +96,27 @@ function Test:notify()
       local tmp = os.ctime(file)
       if ctime < tmp then
         ctime = tmp
-        local icon, body = run(file)
-        notify.send(file, body, icon)
+        local status, body = run(file)
+        notify.send(file, body, status)
         print('\n' .. body .. '\n')
       end
     end
     os.sleep(0.10)
+  end
+end
+
+-------------------------------------------------------------------------------
+-- RUN
+-------------------------------------------------------------------------------
+
+Test.help.run = [[
+  test file with console result
+]]
+
+function Test:run()
+  for _, file in ipairs(self:params()) do
+    local _, body = run(file)
+    print('\n' .. body .. '\n')
   end
 end
 
