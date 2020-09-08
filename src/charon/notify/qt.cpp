@@ -8,7 +8,7 @@
 using namespace charon;
 
 
-void notify::send(string title, string message)
+void notify::send(string title, string message, string status)
 {
 
 
