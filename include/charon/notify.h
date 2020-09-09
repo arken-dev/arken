@@ -6,7 +6,7 @@
 #ifndef _CHARON_NOTIFY_
 #define _CHARON_NOTIFY_
 
-#include <charon/base>
+#include <charon/string.h>
 
 using string = charon::string;
 

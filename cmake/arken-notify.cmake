@@ -3,7 +3,7 @@ set(ARKEN_NOTIFY "" CACHE STRING
 
 set_property(
   CACHE ARKEN_NOTIFY PROPERTY STRINGS
-  "" qt libnotify
+  "" qt libnotify glib
 )
 
 if(ARKEN_NOTIFY STREQUAL "")
