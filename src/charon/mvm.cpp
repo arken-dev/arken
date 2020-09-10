@@ -5,11 +5,6 @@
 
 #include <charon/base>
 #include <charon/mvm>
-#include <cstring>
-#include <iostream>
-#include <mutex>
-#include <thread>
-#include <map>
 
 using namespace charon;
 
@@ -20,6 +15,14 @@ std::atomic<int>    mvm::s_gc(0);
 std::atomic<int>    mvm::s_version(0);
 std::atomic<int>    mvm::s_pool(0);
 std::atomic<double> mvm::s_uptime(os::microtime());
+
+std::vector<std::thread>      * mvm::concurrent_workers   = new std::vector<std::thread>;
+std::queue<mvm::Concurrent *> * mvm::concurrent_queue     = new std::queue<mvm::Concurrent *>;
+std::mutex                    * mvm::concurrent_mutex     = new std::mutex;
+std::condition_variable       * mvm::concurrent_condition = new std::condition_variable;
+
+uint32_t mvm::concurrent_max     = os::cores();
+uint32_t mvm::concurrent_actives = 0;
 
 string     mvm::s_charonPath   = "";
 string     mvm::s_profilePath  = "";
@@ -357,6 +360,14 @@ int mvm::data::version()
   return m_version;
 }
 
+void mvm::Concurrent::run()
+{ }
+
+bool mvm::Concurrent::releaseble()
+{
+  return true;
+}
+
 charon::instance::instance(mvm::data * data)
 {
   m_data = data;
@@ -379,4 +390,41 @@ lua_State * instance::state()
 lua_State * instance::release()
 {
   return m_data->release();
+}
+
+void mvm::working()
+{
+
+  while( true ) {
+    mvm::Concurrent * pointer = mvm::get();
+    pointer->run();
+    if( pointer->releaseble() ) {
+      delete pointer;
+    }
+  } // while
+} // mvm::working
+
+mvm::Concurrent * mvm::get()
+{
+
+  mvm::Concurrent * pointer = nullptr;
+  std::unique_lock<std::mutex> lck(*concurrent_mutex);
+  concurrent_condition->wait(lck, []{ return !concurrent_queue->empty(); });
+  pointer = concurrent_queue->front();
+  concurrent_queue->pop();
+
+  return pointer;
+}
+
+void mvm::concurrent(Concurrent * pointer)
+{
+  std::unique_lock<std::mutex> lck(*concurrent_mutex);
+
+  if( concurrent_workers->size() < concurrent_max && (concurrent_workers->size() - concurrent_actives) == 0  ) {
+    concurrent_workers->push_back(std::thread(working));
+  }
+
+  concurrent_queue->push(pointer);
+  concurrent_actives++;
+  concurrent_condition->notify_one();
 }

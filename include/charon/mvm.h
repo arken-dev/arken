@@ -8,6 +8,15 @@
 
 #include <lua/lua.hpp>
 #include <charon/base>
+#include <thread>
+#include <mutex>
+#include <vector>
+#include <queue>
+#include <string>
+#include <map>
+#include <condition_variable>
+#include <cstring>
+#include <iostream>
 
 namespace charon
 {
@@ -49,6 +58,13 @@ class mvm {
     static void push(mvm::data *);
   };
 
+  class Concurrent {
+
+    public:
+    void run();
+    bool releaseble();
+  };
+
   static std::atomic<double> s_uptime;
   static std::atomic<int>    s_gc;
   static std::atomic<int>    s_version;
@@ -62,6 +78,15 @@ class mvm {
 
   private:
   static mvm::data * pop();
+
+  static std::vector<std::thread>      * concurrent_workers;
+  static std::queue<mvm::Concurrent *> * concurrent_queue;
+  static std::mutex                    * concurrent_mutex;
+  static std::condition_variable       * concurrent_condition;
+
+  static uint32_t concurrent_max;
+  static uint32_t concurrent_actives;
+  static Concurrent * get();
 
   mvm() {};
   ~mvm() {};
@@ -83,6 +108,8 @@ class mvm {
   static double uptime();
   static charon::instance instance();
   static const char * charonPath();
+  static void concurrent(Concurrent * pointer);
+  static void working();
 
 };
 

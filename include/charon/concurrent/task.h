@@ -11,7 +11,10 @@
 #include <vector>
 #include <queue>
 #include <string>
+#include <map>
 #include <condition_variable>
+#include <cstring>
+#include <iostream>
 
 namespace charon {
 namespace concurrent {
