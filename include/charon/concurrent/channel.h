@@ -6,25 +6,14 @@
 #ifndef _CHARON_CONCURRENT_CHANNEL_
 #define _CHARON_CONCURRENT_CHANNEL_
 
-#include <thread>
-#include <mutex>
-#include <vector>
-#include <queue>
-#include <string>
-#include <condition_variable>
+#include <charon/mvm.h>
 
 namespace charon {
 namespace concurrent {
 
-  class channel {
+  class channel : public Base {
 
     private:
-    static std::vector<std::thread> * workers;
-    static std::queue<channel *> * queue;
-    static std::mutex * mtx;
-    static std::condition_variable * condition;
-    static uint32_t max;
-    static uint32_t actives;
 
     std::queue<std::string> * m_read;
     std::queue<std::string> * m_write;
@@ -37,13 +26,18 @@ namespace concurrent {
 
     string m_params;
     string m_fileName;
+
     bool m_finished;
     bool m_release;
+    bool m_purge;
+
     channel * m_client;
-    std::function<void( channel * )> m_function;
     void run();
+    bool release();
+    bool purge();
 
     public:
+
     channel(
       std::queue<std::string> * read,
       std::queue<std::string> * write,
@@ -54,20 +48,14 @@ namespace concurrent {
     );
 
     channel( const char * fileName, const char * params, bool release );
-    channel( void (*func)( channel * channel ), const char * params, bool release );
-
     ~channel();
+
     bool empty();
     void write(std::string message);
     std::string read();
 
-    static void working();
-    static channel * get(); // private ???
     static channel * start(const char * fileName, const char * params, bool release = false);
-    static channel * start(void (* func)( channel *), const char * params, bool release = false);
-    static channel * push(channel * c); // private ???
     static void wait();
-    static void set(uint32_t max);
 
   };
 

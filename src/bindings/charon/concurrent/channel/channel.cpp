@@ -44,13 +44,6 @@ charon_channel_start(lua_State *L) {
 }
 
 static int
-charon_channel_set(lua_State *L) {
-  int max = luaL_checkinteger(L, 1);
-  channel::set(max);
-  return 0;
-}
-
-static int
 charon_channel_wait(lua_State *L) {
   channel::wait();
   return 0;
@@ -59,7 +52,6 @@ charon_channel_wait(lua_State *L) {
 static const luaL_reg TaskClassMethods[] = {
   {"start", charon_channel_start},
   {"wait",  charon_channel_wait},
-  {"set",   charon_channel_set},
   {NULL, NULL}
 };
 
