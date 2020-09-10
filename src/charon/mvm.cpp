@@ -363,9 +363,9 @@ int mvm::data::version()
 void mvm::Concurrent::run()
 { }
 
-bool mvm::Concurrent::releaseble()
+bool mvm::Concurrent::release()
 {
-  return true;
+  return false;
 }
 
 charon::instance::instance(mvm::data * data)
@@ -398,7 +398,7 @@ void mvm::working()
   while( true ) {
     mvm::Concurrent * pointer = mvm::get();
     pointer->run();
-    if( pointer->releaseble() ) {
+    if( pointer->release() ) {
       delete pointer;
     }
   } // while

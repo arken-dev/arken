@@ -62,7 +62,7 @@ class mvm {
 
     public:
     void run();
-    bool releaseble();
+    bool release();
   };
 
   static std::atomic<double> s_uptime;
