@@ -21,6 +21,16 @@
 namespace charon
 {
 
+namespace concurrent
+{
+  class Base {
+
+    public:
+    void run();
+    bool release();
+  };
+}
+
 class instance;
 
 class mvm {
@@ -58,12 +68,6 @@ class mvm {
     static void push(mvm::data *);
   };
 
-  class Concurrent {
-
-    public:
-    void run();
-    bool release();
-  };
 
   static std::atomic<double> s_uptime;
   static std::atomic<int>    s_gc;
@@ -79,14 +83,14 @@ class mvm {
   private:
   static mvm::data * pop();
 
-  static std::vector<std::thread>      * concurrent_workers;
-  static std::queue<mvm::Concurrent *> * concurrent_queue;
-  static std::mutex                    * concurrent_mutex;
-  static std::condition_variable       * concurrent_condition;
+  static std::vector<std::thread>       * concurrent_workers;
+  static std::queue<concurrent::Base *> * concurrent_queue;
+  static std::mutex                     * concurrent_mutex;
+  static std::condition_variable        * concurrent_condition;
 
   static uint32_t concurrent_max;
   static uint32_t concurrent_actives;
-  static Concurrent * get();
+  static concurrent::Base * get();
 
   mvm() {};
   ~mvm() {};
@@ -108,7 +112,7 @@ class mvm {
   static double uptime();
   static charon::instance instance();
   static const char * charonPath();
-  static void concurrent(Concurrent * pointer);
+  static void concurrent(concurrent::Base * pointer);
   static void working();
 
 };

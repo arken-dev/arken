@@ -16,10 +16,10 @@ std::atomic<int>    mvm::s_version(0);
 std::atomic<int>    mvm::s_pool(0);
 std::atomic<double> mvm::s_uptime(os::microtime());
 
-std::vector<std::thread>      * mvm::concurrent_workers   = new std::vector<std::thread>;
-std::queue<mvm::Concurrent *> * mvm::concurrent_queue     = new std::queue<mvm::Concurrent *>;
-std::mutex                    * mvm::concurrent_mutex     = new std::mutex;
-std::condition_variable       * mvm::concurrent_condition = new std::condition_variable;
+std::vector<std::thread>       * mvm::concurrent_workers   = new std::vector<std::thread>;
+std::queue<concurrent::Base *> * mvm::concurrent_queue     = new std::queue<concurrent::Base *>;
+std::mutex                     * mvm::concurrent_mutex     = new std::mutex;
+std::condition_variable        * mvm::concurrent_condition = new std::condition_variable;
 
 uint32_t mvm::concurrent_max     = os::cores();
 uint32_t mvm::concurrent_actives = 0;
@@ -360,10 +360,10 @@ int mvm::data::version()
   return m_version;
 }
 
-void mvm::Concurrent::run()
+void concurrent::Base::run()
 { }
 
-bool mvm::Concurrent::release()
+bool concurrent::Base::release()
 {
   return false;
 }
@@ -396,7 +396,7 @@ void mvm::working()
 {
 
   while( true ) {
-    mvm::Concurrent * pointer = mvm::get();
+    concurrent::Base * pointer = mvm::get();
     pointer->run();
     if( pointer->release() ) {
       delete pointer;
@@ -404,10 +404,10 @@ void mvm::working()
   } // while
 } // mvm::working
 
-mvm::Concurrent * mvm::get()
+concurrent::Base * mvm::get()
 {
 
-  mvm::Concurrent * pointer = nullptr;
+  concurrent::Base * pointer = nullptr;
   std::unique_lock<std::mutex> lck(*concurrent_mutex);
   concurrent_condition->wait(lck, []{ return !concurrent_queue->empty(); });
   pointer = concurrent_queue->front();
@@ -416,7 +416,7 @@ mvm::Concurrent * mvm::get()
   return pointer;
 }
 
-void mvm::concurrent(Concurrent * pointer)
+void mvm::concurrent(concurrent::Base * pointer)
 {
   std::unique_lock<std::mutex> lck(*concurrent_mutex);
 
