@@ -360,14 +360,6 @@ int mvm::data::version()
   return m_version;
 }
 
-void concurrent::Base::run()
-{ }
-
-bool concurrent::Base::release()
-{
-  return false;
-}
-
 charon::instance::instance(mvm::data * data)
 {
   m_data = data;
@@ -394,15 +386,21 @@ lua_State * instance::release()
 
 void mvm::working()
 {
-
   while( true ) {
     concurrent::Base * pointer = mvm::get();
     pointer->run();
+
     if( pointer->release() ) {
       delete pointer;
     }
+
+    concurrent_actives--;
+
   } // while
 } // mvm::working
+
+concurrent::Base::~Base()
+{ }
 
 concurrent::Base * mvm::get()
 {

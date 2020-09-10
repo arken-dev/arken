@@ -7,7 +7,7 @@
 #define _CHARON_MVM_
 
 #include <lua/lua.hpp>
-#include <charon/base>
+#include <charon/string.h>
 #include <thread>
 #include <mutex>
 #include <vector>
@@ -17,6 +17,9 @@
 #include <condition_variable>
 #include <cstring>
 #include <iostream>
+#include <atomic>
+
+using charon::string;
 
 namespace charon
 {
@@ -26,8 +29,9 @@ namespace concurrent
   class Base {
 
     public:
-    void run();
-    bool release();
+    virtual void run() = 0;
+    virtual bool release() = 0;
+    virtual ~Base();
   };
 }
 
@@ -37,6 +41,7 @@ class mvm {
   friend class instance;
 
   public:
+
   class data {
     friend class mvm;
     friend class instance;

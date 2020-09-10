@@ -41,13 +41,6 @@ charon_task_start(lua_State *L) {
 }
 
 static int
-charon_task_set(lua_State *L) {
-  int max = luaL_checkinteger(L, 1);
-  task::set(max);
-  return 0;
-}
-
-static int
 charon_task_wait(lua_State *L) {
   task::wait();
   return 0;
@@ -56,7 +49,6 @@ charon_task_wait(lua_State *L) {
 static const luaL_reg TaskClassMethods[] = {
   {"start", charon_task_start},
   {"wait",  charon_task_wait},
-  {"set",   charon_task_set},
   {NULL, NULL}
 };
 
