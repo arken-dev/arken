@@ -28,10 +28,15 @@ namespace concurrent
 {
   class Base {
 
+    protected:
+    std::atomic<bool> m_finished = ATOMIC_VAR_INIT(false);
+
     public:
     virtual void run() = 0;
     virtual bool release() = 0;
     virtual ~Base();
+    bool finished();
+    void finished(bool flag);
   };
 }
 
@@ -119,6 +124,7 @@ class mvm {
   static const char * charonPath();
   static void concurrent(concurrent::Base * pointer);
   static void working();
+  static void wait();
 
 };
 

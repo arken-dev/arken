@@ -1,12 +1,12 @@
 CHARON_ENV = os.getenv("CHARON_ENV") or "test"
-local Migrate = require('rhea.Migrate')
+local Migrate = require('routines.Migrate')
 local M = {}
 
 -------------------------------------------------------------------------------
 -- START
 -------------------------------------------------------------------------------
 
-function M.start()
+function M.start(triton)
   local JSON = require('charon.json')
   local file = APP_PATH .. '/config/triton.json'
   local raw  = os.read(file)
@@ -14,7 +14,7 @@ function M.start()
     local config  = JSON.decode(raw)
     local threads = config.threads
     for i = 1, threads do
-      triton.enqueue(tostring(i))
+      triton:enqueue(tostring(i))
     end
   else
     error(file .. ' not exists')

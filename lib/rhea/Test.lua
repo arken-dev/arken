@@ -120,4 +120,18 @@ function Test:run()
   end
 end
 
+-------------------------------------------------------------------------------
+-- MIGRATE
+-------------------------------------------------------------------------------
+
+Test.help.migrate = [[
+  run migrate in test database
+]]
+
+function Test:migrate()
+  local Migrate = require('routines.Migrate')
+  local migrate = Migrate.new()
+  migrate:run()
+end
+
 return Test

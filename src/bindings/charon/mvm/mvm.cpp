@@ -61,6 +61,12 @@ charon_mvm_pool(lua_State *L) {
   return 1;
 }
 
+static int
+charon_mvm_wait(lua_State *L) {
+  mvm::wait();
+  return 0;
+}
+
 static void
 register_arken_mvm( lua_State *L ) {
   static const luaL_reg Map[] = {
@@ -72,6 +78,7 @@ register_arken_mvm( lua_State *L ) {
     {"pool",    charon_mvm_pool},
     {"set",     charon_mvm_set},
     {"at",      charon_mvm_at},
+    {"wait",    charon_mvm_wait},
     {NULL, NULL}
   };
   luaL_newmetatable(L, "mvm");

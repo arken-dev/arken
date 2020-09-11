@@ -392,6 +392,8 @@ void mvm::working()
 
     if( pointer->release() ) {
       delete pointer;
+    } else {
+      pointer->finished(true);
     }
 
     concurrent_actives--;
@@ -401,6 +403,16 @@ void mvm::working()
 
 concurrent::Base::~Base()
 { }
+
+bool concurrent::Base::finished()
+{
+  return m_finished;
+}
+
+void concurrent::Base::finished(bool flag)
+{
+  m_finished = flag;
+}
 
 concurrent::Base * mvm::get()
 {
@@ -425,4 +437,18 @@ void mvm::concurrent(concurrent::Base * pointer)
   concurrent_queue->push(pointer);
   concurrent_actives++;
   concurrent_condition->notify_one();
+}
+
+void mvm::wait()
+{
+  while( true ) {
+    {
+      std::unique_lock<std::mutex> lck(*mvm::concurrent_mutex);
+      if (concurrent_actives == 0 && concurrent_queue->empty()) {
+        return;
+      }
+    }
+    // TODO improved whithout sleep
+    os::sleep(0.05);
+  }
 }

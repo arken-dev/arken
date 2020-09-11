@@ -38,7 +38,7 @@
       <td></td>
       <td align='right'>
         <%= #self.files -%> files (<%= helper.number_format(self.time) -%> secs)
-        <%= triton.total('tests') -%> total tests
+        <%= self.total -%> total tests
       </td>
       <td align='right'><%= helper.number_format(coverage/#self.files) -%>%&nbsp;</td>
     </tr>
