@@ -15,18 +15,7 @@ using namespace charon::concurrent;
 
 void channel::wait()
 {
-  /*
-  while( true ) {
-    {
-      std::unique_lock<std::mutex> lck(*channel::mtx);
-      if (channel::actives == 0 && queue->empty()) {
-        return;
-      }
-    }
-    // TODO improved whithout sleep
-    os::sleep(0.05);
-  }
-  */
+  mvm::wait();
 }
 
 void channel::run()

@@ -17,18 +17,7 @@ using cache = charon::cache;
 
 void task::wait()
 {
-/*
-  while( true ) {
-    {
-      std::unique_lock<std::mutex> lck(*task::mtx);
-      if (task::actives == 0 && queue->empty()) {
-        return;
-      }
-    }
-    // TODO improved whithout sleep
-    os::sleep(0.05);
-  }
-*/
+  mvm::wait();
 }
 
 task::~task()
