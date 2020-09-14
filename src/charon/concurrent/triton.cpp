@@ -73,7 +73,9 @@ void triton::run()
   luaL_getmetatable(L, "charon.concurrent.triton.metatable");
   lua_setmetatable(L, -2);
 
-  if( lua_pcall(L, 1, 0, 0) != 0 ) {
+  json_lock_decode(L, m_params);
+
+  if( lua_pcall(L, 2, 0, 0) != 0 ) {
     fprintf(stderr, " %s\n", lua_tostring(L, -1));
   }
 
@@ -100,7 +102,9 @@ void triton::run()
   luaL_getmetatable(L, "charon.concurrent.triton.metatable");
   lua_setmetatable(L, -2);
 
-  if( lua_pcall(L, 1, 0, 0) != 0 ) {
+  json_lock_decode(L, m_params);
+
+  if( lua_pcall(L, 2, 0, 0) != 0 ) {
     fprintf(stderr, " %s\n", lua_tostring(L, -1));
   }
 
