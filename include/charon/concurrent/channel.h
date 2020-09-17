@@ -27,7 +27,6 @@ namespace concurrent {
     string m_params;
     string m_fileName;
 
-    bool m_finished;
     bool m_release;
     bool m_purge;
 
