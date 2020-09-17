@@ -85,11 +85,19 @@ charon_concurrent_channel_instance_method_empty( lua_State *L ) {
   return 1;
 }
 
+static int
+charon_concurrent_channel_instance_method_finished( lua_State *L ) {
+  channel * chn = checkChannel( L );
+  lua_pushboolean(L, chn->finished());
+  return 1;
+}
+
 static const
 luaL_reg ChannelInstanceMethods[] = {
   {"write",     charon_concurrent_channel_instance_method_write},
   {"read",      charon_concurrent_channel_instance_method_read},
   {"empty",     charon_concurrent_channel_instance_method_empty},
+  {"finished",  charon_concurrent_channel_instance_method_finished},
   {NULL, NULL}
 };
 
