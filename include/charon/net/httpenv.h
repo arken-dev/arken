@@ -3,12 +3,12 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#ifndef _CHARON_NET_HTTP_ENV_
-#define _CHARON_NET_HTTP_ENV_
+#ifndef _ARKEN_NET_HTTP_ENV_
+#define _ARKEN_NET_HTTP_ENV_
 
 #include <map>
 
-namespace charon {
+namespace arken {
 namespace net {
 
 class HttpEnv

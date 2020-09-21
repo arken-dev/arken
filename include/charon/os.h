@@ -3,15 +3,15 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#ifndef _CHARON_OS_
-#define _CHARON_OS_
+#ifndef _ARKEN_OS_
+#define _ARKEN_OS_
 
-#include <charon/base>
+#include <arken/base>
 
-using List   = charon::string::List;
-using string = charon::string;
+using List   = arken::string::List;
+using string = arken::string;
 
-namespace charon {
+namespace arken {
   class os {
     public:
     static char   * abspath(const char * path);

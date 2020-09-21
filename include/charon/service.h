@@ -3,17 +3,17 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#ifndef _CHARON_SERVICE_
-#define _CHARON_SERVICE_
+#ifndef _ARKEN_SERVICE_
+#define _ARKEN_SERVICE_
 
-#include <charon/base>
-#include <charon/cache>
+#include <arken/base>
+#include <arken/cache>
 #include <thread>
 #include <iostream>
 #include <mutex>
 #include <vector>
 
-namespace charon
+namespace arken
 {
   class service {
 
@@ -39,4 +39,4 @@ namespace charon
   };
 }
 
-#endif // CHARONSERVICE_H
+#endif // ARKENSERVICE_H

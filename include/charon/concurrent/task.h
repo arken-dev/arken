@@ -3,15 +3,15 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#ifndef _CHARON_CONCURRENT_TASK_
-#define _CHARON_CONCURRENT_TASK_
+#ifndef _ARKEN_CONCURRENT_TASK_
+#define _ARKEN_CONCURRENT_TASK_
 
 #include <string>
 #include <cstring>
 #include <iostream>
-#include <charon/mvm>
+#include <arken/mvm>
 
-namespace charon {
+namespace arken {
 namespace concurrent {
 
   class task: public Base {
@@ -37,6 +37,6 @@ namespace concurrent {
   };
 
 } // namespace concurrent
-} // namespace charon
+} // namespace arken
 
-#endif // _CHARON_CONCURRENT_TASK_
+#endif // _ARKEN_CONCURRENT_TASK_

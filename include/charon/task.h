@@ -3,8 +3,8 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#ifndef _CHARON_TASK_
-#define _CHARON_TASK_
+#ifndef _ARKEN_TASK_
+#define _ARKEN_TASK_
 
 #include <thread>
 #include <mutex>
@@ -13,7 +13,7 @@
 #include <string>
 #include <condition_variable>
 
-namespace charon
+namespace arken
 {
 
   class task {
@@ -51,4 +51,4 @@ namespace charon
 
 }
 
-#endif // _CHARON_TASK_
+#endif // _ARKEN_TASK_

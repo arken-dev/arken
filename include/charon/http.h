@@ -6,10 +6,10 @@
 // Using libcurl for http request
 //  https://curl.haxx.se/libcurl/c/example.html
 
-#ifndef _CHARON_HTTP_
-#define _CHARON_HTTP_
+#ifndef _ARKEN_HTTP_
+#define _ARKEN_HTTP_
 
-namespace charon
+namespace arken
 {
 
 class http {

@@ -3,11 +3,11 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#ifndef _CHARON_MVM_
-#define _CHARON_MVM_
+#ifndef _ARKEN_MVM_
+#define _ARKEN_MVM_
 
 #include <lua/lua.hpp>
-#include <charon/string.h>
+#include <arken/string.h>
 #include <thread>
 #include <mutex>
 #include <vector>
@@ -19,9 +19,9 @@
 #include <iostream>
 #include <atomic>
 
-using charon::string;
+using arken::string;
 
-namespace charon
+namespace arken
 {
 
 namespace concurrent
@@ -86,7 +86,7 @@ class mvm {
 
   static int      s_argc;
   static char  ** s_argv;
-  static string   s_charonPath;
+  static string   s_arkenPath;
   static string   s_profilePath;
   static string   s_dispatchPath;
 
@@ -120,8 +120,8 @@ class mvm {
   static void push(mvm::data *);
   static void back(mvm::data *);
   static double uptime();
-  static charon::instance instance();
-  static const char * charonPath();
+  static arken::instance instance();
+  static const char * arkenPath();
   static void concurrent(concurrent::Base * pointer);
   static void working();
   static void wait();
@@ -141,4 +141,4 @@ class instance {
 };
 
 }
-#endif // CHARONMVM_H
+#endif // ARKENMVM_H

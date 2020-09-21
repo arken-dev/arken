@@ -3,14 +3,14 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#ifndef _CHARON_CACHE_
-#define _CHARON_CACHE_
+#ifndef _ARKEN_CACHE_
+#define _ARKEN_CACHE_
 
 #include <mutex>
 #include <unordered_map>
-#include <charon/base>
+#include <arken/base>
 
-namespace charon
+namespace arken
 {
 
 class cache {
@@ -40,4 +40,4 @@ class cache {
 
 }
 
-#endif // CHARONCACHE_H
+#endif // ARKENCACHE_H

@@ -3,14 +3,14 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#ifndef _CHARON_TIME_DATE_
-#define _CHARON_TIME_DATE_
+#ifndef _ARKEN_TIME_DATE_
+#define _ARKEN_TIME_DATE_
 
 #include <QtCore>
 #include <QDate>
-#include <charon/base>
+#include <arken/base>
 
-namespace charon {
+namespace arken {
 
 namespace time {
 
@@ -25,7 +25,7 @@ class Date : public QDate
 
   Date() : QDate() { }
   Date(QDate date) : QDate(date) { }
-  Date(const charon::time::Date& date) : QDate(date) { }
+  Date(const arken::time::Date& date) : QDate(date) { }
 
   Date beginningOfMonth();
   Date endOfMonth();
@@ -38,6 +38,6 @@ class Date : public QDate
 };
 
 } // namespace time
-} // namespace charon
+} // namespace arken
 
 #endif

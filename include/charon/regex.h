@@ -3,12 +3,12 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#ifndef _CHARON_REGEX_
-#define _CHARON_REGEX_
+#ifndef _ARKEN_REGEX_
+#define _ARKEN_REGEX_
 
-using List = charon::string::List;
+using List = arken::string::List;
 
-namespace charon
+namespace arken
 {
 
 class regex {

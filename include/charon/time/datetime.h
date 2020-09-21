@@ -3,16 +3,16 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#ifndef _CHARON_TIME_DATE_TIME_
-#define _CHARON_TIME_DATE_TIME_
+#ifndef _ARKEN_TIME_DATE_TIME_
+#define _ARKEN_TIME_DATE_TIME_
 
 #include <QtCore>
 #include <QDateTime>
-#include <charon/base>
+#include <arken/base>
 
-using charon::ByteArray;
+using arken::ByteArray;
 
-namespace charon {
+namespace arken {
 namespace time {
 
 class DateTime : public QDateTime
@@ -43,6 +43,6 @@ class DateTime : public QDateTime
 };
 
 } // namespace time
-} // namespace charon
+} // namespace arken
 
 #endif

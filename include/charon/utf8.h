@@ -3,10 +3,10 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#ifndef _CHARON_UTF8_
-#define _CHARON_UTF8_
+#ifndef _ARKEN_UTF8_
+#define _ARKEN_UTF8_
 
-namespace charon
+namespace arken
 {
 
 class utf8 {

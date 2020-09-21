@@ -3,10 +3,10 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#ifndef _CHARON_HTTP_HANDLE_
-#define _CHARON_HTTP_HANDLE_
+#ifndef _ARKEN_HTTP_HANDLE_
+#define _ARKEN_HTTP_HANDLE_
 
-namespace charon {
+namespace arken {
 namespace net {
   class HttpHandle
   {
@@ -15,4 +15,4 @@ namespace net {
   };
 }
 }
-#endif //CHARON_HTTP_HANDLE
+#endif //ARKEN_HTTP_HANDLE

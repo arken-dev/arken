@@ -3,10 +3,10 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#ifndef _CHARON_MATH_
-#define _CHARON_MATH_
+#ifndef _ARKEN_MATH_
+#define _ARKEN_MATH_
 
-namespace charon {
+namespace arken {
   class math {
     public:
     static int    abs(int number);

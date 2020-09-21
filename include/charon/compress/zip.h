@@ -3,10 +3,10 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#ifndef _CHARON_COMPRESS_ZIP_
-#define _CHARON_COMPRESS_ZIP_
+#ifndef _ARKEN_COMPRESS_ZIP_
+#define _ARKEN_COMPRESS_ZIP_
 
-namespace charon {
+namespace arken {
 namespace compress {
 
 class zip

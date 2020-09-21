@@ -3,16 +3,16 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#ifndef _CHARON_CONCURRENT_TRITON_
-#define _CHARON_CONCURRENT_TRITON_
+#ifndef _ARKEN_CONCURRENT_TRITON_
+#define _ARKEN_CONCURRENT_TRITON_
 
-#include <charon/mvm.h>
+#include <arken/mvm.h>
 #include <mutex>
 #include <queue>
 #include <unordered_map>
 #include <string>
 
-namespace charon {
+namespace arken {
 namespace concurrent {
 
   class triton : public Base {
@@ -67,5 +67,5 @@ namespace concurrent {
 
 
 } // namespace concurrent
-} // namespace charon
-#endif // _CHARON_CONCURRENT_TRITON_
+} // namespace arken
+#endif // _ARKEN_CONCURRENT_TRITON_

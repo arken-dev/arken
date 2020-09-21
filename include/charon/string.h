@@ -3,15 +3,15 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#ifndef _CHARON_STRING_
-#define _CHARON_STRING_
+#ifndef _ARKEN_STRING_
+#define _ARKEN_STRING_
 
 #include <cstdlib>
 #include <cstring>
 #include <cctype>
 #include <iostream>
 
-namespace charon {
+namespace arken {
   class string {
 
 
@@ -78,12 +78,12 @@ namespace charon {
 
     static string   consume(char * str);
     static string   consume(char * str, size_t size);
-    static string * consume(charon::string str);
+    static string * consume(arken::string str);
     string();
     string(const char * str);
     string(const char * str, size_t size);
     string(size_t reserve);
-    string(const charon::string &str);
+    string(const arken::string &str);
     ~string();
 
     string & append(const char * str);
@@ -173,7 +173,7 @@ namespace charon {
 
 }
 
-std::ostream & operator<<(std::ostream & os, const charon::string & str);
-std::ostream & operator<<(std::ostream & os, const charon::string * str);
+std::ostream & operator<<(std::ostream & os, const arken::string & str);
+std::ostream & operator<<(std::ostream & os, const arken::string * str);
 
 #endif

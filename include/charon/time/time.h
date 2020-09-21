@@ -3,14 +3,14 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#ifndef _CHARON_TIME_TIME_
-#define _CHARON_TIME_TIME_
+#ifndef _ARKEN_TIME_TIME_
+#define _ARKEN_TIME_TIME_
 
 #include <QtCore>
 #include <QTime>
-#include <charon/base>
+#include <arken/base>
 
-namespace charon {
+namespace arken {
 
 namespace time {
 
@@ -33,6 +33,6 @@ class Time : public QTime
 };
 
 } // namespace time
-} // namespace charon
+} // namespace arken
 
 #endif

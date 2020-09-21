@@ -5,10 +5,10 @@
 
 #include <cstring>
 
-#ifndef _CHARON_NET_HTTP_BODY_
-#define _CHARON_NET_HTTP_BODY_
+#ifndef _ARKEN_NET_HTTP_BODY_
+#define _ARKEN_NET_HTTP_BODY_
 
-namespace charon {
+namespace arken {
 namespace net {
 
 class HttpBody

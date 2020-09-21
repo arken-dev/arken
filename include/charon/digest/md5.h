@@ -3,10 +3,10 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#ifndef _CHARON_DIGEST_MD5_
-#define _CHARON_DIGEST_MD5_
+#ifndef _ARKEN_DIGEST_MD5_
+#define _ARKEN_DIGEST_MD5_
 
-namespace charon {
+namespace arken {
 namespace digest {
 
 class md5 {

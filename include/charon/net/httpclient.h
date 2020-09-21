@@ -3,15 +3,15 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#ifndef _CHARON_NET_HTTP_CLIENT_
-#define _CHARON_NET_HTTP_CLIENT_
+#ifndef _ARKEN_NET_HTTP_CLIENT_
+#define _ARKEN_NET_HTTP_CLIENT_
 
 #include <curl/curl.h>
-#include <charon/base>
+#include <arken/base>
 
-using string = charon::string;
+using string = arken::string;
 
-namespace charon {
+namespace arken {
 namespace net {
 
 class HttpClient

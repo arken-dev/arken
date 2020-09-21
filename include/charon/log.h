@@ -3,14 +3,14 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#ifndef _CHARON_LOG_
-#define _CHARON_LOG_
+#ifndef _ARKEN_LOG_
+#define _ARKEN_LOG_
 
 #include <fstream>
 #include <mutex>
 #include <unordered_map>
 
-namespace charon
+namespace arken
 {
 
   class Log

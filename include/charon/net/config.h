@@ -3,12 +3,12 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#include <charon/base>
+#include <arken/base>
 
-#ifndef _CHARON_NET_CONFIG_
-#define _CHARON_NET_CONFIG_
+#ifndef _ARKEN_NET_CONFIG_
+#define _ARKEN_NET_CONFIG_
 
-namespace charon {
+namespace arken {
 namespace net {
 
 class Config

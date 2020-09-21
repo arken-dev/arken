@@ -3,14 +3,14 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#ifndef _CHARON_NOTIFY_
-#define _CHARON_NOTIFY_
+#ifndef _ARKEN_NOTIFY_
+#define _ARKEN_NOTIFY_
 
-#include <charon/string.h>
+#include <arken/string.h>
 
-using string = charon::string;
+using string = arken::string;
 
-namespace charon
+namespace arken
 {
 
 class notify {

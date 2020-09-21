@@ -3,13 +3,13 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#ifndef _CHARON_LOCK_
-#define _CHARON_LOCK_
+#ifndef _ARKEN_LOCK_
+#define _ARKEN_LOCK_
 
 #include <mutex>
 #include <unordered_map>
 
-namespace charon
+namespace arken
 {
 
   class Lock

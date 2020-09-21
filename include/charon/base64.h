@@ -3,10 +3,10 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#ifndef _CHARON_BASE64_
-#define _CHARON_BASE64_
+#ifndef _ARKEN_BASE64_
+#define _ARKEN_BASE64_
 
-namespace charon
+namespace arken
 {
 
 class base64 {
