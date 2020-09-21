@@ -1,4 +1,4 @@
-require 'charon.ActiveRecord'
+require 'arken.ActiveRecord'
 
 local Migrate = Class.new("routines.Migrate")
 
@@ -76,7 +76,7 @@ Migrate.help.generate = [[
 ]]
 
 function Migrate:generate()
-  local DateTime  = require('charon.time.DateTime')
+  local DateTime  = require('arken.time.DateTime')
   local params    = self:params()
   local timestamp = Migrate.timestamp or DateTime.currentDateTime():toString('yyyyMMddhhmmss')
   local name      = tostring(params[1]):underscore()
