@@ -115,6 +115,7 @@ Test.help.run = [[
 
 function Test:run()
   for _, file in ipairs(self:params()) do
+    print(file)
     local _, body = run(file)
     print('\n' .. body .. '\n')
   end
