@@ -4,14 +4,14 @@
 // license that can be found in the LICENSE file.
 
 #include <lua/lua.hpp>
-#include <charon/base>
-#include <charon/cache>
-#include <charon/mvm>
+#include <arken/base>
+#include <arken/cache>
+#include <arken/mvm>
 
 char * json_lock_encode(lua_State *L);
 void   json_lock_decode(lua_State *L, const char * params);
 
-using namespace charon::concurrent;
+using namespace arken::concurrent;
 
 void channel::wait()
 {
@@ -20,7 +20,7 @@ void channel::wait()
 
 void channel::run()
 {
-  charon::instance i = mvm::instance();
+  arken::instance i = mvm::instance();
   lua_State * L = i.state();
   lua_settop(L, 0);
 
@@ -45,7 +45,7 @@ void channel::run()
   //lua_pushlstring(L,  m_uuid, 37); //push channel
   channel **ptr = (channel **)lua_newuserdata(L, sizeof(channel*));
   *ptr = this;
-  luaL_getmetatable(L, "charon.concurrent.channel.metatable");
+  luaL_getmetatable(L, "arken.concurrent.channel.metatable");
   lua_setmetatable(L, -2);
 
   json_lock_decode(L, m_params);

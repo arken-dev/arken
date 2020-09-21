@@ -3,13 +3,13 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#include <charon/base>
+#include <arken/base>
 #include <QRegExp>
 #include <QString>
 #include <QStringList>
 #include <cstring>
 
-using namespace charon;
+using namespace arken;
 
 bool regex::ematch(const char * string, const char * regex)
 {

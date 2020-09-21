@@ -3,14 +3,14 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#include <charon/base>
+#include <arken/base>
 #include <QDebug>
 
-using base64 = charon::base64;
-using md5    = charon::digest::md5;
-using utf8   = charon::utf8;
-using sha1   = charon::digest::sha1;
-using List   = charon::string::List;
+using base64 = arken::base64;
+using md5    = arken::digest::md5;
+using utf8   = arken::utf8;
+using sha1   = arken::digest::sha1;
+using List   = arken::string::List;
 
 char * string::append(const char * string, const char * ba)
 {
@@ -191,7 +191,7 @@ char * string::chop(const char * string, int n)
   return result;
 }
 
-static inline int charon_string_dasherize_special_char(const char *string, int i)
+static inline int arken_string_dasherize_special_char(const char *string, int i)
 {
   if(string[i] == '/' || string[i] == '_' || string[i] == '.' || string[i] == ' ' || string[i] == '-') {
     return 1;
@@ -200,7 +200,7 @@ static inline int charon_string_dasherize_special_char(const char *string, int i
   }
 }
 
-static inline int charon_string_dasherize_len(const char *string, int len)
+static inline int arken_string_dasherize_len(const char *string, int len)
 {
   int i, j = 0, flag1 = 1, flag2 = 1;
   for(i = 0; i < len; i++) {
@@ -211,7 +211,7 @@ static inline int charon_string_dasherize_len(const char *string, int len)
       flag2 = 0;
       j++;
     } else {
-      if(charon_string_dasherize_special_char(string, i)) {
+      if(arken_string_dasherize_special_char(string, i)) {
         if(flag2 == 0) {
           j++;
           flag2 = 1;
@@ -224,7 +224,7 @@ static inline int charon_string_dasherize_len(const char *string, int len)
       }
     }
   }
-  if(charon_string_dasherize_special_char(string, i-1)) {
+  if(arken_string_dasherize_special_char(string, i-1)) {
     j--;
   }
 
@@ -236,7 +236,7 @@ char * string::dasherize(const char *string)
 {
   int len = strlen(string);
   int i, j = 0, flag1 = 1, flag2 = 1;
-  char * res = new char[charon_string_dasherize_len(string,len)+1];
+  char * res = new char[arken_string_dasherize_len(string,len)+1];
   for(i = 0; i < len; i++) {
     if(isupper(string[i])) {
       if(flag1 == 0) {
@@ -247,7 +247,7 @@ char * string::dasherize(const char *string)
       flag2 = 0;
       j++;
     } else {
-      if(charon_string_dasherize_special_char(string, i)) {
+      if(arken_string_dasherize_special_char(string, i)) {
         if(flag2 == 0) {
           res[j] = '-';
           j++;
@@ -262,7 +262,7 @@ char * string::dasherize(const char *string)
       }
     }
   }
-  if(charon_string_dasherize_special_char(string, i-1)) {
+  if(arken_string_dasherize_special_char(string, i-1)) {
     j--;
   }
   res[j] = '\0';
@@ -1141,7 +1141,7 @@ char * string::truncate(const char *string, int pos, const char * omission, cons
   return result;
 }
 
-static inline int charon_string_underscore_special_char(const char *string, int i)
+static inline int arken_string_underscore_special_char(const char *string, int i)
 {
   if(string[i] == '/' || string[i] == '_' || string[i] == '.' || string[i] == ' ') {
     return 1;
@@ -1150,7 +1150,7 @@ static inline int charon_string_underscore_special_char(const char *string, int 
   }
 }
 
-static inline int charon_string_underscore_len(const char *string, int len)
+static inline int arken_string_underscore_len(const char *string, int len)
 {
   int i, j = 0, flag1 = 1, flag2 = 1;
   for(i = 0; i < len; i++) {
@@ -1161,7 +1161,7 @@ static inline int charon_string_underscore_len(const char *string, int len)
       flag2 = 0;
       j++;
     } else {
-      if(charon_string_underscore_special_char(string, i)) {
+      if(arken_string_underscore_special_char(string, i)) {
         if(flag2 == 0) {
           j++;
           flag2 = 1;
@@ -1174,7 +1174,7 @@ static inline int charon_string_underscore_len(const char *string, int len)
       }
     }
   }
-  if(charon_string_underscore_special_char(string, i-1)) {
+  if(arken_string_underscore_special_char(string, i-1)) {
     j--;
   }
 
@@ -1186,7 +1186,7 @@ char * string::underscore(const char *string)
 {
   int len = strlen(string);
   int i, j = 0, flag1 = 1, flag2 = 1;
-  char * res = new char[charon_string_underscore_len(string,len)+1];
+  char * res = new char[arken_string_underscore_len(string,len)+1];
   for(i = 0; i < len; i++) {
     if(isupper(string[i])) {
       if(flag1 == 0) {
@@ -1197,7 +1197,7 @@ char * string::underscore(const char *string)
       flag2 = 0;
       j++;
     } else {
-      if(charon_string_underscore_special_char(string, i)) {
+      if(arken_string_underscore_special_char(string, i)) {
         if(flag2 == 0) {
           res[j] = '_';
           j++;
@@ -1212,7 +1212,7 @@ char * string::underscore(const char *string)
       }
     }
   }
-  if(charon_string_underscore_special_char(string, i-1)) {
+  if(arken_string_underscore_special_char(string, i-1)) {
     j--;
   }
   res[j] = '\0';
@@ -1275,7 +1275,7 @@ string::string(size_t reserve)
   m_capacity  = m_size;
 }
 
-string::string(const charon::string & str)
+string::string(const arken::string & str)
 {
   m_reserve   = str.m_reserve;
   m_size      = str.m_size;
@@ -1287,7 +1287,7 @@ string::string(const charon::string & str)
 
 string string::consume(char * data)
 {
-  charon::string tmp;
+  arken::string tmp;
   tmp.m_data = data;
   tmp.m_size = strlen(data);
   tmp.m_capacity = tmp.m_size;
@@ -1296,16 +1296,16 @@ string string::consume(char * data)
 
 string string::consume(char * data, size_t size)
 {
-  charon::string tmp;
+  arken::string tmp;
   tmp.m_data = data;
   tmp.m_size = size;
   tmp.m_capacity = tmp.m_size;
   return tmp;
 }
 
-string * string::consume(charon::string str)
+string * string::consume(arken::string str)
 {
-  charon::string * tmp = new string;
+  arken::string * tmp = new string;
   tmp->m_data = str.m_data;
   tmp->m_size = str.m_size;
   tmp->m_capacity = tmp->m_size;
@@ -1381,17 +1381,17 @@ string & string::prepend(const char * data)
 
 string string::camelCase(bool lcfirst)
 {
-  return charon::string::consume(string::camelCase(m_data, lcfirst));
+  return arken::string::consume(string::camelCase(m_data, lcfirst));
 }
 
 string string::capitalize()
 {
-  return charon::string::consume(string::capitalize(m_data));
+  return arken::string::consume(string::capitalize(m_data));
 }
 
 string string::center(size_t size, const char * pad)
 {
-  return charon::string::consume(string::center(m_data, size, pad));
+  return arken::string::consume(string::center(m_data, size, pad));
 }
 
 void string::clear()
@@ -1404,12 +1404,12 @@ void string::clear()
 
 bool string::contains(const char * str)
 {
-  return charon::string::contains(m_data, str);
+  return arken::string::contains(m_data, str);
 }
 
 string string::chop(int n)
 {
-  return charon::string::consume(string::chop(m_data, n));
+  return arken::string::consume(string::chop(m_data, n));
 }
 
 int string::count(const char * str)
@@ -1419,17 +1419,17 @@ int string::count(const char * str)
 
 string string::dasherize()
 {
-  return charon::string::consume(string::dasherize(m_data));
+  return arken::string::consume(string::dasherize(m_data));
 }
 
 string string::decode64()
 {
-  return charon::string::consume(string::decode64(m_data));
+  return arken::string::consume(string::decode64(m_data));
 }
 
 string string::encode64()
 {
-  return charon::string::consume(string::encode64(m_data));
+  return arken::string::consume(string::encode64(m_data));
 }
 
 bool string::equals(const char * data)
@@ -1439,22 +1439,22 @@ bool string::equals(const char * data)
 
 string string::escape()
 {
-  return charon::string::consume(string::escape(m_data));
+  return arken::string::consume(string::escape(m_data));
 }
 
 string string::encode(const char * charset)
 {
-  return charon::string::consume(string::encode(m_data, charset));
+  return arken::string::consume(string::encode(m_data, charset));
 }
 
 string string::decode(const char * charset)
 {
-  return charon::string::consume(string::decode(m_data, charset));
+  return arken::string::consume(string::decode(m_data, charset));
 }
 
 string string::escapeHtml()
 {
-  return charon::string::consume(string::escapeHtml(m_data));
+  return arken::string::consume(string::escapeHtml(m_data));
 }
 
 int string::indexOf(const char * str, int i)
@@ -1464,7 +1464,7 @@ int string::indexOf(const char * str, int i)
 
 string string::insert(int len, const char * ba)
 {
-  return charon::string::consume(string::insert(m_data, len, ba));
+  return arken::string::consume(string::insert(m_data, len, ba));
 }
 
 bool string::endsWith(const char * ba)
@@ -1494,37 +1494,37 @@ string string::mid(int pos, int len)
 
 string string::md5()
 {
-  return charon::string::consume(md5::hash(m_data, m_size));
+  return arken::string::consume(md5::hash(m_data, m_size));
 }
 
 string string::normalize()
 {
-  return charon::string::consume(string::normalize(m_data));
+  return arken::string::consume(string::normalize(m_data));
 }
 
 string string::prefix(const char chr)
 {
-  return charon::string::consume(string::prefix(m_data, chr));
+  return arken::string::consume(string::prefix(m_data, chr));
 }
 
 string string::simplified()
 {
-  return charon::string::consume(string::simplified(m_data));
+  return arken::string::consume(string::simplified(m_data));
 }
 
 string string::repeated(int times)
 {
-  return charon::string::consume(string::repeated(m_data, times));
+  return arken::string::consume(string::repeated(m_data, times));
 }
 
 string string::replace(const char * before, const char * after, int start)
 {
-  return charon::string::consume(string::replace(m_data, before, after, start));
+  return arken::string::consume(string::replace(m_data, before, after, start));
 }
 
 string string::replace(const char before, const char after, int start)
 {
-  return charon::string::consume(string::replace(m_data, before, after, start));
+  return arken::string::consume(string::replace(m_data, before, after, start));
 }
 
 void string::reserve(size_t reserve)
@@ -1539,22 +1539,22 @@ size_t string::reserve()
 
 string string::right(int len)
 {
-  return charon::string::consume(string::right(m_data, len));
+  return arken::string::consume(string::right(m_data, len));
 }
 
 string string::rightJustified(size_t size, const char * pad)
 {
-  return charon::string::consume(string::rightJustified(m_data, size, pad));
+  return arken::string::consume(string::rightJustified(m_data, size, pad));
 }
 
 string string::sha1()
 {
-  return charon::string::consume(string::sha1(m_data));
+  return arken::string::consume(string::sha1(m_data));
 }
 
 string string::suffix(const char chr)
 {
-  return charon::string::consume(string::suffix(m_data, chr));
+  return arken::string::consume(string::suffix(m_data, chr));
 }
 
 char * string::data() const
@@ -1571,17 +1571,17 @@ char * string::release()
 
 string string::trimmed()
 {
-  return charon::string::consume(string::trimmed(m_data));
+  return arken::string::consume(string::trimmed(m_data));
 }
 
 string string::leftTrimmed()
 {
-  return charon::string::consume(string::leftTrimmed(m_data));
+  return arken::string::consume(string::leftTrimmed(m_data));
 }
 
 string string::rightTrimmed()
 {
-  return charon::string::consume(string::rightTrimmed(m_data));
+  return arken::string::consume(string::rightTrimmed(m_data));
 }
 
 bool string::startsWith(const char * str)
@@ -1591,12 +1591,12 @@ bool string::startsWith(const char * str)
 
 string string::truncate(int pos, const char *omission, const char separator)
 {
-  return charon::string::consume(string::truncate(m_data, pos, omission, separator));
+  return arken::string::consume(string::truncate(m_data, pos, omission, separator));
 }
 
 string string::underscore()
 {
-  return charon::string::consume(string::underscore(m_data));
+  return arken::string::consume(string::underscore(m_data));
 }
 
 List * string::split(const char * pattern)
@@ -1618,12 +1618,12 @@ size_t string::len()
 // OPERATORS
 //-----------------------------------------------------------------------------
 
-std::ostream & operator<<(std::ostream & os, const charon::string * str)
+std::ostream & operator<<(std::ostream & os, const arken::string * str)
 {
    os << str->data();
    return os;
 }
-std::ostream & operator<<(std::ostream & os, const charon::string & str)
+std::ostream & operator<<(std::ostream & os, const arken::string & str)
 {
    os << str.data();
    return os;

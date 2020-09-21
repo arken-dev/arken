@@ -4,16 +4,16 @@
 // license that can be found in the LICENSE file.
 
 #include <lua/lua.hpp>
-#include <charon/base>
-#include <charon/cache>
-#include <charon/task>
-#include <charon/mvm>
+#include <arken/base>
+#include <arken/cache>
+#include <arken/task>
+#include <arken/mvm>
 
 char * json_lock_encode(lua_State *L);
 void   json_lock_decode(lua_State *L, const char * params);
 
-using namespace charon::concurrent;
-using cache = charon::cache;
+using namespace arken::concurrent;
+using cache = arken::cache;
 
 void task::wait()
 {
@@ -30,7 +30,7 @@ bool task::release()
 
 void task::run()
 {
-  charon::instance i = mvm::instance();
+  arken::instance i = mvm::instance();
   lua_State * L = i.state();
   lua_settop(L, 0);
 

@@ -4,15 +4,15 @@
 // license that can be found in the LICENSE file.
 
 #include <lua/lua.hpp>
-#include <charon/base>
-#include <charon/cache>
-#include <charon/mvm>
-#include <charon/service>
+#include <arken/base>
+#include <arken/cache>
+#include <arken/mvm>
+#include <arken/service>
 
-using namespace charon;
-using cache = charon::cache;
-using mvm   = charon::mvm;
-using List  = charon::string::List;
+using namespace arken;
+using cache = arken::cache;
+using mvm   = arken::mvm;
+using List  = arken::string::List;
 
 int           service::s_version  = mvm::version();
 char        * service::s_dirName  = 0;
@@ -40,7 +40,7 @@ void service::load()
   if( s_dirName ) {
     service::load(s_dirName);
   } else {
-    std::cout << "warning charon::service dirName not initialize\n" << std::endl;
+    std::cout << "warning arken::service dirName not initialize\n" << std::endl;
   }
 }
 
@@ -129,18 +129,18 @@ void service::run(char * uuid, char * fileName)
 
     int rv;
 
-    charon::instance i = mvm::instance();
+    arken::instance i = mvm::instance();
     lua_State * L = i.state();
     lua_settop(L, 0);
 
-    // global __charon_service
+    // global __arken_service
     service * srv = new service();
     lua_pushlightuserdata(L, srv);
-    lua_setglobal(L, "__charon_service");
+    lua_setglobal(L, "__arken_service");
 
-    // CHARON_UUID
+    // ARKEN_UUID
     lua_pushstring(L, uuid);
-    lua_setglobal(L, "CHARON_UUID");
+    lua_setglobal(L, "ARKEN_UUID");
 
     //TODO .lua end file use dofile not use require ???
     lua_getglobal(L, "dofile");
@@ -151,13 +151,13 @@ void service::run(char * uuid, char * fileName)
       fprintf(stderr, "erro no inicio: %s\n", lua_tostring(L, -1));
     }
 
-    // clear global __charon_service
+    // clear global __arken_service
     lua_pushnil(L);
-    lua_setglobal(L, "__charon_service");
+    lua_setglobal(L, "__arken_service");
 
-    // clear CHARON_TASK
+    // clear ARKEN_TASK
     lua_pushboolean(L, false);
-    lua_setglobal(L, "CHARON_UUID");
+    lua_setglobal(L, "ARKEN_UUID");
 
     // lua gc
     lua_gc(L, LUA_GCCOLLECT, 0);

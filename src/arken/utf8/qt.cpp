@@ -3,11 +3,11 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#include <charon/base>
-#include <charon/utf8>
+#include <arken/base>
+#include <arken/utf8>
 #include <QTextCodec>
 
-using namespace charon;
+using namespace arken;
 
 char * utf8::upper(const char * string)
 {

@@ -3,15 +3,15 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#include <charon/base>
+#include <arken/base>
 #include <curl/curl.h>
 #include <cstdlib>
 #include <cstring>
-#include <charon/base>
+#include <arken/base>
 #include <iostream>
 
-using charon::string;
-using namespace charon::net;
+using arken::string;
+using namespace arken::net;
 
 
 uint64_t HttpClient::callback(void *contents, size_t size, size_t nmemb, void *userp)

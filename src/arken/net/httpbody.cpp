@@ -3,10 +3,10 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#include <charon/base>
-#include <charon/net/httpbody.h>
+#include <arken/base>
+#include <arken/net/httpbody.h>
 
-using namespace charon::net;
+using namespace arken::net;
 
 HttpBody::HttpBody(const char * buffer, size_t size)
 {

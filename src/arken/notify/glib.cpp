@@ -3,11 +3,11 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#include <charon/notify.h>
+#include <arken/notify.h>
 #include <gio/gio.h>
 
 
-using namespace charon;
+using namespace arken;
 
 void notify::send(string title, string message, string status)
 {

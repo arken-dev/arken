@@ -1,9 +1,9 @@
-#include <charon/base>
+#include <arken/base>
 extern "C" {
 #include <openssl/sha.h>
 }
 
-using namespace charon::digest;
+using namespace arken::digest;
 
 char * sha1::hash(const char * hash)
 {

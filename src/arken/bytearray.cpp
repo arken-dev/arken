@@ -4,9 +4,9 @@
 // license that can be found in the LICENSE file.
 
 #include <QtCore>
-#include <charon/base>
+#include <arken/base>
 
-using charon::ByteArray;
+using arken::ByteArray;
 
 ByteArray ByteArray::camelCase(void)
 {

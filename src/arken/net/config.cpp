@@ -5,14 +5,14 @@
 
 #include <iostream>
 #include <fstream>
-#include <charon/net/config.h>
+#include <arken/net/config.h>
 #include <lua/lua.hpp>
 
-using mvm    = charon::mvm;
-using Config = charon::net::Config;
-using Log    = charon::Log;
+using mvm    = arken::mvm;
+using Config = arken::net::Config;
+using Log    = arken::Log;
 
-using namespace charon::net;
+using namespace arken::net;
 
 Config::Config(string path)
 {
@@ -30,15 +30,15 @@ Config::Config(string path)
 
     string raw = os::read(path);
 
-    // charon instance
-    charon::instance i = mvm::instance();
+    // arken instance
+    arken::instance i = mvm::instance();
     lua_State * L = i.state();
 
     // Process Request
     // TODO return is not validate
     lua_settop(L, 0);
     lua_getglobal(L,  "require");
-    lua_pushstring(L, "charon.json");
+    lua_pushstring(L, "arken.json");
     int rv = lua_pcall(L, 1, 1, 0);
     if (rv) {
       fprintf(stderr, "primeiro erro %s\n", lua_tostring(L, -1));
@@ -159,7 +159,7 @@ Config::Config(string path)
   //---------------------------------------------------------------------------
 
   if( m_service && os::exists("app/services")) {
-    charon::service::load("app/services");
+    arken::service::load("app/services");
   }
 
   //---------------------------------------------------------------------------

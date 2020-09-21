@@ -3,11 +3,11 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#include <charon/base>
-#include <charon/mvm>
+#include <arken/base>
+#include <arken/mvm>
 #include <QQueue>
 
-using namespace charon;
+using namespace arken;
 
 static QMutex s_mutex;
 static QQueue<mvm::data *> * s_container = new QQueue<mvm::data *>;

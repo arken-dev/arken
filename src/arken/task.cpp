@@ -4,14 +4,14 @@
 // license that can be found in the LICENSE file.
 
 #include <lua/lua.hpp>
-#include <charon/base>
-#include <charon/cache>
-#include <charon/task>
-#include <charon/mvm>
+#include <arken/base>
+#include <arken/cache>
+#include <arken/task>
+#include <arken/mvm>
 
-using namespace charon;
+using namespace arken;
 
-using charon::cache;
+using arken::cache;
 
 std::vector<std::thread> * task::workers   = new std::vector<std::thread>;
 std::queue<task::work *> * task::queue     = new std::queue<task::work *>;
@@ -50,17 +50,17 @@ void task::run()
   while( true ) {
     task::work * work = task::get();
 
-    charon::instance i = mvm::instance();
+    arken::instance i = mvm::instance();
     lua_State * L = i.state();
     lua_settop(L, 0);
 
-    // CHARON_TASK (deprecate)
+    // ARKEN_TASK (deprecate)
     lua_pushstring(L, work->uuid());
-    lua_setglobal(L, "CHARON_TASK");
+    lua_setglobal(L, "ARKEN_TASK");
 
-    // CHARON_UUID
+    // ARKEN_UUID
     lua_pushstring(L, work->uuid());
-    lua_setglobal(L, "CHARON_UUID");
+    lua_setglobal(L, "ARKEN_UUID");
 
     int rv;
 
@@ -74,13 +74,13 @@ void task::run()
       fprintf(stderr, "erro no inicio: %s\n", lua_tostring(L, -1));
     }
 
-    // clear CHARON_TASK
+    // clear ARKEN_TASK
     lua_pushboolean(L, false);
-    lua_setglobal(L, "CHARON_TASK");
+    lua_setglobal(L, "ARKEN_TASK");
 
-    // clear CHARON_UUID
+    // clear ARKEN_UUID
     lua_pushboolean(L, false);
-    lua_setglobal(L, "CHARON_UUID");
+    lua_setglobal(L, "ARKEN_UUID");
 
     // lua gc
     lua_gc(L, LUA_GCCOLLECT, 0);

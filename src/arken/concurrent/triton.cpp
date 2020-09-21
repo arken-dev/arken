@@ -4,15 +4,15 @@
 // license that can be found in the LICENSE file.
 
 #include <lua/lua.hpp>
-#include <charon/base>
-#include <charon/mvm>
-#include <charon/concurrent/triton.h>
+#include <arken/base>
+#include <arken/mvm>
+#include <arken/concurrent/triton.h>
 #include <vector>
 
 char * json_lock_encode(lua_State *L);
 void   json_lock_decode(lua_State *L, const char * params);
 
-using namespace charon::concurrent;
+using namespace arken::concurrent;
 
 void triton::wait()
 {
@@ -30,7 +30,7 @@ bool triton::release()
 void triton::run()
 {
   int rv;
-  charon::instance i = mvm::instance();
+  arken::instance i = mvm::instance();
   lua_State * L = i.state();
   lua_settop(L, 0);
 
@@ -70,7 +70,7 @@ void triton::run()
 
   triton **ptr = (triton **)lua_newuserdata(L, sizeof(triton *));
   *ptr = this;
-  luaL_getmetatable(L, "charon.concurrent.triton.metatable");
+  luaL_getmetatable(L, "arken.concurrent.triton.metatable");
   lua_setmetatable(L, -2);
 
   json_lock_decode(L, m_params);
@@ -99,7 +99,7 @@ void triton::run()
 
   triton **stop = (triton **)lua_newuserdata(L, sizeof(triton *));
   *stop = this;
-  luaL_getmetatable(L, "charon.concurrent.triton.metatable");
+  luaL_getmetatable(L, "arken.concurrent.triton.metatable");
   lua_setmetatable(L, -2);
 
   json_lock_decode(L, m_params);
@@ -225,7 +225,7 @@ void triton::node::run()
 {
 
   int rv;
-  charon::instance i = mvm::instance();
+  arken::instance i = mvm::instance();
   lua_State * L = i.state();
   lua_settop(L, 0);
 
@@ -260,7 +260,7 @@ void triton::node::run()
 
     triton **ptr = (triton **)lua_newuserdata(L, sizeof(triton *));
     *ptr = this->m_triton;
-    luaL_getmetatable(L, "charon.concurrent.triton.metatable");
+    luaL_getmetatable(L, "arken.concurrent.triton.metatable");
     lua_setmetatable(L, -2);
     lua_pushstring(L, value);
 

@@ -22,7 +22,7 @@
 #include <sys/types.h>
 #include <zip.h>
 
-#include <charon/compress/zip.h>
+#include <arken/compress/zip.h>
 
 static void safe_create_dir(const char *dir)
 {
@@ -34,7 +34,7 @@ static void safe_create_dir(const char *dir)
     }
 }
 
-bool charon::compress::zip::decompress(const char * namefile, const char * output)
+bool arken::compress::zip::decompress(const char * namefile, const char * output)
 {
 
     char * dirname = 0;

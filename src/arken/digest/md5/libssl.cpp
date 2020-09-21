@@ -1,9 +1,9 @@
-#include <charon/base>
+#include <arken/base>
 extern "C" {
 #include <openssl/md5.h>
 }
 
-using namespace charon::digest;
+using namespace arken::digest;
 
 char * md5::hash(const char * hash)
 {

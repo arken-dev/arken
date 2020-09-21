@@ -3,10 +3,10 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#include <charon/base>
-#include <charon/mvm>
+#include <arken/base>
+#include <arken/mvm>
 
-using namespace charon;
+using namespace arken;
 
 int     mvm::s_argc(0);
 char ** mvm::s_argv(0);
@@ -24,7 +24,7 @@ std::condition_variable        * mvm::concurrent_condition = new std::condition_
 uint32_t mvm::concurrent_max     = os::cores();
 uint32_t mvm::concurrent_actives = 0;
 
-string     mvm::s_charonPath   = "";
+string     mvm::s_arkenPath   = "";
 string     mvm::s_profilePath  = "";
 string     mvm::s_dispatchPath = "";
 
@@ -108,7 +108,7 @@ void mvm::config()
 
   const char * fileName = "config/mvm.lua";
   if( os::exists(fileName) ) {
-    charon::instance i = mvm::instance();
+    arken::instance i = mvm::instance();
     lua_State * L = i.state();
     lua_settop(L, 0);
     lua_getglobal(L, "dofile");
@@ -130,15 +130,15 @@ void mvm::init(int argc, char ** argv)
     s_argv[i] = new char[len]();
     strcpy(s_argv[i], argv[i]);
   }
-  s_charonPath    = os::executablePath();
-  int lastIndexOf = s_charonPath.lastIndexOf("bin");
-  s_charonPath    = s_charonPath.left(lastIndexOf-1);
+  s_arkenPath    = os::executablePath();
+  int lastIndexOf = s_arkenPath.lastIndexOf("bin");
+  s_arkenPath    = s_arkenPath.left(lastIndexOf-1);
 
   if( strcmp(os::name(), "windows") == 0 ) {
-    s_charonPath = s_charonPath.capitalize();
+    s_arkenPath = s_arkenPath.capitalize();
   }
 
-  s_profilePath = s_charonPath;
+  s_profilePath = s_arkenPath;
   s_profilePath.append("/profile.lua");
 
   s_dispatchPath.append("dispatch.lua");
@@ -161,7 +161,7 @@ instance mvm::instance()
     data = new mvm::data(mvm::s_version);
   }
 
-  return charon::instance(data);
+  return arken::instance(data);
 }
 
 void mvm::push(mvm::data * data)
@@ -278,9 +278,9 @@ double mvm::uptime()
   return os::microtime() - mvm::s_uptime;
 }
 
-const char *  mvm::charonPath()
+const char *  mvm::arkenPath()
 {
-  return s_charonPath.data();
+  return s_arkenPath.data();
 }
 
 mvm::data::data(int version)
@@ -292,13 +292,13 @@ mvm::data::data(int version)
 
   luaL_openlibs(m_State);
 
-  // CHARON_PATH
-  lua_pushstring(m_State, s_charonPath);
-  lua_setglobal(m_State, "CHARON_PATH");
+  // ARKEN_PATH
+  lua_pushstring(m_State, s_arkenPath);
+  lua_setglobal(m_State, "ARKEN_PATH");
 
-  // CHARON_UUID
+  // ARKEN_UUID
   lua_pushboolean(m_State, false);
-  lua_setglobal(m_State, "CHARON_UUID");
+  lua_setglobal(m_State, "ARKEN_UUID");
 
   //---------------------------------------------
   int top, i;
@@ -360,12 +360,12 @@ int mvm::data::version()
   return m_version;
 }
 
-charon::instance::instance(mvm::data * data)
+arken::instance::instance(mvm::data * data)
 {
   m_data = data;
 }
 
-charon::instance::~instance()
+arken::instance::~instance()
 {
   if( m_data->m_release ) {
     delete m_data;

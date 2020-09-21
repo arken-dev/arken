@@ -3,10 +3,10 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#include <charon/base>
-#include <charon/cache>
+#include <arken/base>
+#include <arken/cache>
 
-using namespace charon;
+using namespace arken;
 
 std::mutex cache::s_mutex;
 std::unordered_map<std::string, cache::data *> * cache::s_cache = new std::unordered_map<std::string, cache::data *>;

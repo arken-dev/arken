@@ -3,7 +3,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#include <charon/base>
+#include <arken/base>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -13,8 +13,8 @@
 #include <iostream>
 #include <fstream>
 
-using HttpClient = charon::net::HttpClient;
-using string = charon::string;
+using HttpClient = arken::net::HttpClient;
+using string = arken::string;
 
 bool os::compare(const char * path1, const char * path2)
 {

@@ -4,10 +4,10 @@
 // license that can be found in the LICENSE file.
 
 #include <cstring>
-#include <charon/base>
+#include <arken/base>
 #include <QCryptographicHash>
 
-using namespace charon::digest;
+using namespace arken::digest;
 
 char * sha1::hash(const char * hash)
 {

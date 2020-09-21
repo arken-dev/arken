@@ -3,12 +3,12 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#include <charon/base>
+#include <arken/base>
 extern "C" {
 #include <digest/md5.h>
 }
 
-using namespace charon::digest;
+using namespace arken::digest;
 
 char * md5::hash(const char * hash)
 {

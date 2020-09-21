@@ -3,13 +3,13 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#include <charon/base>
+#include <arken/base>
 
 extern "C" {
   #include <base64/ap_base64.h>
 }
 
-using namespace charon;
+using namespace arken;
 
 char * base64::decode(const char * encoded)
 {

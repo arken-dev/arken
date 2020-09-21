@@ -3,11 +3,11 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#include <charon/base>
-#include <charon/log>
+#include <arken/base>
+#include <arken/log>
 #include <ctime>
 
-using namespace charon;
+using namespace arken;
 
 std::unordered_map<std::string, int>           Log::m_references;
 std::unordered_map<std::string, std::string *> Log::m_containers;
