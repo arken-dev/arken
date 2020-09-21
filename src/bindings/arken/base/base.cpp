@@ -16,11 +16,4 @@ extern "C" {
     luaopen_arken_string(L);
     return 1;
   }
-
-  int luaopen_arken_base( lua_State *L ) {
-    luaopen_arken_math(L);
-    luaopen_arken_os(L);
-    luaopen_arken_string(L);
-    return 1;
-  }
 }
