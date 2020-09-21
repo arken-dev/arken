@@ -8,7 +8,7 @@
 #
 # ------------------------------------------------------------------------------
 
-set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/clib/charon/concurrent)
+set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/clib/arken/concurrent)
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/clib/arken/concurrent)
 
 add_subdirectory(task)

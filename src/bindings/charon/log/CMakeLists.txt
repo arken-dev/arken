@@ -21,4 +21,4 @@ find_package(Qt5Network)
 
 set_target_properties(Log PROPERTIES PREFIX "")
 
-target_link_libraries(Log Qt5::Core Qt5::Network charon lua)
+target_link_libraries(Log Qt5::Core Qt5::Network arken lua)

@@ -21,4 +21,4 @@ find_package(Qt5Network)
 
 set_target_properties(zip-binding PROPERTIES PREFIX "" OUTPUT_NAME zip)
 
-target_link_libraries(zip-binding charon lua)
+target_link_libraries(zip-binding arken lua)

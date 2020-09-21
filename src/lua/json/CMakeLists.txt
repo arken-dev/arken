@@ -12,7 +12,7 @@ include_directories(.)
 include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${PROJECT_SOURCE_DIR}/deps/include)
 
-set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/clib/charon)
+set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/clib/arken)
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/clib/arken)
 
 add_library(

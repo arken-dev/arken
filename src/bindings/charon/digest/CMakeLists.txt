@@ -8,7 +8,7 @@
 #
 # ------------------------------------------------------------------------------
 
-set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/clib/charon/digest)
+set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/clib/arken/digest)
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/clib/arken/digest)
 
 add_subdirectory(md5)

@@ -8,5 +8,5 @@
 #
 # ------------------------------------------------------------------------------
 
-add_subdirectory( charon )
+add_subdirectory( arken )
 add_subdirectory( arken )

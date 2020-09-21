@@ -21,4 +21,4 @@ find_package(Qt5Network)
 
 set_target_properties(task PROPERTIES PREFIX "")
 
-target_link_libraries(task Qt5::Core Qt5::Network charon lua json)
+target_link_libraries(task Qt5::Core Qt5::Network arken lua json)

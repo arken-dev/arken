@@ -13,12 +13,12 @@ include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${PROJECT_SOURCE_DIR}/deps/include)
 
 add_library(
-  charon_concurrent_Lock SHARED lock.cpp
+  arken_concurrent_Lock SHARED lock.cpp
 )
 
 find_package(Qt5Core)
 find_package(Qt5Network)
 
-set_target_properties(charon_concurrent_Lock PROPERTIES OUTPUT_NAME Lock PREFIX "")
+set_target_properties(arken_concurrent_Lock PROPERTIES OUTPUT_NAME Lock PREFIX "")
 
-target_link_libraries(charon_concurrent_Lock Qt5::Core Qt5::Network charon lua json)
+target_link_libraries(arken_concurrent_Lock Qt5::Core Qt5::Network arken lua json)

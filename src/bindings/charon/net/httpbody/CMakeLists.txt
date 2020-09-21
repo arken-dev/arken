@@ -21,4 +21,4 @@ find_package(Qt5Network)
 
 set_target_properties(HttpBody PROPERTIES PREFIX "")
 
-target_link_libraries(HttpBody Qt5::Core Qt5::Network charon lua)
+target_link_libraries(HttpBody Qt5::Core Qt5::Network arken lua)
