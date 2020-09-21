@@ -43,9 +43,4 @@ extern "C" {
     register_arken_compress_zip(L);
     return 1;
   }
-  int
-  luaopen_arken_compress_zip( lua_State *L ) {
-    register_arken_compress_zip(L);
-    return 1;
-  }
 }

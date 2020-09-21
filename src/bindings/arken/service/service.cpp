@@ -71,8 +71,4 @@ extern "C" {
     register_arken_service( L );
     return 1;
   }
-  int luaopen_arken_service( lua_State *L ) {
-    register_arken_service( L );
-    return 1;
-  }
 }

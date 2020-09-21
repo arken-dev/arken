@@ -182,11 +182,4 @@ extern "C" {
     registerHttpClientClassMethods(L);
     return 1;
   }
-
-  int
-  luaopen_arken_net_HttpClient( lua_State *L ) {
-    registerHttpClientInstanceMethods(L);
-    registerHttpClientClassMethods(L);
-    return 1;
-  }
 }

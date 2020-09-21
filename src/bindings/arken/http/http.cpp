@@ -51,8 +51,4 @@ extern "C" {
     register_arken_http(L);
     return 1;
   }
-  int luaopen_arken_http( lua_State *L ) {
-    register_arken_http(L);
-    return 1;
-  }
 }

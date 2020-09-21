@@ -96,8 +96,4 @@ extern "C" {
     register_arken_regex( L ); 
     return 1;
   }
-  int luaopen_arken_regex( lua_State *L ) {
-    register_arken_regex( L ); 
-    return 1;
-  }
 }

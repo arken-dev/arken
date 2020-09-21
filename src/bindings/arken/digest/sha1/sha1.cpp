@@ -43,8 +43,4 @@ extern "C" {
     register_arken_digest_sha1(L);
     return 1;
   }
-  int luaopen_arken_digest_sha1( lua_State *L ) {
-    register_arken_digest_sha1(L);
-    return 1;
-  }
 }

@@ -66,9 +66,4 @@ extern "C" {
     registerTaskClassMethods(L);
     return 1;
   }
-  int
-  luaopen_arken_concurrent_task( lua_State *L ) {
-    registerTaskClassMethods(L);
-    return 1;
-  }
 }

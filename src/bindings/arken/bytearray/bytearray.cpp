@@ -260,10 +260,4 @@ extern "C" {
     registerByteArrayClassMethods(L);
     return 1;
   }
-  int
-  luaopen_arken_ByteArray( lua_State *L ) {
-    registerByteArrayInstanceMethods(L);
-    registerByteArrayClassMethods(L);
-    return 1;
-  }
 }

@@ -92,8 +92,4 @@ extern "C" {
     register_arken_mvm(L);
     return 1;
   }
-  int luaopen_arken_mvm( lua_State *L ) {
-    register_arken_mvm(L);
-    return 1;
-  }
 }

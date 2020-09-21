@@ -83,7 +83,4 @@ extern "C" {
   int luaopen_arken_task( lua_State *L ) {
     return register_arken_task( L );
   }
-  int luaopen_arken_task( lua_State *L ) {
-    return register_arken_task( L );
-  }
 }

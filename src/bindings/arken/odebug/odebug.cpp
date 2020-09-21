@@ -35,8 +35,4 @@ extern "C" {
     register_arken_odebug( L );
     return 1;
   }
-  int luaopen_arken_odebug( lua_State *L ) {
-    register_arken_odebug( L );
-    return 1;
-  }
 }

@@ -45,8 +45,4 @@ extern "C" {
     register_arken_digest_md5(L);
     return 1;
   }
-  int luaopen_arken_digest_md5( lua_State *L ) {
-    register_arken_digest_md5(L);
-    return 1;
-  }
 }

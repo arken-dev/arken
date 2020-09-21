@@ -287,10 +287,4 @@ extern "C" {
     registerDateClassMethods(L);
     return 1;
   }
-  int
-  luaopen_arken_time_Date( lua_State *L ) {
-    registerDateInstanceMethods(L);
-    registerDateClassMethods(L);
-    return 1;
-  }
 }

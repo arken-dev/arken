@@ -195,10 +195,4 @@ extern "C" {
     registerTimeClassMethods(L);
     return 1;
   }
-  int
-  luaopen_arken_time_Time( lua_State *L ) {
-    registerTimeInstanceMethods(L);
-    registerTimeClassMethods(L);
-    return 1;
-  }
 }

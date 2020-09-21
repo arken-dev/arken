@@ -120,10 +120,4 @@ extern "C" {
     return 1;
   }
 
-  int
-  luaopen_arken_net_HttpBody( lua_State *L ) {
-    registerHttpBodyInstanceMethods(L);
-    registerHttpBodyClassMethods(L);
-    return 1;
-  }
 }

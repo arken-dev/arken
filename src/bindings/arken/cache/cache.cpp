@@ -55,17 +55,4 @@ extern "C" {
     lua_setfield(L, -1, "__index");
     return 1;
   }
-  int luaopen_arken_cache( lua_State *L ) {
-    static const luaL_reg Map[] = {
-      {"value",  arken_cache_value},
-      {"insert", arken_cache_insert},
-      {"remove", arken_cache_remove},
-      {NULL, NULL}
-    };
-    luaL_newmetatable(L, "cache");
-    luaL_register(L, NULL, Map);
-    lua_pushvalue(L, -1);
-    lua_setfield(L, -1, "__index");
-    return 1;
-  }
 }

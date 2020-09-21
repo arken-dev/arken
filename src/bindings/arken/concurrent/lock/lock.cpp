@@ -93,10 +93,4 @@ extern "C" {
     registerLockClassMethods(L);
     return 1;
   }
-  int
-  luaopen_arken_concurrent_Lock( lua_State *L ) {
-    registerLockInstanceMethods(L);
-    registerLockClassMethods(L);
-    return 1;
-  }
 }

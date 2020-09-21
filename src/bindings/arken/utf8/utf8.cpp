@@ -69,8 +69,4 @@ extern "C" {
     register_arken_utf8( L );
     return 1;
   }
-  int luaopen_arken_utf8( lua_State *L ) {
-    register_arken_utf8( L );
-    return 1;
-  }
 }
