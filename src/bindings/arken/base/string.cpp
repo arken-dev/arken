@@ -4,16 +4,16 @@
 // license that can be found in the LICENSE file.
 
 #include <lua/lua.hpp>
-#include <charon/base>
+#include <arken/base>
 #include <iostream>
 #include <cstring>
 
-using charon::string;
-using List = charon::string::List;
+using arken::string;
+using List = arken::string::List;
 
 string *
 checkString ( lua_State *L, int index = 1 ) {
-  return *(string **) luaL_checkudata(L, index, "charon.string.metatable");
+  return *(string **) luaL_checkudata(L, index, "arken.string.metatable");
 }
 
 //-----------------------------------------------------------------------------
@@ -21,7 +21,7 @@ checkString ( lua_State *L, int index = 1 ) {
 //-----------------------------------------------------------------------------
 
 static int
-charon_string_new( lua_State *L ) {
+arken_string_new( lua_State *L ) {
   string * str;
   if(lua_gettop(L) == 0) { // number of arguments
     str = new string();
@@ -36,13 +36,13 @@ charon_string_new( lua_State *L ) {
   }
   string **ptr = (string **)lua_newuserdata(L, sizeof(string*));
   *ptr = str;
-  luaL_getmetatable(L, "charon.string.metatable");
+  luaL_getmetatable(L, "arken.string.metatable");
   lua_setmetatable(L, -2);
   return 1;
 }
 
 static int
-charon_string_append( lua_State *L ) {
+arken_string_append( lua_State *L ) {
   const char *string = luaL_checkstring(L, 1);
   const char *str    = luaL_checkstring(L, 2);
   char *result = string::append(string, str);
@@ -52,7 +52,7 @@ charon_string_append( lua_State *L ) {
 }
 
 static int
-charon_string_camelCase( lua_State *L ) {
+arken_string_camelCase( lua_State *L ) {
   char * result;
   const char *string = luaL_checkstring(L, 1);
   bool  flag = false;
@@ -69,7 +69,7 @@ charon_string_camelCase( lua_State *L ) {
 }
 
 static int
-charon_string_capitalize( lua_State *L ) {
+arken_string_capitalize( lua_State *L ) {
   const char *string = luaL_checkstring(L, 1);
   char *result = string::capitalize(string);
   lua_pushstring(L, result);
@@ -78,7 +78,7 @@ charon_string_capitalize( lua_State *L ) {
 }
 
 static int
-charon_string_center( lua_State *L ) {
+arken_string_center( lua_State *L ) {
   const char *string = luaL_checkstring(L, 1);
   int size           = luaL_checkinteger(L, 2);
   const char *pad    = luaL_checkstring(L, 3);
@@ -89,7 +89,7 @@ charon_string_center( lua_State *L ) {
 }
 
 static int
-charon_string_chop( lua_State *L ) {
+arken_string_chop( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   int n =  luaL_checkinteger(L, 2);
   char * result = string::chop(string, n);
@@ -99,7 +99,7 @@ charon_string_chop( lua_State *L ) {
 }
 
 static int
-charon_string_md5( lua_State *L ) {
+arken_string_md5( lua_State *L ) {
   size_t len;
   const char * str = luaL_checklstring(L, 1, &len);
   char * result = string::md5(str, len);
@@ -109,7 +109,7 @@ charon_string_md5( lua_State *L ) {
 }
 
 static int
-charon_string_sha1( lua_State *L ) {
+arken_string_sha1( lua_State *L ) {
   const char * str = luaL_checkstring(L, 1);
   char * result = string::sha1(str);
   lua_pushstring(L, result);  /* push result */
@@ -118,7 +118,7 @@ charon_string_sha1( lua_State *L ) {
 }
 
 static int
-charon_string_contains( lua_State *L ) {
+arken_string_contains( lua_State *L ) {
   const char *string = luaL_checkstring(L, 1);
   const char *str    = luaL_checkstring(L, 2);
   bool result        = string::contains(string, str);
@@ -127,7 +127,7 @@ charon_string_contains( lua_State *L ) {
 }
 
 static int
-charon_string_decode64( lua_State *L ) {
+arken_string_decode64( lua_State *L ) {
   const char *str = luaL_checkstring(L, 1);
   char * result   = string::decode64(str);
   lua_pushstring(L, result);
@@ -136,7 +136,7 @@ charon_string_decode64( lua_State *L ) {
 }
 
 static int
-charon_string_encode64( lua_State *L ) {
+arken_string_encode64( lua_State *L ) {
   const char *str = luaL_checkstring(L, 1);
   char * result   = string::encode64(str);
   lua_pushstring(L, result);
@@ -145,7 +145,7 @@ charon_string_encode64( lua_State *L ) {
 }
 
 static int
-charon_string_decode( lua_State *L ) {
+arken_string_decode( lua_State *L ) {
   const char *value   = luaL_checkstring(L, 1);
   const char *charset = luaL_checkstring(L, 2);
   char * result   = string::decode(value, charset);
@@ -155,7 +155,7 @@ charon_string_decode( lua_State *L ) {
 }
 
 static int
-charon_string_encode( lua_State *L ) {
+arken_string_encode( lua_State *L ) {
   const char *value   = luaL_checkstring(L, 1);
   const char *charset = luaL_checkstring(L, 2);
   char * result   = string::encode(value, charset);
@@ -165,7 +165,7 @@ charon_string_encode( lua_State *L ) {
 }
 
 static int
-charon_string_equals( lua_State *L ) {
+arken_string_equals( lua_State *L ) {
   if( lua_isuserdata(L, 2) ) {
     const char * str = luaL_checkstring(L, 1);
     string * udata = checkString( L, 2 );
@@ -182,7 +182,7 @@ charon_string_equals( lua_State *L ) {
 }
 
 static int
-charon_string_count( lua_State *L ) {
+arken_string_count( lua_State *L ) {
   const char *str1 = luaL_checkstring(L, 1);
   const char *str2 = luaL_checkstring(L, 2);
   int result       = string::count(str1, str2);
@@ -192,7 +192,7 @@ charon_string_count( lua_State *L ) {
 
 
 static int
-charon_string_endsWith( lua_State *L ) {
+arken_string_endsWith( lua_State *L ) {
   const char *string = luaL_checkstring(L, 1);
   const char *str    = luaL_checkstring(L, 2);
   bool result        = string::endsWith(string, str);
@@ -201,7 +201,7 @@ charon_string_endsWith( lua_State *L ) {
 }
 
 static int
-charon_string_escape( lua_State *L ) {
+arken_string_escape( lua_State *L ) {
   const char *string = luaL_checkstring(L, 1);
   char * result      = string::escape(string);
   lua_pushstring(L, result);
@@ -210,7 +210,7 @@ charon_string_escape( lua_State *L ) {
 }
 
 static int
-charon_string_escapeHtml( lua_State *L ) {
+arken_string_escapeHtml( lua_State *L ) {
   const char *string = luaL_checkstring(L, 1);
   char * result      = string::escapeHtml(string);
   lua_pushstring(L, result);
@@ -219,7 +219,7 @@ charon_string_escapeHtml( lua_State *L ) {
 }
 
 static int
-charon_string_indexOf( lua_State *L ) {
+arken_string_indexOf( lua_State *L ) {
   const char *string = luaL_checkstring(L, 1);
   const char *str    = luaL_checkstring(L, 2);
   int start = 0;
@@ -236,7 +236,7 @@ charon_string_indexOf( lua_State *L ) {
 }
 
 static int
-charon_string_insert( lua_State *L ) {
+arken_string_insert( lua_State *L ) {
   const char *string = luaL_checkstring(L, 1);
   int len            = luaL_checkinteger(L, 2);
   const char *ba     = luaL_checkstring(L, 3);
@@ -247,7 +247,7 @@ charon_string_insert( lua_State *L ) {
 }
 
 static int
-charon_string_lastIndexOf( lua_State *L ) {
+arken_string_lastIndexOf( lua_State *L ) {
   const char *string = luaL_checkstring(L, 1);
   const char *str    = luaL_checkstring(L, 2);
   int result = string::lastIndexOf(string, str);
@@ -259,7 +259,7 @@ charon_string_lastIndexOf( lua_State *L ) {
 }
 
 static int
-charon_string_left( lua_State *L ) {
+arken_string_left( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   int    len    =  luaL_checkinteger(L, 2);
   char * result = string::left(string, len);
@@ -269,7 +269,7 @@ charon_string_left( lua_State *L ) {
 }
 
 static int
-charon_string_mid( lua_State *L ) {
+arken_string_mid( lua_State *L ) {
   const char *string = luaL_checkstring(L, 1);
   int pos      =  luaL_checkinteger(L, 2);
   int len;
@@ -285,7 +285,7 @@ charon_string_mid( lua_State *L ) {
 }
 
 static int
-charon_string_normalize( lua_State *L ) {
+arken_string_normalize( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   char * result       = string::normalize(string);
   lua_pushstring(L, result);  /* push result */
@@ -294,7 +294,7 @@ charon_string_normalize( lua_State *L ) {
 }
 
 static int
-charon_string_leftJustified( lua_State *L ) {
+arken_string_leftJustified( lua_State *L ) {
   const char *string = luaL_checkstring(L, 1);
   int size           = luaL_checkinteger(L, 2);
   const char *pad    = luaL_checkstring(L, 3);
@@ -305,7 +305,7 @@ charon_string_leftJustified( lua_State *L ) {
 }
 
 static int
-charon_string_prefix( lua_State *L ) {
+arken_string_prefix( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   char chr = '.';
   char * result;
@@ -320,7 +320,7 @@ charon_string_prefix( lua_State *L ) {
 
 
 static int
-charon_string_rightJustified( lua_State *L ) {
+arken_string_rightJustified( lua_State *L ) {
   const char *string = luaL_checkstring(L, 1);
   int size           = luaL_checkinteger(L, 2);
   const char *pad    = luaL_checkstring(L, 3);
@@ -331,7 +331,7 @@ charon_string_rightJustified( lua_State *L ) {
 }
 
 static int
-charon_string_repeated( lua_State *L ) {
+arken_string_repeated( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   int    times  =  luaL_checkinteger(L, 2);
   char * result = string::repeated(string, times);
@@ -341,7 +341,7 @@ charon_string_repeated( lua_State *L ) {
 }
 
 static int
-charon_string_right( lua_State *L ) {
+arken_string_right( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   int    len    =  luaL_checkinteger(L, 2);
   char * result = string::right(string, len);
@@ -351,7 +351,7 @@ charon_string_right( lua_State *L ) {
 }
 
 static int
-charon_string_simplified( lua_State *L ) {
+arken_string_simplified( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   char * result = string::simplified(string);
   lua_pushstring(L, result);  /* push result */
@@ -360,7 +360,7 @@ charon_string_simplified( lua_State *L ) {
 }
 
 static int
-charon_string_startsWith( lua_State *L ) {
+arken_string_startsWith( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   const char * ba     = luaL_checkstring(L, 2);
   bool result         = string::startsWith(string, ba);
@@ -369,7 +369,7 @@ charon_string_startsWith( lua_State *L ) {
 }
 
 static int
-charon_string_suffix( lua_State *L ) {
+arken_string_suffix( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   char chr = '.';
   char * result;
@@ -383,21 +383,21 @@ charon_string_suffix( lua_State *L ) {
 }
 
 static int
-charon_string_split( lua_State *L ) {
+arken_string_split( lua_State *L ) {
   size_t len;
   const char  * string  = luaL_checklstring(L, 1, &len);
   const char  * pattern = luaL_checkstring(L, 2);
   List * list = string::split(string, len, pattern);
   List **ptr  = (List **)lua_newuserdata(L, sizeof(List*));
   *ptr = list;
-  luaL_getmetatable(L, "charon.string.List.metatable");
+  luaL_getmetatable(L, "arken.string.List.metatable");
   lua_setmetatable(L, -2);
 
   return 1;
 }
 
 static int
-charon_string_replace( lua_State *L ) {
+arken_string_replace( lua_State *L ) {
   size_t len1, len2;
   const char * string = luaL_checkstring(L, 1);
   const char * before = luaL_checklstring(L, 2, &len1);
@@ -423,7 +423,7 @@ charon_string_replace( lua_State *L ) {
 }
 
 static int
-charon_string_trimmed( lua_State *L ) {
+arken_string_trimmed( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   char * result       = string::trimmed(string);
   lua_pushstring(L, result);  /* push result */
@@ -432,7 +432,7 @@ charon_string_trimmed( lua_State *L ) {
 }
 
 static int
-charon_string_leftTrimmed( lua_State *L ) {
+arken_string_leftTrimmed( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   char * result       = string::leftTrimmed(string);
   lua_pushstring(L, result);  /* push result */
@@ -441,7 +441,7 @@ charon_string_leftTrimmed( lua_State *L ) {
 }
 
 static int
-charon_string_rightTrimmed( lua_State *L ) {
+arken_string_rightTrimmed( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   char * result       = string::rightTrimmed(string);
   lua_pushstring(L, result);  /* push result */
@@ -450,7 +450,7 @@ charon_string_rightTrimmed( lua_State *L ) {
 }
 
 static int
-charon_string_truncate( lua_State *L ) {
+arken_string_truncate( lua_State *L ) {
   const char *string = luaL_checkstring(L, 1);
   int pos = luaL_checkinteger(L, 2);
   const char * omission;
@@ -475,7 +475,7 @@ charon_string_truncate( lua_State *L ) {
 }
 
 static int
-charon_string_dasherize( lua_State *L ) {
+arken_string_dasherize( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   char       * result = string::dasherize(string);
   lua_pushstring(L, result);
@@ -484,7 +484,7 @@ charon_string_dasherize( lua_State *L ) {
 }
 
 static int
-charon_string_underscore( lua_State *L ) {
+arken_string_underscore( lua_State *L ) {
   const char *string = luaL_checkstring(L, 1);
   char      * result = string::underscore(string);
   lua_pushstring(L, result);
@@ -494,46 +494,46 @@ charon_string_underscore( lua_State *L ) {
 
 static const luaL_reg
 StringClassMethods[] = {
-  {"new",            charon_string_new},
-  {"append",         charon_string_append},
-  {"camelCase",      charon_string_camelCase},
-  {"capitalize",     charon_string_capitalize},
-  {"center",         charon_string_center},
-  {"contains",       charon_string_contains},
-  {"chop",           charon_string_chop},
-  {"count",          charon_string_count},
-  {"endsWith",       charon_string_endsWith},
-  {"escape",         charon_string_escape},
-  {"escapeHtml",     charon_string_escapeHtml},
-  {"encode",         charon_string_encode},
-  {"decode",         charon_string_decode},
-  {"encode64",       charon_string_encode64},
-  {"equals",         charon_string_equals},
-  {"decode64",       charon_string_decode64},
-  {"dasherize",      charon_string_dasherize},
-  {"indexOf",        charon_string_indexOf},
-  {"insert",         charon_string_insert},
-  {"left",           charon_string_left},
-  {"lastIndexOf",    charon_string_lastIndexOf},
-  {"md5",            charon_string_md5},
-  {"mid",            charon_string_mid},
-  {"normalize",      charon_string_normalize},
-  {"prefix",         charon_string_prefix},
-  {"leftJustified",  charon_string_leftJustified},
-  {"rightJustified", charon_string_rightJustified},
-  {"simplified",     charon_string_simplified},
-  {"repeated",       charon_string_repeated},
-  {"replace",        charon_string_replace},
-  {"right",          charon_string_right},
-  {"sha1",           charon_string_sha1},
-  {"startsWith",     charon_string_startsWith},
-  {"split",          charon_string_split},
-  {"suffix",         charon_string_suffix},
-  {"trimmed",        charon_string_trimmed},
-  {"leftTrimmed",    charon_string_leftTrimmed},
-  {"rightTrimmed",   charon_string_rightTrimmed},
-  {"truncate",       charon_string_truncate},
-  {"underscore",     charon_string_underscore},
+  {"new",            arken_string_new},
+  {"append",         arken_string_append},
+  {"camelCase",      arken_string_camelCase},
+  {"capitalize",     arken_string_capitalize},
+  {"center",         arken_string_center},
+  {"contains",       arken_string_contains},
+  {"chop",           arken_string_chop},
+  {"count",          arken_string_count},
+  {"endsWith",       arken_string_endsWith},
+  {"escape",         arken_string_escape},
+  {"escapeHtml",     arken_string_escapeHtml},
+  {"encode",         arken_string_encode},
+  {"decode",         arken_string_decode},
+  {"encode64",       arken_string_encode64},
+  {"equals",         arken_string_equals},
+  {"decode64",       arken_string_decode64},
+  {"dasherize",      arken_string_dasherize},
+  {"indexOf",        arken_string_indexOf},
+  {"insert",         arken_string_insert},
+  {"left",           arken_string_left},
+  {"lastIndexOf",    arken_string_lastIndexOf},
+  {"md5",            arken_string_md5},
+  {"mid",            arken_string_mid},
+  {"normalize",      arken_string_normalize},
+  {"prefix",         arken_string_prefix},
+  {"leftJustified",  arken_string_leftJustified},
+  {"rightJustified", arken_string_rightJustified},
+  {"simplified",     arken_string_simplified},
+  {"repeated",       arken_string_repeated},
+  {"replace",        arken_string_replace},
+  {"right",          arken_string_right},
+  {"sha1",           arken_string_sha1},
+  {"startsWith",     arken_string_startsWith},
+  {"split",          arken_string_split},
+  {"suffix",         arken_string_suffix},
+  {"trimmed",        arken_string_trimmed},
+  {"leftTrimmed",    arken_string_leftTrimmed},
+  {"rightTrimmed",   arken_string_rightTrimmed},
+  {"truncate",       arken_string_truncate},
+  {"underscore",     arken_string_underscore},
   {NULL, NULL}
 };
 
@@ -547,7 +547,7 @@ registerStringClassMethods( lua_State *L ) {
 //-----------------------------------------------------------------------------
 
 static int
-charon_StringInstanceMethodCenter( lua_State *L ) {
+arken_StringInstanceMethodCenter( lua_State *L ) {
   string * udata  = checkString( L );
   int size        = luaL_checkinteger(L, 2);
   const char *pad = luaL_checkstring(L, 3);
@@ -557,14 +557,14 @@ charon_StringInstanceMethodCenter( lua_State *L ) {
 }
 
 static int
-charon_StringInstanceMethodClear( lua_State *L ) {
+arken_StringInstanceMethodClear( lua_State *L ) {
   string * udata = checkString( L );
   udata->clear();
   return 0;
 }
 
 static int
-charon_StringInstanceMethodContains( lua_State *L ) {
+arken_StringInstanceMethodContains( lua_State *L ) {
   string * udata  = checkString( L );
   const char *pad = luaL_checkstring(L, 2);
   lua_pushboolean(L, udata->contains(pad));
@@ -572,7 +572,7 @@ charon_StringInstanceMethodContains( lua_State *L ) {
 }
 
 static int
-charon_StringInstanceMethodCount( lua_State *L ) {
+arken_StringInstanceMethodCount( lua_State *L ) {
   string * udata  = checkString( L );
   const char *pad = luaL_checkstring(L, 2);
   lua_pushinteger(L, udata->count(pad));
@@ -580,7 +580,7 @@ charon_StringInstanceMethodCount( lua_State *L ) {
 }
 
 static int
-charon_StringInstanceMethodChop( lua_State *L ) {
+arken_StringInstanceMethodChop( lua_State *L ) {
   string * udata = checkString( L );
   int n = luaL_checkinteger(L, 2);
   string result = udata->chop(n);
@@ -589,7 +589,7 @@ charon_StringInstanceMethodChop( lua_State *L ) {
 }
 
 static int
-charon_StringInstanceMethodDasherize( lua_State *L ) {
+arken_StringInstanceMethodDasherize( lua_State *L ) {
   string * udata = checkString( L );
   string result  = udata->dasherize();
   lua_pushlstring(L, result.data(), result.size());
@@ -597,7 +597,7 @@ charon_StringInstanceMethodDasherize( lua_State *L ) {
 }
 
 static int
-charon_StringInstanceMethodEscape( lua_State *L ) {
+arken_StringInstanceMethodEscape( lua_State *L ) {
   string * udata = checkString( L );
   string result  = udata->escape();
   lua_pushlstring(L, result.data(), result.size());
@@ -605,7 +605,7 @@ charon_StringInstanceMethodEscape( lua_State *L ) {
 }
 
 static int
-charon_StringInstanceMethodEscapeHtml( lua_State *L ) {
+arken_StringInstanceMethodEscapeHtml( lua_State *L ) {
   string * udata = checkString( L );
   string result  = udata->escapeHtml();
   lua_pushlstring(L, result.data(), result.size());
@@ -613,7 +613,7 @@ charon_StringInstanceMethodEscapeHtml( lua_State *L ) {
 }
 
 static int
-charon_StringInstanceMethodIndexOf( lua_State *L ) {
+arken_StringInstanceMethodIndexOf( lua_State *L ) {
   string * udata  = checkString( L );
   const char *pad = luaL_checkstring(L, 2);
   int start = 0;
@@ -629,7 +629,7 @@ charon_StringInstanceMethodIndexOf( lua_State *L ) {
 }
 
 static int
-charon_StringInstanceMethodInsert( lua_State *L ) {
+arken_StringInstanceMethodInsert( lua_State *L ) {
   string * udata = checkString( L );
   int len        = luaL_checkinteger(L, 2);
   const char *ba = luaL_checkstring(L, 3);
@@ -639,7 +639,7 @@ charon_StringInstanceMethodInsert( lua_State *L ) {
 }
 
 static int
-charon_StringInstanceMethodEndsWith( lua_State *L ) {
+arken_StringInstanceMethodEndsWith( lua_State *L ) {
   string * udata  = checkString( L );
   const char * ba = luaL_checkstring(L, 2);
   bool result     = udata->endsWith(ba);
@@ -648,7 +648,7 @@ charon_StringInstanceMethodEndsWith( lua_State *L ) {
 }
 
 static int
-charon_StringInstanceMethodLastIndexOf( lua_State *L ) {
+arken_StringInstanceMethodLastIndexOf( lua_State *L ) {
   string * udata   = checkString( L );
   const char * str = luaL_checkstring(L, 2);
   int  result      = udata->lastIndexOf(str);
@@ -657,7 +657,7 @@ charon_StringInstanceMethodLastIndexOf( lua_State *L ) {
 }
 
 static int
-charon_StringInstanceMethodLeft( lua_State *L ) {
+arken_StringInstanceMethodLeft( lua_State *L ) {
   string * udata = checkString( L );
   int len        = luaL_checkinteger(L, 2);
   string result  = udata->left(len);
@@ -666,7 +666,7 @@ charon_StringInstanceMethodLeft( lua_State *L ) {
 }
 
 static int
-charon_StringInstanceMethodLeftJustified( lua_State *L ) {
+arken_StringInstanceMethodLeftJustified( lua_State *L ) {
   string * udata   = checkString( L );
   size_t size      = luaL_checkinteger(L, 2);
   const char * pad = luaL_checkstring(L, 3);
@@ -676,7 +676,7 @@ charon_StringInstanceMethodLeftJustified( lua_State *L ) {
 }
 
 static int
-charon_StringInstanceMethodMid( lua_State *L ) {
+arken_StringInstanceMethodMid( lua_State *L ) {
   string * udata = checkString( L );
   int pos = luaL_checkinteger(L, 2);
   int len = -1;
@@ -689,7 +689,7 @@ charon_StringInstanceMethodMid( lua_State *L ) {
 }
 
 static int
-charon_StringInstanceMethodMd5( lua_State *L ) {
+arken_StringInstanceMethodMd5( lua_State *L ) {
   string * udata = checkString( L );
   string result  = udata->md5();
   lua_pushlstring(L, result.data(), result.size());
@@ -697,7 +697,7 @@ charon_StringInstanceMethodMd5( lua_State *L ) {
 }
 
 static int
-charon_StringInstanceMethodNormalize( lua_State *L ) {
+arken_StringInstanceMethodNormalize( lua_State *L ) {
   string * udata = checkString( L );
   string result  = udata->normalize();
   lua_pushlstring(L, result.data(), result.size());
@@ -705,7 +705,7 @@ charon_StringInstanceMethodNormalize( lua_State *L ) {
 }
 
 static int
-charon_StringInstanceMethodReplace( lua_State *L ) {
+arken_StringInstanceMethodReplace( lua_State *L ) {
   size_t len1, len2;
   string * udata = checkString( L );
   const char * before = luaL_checklstring(L, 2, &len1);
@@ -730,7 +730,7 @@ charon_StringInstanceMethodReplace( lua_State *L ) {
 }
 
 static int
-charon_StringInstanceMethodRepeated( lua_State *L ) {
+arken_StringInstanceMethodRepeated( lua_State *L ) {
   string * udata = checkString( L );
   int times      = luaL_checkinteger(L, 2);
   string result  = udata->repeated(times);
@@ -739,7 +739,7 @@ charon_StringInstanceMethodRepeated( lua_State *L ) {
 }
 
 static int
-charon_StringInstanceMethodReserve( lua_State *L ) {
+arken_StringInstanceMethodReserve( lua_State *L ) {
   string * udata = checkString( L );
   if(lua_gettop(L) > 1) { // number of arguments
    int reserve = luaL_checklong(L, 2);
@@ -752,7 +752,7 @@ charon_StringInstanceMethodReserve( lua_State *L ) {
 }
 
 static int
-charon_StringInstanceMethodRight( lua_State *L ) {
+arken_StringInstanceMethodRight( lua_State *L ) {
   string * udata = checkString( L );
   int len        = luaL_checkinteger(L, 2);
   string result  = udata->right(len) ;
@@ -761,7 +761,7 @@ charon_StringInstanceMethodRight( lua_State *L ) {
 }
 
 static int
-charon_StringInstanceMethodRightJustified( lua_State *L ) {
+arken_StringInstanceMethodRightJustified( lua_State *L ) {
   string * udata   = checkString( L );
   size_t size      = luaL_checkinteger(L, 2);
   const char * pad = luaL_checkstring(L, 3);
@@ -771,7 +771,7 @@ charon_StringInstanceMethodRightJustified( lua_State *L ) {
 }
 
 static int
-charon_StringInstanceMethodEncode64( lua_State *L ) {
+arken_StringInstanceMethodEncode64( lua_State *L ) {
   string * udata = checkString( L );
   string result  = udata->encode64();
   lua_pushlstring(L, result.data(), result.size());
@@ -779,7 +779,7 @@ charon_StringInstanceMethodEncode64( lua_State *L ) {
 }
 
 static int
-charon_StringInstanceMethodDecode64( lua_State *L ) {
+arken_StringInstanceMethodDecode64( lua_State *L ) {
   string * udata = checkString( L );
   string result  = udata->decode64();
   lua_pushlstring(L, result.data(), result.size());
@@ -787,7 +787,7 @@ charon_StringInstanceMethodDecode64( lua_State *L ) {
 }
 
 static int
-charon_StringInstanceMethodEncode( lua_State *L ) {
+arken_StringInstanceMethodEncode( lua_State *L ) {
   string * udata = checkString( L );
   const char * charset = luaL_checkstring(L, 2);
   string result  = udata->encode(charset);
@@ -796,7 +796,7 @@ charon_StringInstanceMethodEncode( lua_State *L ) {
 }
 
 static int
-charon_StringInstanceMethodPrefix( lua_State *L ) {
+arken_StringInstanceMethodPrefix( lua_State *L ) {
   string * udata = checkString( L );
   string result;
   if(lua_gettop(L) == 2) { // number of arguments
@@ -810,7 +810,7 @@ charon_StringInstanceMethodPrefix( lua_State *L ) {
 }
 
 static int
-charon_StringInstanceMethodDecode( lua_State *L ) {
+arken_StringInstanceMethodDecode( lua_State *L ) {
   string * udata = checkString( L );
   const char * charset = luaL_checkstring(L, 2);
   string result  = udata->decode(charset);
@@ -819,7 +819,7 @@ charon_StringInstanceMethodDecode( lua_State *L ) {
 }
 
 static int
-charon_StringInstanceMethodSha1( lua_State *L ) {
+arken_StringInstanceMethodSha1( lua_State *L ) {
   string * udata = checkString( L );
   string result  = udata->sha1();
   lua_pushlstring(L, result.data(), result.size());
@@ -827,7 +827,7 @@ charon_StringInstanceMethodSha1( lua_State *L ) {
 }
 
 static int
-charon_StringInstanceMethodSimplified( lua_State *L ) {
+arken_StringInstanceMethodSimplified( lua_State *L ) {
   string *  udata = checkString( L );
   string result = udata->simplified();
   lua_pushlstring(L, result.data(), result.size());
@@ -835,7 +835,7 @@ charon_StringInstanceMethodSimplified( lua_State *L ) {
 }
 
 static int
-charon_StringInstanceMethodSuffix( lua_State *L ) {
+arken_StringInstanceMethodSuffix( lua_State *L ) {
   string * udata = checkString( L );
   string result;
   if(lua_gettop(L) == 2) { // number of arguments
@@ -849,7 +849,7 @@ charon_StringInstanceMethodSuffix( lua_State *L ) {
 }
 
 static int
-charon_StringInstanceMethodLeftTrimmed( lua_State *L ) {
+arken_StringInstanceMethodLeftTrimmed( lua_State *L ) {
   string *  udata = checkString( L );
   string result   = udata->leftTrimmed();
   lua_pushlstring(L, result.data(), result.size());
@@ -857,7 +857,7 @@ charon_StringInstanceMethodLeftTrimmed( lua_State *L ) {
 }
 
 static int
-charon_StringInstanceMethodTrimmed( lua_State *L ) {
+arken_StringInstanceMethodTrimmed( lua_State *L ) {
   string *  udata = checkString( L );
   string result   = udata->trimmed();
   lua_pushlstring(L, result.data(), result.size());
@@ -865,7 +865,7 @@ charon_StringInstanceMethodTrimmed( lua_State *L ) {
 }
 
 static int
-charon_StringInstanceMethodStartsWith( lua_State *L ) {
+arken_StringInstanceMethodStartsWith( lua_State *L ) {
   string * udata   = checkString( L );
   const char * str = luaL_checkstring(L, 2);
   lua_pushboolean(L, udata->startsWith(str));
@@ -873,7 +873,7 @@ charon_StringInstanceMethodStartsWith( lua_State *L ) {
 }
 
 static int
-charon_StringInstanceMethodRightTrimmed( lua_State *L ) {
+arken_StringInstanceMethodRightTrimmed( lua_State *L ) {
   string *  udata = checkString( L );
   string result   = udata->rightTrimmed();
   lua_pushlstring(L, result.data(), result.size());
@@ -881,7 +881,7 @@ charon_StringInstanceMethodRightTrimmed( lua_State *L ) {
 }
 
 static int
-charon_StringInstanceMethodTruncate( lua_State *L ) {
+arken_StringInstanceMethodTruncate( lua_State *L ) {
   string *  udata = checkString( L );
   int pos = luaL_checkinteger(L, 2);
   const char * omission;
@@ -905,7 +905,7 @@ charon_StringInstanceMethodTruncate( lua_State *L ) {
 }
 
 static int
-charon_StringInstanceMethodUnderscore( lua_State *L ) {
+arken_StringInstanceMethodUnderscore( lua_State *L ) {
   string *  udata = checkString( L );
   string result   = udata->underscore();
   lua_pushlstring(L, result.data(), result.size());
@@ -913,7 +913,7 @@ charon_StringInstanceMethodUnderscore( lua_State *L ) {
 }
 
 static int
-charon_StringInstanceMethodAppend( lua_State *L ) {
+arken_StringInstanceMethodAppend( lua_State *L ) {
   string * udata   = checkString( L );
   const char * str = luaL_checkstring(L, 2);
   udata->append(str);
@@ -922,7 +922,7 @@ charon_StringInstanceMethodAppend( lua_State *L ) {
 }
 
 static int
-charon_StringInstanceMethodPrepend( lua_State *L ) {
+arken_StringInstanceMethodPrepend( lua_State *L ) {
   string * udata   = checkString( L );
   const char * str = luaL_checkstring(L, 2);
   udata->prepend(str);
@@ -931,26 +931,26 @@ charon_StringInstanceMethodPrepend( lua_State *L ) {
 }
 
 static int
-charon_StringInstanceMethodSplit( lua_State *L ) {
+arken_StringInstanceMethodSplit( lua_State *L ) {
   string * udata = checkString( L );
   const char  * pattern = luaL_checkstring(L, 2);
   List * list  = udata->split(pattern);
   List **ptr   = (List **)lua_newuserdata(L, sizeof(List*));
   *ptr = list;
-  luaL_getmetatable(L, "charon.string.List.metatable");
+  luaL_getmetatable(L, "arken.string.List.metatable");
   lua_setmetatable(L, -2);
   return 1;
 }
 
 static int
-charon_StringInstanceMethodToString( lua_State *L ) {
+arken_StringInstanceMethodToString( lua_State *L ) {
   string * udata = checkString( L );
   lua_pushlstring(L, udata->data(), udata->size());
   return 1;
 }
 
 static int
-charon_StringInstanceMethodEquals( lua_State *L ) {
+arken_StringInstanceMethodEquals( lua_State *L ) {
   string * udata = checkString( L );
   if( lua_isuserdata(L, 2) ) {
     string * odata = checkString( L, 2 );
@@ -963,28 +963,28 @@ charon_StringInstanceMethodEquals( lua_State *L ) {
 }
 
 static int
-charon_StringInstanceMethodToLen( lua_State *L ) {
+arken_StringInstanceMethodToLen( lua_State *L ) {
   string * udata = checkString( L );
   lua_pushinteger(L, udata->len());
   return 1;
 }
 
 static int
-charon_StringInstanceMethodSize( lua_State *L ) {
+arken_StringInstanceMethodSize( lua_State *L ) {
   string * udata = checkString( L );
   lua_pushinteger(L, udata->size());
   return 1;
 }
 
 static int
-charon_StringInstanceMethodLen( lua_State *L ) {
+arken_StringInstanceMethodLen( lua_State *L ) {
   string * udata = checkString( L );
   lua_pushinteger(L, udata->len());
   return 1;
 }
 
 static int
-charon_StringInstanceMethodDestruct( lua_State *L ) {
+arken_StringInstanceMethodDestruct( lua_State *L ) {
   string * udata = checkString( L );
   delete udata;
   return 0;
@@ -992,57 +992,57 @@ charon_StringInstanceMethodDestruct( lua_State *L ) {
 
 static const
 luaL_reg StringInstanceMethods[] = {
-  {"append",         charon_StringInstanceMethodAppend},
-  {"center",         charon_StringInstanceMethodCenter},
-  {"chop",           charon_StringInstanceMethodChop},
-  {"clear",          charon_StringInstanceMethodClear},
-  {"contains",       charon_StringInstanceMethodContains},
-  {"count",          charon_StringInstanceMethodCount},
-  {"dasherize",      charon_StringInstanceMethodDasherize},
-  {"escape",         charon_StringInstanceMethodEscape},
-  {"decode",         charon_StringInstanceMethodDecode},
-  {"encode",         charon_StringInstanceMethodEncode},
-  {"decode64",       charon_StringInstanceMethodDecode64},
-  {"encode64",       charon_StringInstanceMethodEncode64},
-  {"escapeHtml",     charon_StringInstanceMethodEscapeHtml},
-  {"indexOf",        charon_StringInstanceMethodIndexOf},
-  {"endsWith",       charon_StringInstanceMethodEndsWith},
-  {"equals",         charon_StringInstanceMethodEquals},
-  {"lastIndexOf",    charon_StringInstanceMethodLastIndexOf},
-  {"left",           charon_StringInstanceMethodLeft},
-  {"leftJustified",  charon_StringInstanceMethodLeftJustified},
-  {"mid",            charon_StringInstanceMethodMid},
-  {"insert",         charon_StringInstanceMethodInsert},
-  {"len",            charon_StringInstanceMethodLen},
-  {"md5",            charon_StringInstanceMethodMd5},
-  {"normalize",      charon_StringInstanceMethodNormalize},
-  {"prepend",        charon_StringInstanceMethodPrepend},
-  {"prefix",         charon_StringInstanceMethodPrefix},
-  {"repeated",       charon_StringInstanceMethodRepeated},
-  {"replace",        charon_StringInstanceMethodReplace},
-  {"reserve",        charon_StringInstanceMethodReserve},
-  {"right",          charon_StringInstanceMethodRight},
-  {"rightJustified", charon_StringInstanceMethodRightJustified},
-  {"sha1",           charon_StringInstanceMethodSha1},
-  {"size",           charon_StringInstanceMethodSize},
-  {"simplified",     charon_StringInstanceMethodSimplified},
-  {"suffix",         charon_StringInstanceMethodSuffix},
-  {"trimmed",        charon_StringInstanceMethodTrimmed},
-  {"rightTrimmed",   charon_StringInstanceMethodRightTrimmed},
-  {"split",          charon_StringInstanceMethodSplit},
-  {"leftTrimmed",    charon_StringInstanceMethodLeftTrimmed},
-  {"truncate",       charon_StringInstanceMethodTruncate},
-  {"underscore",     charon_StringInstanceMethodUnderscore},
-  {"startsWith",     charon_StringInstanceMethodStartsWith},
-  {"__tostring",     charon_StringInstanceMethodToString},
-  {"__len",          charon_StringInstanceMethodToLen},
-  {"__gc",           charon_StringInstanceMethodDestruct},
+  {"append",         arken_StringInstanceMethodAppend},
+  {"center",         arken_StringInstanceMethodCenter},
+  {"chop",           arken_StringInstanceMethodChop},
+  {"clear",          arken_StringInstanceMethodClear},
+  {"contains",       arken_StringInstanceMethodContains},
+  {"count",          arken_StringInstanceMethodCount},
+  {"dasherize",      arken_StringInstanceMethodDasherize},
+  {"escape",         arken_StringInstanceMethodEscape},
+  {"decode",         arken_StringInstanceMethodDecode},
+  {"encode",         arken_StringInstanceMethodEncode},
+  {"decode64",       arken_StringInstanceMethodDecode64},
+  {"encode64",       arken_StringInstanceMethodEncode64},
+  {"escapeHtml",     arken_StringInstanceMethodEscapeHtml},
+  {"indexOf",        arken_StringInstanceMethodIndexOf},
+  {"endsWith",       arken_StringInstanceMethodEndsWith},
+  {"equals",         arken_StringInstanceMethodEquals},
+  {"lastIndexOf",    arken_StringInstanceMethodLastIndexOf},
+  {"left",           arken_StringInstanceMethodLeft},
+  {"leftJustified",  arken_StringInstanceMethodLeftJustified},
+  {"mid",            arken_StringInstanceMethodMid},
+  {"insert",         arken_StringInstanceMethodInsert},
+  {"len",            arken_StringInstanceMethodLen},
+  {"md5",            arken_StringInstanceMethodMd5},
+  {"normalize",      arken_StringInstanceMethodNormalize},
+  {"prepend",        arken_StringInstanceMethodPrepend},
+  {"prefix",         arken_StringInstanceMethodPrefix},
+  {"repeated",       arken_StringInstanceMethodRepeated},
+  {"replace",        arken_StringInstanceMethodReplace},
+  {"reserve",        arken_StringInstanceMethodReserve},
+  {"right",          arken_StringInstanceMethodRight},
+  {"rightJustified", arken_StringInstanceMethodRightJustified},
+  {"sha1",           arken_StringInstanceMethodSha1},
+  {"size",           arken_StringInstanceMethodSize},
+  {"simplified",     arken_StringInstanceMethodSimplified},
+  {"suffix",         arken_StringInstanceMethodSuffix},
+  {"trimmed",        arken_StringInstanceMethodTrimmed},
+  {"rightTrimmed",   arken_StringInstanceMethodRightTrimmed},
+  {"split",          arken_StringInstanceMethodSplit},
+  {"leftTrimmed",    arken_StringInstanceMethodLeftTrimmed},
+  {"truncate",       arken_StringInstanceMethodTruncate},
+  {"underscore",     arken_StringInstanceMethodUnderscore},
+  {"startsWith",     arken_StringInstanceMethodStartsWith},
+  {"__tostring",     arken_StringInstanceMethodToString},
+  {"__len",          arken_StringInstanceMethodToLen},
+  {"__gc",           arken_StringInstanceMethodDestruct},
   {NULL, NULL}
 };
 
 void static
 registerStringInstanceMethods( lua_State *L ) {
-  luaL_newmetatable(L, "charon.string.metatable");
+  luaL_newmetatable(L, "arken.string.metatable");
   luaL_register(L, NULL, StringInstanceMethods);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
@@ -1054,7 +1054,7 @@ registerStringInstanceMethods( lua_State *L ) {
 
 List *
 checkList( lua_State *L ) {
-  return *(List **) luaL_checkudata(L, 1, "charon.string.List.metatable");
+  return *(List **) luaL_checkudata(L, 1, "arken.string.List.metatable");
 }
 
 /**
@@ -1062,23 +1062,23 @@ checkList( lua_State *L ) {
  */
 
 static int
-charon_string_ListClassMethodNew( lua_State *L ) {
+arken_string_ListClassMethodNew( lua_State *L ) {
   List **ptr = (List **)lua_newuserdata(L, sizeof(List*));
   *ptr= new List();
-  luaL_getmetatable(L, "charon.string.List.metatable");
+  luaL_getmetatable(L, "arken.string.List.metatable");
   lua_setmetatable(L, -2);
   return 1;
 }
 
-static const luaL_reg charon_string_ListClassMethods[] = {
-  {"new", charon_string_ListClassMethodNew},
+static const luaL_reg arken_string_ListClassMethods[] = {
+  {"new", arken_string_ListClassMethodNew},
   {NULL, NULL}
 };
 
 void static
 registerStringListClassMethods( lua_State *L ) {
-  luaL_newmetatable(L, "charon.string.List");
-  luaL_register(L, NULL, charon_string_ListClassMethods);
+  luaL_newmetatable(L, "arken.string.List");
+  luaL_register(L, NULL, arken_string_ListClassMethods);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -1088,14 +1088,14 @@ registerStringListClassMethods( lua_State *L ) {
  */
 
 static int
-charon_string_ListInstanceMethodDestruct( lua_State *L ) {
+arken_string_ListInstanceMethodDestruct( lua_State *L ) {
   List *udata = checkList( L );
   delete udata;
   return 0;
 }
 
 static int
-charon_string_ListInstanceMethodAt( lua_State *L ) {
+arken_string_ListInstanceMethodAt( lua_State *L ) {
   List * udata  = checkList( L );
   int pos = luaL_checkint(L, 2);
   int len;
@@ -1109,7 +1109,7 @@ charon_string_ListInstanceMethodAt( lua_State *L ) {
 }
 
 static int
-charon_string_list_each( lua_State *L ) {
+arken_string_list_each( lua_State *L ) {
   int i = lua_upvalueindex(1);
   luaL_checktype(L, i, LUA_TLIGHTUSERDATA);
   List * ba  = (List *) lua_touserdata(L, i);
@@ -1123,29 +1123,29 @@ charon_string_list_each( lua_State *L ) {
 }
 
 static int
-charon_string_ListInstanceMethodEach( lua_State *L ) {
+arken_string_ListInstanceMethodEach( lua_State *L ) {
   List * udata  = checkList( L );
   lua_pushlightuserdata(L, udata);
-  lua_pushcclosure(L, charon_string_list_each, 1);
+  lua_pushcclosure(L, arken_string_list_each, 1);
   return 1;
 }
 
 static int
-charon_string_ListInstanceMethodFirst( lua_State *L ) {
+arken_string_ListInstanceMethodFirst( lua_State *L ) {
   List * udata  = checkList( L );
   lua_pushstring(L, udata->first());
   return 1;
 }
 
 static int
-charon_string_ListInstanceMethodLast( lua_State *L ) {
+arken_string_ListInstanceMethodLast( lua_State *L ) {
   List * udata  = checkList( L );
   lua_pushstring(L, udata->last());
   return 1;
 }
 
 static int
-charon_string_ListInstanceMethodReplace( lua_State *L ) {
+arken_string_ListInstanceMethodReplace( lua_State *L ) {
   List * udata  = checkList( L );
   int pos = luaL_checkint(L, 2);
   const char * value = luaL_checkstring(L, 3);
@@ -1154,7 +1154,7 @@ charon_string_ListInstanceMethodReplace( lua_State *L ) {
 }
 
 static int
-charon_string_ListInstanceMethodJoin( lua_State *L ) {
+arken_string_ListInstanceMethodJoin( lua_State *L ) {
   List * udata   = checkList( L );
   const char  * separator = luaL_checkstring(L, 2);
   char * result = udata->join(separator);
@@ -1165,7 +1165,7 @@ charon_string_ListInstanceMethodJoin( lua_State *L ) {
 
 
 static int
-charon_string_ListInstanceMethodAppend( lua_State *L ) {
+arken_string_ListInstanceMethodAppend( lua_State *L ) {
   List * udata  = checkList( L );
   const char * value = luaL_checkstring(L, 2);
   udata->append(value);
@@ -1174,30 +1174,30 @@ charon_string_ListInstanceMethodAppend( lua_State *L ) {
 }
 
 static int
-charon_string_ListInstanceMethodSize( lua_State *L ) {
+arken_string_ListInstanceMethodSize( lua_State *L ) {
   List * udata  = checkList( L );
   lua_pushinteger(L, udata->size());
   return 1;
 }
 
 static const
-luaL_reg charon_string_ListInstanceMethods[] = {
-  {"append",  charon_string_ListInstanceMethodAppend},
-  {"at",      charon_string_ListInstanceMethodAt},
-  {"each",    charon_string_ListInstanceMethodEach},
-  {"first",   charon_string_ListInstanceMethodFirst},
-  {"last",    charon_string_ListInstanceMethodLast},
-  {"join",    charon_string_ListInstanceMethodJoin},
-  {"size",    charon_string_ListInstanceMethodSize},
-  {"replace", charon_string_ListInstanceMethodReplace},
-  {"__gc",    charon_string_ListInstanceMethodDestruct},
+luaL_reg arken_string_ListInstanceMethods[] = {
+  {"append",  arken_string_ListInstanceMethodAppend},
+  {"at",      arken_string_ListInstanceMethodAt},
+  {"each",    arken_string_ListInstanceMethodEach},
+  {"first",   arken_string_ListInstanceMethodFirst},
+  {"last",    arken_string_ListInstanceMethodLast},
+  {"join",    arken_string_ListInstanceMethodJoin},
+  {"size",    arken_string_ListInstanceMethodSize},
+  {"replace", arken_string_ListInstanceMethodReplace},
+  {"__gc",    arken_string_ListInstanceMethodDestruct},
   {NULL, NULL}
 };
 
 void static
 registerStringListInstanceMethods( lua_State *L ) {
-  luaL_newmetatable(L, "charon.string.List.metatable");
-  luaL_register(L, NULL, charon_string_ListInstanceMethods);
+  luaL_newmetatable(L, "arken.string.List.metatable");
+  luaL_register(L, NULL, arken_string_ListInstanceMethods);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -1206,7 +1206,7 @@ registerStringListInstanceMethods( lua_State *L ) {
 // REGISTERS
 //-----------------------------------------------------------------------------
 
-int luaopen_charon_string( lua_State *L ) {
+int luaopen_arken_string( lua_State *L ) {
   registerStringClassMethods(L);
   registerStringInstanceMethods(L);
   registerStringListClassMethods(L);

@@ -4,10 +4,10 @@
 // license that can be found in the LICENSE file.
 
 #include <lua/lua.hpp>
-#include <charon/base>
+#include <arken/base>
 #include <QtCore>
 
-using charon::ByteArray;
+using arken::ByteArray;
 
 /**
  * checkByteArray
@@ -23,7 +23,7 @@ checkByteArray( lua_State *L ) {
  */
 
 static int
-charon_ByteArrayClassMethodNew( lua_State *L ) {
+arken_ByteArrayClassMethodNew( lua_State *L ) {
   size_t len;
   const char *str = (char *) lua_tolstring(L, 1, &len);
   ByteArray **ptr = (ByteArray **)lua_newuserdata(L, sizeof(ByteArray*));
@@ -34,7 +34,7 @@ charon_ByteArrayClassMethodNew( lua_State *L ) {
 }
 
 static const luaL_reg ByteArrayClassMethods[] = {
-  {"new", charon_ByteArrayClassMethodNew},
+  {"new", arken_ByteArrayClassMethodNew},
   {NULL, NULL}
 };
 
@@ -51,21 +51,21 @@ registerByteArrayClassMethods( lua_State *L ) {
  */
 
 static int
-charon_ByteArrayInstanceMethodDestruct( lua_State *L ) {
+arken_ByteArrayInstanceMethodDestruct( lua_State *L ) {
   ByteArray *udata = checkByteArray( L );
   delete udata;
   return 0;
 }
 
 static int
-charon_ByteArrayInstanceMethodToString( lua_State *L ) {
+arken_ByteArrayInstanceMethodToString( lua_State *L ) {
   ByteArray *udata = checkByteArray( L );
   lua_pushlstring(L, udata->data(), udata->size());
   return 1;
 }
 
 static int
-charon_ByteArrayInstanceMethodConcat( lua_State *L ) {
+arken_ByteArrayInstanceMethodConcat( lua_State *L ) {
   ByteArray *udata  = checkByteArray( L );
   const char *str = lua_tostring(L, 2);
   udata->append(str);
@@ -74,14 +74,14 @@ charon_ByteArrayInstanceMethodConcat( lua_State *L ) {
 }
 
 static int
-charon_ByteArrayInstanceMethodToUpper( lua_State *L ) {
+arken_ByteArrayInstanceMethodToUpper( lua_State *L ) {
   ByteArray *udata  = checkByteArray( L );
   lua_pushstring(L, udata->toUpper());
   return 1;
 }
 
 static int
-charon_ByteArrayInstanceMethodReplace( lua_State *L ) {
+arken_ByteArrayInstanceMethodReplace( lua_State *L ) {
   ByteArray * udata  = checkByteArray( L );
   const char * before = lua_tostring(L, 2);
   const char * after  = lua_tostring(L, 3);
@@ -91,42 +91,42 @@ charon_ByteArrayInstanceMethodReplace( lua_State *L ) {
 }
 
 static int
-charon_ByteArrayInstanceMethodNormalize( lua_State *L ) {
+arken_ByteArrayInstanceMethodNormalize( lua_State *L ) {
   ByteArray *udata  = checkByteArray( L );
   lua_pushstring(L, udata->normalize());
   return 1;
 }
 
 static int
-charon_ByteArrayInstanceMethodTrimmed( lua_State *L ) {
+arken_ByteArrayInstanceMethodTrimmed( lua_State *L ) {
   ByteArray *udata  = checkByteArray( L );
   lua_pushstring(L, udata->trimmed());
   return 1;
 }
 
 static int
-charon_ByteArrayInstanceMethodLeftTrimmed( lua_State *L ) {
+arken_ByteArrayInstanceMethodLeftTrimmed( lua_State *L ) {
   ByteArray *udata  = checkByteArray( L );
   lua_pushstring(L, udata->leftTrimmed());
   return 1;
 }
 
 static int
-charon_ByteArrayInstanceMethodRightTrimmed( lua_State *L ) {
+arken_ByteArrayInstanceMethodRightTrimmed( lua_State *L ) {
   ByteArray *udata  = checkByteArray( L );
   lua_pushstring(L, udata->rightTrimmed());
   return 1;
 }
 
 static int
-charon_ByteArrayInstanceMethodSimplified( lua_State *L ) {
+arken_ByteArrayInstanceMethodSimplified( lua_State *L ) {
   ByteArray *udata  = checkByteArray( L );
   lua_pushstring(L, udata->simplified());
   return 1;
 }
 
 static int
-charon_ByteArrayInstanceMethodAppend( lua_State *L ) {
+arken_ByteArrayInstanceMethodAppend( lua_State *L ) {
   ByteArray *udata  = checkByteArray( L );
   const char *str   = lua_tostring(L, 2);
   udata->append(str);
@@ -135,7 +135,7 @@ charon_ByteArrayInstanceMethodAppend( lua_State *L ) {
 }
 
 static int
-charon_ByteArrayInstanceMethodPrepend( lua_State *L ) {
+arken_ByteArrayInstanceMethodPrepend( lua_State *L ) {
   ByteArray *udata  = checkByteArray( L );
   const char *str   = lua_tostring(L, 2);
   udata->prepend(str);
@@ -144,28 +144,28 @@ charon_ByteArrayInstanceMethodPrepend( lua_State *L ) {
 }
 
 static int
-charon_ByteArrayInstanceMethodCamelCase( lua_State *L ) {
+arken_ByteArrayInstanceMethodCamelCase( lua_State *L ) {
   ByteArray *udata  = checkByteArray( L );
   lua_pushstring(L, udata->camelCase());
   return 1;
 }
 
 static int
-charon_ByteArrayInstanceMethodCapitalize( lua_State *L ) {
+arken_ByteArrayInstanceMethodCapitalize( lua_State *L ) {
   ByteArray *udata  = checkByteArray( L );
   lua_pushstring(L, udata->capitalize());
   return 1;
 }
 
 static int
-charon_ByteArrayInstanceMethodUnderscore( lua_State *L ) {
+arken_ByteArrayInstanceMethodUnderscore( lua_State *L ) {
   ByteArray *udata  = checkByteArray( L );
   lua_pushstring(L, udata->underscore());
   return 1;
 }
 
 static int
-charon_ByteArrayInstanceMethodLastIndexOf( lua_State *L ) {
+arken_ByteArrayInstanceMethodLastIndexOf( lua_State *L ) {
   ByteArray *udata  = checkByteArray( L );
   const char *str    = lua_tostring(L, 2);
   lua_pushnumber(L, udata->lastIndexOf(str[0]));
@@ -173,7 +173,7 @@ charon_ByteArrayInstanceMethodLastIndexOf( lua_State *L ) {
 }
 
 static int
-charon_ByteArrayInstanceMethodMid( lua_State *L ) {
+arken_ByteArrayInstanceMethodMid( lua_State *L ) {
   ByteArray *udata  = checkByteArray( L );
   int pos =  luaL_checkinteger(L, 2);
   int len;
@@ -189,14 +189,14 @@ charon_ByteArrayInstanceMethodMid( lua_State *L ) {
 }
 
 static int
-charon_ByteArrayInstanceMethodSize( lua_State *L ) {
+arken_ByteArrayInstanceMethodSize( lua_State *L ) {
   ByteArray *udata  = checkByteArray( L );
   lua_pushnumber(L, udata->size());
   return 1;
 }
 
 static int
-charon_ByteArrayInstanceMethodRight( lua_State *L ) {
+arken_ByteArrayInstanceMethodRight( lua_State *L ) {
   ByteArray *udata  = checkByteArray( L );
   int len =  luaL_checkinteger(L, 2);
   lua_pushstring(L, udata->right(len));
@@ -204,7 +204,7 @@ charon_ByteArrayInstanceMethodRight( lua_State *L ) {
 }
 
 static int
-charon_ByteArrayInstanceMethodResize( lua_State *L ) {
+arken_ByteArrayInstanceMethodResize( lua_State *L ) {
   ByteArray *udata  = checkByteArray( L );
   int len =  luaL_checkinteger(L, 2);
   udata->resize(len);
@@ -212,7 +212,7 @@ charon_ByteArrayInstanceMethodResize( lua_State *L ) {
 }
 
 static int
-charon_ByteArrayInstanceMethodSqueeze( lua_State *L ) {
+arken_ByteArrayInstanceMethodSqueeze( lua_State *L ) {
   ByteArray *udata  = checkByteArray( L );
   udata->squeeze();
   return 0;
@@ -221,27 +221,27 @@ charon_ByteArrayInstanceMethodSqueeze( lua_State *L ) {
 
 static const
 luaL_reg ByteArrayInstanceMethods[] = {
-  {"camelCase", charon_ByteArrayInstanceMethodCamelCase},
-  {"capitalize", charon_ByteArrayInstanceMethodCapitalize},
-  {"right", charon_ByteArrayInstanceMethodRight},
-  {"size", charon_ByteArrayInstanceMethodSize},
-  {"mid", charon_ByteArrayInstanceMethodMid},
-  {"lastIndexOf", charon_ByteArrayInstanceMethodLastIndexOf},
-  {"toUpper", charon_ByteArrayInstanceMethodToUpper},
-  {"prepend", charon_ByteArrayInstanceMethodPrepend},
-  {"append", charon_ByteArrayInstanceMethodAppend},
-  {"trimmed",   charon_ByteArrayInstanceMethodTrimmed},
-  {"leftTrimmed",  charon_ByteArrayInstanceMethodLeftTrimmed},
-  {"rightTrimmed", charon_ByteArrayInstanceMethodRightTrimmed},
-  {"normalize", charon_ByteArrayInstanceMethodNormalize},
-  {"replace",   charon_ByteArrayInstanceMethodReplace},
-  {"simplified", charon_ByteArrayInstanceMethodSimplified},
-  {"underscore", charon_ByteArrayInstanceMethodUnderscore},
-  {"resize", charon_ByteArrayInstanceMethodResize},
-  {"squeeze", charon_ByteArrayInstanceMethodSqueeze},
-  {"__concat", charon_ByteArrayInstanceMethodConcat},
-  {"__tostring", charon_ByteArrayInstanceMethodToString},
-  {"__gc", charon_ByteArrayInstanceMethodDestruct},
+  {"camelCase", arken_ByteArrayInstanceMethodCamelCase},
+  {"capitalize", arken_ByteArrayInstanceMethodCapitalize},
+  {"right", arken_ByteArrayInstanceMethodRight},
+  {"size", arken_ByteArrayInstanceMethodSize},
+  {"mid", arken_ByteArrayInstanceMethodMid},
+  {"lastIndexOf", arken_ByteArrayInstanceMethodLastIndexOf},
+  {"toUpper", arken_ByteArrayInstanceMethodToUpper},
+  {"prepend", arken_ByteArrayInstanceMethodPrepend},
+  {"append", arken_ByteArrayInstanceMethodAppend},
+  {"trimmed",   arken_ByteArrayInstanceMethodTrimmed},
+  {"leftTrimmed",  arken_ByteArrayInstanceMethodLeftTrimmed},
+  {"rightTrimmed", arken_ByteArrayInstanceMethodRightTrimmed},
+  {"normalize", arken_ByteArrayInstanceMethodNormalize},
+  {"replace",   arken_ByteArrayInstanceMethodReplace},
+  {"simplified", arken_ByteArrayInstanceMethodSimplified},
+  {"underscore", arken_ByteArrayInstanceMethodUnderscore},
+  {"resize", arken_ByteArrayInstanceMethodResize},
+  {"squeeze", arken_ByteArrayInstanceMethodSqueeze},
+  {"__concat", arken_ByteArrayInstanceMethodConcat},
+  {"__tostring", arken_ByteArrayInstanceMethodToString},
+  {"__gc", arken_ByteArrayInstanceMethodDestruct},
   {NULL, NULL}
 };
 
@@ -255,7 +255,7 @@ registerByteArrayInstanceMethods( lua_State *L ) {
 
 extern "C" {
   int
-  luaopen_charon_ByteArray( lua_State *L ) {
+  luaopen_arken_ByteArray( lua_State *L ) {
     registerByteArrayInstanceMethods(L);
     registerByteArrayClassMethods(L);
     return 1;

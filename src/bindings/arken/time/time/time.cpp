@@ -4,9 +4,9 @@
 // license that can be found in the LICENSE file.
 
 #include <lua/lua.hpp>
-#include <charon/base>
+#include <arken/base>
 
-using charon::time::Time;
+using arken::time::Time;
 
 /**
  * checkTime
@@ -27,7 +27,7 @@ checkTime( lua_State *L, int i ) {
  */
 
 static int
-charon_TimeClassMethodCurrentTime( lua_State *L ) {
+arken_TimeClassMethodCurrentTime( lua_State *L ) {
   Time **ptr = (Time **)lua_newuserdata(L, sizeof(Time*));
   *ptr = new Time(Time::currentTime());
   luaL_getmetatable(L, "Time.metatable");
@@ -36,7 +36,7 @@ charon_TimeClassMethodCurrentTime( lua_State *L ) {
 }
 
 static int
-charon_TimeClassMethodFromString( lua_State *L ) {
+arken_TimeClassMethodFromString( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   const char * format = luaL_checkstring(L, 2);
   Time **ptr = (Time **)lua_newuserdata(L, sizeof(Time*));
@@ -47,7 +47,7 @@ charon_TimeClassMethodFromString( lua_State *L ) {
 }
 
 static int
-charon_TimeClassMethodParse( lua_State *L ) {
+arken_TimeClassMethodParse( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   Time * time = Time::parse(string);
   if( time == 0 ) {
@@ -62,9 +62,9 @@ charon_TimeClassMethodParse( lua_State *L ) {
 }
 
 static const luaL_reg TimeClassMethods[] = {
-  {"parse", charon_TimeClassMethodParse},
-  {"fromString", charon_TimeClassMethodFromString},
-  {"currentTime", charon_TimeClassMethodCurrentTime},
+  {"parse", arken_TimeClassMethodParse},
+  {"fromString", arken_TimeClassMethodFromString},
+  {"currentTime", arken_TimeClassMethodCurrentTime},
   {NULL, NULL}
 };
 
@@ -81,14 +81,14 @@ registerTimeClassMethods( lua_State *L ) {
  */
 
 static int
-charon_TimeInstanceMethodDestruct( lua_State *L ) {
+arken_TimeInstanceMethodDestruct( lua_State *L ) {
   Time *udata = checkTime( L );
   delete udata;
   return 0;
 }
 
 static int
-charon_TimeInstanceMethodToString( lua_State *L ) {
+arken_TimeInstanceMethodToString( lua_State *L ) {
   Time *dt    = checkTime( L );
   const char * str;
   if(lua_isstring(L, 2)) {
@@ -102,7 +102,7 @@ charon_TimeInstanceMethodToString( lua_State *L ) {
 }
 
 static int
-charon_TimeInstanceMethodConcat( lua_State *L ) {
+arken_TimeInstanceMethodConcat( lua_State *L ) {
   Time *dt;
   string concat;
   const char * str;
@@ -121,7 +121,7 @@ charon_TimeInstanceMethodConcat( lua_State *L ) {
 }
 
 static int
-charon_TimeInstanceMethodEqual( lua_State *L ) {
+arken_TimeInstanceMethodEqual( lua_State *L ) {
   Time *dt1 = checkTime( L );
   Time *dt2 = *(Time **) luaL_checkudata(L, 2, "Time.metatable");
 
@@ -130,7 +130,7 @@ charon_TimeInstanceMethodEqual( lua_State *L ) {
 }
 
 static int
-charon_TimeInstanceMethodLessThan( lua_State *L ) {
+arken_TimeInstanceMethodLessThan( lua_State *L ) {
   Time *dt1 = checkTime( L );
   Time *dt2 = *(Time **) luaL_checkudata(L, 2, "Time.metatable");
 
@@ -139,7 +139,7 @@ charon_TimeInstanceMethodLessThan( lua_State *L ) {
 }
 
 static int
-charon_TimeInstanceMethodAddSecs( lua_State *L ) {
+arken_TimeInstanceMethodAddSecs( lua_State *L ) {
   Time *dt    = checkTime( L );
   qint64 days = luaL_checkinteger(L, 2);
   Time other  = dt->addSecs(days);
@@ -153,14 +153,14 @@ charon_TimeInstanceMethodAddSecs( lua_State *L ) {
 }
 
 static int
-charon_TimeInstanceMethodIsNull( lua_State *L ) {
+arken_TimeInstanceMethodIsNull( lua_State *L ) {
   Time *dt   = checkTime( L );
   lua_pushboolean(L, dt->isNull());
   return 1;
 }
 
 static int
-charon_TimeInstanceMethodIsValid( lua_State *L ) {
+arken_TimeInstanceMethodIsValid( lua_State *L ) {
   Time *dt   = checkTime( L );
   lua_pushboolean(L, dt->isValid());
   return 1;
@@ -168,15 +168,15 @@ charon_TimeInstanceMethodIsValid( lua_State *L ) {
 
 static const
 luaL_reg TimeInstanceMethods[] = {
-  {"isValid", charon_TimeInstanceMethodIsValid},
-  {"isNull", charon_TimeInstanceMethodIsNull},
-  {"addSecs", charon_TimeInstanceMethodAddSecs},
-  {"toString", charon_TimeInstanceMethodToString},
-  {"__lt", charon_TimeInstanceMethodLessThan},
-  {"__eq", charon_TimeInstanceMethodEqual},
-  {"__tostring", charon_TimeInstanceMethodToString},
-  {"__concat", charon_TimeInstanceMethodConcat},
-  {"__gc", charon_TimeInstanceMethodDestruct},
+  {"isValid", arken_TimeInstanceMethodIsValid},
+  {"isNull", arken_TimeInstanceMethodIsNull},
+  {"addSecs", arken_TimeInstanceMethodAddSecs},
+  {"toString", arken_TimeInstanceMethodToString},
+  {"__lt", arken_TimeInstanceMethodLessThan},
+  {"__eq", arken_TimeInstanceMethodEqual},
+  {"__tostring", arken_TimeInstanceMethodToString},
+  {"__concat", arken_TimeInstanceMethodConcat},
+  {"__gc", arken_TimeInstanceMethodDestruct},
   {NULL, NULL}
 };
 
@@ -196,7 +196,7 @@ extern "C" {
     return 1;
   }
   int
-  luaopen_charon_time_Time( lua_State *L ) {
+  luaopen_arken_time_Time( lua_State *L ) {
     registerTimeInstanceMethods(L);
     registerTimeClassMethods(L);
     return 1;

@@ -4,17 +4,17 @@
 // license that can be found in the LICENSE file.
 
 #include <lua/lua.hpp>
-#include <charon/base>
-#include <charon/concurrent/triton.h>
+#include <arken/base>
+#include <arken/concurrent/triton.h>
 
-using triton = charon::concurrent::triton;
+using triton = arken::concurrent::triton;
 
 char * json_lock_encode(lua_State *L);
 void   json_lock_decode(lua_State *L, const char * data);
 
 triton *
 checkChannel( lua_State *L ) {
-  return *(triton **) luaL_checkudata(L, 1, "charon.concurrent.triton.metatable");
+  return *(triton **) luaL_checkudata(L, 1, "arken.concurrent.triton.metatable");
 }
 
 //-----------------------------------------------------------------------------
@@ -22,7 +22,7 @@ checkChannel( lua_State *L ) {
 //-----------------------------------------------------------------------------
 
 static int
-charon_triton_start(lua_State *L) {
+arken_triton_start(lua_State *L) {
   bool release = false;
   const char * fileName = luaL_checkstring(L, 1);
   char * data;
@@ -41,27 +41,27 @@ charon_triton_start(lua_State *L) {
 }
 
 static int
-charon_triton_wait(lua_State *L) {
+arken_triton_wait(lua_State *L) {
   triton::wait();
   return 0;
 }
 
 static const luaL_reg TaskClassMethods[] = {
-  {"start", charon_triton_start},
-  {"wait",  charon_triton_wait},
+  {"start", arken_triton_start},
+  {"wait",  arken_triton_wait},
   {NULL, NULL}
 };
 
 void static
 registerChannelClassMethods( lua_State *L ) {
-  luaL_newmetatable(L, "charon.concurrent.triton");
+  luaL_newmetatable(L, "arken.concurrent.triton");
   luaL_register(L, NULL, TaskClassMethods);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
 
 static int
-charon_concurrent_triton_instance_method_enqueue( lua_State *L ) {
+arken_concurrent_triton_instance_method_enqueue( lua_State *L ) {
   triton * pointer = checkChannel( L );
   const char *str = luaL_checkstring(L, 2);
   pointer->enqueue(str);
@@ -69,7 +69,7 @@ charon_concurrent_triton_instance_method_enqueue( lua_State *L ) {
 }
 
 static int
-charon_concurrent_triton_instance_method_count( lua_State *L ) {
+arken_concurrent_triton_instance_method_count( lua_State *L ) {
   triton * pointer = checkChannel( L );
   const char * key = luaL_checkstring(L, 2);
   pointer->count(key);
@@ -77,7 +77,7 @@ charon_concurrent_triton_instance_method_count( lua_State *L ) {
 }
 
 static int
-charon_concurrent_triton_instance_method_total( lua_State *L ) {
+arken_concurrent_triton_instance_method_total( lua_State *L ) {
   triton * pointer = checkChannel( L );
   const char * label = luaL_checkstring(L, 2);
   lua_pushinteger(L, pointer->total(label));
@@ -85,7 +85,7 @@ charon_concurrent_triton_instance_method_total( lua_State *L ) {
 }
 
 static int
-charon_concurrent_triton_instance_method_append( lua_State *L ) {
+arken_concurrent_triton_instance_method_append( lua_State *L ) {
   triton * pointer = checkChannel( L );
   const char * key    = luaL_checkstring(L, 2);
   const char * result = luaL_checkstring(L, 3);
@@ -94,7 +94,7 @@ charon_concurrent_triton_instance_method_append( lua_State *L ) {
 }
 
 static int
-charon_concurrent_triton_instance_method_result( lua_State *L ) {
+arken_concurrent_triton_instance_method_result( lua_State *L ) {
   triton * pointer = checkChannel( L );
   const char * key = luaL_checkstring(L, 2);
   lua_pushstring(L, pointer->result(key));
@@ -105,17 +105,17 @@ charon_concurrent_triton_instance_method_result( lua_State *L ) {
 
 static const
 luaL_reg ChannelInstanceMethods[] = {
-  {"enqueue", charon_concurrent_triton_instance_method_enqueue},
-  {"count",   charon_concurrent_triton_instance_method_count},
-  {"total",   charon_concurrent_triton_instance_method_total},
-  {"append",  charon_concurrent_triton_instance_method_append},
-  {"result",  charon_concurrent_triton_instance_method_result},
+  {"enqueue", arken_concurrent_triton_instance_method_enqueue},
+  {"count",   arken_concurrent_triton_instance_method_count},
+  {"total",   arken_concurrent_triton_instance_method_total},
+  {"append",  arken_concurrent_triton_instance_method_append},
+  {"result",  arken_concurrent_triton_instance_method_result},
   {NULL, NULL}
 };
 
 void static
 registerChannelInstanceMethods( lua_State *L ) {
-  luaL_newmetatable(L, "charon.concurrent.triton.metatable");
+  luaL_newmetatable(L, "arken.concurrent.triton.metatable");
   luaL_register(L, NULL, ChannelInstanceMethods);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
@@ -123,7 +123,7 @@ registerChannelInstanceMethods( lua_State *L ) {
 
 extern "C" {
   int
-  luaopen_charon_concurrent_triton( lua_State *L ) {
+  luaopen_arken_concurrent_triton( lua_State *L ) {
     registerChannelInstanceMethods(L);
     registerChannelClassMethods(L);
     return 1;

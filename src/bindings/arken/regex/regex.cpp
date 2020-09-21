@@ -4,12 +4,12 @@
 // license that can be found in the LICENSE file.
 
 #include <lua/lua.hpp>
-#include <charon/base>
+#include <arken/base>
 
-using List = charon::string::List;
-using charon::regex;
+using List = arken::string::List;
+using arken::regex;
 
-static int charon_regex_match( lua_State *L ) {
+static int arken_regex_match( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   const char * regex  = luaL_checkstring(L, 2);
   bool result = regex::match(string, regex);
@@ -17,7 +17,7 @@ static int charon_regex_match( lua_State *L ) {
   return 1;
 }
 
-static int charon_regex_ematch( lua_State *L ) {
+static int arken_regex_ematch( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   const char * regex  = luaL_checkstring(L, 2);
   bool result = regex::ematch(string, regex);
@@ -25,7 +25,7 @@ static int charon_regex_ematch( lua_State *L ) {
   return 1;
 }
 
-static int charon_regex_index( lua_State *L ) {
+static int arken_regex_index( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   const char * regex  = luaL_checkstring(L, 2);
   int result;
@@ -39,7 +39,7 @@ static int charon_regex_index( lua_State *L ) {
   return 1;
 }
 
-static int charon_regex_replace( lua_State *L ) {
+static int arken_regex_replace( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   const char * regex  = luaL_checkstring(L, 2);
   const char * after  = luaL_checkstring(L, 3);
@@ -49,26 +49,26 @@ static int charon_regex_replace( lua_State *L ) {
   return 1;
 }
 
-static int charon_regex_scan( lua_State *L ) {
+static int arken_regex_scan( lua_State *L ) {
   List * list;
   const char  * string = luaL_checkstring(L, 1);
   const char  * regex  = luaL_checkstring(L, 2);
   list = regex::scan(string, regex);
   List **ptr = (List **)lua_newuserdata(L, sizeof(List*));
   *ptr = list;
-  luaL_getmetatable(L, "charon.string.List.metatable");
+  luaL_getmetatable(L, "arken.string.List.metatable");
   lua_setmetatable(L, -2);
 
   return 1;
 }
 
-static int charon_regex_split( lua_State *L ) {
+static int arken_regex_split( lua_State *L ) {
   const char  * string = luaL_checkstring(L, 1);
   const char  * regex  = luaL_checkstring(L, 2);
   List * list   = regex::split(string, regex);
   List **ptr = (List **)lua_newuserdata(L, sizeof(List*));
   *ptr = list;
-  luaL_getmetatable(L, "charon.string.List.metatable");
+  luaL_getmetatable(L, "arken.string.List.metatable");
   lua_setmetatable(L, -2);
 
   return 1;
@@ -77,12 +77,12 @@ static int charon_regex_split( lua_State *L ) {
 static void
 register_arken_regex( lua_State *L ) {
   static const luaL_reg Map[] = {
-    {"ematch",  charon_regex_ematch},
-    {"index",   charon_regex_index},
-    {"match",   charon_regex_match},
-    {"replace", charon_regex_replace},
-    {"split",   charon_regex_split},
-    {"scan",    charon_regex_scan},
+    {"ematch",  arken_regex_ematch},
+    {"index",   arken_regex_index},
+    {"match",   arken_regex_match},
+    {"replace", arken_regex_replace},
+    {"split",   arken_regex_split},
+    {"scan",    arken_regex_scan},
     {NULL, NULL}
   };
   luaL_newmetatable(L, "regex");
@@ -96,7 +96,7 @@ extern "C" {
     register_arken_regex( L ); 
     return 1;
   }
-  int luaopen_charon_regex( lua_State *L ) {
+  int luaopen_arken_regex( lua_State *L ) {
     register_arken_regex( L ); 
     return 1;
   }

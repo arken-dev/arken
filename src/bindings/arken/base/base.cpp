@@ -5,22 +5,22 @@
 
 #include <lua/lua.hpp>
 
-int luaopen_charon_math( lua_State *L );
-int luaopen_charon_os( lua_State *L );
-int luaopen_charon_string( lua_State *L );
+int luaopen_arken_math( lua_State *L );
+int luaopen_arken_os( lua_State *L );
+int luaopen_arken_string( lua_State *L );
 
 extern "C" {
   int luaopen_arken_base( lua_State *L ) {
-    luaopen_charon_math(L);
-    luaopen_charon_os(L);
-    luaopen_charon_string(L);
+    luaopen_arken_math(L);
+    luaopen_arken_os(L);
+    luaopen_arken_string(L);
     return 1;
   }
 
-  int luaopen_charon_base( lua_State *L ) {
-    luaopen_charon_math(L);
-    luaopen_charon_os(L);
-    luaopen_charon_string(L);
+  int luaopen_arken_base( lua_State *L ) {
+    luaopen_arken_math(L);
+    luaopen_arken_os(L);
+    luaopen_arken_string(L);
     return 1;
   }
 }

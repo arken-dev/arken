@@ -4,17 +4,17 @@
 // license that can be found in the LICENSE file.
 
 #include <lua/lua.hpp>
-#include <charon/base>
-#include <charon/task>
+#include <arken/base>
+#include <arken/task>
 
-using task = charon::concurrent::task;
+using task = arken::concurrent::task;
 
 char * json_lock_encode(lua_State *L);
 void   json_lock_decode(lua_State *L, const char * data);
 
 task *
 checkTask( lua_State *L ) {
-  return *(task **) luaL_checkudata(L, 1, "charon.concurrent.task.metatable");
+  return *(task **) luaL_checkudata(L, 1, "arken.concurrent.task.metatable");
 }
 
 //-----------------------------------------------------------------------------
@@ -22,7 +22,7 @@ checkTask( lua_State *L ) {
 //-----------------------------------------------------------------------------
 
 static int
-charon_task_start(lua_State *L) {
+arken_task_start(lua_State *L) {
   bool release = false;
   const char * fileName = luaL_checkstring(L, 1);
   char * data;
@@ -41,20 +41,20 @@ charon_task_start(lua_State *L) {
 }
 
 static int
-charon_task_wait(lua_State *L) {
+arken_task_wait(lua_State *L) {
   task::wait();
   return 0;
 }
 
 static const luaL_reg TaskClassMethods[] = {
-  {"start", charon_task_start},
-  {"wait",  charon_task_wait},
+  {"start", arken_task_start},
+  {"wait",  arken_task_wait},
   {NULL, NULL}
 };
 
 void static
 registerTaskClassMethods( lua_State *L ) {
-  luaL_newmetatable(L, "charon.concurrent.task");
+  luaL_newmetatable(L, "arken.concurrent.task");
   luaL_register(L, NULL, TaskClassMethods);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
@@ -62,7 +62,7 @@ registerTaskClassMethods( lua_State *L ) {
 
 extern "C" {
   int
-  luaopen_charon_concurrent_task( lua_State *L ) {
+  luaopen_arken_concurrent_task( lua_State *L ) {
     registerTaskClassMethods(L);
     return 1;
   }

@@ -4,14 +4,14 @@
 // license that can be found in the LICENSE file.
 
 #include <lua/lua.hpp>
-#include <charon/cache>
+#include <arken/cache>
 
 char * json_lock_encode(lua_State *L);
 void   json_lock_decode(lua_State *L, const char * data);
 
-using charon::cache;
+using arken::cache;
 
-static int charon_cache_value( lua_State *L ) {
+static int arken_cache_value( lua_State *L ) {
   const char * key   = luaL_checkstring(L, 1);
   const char * value = cache::value(key);
   if( value == 0 ) {
@@ -22,7 +22,7 @@ static int charon_cache_value( lua_State *L ) {
   return 1;
 }
 
-static int charon_cache_insert( lua_State *L ) {
+static int arken_cache_insert( lua_State *L ) {
   const char * key   = luaL_checkstring(L, 1);
   int expires = -1;
   if(lua_gettop(L) == 3) { /* número de argumentos */
@@ -35,7 +35,7 @@ static int charon_cache_insert( lua_State *L ) {
   return 1;
 }
 
-static int charon_cache_remove( lua_State *L ) {
+static int arken_cache_remove( lua_State *L ) {
   const char * key   = luaL_checkstring(L, 1);
   cache::remove(key);
   return 0;
@@ -44,9 +44,9 @@ static int charon_cache_remove( lua_State *L ) {
 extern "C" {
   int luaopen_arken_cache( lua_State *L ) {
     static const luaL_reg Map[] = {
-      {"value",  charon_cache_value},
-      {"insert", charon_cache_insert},
-      {"remove", charon_cache_remove},
+      {"value",  arken_cache_value},
+      {"insert", arken_cache_insert},
+      {"remove", arken_cache_remove},
       {NULL, NULL}
     };
     luaL_newmetatable(L, "cache");
@@ -55,11 +55,11 @@ extern "C" {
     lua_setfield(L, -1, "__index");
     return 1;
   }
-  int luaopen_charon_cache( lua_State *L ) {
+  int luaopen_arken_cache( lua_State *L ) {
     static const luaL_reg Map[] = {
-      {"value",  charon_cache_value},
-      {"insert", charon_cache_insert},
-      {"remove", charon_cache_remove},
+      {"value",  arken_cache_value},
+      {"insert", arken_cache_insert},
+      {"remove", arken_cache_remove},
       {NULL, NULL}
     };
     luaL_newmetatable(L, "cache");

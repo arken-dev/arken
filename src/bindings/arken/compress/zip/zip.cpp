@@ -4,17 +4,17 @@
 // license that can be found in the LICENSE file.
 
 #include <lua/lua.hpp>
-#include <charon/base>
-#include <charon/compress/zip.h>
+#include <arken/base>
+#include <arken/compress/zip.h>
 
-using charon::compress::zip;
+using arken::compress::zip;
 
 /**
  * ClassMethods
  */
 
 static int
-charon_compress_zip_descompress( lua_State *L ) {
+arken_compress_zip_descompress( lua_State *L ) {
   const char * filename = luaL_checkstring(L, 1);
   const char * output   = 0;
   if(lua_gettop(L) == 2) { // number of arguments
@@ -24,28 +24,28 @@ charon_compress_zip_descompress( lua_State *L ) {
   return 1;
 }
 
-static const luaL_reg charon_compress_zip_methods[] = {
-  {"decompress", charon_compress_zip_descompress},
+static const luaL_reg arken_compress_zip_methods[] = {
+  {"decompress", arken_compress_zip_descompress},
   {NULL, NULL}
 };
 
 void static
-register_charon_compress_zip( lua_State *L ) {
-  luaL_newmetatable(L, "charon.compress.zip");
-  luaL_register(L, NULL, charon_compress_zip_methods);
+register_arken_compress_zip( lua_State *L ) {
+  luaL_newmetatable(L, "arken.compress.zip");
+  luaL_register(L, NULL, arken_compress_zip_methods);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
 
 extern "C" {
   int
-  luaopen_charon_compress_zip( lua_State *L ) {
-    register_charon_compress_zip(L);
+  luaopen_arken_compress_zip( lua_State *L ) {
+    register_arken_compress_zip(L);
     return 1;
   }
   int
   luaopen_arken_compress_zip( lua_State *L ) {
-    register_charon_compress_zip(L);
+    register_arken_compress_zip(L);
     return 1;
   }
 }

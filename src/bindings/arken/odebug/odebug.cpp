@@ -4,9 +4,9 @@
 // license that can be found in the LICENSE file.
 
 #include <lua/lua.hpp>
-#include <charon/base>
+#include <arken/base>
 
-static int charon_odebug_info( lua_State *L ) {
+static int arken_odebug_info( lua_State *L ) {
   lua_Debug info;
 
   lua_getstack(L, 2, &info);
@@ -21,7 +21,7 @@ static int charon_odebug_info( lua_State *L ) {
 void static
 register_arken_odebug( lua_State *L ) {
   static const luaL_reg Map[] = {
-    {"info", charon_odebug_info},
+    {"info", arken_odebug_info},
     {NULL, NULL}
   };
   luaL_newmetatable(L, "odebug");
@@ -35,7 +35,7 @@ extern "C" {
     register_arken_odebug( L );
     return 1;
   }
-  int luaopen_charon_odebug( lua_State *L ) {
+  int luaopen_arken_odebug( lua_State *L ) {
     register_arken_odebug( L );
     return 1;
   }

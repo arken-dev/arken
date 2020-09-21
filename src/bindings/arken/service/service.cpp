@@ -4,14 +4,14 @@
 // license that can be found in the LICENSE file.
 
 #include <lua/lua.hpp>
-#include <charon/base>
-#include <charon/service>
+#include <arken/base>
+#include <arken/service>
 
-using charon::service;
+using arken::service;
 
 static int
-charon_service_loop(lua_State * L) {
-  lua_getglobal(L, "__charon_service");
+arken_service_loop(lua_State * L) {
+  lua_getglobal(L, "__arken_service");
   service * srv = (service *) lua_touserdata(L, -1);
   int secs = luaL_checkint(L, 1);
   lua_pushboolean(L, srv->loop(secs, L));
@@ -19,23 +19,23 @@ charon_service_loop(lua_State * L) {
 }
 
 static int
-charon_service_quit(lua_State * L) {
-  lua_getglobal(L, "__charon_service");
+arken_service_quit(lua_State * L) {
+  lua_getglobal(L, "__arken_service");
   service * srv = (service *) lua_touserdata(L, -1);
   srv->quit();
   return 0;
 }
 
 static int
-charon_service_exit(lua_State * L) {
-  lua_getglobal(L, "__charon_service");
+arken_service_exit(lua_State * L) {
+  lua_getglobal(L, "__arken_service");
   service * srv = (service *) lua_touserdata(L, -1);
   srv->exit();
   return 0;
 }
 
 static int
-charon_service_start(lua_State *L) {
+arken_service_start(lua_State *L) {
   const char * fileName = luaL_checkstring(L, 1);
   char * uuid = service::start( fileName );
   lua_pushstring(L, uuid);
@@ -44,7 +44,7 @@ charon_service_start(lua_State *L) {
 }
 
 static int
-charon_service_load(lua_State *L) {
+arken_service_load(lua_State *L) {
   const char * fileName = luaL_checkstring(L, 1);
   service::load( fileName );
   return 0;
@@ -53,11 +53,11 @@ charon_service_load(lua_State *L) {
 static void
 register_arken_service( lua_State *L ) {
   static const luaL_reg Map[] = {
-    {"quit",    charon_service_quit},
-    {"exit",    charon_service_exit},
-    {"loop",    charon_service_loop},
-    {"start",   charon_service_start},
-    {"load",    charon_service_load},
+    {"quit",    arken_service_quit},
+    {"exit",    arken_service_exit},
+    {"loop",    arken_service_loop},
+    {"start",   arken_service_start},
+    {"load",    arken_service_load},
     {NULL, NULL}
   };
   luaL_newmetatable(L, "service");
@@ -71,7 +71,7 @@ extern "C" {
     register_arken_service( L );
     return 1;
   }
-  int luaopen_charon_service( lua_State *L ) {
+  int luaopen_arken_service( lua_State *L ) {
     register_arken_service( L );
     return 1;
   }

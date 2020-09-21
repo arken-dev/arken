@@ -4,11 +4,11 @@
 // license that can be found in the LICENSE file.
 
 #include <lua/lua.hpp>
-#include <charon/base>
+#include <arken/base>
 
-using sha1 = charon::digest::sha1;
+using sha1 = arken::digest::sha1;
 
-static int charon_digest_sha1_hash( lua_State *L ) {
+static int arken_digest_sha1_hash( lua_State *L ) {
   size_t size;
   const char *path = luaL_checklstring(L, 1, &size);
   char * result = sha1::hash(path, size);
@@ -17,7 +17,7 @@ static int charon_digest_sha1_hash( lua_State *L ) {
   return 1;
 }
 
-static int charon_digest_sha1_file( lua_State *L ) {
+static int arken_digest_sha1_file( lua_State *L ) {
   const char *path = luaL_checkstring(L, 1);
   char * result = sha1::file(path);
   lua_pushlstring( L, result, 40 );
@@ -28,8 +28,8 @@ static int charon_digest_sha1_file( lua_State *L ) {
 
 static void register_arken_digest_sha1( lua_State *L ) {
   static const luaL_reg Map[] = {
-    {"hash", charon_digest_sha1_hash},
-    {"file", charon_digest_sha1_file},
+    {"hash", arken_digest_sha1_hash},
+    {"file", arken_digest_sha1_file},
     {NULL, NULL}
   };
   luaL_newmetatable(L, "sha1");
@@ -43,7 +43,7 @@ extern "C" {
     register_arken_digest_sha1(L);
     return 1;
   }
-  int luaopen_charon_digest_sha1( lua_State *L ) {
+  int luaopen_arken_digest_sha1( lua_State *L ) {
     register_arken_digest_sha1(L);
     return 1;
   }

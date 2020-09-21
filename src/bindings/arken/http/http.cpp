@@ -4,29 +4,29 @@
 // license that can be found in the LICENSE file.
 
 #include <lua/lua.hpp>
-#include <charon/base>
+#include <arken/base>
 
-using namespace charon;
+using namespace arken;
 
-static int charon_http_read( lua_State *L ) {
+static int arken_http_read( lua_State *L ) {
   const char *path = luaL_checkstring(L, 1);
   lua_pushstring( L, http::read(path) );
   return 1;
 }
 
-static int charon_http_get( lua_State *L ) {
+static int arken_http_get( lua_State *L ) {
   const char *path = luaL_checkstring(L, 1);
   lua_pushstring( L, http::get(path) );
   return 1;
 }
 
-static int charon_http_post( lua_State *L ) {
+static int arken_http_post( lua_State *L ) {
   const char *path = luaL_checkstring(L, 1);
   lua_pushstring( L, http::post(path) );
   return 1;
 }
 
-static int charon_http_put( lua_State *L ) {
+static int arken_http_put( lua_State *L ) {
   const char *path = luaL_checkstring(L, 1);
   lua_pushstring( L, http::put(path) );
   return 1;
@@ -34,10 +34,10 @@ static int charon_http_put( lua_State *L ) {
 
 static void register_arken_http( lua_State *L ) {
   static const luaL_reg Map[] = {
-    {"read", charon_http_read},
-    {"get",  charon_http_get},
-    {"post", charon_http_post},
-    {"put",  charon_http_put},
+    {"read", arken_http_read},
+    {"get",  arken_http_get},
+    {"post", arken_http_post},
+    {"put",  arken_http_put},
     {NULL, NULL}
   };
   luaL_newmetatable(L, "http");
@@ -51,7 +51,7 @@ extern "C" {
     register_arken_http(L);
     return 1;
   }
-  int luaopen_charon_http( lua_State *L ) {
+  int luaopen_arken_http( lua_State *L ) {
     register_arken_http(L);
     return 1;
   }

@@ -4,10 +4,10 @@
 // license that can be found in the LICENSE file.
 
 #include <lua/lua.hpp>
-#include <charon/base>
+#include <arken/base>
 
 
-using charon::Lock;
+using arken::Lock;
 
 /**
  * checkLock
@@ -23,7 +23,7 @@ checkLock( lua_State *L ) {
  */
 
 static int
-charon_LockClassMethodNew( lua_State *L ) {
+arken_LockClassMethodNew( lua_State *L ) {
   const char *str = (char *) luaL_checkstring(L, 1);
   Lock **ptr = (Lock **)lua_newuserdata(L, sizeof(Lock*));
   *ptr = new Lock(Lock(str));
@@ -33,7 +33,7 @@ charon_LockClassMethodNew( lua_State *L ) {
 }
 
 static const luaL_reg LockClassMethods[] = {
-  {"new", charon_LockClassMethodNew},
+  {"new", arken_LockClassMethodNew},
   {NULL, NULL}
 };
 
@@ -50,21 +50,21 @@ registerLockClassMethods( lua_State *L ) {
  */
 
 static int
-charon_LockInstanceMethodDestruct( lua_State *L ) {
+arken_LockInstanceMethodDestruct( lua_State *L ) {
   Lock *udata = checkLock( L );
   delete udata;
   return 0;
 }
 
 static int
-charon_LockInstanceMethodEnable( lua_State *L ) {
+arken_LockInstanceMethodEnable( lua_State *L ) {
   Lock * udata  = checkLock( L );
   udata->enable();
   return 0;
 }
 
 static int
-charon_LockInstanceMethodDisable( lua_State *L ) {
+arken_LockInstanceMethodDisable( lua_State *L ) {
   Lock * udata  = checkLock( L );
   udata->disable();
   return 0;
@@ -72,9 +72,9 @@ charon_LockInstanceMethodDisable( lua_State *L ) {
 
 static const
 luaL_reg LockInstanceMethods[] = {
-  {"enable",  charon_LockInstanceMethodEnable},
-  {"disable", charon_LockInstanceMethodDisable},
-  {"__gc", charon_LockInstanceMethodDestruct},
+  {"enable",  arken_LockInstanceMethodEnable},
+  {"disable", arken_LockInstanceMethodDisable},
+  {"__gc", arken_LockInstanceMethodDestruct},
   {NULL, NULL}
 };
 
@@ -94,7 +94,7 @@ extern "C" {
     return 1;
   }
   int
-  luaopen_charon_concurrent_Lock( lua_State *L ) {
+  luaopen_arken_concurrent_Lock( lua_State *L ) {
     registerLockInstanceMethods(L);
     registerLockClassMethods(L);
     return 1;

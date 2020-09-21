@@ -4,13 +4,13 @@
 // license that can be found in the LICENSE file.
 
 #include <lua/lua.hpp>
-#include <charon/base>
-#include <charon/net/httpbody.h>
+#include <arken/base>
+#include <arken/net/httpbody.h>
 #include <QtCore>
 #include <iostream>
 #include <QByteArray>
 
-using charon::net::HttpBody;
+using arken::net::HttpBody;
 
 /**
  * checkHttpBody
@@ -26,7 +26,7 @@ checkHttpBody( lua_State *L ) {
  */
 
 static int
-charon_HttpBodyClassMethodLoadFile( lua_State *L ) {
+arken_HttpBodyClassMethodLoadFile( lua_State *L ) {
   const char * path = luaL_checkstring(L, 1);
   HttpBody **ptr = (HttpBody **)lua_newuserdata(L, sizeof(HttpBody*));
   *ptr = HttpBody::loadFile(path);
@@ -36,7 +36,7 @@ charon_HttpBodyClassMethodLoadFile( lua_State *L ) {
 }
 
 static int
-charon_HttpBodyClassMethodLoadBuffer( lua_State *L ) {
+arken_HttpBodyClassMethodLoadBuffer( lua_State *L ) {
   size_t size;
   const char * buffer = luaL_checklstring(L, 1, &size);
   HttpBody **ptr = (HttpBody **)lua_newuserdata(L, sizeof(HttpBody*));
@@ -48,8 +48,8 @@ charon_HttpBodyClassMethodLoadBuffer( lua_State *L ) {
 
 
 static const luaL_reg HttpBodyClassMethods[] = {
-  {"loadFile",   charon_HttpBodyClassMethodLoadFile},
-  {"loadBuffer", charon_HttpBodyClassMethodLoadBuffer},
+  {"loadFile",   arken_HttpBodyClassMethodLoadFile},
+  {"loadBuffer", arken_HttpBodyClassMethodLoadBuffer},
   {NULL, NULL}
 };
 
@@ -66,7 +66,7 @@ registerHttpBodyClassMethods( lua_State *L ) {
  */
 
 static int
-charon_HttpBodyInstanceMethodRead( lua_State *L ) {
+arken_HttpBodyInstanceMethodRead( lua_State *L ) {
   HttpBody *udata  = checkHttpBody( L );
   const char * buffer = udata->read();
   lua_pushlstring(L, buffer, udata->size());
@@ -74,14 +74,14 @@ charon_HttpBodyInstanceMethodRead( lua_State *L ) {
 }
 
 static int
-charon_HttpBodyInstanceMethodSize( lua_State *L ) {
+arken_HttpBodyInstanceMethodSize( lua_State *L ) {
   HttpBody *udata  = checkHttpBody( L );
   lua_pushnumber(L, udata->size());
   return 1;
 }
 
 static int
-charon_HttpBodyInstanceMethodRelease( lua_State *L ) {
+arken_HttpBodyInstanceMethodRelease( lua_State *L ) {
   HttpBody *udata  = checkHttpBody( L );
   udata->release();
   return 0;
@@ -89,7 +89,7 @@ charon_HttpBodyInstanceMethodRelease( lua_State *L ) {
 
 
 static int
-charon_HttpBodyInstanceMethodDestruct( lua_State *L ) {
+arken_HttpBodyInstanceMethodDestruct( lua_State *L ) {
   HttpBody *udata = checkHttpBody( L );
   delete udata;
   return 0;
@@ -97,10 +97,10 @@ charon_HttpBodyInstanceMethodDestruct( lua_State *L ) {
 
 static const
 luaL_reg HttpBodyInstanceMethods[] = {
-  {"size",    charon_HttpBodyInstanceMethodSize},
-  {"read",    charon_HttpBodyInstanceMethodRead},
-  {"release", charon_HttpBodyInstanceMethodRelease},
-  {"__gc",    charon_HttpBodyInstanceMethodDestruct},
+  {"size",    arken_HttpBodyInstanceMethodSize},
+  {"read",    arken_HttpBodyInstanceMethodRead},
+  {"release", arken_HttpBodyInstanceMethodRelease},
+  {"__gc",    arken_HttpBodyInstanceMethodDestruct},
   {NULL, NULL}
 };
 
@@ -121,7 +121,7 @@ extern "C" {
   }
 
   int
-  luaopen_charon_net_HttpBody( lua_State *L ) {
+  luaopen_arken_net_HttpBody( lua_State *L ) {
     registerHttpBodyInstanceMethods(L);
     registerHttpBodyClassMethods(L);
     return 1;

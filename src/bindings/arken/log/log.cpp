@@ -4,10 +4,10 @@
 // license that can be found in the LICENSE file.
 
 #include <lua/lua.hpp>
-#include <charon/base>
-#include <charon/log>
+#include <arken/base>
+#include <arken/log>
 
-using charon::Log;
+using arken::Log;
 
 /**
  * checkLog
@@ -23,7 +23,7 @@ checkLog( lua_State *L ) {
  */
 
 static int
-charon_LogClassMethodNew( lua_State *L ) {
+arken_LogClassMethodNew( lua_State *L ) {
   const char *str = (char *) luaL_checkstring(L, 1);
   Log **ptr = (Log **)lua_newuserdata(L, sizeof(Log*));
   *ptr = new Log(Log(str));
@@ -33,7 +33,7 @@ charon_LogClassMethodNew( lua_State *L ) {
 }
 
 static const luaL_reg LogClassMethods[] = {
-  {"new", charon_LogClassMethodNew},
+  {"new", arken_LogClassMethodNew},
   {NULL, NULL}
 };
 
@@ -50,14 +50,14 @@ registerLogClassMethods( lua_State *L ) {
  */
 
 static int
-charon_LogInstanceMethodDestruct( lua_State *L ) {
+arken_LogInstanceMethodDestruct( lua_State *L ) {
   Log *udata = checkLog( L );
   delete udata;
   return 0;
 }
 
 static int
-charon_LogInstanceMethodAppend( lua_State *L ) {
+arken_LogInstanceMethodAppend( lua_State *L ) {
   Log * udata  = checkLog( L );
   const char * append = lua_tostring(L, 2);
   udata->append(append);
@@ -65,14 +65,14 @@ charon_LogInstanceMethodAppend( lua_State *L ) {
 }
 
 static int
-charon_LogInstanceMethodDump( lua_State *L ) {
+arken_LogInstanceMethodDump( lua_State *L ) {
   Log *udata  = checkLog( L );
   udata->dump();
   return 0;
 }
 
 static int
-charon_LogInstanceMethodLog( lua_State *L ) {
+arken_LogInstanceMethodLog( lua_State *L ) {
   Log * udata  = checkLog( L );
   const char * level  = lua_tostring(L, 2);
   const char * append = lua_tostring(L, 3);
@@ -81,7 +81,7 @@ charon_LogInstanceMethodLog( lua_State *L ) {
 }
 
 static int
-charon_LogInstanceMethodTrace( lua_State *L ) {
+arken_LogInstanceMethodTrace( lua_State *L ) {
   Log * udata  = checkLog( L );
   const char * append = lua_tostring(L, 2);
   udata->trace(append);
@@ -89,7 +89,7 @@ charon_LogInstanceMethodTrace( lua_State *L ) {
 }
 
 static int
-charon_LogInstanceMethodDebug( lua_State *L ) {
+arken_LogInstanceMethodDebug( lua_State *L ) {
   Log * udata  = checkLog( L );
   const char * append = lua_tostring(L, 2);
   udata->debug(append);
@@ -97,7 +97,7 @@ charon_LogInstanceMethodDebug( lua_State *L ) {
 }
 
 static int
-charon_LogInstanceMethodInfo( lua_State *L ) {
+arken_LogInstanceMethodInfo( lua_State *L ) {
   Log * udata  = checkLog( L );
   const char * append = lua_tostring(L, 2);
   udata->info(append);
@@ -105,7 +105,7 @@ charon_LogInstanceMethodInfo( lua_State *L ) {
 }
 
 static int
-charon_LogInstanceMethodWarn( lua_State *L ) {
+arken_LogInstanceMethodWarn( lua_State *L ) {
   Log * udata  = checkLog( L );
   const char * append = lua_tostring(L, 2);
   udata->warn(append);
@@ -113,7 +113,7 @@ charon_LogInstanceMethodWarn( lua_State *L ) {
 }
 
 static int
-charon_LogInstanceMethodError( lua_State *L ) {
+arken_LogInstanceMethodError( lua_State *L ) {
   Log * udata  = checkLog( L );
   const char * append = lua_tostring(L, 2);
   udata->error(append);
@@ -121,7 +121,7 @@ charon_LogInstanceMethodError( lua_State *L ) {
 }
 
 static int
-charon_LogInstanceMethodFatal( lua_State *L ) {
+arken_LogInstanceMethodFatal( lua_State *L ) {
   Log * udata  = checkLog( L );
   const char * append = lua_tostring(L, 2);
   udata->fatal(append);
@@ -130,16 +130,16 @@ charon_LogInstanceMethodFatal( lua_State *L ) {
 
 static const
 luaL_reg LogInstanceMethods[] = {
-  {"append", charon_LogInstanceMethodAppend},
-  {"dump", charon_LogInstanceMethodDump},
-  {"log", charon_LogInstanceMethodLog},
-  {"trace", charon_LogInstanceMethodTrace},
-  {"debug", charon_LogInstanceMethodDebug},
-  {"info", charon_LogInstanceMethodInfo},
-  {"warn", charon_LogInstanceMethodWarn},
-  {"error", charon_LogInstanceMethodError},
-  {"fatal", charon_LogInstanceMethodFatal},
-  {"__gc", charon_LogInstanceMethodDestruct},
+  {"append", arken_LogInstanceMethodAppend},
+  {"dump", arken_LogInstanceMethodDump},
+  {"log", arken_LogInstanceMethodLog},
+  {"trace", arken_LogInstanceMethodTrace},
+  {"debug", arken_LogInstanceMethodDebug},
+  {"info", arken_LogInstanceMethodInfo},
+  {"warn", arken_LogInstanceMethodWarn},
+  {"error", arken_LogInstanceMethodError},
+  {"fatal", arken_LogInstanceMethodFatal},
+  {"__gc", arken_LogInstanceMethodDestruct},
   {NULL, NULL}
 };
 
@@ -159,7 +159,7 @@ extern "C" {
     return 1;
   }
   int
-  luaopen_charon_Log( lua_State *L ) {
+  luaopen_arken_Log( lua_State *L ) {
     registerLogInstanceMethods(L);
     registerLogClassMethods(L);
     return 1;

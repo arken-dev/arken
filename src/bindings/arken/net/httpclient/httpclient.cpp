@@ -4,9 +4,9 @@
 // license that can be found in the LICENSE file.
 
 #include <lua/lua.hpp>
-#include <charon/base>
+#include <arken/base>
 
-using charon::net::HttpClient;
+using arken::net::HttpClient;
 
 /**
  * checkHttpClient
@@ -22,7 +22,7 @@ checkHttpClient( lua_State *L ) {
  */
 
 static int
-charon_HttpClientClassMethodNew( lua_State *L ) {
+arken_HttpClientClassMethodNew( lua_State *L ) {
   const char * url = luaL_checkstring(L, 1);
   HttpClient **ptr = (HttpClient **)lua_newuserdata(L, sizeof(HttpClient*));
   *ptr = new HttpClient(url);
@@ -32,7 +32,7 @@ charon_HttpClientClassMethodNew( lua_State *L ) {
 }
 
 static const luaL_reg HttpClientClassMethods[] = {
-  {"new", charon_HttpClientClassMethodNew},
+  {"new", arken_HttpClientClassMethodNew},
   {NULL, NULL}
 };
 
@@ -49,7 +49,7 @@ registerHttpClientClassMethods( lua_State *L ) {
  */
 
 static int
-charon_HttpClientInstanceMethodAppendHeader( lua_State *L ) {
+arken_HttpClientInstanceMethodAppendHeader( lua_State *L ) {
   HttpClient * udata  = checkHttpClient( L );
   const char * header = luaL_checkstring(L, 2);
   udata->appendHeader(header);
@@ -57,7 +57,7 @@ charon_HttpClientInstanceMethodAppendHeader( lua_State *L ) {
 }
 
 static int
-charon_HttpClientInstanceMethodSetVerbose( lua_State *L ) {
+arken_HttpClientInstanceMethodSetVerbose( lua_State *L ) {
   HttpClient *udata  = checkHttpClient( L );
   bool verbose = lua_toboolean(L, 2);
   udata->setVerbose(verbose);
@@ -65,7 +65,7 @@ charon_HttpClientInstanceMethodSetVerbose( lua_State *L ) {
 }
 
 static int
-charon_HttpClientInstanceMethodSetBody( lua_State *L ) {
+arken_HttpClientInstanceMethodSetBody( lua_State *L ) {
   HttpClient * udata = checkHttpClient( L );
   const char * body  = luaL_checkstring(L, 2);
   udata->setBody(body);
@@ -73,7 +73,7 @@ charon_HttpClientInstanceMethodSetBody( lua_State *L ) {
 }
 
 static int
-charon_HttpClientInstanceMethodBody( lua_State *L ) {
+arken_HttpClientInstanceMethodBody( lua_State *L ) {
   HttpClient * udata = checkHttpClient( L );
   const char * body  = udata->body();
   lua_pushstring(L, body);
@@ -81,7 +81,7 @@ charon_HttpClientInstanceMethodBody( lua_State *L ) {
 }
 
 static int
-charon_HttpClientInstanceMethodPerformGet( lua_State *L ) {
+arken_HttpClientInstanceMethodPerformGet( lua_State *L ) {
   HttpClient * udata = checkHttpClient( L );
   string result = udata->performGet();
   lua_pushlstring(L, result.data(), result.size());
@@ -89,7 +89,7 @@ charon_HttpClientInstanceMethodPerformGet( lua_State *L ) {
 }
 
 static int
-charon_HttpClientInstanceMethodPerformPost( lua_State *L ) {
+arken_HttpClientInstanceMethodPerformPost( lua_State *L ) {
   HttpClient *udata = checkHttpClient( L );
   string result = udata->performPost();
   lua_pushlstring(L, result.data(), result.size());
@@ -97,7 +97,7 @@ charon_HttpClientInstanceMethodPerformPost( lua_State *L ) {
 }
 
 static int
-charon_HttpClientInstanceMethodPerformPut( lua_State *L ) {
+arken_HttpClientInstanceMethodPerformPut( lua_State *L ) {
   HttpClient *udata = checkHttpClient( L );
   string result = udata->performPut();
   lua_pushlstring(L, result.data(), result.size());
@@ -105,7 +105,7 @@ charon_HttpClientInstanceMethodPerformPut( lua_State *L ) {
 }
 
 static int
-charon_HttpClientInstanceMethodPerformDelete( lua_State *L ) {
+arken_HttpClientInstanceMethodPerformDelete( lua_State *L ) {
   HttpClient *udata = checkHttpClient( L );
   string result = udata->performDelete();
   lua_pushlstring(L, result.data(), result.size());
@@ -113,7 +113,7 @@ charon_HttpClientInstanceMethodPerformDelete( lua_State *L ) {
 }
 
 static int
-charon_HttpClientInstanceMethodData( lua_State *L ) {
+arken_HttpClientInstanceMethodData( lua_State *L ) {
   HttpClient * udata = checkHttpClient( L );
   const char * data  = udata->data();
   lua_pushstring(L, data);
@@ -121,7 +121,7 @@ charon_HttpClientInstanceMethodData( lua_State *L ) {
 }
 
 static int
-charon_HttpClientInstanceMethodMessage( lua_State *L ) {
+arken_HttpClientInstanceMethodMessage( lua_State *L ) {
   HttpClient * udata   = checkHttpClient( L );
   const char * message = udata->message();
   lua_pushstring(L, message);
@@ -129,21 +129,21 @@ charon_HttpClientInstanceMethodMessage( lua_State *L ) {
 }
 
 static int
-charon_HttpClientInstanceMethodStatus( lua_State *L ) {
+arken_HttpClientInstanceMethodStatus( lua_State *L ) {
   HttpClient *udata = checkHttpClient( L );
   lua_pushinteger(L, udata->status());
   return 1;
 }
 
 static int
-charon_HttpClientInstanceMethodFailure( lua_State *L ) {
+arken_HttpClientInstanceMethodFailure( lua_State *L ) {
   HttpClient *udata = checkHttpClient( L );
   lua_pushboolean(L, udata->failure());
   return 1;
 }
 
 static int
-charon_HttpClientInstanceMethodDestruct( lua_State *L ) {
+arken_HttpClientInstanceMethodDestruct( lua_State *L ) {
   HttpClient *udata = checkHttpClient( L );
   delete udata;
   return 0;
@@ -151,19 +151,19 @@ charon_HttpClientInstanceMethodDestruct( lua_State *L ) {
 
 static const
 luaL_reg HttpClientInstanceMethods[] = {
-  {"appendHeader", charon_HttpClientInstanceMethodAppendHeader},
-  {"setVerbose", charon_HttpClientInstanceMethodSetVerbose},
-  {"setBody", charon_HttpClientInstanceMethodSetBody},
-  {"body", charon_HttpClientInstanceMethodBody},
-  {"performGet", charon_HttpClientInstanceMethodPerformGet},
-  {"performPost", charon_HttpClientInstanceMethodPerformPost},
-  {"performPut", charon_HttpClientInstanceMethodPerformPut},
-  {"performDelete", charon_HttpClientInstanceMethodPerformDelete},
-  {"status",        charon_HttpClientInstanceMethodStatus},
-  {"data",        charon_HttpClientInstanceMethodData},
-  {"failure",     charon_HttpClientInstanceMethodFailure},
-  {"message",     charon_HttpClientInstanceMethodMessage},
-  {"__gc", charon_HttpClientInstanceMethodDestruct},
+  {"appendHeader", arken_HttpClientInstanceMethodAppendHeader},
+  {"setVerbose", arken_HttpClientInstanceMethodSetVerbose},
+  {"setBody", arken_HttpClientInstanceMethodSetBody},
+  {"body", arken_HttpClientInstanceMethodBody},
+  {"performGet", arken_HttpClientInstanceMethodPerformGet},
+  {"performPost", arken_HttpClientInstanceMethodPerformPost},
+  {"performPut", arken_HttpClientInstanceMethodPerformPut},
+  {"performDelete", arken_HttpClientInstanceMethodPerformDelete},
+  {"status",        arken_HttpClientInstanceMethodStatus},
+  {"data",        arken_HttpClientInstanceMethodData},
+  {"failure",     arken_HttpClientInstanceMethodFailure},
+  {"message",     arken_HttpClientInstanceMethodMessage},
+  {"__gc", arken_HttpClientInstanceMethodDestruct},
   {NULL, NULL}
 };
 
@@ -184,7 +184,7 @@ extern "C" {
   }
 
   int
-  luaopen_charon_net_HttpClient( lua_State *L ) {
+  luaopen_arken_net_HttpClient( lua_State *L ) {
     registerHttpClientInstanceMethods(L);
     registerHttpClientClassMethods(L);
     return 1;

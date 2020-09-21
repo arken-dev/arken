@@ -4,16 +4,16 @@
 // license that can be found in the LICENSE file.
 
 #include <lua/lua.hpp>
-#include <charon/base>
-#include <charon/task>
+#include <arken/base>
+#include <arken/task>
 
 char * json_lock_encode(lua_State *L);
 void   json_lock_decode(lua_State *L, const char * data);
 
-using charon::task;
+using arken::task;
 
 static int
-charon_task_value(lua_State *L) {
+arken_task_value(lua_State *L) {
   const char * uuid = luaL_checkstring(L, 1);
   const char * data = task::value(uuid);
   json_lock_decode(L, data);
@@ -21,7 +21,7 @@ charon_task_value(lua_State *L) {
 }
 
 static int
-charon_task_start(lua_State *L) {
+arken_task_start(lua_State *L) {
   const char * fileName = luaL_checkstring(L, 1);
   char * data = json_lock_encode(L);
   const char * uuid = task::start( fileName, data );
@@ -31,7 +31,7 @@ charon_task_start(lua_State *L) {
 }
 
 static int
-charon_task_insert(lua_State *L) {
+arken_task_insert(lua_State *L) {
   const char * uuid;
   char * data = 0;
   if(lua_gettop(L) == 2) { // número de argumentos
@@ -39,7 +39,7 @@ charon_task_insert(lua_State *L) {
     data = json_lock_encode(L);
   } else {
     data = json_lock_encode(L);
-    lua_getglobal(L, "CHARON_UUID");
+    lua_getglobal(L, "ARKEN_UUID");
     uuid = lua_tostring(L, -1);
   }
   task::insert(uuid, data);
@@ -50,14 +50,14 @@ charon_task_insert(lua_State *L) {
 }
 
 static int
-charon_task_set(lua_State *L) {
+arken_task_set(lua_State *L) {
   int max = luaL_checkinteger(L, 1);
   task::set(max);
   return 0;
 }
 
 static int
-charon_task_wait(lua_State *L) {
+arken_task_wait(lua_State *L) {
   task::wait();
   return 0;
 }
@@ -65,11 +65,11 @@ charon_task_wait(lua_State *L) {
 static int
 register_arken_task( lua_State *L ) {
   static const luaL_reg Map[] = {
-    {"set",     charon_task_set},
-    {"start",   charon_task_start},
-    {"value",   charon_task_value},
-    {"insert",  charon_task_insert},
-    {"wait",    charon_task_wait},
+    {"set",     arken_task_set},
+    {"start",   arken_task_start},
+    {"value",   arken_task_value},
+    {"insert",  arken_task_insert},
+    {"wait",    arken_task_wait},
     {NULL, NULL}
   };
   luaL_newmetatable(L, "task");
@@ -83,7 +83,7 @@ extern "C" {
   int luaopen_arken_task( lua_State *L ) {
     return register_arken_task( L );
   }
-  int luaopen_charon_task( lua_State *L ) {
+  int luaopen_arken_task( lua_State *L ) {
     return register_arken_task( L );
   }
 }

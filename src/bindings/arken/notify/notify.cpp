@@ -4,12 +4,12 @@
 // license that can be found in the LICENSE file.
 
 #include <lua/lua.hpp>
-#include <charon/notify.h>
+#include <arken/notify.h>
 
-using charon::notify;
+using arken::notify;
 
 
-static int charon_notify_send( lua_State *L ) {
+static int arken_notify_send( lua_State *L ) {
   const char * title = luaL_checkstring(L, 1);
   const char * body  = luaL_checkstring(L, 2);
   if(lua_gettop(L) == 3) { // number of arguments
@@ -25,7 +25,7 @@ static int charon_notify_send( lua_State *L ) {
 extern "C" {
   int luaopen_arken_notify( lua_State *L ) {
     static const luaL_reg Map[] = {
-      {"send", charon_notify_send},
+      {"send", arken_notify_send},
       {NULL, NULL}
     };
     luaL_newmetatable(L, "notify");
