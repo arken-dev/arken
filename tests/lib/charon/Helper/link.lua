@@ -1,5 +1,5 @@
-local helper     = require('charon.Helper')
-local dispatcher = require('charon.dispatcher')
+local helper     = require('arken.Helper')
+local dispatcher = require('arken.dispatcher')
 local test       = {}
 
 test.before = function()

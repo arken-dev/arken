@@ -1,5 +1,5 @@
-local Array  = require('charon.Array')
-local helper = require('charon.Helper')
+local Array  = require('arken.Array')
+local helper = require('arken.Helper')
 local test   = {}
 
 test.should_return_html_with_options_default = function()

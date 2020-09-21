@@ -1,5 +1,5 @@
-local Object = require('charon.oop.Object')
-local Class  = require('charon.oop.Class')
+local Object = require('arken.oop.Object')
+local Class  = require('arken.oop.Class')
 local test   = {}
 
 test.should_return_object_in_many_calls = function()

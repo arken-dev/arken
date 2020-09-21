@@ -1,5 +1,5 @@
-local json       = require('charon.json')
-local dispatcher = require('charon.dispatcher')
+local json       = require('arken.json')
+local dispatcher = require('arken.dispatcher')
 local test = {}
 package.path = package.path .. ';util/?.lua'
 
@@ -76,9 +76,9 @@ test.should_return_error_with_not_render = function()
   end
 
   dispatcher.prefix = ""
-  CHARON_ENV='development'
+  ARKEN_ENV='development'
   local status, message = pcall(dispatcher.dispatch, env)
-  CHARON_ENV='test'
+  ARKEN_ENV='test'
   assert( status == false, tostring(status) )
   assert( message:contains('body empty, missing render or return ?') == true, message )
 end
@@ -94,9 +94,9 @@ test.should_return_public_image_in_development = function()
 
   dispatcher.prefix = ""
   dispatcher.public = "util/public"
-  CHARON_ENV='development'
+  ARKEN_ENV='development'
   local status, headers, body = dispatcher.dispatch(env)
-  CHARON_ENV='test'
+  ARKEN_ENV='test'
 
   assert( status == 200, status )
   assert( headers[1] == 'Content-type: image/jpeg', headers[1] )

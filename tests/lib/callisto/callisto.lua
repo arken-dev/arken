@@ -2,7 +2,7 @@ local test = {}
 local callisto = require 'callisto'
 
 test.should_error_not_exists_file = function()
-  local test = require('charon.test')
+  local test = require('arken.test')
   test.output = function() end
   local result, message = pcall(callisto, "util/callisto/example-not-exists.lua")
   test.output = io.write
@@ -11,7 +11,7 @@ test.should_error_not_exists_file = function()
 end
 
 test.should_result_ok = function()
-  local test = require('charon.test')
+  local test = require('arken.test')
   test.output = function() end
   local icon, result = callisto("util/callisto/example-ok.lua")
   test.output = io.write
@@ -19,7 +19,7 @@ test.should_result_ok = function()
 end
 
 test.should_result_warning = function()
-  local test = require('charon.test')
+  local test = require('arken.test')
   test.output = function() end
   local icon, result = callisto("util/callisto/example-warning.lua")
   test.output = io.write
@@ -27,7 +27,7 @@ test.should_result_warning = function()
 end
 
 test.should_result_failure = function()
-  local test = require('charon.test')
+  local test = require('arken.test')
   test.output = function() end
   local icon, result = callisto("util/callisto/example-failure.lua")
   test.output = io.write

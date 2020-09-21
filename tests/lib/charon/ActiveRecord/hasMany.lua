@@ -1,6 +1,6 @@
 local test   = {}
-local Class        = require('charon.oop.Class')
-local ActiveRecord = require('charon.ActiveRecord')
+local Class        = require('arken.oop.Class')
+local ActiveRecord = require('arken.ActiveRecord')
 local Employee = Class.new("Employee", "ActiveRecord")
 local Task     = Class.new("Task", "ActiveRecord")
 

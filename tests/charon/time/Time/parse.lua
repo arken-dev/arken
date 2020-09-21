@@ -1,4 +1,4 @@
-local Time = require('charon.time.Time')
+local Time = require('arken.time.Time')
 local test = {}
 
 test.should_parse_hour_and_minute = function()

@@ -1,4 +1,4 @@
-local ActiveRecord = require('charon.ActiveRecord')
+local ActiveRecord = require('arken.ActiveRecord')
 local test = {}
 
 test.beforeAll = function()
@@ -18,7 +18,7 @@ test.should_execute_commit_after_begin = function()
 end
 
 test.should_clear_errors = function()
-  local Adapter = require('charon.ActiveRecord.Adapter')
+  local Adapter = require('arken.ActiveRecord.Adapter')
   local adapter = ActiveRecord.factoryAdapter()
   Adapter.errors.value = 'true'
   adapter:begin()
@@ -28,7 +28,7 @@ test.should_clear_errors = function()
 end
 
 test.should_clear_cache = function()
-  local Adapter = require('charon.ActiveRecord.Adapter')
+  local Adapter = require('arken.ActiveRecord.Adapter')
   local adapter = ActiveRecord.factoryAdapter()
   Adapter.cache.value = 'true'
   adapter:begin()
@@ -38,7 +38,7 @@ test.should_clear_cache = function()
 end
 
 test.should_clear_neat = function()
-  local Adapter = require('charon.ActiveRecord.Adapter')
+  local Adapter = require('arken.ActiveRecord.Adapter')
   local adapter = ActiveRecord.factoryAdapter()
   Adapter.neat.value = 'true'
   adapter:begin()

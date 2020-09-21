@@ -1,6 +1,6 @@
 local test = {}
-local json  = require('charon.json')
-local Class  = require('charon.oop.Class')
+local json  = require('arken.json')
+local Class  = require('arken.oop.Class')
 local Person = Class.new("Person", "ActiveRecord")
 Person.tableName = "person_create"
 

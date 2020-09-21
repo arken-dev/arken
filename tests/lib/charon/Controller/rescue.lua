@@ -1,4 +1,4 @@
-local Controller = require 'charon.Controller'
+local Controller = require 'arken.Controller'
 local test = {}
 
 test.should_return_http_status_500 = function()

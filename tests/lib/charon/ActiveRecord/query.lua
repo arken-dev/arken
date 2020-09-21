@@ -1,6 +1,6 @@
 local test   = {}
-local json   = require('charon.json')
-local Class  = require('charon.oop.Class')
+local json   = require('arken.json')
+local Class  = require('arken.oop.Class')
 local Person = Class.new("Person", "ActiveRecord")
 
 test.beforeAll = function()
@@ -27,7 +27,7 @@ test.afterAll = function()
 end
 
 test.should_return_cursor = function()
-  ActiveRecord.query_prefix = CHARON_PATH .. '/util/'
+  ActiveRecord.query_prefix = ARKEN_PATH .. '/util/'
   Person.where = function(params)
     return params
   end

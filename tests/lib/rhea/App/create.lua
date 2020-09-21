@@ -1,5 +1,5 @@
 local test = {}
-local json = require('charon.json')
+local json = require('arken.json')
 local rhea = require('rhea')
 local App  = require('rhea.App')
 
@@ -42,7 +42,7 @@ test.should_config_database_postgres = function()
   rhea.run(params)
   local data = json.decode( os.read(dir .. '/config/active_record.json') )
   assert( os.exists(dir .. '/config/active_record.json') == true )
-  assert( data.production.adapter == 'charon.ActiveRecord.PostgresAdapter' , data.production.adapter )
+  assert( data.production.adapter == 'arken.ActiveRecord.PostgresAdapter' , data.production.adapter )
 end
 
 test.should_config_database_mysql = function()
@@ -55,7 +55,7 @@ test.should_config_database_mysql = function()
   rhea.run(params)
   local data = json.decode( os.read(dir .. '/config/active_record.json') )
   assert( os.exists(dir .. '/config/active_record.json') == true )
-  assert( data.production.adapter == 'charon.ActiveRecord.MysqlAdapter' , data.production.adapter )
+  assert( data.production.adapter == 'arken.ActiveRecord.MysqlAdapter' , data.production.adapter )
 end
 
 test.should_config_database_sqlite = function()
@@ -68,7 +68,7 @@ test.should_config_database_sqlite = function()
   rhea.run(params)
   local data = json.decode( os.read(dir .. '/config/active_record.json') )
   assert( os.exists(dir .. '/config/active_record.json') == true )
-  assert( data.production.adapter == 'charon.ActiveRecord.SqliteAdapter' , data.production.adapter )
+  assert( data.production.adapter == 'arken.ActiveRecord.SqliteAdapter' , data.production.adapter )
 end
 
 return test

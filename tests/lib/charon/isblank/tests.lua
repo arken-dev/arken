@@ -1,4 +1,4 @@
-local isblank = require('charon.isblank')
+local isblank = require('arken.isblank')
 local test = {}
 
 test.should_return_true_for_nil = function()

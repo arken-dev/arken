@@ -1,7 +1,7 @@
-local HttpEnv = require "charon.net.HttpEnv"
+local HttpEnv = require "arken.net.HttpEnv"
 
-local multipart = require('charon.net.multi-part')
-local header = os.read(CHARON_PATH .. '/tests/charon/net/HttpEnv/example-2.txt')
+local multipart = require('arken.net.multi-part')
+local header = os.read(ARKEN_PATH .. '/tests/arken/net/HttpEnv/example-2.txt')
 local parser = HttpEnv.new(header)
 local test = {}
 

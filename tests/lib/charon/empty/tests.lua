@@ -1,4 +1,4 @@
-local empty = require('charon.empty')
+local empty = require('arken.empty')
 local test  = {}
 
 test['should return false for 0'] = function()

@@ -1,4 +1,4 @@
-local ctest = require 'charon.test'
+local ctest = require 'arken.test'
 local test  = {}
 
 test.should_error_if_file_not_exists = function()

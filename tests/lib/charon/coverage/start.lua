@@ -1,4 +1,4 @@
-local coverage = require('charon.coverage')
+local coverage = require('arken.coverage')
 local test = {}
 
 test.should_apply_hook_function = function()

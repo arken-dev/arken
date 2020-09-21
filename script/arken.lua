@@ -1,4 +1,4 @@
-local list = {'util', 'triton'} --'app', 'lib', 'tests', 'util', 'importacoes', 'api'}
+local list = {'tests'} --'app', 'lib', 'tests', 'util', 'importacoes', 'api'}
 for _, dir in ipairs(list) do
   local list = os.glob(dir, '\\.lua$', true)
 

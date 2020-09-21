@@ -1,4 +1,4 @@
-local Converter = require 'charon.Converter'
+local Converter = require 'arken.Converter'
 local test      = {}
 
 test.should_return_1234 = function()

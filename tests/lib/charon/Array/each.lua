@@ -1,4 +1,4 @@
-local Array = require('charon.Array')
+local Array = require('arken.Array')
 local test  = {}
 
 test.should_each_element_of_array = function()

@@ -1,5 +1,5 @@
 local test = {}
-local Log  = require('charon.Log')
+local Log  = require('arken.Log')
 
 test.should_write_multiples_logs_instances_in_unique_file = function()
   local tmp  = os.tmpname()

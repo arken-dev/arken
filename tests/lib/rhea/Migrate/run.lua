@@ -1,7 +1,7 @@
 local rhea         = require 'rhea'
-local json         = require 'charon.json'
+local json         = require 'arken.json'
 local Migrate      = require 'rhea.Migrate'
-local ActiveRecord = require 'charon.ActiveRecord'
+local ActiveRecord = require 'arken.ActiveRecord'
 
 local test = {}
 local res  = {}
@@ -31,7 +31,7 @@ end
 test.beforeAll = function()
   ActiveRecord.reset()
   ActiveRecord.config = "config/active_record_sqlite.json"
-  package.path = package.path .. ';' .. CHARON_PATH .. '/util/?.lua'
+  package.path = package.path .. ';' .. ARKEN_PATH .. '/util/?.lua'
   rhea.path = package.path
 end
 
