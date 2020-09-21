@@ -4,10 +4,10 @@
 -- license that can be found in the LICENSE file.
 
 local driver    = require('luasql.postgres')
-local isblank   = require('charon.isblank')
-local toboolean = require('charon.toboolean')
-local Class     = require('charon.oop.Class')
-local Adapter   = require('charon.ActiveRecord.Adapter')
+local isblank   = require('arken.isblank')
+local toboolean = require('arken.toboolean')
+local Class     = require('arken.oop.Class')
+local Adapter   = require('arken.ActiveRecord.Adapter')
 
 local ActiveRecord_PostgresAdapter = Class.new("ActiveRecord.PostgresAdapter", Adapter)
 

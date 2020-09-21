@@ -1,4 +1,4 @@
-CHARON_ENV = os.getenv("CHARON_ENV") or "test"
+ARKEN_ENV = os.getenv("ARKEN_ENV") or "test"
 local Migrate = require('routines.Migrate')
 local M = {}
 
@@ -7,7 +7,7 @@ local M = {}
 -------------------------------------------------------------------------------
 
 function M.start(triton)
-  local JSON = require('charon.json')
+  local JSON = require('arken.json')
   local file = APP_PATH .. '/config/triton.json'
   local raw  = os.read(file)
   if os.exists(file) then

@@ -1,4 +1,4 @@
-require 'charon.ActiveRecord'
+require 'arken.ActiveRecord'
 
 local Migrate = Class.new("Migrate")
 

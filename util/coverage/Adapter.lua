@@ -3,9 +3,9 @@
 -- Use of this source code is governed by a BSD-style
 -- license that can be found in the LICENSE file.
 
-local Array = require('charon.Array')
-local Class = require('charon.oop.Class')
-local toboolean = require('charon.toboolean')
+local Array = require('arken.Array')
+local Class = require('arken.oop.Class')
+local toboolean = require('arken.toboolean')
 local QDateTime = require('QDateTime')
 
 local ActiveRecord_Adapter = Class.new("ActiveRecord.Adapter")
