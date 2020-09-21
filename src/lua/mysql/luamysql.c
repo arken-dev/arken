@@ -413,7 +413,7 @@ static const struct luaL_Reg mysqlresult_lib[] = {
     {NULL, NULL},
 };
 
-int luaopen_charon_mysql(lua_State* l)
+int luaopen_arken_mysql(lua_State* l)
 {
 
     /* meta table for mysql module */
