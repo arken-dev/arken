@@ -3,12 +3,12 @@
 -- Use of this source code is governed by a BSD-style
 -- license that can be found in the LICENSE file.
 
-local Class      = require "charon.oop.Class"
-local template   = require "charon.template"
-local url        = require "charon.net.url"
-local json       = require "charon.json"
+local Class      = require "arken.oop.Class"
+local template   = require "arken.template"
+local url        = require "arken.net.url"
+local json       = require "arken.json"
 
-local Controller = Class.new("Controller", "charon.net.HttpRequest")
+local Controller = Class.new("Controller", "arken.net.HttpRequest")
 
 Controller.prefix        = "/app"
 Controller.prefixHelpers = "app.helpers"
@@ -43,7 +43,7 @@ end
 
 function Controller:resolvHelper()
 
-  local helper   = require("charon.Helper")
+  local helper   = require("arken.Helper")
   helper.__index = helper
 
   local file   = self.prefixHelpers .. ".default"
@@ -71,7 +71,7 @@ function Controller:resolvHelper()
 end
 
 function Controller:helper()
-  if helpers[self.controllerName] == nil or CHARON_ENV ~= 'production' then
+  if helpers[self.controllerName] == nil or ARKEN_ENV ~= 'production' then
     helpers[self.controllerName] = self:resolvHelper()
   end
   local tmp = helpers[self.controllerName]
@@ -112,7 +112,7 @@ function Controller:render_js(params)
   end
 
   if self.layout then
-    local flag, result = pcall(template.execute, fileName, self, self:helper(), CHARON_ENV ~= 'production')
+    local flag, result = pcall(template.execute, fileName, self, self:helper(), ARKEN_ENV ~= 'production')
     if flag then
       self._yield = result
     else
@@ -121,7 +121,7 @@ function Controller:render_js(params)
     fileName = self.prefixViews .. "/layouts/" .. self.layout .. ".js"
   end
 
-  local flag, result = pcall(template.execute, fileName, self, self:helper(), CHARON_ENV ~= 'production')
+  local flag, result = pcall(template.execute, fileName, self, self:helper(), ARKEN_ENV ~= 'production')
   if flag then
     return 200, {'Content-Type: text/javascript'}, result
   else
@@ -153,7 +153,7 @@ function Controller:render_html(params)
       flag   = true
       result = params.value
     else
-      flag, result = pcall(template.execute, file, self, self:helper(), CHARON_ENV ~= 'production')
+      flag, result = pcall(template.execute, file, self, self:helper(), ARKEN_ENV ~= 'production')
     end
     if flag then
       self._yield = result
@@ -164,7 +164,7 @@ function Controller:render_html(params)
     file = self.prefixViews .. "/layouts/" .. self.layout .. ".html"
   end
 
-  local flag, result = pcall(template.execute, file, self, self:helper(), CHARON_ENV ~= 'production')
+  local flag, result = pcall(template.execute, file, self, self:helper(), ARKEN_ENV ~= 'production')
   if flag then
     return 200, {'Content-Type: text/html'}, result
   else
@@ -191,7 +191,7 @@ function Controller:renderTemplate(params, ext)
       flag   = true
       result = params.value
     else
-      flag, result = pcall(template.execute, file, self, self:helper(), CHARON_ENV ~= 'production')
+      flag, result = pcall(template.execute, file, self, self:helper(), ARKEN_ENV ~= 'production')
     end
     if flag then
       self._yield = result
@@ -202,7 +202,7 @@ function Controller:renderTemplate(params, ext)
     file = self.prefixViews .. "/layouts/" .. self.layout .. "." .. ext
   end
 
-  local flag, result = pcall(template.execute, file, self, self:helper(), CHARON_ENV ~= 'production')
+  local flag, result = pcall(template.execute, file, self, self:helper(), ARKEN_ENV ~= 'production')
   if flag then
     return true, result
   else
@@ -222,7 +222,7 @@ function Controller:partial(params)
   end
 
   local context = params.context or self
-  local flag, result = pcall(template.execute, file, self, self:helper(), CHARON_ENV ~= 'production')
+  local flag, result = pcall(template.execute, file, self, self:helper(), ARKEN_ENV ~= 'production')
   if flag then
     return result
   else
@@ -339,7 +339,7 @@ Controller.contetTypeHash = {
 }
 
 function Controller:render_file(params)
-  local HttpBody = require('charon.net.HttpBody')
+  local HttpBody = require('arken.net.HttpBody')
   local code = params.code or 200
   local path = params.path or nil
 

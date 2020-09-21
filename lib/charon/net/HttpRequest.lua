@@ -1,12 +1,12 @@
-local url         = require 'charon.net.url'
-local cookie      = require 'charon.net.cookie'
-local multipart   = require 'charon.net.multi-part'
-local json        = require 'charon.json'
-local Class       = require 'charon.oop.Class'
+local url         = require 'arken.net.url'
+local cookie      = require 'arken.net.cookie'
+local multipart   = require 'arken.net.multi-part'
+local json        = require 'arken.json'
+local Class       = require 'arken.oop.Class'
 
-local HttpRequest = Class.new("charon.net.HttpRequest")
+local HttpRequest = Class.new("arken.net.HttpRequest")
 
-HttpRequest.converter = require('charon.Converter')
+HttpRequest.converter = require('arken.Converter')
 
 function HttpRequest:env()
   return self._env
@@ -67,9 +67,9 @@ end
 
 function HttpRequest:session()
   local cookies = self:cookies()
-  if cookies.charon_session_id then
+  if cookies.arken_session_id then
     if self._session_data == nil then
-      self._session_id = cookies.charon_session_id
+      self._session_id = cookies.arken_session_id
       if cache.value(self.__session_id) then
         local data = cache.value(self._session_id)
         if #data == 0 then
@@ -81,7 +81,7 @@ function HttpRequest:session()
     end
   else
     local uuid = os.uuid()
-    self:cookie('charon_session_id', uuid)
+    self:cookie('arken_session_id', uuid)
     self._session_id   = uuid
     self._session_data = {}
   end

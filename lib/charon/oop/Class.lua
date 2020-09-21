@@ -3,7 +3,7 @@
 -- Use of this source code is governed by a BSD-style
 -- license that can be found in the LICENSE file.
 
-local Object = require 'charon.oop.Object'
+local Object = require 'arken.oop.Object'
 
 Class = Class or {}
 Class.classes    = {}
@@ -64,7 +64,7 @@ Class.new = function(className, inheritedBy, params)
     --if class[name .. "Body"] then
     --  error(string.format('contract %q in %s is already created', name, class.className))
     --else
-      local contract = require('charon.contract')
+      local contract = require('arken.contract')
       contract.create(class, name)
     --end
   end
@@ -93,7 +93,7 @@ Class.retrieve = function(name)
   if flag then
     return class_or_error or flag
   end
-  local flag, class = pcall(require, 'charon.' .. name)
+  local flag, class = pcall(require, 'arken.' .. name)
   if flag then
     return class or flag
   else

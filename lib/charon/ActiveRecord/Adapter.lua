@@ -3,11 +3,11 @@
 -- Use of this source code is governed by a BSD-style
 -- license that can be found in the LICENSE file.
 
-local Array     = require('charon.Array')
-local Class     = require('charon.oop.Class')
-local toboolean = require('charon.toboolean')
-local Date      = require('charon.time.Date')
-local DateTime  = require('charon.time.DateTime')
+local Array     = require('arken.Array')
+local Class     = require('arken.oop.Class')
+local toboolean = require('arken.toboolean')
+local Date      = require('arken.time.Date')
+local DateTime  = require('arken.time.DateTime')
 
 local ActiveRecord_Adapter = Class.new("ActiveRecord.Adapter")
 
@@ -400,7 +400,7 @@ end
 --------------------------------------------------------------------------------
 
 function ActiveRecord_Adapter:begin()
-  if CHARON_ENV == 'test' then
+  if ARKEN_ENV == 'test' then
     if ActiveRecord_Adapter.savePoint == 0 then
       self:execute("BEGIN")
     end
@@ -422,7 +422,7 @@ function ActiveRecord_Adapter:rollback()
   ActiveRecord_Adapter.errors  = Array.new()
   ActiveRecord_Adapter.cache   = {}
   ActiveRecord_Adapter.pending = {}
-  if CHARON_ENV == 'test' then
+  if ARKEN_ENV == 'test' then
     ActiveRecord_Adapter.savePoint = ActiveRecord_Adapter.savePoint - 1
     if ActiveRecord_Adapter.savePoint < 1 then
       ActiveRecord_Adapter.savePoint = 0
@@ -444,7 +444,7 @@ function ActiveRecord_Adapter:commit()
   ActiveRecord_Adapter.cache   = {}
   ActiveRecord_Adapter.neat    = {}
   ActiveRecord_Adapter.pending = {}
-  if CHARON_ENV == 'test' then
+  if ARKEN_ENV == 'test' then
     ActiveRecord_Adapter.savePoint = ActiveRecord_Adapter.savePoint - 1
   else
     return self:execute("COMMIT")

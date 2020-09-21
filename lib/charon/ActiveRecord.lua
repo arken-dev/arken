@@ -3,9 +3,9 @@
 -- Use of this source code is governed by a BSD-style
 -- license that can be found in the LICENSE file.
 
-local json    = require("charon.json")
-local Class   = require("charon.oop.Class")
-local Array   = require("charon.Array")
+local json    = require("arken.json")
+local Class   = require("arken.oop.Class")
+local Array   = require("arken.Array")
 ActiveRecord  = Class.new("ActiveRecord")
 
 ActiveRecord.time     = 0
@@ -157,7 +157,7 @@ ActiveRecord.inherit = function(class)
   -----------------------------------------------------------------------------
 
   class.loadConfig = function()
-    local template = require 'charon.template'
+    local template = require 'arken.template'
     local config   = "config/active_record.json"
 
     if not os.exists(config) then
@@ -165,7 +165,7 @@ ActiveRecord.inherit = function(class)
     end
 
     local raw  = template.execute(config)
-    local env  = CHARON_ENV or 'development'
+    local env  = ARKEN_ENV or 'development'
     local data = json.decode(raw)
     if type(data) == 'table' then
       return data[env]
@@ -203,7 +203,7 @@ ActiveRecord.inherit = function(class)
   ------------------------------------------------------------------------------
   -- clear all cache
   function class.clear()
-    local Adapter = require("charon.ActiveRecord.Adapter")
+    local Adapter = require("arken.ActiveRecord.Adapter")
     Adapter.neat  = {}
     Adapter.cache = {}
     for _, cursor in ipairs(Adapter.cursor) do

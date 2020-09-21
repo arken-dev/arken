@@ -3,8 +3,8 @@
 -- Use of this source code is governed by a BSD-style
 -- license that can be found in the LICENSE file.
 
-local Class = require('charon.oop.Class')
-local json  = require('charon.json')
+local Class = require('arken.oop.Class')
+local json  = require('arken.json')
 local Converter = Class.new("Converter")
 
 -------------------------------------------------------------------------------

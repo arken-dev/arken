@@ -3,9 +3,9 @@
 -- Use of this source code is governed by a BSD-style
 -- license that can be found in the LICENSE file.
 
-CHARON_ENV   = os.getenv("CHARON_ENV") or "test"
-local empty  = require('charon.empty')
-local test   = require('charon.test')
+ARKEN_ENV   = os.getenv("ARKEN_ENV") or "test"
+local empty  = require('arken.empty')
+local test   = require('arken.test')
 local buffer = ""
 
 print = function(value)

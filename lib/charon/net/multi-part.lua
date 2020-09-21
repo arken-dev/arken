@@ -1,4 +1,4 @@
-local ByteArray = require 'charon.ByteArray'
+local ByteArray = require 'arken.ByteArray'
 local multipart = {}
 
 multipart.parse = function(data)

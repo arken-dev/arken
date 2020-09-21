@@ -1,6 +1,6 @@
-local ActiveRecord = require('charon.ActiveRecord')
+local ActiveRecord = require('arken.ActiveRecord')
 local ActiveRecord_SqliteMemoryAdapter = Class.new("ActiveRecord.SqliteMemoryAdapter", "ActiveRecord.SqliteAdapter")
-local json = require('charon.json')
+local json = require('arken.json')
 
 ActiveRecord.schema   = ActiveRecord.schema   or "db/schema"
 ActiveRecord.fixtures = ActiveRecord.fixtures or "db/fixtures"

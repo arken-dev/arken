@@ -4,16 +4,16 @@
 -- license that can be found in the LICENSE file.
 
 -------------------------------------------------------------------------------
--- CHARON_ENV
+-- ARKEN_ENV
 -------------------------------------------------------------------------------
 
-CHARON_ENV = os.getenv("CHARON_ENV") or "test"
+ARKEN_ENV = os.getenv("ARKEN_ENV") or "test"
 
 -------------------------------------------------------------------------------
 -- TEST MODULE
 -------------------------------------------------------------------------------
 
-local colorize = require 'charon.colorize'
+local colorize = require 'arken.colorize'
 local test     = {}
 test.output    = io.write
 
@@ -56,7 +56,7 @@ function test.run(specs)
       if status then
         status, message = pcall(func)
       end
-      -- require( 'charon.record' ).cache = {}
+      -- require( 'arken.record' ).cache = {}
       if status == false then
         if type(message) == 'table' then
           local text = ""

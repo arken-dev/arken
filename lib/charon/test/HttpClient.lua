@@ -1,6 +1,6 @@
-local HttpClient = Class.new("charon.test.HttpClient")
-local template   = require("charon.template")
-local HttpEnv    = require "charon.net.HttpEnv"
+local HttpClient = Class.new("arken.test.HttpClient")
+local template   = require("arken.template")
+local HttpEnv    = require "arken.net.HttpEnv"
 
 
 require('dispatch')
@@ -39,7 +39,7 @@ end
 
 function HttpClient:performPost()
   self.headers = self.headers or {}
-  local env = template.execute(CHARON_PATH .. "/lib/charon/test/HttpClient/post.tpl", self, {})
+  local env = template.execute(ARKEN_PATH .. "/lib/arken/test/HttpClient/post.tpl", self, {})
   if self.verbose then
     print(env)
   end
@@ -50,7 +50,7 @@ end
 
 function HttpClient:performGet()
   self.headers = self.headers or {}
-  local env = template.execute(CHARON_PATH .. "/lib/charon/test/HttpClient/get.tpl", self, {})
+  local env = template.execute(ARKEN_PATH .. "/lib/arken/test/HttpClient/get.tpl", self, {})
   if self.verbose then
     print(env)
   end
@@ -61,7 +61,7 @@ end
 
 function HttpClient:performPut()
   self.headers = self.headers or {}
-  local env = template.execute(CHARON_PATH .. "/lib/charon/test/HttpClient/put.tpl", self, {})
+  local env = template.execute(ARKEN_PATH .. "/lib/arken/test/HttpClient/put.tpl", self, {})
   if self.verbose then
     print(env)
   end
@@ -72,7 +72,7 @@ end
 
 function HttpClient:performDelete()
   self.headers = self.headers or {}
-  local env = template.execute(CHARON_PATH .. "/lib/charon/test/HttpClient/delete.tpl", self, {})
+  local env = template.execute(ARKEN_PATH .. "/lib/arken/test/HttpClient/delete.tpl", self, {})
   if self.verbose then
     print(env)
   end

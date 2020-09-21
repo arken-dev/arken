@@ -3,11 +3,11 @@
 -- Use of this source code is governed by a BSD-style
 -- license that can be found in the LICENSE file.
 
-local Controller   = require 'charon.Controller'
-local ActiveRecord = require 'charon.ActiveRecord'
-local ByteArray    = require 'charon.ByteArray'
-local template     = require 'charon.template'
-local HttpEnv      = require 'charon.net.HttpEnv'
+local Controller   = require 'arken.Controller'
+local ActiveRecord = require 'arken.ActiveRecord'
+local ByteArray    = require 'arken.ByteArray'
+local template     = require 'arken.template'
+local HttpEnv      = require 'arken.net.HttpEnv'
 
 -------------------------------------------------------------------------------
 -- DISPATCHER
@@ -54,7 +54,7 @@ end
 -------------------------------------------------------------------------------
 
 dispatcher.dispatchLocal = function(fileName)
-  local list     = require 'charon.net.mime-type'
+  local list     = require 'arken.net.mime-type'
   local suffix   = fileName:suffix()
   local mimetype = tostring(list[suffix])
   local header   = "Content-type: " .. mimetype
@@ -100,7 +100,7 @@ dispatcher.dispatch = function(env)
   local time    = os.microtime()
   local reload  = 0
   local code, headers, body
-  if CHARON_ENV == 'development' then
+  if ARKEN_ENV == 'development' then
     local requestPath = env:requestPath()
     local fileName    = dispatcher.public .. requestPath:mid(#dispatcher.prefix+1, -1)
     if requestPath ~= '/' and os.exists(fileName) then
@@ -128,7 +128,7 @@ end
 dispatcher.output = print
 
 dispatcher.log = function(env, code, time, reload)
-  if CHARON_ENV ~= 'test' then
+  if ARKEN_ENV ~= 'test' then
     local msg = "Completed in %.4f ms (Reload: %.4f, View: %.4f, DB: %.4f) | %i OK [%s]"
     local log = string.format(msg, time, reload, template.time, ActiveRecord.time, code, env:requestUri())
     dispatcher.output(log)

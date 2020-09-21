@@ -3,12 +3,12 @@
 -- Use of this source code is governed by a BSD-style
 -- license that can be found in the LICENSE file.
 
-local Array     = require('charon.Array')
-local empty     = require('charon.empty')
+local Array     = require('arken.Array')
+local empty     = require('arken.empty')
 local driver    = require('luasql.postgres')
-local toboolean = require('charon.toboolean')
-local Class     = require('charon.oop.Class')
-local Adapter   = require('charon.ActiveRecord.Adapter')
+local toboolean = require('arken.toboolean')
+local Class     = require('arken.oop.Class')
+local Adapter   = require('arken.ActiveRecord.Adapter')
 
 local ActiveRecord_PostgresAdapter = Class.new("ActiveRecord.PostgresAdapter", Adapter)
 

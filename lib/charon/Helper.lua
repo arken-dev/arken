@@ -3,7 +3,7 @@
 -- Use of this source code is governed by a BSD-style
 -- license that can be found in the LICENSE file.
 --
--- Helpers in charon platform follow similiar principle of Velocity Framework
+-- Helpers in arken platform follow similiar principle of Velocity Framework
 -- http://stackoverflow.com/questions/4201142/rails-style-template-helpers-in-velocity
 -- Examples:
 -- <% local img = helper:img("pdf.png") -%>
@@ -12,10 +12,10 @@
 -- or
 -- <a href="<%= helper:url{ action = 'cancel' } -%>">cancel</a>
 
-local Form       = require "charon.Helper.FormHelper"
-local url        = require "charon.net.url"
-local toboolean  = require "charon.toboolean"
-local dispatcher = require 'charon.dispatcher'
+local Form       = require "arken.Helper.FormHelper"
+local url        = require "arken.net.url"
+local toboolean  = require "arken.toboolean"
+local dispatcher = require 'arken.dispatcher'
 local Helper     = {}
 local cache      = {}
 
@@ -318,7 +318,7 @@ function Helper:selectHash(field, list, value, options)
 end
 
 function Helper:fileTimestamp(file_name)
-  if cache[file_name] == nil or CHARON_ENV ~= 'production' then
+  if cache[file_name] == nil or ARKEN_ENV ~= 'production' then
     if os.exists(Helper.publicPath .. file_name) then
       cache[file_name] = os.ctime(Helper.publicPath .. file_name)
     else

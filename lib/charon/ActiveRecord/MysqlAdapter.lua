@@ -4,11 +4,11 @@
 -- license that can be found in the LICENSE file.
 
 local mysql     = require "luasql.mysql"
-local json      = require('charon.json')
-local empty     = require('charon.empty')
-local toboolean = require('charon.toboolean')
-local Class     = require('charon.oop.Class')
-local Adapter   = require('charon.ActiveRecord.Adapter')
+local json      = require('arken.json')
+local empty     = require('arken.empty')
+local toboolean = require('arken.toboolean')
+local Class     = require('arken.oop.Class')
+local Adapter   = require('arken.ActiveRecord.Adapter')
 
 local ActiveRecord_MysqlAdapter = Class.new("ActiveRecord.MysqlAdapter", Adapter)
 

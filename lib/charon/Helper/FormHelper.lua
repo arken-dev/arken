@@ -3,9 +3,9 @@
 -- Use of this source code is governed by a BSD-style
 -- license that can be found in the LICENSE file.
 
-local Class     = require 'charon.oop.Class'
-local url       = require 'charon.net.url'
-local toboolean = require 'charon.toboolean'
+local Class     = require 'arken.oop.Class'
+local url       = require 'arken.net.url'
+local toboolean = require 'arken.toboolean'
 
 FormHelper = Class.new("FormHelper")
 
@@ -27,7 +27,7 @@ function FormHelper:url(params)
     return params
   end
 
-  local dispatcher = require 'charon.dispatcher'
+  local dispatcher = require 'arken.dispatcher'
   local controller = params.controller or self.controller.controllerName or 'index'
   local action     = params.action or self.controller.actionName or 'index'
 

@@ -4,7 +4,7 @@
 -- Use of this source code is governed by a BSD-style
 -- license that can be found in the LICENSE file.
 
-local json = require 'charon.json'
+local json = require 'arken.json'
 
 json.pretty = function(dt, lf, id, ac, ec)
     local s, e = (ec or json.encode)(dt)

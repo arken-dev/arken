@@ -3,7 +3,7 @@
 -- Use of this source code is governed by a BSD-style
 -- license that can be found in the LICENSE file.
 
-local odebug   = require 'charon.odebug'
+local odebug   = require 'arken.odebug'
 local coverage = {}
 local result   = {}
 
@@ -15,7 +15,7 @@ coverage.hook = function(val1, val2, fake)
   local linedefined  = info.currentline
   ]]
 
-  -- odebug is a charon module return values whitout table
+  -- odebug is a arken module return values whitout table
   local ldebug = fake or odebug
   local filename, linedefined = ldebug.info()
 
