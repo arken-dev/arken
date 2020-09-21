@@ -1,6 +1,6 @@
-local list = {'routines', 'skel'} --'app', 'lib', 'tests', 'util', 'importacoes', 'api'}
+local list = {'packages'} --'app', 'lib', 'tests', 'util', 'importacoes', 'api'}
 for _, dir in ipairs(list) do
-  local list = os.glob(dir, '\\.lua$', true)
+  local list = os.glob(dir, '\\.c$', true)
 
   for fileName in list:each() do
 

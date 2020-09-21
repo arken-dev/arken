@@ -6,9 +6,9 @@ Charon is a industrial platform for web development (and others) of extremely fa
 
 # ROADMAP
 
-To follow the development roadmap: https://trello.com/b/27ccvQuw/charon-platform
+To follow the development roadmap: https://trello.com/b/27ccvQuw/arken-platform
 
-http://charonplatform.org
+http://arkenplatform.org
 
 # BUILD
 
@@ -29,7 +29,7 @@ http://charonplatform.org
 - bootstrap/windows.jit.sh
 - bootstrap/macos.lua.sh
 
-### cmake (build charon platform)
+### cmake (build arken platform)
 
 - mkdir build
 - cd build

@@ -1,20 +1,20 @@
 {
   "development" : {
-    "adapter"  : "charon.ActiveRecord.SqliteAdapter",
+    "adapter"  : "arken.ActiveRecord.SqliteAdapter",
     "host"     : "localhost",
     "database" : "mydatabase",
     "user"     : "postgres",
     "password" : "mypassword"
   },
   "production" : {
-    "adapter"  : "charon.ActiveRecord.SqliteAdapter",
+    "adapter"  : "arken.ActiveRecord.SqliteAdapter",
     "host"     : "localhost",
     "database" : "mydatabase",
     "user"     : "myuser",
     "password" : "mypassword"
   },
   "test" : {
-    "adapter"  : "charon.ActiveRecord.SqliteAdapter",
+    "adapter"  : "arken.ActiveRecord.SqliteAdapter",
     "host"     : "localhost",
     "database" : "mydatabase",
     "user"     : "myuser",
