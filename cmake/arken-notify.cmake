@@ -10,6 +10,6 @@ if(ARKEN_NOTIFY STREQUAL "")
   set(ARKEN_NOTIFY "libnotify")
 endif()
 
-set( arken-notify ${PROJECT_SOURCE_DIR}/src/charon/notify/${ARKEN_NOTIFY}.cpp )
+set( arken-notify ${PROJECT_SOURCE_DIR}/src/arken/notify/${ARKEN_NOTIFY}.cpp )
 
 message("ARKEN NOTIFY.............: ${ARKEN_NOTIFY}")

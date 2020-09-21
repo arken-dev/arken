@@ -1,6 +1,6 @@
-local list = {'packages'} --'app', 'lib', 'tests', 'util', 'importacoes', 'api'}
+local list = {'cmake'} --'app', 'lib', 'tests', 'util', 'importacoes', 'api'}
 for _, dir in ipairs(list) do
-  local list = os.glob(dir, '\\.c$', true)
+  local list = os.glob(dir, '\\.cmake$', true)
 
   for fileName in list:each() do
 

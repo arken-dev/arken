@@ -1,21 +1,21 @@
-set(CHARON_MVM_CONTAINER "" CACHE STRING
+set(ARKEN_MVM_CONTAINER "" CACHE STRING
   "container implementation used by mvm")
 
 set_property(
-  CACHE CHARON_MVM_CONTAINER PROPERTY STRINGS
+  CACHE ARKEN_MVM_CONTAINER PROPERTY STRINGS
   "" deque-stack deque-queue list-stack list-queue vector QQueue boost-lockfree-queue
 )
 
-if(CHARON_MVM_CONTAINER STREQUAL "")
-  if(CHARON_BACKEND STREQUAL "embedded")
-    set(CHARON_MVM_CONTAINER "deque-stack")
-  elseif(CHARON_BACKEND STREQUAL "benchmark")
-    set(CHARON_MVM_CONTAINER "deque-stack")
+if(ARKEN_MVM_CONTAINER STREQUAL "")
+  if(ARKEN_BACKEND STREQUAL "embedded")
+    set(ARKEN_MVM_CONTAINER "deque-stack")
+  elseif(ARKEN_BACKEND STREQUAL "benchmark")
+    set(ARKEN_MVM_CONTAINER "deque-stack")
   else()
-    set(CHARON_MVM_CONTAINER "deque-stack")
+    set(ARKEN_MVM_CONTAINER "deque-stack")
   endif()
 endif()
 
-set( mvm-container ${PROJECT_SOURCE_DIR}/src/charon/mvm/containers/${CHARON_MVM_CONTAINER}.cpp )
+set( mvm-container ${PROJECT_SOURCE_DIR}/src/arken/mvm/containers/${ARKEN_MVM_CONTAINER}.cpp )
 
-message("CHARON MVM CONTAINER.....: ${CHARON_MVM_CONTAINER}")
+message("ARKEN MVM CONTAINER.....: ${ARKEN_MVM_CONTAINER}")

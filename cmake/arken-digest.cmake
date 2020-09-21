@@ -1,26 +1,26 @@
-set(CHARON_DIGEST "" CACHE STRING
-  "charon digest (md5|sha1) backend")
+set(ARKEN_DIGEST "" CACHE STRING
+  "arken digest (md5|sha1) backend")
 
 set_property(
-  CACHE CHARON_DIGEST PROPERTY STRINGS
+  CACHE ARKEN_DIGEST PROPERTY STRINGS
   "" qt embedded libssl
 )
 
-if(CHARON_DIGEST STREQUAL "")
-  if(CHARON_BACKEND STREQUAL "embedded")
-    set(CHARON_DIGEST "embedded")
-  elseif(CHARON_BACKEND STREQUAL "benchmark")
-    set(CHARON_DIGEST "qt")
+if(ARKEN_DIGEST STREQUAL "")
+  if(ARKEN_BACKEND STREQUAL "embedded")
+    set(ARKEN_DIGEST "embedded")
+  elseif(ARKEN_BACKEND STREQUAL "benchmark")
+    set(ARKEN_DIGEST "qt")
   else()
-    set(CHARON_DIGEST "qt")
+    set(ARKEN_DIGEST "qt")
   endif()
 endif()
 
-if(CHARON_DIGEST STREQUAL "embedded")
+if(ARKEN_DIGEST STREQUAL "embedded")
   file(GLOB digest-embedded ${PROJECT_SOURCE_DIR}/src/embedded/digest/*.c)
 endif()
 
-file(GLOB digest ${PROJECT_SOURCE_DIR}/src/charon/digest/*/${CHARON_DIGEST}.cpp)
-#file(GLOB_RECURSE digest ${PROJECT_SOURCE_DIR}/src/charon/digest/*/${CHARON_DIGEST}.cpp)
+file(GLOB digest ${PROJECT_SOURCE_DIR}/src/arken/digest/*/${ARKEN_DIGEST}.cpp)
+#file(GLOB_RECURSE digest ${PROJECT_SOURCE_DIR}/src/arken/digest/*/${ARKEN_DIGEST}.cpp)
 
-message("CHARON DIGEST............: ${CHARON_DIGEST}")
+message("ARKEN DIGEST............: ${ARKEN_DIGEST}")
