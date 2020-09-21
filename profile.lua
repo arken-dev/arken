@@ -1,7 +1,7 @@
 -------------------------------------------------------------------------------
 -- PATH
 -------------------------------------------------------------------------------
-ARKEN_PATH = ARKEN_PATH or ARKEN_PATH
+ARKEN_PATH = ARKEN_PATH or CHARON_PATH
 
 package.path  = package.path  .. ";" .. ARKEN_PATH .. "/?.lua"
 package.path  = package.path  .. ";" .. ARKEN_PATH .. "/lib/?.lua"
