@@ -1,8 +1,8 @@
 # ARKEN PLATFORM
 
-Charon is a industrial platform for web development (and others) of extremely fast and scalable
+Arken is a industrial platform for web development (and others) of extremely fast and scalable
 
-![Charon image](images/logo2.jpg)
+![Arken image](images/logo2.jpg)
 
 # ROADMAP
 

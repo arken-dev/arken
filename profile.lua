@@ -1,7 +1,7 @@
 -------------------------------------------------------------------------------
 -- PATH
 -------------------------------------------------------------------------------
-ARKEN_PATH = ARKEN_PATH or CHARON_PATH
+ARKEN_PATH = ARKEN_PATH or ARKEN_PATH
 
 package.path  = package.path  .. ";" .. ARKEN_PATH .. "/?.lua"
 package.path  = package.path  .. ";" .. ARKEN_PATH .. "/lib/?.lua"
@@ -20,8 +20,8 @@ os.setlocale("C", "numeric")
 -------------------------------------------------------------------------------
 -- GLOBALS
 -------------------------------------------------------------------------------
-require 'charon.base'
-require 'charon.package'
+require 'arken.base'
+require 'arken.package'
 
 -------------------------------------------------------------------------------
 -- PROFILE.D

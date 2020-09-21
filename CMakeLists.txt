@@ -1,6 +1,6 @@
 # ------------------------------------------------------------------------------
 #
-# Copyright 2016 The Charon Platform Authors.
+# Copyright 2016 The Arken Platform Authors.
 #
 # All rights reserved.
 # Use of this source code is governed by a BSD-style
@@ -11,7 +11,7 @@
 cmake_minimum_required(VERSION 3.0)
 
 # ------------------------------------------------------------------------------
-# CHARON CMAKE MODULES
+# ARKEN CMAKE MODULES
 # ------------------------------------------------------------------------------
 
 LIST(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")

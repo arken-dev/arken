@@ -1,4 +1,4 @@
-require 'charon.pgsql'
+require 'arken.pgsql'
 
 connect = pg.connect('dbname=fusion_development user=postgres password=42 host=localhost')
 query   = [[SELECT attname FROM pg_attribute]]
