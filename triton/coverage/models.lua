@@ -1,4 +1,5 @@
-CHARON_ENV = os.getenv("CHARON_ENV") or "test"
+ARKEN_ENV  = os.getenv("ARKEN_ENV") or "test"
+CHARON_ENV = ARKEN_ENV or os.getenv("CHARON_ENV")
 
 local ActiveRecord = require "charon.ActiveRecord"
 local test         = require 'charon.test'
