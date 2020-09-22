@@ -2,7 +2,7 @@
 #include <lua/lauxlib.h>
 #include <lua/lualib.h>
 
-extern int luaopen_charon_mysql(lua_State* l);
+extern int luaopen_arken_mysql(lua_State* l);
 
 int main(int argc, char* argv[])
 {
@@ -16,7 +16,7 @@ int main(int argc, char* argv[])
     l = luaL_newstate();
     luaL_openlibs(l);
 
-    luaopen_charon_mysql(l); /* this will put the function table on top of the stack */
+    luaopen_arken_mysql(l); /* this will put the function table on top of the stack */
     lua_setglobal(l, "mysql");
 
     if (luaL_dofile(l, argv[1]) != 0)

@@ -1,6 +1,6 @@
 local test   = {}
-local json   = require('charon.json')
-local Class  = require('charon.oop.Class')
+local json   = require('arken.json')
+local Class  = require('arken.oop.Class')
 local Person = Class.new("Person", "ActiveRecord")
 
 test.beforeAll = function()
@@ -27,7 +27,7 @@ test.afterAll = function()
 end
 
 test.should_return_cursor = function()
-  ActiveRecord.query_prefix = CHARON_PATH .. '/util/'
+  ActiveRecord.query_prefix = ARKEN_PATH .. '/util/'
   Person.where = function(params)
     return params
   end
@@ -48,7 +48,7 @@ test.should_error_if_file_not_exists = function()
 end
 
 test.should_query_with_binding = function()
-  ActiveRecord.query_prefix = CHARON_PATH .. '/util/'
+  ActiveRecord.query_prefix = ARKEN_PATH .. '/util/'
 
   Person.where = function(params)
     return params
@@ -59,7 +59,7 @@ test.should_query_with_binding = function()
 end
 
 test.should_return_error_if_where_method_return_nil = function()
-  ActiveRecord.query_prefix = CHARON_PATH .. '/util/'
+  ActiveRecord.query_prefix = ARKEN_PATH .. '/util/'
   Person.where = function(params)
     return nil
   end

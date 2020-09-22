@@ -1,9 +1,9 @@
-CHARON_ENV = os.getenv("CHARON_ENV") or "test"
+ARKEN_ENV = os.getenv("ARKEN_ENV") or "test"
 
-local test     = require 'charon.test'
-local template = require 'charon.template'
-local coverage = require 'charon.coverage'
-local json     = require 'charon.jsonp'
+local test     = require 'arken.test'
+local template = require 'arken.template'
+local coverage = require 'arken.coverage'
+local json     = require 'arken.jsonp'
 local start    = os.microtime()
 local files    = {}
 local M = {}
@@ -42,7 +42,7 @@ function M.run(fileName)
   local modelName = dirName:gsub("./tests/lib/", ""):gsub("/", ".")
   local list = os.glob(dirName)
 
-  if modelName == 'charon.coverage' then
+  if modelName == 'arken.coverage' then
     package.loaded[modelName] = nil
   end
 
@@ -75,7 +75,7 @@ function M.run(fileName)
 
   local dir     = 'coverage'
   local file    = fileName
-  local tpl     = CHARON_PATH .. "/lib/charon/coverage/templates/file.html"
+  local tpl     = ARKEN_PATH .. "/lib/arken/coverage/templates/file.html"
   local dump    = coverage.dump()
   local data    = coverage.analyze(fileName)
   local buffer  = template.execute(tpl, data )
@@ -94,7 +94,7 @@ end
 function M.stop()
   print('')
   local dir    = 'coverage'
-  local tpl    = CHARON_PATH .. "/lib/charon/coverage/templates/index.html"
+  local tpl    = ARKEN_PATH .. "/lib/arken/coverage/templates/index.html"
   local data   = {files = files, time = (os.microtime() - start), total = triton.total('tests')}
   local buffer = template.execute(tpl, data)
 

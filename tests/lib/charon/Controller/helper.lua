@@ -1,4 +1,4 @@
-local Controller = require('charon.Controller')
+local Controller = require('arken.Controller')
 local test = {}
 
 test.before = function()
@@ -10,7 +10,7 @@ test.should_return_default_helper_by_metatable = function()
   local c = Controller.new{ controllerName = 'controller' }
   local h = c:helper()
   Controller.prefixHelpers = 'util.helpers.'
-  assert( getmetatable(h) == require('charon.Helper') )
+  assert( getmetatable(h) == require('arken.Helper') )
 end
 
 test.should_return_defaul_helper_if_exists = function()

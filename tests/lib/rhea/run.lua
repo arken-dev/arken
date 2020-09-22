@@ -1,10 +1,10 @@
 local rhea = require 'rhea'
-local json = require 'charon.json'
+local json = require 'arken.json'
 local test = {}
 local MyRheaTask = require('util.rhea.MyRheaTask')
 
 test.beforeAll = function()
-  package.path = package.path .. ';' .. CHARON_PATH .. '/util/?.lua'
+  package.path = package.path .. ';' .. ARKEN_PATH .. '/util/?.lua'
   rhea.path = package.path
 end
 

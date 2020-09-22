@@ -1,4 +1,4 @@
-local mimetype = require('charon.net.mime-type')
+local mimetype = require('arken.net.mime-type')
 local test = {}
 
 test.should_contains_text_mime_type = function()

@@ -1,5 +1,5 @@
-local json       = require('charon.json')
-local dispatcher = require('charon.dispatcher')
+local json       = require('arken.json')
+local dispatcher = require('arken.dispatcher')
 local test = {}
 package.path = package.path .. ';util/?.lua'
 

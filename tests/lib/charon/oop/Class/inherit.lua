@@ -1,4 +1,4 @@
-local Class = require('charon.oop.Class')
+local Class = require('arken.oop.Class')
 local test  = {}
 
 test.redefine_new_method_in_inherit_callback = function()

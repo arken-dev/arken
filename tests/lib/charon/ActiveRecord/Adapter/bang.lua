@@ -1,7 +1,7 @@
 local test    = {}
-local json    = require('charon.json')
-local Class   = require('charon.oop.Class')
-local Adapter = require("charon.ActiveRecord.Adapter")
+local json    = require('arken.json')
+local Class   = require('arken.oop.Class')
+local Adapter = require("arken.ActiveRecord.Adapter")
 local Person  = Class.new("Person", "ActiveRecord")
 
 test.beforeAll = function()

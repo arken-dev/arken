@@ -1,5 +1,5 @@
-local json = require('charon.json')
-local url  = require('charon.net.url')
+local json = require('arken.json')
+local url  = require('arken.net.url')
 local test = {}
 
 test.should_return_table_of_parse = function()

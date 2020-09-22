@@ -1,4 +1,4 @@
-local regex = require 'charon.regex'
+local regex = require 'arken.regex'
 local test  = {}
 
 test['should be true for (g|p|r)ato'] = function()

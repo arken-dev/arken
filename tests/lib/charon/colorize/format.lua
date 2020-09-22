@@ -1,4 +1,4 @@
-local colorize = require('charon.colorize')
+local colorize = require('arken.colorize')
 local test = {}
 
 test.should_return_text_without_color_if_windows = function()

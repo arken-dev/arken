@@ -1,4 +1,4 @@
-local dispatcher = require('charon.dispatcher')
+local dispatcher = require('arken.dispatcher')
 local test = {}
 
 test.should_return_response = function()

@@ -1,6 +1,6 @@
-local HttpEnv = require "charon.net.HttpEnv"
-local HttpRequest = require "charon.net.HttpRequest"
-local json = require "charon.json"
+local HttpEnv = require "arken.net.HttpEnv"
+local HttpRequest = require "arken.net.HttpRequest"
+local json = require "arken.json"
 
 cache   = {}
 cache.value = function()
@@ -17,7 +17,7 @@ end
 test.should_return_table_data = function()
   local env = {}
   env.field = function()
-    return os.read(CHARON_PATH .. "/tests/lib/charon/net/cookie/1-example.cookie")
+    return os.read(ARKEN_PATH .. "/tests/lib/arken/net/cookie/1-example.cookie")
   end
   local request = HttpRequest.new{ _env = env }
   local session = request:session()
@@ -32,7 +32,7 @@ test.should_return_table_restore_from_cache = function()
   local uuid    = os.uuid()
   local cookies = request.cookies
   request.cookies = function(val)
-    return { charon_session_id = 'uuid-1234' }
+    return { arken_session_id = 'uuid-1234' }
   end
   request.__session_data = nil
   local session = request:session()
@@ -44,7 +44,7 @@ end
 test.should_return_table_data = function()
   local request = HttpRequest.new()
   request.cookies = function()
-    return { charon_session_id = os.uuid() }
+    return { arken_session_id = os.uuid() }
   end
   local session = request:session()
   assert( type(session) == 'table', type(session) )
@@ -59,7 +59,7 @@ test.should_return_empty_table_if_session_empty = function()
   local uuid    = os.uuid()
   local cookies = request.cookies
   request.cookies = function(val)
-    return { charon_session_id = 'uuid-1234' }
+    return { arken_session_id = 'uuid-1234' }
   end
   request._session_data = nil
   local session = request:session()
@@ -73,7 +73,7 @@ test.should_return_table_new_session = function()
   local uuid    = os.uuid()
   local cookies = request.cookies
   request.cookies = function(val)
-    return { charon_session_id = nil }
+    return { arken_session_id = nil }
   end
   local session = request:session()
 

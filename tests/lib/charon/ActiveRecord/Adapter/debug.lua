@@ -1,6 +1,6 @@
-local ActiveRecord = require('charon.ActiveRecord')
-local Adapter = require('charon.ActiveRecord.Adapter')
-local Class   = require('charon.oop.Class')
+local ActiveRecord = require('arken.ActiveRecord')
+local Adapter = require('arken.ActiveRecord.Adapter')
+local Class   = require('arken.oop.Class')
 local Person  = Class.new("Person", "ActiveRecord")
 local test    = {}
 

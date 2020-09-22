@@ -1,4 +1,4 @@
-local Class = require('charon.oop.Class')
+local Class = require('arken.oop.Class')
 local test  = {}
 
 test.should_list_of_methods = function()

@@ -1,7 +1,7 @@
 local test   = {}
-local json   = require('charon.json')
-local Class  = require('charon.oop.Class')
-local ActiveRecord = require('charon.ActiveRecord')
+local json   = require('arken.json')
+local Class  = require('arken.oop.Class')
+local ActiveRecord = require('arken.ActiveRecord')
 local Person = Class.new("Person", "ActiveRecord")
 Person.tableName = string.format("person_%s", os.uuid():replace('-', '_'))
 

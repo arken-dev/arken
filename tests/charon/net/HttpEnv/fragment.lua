@@ -1,9 +1,9 @@
-local HttpEnv = require "charon.net.HttpEnv"
+local HttpEnv = require "arken.net.HttpEnv"
 
 local test = {}
 
 test['first example'] = function()
-  local header = os.read(CHARON_PATH .. '/tests/charon/net/HttpEnv/example-1.txt')
+  local header = os.read(ARKEN_PATH .. '/tests/arken/net/HttpEnv/example-1.txt')
   local parser = HttpEnv.new(header)
   assert(parser:fragment() == nil)
 end

@@ -1,4 +1,4 @@
-local FormHelper = require('charon.Helper.FormHelper')
+local FormHelper = require('arken.Helper.FormHelper')
 local test = {}
 
 test.should_return_html_date_field = function()

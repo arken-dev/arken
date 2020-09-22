@@ -1,4 +1,4 @@
-local Controller = require('charon.Controller')
+local Controller = require('arken.Controller')
 local test       = {}
 local env        = {}
 

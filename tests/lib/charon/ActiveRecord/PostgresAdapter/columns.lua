@@ -1,7 +1,7 @@
 local test   = {}
-local json   = require('charon.json')
-local Class  = require('charon.oop.Class')
-local Adapter = require('charon.ActiveRecord.PostgresAdapter')
+local json   = require('arken.json')
+local Class  = require('arken.oop.Class')
+local Adapter = require('arken.ActiveRecord.PostgresAdapter')
 local Person = Class.new("Person", "ActiveRecord")
 Person.tableName = string.format("person_%s", "columns") --os.uuid():replace('-', '_'))
 

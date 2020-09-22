@@ -1,4 +1,4 @@
-local Class = require('charon.oop.Class')
+local Class = require('arken.oop.Class')
 local MyRheaTask = Class.new("MyRheaTask")
 MyRheaTask.help  = {}
 

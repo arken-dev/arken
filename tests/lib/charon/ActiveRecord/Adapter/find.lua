@@ -1,8 +1,8 @@
 local test   = {}
-local json   = require('charon.json')
-local Class  = require('charon.oop.Class')
+local json   = require('arken.json')
+local Class  = require('arken.oop.Class')
 local Person = Class.new("Person", "ActiveRecord")
-local Adapter = require('charon.ActiveRecord.Adapter')
+local Adapter = require('arken.ActiveRecord.Adapter')
 Person.tableName = string.format('person_%s', os.uuid():replace('-', '_'))
 
 test.beforeAll = function()

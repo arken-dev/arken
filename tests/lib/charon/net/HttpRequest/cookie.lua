@@ -1,4 +1,4 @@
-local HttpRequest = require('charon.net.HttpRequest')
+local HttpRequest = require('arken.net.HttpRequest')
 local test = {}
 
 test.before = function()
@@ -30,8 +30,8 @@ end
 
 test.should_append_header_with_http_domain = function()
   local request = HttpRequest.new()
-  request:cookie('box', 'full', { domain = 'charonplatform.org'})
-  assert(request._response[1] == 'Set-Cookie: box=full; Domain=charonplatform.org', request._response[1])
+  request:cookie('box', 'full', { domain = 'arkenplatform.org'})
+  assert(request._response[1] == 'Set-Cookie: box=full; Domain=arkenplatform.org', request._response[1])
 end
 
 test.should_append_header_with_http_path = function()

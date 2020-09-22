@@ -1,4 +1,4 @@
-local helper = require('charon.coverage.helper')
+local helper = require('arken.coverage.helper')
 local test   = {}
 
 test.should_return_formated_number = function()

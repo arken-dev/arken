@@ -1,0 +1,47 @@
+<% local helper = require "arken.coverage.helper" -%>
+<% local json   = require "arken.json" -%>
+<html>
+  <head>
+    <title>coverage</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
+    <style type="text/css">
+      table, a {
+        font-family : 'Source Code Pro', monospace;
+        font-size: 14px ;
+        margin: 5px auto;
+        color: #333;
+        font-weight: 500;
+        text-decoration: none;
+      }
+      tr { line-height: 18px; }
+    </style>
+  </head>
+  <body>
+    <table width='90%'>
+    <tr>
+      <td colspan='3' align='right'>
+        <%= helper.datetime() -%>&nbsp;
+      </td>
+    </tr>
+    <% local coverage = 0 -%>
+    <% table.sort(self.files) -%>
+    <% for i, file in ipairs(self.files) do -%>
+    <% local row = json.decode(os.read('coverage/' .. file:replace('/', '-') .. '.json')) -%>
+    <tr bgcolor='<%= helper.color_coverage(row.coverage) -%>'>
+       <% coverage = coverage + row.coverage -%>
+       <td align='right'> <%= i -%></td>
+       <td><a href='<%= helper.parameterize(file) -%>.html'><%= helper.sanitize(file) -%></a></td>
+       <td align='right'><%= helper.number_format(row.coverage) -%>%&nbsp;</td>
+    </tr>
+    <% end -%>
+    <tr>
+      <td></td>
+      <td align='right'>
+        <%= #self.files -%> files (<%= helper.number_format(self.time) -%> secs)
+        <%= self.total -%> total tests
+      </td>
+      <td align='right'><%= helper.number_format(coverage/#self.files) -%>%&nbsp;</td>
+    </tr>
+    </table>
+  </body>
+</html>

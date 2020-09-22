@@ -1,4 +1,4 @@
-local HttpBody = require('charon.net.HttpBody')
+local HttpBody = require('arken.net.HttpBody')
 
 local test = {}
 

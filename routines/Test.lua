@@ -1,7 +1,7 @@
-CHARON_ENV   = os.getenv("CHARON_ENV") or "test"
+ARKEN_ENV   = os.getenv("ARKEN_ENV") or "test"
 
-local empty  = require('charon.empty')
-local test   = require('charon.test')
+local empty  = require('arken.empty')
+local test   = require('arken.test')
 local notify = require('arken.notify')
 
 local Test = Class.new("routines.Test")

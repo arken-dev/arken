@@ -1,4 +1,4 @@
-local toboolean = require('charon.toboolean')
+local toboolean = require('arken.toboolean')
 local test = {}
 
 test.should_return_true_for_values_representating = function()

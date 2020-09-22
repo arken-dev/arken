@@ -1,4 +1,4 @@
-local package = require 'charon.package'
+local package = require 'arken.package'
 local test    = {}
 
 test.should_return_if_file_is_update = function()

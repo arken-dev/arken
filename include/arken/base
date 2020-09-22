@@ -1,0 +1,36 @@
+#ifndef _ARKEN_BASE_
+#define _ARKEN_BASE_
+
+#include <arken/string.h>
+#include <arken/math.h>
+#include <arken/os.h>
+#include <arken/net/config.h>
+#include <arken/net/httpbody.h>
+#include <arken/net/httpclient.h>
+#include <arken/net/httpenv.h>
+#include <arken/net/httphandle.h>
+#include <arken/net/httputil.h>
+#include <arken/base64.h>
+#include <arken/bytearray.h>
+#include <arken/compress/zip.h>
+#include <arken/digest/md5.h>
+#include <arken/digest/sha1.h>
+#include <arken/http.h>
+#include <arken/log.h>
+#include <arken/mvm.h>
+#include <arken/regex.h>
+#include <arken/service.h>
+#include <arken/task.h>
+#include <arken/time/date.h>
+#include <arken/time/datetime.h>
+#include <arken/time/time.h>
+#include <arken/concurrent/channel.h>
+#include <arken/concurrent/lock.h>
+#include <arken/concurrent/task.h>
+#include <arken/utf8.h>
+
+using arken::os;
+using arken::string;
+using arken::math;
+
+#endif

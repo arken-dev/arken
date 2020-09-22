@@ -1,5 +1,5 @@
 local test   = {}
-local Class  = require('charon.oop.Class')
+local Class  = require('arken.oop.Class')
 local Person = Class.new("Person", "ActiveRecord")
 Person.tableName = string.format("person_%s", os.uuid():replace('-', '_'))
 

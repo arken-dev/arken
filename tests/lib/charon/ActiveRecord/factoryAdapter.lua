@@ -1,5 +1,5 @@
-local ActiveRecord = require 'charon.ActiveRecord'
-local json = require('charon.json')
+local ActiveRecord = require 'arken.ActiveRecord'
+local json = require('arken.json')
 local test = {}
 
 test.beforeAll = function()

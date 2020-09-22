@@ -1,7 +1,7 @@
 local test    = {}
-local json    = require('charon.json')
-local Class   = require('charon.oop.Class')
-local Adapter = require('charon.ActiveRecord.SqliteAdapter')
+local json    = require('arken.json')
+local Class   = require('arken.oop.Class')
+local Adapter = require('arken.ActiveRecord.SqliteAdapter')
 local SqliteTypes = Class.new("SqliteTypes", "ActiveRecord")
 SqliteTypes.tableName = 'sqlit_adapter_types'
 

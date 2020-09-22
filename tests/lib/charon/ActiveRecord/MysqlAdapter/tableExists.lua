@@ -1,8 +1,8 @@
 local test   = {}
-local json   = require('charon.json')
-local Class  = require('charon.oop.Class')
+local json   = require('arken.json')
+local Class  = require('arken.oop.Class')
 local PersonMysql = Class.new("PersonMysql", "ActiveRecord")
-local ActiveRecord = require('charon.ActiveRecord')
+local ActiveRecord = require('arken.ActiveRecord')
 
 test.beforeAll = function()
   ActiveRecord.reset()
