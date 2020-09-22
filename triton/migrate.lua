@@ -7,17 +7,8 @@ local M = {}
 -------------------------------------------------------------------------------
 
 function M.start(triton)
-  local JSON = require('charon.json')
-  local file = APP_PATH .. '/config/triton.json'
-  local raw  = os.read(file)
-  if os.exists(file) then
-    local config  = JSON.decode(raw)
-    local threads = config.threads
-    for i = 1, threads do
-      triton:enqueue(tostring(i))
-    end
-  else
-    error(file .. ' not exists')
+  for i = 1, os.cores() do
+    triton:enqueue(tostring(i))
   end
 end
 
