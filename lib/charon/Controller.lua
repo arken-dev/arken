@@ -282,7 +282,7 @@ Controller.contetTypeHash = {
   ["bz2"]   = "application/x-bzip2", -- Arquivo compactado  BZip2
   ["csh"]   = "application/x-csh", -- C-Shell script
   ["css"]   = "text/css", -- Cascading Style Sheets (CSS)
-  ["csv"]   = "text/csv", -- Comma-separated values (CSV)
+  ["csv"]   = "text/csv; charset=UTF-8", -- Comma-separated values (CSV)
   ["doc"]   = "application/msword", -- Microsoft Word
   ["eot"]   = "application/vnd.ms-fontobject", -- MS Embedded OpenType fonts
   ["epub"]  = "application/epub+zip", -- Electronic publication (EPUB)
