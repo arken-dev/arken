@@ -9,17 +9,17 @@
 using namespace arken;
 
 
-void notify::send(string title, string message, string icon)
+void notify::send(const char * title, const char * message, const char * icon)
 {
-  if ( icon.equals("ok") ) {
+  if ( string::equals(icon, "ok") ) {
     icon = "dialog-information";
   }
 
-  if ( icon.equals("failure") ) {
+  if ( string::equals(icon, "failure") ) {
     icon = "error";
   }
 
-  if ( icon.equals("warning") ) {
+  if ( string::equals(icon, "warning") ) {
     icon = "dialog-warning";
   }
 

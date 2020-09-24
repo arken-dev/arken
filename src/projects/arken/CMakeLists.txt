@@ -18,4 +18,4 @@ find_package(Qt5Core)
 find_package(Qt5Network)
 
 target_link_libraries(arken-bin Qt5::Core lua arken curl)
-target_link_libraries(arken-bin Qt5::Network)
+target_link_libraries(arken-bin Qt5::Network Qt5::Widgets Qt5::Gui)

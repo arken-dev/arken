@@ -15,7 +15,7 @@ namespace arken
 
 class notify {
   public:
-  static void send(string title, string body, string icon = "ok");
+  static void send(const char * title, const char * body, const char * icon = "ok");
 };
 
 }

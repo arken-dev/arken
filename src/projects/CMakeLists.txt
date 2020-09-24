@@ -8,4 +8,9 @@
 #
 # ------------------------------------------------------------------------------
 
+find_package(Qt5Core)
+find_package(Qt5Network)
+find_package(Qt5Widgets)
+find_package(Qt5Gui)
+
 add_subdirectory( arken )

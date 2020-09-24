@@ -70,9 +70,14 @@ add_library(
 
 find_package(Qt5Core)
 find_package(Qt5Network)
+find_package(Qt5Gui)
+find_package(Qt5Widgets)
 
 target_link_libraries(arken Qt5::Core)
 target_link_libraries(arken Qt5::Network)
+target_link_libraries(arken Qt5::Gui)
+target_link_libraries(arken Qt5::Widgets)
+
 target_link_libraries(arken zip)
 target_link_libraries(arken curl)
 target_link_libraries(arken lua)
@@ -82,6 +87,10 @@ if(ARKEN_NOTIFY STREQUAL "libnotify")
   target_link_libraries(arken notify)
   target_link_libraries(arken ${GLIB_LIBRARIES})
   target_link_libraries(arken ${NOTIFY_LIBRARIES})
+endif()
+
+if(ARKEN_NOTIFY STREQUAL "qt")
+  include_directories(${PROJECT_SOURCE_DIR}/src/arken/notify/qt)
 endif()
 
 if(ARKEN_NOTIFY STREQUAL "glib")

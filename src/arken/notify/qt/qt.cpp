@@ -4,13 +4,11 @@
 // license that can be found in the LICENSE file.
 
 #include <arken/notify.h>
+#include <dialog.h>
 
 using namespace arken;
 
-
-void notify::send(string title, string message, string status)
+void notify::send(const char * title, const char * message, const char * status)
 {
-
-
-
+  Dialog::send(new NotifyNode(status, title, message));
 }

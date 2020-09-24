@@ -152,6 +152,7 @@ int arkenConsoleLoad(lua_State *L)
 
 int main(int argc, char * argv[])
 {
+
   mvm::init(argc, argv);
   os::sleep(0.1); // waiting mvm output log
 
