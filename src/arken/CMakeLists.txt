@@ -93,10 +93,18 @@ if(ARKEN_NOTIFY STREQUAL "qt")
   include_directories(${PROJECT_SOURCE_DIR}/src/arken/notify/qt)
 endif()
 
+if(ARKEN_NOTIFY STREQUAL "opengl")
+  include_directories(${PROJECT_SOURCE_DIR}/src/arken/notify/opengl)
+endif()
+
 if(ARKEN_NOTIFY STREQUAL "glib")
   message(STATUS ${GLIB_LIBRARIES})
   target_link_libraries(arken ${GLIB_LIBRARIES})
   target_link_libraries(arken gio-2.0)
+endif()
+
+if(ARKEN_NOTIFY STREQUAL "opengl")
+  target_link_libraries(arken glut GL)
 endif()
 
 if(ARKEN_DIGEST STREQUAL "libssl")
