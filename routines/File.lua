@@ -39,7 +39,7 @@ function File:notify()
       local status, result = pcall(dofile, file)
       local icon = 'ok'
       if not status then
-        icon   = 'error' 
+        icon   = 'failure'
         buffer = result
       end
 
@@ -50,6 +50,7 @@ function File:notify()
       buffer = ""
 
     end
+
     -- wait 0.05 secs
     os.sleep(0.05)
   end
