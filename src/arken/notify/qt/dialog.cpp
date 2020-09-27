@@ -80,7 +80,7 @@ Dialog::Dialog(QWidget *parent) :
 
     m_currenttime = QDateTime::currentMSecsSinceEpoch();
     const int width = QApplication::desktop()->width();
-    this->move(width-400, 0);
+    this->move(width-405, 30);
     //this->startTimer(100);
 
     QString fileName("");
