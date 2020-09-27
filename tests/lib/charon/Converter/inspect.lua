@@ -1,5 +1,5 @@
-local Converter  = require 'charon.Converter'
-local HttpClient = require 'charon.net.HttpClient'
+local Converter  = require 'arken.Converter'
+local HttpClient = require 'arken.net.HttpClient'
 local test       = {}
 
 test.should_return_userdata = function()

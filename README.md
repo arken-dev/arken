@@ -1,14 +1,14 @@
-# CHARON PLATFORM
+# ARKEN PLATFORM
 
-Charon is a industrial platform for web development (and others) of extremely fast and scalable
+Arken is a industrial platform for web development (and others) of extremely fast and scalable
 
-![Charon image](images/logo2.jpg)
+![Arken image](images/logo2.jpg)
 
 # ROADMAP
 
-To follow the development roadmap: https://trello.com/b/27ccvQuw/charon-platform
+To follow the development roadmap: https://trello.com/b/27ccvQuw/arken-platform
 
-http://charonplatform.org
+http://arkenplatform.org
 
 # BUILD
 
@@ -29,7 +29,7 @@ http://charonplatform.org
 - bootstrap/windows.jit.sh
 - bootstrap/macos.lua.sh
 
-### cmake (build charon platform)
+### cmake (build arken platform)
 
 - mkdir build
 - cd build

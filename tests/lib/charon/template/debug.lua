@@ -1,4 +1,4 @@
-local template = require 'charon.template'
+local template = require 'arken.template'
 local test = {}
 
 test.should_source_with_line_number = function()

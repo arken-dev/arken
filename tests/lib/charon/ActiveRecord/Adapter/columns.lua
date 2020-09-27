@@ -1,4 +1,4 @@
-local Adapter = require('charon.ActiveRecord.Adapter')
+local Adapter = require('arken.ActiveRecord.Adapter')
 local test = {}
 
 test.beforeAll = function()

@@ -1,5 +1,5 @@
-local Class    = require 'charon.oop.Class'
-local contract = require 'charon.contract'
+local Class    = require 'arken.oop.Class'
+local contract = require 'arken.contract'
 local test     = {}
 
 test.before = function()

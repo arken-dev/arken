@@ -1,4 +1,4 @@
-local HttpClient = require "charon.net.HttpClient"
+local HttpClient = require "arken.net.HttpClient"
 
 local test = {}
 

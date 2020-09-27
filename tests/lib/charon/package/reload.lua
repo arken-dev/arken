@@ -1,4 +1,4 @@
-local package = require 'charon.package'
+local package = require 'arken.package'
 local test    = {}
 
 test.should_reload_after_time_module_is_updatetodate = function()
@@ -12,7 +12,7 @@ test.should_reload_after_time_module_is_updatetodate = function()
   package.time = 0
   package.loaded['util.lib.example'] = nil
   package.reload()
-  local package = require 'charon.package'
+  local package = require 'arken.package'
   local lib = require('util.lib.example')
   assert(lib.localtime() > time, string.format("%s %s", lib.localtime(), time) )
   package.output = print

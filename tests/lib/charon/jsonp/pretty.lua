@@ -1,4 +1,4 @@
-local json  = require 'charon.jsonp'
+local json  = require 'arken.jsonp'
 local tests = {}
 
 tests.should_json_encode_string = function()

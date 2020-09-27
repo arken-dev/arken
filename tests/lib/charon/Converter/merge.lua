@@ -1,4 +1,4 @@
-local Converter = require('charon.Converter')
+local Converter = require('arken.Converter')
 local test = {}
 
 test.should_merge_other_table = function()

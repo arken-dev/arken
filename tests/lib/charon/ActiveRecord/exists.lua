@@ -1,5 +1,5 @@
 local test     = {}
-local Class    = require('charon.oop.Class')
+local Class    = require('arken.oop.Class')
 local Employee = Class.new("Employee", "ActiveRecord")
 
 test.beforeAll = function()

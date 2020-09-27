@@ -1,5 +1,5 @@
-local ctest = require 'charon.test'
-local json  = require 'charon.json'
+local ctest = require 'arken.test'
+local json  = require 'arken.json'
 local test  = {}
 
 

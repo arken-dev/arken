@@ -1,4 +1,4 @@
-local url = require('charon.net.url')
+local url = require('arken.net.url')
 local test = {}
 
 test.should_encode_char_with_upcase = function()

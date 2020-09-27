@@ -1,5 +1,5 @@
-CHARON_ENV = os.getenv("CHARON_ENV") or "test"
-local test  = require 'charon.test'
+ARKEN_ENV = os.getenv("ARKEN_ENV") or "test"
+local test  = require 'arken.test'
 local start = os.microtime()
 local M = {}
 

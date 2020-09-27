@@ -1,6 +1,6 @@
 # ------------------------------------------------------------------------------
 #
-# Copyright 2016 The Charon Platform Authors.
+# Copyright 2016 The Arken Platform Authors.
 #
 # All rights reserved.
 # Use of this source code is governed by a BSD-style
@@ -8,5 +8,9 @@
 #
 # ------------------------------------------------------------------------------
 
-add_subdirectory( charon )
+find_package(Qt5Core)
+find_package(Qt5Network)
+find_package(Qt5Widgets)
+find_package(Qt5Gui)
+
 add_subdirectory( arken )

@@ -1,5 +1,5 @@
 local rhea    = require 'rhea'
-local json    = require 'charon.json'
+local json    = require 'arken.json'
 local Migrate = require 'rhea.Migrate'
 local test    = {}
 local result  = {}

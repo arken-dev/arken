@@ -1,8 +1,8 @@
 local test   = {}
-local json   = require('charon.json')
-local Class  = require('charon.oop.Class')
-local ActiveRecord = require('charon.ActiveRecord')
-local Adapter = require('charon.ActiveRecord.PostgresAdapter')
+local json   = require('arken.json')
+local Class  = require('arken.oop.Class')
+local ActiveRecord = require('arken.ActiveRecord')
+local Adapter = require('arken.ActiveRecord.PostgresAdapter')
 
 test.beforeAll = function()
   ActiveRecord.reset()

@@ -1,11 +1,11 @@
-local HttpEnv = require "charon.net.HttpEnv"
-local HttpRequest = require "charon.net.HttpRequest"
+local HttpEnv = require "arken.net.HttpEnv"
+local HttpRequest = require "arken.net.HttpRequest"
 local test = {}
 
 test.should_return_table_from_cookies = function()
   local env = {}
   env.field = function(val)
-    return os.read(CHARON_PATH .. "/tests/lib/charon/net/cookie/1-example.cookie")
+    return os.read(ARKEN_PATH .. "/tests/lib/arken/net/cookie/1-example.cookie")
   end
   local request = HttpRequest.new{ _env = env }
   local result = request:cookies()

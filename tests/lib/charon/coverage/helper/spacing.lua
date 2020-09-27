@@ -1,4 +1,4 @@
-local helper = require('charon.coverage.helper')
+local helper = require('arken.coverage.helper')
 local test   = {}
 
 test.shoul_change_blank_space_for_nbsp = function()

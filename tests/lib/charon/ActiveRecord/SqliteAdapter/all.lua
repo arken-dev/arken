@@ -1,8 +1,8 @@
-require 'charon.ActiveRecord.SqliteAdapter'
+require 'arken.ActiveRecord.SqliteAdapter'
 
 local test   = {}
-local json   = require('charon.json')
-local Class  = require('charon.oop.Class')
+local json   = require('arken.json')
+local Class  = require('arken.oop.Class')
 local Person = Class.new("Person", "ActiveRecord")
 
 test.beforeAll = function()

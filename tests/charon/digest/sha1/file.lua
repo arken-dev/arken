@@ -1,5 +1,5 @@
 local test = {}
-local sha1 = require('charon.digest.sha1')
+local sha1 = require('arken.digest.sha1')
 
 test['should return sha1 calc'] = function()
   local result = sha1.file('util/tests/digest/file.txt')

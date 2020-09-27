@@ -1,4 +1,4 @@
-local Object = require('charon.oop.Object')
+local Object = require('arken.oop.Object')
 local test   = {}
 
 test.should_execute_generic_contract = function()

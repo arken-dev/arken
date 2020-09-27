@@ -1,5 +1,5 @@
-local json  = require('charon.jsonp')
-local Class = require('charon.oop.Class')
+local json  = require('arken.jsonp')
+local Class = require('arken.oop.Class')
 local App   = Class.new("App")
 App.help    = {}
 App.output  = print
@@ -18,7 +18,7 @@ function App:create()
   if os.exists(dirName) then
     error(dirName .. ' exists')
   else
-    os.copy(CHARON_PATH .. '/skel', dirName)
+    os.copy(ARKEN_PATH .. '/skel', dirName)
     for fileName in os.glob(dirName, true):each() do
       if not fileName:endsWith('.') and not fileName:endsWith('..') then
         App.output(fileName)
@@ -27,24 +27,24 @@ function App:create()
 
     local fileName = dirName .. '/config/active_record.json'
     local data     = json.decode(os.read(fileName))
-    local database = params.database or "charonapp"
+    local database = params.database or "arkenapp"
 
     if params.postgres then
-      data.development.adapter = "charon.ActiveRecord.PostgresAdapter"
-      data.production.adapter = "charon.ActiveRecord.PostgresAdapter"
-      data.test.adapter = "charon.ActiveRecord.PostgresAdapter"
+      data.development.adapter = "arken.ActiveRecord.PostgresAdapter"
+      data.production.adapter = "arken.ActiveRecord.PostgresAdapter"
+      data.test.adapter = "arken.ActiveRecord.PostgresAdapter"
     end
 
     if params.mysql then
-      data.development.adapter = "charon.ActiveRecord.MysqlAdapter"
-      data.production.adapter = "charon.ActiveRecord.MysqlAdapter"
-      data.test.adapter = "charon.ActiveRecord.MysqlAdapter"
+      data.development.adapter = "arken.ActiveRecord.MysqlAdapter"
+      data.production.adapter = "arken.ActiveRecord.MysqlAdapter"
+      data.test.adapter = "arken.ActiveRecord.MysqlAdapter"
     end
 
     if params.sqlite then
-      data.development.adapter = "charon.ActiveRecord.SqliteAdapter"
-      data.production.adapter = "charon.ActiveRecord.SqliteAdapter"
-      data.test.adapter = "charon.ActiveRecord.SqliteAdapter"
+      data.development.adapter = "arken.ActiveRecord.SqliteAdapter"
+      data.production.adapter = "arken.ActiveRecord.SqliteAdapter"
+      data.test.adapter = "arken.ActiveRecord.SqliteAdapter"
     end
 
     data.test.database = database:append("_test")

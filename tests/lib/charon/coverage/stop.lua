@@ -1,4 +1,4 @@
-local coverage = require('charon.coverage')
+local coverage = require('arken.coverage')
 local test     = {}
 local mydebug  = {}
 

@@ -1,4 +1,4 @@
-local Converter = require 'charon.Converter'
+local Converter = require 'arken.Converter'
 local test      = {}
 
 test.should_return_true_for_string_true = function()

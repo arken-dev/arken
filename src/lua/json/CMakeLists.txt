@@ -1,6 +1,6 @@
 # ------------------------------------------------------------------------------
 #
-# Copyright 2016 The Charon Platform Authors.
+# Copyright 2016 The Arken Platform Authors.
 #
 # All rights reserved.
 # Use of this source code is governed by a BSD-style
@@ -12,7 +12,7 @@ include_directories(.)
 include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${PROJECT_SOURCE_DIR}/deps/include)
 
-set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/clib/charon)
+set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/clib/arken)
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/clib/arken)
 
 add_library(

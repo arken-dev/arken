@@ -1,5 +1,5 @@
-local Array      = require('charon.Array')
-local FormHelper = require('charon.Helper.FormHelper')
+local Array      = require('arken.Array')
+local FormHelper = require('arken.Helper.FormHelper')
 local test = {}
 
 test.should_return_html_not_checked = function()

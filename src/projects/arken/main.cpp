@@ -1,17 +1,17 @@
-// Copyright 2016 The Charon Platform Authors.
+// Copyright 2016 The Arken Platform Authors.
 // All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
 #include <lua/lua.hpp>
-#include <charon/base>
-#include <charon/mvm>
+#include <arken/base>
+#include <arken/mvm>
 #include <iostream>
 #include <cstdio>
 
-using charon::mvm;
+using arken::mvm;
 
-int charonFileLoad(lua_State *L, const char * filename)
+int arkenFileLoad(lua_State *L, const char * filename)
 {
   int rv;
 
@@ -30,14 +30,14 @@ int charonFileLoad(lua_State *L, const char * filename)
   return rv;
 }
 
-void charonConsolePrintAround(string &buffer)
+void arkenConsolePrintAround(string &buffer)
 {
   buffer = buffer.mid(1);
   buffer.prepend("print(");
   buffer.append(")");
 }
 
-bool charonConsoleIncrementLevel(string &row)
+bool arkenConsoleIncrementLevel(string &row)
 {
   /* if */
   if(row.startsWith("if ") or row.contains(" if ")) {
@@ -62,7 +62,7 @@ bool charonConsoleIncrementLevel(string &row)
   return false;
 }
 
-bool charonConsoleDecrementLevel(string &row)
+bool arkenConsoleDecrementLevel(string &row)
 {
   /* end */
   if(row.startsWith("end") or row.contains(" end ")) {
@@ -99,7 +99,7 @@ void executeRoutine(lua_State *L)
  2) set up
  3) ctrl + r
 */
-int charonConsoleLoad(lua_State *L)
+int arkenConsoleLoad(lua_State *L)
 {
   int rv = 0;
   int level = 0;
@@ -123,15 +123,15 @@ int charonConsoleLoad(lua_State *L)
     }
 
     if (buffer.startsWith("=")) {
-      charonConsolePrintAround(buffer);
+      arkenConsolePrintAround(buffer);
     }
 
-    if (charonConsoleIncrementLevel(row)) {
+    if (arkenConsoleIncrementLevel(row)) {
       buffer.append("\n");
       level ++ ;
     }
 
-    if (charonConsoleDecrementLevel(row)) {
+    if (arkenConsoleDecrementLevel(row)) {
       level -- ;
     }
 
@@ -152,22 +152,23 @@ int charonConsoleLoad(lua_State *L)
 
 int main(int argc, char * argv[])
 {
+
   mvm::init(argc, argv);
   os::sleep(0.1); // waiting mvm output log
 
   int rv = 0;
-  string  charonPath;
+  string  arkenPath;
   string  task;
   string  arg1;
-  charon::instance i = mvm::instance();
+  arken::instance i = mvm::instance();
   lua_State  * L = i.state();
 
   if ( argc == 1 ) {
-    return charonConsoleLoad(L);
+    return arkenConsoleLoad(L);
   }
 
   if( os::exists(argv[1]) ) {
-    return charonFileLoad(L, argv[1]);
+    return arkenFileLoad(L, argv[1]);
   } else {
     if (string::contains(argv[1], ":")) {
       executeRoutine(L);

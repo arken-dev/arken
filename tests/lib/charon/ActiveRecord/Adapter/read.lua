@@ -1,6 +1,6 @@
 local test     = {}
-local json     = require('charon.jsonp')
-local Class    = require('charon.oop.Class')
+local json     = require('arken.jsonp')
+local Class    = require('arken.oop.Class')
 local Employee = Class.new("EmployeeMaster", "ActiveRecord")
 
 test.beforeAll = function()

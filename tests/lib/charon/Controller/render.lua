@@ -1,4 +1,4 @@
-local Controller = require('charon.Controller')
+local Controller = require('arken.Controller')
 local test = {}
 
 test.should_execute_output_method_prefix_render = function()

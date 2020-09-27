@@ -1,5 +1,5 @@
-local coverage = require('charon.coverage')
-local json     = require('charon.json')
+local coverage = require('arken.coverage')
+local json     = require('arken.json')
 local test     = {}
 
 test.before = function()

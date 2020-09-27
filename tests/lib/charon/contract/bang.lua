@@ -1,4 +1,4 @@
-local contract = require('charon.contract')
+local contract = require('arken.contract')
 local test     = {}
 
 test.should_bang_errors_and_generage_traceback = function()
