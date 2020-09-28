@@ -69,7 +69,7 @@ Class.new = function(className, inheritedBy, params)
     --end
   end
 
-  function class.mixin(path)
+  function class.include(path)
     package.mixed[path] = class.className
     local M = require(path)
     for key, value in pairs(M) do
