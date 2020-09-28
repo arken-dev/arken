@@ -2,6 +2,7 @@
 -- All rights reserved.
 -- Use of this source code is governed by a BSD-style
 -- license that can be found in the LICENSE file.
+local Array = require('arken.Array')
 
 local rhea = {}
 
@@ -9,7 +10,7 @@ rhea.output = print
 
 rhea.parseArg = function(index, args)
   index = index + 1
-  local result = {}
+  local result = Array.new()
   while (index <= #args) do
     if args[index]:startsWith("--") then
       break
