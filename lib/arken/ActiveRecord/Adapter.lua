@@ -557,7 +557,8 @@ end
 -------------------------------------------------------------------------------
 
 function ActiveRecord_Adapter:createTimestamp()
-  return os.date("%Y-%m-%d %H:%M:%S") .. string.format("%.6f", os.microtime()):mid(11, -1)
+  local timestamp = os.date("%Y-%m-%d %H:%M:%S") .. string.format("%.6f", os.microtime()):mid(11, -1)
+  return ActiveRecord.TIMESTAMP or timestamp
 end
 
 -------------------------------------------------------------------------------
