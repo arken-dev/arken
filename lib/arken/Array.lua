@@ -68,4 +68,12 @@ function Array:insert(value)
   table.insert(self, value)
 end
 
+function Array:map(func)
+  local result = {}
+  for idx, value in pairs(self) do
+    table.insert(result, func(value))
+  end
+  return result
+end
+
 return Array
