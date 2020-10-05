@@ -86,6 +86,8 @@ HttpClient::~HttpClient()
   // cleanup curl stuff
   curl_easy_cleanup(m_curl);
 
+  /* Free the list */
+  curl_slist_free_all(m_list);
 
   // we're done with libcurl, so clean it up
   curl_global_cleanup();
