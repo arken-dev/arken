@@ -11,6 +11,13 @@
 
 cmake_minimum_required(VERSION 3.0)
 
+find_package(Qt5Core)
+find_package(Qt5Network)
+find_package(Qt5Gui)
+find_package(Qt5Widgets)
+set(CMAKE_AUTOMOC ON)
+
+
 # ------------------------------------------------------------------------------
 # ARKEN CMAKE MODULES
 # ------------------------------------------------------------------------------
@@ -20,6 +27,7 @@ cmake_minimum_required(VERSION 3.0)
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(<%= mvm:path() -%>/include)
+include_directories(<%= mvm:path() -%>/deps/include)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11 -O2 -finline-functions")
 
@@ -33,9 +41,13 @@ link_directories( <%= mvm:path() -%>/deps )
 
 file(GLOB src ${PROJECT_SOURCE_DIR}/src/*.cpp)
 
-add_executable( myproject ${src} )
+add_executable( <%= self.name -%> ${src} )
 
-target_link_libraries(myproject lua arken curl)
+target_link_libraries(<%= self.name -%> lua arken curl)
+target_link_libraries(<%= self.name -%> Qt5::Core)
+target_link_libraries(<%= self.name -%> Qt5::Network)
+target_link_libraries(<%= self.name -%> Qt5::Gui)
+target_link_libraries(<%= self.name -%> Qt5::Widgets)
 
 if (WIN32)
 find_package(curl)

@@ -40,7 +40,7 @@ function App:create()
     os.mkdir( string.format('%s/bin', name) )
     os.mkdir( string.format('%s/build', name) )
     local path   = string.format("%s/routines/templates/cmake/app.tpl", mvm.path())
-    local buffer = template.execute(path, {})
+    local buffer = template.execute(path, { name = name })
 
     local file = io.open(dirName .. '/CMakeLists.txt', 'w')
     file:write(buffer)
