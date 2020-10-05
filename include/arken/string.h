@@ -103,6 +103,7 @@ namespace arken {
     string decode(const char * charset);
     string escape();
     string escapeHtml();
+    bool   empty();
     bool   equals(const char * str);
     int    indexOf(const char * str, int i = 0);
     string insert(int len, const char * ba);

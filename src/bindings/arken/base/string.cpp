@@ -564,6 +564,30 @@ arken_StringInstanceMethodClear( lua_State *L ) {
 }
 
 static int
+arken_StringInstanceMethodCamelCase( lua_State *L ) {
+  string * udata = checkString( L );
+  bool     flag  = false;
+
+  if(lua_gettop(L) == 2) { /* número de argumentos */
+    flag =  lua_toboolean(L, 2);
+  }
+
+  string result = udata->camelCase(flag);
+  lua_pushlstring(L, result.data(), result.size());
+  return 1;
+}
+
+static int
+arken_StringInstanceMethodCapitalize( lua_State *L ) {
+  string * udata = checkString( L );
+
+  string result = udata->capitalize();
+  lua_pushlstring(L, result.data(), result.size());
+  return 1;
+}
+
+
+static int
 arken_StringInstanceMethodContains( lua_State *L ) {
   string * udata  = checkString( L );
   const char *pad = luaL_checkstring(L, 2);
@@ -996,6 +1020,8 @@ luaL_reg StringInstanceMethods[] = {
   {"center",         arken_StringInstanceMethodCenter},
   {"chop",           arken_StringInstanceMethodChop},
   {"clear",          arken_StringInstanceMethodClear},
+  {"camelCase",      arken_StringInstanceMethodCamelCase},
+  {"capitalize",     arken_StringInstanceMethodCapitalize},
   {"contains",       arken_StringInstanceMethodContains},
   {"count",          arken_StringInstanceMethodCount},
   {"dasherize",      arken_StringInstanceMethodDasherize},

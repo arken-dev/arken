@@ -935,6 +935,8 @@ char *  string::suffix(const char * raw, char chr)
       result[j] = raw[i];
     }
     result[(len - point)] = '\0';
+  } else {
+    result = new char[1]();
   }
 
   return result;
@@ -962,11 +964,12 @@ char *  string::prefix(const char * raw, char chr)
       result[j] = raw[i];
     }
     result[point] = '\0';
+  } else {
+    result = new char[1]();
   }
 
   return result;
 }
-
 
 bool string::startsWith(const char *string, const char *str)
 {
@@ -1243,7 +1246,7 @@ string::string()
 {
   m_reserve  = 1024;
   m_size     = 0;
-  m_data     = 0;
+  m_data     = new char[1]();
   m_capacity = m_size;
 }
 
@@ -1612,6 +1615,11 @@ size_t string::size()
 size_t string::len()
 {
   return m_size;
+}
+
+bool string::empty()
+{
+  return m_size == 0;
 }
 
 //-----------------------------------------------------------------------------
