@@ -1,5 +1,10 @@
-local json  = require('arken.jsonp')
-local Class = require('arken.oop.Class')
+local mvm      = require('arken.mvm')
+local empty    = require('arken.empty')
+local template = require('arken.template')
+local json     = require('arken.jsonp')
+local Class    = require('arken.oop.Class')
+
+
 local App   = Class.new("App")
 App.help    = {}
 App.output  = print
@@ -12,12 +17,37 @@ App.help.create = [[
   create app in dir
 ]]
 
+function App:createValidate()
+  if empty(self:params()[1]) then
+    error('inform name')
+  end
+end
+
 function App:create()
   local params  = self:params()
-  local dirName = os.pwd() .. '/' .. params[1]
+  local name    = params[1]
+  local dirName = os.pwd() .. '/' .. name
   if os.exists(dirName) then
     error(dirName .. ' exists')
-  else
+  end
+  if params.cpp == nil and params.web == nil then
+    error('inform --cpp or --web')
+  end
+
+  if params.cpp then
+    os.mkdir( name )
+    os.mkdir( string.format('%s/src', name) )
+    os.mkdir( string.format('%s/bin', name) )
+    os.mkdir( string.format('%s/build', name) )
+    local path   = string.format("%s/routines/templates/cmake/app.tpl", mvm.path())
+    local buffer = template.execute(path, {})
+
+    local file = io.open(dirName .. '/CMakeLists.txt', 'w')
+    file:write(buffer)
+    file:close()
+  end
+
+  if params.web then
     os.copy(ARKEN_PATH .. '/skel', dirName)
     for fileName in os.glob(dirName, true):each() do
       if not fileName:endsWith('.') and not fileName:endsWith('..') then
@@ -54,5 +84,7 @@ function App:create()
     file:close()
   end
 end
+
+App.contract('create')
 
 return App

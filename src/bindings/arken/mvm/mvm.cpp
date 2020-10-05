@@ -22,6 +22,13 @@ arken_mvm_reload(lua_State *L) {
 }
 
 static int
+arken_mvm_path(lua_State *L) {
+  // TODO rename arkenPath => path
+  lua_pushstring(L, mvm::arkenPath());
+  return 1;
+}
+
+static int
 arken_mvm_clear(lua_State *L) {
   lua_pushnumber(L, mvm::clear());
   return 1;
@@ -79,6 +86,7 @@ register_arken_mvm( lua_State *L ) {
     {"set",     arken_mvm_set},
     {"at",      arken_mvm_at},
     {"wait",    arken_mvm_wait},
+    {"path",    arken_mvm_path},
     {NULL, NULL}
   };
   luaL_newmetatable(L, "mvm");
