@@ -1399,10 +1399,13 @@ string string::center(size_t size, const char * pad)
 
 void string::clear()
 {
-  if( m_data )
+  if( m_data ) {
     delete[] m_data;
-  m_data = 0;
-  m_size = 0;
+  }
+  m_reserve  = 1024;
+  m_size     = 0;
+  m_data     = new char[1]();
+  m_capacity = m_size;
 }
 
 bool string::contains(const char * str)

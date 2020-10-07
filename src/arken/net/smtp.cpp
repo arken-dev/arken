@@ -217,6 +217,10 @@ void SMTP::setTo(const char * mail, const char * name)
 
   m_to_mail = mail;
 
+  if( ! m_from.empty() ) {
+    m_to.clear();
+  }
+
   if( name ) {
     m_to.append(name);
     m_to.append(" ");
