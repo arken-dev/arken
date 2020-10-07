@@ -16,6 +16,9 @@ size_t SMTP::payload_source(void *ptr, size_t size, size_t nmemb, void *userp)
   }
 
   data = upload_ctx->m_payload_text[upload_ctx->m_lines];
+  if( upload_ctx->m_verbose ) {
+     std::cout << "upload " << upload_ctx->m_lines << ":" << data;
+  }
 
   if( upload_ctx->m_lines < upload_ctx->m_payload_text.size() ) {
     size_t len = strlen(data);
@@ -36,53 +39,52 @@ SMTP::SMTP(const char * url)
 void SMTP::loadText()
 {
 
-  if( m_payload_text.size() == 0 ) {
-    m_payload_text.push_back( string("Date: ").append(SMTP::rfc2822Date()).append("\r\n") );
-    m_payload_text.push_back( string("From: ").append(m_from).append("\r\n") );
+  m_payload_text.clear();
 
-    if( m_to_mail.contains(";") ) {
-      List * list = m_to_mail.split(";");
-      for(int i=0; i < list->size(); i++) {
-        m_payload_text.push_back( string("To: ").append(list->at(i)).append("\r\n") );
-      }
-      delete list;
-    } else {
-      m_payload_text.push_back( string("To: ").append(m_to).append("\r\n") );
+  m_payload_text.push_back( string("Date: ").append(SMTP::rfc2822Date()).append("\r\n") );
+  m_payload_text.push_back( string("From: ").append(m_from).append("\r\n") );
+
+  if( m_to_mail.contains(";") ) {
+    List * list = m_to_mail.split(";");
+    for(int i=0; i < list->size(); i++) {
+      m_payload_text.push_back( string("To: ").append(list->at(i)).append("\r\n") );
     }
-
-    if( ! m_reply_to.empty() ) {
-      m_payload_text.push_back( string("Reply-To: ").append(m_reply_to).append("\r\n") );
-    }
-
-    if(! m_copy.empty() ) {
-      m_payload_text.push_back( string("Cc: ").append(m_copy).append("\r\n") );
-    }
-
-    //m_payload_text.push_back( "Message-ID: <dcd7cb36-11db-487a-9f3a-e652a9458efd@rfcpedant.example.org>\r\n" );
-    m_payload_text.push_back( string("Message-ID: <").append(os::uuid()).append("@").append(m_domain).append(">\r\n") );
-
-    if(! m_subject.empty() ) {
-      m_payload_text.push_back( string("Subject: ").append(m_subject).append("\r\n") );
-    }
-
-    //m_payload_text.push_back( "Content-Type: text/plain\r\n" );
-    m_payload_text.push_back( string("Content-Type: ").append(m_contentType).append("\r\n") );
-
-    /* empty line to divide headers from body, see RFC5322 */
-    m_payload_text.push_back( "\r\n" );
-
-    /* body */
-    m_payload_text.push_back( string(m_body).append("\r\n") );
-
-    //m_payload_text.push_back("\r\n");
-    //m_payload_text.push_back("It could be a lot of lines, could be MIME encoded, whatever.\r\n");
-    //m_payload_text.push_back("Check RFC5322.\r\n");
+    delete list;
+  } else {
+    m_payload_text.push_back( string("To: ").append(m_to).append("\r\n") );
   }
+
+  if( ! m_reply_to.empty() ) {
+    m_payload_text.push_back( string("Reply-To: ").append(m_reply_to).append("\r\n") );
+  }
+
+  if(! m_copy.empty() ) {
+    m_payload_text.push_back( string("Cc: ").append(m_copy).append("\r\n") );
+  }
+
+  //m_payload_text.push_back( "Message-ID: <dcd7cb36-11db-487a-9f3a-e652a9458efd@rfcpedant.example.org>\r\n" );
+  m_payload_text.push_back( string("Message-ID: <").append(os::uuid()).append("@").append(m_domain).append(">\r\n") );
+
+  if(! m_subject.empty() ) {
+    m_payload_text.push_back( string("Subject: ").append(m_subject).append("\r\n") );
+  }
+
+  //m_payload_text.push_back( "Content-Type: text/plain\r\n" );
+  m_payload_text.push_back( string("Content-Type: ").append(m_contentType).append("\r\n") );
+
+  /* empty line to divide headers from body, see RFC5322 */
+  m_payload_text.push_back( "\r\n" );
+
+  /* body */
+  m_payload_text.push_back( string(m_body).append("\r\n") );
+
+  //m_payload_text.push_back("\r\n");
+  //m_payload_text.push_back("It could be a lot of lines, could be MIME encoded, whatever.\r\n");
+  //m_payload_text.push_back("Check RFC5322.\r\n");
 }
 
 bool SMTP::perform()
 {
-
   CURL * curl        = curl_easy_init();
   curl_slist * slist = nullptr;
   CURLcode cresult   = CURLE_OK;
@@ -186,13 +188,12 @@ bool SMTP::perform()
      */
     curl_easy_cleanup(curl);
 
-    m_payload_text.clear();
-
-    return m_success;
   } else {
     m_success = false;
     m_message = "could not alocate memory";
   }
+
+  m_lines = 0;
 
   return m_success;
 }
