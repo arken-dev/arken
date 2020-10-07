@@ -6,7 +6,7 @@
 #ifndef _ARKEN_OS_
 #define _ARKEN_OS_
 
-#include <arken/base>
+#include <arken/string.h>
 
 using List   = arken::string::List;
 using string = arken::string;
