@@ -86,6 +86,7 @@ bool SMTP::perform()
   CURL * curl        = curl_easy_init();
   curl_slist * slist = nullptr;
   CURLcode cresult   = CURLE_OK;
+  m_success          = true;
 
   if(curl) {
 
@@ -192,6 +193,7 @@ bool SMTP::perform()
     m_success = false;
     m_message = "could not alocate memory";
   }
+
   return m_success;
 }
 
