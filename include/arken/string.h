@@ -62,8 +62,8 @@ namespace arken {
     static char * right(const char * buffer, int len);
     static char * rightJustified(const char * string, size_t size, const char * pad);
     static char * sha1(const char * string);
-    static List * split(const char * string, const char * pattern);
-    static List * split(const char * string, size_t len, const char * pattern);
+    static List split(const char * string, const char * pattern);
+    static List split(const char * string, size_t len, const char * pattern);
     static char * suffix(const char * raw, const char chr = '.');
     static bool   startsWith(const char * string, const char *str);
     static char * trimmed(const char * string);
@@ -128,7 +128,7 @@ namespace arken {
     string rightJustified(size_t size, const char * pad);
     string sha1();
     size_t size();
-    List * split(const char * pattern);
+    List split(const char * pattern);
     string suffix(const char chr = '.');
     bool   startsWith(const char *str);
     string trimmed();
@@ -155,6 +155,8 @@ namespace arken {
       public:
       List();
       List(int resource);
+      List(const List &obj);
+      static List * consume(List &obj);
       ~List();
       void replace(int pos, const char * value);
       List &append(const char * value);

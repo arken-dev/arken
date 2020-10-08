@@ -870,14 +870,14 @@ char * string::replace(const char * original, const char * pattern, const char *
   }
 }
 
-List * string::split(const char * raw, const char * pattern)
+List string::split(const char * raw, const char * pattern)
 {
   return string::split(raw, strlen(raw), pattern);
 }
 
-List * string::split(const char * raw, size_t len, const char * pattern)
+List string::split(const char * raw, size_t len, const char * pattern)
 {
-  List *list = new List();
+  List list;
 
   const char * current = raw;
   const char * other   = raw;
@@ -893,7 +893,7 @@ List * string::split(const char * raw, size_t len, const char * pattern)
         char * tmp = new char[size+1];
         memcpy ( tmp, other, size );
         tmp[size] = '\0';
-        list->append(tmp, size);
+        list.append(tmp, size);
         delete[] tmp;
       }
       flag = i+patternlen;
@@ -907,7 +907,7 @@ List * string::split(const char * raw, size_t len, const char * pattern)
     //char * tmp = new char[size+1];
     //strncpy(tmp, other, size);
     //tmp[size] = '\0';
-    list->append(other, size);
+    list.append(other, size);
   }
 
   return list;
@@ -1605,7 +1605,7 @@ string string::underscore()
   return arken::string::consume(string::underscore(m_data));
 }
 
-List * string::split(const char * pattern)
+List string::split(const char * pattern)
 {
   return string::split(m_data, m_size, pattern);
 }
@@ -1718,30 +1718,69 @@ void string::List::init()
 string::List::List()
 {
 
-  m_array = 0;
-  m_size  = 0;
+  m_array    = 0;
+  m_size     = 0;
   m_resource = 10;
   init();
 }
 
 string::List::List(int resource)
 {
-  m_array = 0;
-  m_size  = 0;
-  m_resource = resource;
-  init();
+  if( resource ) {
+    m_array    = 0;
+    m_size     = 0;
+    m_resource = resource;
+    init();
+  }
+}
+
+// Copy Constructor
+string::List::List(const List &obj)
+{
+  m_cursor   = 0;
+  m_size     = obj.m_size;
+  m_resource = obj.m_resource;
+  m_array    = new string*[m_resource];
+
+  if( m_size > 0 ) {
+    for(int i = 0; i < m_size; i++) {
+      m_array[i] = new string(obj.m_array[i]->data());
+    }
+  }
+
+  for(int i = m_size; i < m_resource; i++) {
+    m_array[i] = 0;
+  }
+}
+
+// Copy Constructor
+List * string::List::consume(List &obj)
+{
+  List *list = new List(0);
+  list->m_cursor   = 0;
+  list->m_size     = obj.m_size;
+  list->m_resource = obj.m_resource;
+  list->m_array    = obj.m_array;
+
+  obj.m_array    = nullptr;
+  obj.m_size     = 0;
+  obj.m_resource = 0;
+
+  return list;
 }
 
 string::List::~List()
 {
 
-  for(int i = 0; i < m_size; i++) {
-    if( m_array[i] != 0 ) {
-      delete m_array[i];
+  if( m_array ) {
+    for(int i = 0; i < m_size; i++) {
+      if( m_array[i] != 0 ) {
+        delete m_array[i];
+      }
     }
-  }
 
-  delete[] m_array;
+    delete[] m_array;
+  }
 }
 
 void string::List::replace(int pos, const char * value)
@@ -1800,11 +1839,16 @@ const char * string::List::operator[](int pos)
 const char * string::List::at(int pos)
 {
   if( pos > m_size ) {
-    return 0;
+    return nullptr;
   }
+
+  if( pos < 0 ) {
+    return nullptr;
+  }
+
   string * ba = m_array[pos];
   if( ba == 0 || ba->size() == 0 ) {
-    return 0;
+    return nullptr;
   } else {
     return m_array[pos]->data();
   }
@@ -1812,11 +1856,19 @@ const char * string::List::at(int pos)
 
 const char * string::List::at(int pos, int * len)
 {
+
   if( pos > m_size ) {
     * len = 0;
-    return 0;
+    return nullptr;
   }
+
+  if( pos < 0 ) {
+    return nullptr;
+  }
+
+
   string * ba = m_array[pos];
+
   if( ba == 0 || ba->size() == 0 ) {
     * len = 0;
     return 0;
@@ -1875,11 +1927,13 @@ char * string::List::join(const char * separator)
 
 const char * string::List::each()
 {
+
   if( m_cursor >= m_size ) {
     return NULL;
   }
 
   const char * result = at(m_cursor);
   m_cursor++;
+
   return result;
 }

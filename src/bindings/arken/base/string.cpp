@@ -387,9 +387,9 @@ arken_string_split( lua_State *L ) {
   size_t len;
   const char  * string  = luaL_checklstring(L, 1, &len);
   const char  * pattern = luaL_checkstring(L, 2);
-  List * list = string::split(string, len, pattern);
+  List list = string::split(string, len, pattern);
   List **ptr  = (List **)lua_newuserdata(L, sizeof(List*));
-  *ptr = list;
+  *ptr = List::consume(list);
   luaL_getmetatable(L, "arken.string.List.metatable");
   lua_setmetatable(L, -2);
 
@@ -958,9 +958,9 @@ static int
 arken_StringInstanceMethodSplit( lua_State *L ) {
   string * udata = checkString( L );
   const char  * pattern = luaL_checkstring(L, 2);
-  List * list  = udata->split(pattern);
-  List **ptr   = (List **)lua_newuserdata(L, sizeof(List*));
-  *ptr = list;
+  List list  = udata->split(pattern);
+  List **ptr = (List **)lua_newuserdata(L, sizeof(List*));
+  *ptr = List::consume(list);
   luaL_getmetatable(L, "arken.string.List.metatable");
   lua_setmetatable(L, -2);
   return 1;
@@ -1090,7 +1090,7 @@ checkList( lua_State *L ) {
 static int
 arken_string_ListClassMethodNew( lua_State *L ) {
   List **ptr = (List **)lua_newuserdata(L, sizeof(List*));
-  *ptr= new List();
+  *ptr = new List();
   luaL_getmetatable(L, "arken.string.List.metatable");
   lua_setmetatable(L, -2);
   return 1;

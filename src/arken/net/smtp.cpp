@@ -45,11 +45,10 @@ void SMTP::loadText()
   m_payload_text.push_back( string("From: ").append(m_from).append("\r\n") );
 
   if( m_to_mail.contains(";") ) {
-    List * list = m_to_mail.split(";");
-    for(int i=0; i < list->size(); i++) {
-      m_payload_text.push_back( string("To: ").append(list->at(i)).append("\r\n") );
+    List list = m_to_mail.split(";");
+    for(int i=0; i < list.size(); i++) {
+      m_payload_text.push_back( string("To: ").append(list[i]).append("\r\n") );
     }
-    delete list;
   } else {
     m_payload_text.push_back( string("To: ").append(m_to).append("\r\n") );
   }
@@ -60,11 +59,10 @@ void SMTP::loadText()
 
   if(! m_copy.empty() ) {
     if( m_copy_mail.contains(";") ) {
-      List * list = m_copy_mail.split(";");
-      for(int i=0; i < list->size(); i++) {
-        m_payload_text.push_back( string("Cc: ").append(list->at(i)).append("\r\n") );
+      List list = m_copy_mail.split(";");
+      for(int i=0; i < list.size(); i++) {
+        m_payload_text.push_back( string("Cc: ").append(list[i]).append("\r\n") );
       }
-      delete list;
     } else {
       m_payload_text.push_back( string("Cc: ").append(m_copy).append("\r\n") );
     }
@@ -151,21 +149,19 @@ bool SMTP::perform()
      * To: and Cc: addressees in the header, but they could be any kind of
      * recipient. */
     if( m_to_mail.contains(";") ) {
-      List * list = m_to_mail.split(";");
-      for(int i=0; i < list->size(); i++) {
-        slist = curl_slist_append(slist, list->at(i));
+      List list = m_to_mail.split(";");
+      for(int i=0; i < list.size(); i++) {
+        slist = curl_slist_append(slist, list[i]);
       }
-      delete list;
     } else {
       slist = curl_slist_append(slist, m_to_mail.data());
     }
 
     if( m_copy_mail.contains(";") ) {
-      List * list = m_copy_mail.split(";");
-      for(int i=0; i < list->size(); i++) {
-        slist = curl_slist_append(slist, list->at(i));
+      List list = m_copy_mail.split(";");
+      for(int i=0; i < list.size(); i++) {
+        slist = curl_slist_append(slist, list[i]);
       }
-      delete list;
     } else {
       slist = curl_slist_append(slist, m_copy_mail.data());
     }
