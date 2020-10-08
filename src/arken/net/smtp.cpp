@@ -59,7 +59,15 @@ void SMTP::loadText()
   }
 
   if(! m_copy.empty() ) {
-    m_payload_text.push_back( string("Cc: ").append(m_copy).append("\r\n") );
+    if( m_copy_mail.contains(";") ) {
+      List * list = m_copy_mail.split(";");
+      for(int i=0; i < list->size(); i++) {
+        m_payload_text.push_back( string("Cc: ").append(list->at(i)).append("\r\n") );
+      }
+      delete list;
+    } else {
+      m_payload_text.push_back( string("Cc: ").append(m_copy).append("\r\n") );
+    }
   }
 
   //m_payload_text.push_back( "Message-ID: <dcd7cb36-11db-487a-9f3a-e652a9458efd@rfcpedant.example.org>\r\n" );
@@ -151,9 +159,17 @@ bool SMTP::perform()
     } else {
       slist = curl_slist_append(slist, m_to_mail.data());
     }
-    if(! m_copy_mail.empty()) {
+
+    if( m_copy_mail.contains(";") ) {
+      List * list = m_copy_mail.split(";");
+      for(int i=0; i < list->size(); i++) {
+        slist = curl_slist_append(slist, list->at(i));
+      }
+      delete list;
+    } else {
       slist = curl_slist_append(slist, m_copy_mail.data());
     }
+
     if(! m_reply_to_mail.empty()) {
       slist = curl_slist_append(slist, m_reply_to_mail.data());
     }
