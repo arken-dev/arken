@@ -73,6 +73,19 @@ class SMTP
   string raw();
   static
   string rfc2822Date();
+  const char * from();
+  const char * to();
+  const char * copy();
+  const char * replyTo();
+  const char * subject();
+  const char * domain();
+  const char * body();
+  const char * username();
+  const char * password();
+  const char * contentType();
+  int    port();
+  bool   ssl();
+  bool   verbose();
 
 };
 

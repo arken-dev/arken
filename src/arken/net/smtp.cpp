@@ -333,3 +333,68 @@ const char * SMTP::message()
 {
   return m_message.data();
 }
+
+const char * SMTP::from()
+{
+  return m_from;
+}
+
+const char * SMTP::to()
+{
+  return m_to;
+}
+
+const char * SMTP::copy()
+{
+  return m_copy;
+}
+
+const char * SMTP::replyTo()
+{
+  return m_reply_to;
+}
+
+const char * SMTP::subject()
+{
+  return m_subject;
+}
+
+const char * SMTP::domain()
+{
+  return m_domain;
+}
+
+const char * SMTP::body()
+{
+  return m_body;
+}
+
+const char * SMTP::username()
+{
+  return m_username;
+}
+
+const char * SMTP::password()
+{
+  return m_password;
+}
+
+const char * SMTP::contentType()
+{
+  return m_contentType;
+}
+
+int SMTP::port()
+{
+  return m_port;
+}
+
+bool SMTP::ssl()
+{
+  return m_ssl;
+}
+
+bool SMTP::verbose()
+{
+  return m_verbose;
+}
