@@ -2,7 +2,7 @@
 
 Arken is a industrial platform for web development (and others) of extremely fast and scalable
 
-![Arken image](images/logo2.jpg)
+![Arken image](images/logo-arken-1.png)
 
 # ROADMAP
 
