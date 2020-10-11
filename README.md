@@ -6,7 +6,7 @@ Arken is a industrial platform for web development (and others) of extremely fas
 
 # ROADMAP
 
-To follow the development roadmap: https://trello.com/b/27ccvQuw/arken-platform
+To follow the development roadmap: https://trello.com/b/27ccvQuw/arken-dev
 
 http://arkenplatform.org
 
