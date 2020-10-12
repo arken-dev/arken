@@ -2,7 +2,6 @@ ARKEN_ENV   = os.getenv("ARKEN_ENV") or "test"
 
 local empty  = require('arken.empty')
 local test   = require('arken.test')
-local notify = require('arken.notify')
 
 local Test = Class.new("routines.Test")
 
@@ -85,9 +84,12 @@ end
 
 Test.help.notify = [[
   test file with notify result
+  Example:
+  test:notify tests/models/MyModel/save.lua
 ]]
 
 function Test:notify()
+  local notify = require('arken.notify')
   local params = self:params()
   local file   = params[1]
   local ctime  = 0
@@ -133,6 +135,26 @@ function Test:migrate()
   local Migrate = require('routines.Migrate')
   local migrate = Migrate.new()
   migrate:run()
+end
+
+-------------------------------------------------------------------------------
+-- ALL
+-------------------------------------------------------------------------------
+
+Test.help.all = [[
+  tests all files in path parameter
+  Example:
+  arken test:all tests/models
+]]
+
+function Test:all()
+  local triton = require('arken.concurrent.triton')
+  local path   = self:params()[1]
+  if not os.exists(path) then
+    error(string.format('%s not exists', path))
+  end
+  triton.start('triton.tests', { path = path });
+  triton.wait();
 end
 
 return Test

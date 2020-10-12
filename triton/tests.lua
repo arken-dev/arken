@@ -8,8 +8,9 @@ local M = {}
 -- START
 -------------------------------------------------------------------------------
 
-function M.start(triton)
-  local list = os.glob('tests/models', true)
+function M.start(triton, params)
+  print('tests in path ' .. params.path )
+  local list = os.glob(params.path, true)
   for i = 1, list:size() do
     local filePath = list:at(i)
     if filePath:endsWith(".lua") then

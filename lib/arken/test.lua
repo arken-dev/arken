@@ -18,6 +18,7 @@ local test     = {}
 test.output    = io.write
 
 function test.process(file_name)
+  local results = {}
   local status, specs = pcall(dofile, file_name)
   if not status then
     test.output(file_name)
