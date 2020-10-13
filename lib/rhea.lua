@@ -109,7 +109,7 @@ rhea.run = function(args)
     end
   else
     local name, action = rhea.parseName(arg[0])
-    local module = require('rhea.' .. name)
+    local module = require('routines.' .. name)
 
     if action == 'help' then
       rhea.output(module.className:underscore())
