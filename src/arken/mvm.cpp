@@ -42,7 +42,7 @@ void mvm_pool()
     int count = mvm::at("pool.size") - mvm::s_pool;
     mtx.unlock();
     if (count > 0) {
-      for(int i=0; i < count; i++) {
+      for(int i=1; i < count; i++) {
         mvm::push( new mvm::data(mvm::s_version) );
       }
     }
