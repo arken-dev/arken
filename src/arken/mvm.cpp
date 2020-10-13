@@ -42,7 +42,7 @@ void mvm_pool()
     int count = mvm::at("pool.size") - mvm::s_pool;
     mtx.unlock();
     if (count > 0) {
-      for(int i=0; i < count; i++) {
+      for(int i=1; i < count; i++) {
         mvm::push( new mvm::data(mvm::s_version) );
       }
     }
@@ -194,7 +194,7 @@ mvm::data * mvm::pop()
     return new mvm::data(mvm::s_version);
   }
   mvm::data * data = container::pop();
-  s_pool--;
+  s_pool --;
   return data;
 }
 
@@ -218,8 +218,8 @@ void mvm::reload()
       if( log ) {
         mvm::log("mvm delete\n");
       }
-      delete data;
       mvm::back(new mvm::data(version));
+      delete data;
     }
   }
   mvm::s_version = version;
@@ -339,7 +339,6 @@ mvm::data::data(int version)
 mvm::data::~data()
 {
   if( m_release == false ) {
-    s_pool --;
     lua_close(m_State);
   }
 }
