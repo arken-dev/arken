@@ -159,7 +159,7 @@ end
 function ActiveRecord_PostgresAdapter:columns()
   if self.instanceColumns == nil then
     sql = [[
-      SELECT a.attname, format_type(a.atttypid, a.atttypmod), pg_get_expr(d.adbin, d.adrelid) as adsrc, a.attnotnull, i.indisprimary
+      SELECT a.attname, format_type(a.atttypid, a.atttypmod), d.adsrc, a.attnotnull, i.indisprimary
         FROM pg_attribute a
         LEFT JOIN pg_attrdef d ON a.attrelid = d.adrelid AND a.attnum = d.adnum
         LEFT JOIN pg_index i ON a.attrelid = i.indrelid  AND a.attnum = ANY(i.indkey) AND i.indisprimary
