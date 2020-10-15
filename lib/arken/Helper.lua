@@ -526,4 +526,86 @@ function Helper:nl2br(value)
   return tostring(value):replace('\n', '<br>')
 end
 
+
+-------------------------------------------------------------------------------
+-- FCKEDITOR
+-------------------------------------------------------------------------------
+-- versão 4.15
+-- Ferramenta usada para editar HTML e RICH TEXT,
+-- para utilizar é nescessario baixar a versão 4.15 do site
+-- no formulario do projeto utilizar para
+--   html: <%= form:fckEditorField("nome_campo") %>
+--   Rich Text <%= form:fckEditorField("descricao", {documentEditor = true}) %>
+function FormHelper:fckEditorField(field, options)
+  options       = options or {}
+  local options = options or {}
+  local html   = ""
+  local script = ""
+  local width  = "800"
+  local height = "600"
+
+  if toboolean(options.documentEditor) == true then
+     width  = "1024"
+     height = "700"
+  end
+
+  width  = options.width or width
+  height = options.height or height
+  local style   = options.style or "width:800px;height:600px"
+  local value   = options.value or self:buildValue(field)
+  local fieldName = self:buildName(field)
+  local html    = [[<textarea id=%q name=%q style=%q data-sample-short >%s</textarea>]]
+  html    = string.format(html, self:buildId(field), self:buildName(field), style, value)
+
+  local javaScript = nil
+
+  if toboolean(options.documentEditor) == true then
+   javaScript =  [[<script>
+    CKEDITOR.addCss(
+      'body.document-editor { margin: 0.5cm auto; border: 1px #D3D3D3 solid; border-radius: 5px; background: white; box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);}' +
+      'body.document-editor, div.cke_editable {  width: 21cm ;min-height: 29.7cm; padding: 1cm 2cm 2cm; } ' +
+      'body.document-editor table td > p, div.cke_editable table td > p { margin-top: 0; margin-bottom: 0; padding: 4px 0 3px 5px;} ' +
+      'blockquote { font-family: sans-serif, Arial, Verdana, "Trebuchet MS", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"; } ');
+    var editor1 = CKEDITOR.replace(%q, {
+      width: %q,
+      height: %q,
+      uiColor: '#d9d9d9',
+      bodyClass: 'document-editor'
+    });
+    </script>
+   ]]
+  else
+    javaScript =  [[<script>
+    var editor1 = CKEDITOR.replace(%q, {
+      width: %q,
+      height: %q,
+      uiColor: '#d9d9d9',
+      bodyClass: 'document-editor'
+    });
+
+    editor1.on('instanceReady', function() {
+      // Output self-closing tags the HTML4 way, like <br>.
+      this.dataProcessor.writer.selfClosingEnd = '>';
+
+      // Use line breaks for block elements, tables, and lists.
+      var dtd = CKEDITOR.dtd;
+      for (var e in CKEDITOR.tools.extend({}, dtd.$nonBodyContent, dtd.$block, dtd.$listItem, dtd.$tableContent)) {
+        this.dataProcessor.writer.setRules(e, {
+          indent: true,
+          breakBeforeOpen: true,
+          breakAfterOpen: true,
+          breakBeforeClose: true,
+          breakAfterClose: true
+        });
+      }
+    });
+    </script>
+    ]]
+
+  end
+
+   javaScript = string.format(javaScript, self:buildId(field), width, height)
+  return html .. "\n\r" .. javaScript
+end
+
 return Helper
