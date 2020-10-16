@@ -36,14 +36,14 @@ void mvm_pool()
   while( true ) {
     int log = mvm::at("pool.log");
     if( log ) {
-      mvm::log("pool...\n");
+      mvm::log("pool...");
     }
     mtx.lock();
     int count = mvm::at("pool.size") - mvm::s_pool;
     mtx.unlock();
     if (count > 0) {
       for(int i=1; i < count; i++) {
-        mvm::push( new mvm::data(mvm::s_version) );
+        mvm::push( new mvm::data() );
       }
     }
     mvm::pause("pool.pause");
@@ -55,7 +55,7 @@ void mvm_gc()
   while( true ) {
     int log = mvm::at("gc.log");
     if( log ) {
-      mvm::log("gc ...\n");
+      mvm::log("gc ...");
     }
     mvm::gc();
     mvm::pause("gc.pause");
@@ -92,7 +92,7 @@ bool mvm::pause(std::string key)
 void mvm::log(const char * value)
 {
   mtx.lock();
-  std::cout << value;
+  std::cout << value << std::endl;
   mtx.unlock();
 }
 
@@ -154,11 +154,11 @@ void mvm::init(int argc, char ** argv)
 
 instance mvm::instance()
 {
-  mvm::data * data  = pop();
+  mvm::data * data = pop();
 
   if( mvm::s_version != data->version() ) {
     delete data;
-    data = new mvm::data(mvm::s_version);
+    data = new mvm::data();
   }
 
   return arken::instance(data);
@@ -191,38 +191,39 @@ void mvm::back(mvm::data * data)
 mvm::data * mvm::pop()
 {
   if( container::empty() ) {
-    return new mvm::data(mvm::s_version);
+    return new mvm::data();
   }
   mvm::data * data = container::pop();
   s_pool --;
   return data;
 }
 
-void mvm::reload()
+double mvm::reload()
 {
+  double init = os::microtime();
   int log = mvm::at("pool.log");
-  int version = mvm::s_version + 1;
+  mvm::s_version++;
 
   if( log ) {
     char buffer[30];
-    sprintf(buffer, "reload: pool size %i\n", s_pool.load(std::memory_order_relaxed));
+    sprintf(buffer, "reload: pool size %i", s_pool.load(std::memory_order_relaxed));
     mvm::log(buffer);
   }
 
   while( true ) {
     mvm::data * data = mvm::pop();
-    if( data->version() == version ) {
+    if( data->version() == mvm::s_version ) {
       mvm::push(data);
       break;
     } else {
       if( log ) {
-        mvm::log("mvm delete\n");
+        mvm::log("mvm create and delete");
       }
-      mvm::back(new mvm::data(version));
+      mvm::back(new mvm::data());
       delete data;
     }
   }
-  mvm::s_version = version;
+  return os::microtime() - init;
 }
 
 int mvm::version()
@@ -260,16 +261,18 @@ int mvm::gc()
 
 int mvm::clear()
 {
+  int log    = mvm::at("pool.log");
   int result = 0;
-  mtx.lock();
   mvm::s_version++;
   while( !container::empty() ) {
     result++;
     mvm::data * data = container::pop();
     s_pool--;
+    if( log ) {
+      mvm::log("mvm delete");
+    }
     delete data;
   }
-  mtx.unlock();
   return result;
 }
 
@@ -331,7 +334,7 @@ mvm::data::data(int version)
 
   int log = mvm::at("pool.log");
   if( log ) {
-    mvm::log("mvm create\n");
+    mvm::log("mvm create");
   }
 
 }

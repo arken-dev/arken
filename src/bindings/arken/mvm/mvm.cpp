@@ -16,9 +16,8 @@ arken_mvm_gc(lua_State *L) {
 
 static int
 arken_mvm_reload(lua_State *L) {
-  mvm::reload();
-  lua_pushinteger(L, mvm::version());
-  return 0;
+  lua_pushnumber(L, mvm::reload());
+  return 1;
 }
 
 static int

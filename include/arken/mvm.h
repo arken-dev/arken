@@ -43,6 +43,7 @@ namespace concurrent
 class instance;
 
 class mvm {
+
   friend class instance;
 
   public:
@@ -58,7 +59,7 @@ class mvm {
     bool        m_release = false;
 
     public:
-    data(int version);
+    data(int version = s_version);
     ~data();
     lua_State * state();
     lua_State * release();
@@ -112,7 +113,7 @@ class mvm {
   static void set(std::string key, int value);
   static int  at(std::string key);
   static bool pause(std::string key);
-  static void reload();
+  static double reload();
   static int  version();
   static int  pool();
   static int  gc();
