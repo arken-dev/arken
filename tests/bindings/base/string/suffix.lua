@@ -13,7 +13,7 @@ end
 test['should return nil of not identify char'] = function()
   local str = "this is # a test"
   local res = str:suffix('*')
-  assert(res == nil, string.format("%s => type(%s)", res, type(res)))
+  assert(res == '', string.format("%s => type(%s)", res, type(res)))
 end
 
 return test
