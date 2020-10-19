@@ -88,7 +88,12 @@ void triton::run()
   // PERFORM
   // --------------------------------------------------------------------------
 
-  this->perform();
+  unsigned int cores = os::cores();
+  if( m_queue.size() < cores ) {
+    cores = m_queue.size();
+  }
+
+  this->perform(cores);
 
   // --------------------------------------------------------------------------
   // STOP
@@ -124,16 +129,15 @@ triton::triton(const char * fileName, const char * params, bool purge)
   m_release  = true;
 }
 
-void triton::perform()
+void triton::perform(unsigned int cores)
 {
 
   std::vector<triton::node *> list;
 
-  unsigned int cores = os::cores() - 1;
   for(unsigned int i=0; i < cores; i++) {
     triton::node *n = new triton::node(this, m_fileName, i);
-    mvm::concurrent(n);
     list.push_back(n);
+    mvm::concurrent(n);
   }
 
   while( true ) {
@@ -142,12 +146,11 @@ void triton::perform()
       if( n->finished() == false ) {
         flag = false;
       }
-
     }
     if( flag ) {
       return;
     }
-    os::sleep(0.10);
+    os::sleep(0.05);
   }
 
 }
