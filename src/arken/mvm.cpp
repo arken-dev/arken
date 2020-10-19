@@ -11,9 +11,9 @@ using namespace arken;
 int     mvm::s_argc(0);
 char ** mvm::s_argv(0);
 
-std::atomic<int>    mvm::s_gc(0);
-std::atomic<int>    mvm::s_version(0);
-std::atomic<int>    mvm::s_pool(0);
+std::atomic<uint32_t> mvm::s_gc(0);
+std::atomic<uint32_t> mvm::s_version(0);
+std::atomic<uint32_t> mvm::s_pool(0);
 std::atomic<double> mvm::s_uptime(os::microtime());
 
 std::vector<std::thread>       * mvm::concurrent_workers   = new std::vector<std::thread>;
@@ -21,8 +21,8 @@ std::queue<concurrent::Base *> * mvm::concurrent_queue     = new std::queue<conc
 std::mutex                     * mvm::concurrent_mutex     = new std::mutex;
 std::condition_variable        * mvm::concurrent_condition = new std::condition_variable;
 
-uint32_t mvm::concurrent_max     = os::cores();
-uint32_t mvm::concurrent_actives = 0;
+std::atomic<uint32_t> mvm::concurrent_max(os::cores());
+std::atomic<uint32_t> mvm::concurrent_actives(0);
 
 string     mvm::s_arkenPath   = "";
 string     mvm::s_profilePath  = "";
@@ -156,7 +156,7 @@ instance mvm::instance()
 {
   mvm::data * data = pop();
 
-  if( mvm::s_version != data->version() ) {
+  if( mvm::s_version != data->m_version ) {
     delete data;
     data = new mvm::data();
   }
@@ -212,7 +212,7 @@ double mvm::reload()
 
   while( true ) {
     mvm::data * data = mvm::pop();
-    if( data->version() == mvm::s_version ) {
+    if( data->m_version == mvm::s_version ) {
       mvm::push(data);
       break;
     } else {
@@ -226,19 +226,19 @@ double mvm::reload()
   return os::microtime() - init;
 }
 
-int mvm::version()
+uint32_t mvm::version()
 {
   return mvm::s_version;
 }
 
-int mvm::pool()
+uint32_t mvm::pool()
 {
   return s_pool;
 }
 
-int mvm::gc()
+uint32_t mvm::gc()
 {
-  int i = 0;
+  uint32_t i = 0;
   mvm::data * data;
 
   s_gc ++;
@@ -259,7 +259,7 @@ int mvm::gc()
   return i;
 }
 
-int mvm::clear()
+uint32_t mvm::clear()
 {
   int log    = mvm::at("pool.log");
   int result = 0;
@@ -286,7 +286,7 @@ const char *  mvm::arkenPath()
   return s_arkenPath.data();
 }
 
-mvm::data::data(int version)
+mvm::data::data(uint32_t version)
 {
   int rv;
   m_version = version;
@@ -357,7 +357,7 @@ lua_State * mvm::data::release()
   return m_State;
 }
 
-int mvm::data::version()
+uint32_t mvm::data::version()
 {
   return m_version;
 }
@@ -437,8 +437,8 @@ void mvm::concurrent(concurrent::Base * pointer)
   }
 
   concurrent_queue->push(pointer);
-  concurrent_actives++;
   concurrent_condition->notify_one();
+  concurrent_actives++;
 }
 
 void mvm::wait()

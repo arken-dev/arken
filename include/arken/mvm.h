@@ -54,16 +54,16 @@ class mvm {
 
     private:
     lua_State * m_State;
-    int         m_version;
-    int         m_gc;
+    uint32_t    m_version;
+    uint32_t    m_gc;
     bool        m_release = false;
 
     public:
-    data(int version = s_version);
+    data(uint32_t version = s_version);
     ~data();
     lua_State * state();
     lua_State * release();
-    int version();
+    uint32_t    version();
   };
 
   class container {
@@ -81,9 +81,9 @@ class mvm {
 
 
   static std::atomic<double> s_uptime;
-  static std::atomic<int>    s_gc;
-  static std::atomic<int>    s_version;
-  static std::atomic<int>    s_pool;
+  static std::atomic<uint32_t> s_gc;
+  static std::atomic<uint32_t> s_version;
+  static std::atomic<uint32_t> s_pool;
 
   static int      s_argc;
   static char  ** s_argv;
@@ -99,8 +99,9 @@ class mvm {
   static std::mutex                     * concurrent_mutex;
   static std::condition_variable        * concurrent_condition;
 
-  static uint32_t concurrent_max;
-  static uint32_t concurrent_actives;
+  static std::atomic<uint32_t> concurrent_max;
+  static std::atomic<uint32_t> concurrent_actives;
+
   static concurrent::Base * get();
 
   mvm() {};
@@ -114,10 +115,10 @@ class mvm {
   static int  at(std::string key);
   static bool pause(std::string key);
   static double reload();
-  static int  version();
-  static int  pool();
-  static int  gc();
-  static int  clear();
+  static uint32_t version();
+  static uint32_t pool();
+  static uint32_t gc();
+  static uint32_t clear();
   static void push(mvm::data *);
   static void back(mvm::data *);
   static double uptime();
