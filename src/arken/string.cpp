@@ -17,7 +17,7 @@ char * string::append(const char * string, const char * ba)
   int string_len = strlen(string);
   int ba_len     = strlen(ba);
   int result_len = string_len + ba_len;
-  char * result  = new char[result_len+1];
+  char * result  = new char[result_len + 1];
   int i, j = 0;
   for(i = 0; i < string_len; i++){
     result[j] = string[i];
@@ -50,7 +50,7 @@ char * string::camelCase(const char * string, bool lcfirst)
 
   flag = true;
   string_len = strlen(string);
-  result     = new char[string_len+1];
+  result     = new char[string_len + 1];
 
   for(i = 0, j = 0; i < string_len; i++) {
     if( string_camelCase_special_char(string[i]) ) {
@@ -78,6 +78,7 @@ char * string::camelCase(const char * string, bool lcfirst)
   if( lcfirst ) {
     result[0] = tolower(result[0]);
   }
+
   result[j] = '\0';
 
   return result;
@@ -147,11 +148,11 @@ bool string::contains(const char * string, const char * str)
       }
     }
     if(j == len) {
-      return 1;
+      return true;
     }
   }
 
-  return 0;
+  return false;
 }
 
 int string::count(const char * str1, const char * str2)
@@ -176,8 +177,7 @@ char * string::chop(const char * string, int n)
   int len = strlen(string);
 
   if ( n > len ) {
-    result = new char[1];
-    result[0] = '\0';
+    result = new char[1]();
   } else {
     int size = len - n;
     result = new char[size+1];
@@ -203,6 +203,7 @@ static inline int arken_string_dasherize_special_char(const char *string, int i)
 static inline int arken_string_dasherize_len(const char *string, int len)
 {
   int i, j = 0, flag1 = 1, flag2 = 1;
+
   for(i = 0; i < len; i++) {
     if(isupper(string[i])) {
       if(flag1 == 0) {
@@ -224,6 +225,7 @@ static inline int arken_string_dasherize_len(const char *string, int len)
       }
     }
   }
+
   if(arken_string_dasherize_special_char(string, i-1)) {
     j--;
   }
@@ -236,38 +238,40 @@ char * string::dasherize(const char *string)
 {
   int len = strlen(string);
   int i, j = 0, flag1 = 1, flag2 = 1;
-  char * res = new char[arken_string_dasherize_len(string,len)+1];
+  char * result = new char[arken_string_dasherize_len(string, len)+1];
+
   for(i = 0; i < len; i++) {
     if(isupper(string[i])) {
       if(flag1 == 0) {
-        res[j] = '-';
+        result[j] = '-';
         j++;
       }
-      res[j] = tolower(string[i]);
+      result[j] = tolower(string[i]);
       flag2 = 0;
       j++;
     } else {
       if(arken_string_dasherize_special_char(string, i)) {
         if(flag2 == 0) {
-          res[j] = '-';
+          result[j] = '-';
           j++;
           flag2 = 1;
           flag1 = 1;
         }
       } else {
-        res[j] = string[i];
+        result[j] = string[i];
         flag1 = 0;
         flag2 = 0;
         j++;
       }
     }
   }
+
   if(arken_string_dasherize_special_char(string, i-1)) {
     j--;
   }
-  res[j] = '\0';
+  result[j] = '\0';
 
-  return res;
+  return result;
 }
 
 char * string::encode64(const char * str)
@@ -355,7 +359,7 @@ char * string::escapeHtml(const char * string)
     }
   }
 
-  result = new char[count+1];
+  result = new char[count + 1];
 
   j = 0;
   for(i = 0; i < len; i++) {
@@ -436,6 +440,7 @@ bool string::endsWith(const char * string, const char * str)
    int string_len = strlen(string);
    int str_len    = strlen(str);
    int i;
+
    for (i=0; i <= str_len; i++) {
      if(string[string_len-i] != str[str_len-i]) {
        return false;
@@ -600,7 +605,7 @@ char * string::normalize(const char *string)
 
   flag = true;
   string_len = strlen(string);
-  result     = new char[string_len+1];
+  result     = new char[string_len + 1];
 
   for(i = 0, j = 0; i < string_len; i++) {
     if( string_normalize_special_char(string[i]) ) {
@@ -633,11 +638,11 @@ char * string::leftJustified(const char * string, size_t size, const char * pad)
   char * result;
 
   if( size < str_len or pad_len == 0 ) {
-    result = new char[ str_len + 1 ];
+    result = new char[str_len + 1];
     strcpy(result, string);
     result[str_len] = '\0';
   } else {
-    result = new char[ size + 1 ];
+    result = new char[size + 1];
 
     size_t i = 0;
     size_t j = 0;
@@ -666,11 +671,11 @@ char * string::rightJustified(const char * string, size_t size, const char * pad
   char * result;
 
   if( size < str_len or pad_len == 0 ) {
-    result = new char[ str_len + 1 ];
+    result = new char[str_len + 1];
     strcpy(result, string);
     result[str_len] = '\0';
   } else {
-    result = new char[ size + 1 ];
+    result = new char[size + 1];
 
     size_t i = 0;
     size_t j = 0;
@@ -736,6 +741,7 @@ char * string::replace(const char *string, const char before, const char after, 
       j++;
     }
   }
+
   result[j] = '\0';
 
   return result;
@@ -788,8 +794,7 @@ char * string::simplified(const char *string)
   }
 
   if( (len - i) <= 0 ) {
-    result = new char[1];
-    result[0] = '\0';
+    result = new char[1]();
   } else {
     result = new char[len + 1];
     while(i < len) {
@@ -836,7 +841,7 @@ char * string::replace(const char * original, const char * pattern, const char *
   {
     // allocate memory for the new string
     size_t const retlen = orilen + patcnt * (replen - patlen);
-    char * const returned = (char *) malloc( sizeof(char) * (retlen + 1) );
+    char * const returned = new char[retlen + 1];
 
     if (returned != NULL)
     {
@@ -890,7 +895,7 @@ List string::split(const char * raw, size_t len, const char * pattern)
       other = raw + flag;
       size = i - flag;
       if( size > 0 ) {
-        char * tmp = new char[size+1];
+        char * tmp = new char[size + 1];
         memcpy ( tmp, other, size );
         tmp[size] = '\0';
         list.append(tmp, size);
@@ -929,7 +934,7 @@ char *  string::suffix(const char * raw, char chr)
 
   if( point > 0 ) {
     point++;
-    result = (char *) malloc( (len - point) + 1 * sizeof(char) );
+    result = new char[(len - point) + 1];
     j = 0;
     for( i = point; i < len; i++, j++) {
       result[j] = raw[i];
@@ -958,7 +963,7 @@ char *  string::prefix(const char * raw, char chr)
 
   if( point > 0 ) {
     point++;
-    result = new char[point+1];
+    result = new char[point + 1];
     j = 0;
     for( i = 0; i < point; i++, j++) {
       result[j] = raw[i];
@@ -1016,8 +1021,7 @@ char * string::trimmed(const char *string)
   }
 
   if( (len - i) < 0 ) {
-    result = new char[1];
-    result[0] = '\0';
+    result = new char[1]();
   } else {
     result = new char[(len-i) + 2];
     while(i <= len) {
@@ -1046,8 +1050,7 @@ char * string::leftTrimmed(const char *string)
   }
 
   if( (len - i) < 0 ) {
-    result = new char[1];
-    result[0] = '\0';
+    result = new char[1]();
   } else {
     result = new char[(len-i) + 2];
     while(i <= len) {
@@ -1076,8 +1079,7 @@ char * string::rightTrimmed(const char *string)
   }
 
   if( (len - i) < 0 ) {
-    result = new char[1];
-    result[0] = '\0';
+    result = new char[1]();
   } else {
     result = new char[(len-i) + 2];
     while(i <= len) {
@@ -1128,7 +1130,7 @@ char * string::truncate(const char *string, int pos, const char * omission, cons
 
   //pos += omission_len;
 
-  result = new char[pos+omission_len+1];
+  result = new char[pos + omission_len + 1];
 
   for (i = 0; i < pos; i++) {
     result[i] = string[i];
@@ -1156,6 +1158,7 @@ static inline int arken_string_underscore_special_char(const char *string, int i
 static inline int arken_string_underscore_len(const char *string, int len)
 {
   int i, j = 0, flag1 = 1, flag2 = 1;
+
   for(i = 0; i < len; i++) {
     if(isupper(string[i])) {
       if(flag1 == 0) {
@@ -1177,6 +1180,7 @@ static inline int arken_string_underscore_len(const char *string, int len)
       }
     }
   }
+
   if(arken_string_underscore_special_char(string, i-1)) {
     j--;
   }
@@ -1189,26 +1193,26 @@ char * string::underscore(const char *string)
 {
   int len = strlen(string);
   int i, j = 0, flag1 = 1, flag2 = 1;
-  char * res = new char[arken_string_underscore_len(string,len)+1];
+  char * result = new char[arken_string_underscore_len(string,len) + 1];
   for(i = 0; i < len; i++) {
     if(isupper(string[i])) {
       if(flag1 == 0) {
-        res[j] = '_';
+        result[j] = '_';
         j++;
       }
-      res[j] = tolower(string[i]);
+      result[j] = tolower(string[i]);
       flag2 = 0;
       j++;
     } else {
       if(arken_string_underscore_special_char(string, i)) {
         if(flag2 == 0) {
-          res[j] = '_';
+          result[j] = '_';
           j++;
           flag2 = 1;
           flag1 = 1;
         }
       } else {
-        res[j] = string[i];
+        result[j] = string[i];
         flag1 = 0;
         flag2 = 0;
         j++;
@@ -1218,9 +1222,9 @@ char * string::underscore(const char *string)
   if(arken_string_underscore_special_char(string, i-1)) {
     j--;
   }
-  res[j] = '\0';
+  result[j] = '\0';
 
-  return res;
+  return result;
 }
 
 char * string::md5(const char * str)
@@ -1255,7 +1259,7 @@ string::string(const char * data, size_t size)
   m_reserve   = 1024;
   m_size      = size;
   m_capacity  = m_size;
-  m_data      = new char[m_size+1];
+  m_data      = new char[m_size + 1];
   memcpy( m_data, data, size );
   m_data[m_size] = '\0';
 }
@@ -1265,7 +1269,7 @@ string::string(const char * data)
   m_reserve   = 1024;
   m_size      = strlen(data);
   m_capacity  = m_size;
-  m_data      = new char[m_size+1];
+  m_data      = new char[m_size + 1];
   strcpy(m_data, data);
   m_data[m_size] = '\0';
 }
@@ -1283,7 +1287,7 @@ string::string(const arken::string & str)
   m_reserve   = str.m_reserve;
   m_size      = str.m_size;
   m_capacity  = str.m_capacity;
-  m_data      = new char[m_capacity+1];
+  m_data      = new char[m_capacity + 1];
   memcpy( m_data, str.m_data, str.m_size );
   m_data[m_size] = '\0';
 }
@@ -1648,7 +1652,7 @@ string & string::operator=(const string &a)
   m_reserve   = 1024;
   m_size      = a.m_size;
   m_capacity  = a.m_size;
-  m_data      = new char[m_size+1];
+  m_data      = new char[m_size + 1];
   strcpy(m_data, a.m_data);
   m_data[m_size] = '\0';
   return *this;
@@ -1662,7 +1666,7 @@ string & string::operator=(const char * data)
   m_reserve   = 1024;
   m_size      = strlen(data);
   m_capacity  = m_size;
-  m_data      = new char[m_size+1];
+  m_data      = new char[m_size + 1];
   strcpy(m_data, data);
   m_data[m_size] = '\0';
 
@@ -1677,7 +1681,7 @@ string & string::operator=(const string * str)
   m_reserve   = 1024;
   m_size      = str->m_size;
   m_capacity  = str->m_size;
-  m_data      = new char[m_size+1];
+  m_data      = new char[m_size + 1];
   strcpy(m_data, str->m_data);
   m_data[m_size] = '\0';
 
