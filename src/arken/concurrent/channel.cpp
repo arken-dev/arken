@@ -69,7 +69,7 @@ void channel::run()
   m_client->m_finished = true;
 
   // GC
-  if( m_release ) {
+  if( m_purge ) {
     i.release();
     lua_close(L);
   } else {
