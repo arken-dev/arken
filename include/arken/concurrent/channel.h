@@ -7,6 +7,7 @@
 #define _ARKEN_CONCURRENT_CHANNEL_
 
 #include <arken/mvm.h>
+#include <memory>
 
 namespace arken {
 namespace concurrent {
@@ -15,22 +16,23 @@ namespace concurrent {
 
     private:
 
-    std::queue<std::string> * m_read;
-    std::queue<std::string> * m_write;
+    std::shared_ptr<std::queue<std::string>> m_read;
+    std::shared_ptr<std::queue<std::string>> m_write;
 
-    std::mutex * m_read_mtx;
-    std::mutex * m_write_mtx;
+    std::shared_ptr<std::mutex> m_read_mtx;
+    std::shared_ptr<std::mutex> m_write_mtx;
 
-    std::condition_variable * m_read_condition;
-    std::condition_variable * m_write_condition;
+    std::shared_ptr<std::condition_variable> m_read_condition;
+    std::shared_ptr<std::condition_variable> m_write_condition;
 
     string m_params;
     string m_fileName;
 
+    channel * m_client;
+
     bool m_release;
     bool m_purge;
 
-    channel * m_client;
     void run();
     bool release();
     bool purge();
@@ -38,22 +40,23 @@ namespace concurrent {
     public:
 
     channel(
-      std::queue<std::string> * read,
-      std::queue<std::string> * write,
-      std::mutex * read_mtx,
-      std::mutex * write_mtx,
-      std::condition_variable * read_condition,
-      std::condition_variable * write_condition
+      std::shared_ptr<std::queue<std::string>> read,
+      std::shared_ptr<std::queue<std::string>> write,
+      std::shared_ptr<std::mutex> read_mtx,
+      std::shared_ptr<std::mutex> write_mtx,
+      std::shared_ptr<std::condition_variable> read_condition,
+      std::shared_ptr<std::condition_variable> write_condition
     );
 
-    channel( const char * fileName, const char * params, bool release );
+    channel( const char * fileName, const char * params, bool purge );
     ~channel();
 
     bool empty();
     void write(std::string message);
     std::string read();
+    channel * client();
 
-    static channel * start(const char * fileName, const char * params, bool release = false);
+    static channel * start(const char * fileName, const char * params, bool purge = false);
     static void wait();
 
   };

@@ -7,6 +7,7 @@
 #include <arken/base>
 #include <arken/cache>
 #include <arken/mvm>
+#include <memory>
 
 char * json_lock_encode(lua_State *L);
 void   json_lock_decode(lua_State *L, const char * params);
@@ -79,49 +80,57 @@ void channel::run()
 } // channel::run
 
 channel::channel(
-  std::queue<std::string> * read,
-  std::queue<std::string> * write,
-  std::mutex * read_mtx,
-  std::mutex * write_mtx,
-  std::condition_variable * read_condition,
-  std::condition_variable * write_condition
+  std::shared_ptr<std::queue<std::string>> read,
+  std::shared_ptr<std::queue<std::string>> write,
+  std::shared_ptr<std::mutex> read_mtx,
+  std::shared_ptr<std::mutex> write_mtx,
+  std::shared_ptr<std::condition_variable> read_condition,
+  std::shared_ptr<std::condition_variable> write_condition
 )
 {
-  m_read  = read;
-  m_write = write;
-  m_read_mtx = read_mtx;
-  m_write_mtx = write_mtx;
+  m_read            = read;
+  m_write           = write;
+  m_read_mtx        = read_mtx;
+  m_write_mtx       = write_mtx;
   m_read_condition  = read_condition;
   m_write_condition = write_condition;
-  m_finished = false;
-  m_release  = false;
+  m_finished        = false;
+  m_release         = true;
+  m_client          = nullptr;
 }
 
 channel::channel(const char * fileName, const char * params, bool purge)
 {
-  m_read  = new std::queue<std::string>;
-  m_write = new std::queue<std::string>;
-  m_read_mtx  = new std::mutex;
-  m_write_mtx = new std::mutex;
-  m_read_condition  = new std::condition_variable;
-  m_write_condition = new std::condition_variable;
+  m_read            = std::shared_ptr<std::queue<std::string>>(new std::queue<std::string>);
+  m_write           = std::shared_ptr<std::queue<std::string>>(new std::queue<std::string>);
+  m_read_mtx        = std::shared_ptr<std::mutex>(new std::mutex);
+  m_write_mtx       = std::shared_ptr<std::mutex>(new std::mutex);
+  m_read_condition  = std::shared_ptr<std::condition_variable>(new std::condition_variable);
+  m_write_condition = std::shared_ptr<std::condition_variable>(new std::condition_variable);
 
   m_fileName = fileName;
   m_params   = params;
   m_purge    = purge;
   m_finished = false;
-  m_release  = false;
+  m_release  = true;
+
+  m_client = new channel(
+    m_write, m_read, m_write_mtx, m_read_mtx, m_write_condition, m_read_condition
+  );
+
+}
+
+channel * channel::client()
+{
+  return m_client;
 }
 
 channel * channel::start(const char * fileName, const char * params, bool purge)
 {
   channel * c = new channel(fileName, params, purge);
   mvm::concurrent(c);
-  channel * client = new channel(
-    c->m_write, c->m_read, c->m_write_mtx, c->m_read_mtx, c->m_write_condition, c->m_read_condition
-  );
-  c->m_client = client;
-  return client;
+
+  return c->client();
 }
 
 bool channel::release()
@@ -131,9 +140,9 @@ bool channel::release()
 
 channel::~channel()
 {
-  delete m_read;
-  delete m_read_mtx;
-  delete m_read_condition;
+  //delete m_read;
+  //delete m_read_mtx;
+  //delete m_read_condition;
 }
 
 bool channel::empty()

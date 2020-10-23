@@ -38,6 +38,7 @@ arken_channel_start(lua_State *L) {
   channel * chn = channel::start( fileName, data, release );
   channel **ptr = (channel **)lua_newuserdata(L, sizeof(channel*));
   *ptr = chn;
+
   luaL_getmetatable(L, "arken.concurrent.channel.metatable");
   lua_setmetatable(L, -2);
   return 1;
@@ -92,12 +93,22 @@ arken_concurrent_channel_instance_method_finished( lua_State *L ) {
   return 1;
 }
 
+static int
+arken_concurrent_channel_instance_method_destruct( lua_State *L ) {
+  channel * chn = checkChannel( L );
+  if( !chn->client() ) {
+    delete chn;
+  }
+  return 0;
+}
+
 static const
 luaL_reg ChannelInstanceMethods[] = {
   {"write",     arken_concurrent_channel_instance_method_write},
   {"read",      arken_concurrent_channel_instance_method_read},
   {"empty",     arken_concurrent_channel_instance_method_empty},
   {"finished",  arken_concurrent_channel_instance_method_finished},
+  {"__gc",      arken_concurrent_channel_instance_method_destruct},
   {NULL, NULL}
 };
 

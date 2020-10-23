@@ -24,9 +24,9 @@ std::condition_variable        * mvm::concurrent_condition = new std::condition_
 std::atomic<uint32_t> mvm::concurrent_max(os::cores());
 std::atomic<uint32_t> mvm::concurrent_actives(0);
 
-string     mvm::s_arkenPath   = "";
-string     mvm::s_profilePath  = "";
-string     mvm::s_dispatchPath = "";
+string mvm::s_arkenPath    = "";
+string mvm::s_profilePath  = "";
+string mvm::s_dispatchPath = "";
 
 static std::mutex mtx;
 static std::map <std::string, int> s_config;
