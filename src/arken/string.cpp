@@ -1294,25 +1294,34 @@ string::string(const arken::string & str)
 
 string string::consume(char * data)
 {
+
   arken::string tmp;
+  delete[] tmp.m_data;
+
   tmp.m_data = data;
   tmp.m_size = strlen(data);
   tmp.m_capacity = tmp.m_size;
+
   return tmp;
 }
 
 string string::consume(char * data, size_t size)
 {
   arken::string tmp;
+  delete[] tmp.m_data;
+
   tmp.m_data = data;
   tmp.m_size = size;
   tmp.m_capacity = tmp.m_size;
+
   return tmp;
 }
 
 string * string::consume(arken::string str)
 {
   arken::string * tmp = new string;
+  delete[] tmp->m_data;
+
   tmp->m_data = str.m_data;
   tmp->m_size = str.m_size;
   tmp->m_capacity = tmp->m_size;

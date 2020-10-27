@@ -221,7 +221,9 @@ string HttpClient::perform()
     index = string::lastIndexOf(m_data, "HTTP");
     index = string::indexOf(m_data, " ", index);
     if( index > -1 ) {
-      m_status = atoi(string::mid(m_data, index + 1, index + 4));
+      char * status = string::mid(m_data, index + 1, index + 4);
+      m_status = atoi(status);
+      delete status;
     } else {
       m_status = 0;
     }
