@@ -152,8 +152,13 @@ void mvm::init(int argc, char ** argv)
 
 }
 
-instance mvm::instance()
+instance mvm::instance(bool create)
 {
+
+  if( create ) {
+    return new mvm::data();
+  }
+
   mvm::data * data = pop();
 
   if( mvm::s_version != data->m_version ) {

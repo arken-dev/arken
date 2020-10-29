@@ -30,7 +30,7 @@ bool task::release()
 
 void task::run()
 {
-  arken::instance i = mvm::instance();
+  arken::instance i = mvm::instance( m_purge );
   lua_State * L = i.state();
   lua_settop(L, 0);
 

@@ -122,7 +122,7 @@ class mvm {
   static void push(mvm::data *);
   static void back(mvm::data *);
   static double uptime();
-  static arken::instance instance();
+  static arken::instance instance(bool create = false);
   static const char * arkenPath();
   static void concurrent(concurrent::Base * pointer);
   static void working();

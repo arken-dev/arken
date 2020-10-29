@@ -21,7 +21,9 @@ void channel::wait()
 
 void channel::run()
 {
-  arken::instance i = mvm::instance();
+  // if m_purge is true, create a new arken::instance
+  // because it will be destroyed in the end
+  arken::instance i = mvm::instance( m_purge );
   lua_State * L = i.state();
   lua_settop(L, 0);
 
