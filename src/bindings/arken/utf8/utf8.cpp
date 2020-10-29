@@ -11,33 +11,42 @@ using arken::utf8;
 
 static int arken_utf8_lower( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
-  lua_pushstring( L, utf8::lower(string) );
+  char * result = utf8::lower(string);
+  lua_pushstring( L, result );
+  delete[] result;
   return 1;
 }
 
 static int arken_utf8_upper( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
-  lua_pushstring( L, utf8::upper(string) );
+  char * result = utf8::upper(string);
+  lua_pushstring( L, result );
+  delete[] result;
   return 1;
 }
 
 static int arken_utf8_format( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
-  lua_pushstring( L, utf8::format(string) );
+  char * result = utf8::format(string);
+  lua_pushstring( L, result );
+  delete[] result;
   return 1;
 }
 
 static int arken_utf8_decode( lua_State *L ) {
   const char * string  = luaL_checkstring(L, 1);
   const char * charset = luaL_checkstring(L, 2);
-  lua_pushstring( L, utf8::decode(string, charset) );
+  char * result = utf8::decode(string, charset);
+  lua_pushstring( L, result );
+  delete[] result;
   return 1;
 }
 
 static int arken_utf8_encode( lua_State *L ) {
   const char * string  = luaL_checkstring(L, 1);
   const char * charset = luaL_checkstring(L, 2);
-  lua_pushstring( L, utf8::encode(string, charset) );
+  char * result = utf8::encode(string, charset);
+  lua_pushstring( L, result );
   return 1;
 }
 
