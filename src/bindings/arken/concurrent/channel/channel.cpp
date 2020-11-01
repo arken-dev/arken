@@ -22,7 +22,7 @@ checkChannel( lua_State *L ) {
 
 static int
 arken_channel_start(lua_State *L) {
-  bool release = false;
+  bool purge = false;
   const char * fileName = luaL_checkstring(L, 1);
   char * params;
 
@@ -30,12 +30,13 @@ arken_channel_start(lua_State *L) {
     params = new char[3]{'{','}','\0'};
   } else {
     if(lua_gettop(L) == 3) { // number of arguments
-      release = lua_toboolean(L, 3);
+      purge = lua_toboolean(L, 3);
       lua_settop(L, 2);
     }
     params = json_lock_encode(L);
   }
-  channel * chn = channel::start( fileName, params, release );
+  purge = false;
+  channel * chn = channel::start( fileName, params, purge );
   channel **ptr = (channel **)lua_newuserdata(L, sizeof(channel*));
   *ptr = chn;
 
