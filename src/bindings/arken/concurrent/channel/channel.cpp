@@ -35,7 +35,10 @@ arken_channel_start(lua_State *L) {
     }
     params = json_lock_encode(L);
   }
+
+  // TODO remove after tests
   purge = false;
+
   channel * chn = channel::start( fileName, params, purge );
   channel **ptr = (channel **)lua_newuserdata(L, sizeof(channel*));
   *ptr = chn;
