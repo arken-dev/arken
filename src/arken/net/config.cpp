@@ -6,11 +6,13 @@
 #include <iostream>
 #include <fstream>
 #include <arken/net/config.h>
+#include <arken/concurrent/service.h>
 #include <lua/lua.hpp>
 
-using mvm    = arken::mvm;
-using Config = arken::net::Config;
-using Log    = arken::Log;
+using mvm     = arken::mvm;
+using Config  = arken::net::Config;
+using Log     = arken::Log;
+using service = arken::concurrent::service;
 
 using namespace arken::net;
 
@@ -159,7 +161,7 @@ Config::Config(string path)
   //---------------------------------------------------------------------------
 
   if( m_service && os::exists("app/services")) {
-    arken::service::load("app/services");
+    arken::concurrent::service::load("app/services");
   }
 
   //---------------------------------------------------------------------------

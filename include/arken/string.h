@@ -162,6 +162,7 @@ namespace arken {
       List &append(const char * value);
       List &append(const char * value, int len);
       List &operator << (const char * value);
+      List &operator=(const List &list);
       const char *operator[](int pos);
       const char *at(int pos);
       const char *at(int pos, int * len);

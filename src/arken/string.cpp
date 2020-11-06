@@ -896,7 +896,7 @@ List string::split(const char * raw, size_t len, const char * pattern)
       size = i - flag;
       if( size > 0 ) {
         char * tmp = new char[size + 1];
-        memcpy ( tmp, other, size );
+        memcpy( tmp, other, size );
         tmp[size] = '\0';
         list.append(tmp, size);
         delete[] tmp;
@@ -1730,7 +1730,6 @@ void string::List::init()
 
 string::List::List()
 {
-
   m_array    = 0;
   m_size     = 0;
   m_resource = 10;
@@ -1739,11 +1738,13 @@ string::List::List()
 
 string::List::List(int resource)
 {
+
   if( resource ) {
-    m_array    = 0;
-    m_size     = 0;
     m_resource = resource;
     init();
+  } else {
+    m_array = nullptr;
+    m_size  = 0;
   }
 }
 
@@ -1766,7 +1767,39 @@ string::List::List(const List &obj)
   }
 }
 
-// Copy Constructor
+List & string::List::operator=(const List &obj)
+{
+
+  if( m_array ) {
+    for(int i = 0; i < m_size; i++) {
+      if( m_array[i] ) {
+        delete m_array[i];
+      }
+    }
+
+    delete[] m_array;
+  }
+
+  this->m_cursor   = 0;
+  this->m_size     = obj.m_size;
+  this->m_resource = obj.m_resource;
+  this->m_array    = obj.m_array;
+
+  this->m_array    = new string*[m_resource];
+
+  if( m_size > 0 ) {
+    for(int i = 0; i < m_size; i++) {
+      this->m_array[i] = new string(obj.m_array[i]->data());
+    }
+  }
+
+  for(int i = m_size; i < m_resource; i++) {
+    m_array[i] = 0;
+  }
+
+  return *this;
+}
+
 List * string::List::consume(List &obj)
 {
   List *list = new List(0);
@@ -1781,6 +1814,7 @@ List * string::List::consume(List &obj)
 
   return list;
 }
+
 
 string::List::~List()
 {

@@ -87,8 +87,8 @@ static int arken_os_executablePath( lua_State *L ) {
 }
 
 static int arken_os_glob( lua_State *L ) {
-  List * list = 0;
-  const char  * path = luaL_checkstring(L, 1);
+  const char * path = luaL_checkstring(L, 1);
+  List list(0);
 
   if( lua_gettop(L) == 1 ) { /* número de argumentos */
     list = os::glob( path );
@@ -107,7 +107,7 @@ static int arken_os_glob( lua_State *L ) {
   }
 
   List **ptr = (List **)lua_newuserdata(L, sizeof(List*));
-  *ptr = list;
+  *ptr = List::consume(list);
   luaL_getmetatable(L, "arken.string.List.metatable");
   lua_setmetatable(L, -2);
 

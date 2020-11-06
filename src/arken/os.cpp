@@ -46,14 +46,14 @@ unsigned int os::cores()
   return std::thread::hardware_concurrency();
 }
 
-List * os::glob(const char * dir)
+List os::glob(const char * dir)
 {
   return os::glob(dir, false);
 }
 
-List * os::glob(const char * dir, bool sub)
+List os::glob(const char * dir, bool sub)
 {
-  List * list = new List();
+  List list;
   QDirIterator::IteratorFlags flags;
 
   if( sub ) {
@@ -64,22 +64,22 @@ List * os::glob(const char * dir, bool sub)
 
   while( iterator.hasNext() ) {
     iterator.next();
-    list->append( iterator.fileInfo().filePath().toLocal8Bit().data() );
+    list.append( iterator.fileInfo().filePath().toLocal8Bit().data() );
   }
 
   return list;
 }
 
-List * os::glob(const char * dir, const char * regex)
+List os::glob(const char * dir, const char * regex)
 {
   return os::glob(dir, regex, false);
 }
 
-List * os::glob(const char * dir, const char * regex, bool sub)
+List os::glob(const char * dir, const char * regex, bool sub)
 {
 
   QRegExp qregex(regex);
-  List * list = new List();
+  List list;
   QDirIterator::IteratorFlags flags;
 
   if( sub ) {
@@ -91,7 +91,7 @@ List * os::glob(const char * dir, const char * regex, bool sub)
   while( iterator.hasNext() ) {
     iterator.next();
     if( qregex.indexIn(iterator.fileInfo().filePath(), 0) != -1 ) {
-      list->append( iterator.fileInfo().filePath().toLocal8Bit().data() );
+      list.append( iterator.fileInfo().filePath().toLocal8Bit().data() );
     }
   }
 

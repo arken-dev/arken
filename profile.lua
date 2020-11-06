@@ -27,12 +27,10 @@ require 'arken.package'
 -- PROFILE.D
 -------------------------------------------------------------------------------
 
-local list = os.glob(ARKEN_PATH .. '/profile.d')
+local list = os.glob(ARKEN_PATH .. '/profile.d', '.lua$')
 for i = 1, list:size() do
   local fileName = list:at(i)
-  if fileName:endsWith(".lua") then
-    dofile(fileName)
-  end
+  dofile(fileName)
 end
 
 -------------------------------------------------------------------------------

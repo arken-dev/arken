@@ -19,10 +19,10 @@ namespace arken
 
     private:
     static void run(char * uuid, char * fileName);
-    int  m_version;
+    uint32_t m_version;
     bool m_quit;
     static bool          s_exit;
-    static int           s_version;
+    static uint32_t      s_version;
     static char        * s_dirName;
     static std::mutex  * s_mutex;
     static std::vector<std::string> * s_services;

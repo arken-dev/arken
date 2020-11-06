@@ -25,10 +25,10 @@ namespace arken {
     static char   * dirpath(const char * path);
     static bool     exists(const char * path);
     static char   * executablePath();
-    static List * glob(const char * dir);
-    static List * glob(const char * dir, bool sub);
-    static List * glob(const char * dir, const char * regex);
-    static List * glob(const char * dir, const char * regex, bool sub);
+    static List glob(const char * dir);
+    static List glob(const char * dir, bool sub);
+    static List glob(const char * dir, const char * regex);
+    static List glob(const char * dir, const char * regex, bool sub);
     static char   * home();
     static char   * hostname();
     static bool     isdir(const char * path);

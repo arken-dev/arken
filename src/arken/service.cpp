@@ -14,7 +14,7 @@ using cache = arken::cache;
 using mvm   = arken::mvm;
 using List  = arken::string::List;
 
-int           service::s_version  = mvm::version();
+uint32_t      service::s_version  = mvm::version();
 char        * service::s_dirName  = 0;
 bool          service::s_exit     = false;
 std::mutex  * service::s_mutex    = new std::mutex;
@@ -22,17 +22,17 @@ std::vector<std::string> * service::s_services = new std::vector<std::string>;
 
 void service::load(const char * dirName)
 {
+  std::cout << "old load " << std::endl;
   service::s_exit = false;
   if( ! s_dirName ) {
     s_dirName = new char(strlen(dirName)+1);
     strcpy(s_dirName, dirName);
   }
 
-  List * list = os::glob(dirName, ".lua$");
-  for( int i = 0; i < list->size(); i++ ) {
-    service::start(list->at(i));
+  List list = os::glob(dirName, ".lua$");
+  for( int i = 0; i < list.size(); i++ ) {
+    service::start(list[i]);
   }
-  delete list;
 }
 
 void service::load()
