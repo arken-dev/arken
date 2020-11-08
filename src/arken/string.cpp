@@ -281,7 +281,8 @@ char * string::encode64(const char * str)
 
 char * string::decode64(const char * str)
 {
-  return base64::decode(str);
+  size_t i;
+  return base64::decode(str, &i);
 }
 
 char * string::encode(const char * string, const char * charset)

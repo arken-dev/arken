@@ -10,8 +10,9 @@ using arken::base64;
 
 static int arken_base64_decode( lua_State *L ) {
   const char * data = luaL_checkstring(L, 1);
-  char * decoded = base64::decode(data);
-  lua_pushstring( L, decoded );
+  size_t size;
+  char * decoded = base64::decode(data, &size);
+  lua_pushlstring( L, decoded, size );
   delete[] decoded;
   return 1;
 }

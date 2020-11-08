@@ -3,11 +3,13 @@
 
 using namespace arken;
 
-char * base64::decode(const char * encoded)
+char * base64::decode(const char * encoded, size_t * size)
 {
   QByteArray text = QByteArray::fromBase64(encoded);
+  *size = (size_t) text.size();
   char * result = new char[text.size()+1];
-  strcpy(result, text.data());
+  memcpy(result, text.data(), text.size());
+  result[text.size()] = '\0';
   return result;
 }
 
