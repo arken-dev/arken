@@ -11,10 +11,12 @@ extern "C" {
 
 using namespace arken;
 
-char * base64::decode(const char * encoded)
+char * base64::decode(const char * encoded, size_t * size)
 {
   size_t decode_len = Base64decode_len(encoded);
-  char * plain = new char[decode_len];
+  *size = decode_len;
+  char * plain = new char[decode_len + 1];
+  plain[decode_len] = '\0';
   Base64decode(plain, encoded);
   return plain;
 }

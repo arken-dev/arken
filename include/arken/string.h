@@ -38,7 +38,7 @@ namespace arken {
     static int    count(const char * str1, const char * str2);
     static char * dasherize(const char *string);
     static char * encode64(const char *string);
-    static char * decode64(const char *string);
+    static char * decode64(const char *string, size_t * size);
     static char * encode(const char *string, const char *charset);
     static char * decode(const char *string, const char *charset);
     static bool   equals(const char * str1, const char * str2);

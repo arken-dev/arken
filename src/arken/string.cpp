@@ -279,10 +279,9 @@ char * string::encode64(const char * str)
   return base64::encode(str);
 }
 
-char * string::decode64(const char * str)
+char * string::decode64(const char * str, size_t * size)
 {
-  size_t i;
-  return base64::decode(str, &i);
+  return base64::decode(str, size);
 }
 
 char * string::encode(const char * string, const char * charset)
@@ -1444,7 +1443,9 @@ string string::dasherize()
 
 string string::decode64()
 {
-  return arken::string::consume(string::decode64(m_data));
+  size_t size;
+  char * decoded = string::decode64(m_data, &size);
+  return arken::string::consume(decoded, size);
 }
 
 string string::encode64()

@@ -129,8 +129,9 @@ arken_string_contains( lua_State *L ) {
 static int
 arken_string_decode64( lua_State *L ) {
   const char *str = luaL_checkstring(L, 1);
-  char * result   = string::decode64(str);
-  lua_pushstring(L, result);
+  size_t size;
+  char * result   = string::decode64(str, &size);
+  lua_pushlstring(L, result, size);
   delete[] result;
   return 1;
 }
