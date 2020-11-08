@@ -21,7 +21,7 @@ std::queue<concurrent::Base *> * mvm::concurrent_queue     = new std::queue<conc
 std::mutex                     * mvm::concurrent_mutex     = new std::mutex;
 std::condition_variable        * mvm::concurrent_condition = new std::condition_variable;
 
-std::atomic<uint32_t> mvm::concurrent_max(os::cores());
+std::atomic<uint32_t> mvm::concurrent_max(10);//os::cores());
 std::atomic<uint32_t> mvm::concurrent_actives(0);
 
 string mvm::s_arkenPath    = "";
