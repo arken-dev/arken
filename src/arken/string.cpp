@@ -274,9 +274,9 @@ char * string::dasherize(const char *string)
   return result;
 }
 
-char * string::encode64(const char * str)
+char * string::encode64(const char * str, size_t size)
 {
-  return base64::encode(str);
+  return base64::encode(str, size);
 }
 
 char * string::decode64(const char * str, size_t * size)
@@ -1450,7 +1450,7 @@ string string::decode64()
 
 string string::encode64()
 {
-  return arken::string::consume(string::encode64(m_data));
+  return arken::string::consume(string::encode64(m_data, m_size));
 }
 
 bool string::equals(const char * data)

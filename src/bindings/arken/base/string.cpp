@@ -138,8 +138,9 @@ arken_string_decode64( lua_State *L ) {
 
 static int
 arken_string_encode64( lua_State *L ) {
-  const char *str = luaL_checkstring(L, 1);
-  char * result   = string::encode64(str);
+  size_t size;
+  const char *str = luaL_checklstring(L, 1, &size);
+  char * result   = string::encode64(str, size);
   lua_pushstring(L, result);
   delete[] result;
   return 1;
