@@ -57,8 +57,9 @@ function ActiveRecord_PostgresAdapter:insert(record)
   local sql = 'INSERT INTO ' .. self.tableName .. ' '
   local col = ''
   local val = ''
+  local columns = self:columns()
   for column, value in pairs(record) do
-    if not self:isReserved(column) then
+    if columns[column] then --not self:isReserved(column) then
     --for column, properties in pairs(self:columns(table)) do
       if not (column == self.primaryKey and empty(record[self.primaryKey]))  then
         --local value = record[column]

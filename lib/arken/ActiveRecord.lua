@@ -276,9 +276,9 @@ end
 
 function ActiveRecord:save()
   if self.newRecord then
-    self:create({})
+    self:create()
   else
-    self:update({})
+    self:update()
   end
   return self
 end
