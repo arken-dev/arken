@@ -49,20 +49,24 @@ namespace concurrent {
     int  total(string);
     string result(string key);
 
+    private:
     class node : public Base {
 
       string   m_fileName;
       triton * m_triton;
       unsigned int m_number = 0;
 
-      void run();
       bool release();
       unsigned int number();
       const char * dequeue();
 
       public:
+      void run();
       node(triton * ptr, string fileName, int number);
+
     };
+
+    static void working(node * n);
   };
 
 

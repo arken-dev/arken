@@ -129,28 +129,28 @@ triton::triton(const char * fileName, const char * params, bool purge)
   m_release  = true;
 }
 
+void triton::working(node * n)
+{
+  n->run();
+  delete n;
+}
+
 void triton::perform(unsigned int cores)
 {
 
-  std::vector<triton::node *> list;
+  std::vector<std::thread *> threads;
 
   for(unsigned int i=0; i < cores; i++) {
-    triton::node *n = new triton::node(this, m_fileName, i);
-    list.push_back(n);
-    mvm::concurrent(n);
+    node *n = new node(this, m_fileName, i);
+    threads.push_back(new std::thread(working, n));
   }
 
-  while( true ) {
-    bool flag = true;
-    for(triton::node *n : list) {
-      if( n->finished() == false ) {
-        flag = false;
-      }
-    }
-    if( flag ) {
-      return;
-    }
-    os::sleep(0.05);
+  for(std::thread *t : threads) {
+    t->join();
+  }
+
+  for(std::thread *t : threads) {
+    delete t;
   }
 
 }
