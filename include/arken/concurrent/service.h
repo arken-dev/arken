@@ -25,7 +25,7 @@ namespace concurrent {
     string m_fileName;
     string m_params;
 
-    service( const char * fileName, const char * params, bool purge );
+    service( const char * fileName, const char * params, bool purge = false);
     ~service();
     bool release();
     void run();

@@ -48,7 +48,7 @@ namespace concurrent {
       std::shared_ptr<std::condition_variable> write_condition
     );
 
-    channel( const char * fileName, const char * params, bool purge );
+    channel( const char * fileName, const char * params, bool purge = false);
     ~channel();
 
     bool empty();
