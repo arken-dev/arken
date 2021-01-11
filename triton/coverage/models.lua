@@ -96,9 +96,9 @@ function M.stop(triton)
   file:write(buffer)
   file:close()
 
-  local result = "%i tests, %i pendings, %i failures"
+  local result = "%i tests, %i pendings, %i failures, %.4f%% coverage"
   print('\n' .. triton:result('message'))
-  print(string.format(result, triton:total('tests'), triton:total('failure'), triton:total('pending')))
+  print(string.format(result, triton:total('tests'), triton:total('failure'), triton:total('pending'), data.coverage))
   print(string.format("Finished in %.2f seconds", os.microtime() - start))
 end
 
