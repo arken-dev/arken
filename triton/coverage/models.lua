@@ -13,6 +13,11 @@ local M = {}
 -------------------------------------------------------------------------------
 
 function M.start(triton)
+  local prepare = 'triton/coverage/prepare.lua'
+  if os.exists(prepare) then
+    dofile(prepare)
+  end
+
   local dir = 'coverage'
   if not os.exists(dir) then
     os.mkdir(dir)
