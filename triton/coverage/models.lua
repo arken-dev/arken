@@ -31,7 +31,7 @@ end
 function M.run(triton, fileName)
   --os.exit()
   local tests     = {}
-  local dirName   = fileName:replace(".lua", ""):replace("app", "tests")
+  local dirName   = fileName:replace(".lua", ""):replace("/app", "/tests")
   local modelName = dirName:replace("./tests/models/", ""):replace("/", ".")
 
   local list = os.glob(dirName)
