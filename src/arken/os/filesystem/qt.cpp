@@ -23,9 +23,9 @@ char * os::abspath(const char * path)
 char * os::basename(const char * path)
 {
   QFileInfo info(path);
-  QString basename = info.fileName();
+  QByteArray basename = info.fileName().toLocal8Bit();
   char * result = new char[basename.size() + 1];
-  strcpy(result, basename.toLocal8Bit());
+  strcpy(result, basename);
   result[basename.size()] = '\0';
   return result;
 }
