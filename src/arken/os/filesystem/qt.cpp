@@ -85,9 +85,9 @@ uint os::ctime(const char * path)
 char * os::dirpath(const char * path)
 {
   QFileInfo info(path);
-  QString dirpath = info.absolutePath();
+  QByteArray dirpath = info.absoluteFilePath().toLocal8Bit();
   char * result = new char[dirpath.size() + 1];
-  strcpy(result, dirpath.toLocal8Bit());
+  strcpy(result, dirpath);
   result[dirpath.size()] = '\0';
   return result;
 }
@@ -99,18 +99,18 @@ bool os::exists(const char * path)
 
 char * os::home()
 {
-  QString homePath = QDir::homePath();
+  QByteArray homePath = QDir::homePath().toLocal8Bit();
   char * result = new char[homePath.size()+1];
-  strcpy(result, homePath.toLocal8Bit());
+  strcpy(result, homePath);
   result[homePath.size()] = '\0';
   return result;
 }
 
 char * os::hostname()
 {
-  QString hostname = QHostInfo::localHostName();
+  QByteArray hostname = QHostInfo::localHostName().toLocal8Bit();
   char * result = new char[hostname.size() + 1];
-  strcpy(result, hostname.toLocal8Bit());
+  strcpy(result, hostname);
   result[hostname.size()] = '\0';
   return result;
 }
@@ -155,9 +155,9 @@ bool os::mkpath(const char * dirpath)
 
 char * os::pwd()
 {
-  QString pwd = QDir::currentPath();
+  QByteArray pwd = QDir::currentPath().toLocal8Bit();
   char * result = new char[pwd.size() + 1];
-  strcpy(result, pwd.toLocal8Bit());
+  strcpy(result, pwd);
   result[pwd.size()] = '\0';
   return result;
 }
@@ -176,27 +176,27 @@ bool os::rmpath(const char * dirpath)
 
 char * os::target(const char * path)
 {
-  QString target = QFile::symLinkTarget(path);
+  QByteArray target = QFile::symLinkTarget(path).toLocal8Bit();
   char * result  = new char[target.size() + 1];
-  strcpy(result, target.toLocal8Bit());
+  strcpy(result, target);
   result[target.size()] = '\0';
   return result;
 }
 
 char * os::temp()
 {
-  QString temp = QDir::tempPath();
+  QByteArray temp = QDir::tempPath().toLocal8Bit();
   char * result = new char[temp.size() + 1];
-  strcpy(result, temp.toLocal8Bit());
+  strcpy(result, temp);
   result[temp.size()] = '\0';
   return result;
 }
 
 char * os::root()
 {
-  QString root = QDir::rootPath();
+  QByteArray root = QDir::rootPath().toLocal8Bit();
   char * result = new char[root.size() + 1];
-  strcpy(result, root.toLocal8Bit());
+  strcpy(result, root);
   result[root.size()] = '\0';
   return result;
 }
