@@ -21,8 +21,9 @@ if(ARKEN_OS_FILESYSTEM STREQUAL "")
 endif()
 
 if(ARKEN_OS_FILESYSTEM STREQUAL "boost")
-  message("ARKEN OS FILESYSTEM.....: boost not not available, force qt")
-  set(ARKEN_OS_FILESYSTEM "qt")
+  message("ARKEN OS FILESYSTEM.....: boost")
+  find_package( Boost REQUIRED COMPONENTS system filesystem thread )
+  include_directories(${Boost_INCLUDE_DIRS})
 endif()
 
 set(os-filesystem ${PROJECT_SOURCE_DIR}/src/arken/os/filesystem/${ARKEN_OS_FILESYSTEM}.cpp)

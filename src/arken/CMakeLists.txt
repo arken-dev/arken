@@ -116,3 +116,8 @@ endif()
 if(ARKEN_OS_UUID STREQUAL "libuuid")
   target_link_libraries(arken uuid)
 endif()
+
+if(ARKEN_OS_FILESYSTEM STREQUAL "boost")
+  message(STATUS "link libarken with ${Boost_LIBRARIES}")
+  target_link_libraries(arken pthread m ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
+endif()
