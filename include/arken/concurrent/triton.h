@@ -19,6 +19,7 @@ namespace concurrent {
 
     private:
 
+    string m_uuid;
     string m_params;
     string m_fileName;
 
@@ -48,6 +49,7 @@ namespace concurrent {
     void count(string key);
     int  total(string);
     string result(string key);
+    string uuid();
 
     public:
     class node : public Base {
@@ -67,6 +69,7 @@ namespace concurrent {
       void count(string key);
       void append(string key, string result);
       string result(string key);
+      string uuid();
 
 
     };

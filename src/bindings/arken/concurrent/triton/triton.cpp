@@ -111,6 +111,14 @@ arken_concurrent_triton_instance_method_result( lua_State *L ) {
   return 1;
 }
 
+static int
+arken_concurrent_triton_instance_method_uuid( lua_State *L ) {
+  triton * pointer = checkTriton( L );
+  lua_pushstring(L, pointer->uuid());
+
+  return 1;
+}
+
 //-----------------------------------------------------------------------------
 // TRITON INSTANCE METHODS
 //-----------------------------------------------------------------------------
@@ -122,6 +130,7 @@ luaL_reg ChannelInstanceMethods[] = {
   {"total",   arken_concurrent_triton_instance_method_total},
   {"append",  arken_concurrent_triton_instance_method_append},
   {"result",  arken_concurrent_triton_instance_method_result},
+  {"uuid",    arken_concurrent_triton_instance_method_uuid},
   {NULL, NULL}
 };
 
@@ -179,6 +188,15 @@ arken_concurrent_triton_node_instance_method_number( lua_State *L ) {
   return 1;
 }
 
+static int
+arken_concurrent_triton_node_instance_method_uuid( lua_State *L ) {
+  triton::node * pointer = checkTritonNode( L );
+  lua_pushstring(L, pointer->uuid());
+
+  return 1;
+}
+
+
 static const
 luaL_reg TritonNodeInstanceMethods[] = {
   {"count",   arken_concurrent_triton_node_instance_method_count},
@@ -186,6 +204,7 @@ luaL_reg TritonNodeInstanceMethods[] = {
   {"append",  arken_concurrent_triton_node_instance_method_append},
   {"result",  arken_concurrent_triton_node_instance_method_result},
   {"number",  arken_concurrent_triton_node_instance_method_number},
+  {"uuid",    arken_concurrent_triton_node_instance_method_uuid},
   {NULL, NULL}
 };
 

@@ -123,6 +123,7 @@ void triton::start(const char * fileName, const char * params, bool purge)
 
 triton::triton(const char * fileName, const char * params, bool purge)
 {
+  m_uuid     = os::uuid();
   m_fileName = fileName;
   m_params   = params;
   m_purge    = purge;
@@ -192,6 +193,11 @@ int triton::total(string key)
   } else {
     return 0;
   }
+}
+
+string triton::uuid()
+{
+  return m_uuid;
 }
 
 string triton::result(string key)
@@ -375,4 +381,9 @@ string triton::node::result(string key)
   } else {
     return "";
   }
+}
+
+string triton::node::uuid()
+{
+  return m_triton->m_uuid;
 }
