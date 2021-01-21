@@ -27,6 +27,10 @@ std::atomic<uint32_t> mvm::concurrent_actives(0);
 string mvm::s_arkenPath    = "";
 string mvm::s_profilePath  = "";
 string mvm::s_dispatchPath = "";
+string mvm::s_packagePath  = "";
+string mvm::s_cpackagePath = "";
+string mvm::s_env = "development";
+
 
 static std::mutex mtx;
 static std::map <std::string, int> s_config;
@@ -130,12 +134,34 @@ void mvm::init(int argc, char ** argv)
     s_argv[i] = new char[len]();
     strcpy(s_argv[i], argv[i]);
   }
-  s_arkenPath    = os::executablePath();
+
+  // env
+  const char * env = getenv("ARKEN_ENV");
+  if( env ) {
+    mvm::env(env);
+  }
+
+  s_arkenPath     = os::executablePath();
   int lastIndexOf = s_arkenPath.lastIndexOf("bin");
-  s_arkenPath    = s_arkenPath.left(lastIndexOf-1);
+  s_arkenPath     = s_arkenPath.left(lastIndexOf-1);
+
+  s_packagePath.
+    append("./?.lua;").
+    append(s_arkenPath).append("/?.lua;").
+    append(s_arkenPath).append("/lib/?.lua;").
+    append(s_arkenPath).append("/packages/?.lua");
 
   if( strcmp(os::name(), "windows") == 0 ) {
     s_arkenPath = s_arkenPath.capitalize();
+    s_cpackagePath.append(s_arkenPath).append("/clib/?.dll");
+  }
+
+  if( strcmp(os::name(), "linux") == 0 ) {
+    s_cpackagePath.append(s_arkenPath).append("/clib/?.so");
+  }
+
+  if( strcmp(os::name(), "macos") == 0 ) {
+    s_cpackagePath.append(s_arkenPath).append("/clib/?.dylib");
   }
 
   s_profilePath = s_arkenPath;
@@ -286,9 +312,9 @@ double mvm::uptime()
   return os::microtime() - mvm::s_uptime;
 }
 
-const char *  mvm::arkenPath()
+const char *  mvm::path()
 {
-  return s_arkenPath.data();
+  return s_arkenPath;
 }
 
 mvm::data::data(uint32_t version)
@@ -300,13 +326,13 @@ mvm::data::data(uint32_t version)
 
   luaL_openlibs(m_State);
 
-  // ARKEN_PATH
-  lua_pushstring(m_State, s_arkenPath);
-  lua_setglobal(m_State, "ARKEN_PATH");
+  lua_getglobal(m_State, "package");
+  lua_pushstring(m_State, s_packagePath);
+  lua_setfield(m_State, -2, "path");
+  lua_pushstring(m_State, s_cpackagePath);
+  lua_setfield(m_State, -2, "cpath");
 
-  // ARKEN_UUID
-  lua_pushboolean(m_State, false);
-  lua_setglobal(m_State, "ARKEN_UUID");
+  lua_pop(m_State, 1);
 
   //---------------------------------------------
   int top, i;
@@ -431,6 +457,16 @@ concurrent::Base * mvm::get()
   concurrent_queue->pop();
 
   return pointer;
+}
+
+void mvm::env(const char * env)
+{
+  s_env = env;
+}
+
+const char * mvm::env()
+{
+  return s_env;
 }
 
 void mvm::concurrent(concurrent::Base * pointer)

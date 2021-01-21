@@ -1,16 +1,4 @@
 -------------------------------------------------------------------------------
--- PATH
--------------------------------------------------------------------------------
-ARKEN_PATH = ARKEN_PATH or CHARON_PATH
-
-package.path  = package.path  .. ";" .. ARKEN_PATH .. "/?.lua"
-package.path  = package.path  .. ";" .. ARKEN_PATH .. "/lib/?.lua"
-package.path  = package.path  .. ";" .. ARKEN_PATH .. "/packages/?.lua"
-package.cpath = package.cpath .. ";" .. ARKEN_PATH .. "/clib/?.so"
-package.cpath = package.cpath .. ";" .. ARKEN_PATH .. "/clib/?.dylib"
-package.cpath = package.cpath .. ";" .. ARKEN_PATH .. "/clib/?.dll"
-
--------------------------------------------------------------------------------
 -- ENV
 -------------------------------------------------------------------------------
 
@@ -20,6 +8,7 @@ os.setlocale("C", "numeric")
 -------------------------------------------------------------------------------
 -- GLOBALS
 -------------------------------------------------------------------------------
+
 require 'arken.base'
 require 'arken.package'
 
@@ -27,9 +16,10 @@ require 'arken.package'
 -- PROFILE.D
 -------------------------------------------------------------------------------
 
-local list = os.glob(ARKEN_PATH .. '/profile.d', '.lua$')
-for i = 1, list:size() do
-  local fileName = list:at(i)
+local mvm  = require 'arken.mvm'
+local list = os.glob(mvm.path() .. '/profile.d', '.lua$')
+
+for fileName in list:each() do
   dofile(fileName)
 end
 
@@ -37,7 +27,7 @@ end
 -- LOCAL PROFILE
 -------------------------------------------------------------------------------
 
-if ARKEN_PATH ~= os.pwd() then
+if mvm.path() ~= os.pwd() then
   local profile = os.pwd() .. '/profile.lua'
   if os.exists(profile) then
     dofile(profile)

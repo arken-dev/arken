@@ -90,6 +90,9 @@ class mvm {
   static string   s_arkenPath;
   static string   s_profilePath;
   static string   s_dispatchPath;
+  static string   s_packagePath;
+  static string   s_cpackagePath;
+  static string   s_env;
 
   private:
   static mvm::data * pop();
@@ -123,10 +126,12 @@ class mvm {
   static void back(mvm::data *);
   static double uptime();
   static arken::instance instance(bool create = false);
-  static const char * arkenPath();
+  static const char * path();
   static void concurrent(concurrent::Base * pointer);
   static void working();
   static void wait();
+  static void env(const char * value);
+  static const char * env();
 
 };
 

@@ -4,6 +4,7 @@ local ActiveRecord = require "arken.ActiveRecord"
 local test         = require 'arken.test'
 local template     = require 'arken.template'
 local coverage     = require 'arken.coverage'
+local mvm          = require 'arken.mvm'
 local start        = os.microtime()
 local files        = {}
 local M = {}
@@ -83,7 +84,7 @@ function M.run(triton, fileName)
 
   local dir     = 'coverage'
   local file    = fileName:mid(3, -1)
-  local tpl     = ARKEN_PATH .. "/lib/arken/coverage/templates/file.html"
+  local tpl     = mvm.path() .. "/lib/arken/coverage/templates/file.html"
   local dump    = coverage.dump()
   local data    = coverage.analyze(file)
   local buffer  = template.execute(tpl, data)
@@ -112,7 +113,7 @@ end
 function M.stop(triton)
   --os.exit()
   local dir    = 'coverage'
-  local tpl    = ARKEN_PATH .. "/lib/arken/coverage/templates/index.html"
+  local tpl    = mvm.path() .. "/lib/arken/coverage/templates/index.html"
   local data   = {files = files, time = (os.microtime() - start), total = triton:total('tests') }
   local buffer = template.execute(tpl, data)
 

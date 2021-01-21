@@ -78,7 +78,7 @@ bool os::exists(const char * path)
 char * os::home()
 {
   const char * p = getenv("HOME");
-  if( p == NULL ) {
+  if( p == nullptr ) {
     return new char{'\0'};
   } else {
     path path = boost::filesystem::absolute(p);

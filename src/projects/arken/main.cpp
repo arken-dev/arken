@@ -110,7 +110,7 @@ int arkenConsoleLoad(lua_State *L)
 
   while(true) {
     sprintf(cmd, "arken %i> ", level);
-    mvm::log(cmd);
+    std::cout << cmd;
 
     std::getline(std::cin, line);
     row = line.c_str();

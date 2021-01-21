@@ -187,7 +187,7 @@ void Dialog::keyPressEvent(QKeyEvent *event)
 void Dialog::send(QString icon, QString title, QString body)
 {
   icon.prepend("/images/");
-  icon.prepend(mvm::arkenPath());
+  icon.prepend(mvm::path());
   icon.append(".png");
 
   this->hide();
