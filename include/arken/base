@@ -11,11 +11,9 @@
 #include <arken/net/httphandle.h>
 #include <arken/net/httputil.h>
 #include <arken/base64.h>
-#include <arken/bytearray.h>
 #include <arken/compress/zip.h>
 #include <arken/digest/md5.h>
 #include <arken/digest/sha1.h>
-#include <arken/http.h>
 #include <arken/log.h>
 #include <arken/mvm.h>
 #include <arken/regex.h>

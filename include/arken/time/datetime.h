@@ -10,8 +10,6 @@
 #include <QDateTime>
 #include <arken/base>
 
-using arken::ByteArray;
-
 namespace arken {
 namespace time {
 
