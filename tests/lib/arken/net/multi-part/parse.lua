@@ -1,7 +1,8 @@
-local HttpEnv = require "arken.net.HttpEnv"
+local mvm       = require "arken.mvm"
+local HttpEnv   = require "arken.net.HttpEnv"
+local multipart = require "arken.net.multi-part"
 
-local multipart = require('arken.net.multi-part')
-local header = os.read(ARKEN_PATH .. '/tests/arken/net/HttpEnv/example-2.txt')
+local header = os.read(mvm.path() .. '/tests/bindings/net/HttpEnv/example-2.txt')
 local parser = HttpEnv.new(header)
 local test = {}
 
