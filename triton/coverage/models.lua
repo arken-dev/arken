@@ -33,8 +33,20 @@ function M.start(triton)
   end
 end
 
+-------------------------------------------------------------------------------
+-- BEFORE
+-------------------------------------------------------------------------------
+
+function M.before(triton)
+  local ActiveRecord = require('arken.ActiveRecord')
+  ActiveRecord.loadConfig{ triton = triton:number() }
+end
+
+-------------------------------------------------------------------------------
+-- RUN
+-------------------------------------------------------------------------------
+
 function M.run(triton, fileName)
-  --os.exit()
   local tests     = {}
   local dirName   = fileName:replace(".lua", ""):replace("/app", "/tests")
   local modelName = dirName:replace("./tests/models/", ""):replace("/", ".")
@@ -84,6 +96,13 @@ function M.run(triton, fileName)
   file:write(json.encode(data))
 
   file:close()
+end
+
+-------------------------------------------------------------------------------
+-- AFTER
+-------------------------------------------------------------------------------
+
+function M.after(triton)
 end
 
 -------------------------------------------------------------------------------

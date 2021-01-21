@@ -6,6 +6,8 @@
 local json    = require("arken.json")
 local Class   = require("arken.oop.Class")
 local Array   = require("arken.Array")
+local config  = nil
+
 ActiveRecord  = Class.new("ActiveRecord")
 
 ActiveRecord.time     = 0
@@ -139,7 +141,7 @@ ActiveRecord.inherit = function(class)
 
   class.factoryAdapter = function(params)
     local params  = params or {}
-    local config  = class.loadConfig()
+    local config  = class.loadConfig(params)
     local adapter = params.adapter or config.adapter
     return Class.lookup(adapter).new{
       record_class = class,
@@ -156,22 +158,25 @@ ActiveRecord.inherit = function(class)
   -- ActiveRecord#loadConfig()
   -----------------------------------------------------------------------------
 
-  class.loadConfig = function()
-    local template = require 'arken.template'
-    local config   = "config/active_record.json"
+  class.loadConfig = function(params)
+    if config == nil then
+      local template = require 'arken.template'
+      local fileName = "config/active_record.json"
 
-    if not os.exists(config) then
-      error("file " .. config .. " not exists")
-    end
+      if not os.exists(fileName) then
+        error("file " .. config .. " not exists")
+      end
 
-    local raw  = template.execute(config)
-    local env  = ARKEN_ENV or 'development'
-    local data = json.decode(raw)
-    if type(data) == 'table' then
-      return data[env]
-    else
-      error(config .. " invalid")
+      local raw  = template.execute(fileName, params)
+      local env  = ARKEN_ENV or 'development'
+      local data = json.decode(raw)
+      if type(data) == 'table' then
+        config = data[env]
+      else
+        error(fileName .. " invalid")
+      end
     end
+    return config
   end
 
   ------------------------------------------------------------------------------

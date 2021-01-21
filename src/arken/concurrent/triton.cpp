@@ -76,7 +76,7 @@ void triton::run()
   json_lock_decode(L, m_params);
 
   if( lua_pcall(L, 2, 0, 0) != 0 ) {
-    fprintf(stderr, " %s\n", lua_tostring(L, -1));
+    fprintf(stderr, "start => %s\n", lua_tostring(L, -1));
   }
 
   if(!lua_istable(L, -1)) {
@@ -110,7 +110,7 @@ void triton::run()
   json_lock_decode(L, m_params);
 
   if( lua_pcall(L, 2, 0, 0) != 0 ) {
-    fprintf(stderr, " %s\n", lua_tostring(L, -1));
+    fprintf(stderr, "stop => %s\n", lua_tostring(L, -1));
   }
 
 } // triton::run
@@ -257,9 +257,29 @@ void triton::node::run()
     lua_pushstring(L, m_fileName);
     rv = lua_pcall(L, 1, 1, 0);
     if (rv) {
-      fprintf(stderr, "%s\n", lua_tostring(L, -1));
+      fprintf(stderr, "file => %s\n", lua_tostring(L, -1));
     }
   }
+
+  // --------------------------------------------------------------------------
+  // BEFORE
+  // --------------------------------------------------------------------------
+
+  lua_pushstring(L, "before");
+  lua_gettable(L, -2);
+
+  triton::node **ptr = (triton::node **)lua_newuserdata(L, sizeof(triton::node *));
+  *ptr = this;
+  luaL_getmetatable(L, "arken.concurrent.triton.node.metatable");
+  lua_setmetatable(L, -2);
+
+  if( lua_pcall(L, 1, 0, 0) != 0 ) {
+    fprintf(stderr, "before => %s: %s\n", m_fileName.data(), lua_tostring(L, 2));
+  }
+
+  // --------------------------------------------------------------------------
+  // RUN
+  // --------------------------------------------------------------------------
 
   while( true ) {
 
@@ -271,18 +291,35 @@ void triton::node::run()
     lua_pushstring(L, "run");
     lua_gettable(L, -2);
 
-    triton **ptr = (triton **)lua_newuserdata(L, sizeof(triton *));
-    *ptr = this->m_triton;
-    luaL_getmetatable(L, "arken.concurrent.triton.metatable");
+    triton::node **ptr = (triton::node **)lua_newuserdata(L, sizeof(triton::node *));
+    *ptr = this;
+    luaL_getmetatable(L, "arken.concurrent.triton.node.metatable");
     lua_setmetatable(L, -2);
     lua_pushstring(L, value);
 
     if( lua_pcall(L, 2, 0, 0) != 0 ) {
-      fprintf(stderr, "file name => %s: %s\n", m_fileName.data(), lua_tostring(L, 2));
+      fprintf(stderr, "run => %s: %s\n", m_fileName.data(), lua_tostring(L, 2));
     }
 
   }
 
+  // --------------------------------------------------------------------------
+  // AFTER
+  // --------------------------------------------------------------------------
+
+  lua_pushstring(L, "after");
+  lua_gettable(L, -2);
+
+  ptr  = (triton::node **)lua_newuserdata(L, sizeof(triton::node *));
+  *ptr = this;
+  luaL_getmetatable(L, "arken.concurrent.triton.node.metatable");
+  lua_setmetatable(L, -2);
+
+  if( lua_pcall(L, 1, 0, 0) != 0 ) {
+    fprintf(stderr, "after => %s: %s\n", m_fileName.data(), lua_tostring(L, 2));
+  }
+
+  // TODO remove
   lua_pushnil(L);
   lua_setglobal(L, "TRITON_NUMBER");
 }
@@ -295,4 +332,47 @@ bool triton::node::release()
 unsigned int triton::node::number()
 {
   return m_number;
+}
+
+void triton::node::append(string key, string result)
+{
+  std::unique_lock<std::mutex> lck(m_triton->m_mutex);
+  if( m_triton->m_result.count(key.data()) > 0 ) {
+    std::string * value = m_triton->m_result.at(key.data());
+    value->append(result.data());
+  } else {
+    m_triton->m_result[key.data()] = new std::string(result.data());
+  }
+}
+
+void triton::node::count(string key)
+{
+  std::unique_lock<std::mutex> lck(m_triton->m_mutex);
+  if( m_triton->m_total.count(key.data()) > 0 ) {
+    int value = m_triton->m_total.at(key.data());
+    value++;
+    m_triton->m_total[key.data()] = value;
+  } else {
+    m_triton->m_total[key.data()] = 1;
+  }
+}
+
+int triton::node::total(string key)
+{
+  std::unique_lock<std::mutex> lck(m_triton->m_mutex);
+  if( m_triton->m_total.count(key.data()) > 0 ) {
+    return m_triton->m_total.at(key.data());
+  } else {
+    return 0;
+  }
+}
+
+string triton::node::result(string key)
+{
+  std::unique_lock<std::mutex> lck(m_triton->m_mutex);
+  if( m_triton->m_result.count(key.data()) > 0 ) {
+    return m_triton->m_result.at(key.data())->c_str();
+  } else {
+    return "";
+  }
 }
