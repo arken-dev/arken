@@ -41,7 +41,7 @@ namespace concurrent {
     triton( const char * fileName, const char * params, bool purge );
     ~triton();
 
-    static void start(const char * fileName, const char * params, bool purge = false);
+    static string start(const char * fileName, const char * params, bool purge = false);
     static void wait();
     void perform(unsigned int cores);
     void enqueue(string node);

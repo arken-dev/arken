@@ -42,7 +42,8 @@ arken_triton_start(lua_State *L) {
     }
     params = json_lock_encode(L);
   }
-  triton::start( fileName, params, release );
+  string uuid = triton::start( fileName, params, release );
+  lua_pushstring(L, uuid);
 
   delete params;
 

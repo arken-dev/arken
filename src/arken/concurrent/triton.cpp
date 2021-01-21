@@ -115,10 +115,11 @@ void triton::run()
 
 } // triton::run
 
-void triton::start(const char * fileName, const char * params, bool purge)
+string triton::start(const char * fileName, const char * params, bool purge)
 {
   triton * ptr = new triton(fileName, params, purge);
   mvm::concurrent(ptr);
+  return ptr->m_uuid;
 }
 
 triton::triton(const char * fileName, const char * params, bool purge)
