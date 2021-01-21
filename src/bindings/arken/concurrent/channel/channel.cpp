@@ -109,12 +109,21 @@ arken_concurrent_channel_instance_method_destruct( lua_State *L ) {
   return 0;
 }
 
+static int
+arken_concurrent_channel_instance_method_uuid( lua_State *L ) {
+  channel * chn = checkChannel( L );
+  lua_pushstring(L, chn->uuid());
+  return 1;
+}
+
+
 static const
 luaL_reg ChannelInstanceMethods[] = {
   {"write",     arken_concurrent_channel_instance_method_write},
   {"read",      arken_concurrent_channel_instance_method_read},
   {"empty",     arken_concurrent_channel_instance_method_empty},
   {"finished",  arken_concurrent_channel_instance_method_finished},
+  {"uuid",      arken_concurrent_channel_instance_method_uuid},
   {"__gc",      arken_concurrent_channel_instance_method_destruct},
   {NULL, NULL}
 };

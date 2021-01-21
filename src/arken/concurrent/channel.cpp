@@ -87,7 +87,8 @@ channel::channel(
   std::shared_ptr<std::mutex> read_mtx,
   std::shared_ptr<std::mutex> write_mtx,
   std::shared_ptr<std::condition_variable> read_condition,
-  std::shared_ptr<std::condition_variable> write_condition
+  std::shared_ptr<std::condition_variable> write_condition,
+  string uuid
 )
 {
   m_read            = read;
@@ -99,6 +100,7 @@ channel::channel(
   m_finished        = false;
   m_release         = true;
   m_client          = nullptr;
+  m_uuid            = uuid;
 }
 
 channel::channel(const char * fileName, const char * params, bool purge)
@@ -110,6 +112,7 @@ channel::channel(const char * fileName, const char * params, bool purge)
   m_read_condition  = std::shared_ptr<std::condition_variable>(new std::condition_variable);
   m_write_condition = std::shared_ptr<std::condition_variable>(new std::condition_variable);
 
+  m_uuid     = os::uuid();
   m_fileName = fileName;
   m_params   = params;
   m_purge    = purge;
@@ -117,7 +120,7 @@ channel::channel(const char * fileName, const char * params, bool purge)
   m_release  = true;
 
   m_client = new channel(
-    m_write, m_read, m_write_mtx, m_read_mtx, m_write_condition, m_read_condition
+    m_write, m_read, m_write_mtx, m_read_mtx, m_write_condition, m_read_condition, m_uuid
   );
 
 }
@@ -176,4 +179,9 @@ std::string channel::read()
   m_read->pop();
 
   return message;
+}
+
+string channel::uuid()
+{
+  return m_uuid;
 }

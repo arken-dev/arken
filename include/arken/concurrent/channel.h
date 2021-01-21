@@ -6,6 +6,7 @@
 #ifndef _ARKEN_CONCURRENT_CHANNEL_
 #define _ARKEN_CONCURRENT_CHANNEL_
 
+#include <arken/base>
 #include <arken/mvm.h>
 #include <memory>
 
@@ -25,6 +26,7 @@ namespace concurrent {
     std::shared_ptr<std::condition_variable> m_read_condition;
     std::shared_ptr<std::condition_variable> m_write_condition;
 
+    string m_uuid;
     string m_params;
     string m_fileName;
 
@@ -45,7 +47,8 @@ namespace concurrent {
       std::shared_ptr<std::mutex> read_mtx,
       std::shared_ptr<std::mutex> write_mtx,
       std::shared_ptr<std::condition_variable> read_condition,
-      std::shared_ptr<std::condition_variable> write_condition
+      std::shared_ptr<std::condition_variable> write_condition,
+      string uuid
     );
 
     channel( const char * fileName, const char * params, bool purge = false);
@@ -53,6 +56,7 @@ namespace concurrent {
 
     bool empty();
     void write(std::string message);
+    string uuid();
     std::string read();
     channel * client();
 
