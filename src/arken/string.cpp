@@ -550,7 +550,7 @@ char * string::left(const char * string, int len)
   return result;
 }
 
-char * string::mid(const char * string, int pos, int len, int string_len)
+char * string::mid(const char * string, int pos, int len, int string_len, size_t * _len)
 {
   int i, j = 0;
   if( ! string_len) { string_len = strlen(string); };
@@ -575,6 +575,10 @@ char * string::mid(const char * string, int pos, int len, int string_len)
 
   if ( pos >= string_len || len < 0) {
     len = 0;
+  }
+
+  if( _len ) {
+    *_len = len;
   }
 
   result = new char[len + 1];
@@ -1510,7 +1514,9 @@ string string::leftJustified(size_t size, const char * pad)
 
 string string::mid(int pos, int len)
 {
-  return string::consume( string::mid(m_data, pos, len, m_size) ); //, len );
+  size_t _len;
+  char * result = string::mid(m_data, pos, len, m_size, &_len);
+  return string::consume( result, len );
 }
 
 string string::md5()

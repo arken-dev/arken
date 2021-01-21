@@ -1,4 +1,3 @@
-local ByteArray = require 'arken.ByteArray'
 local multipart = {}
 
 multipart.parse = function(data)
@@ -17,7 +16,7 @@ multipart.parse = function(data)
       file.name = cols:at(4)
       file.contentType = rows:at(2)
       local tamanho = #disp + #file.contentType + 8
-      file.data = ByteArray.new(frag):mid(tamanho, #frag - tamanho - 2)
+      file.data = string.new(frag):mid(tamanho, #frag - tamanho - 2)
       result[field] = file
     else
       if field then

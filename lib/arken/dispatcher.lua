@@ -5,7 +5,6 @@
 
 local Controller   = require 'arken.Controller'
 local ActiveRecord = require 'arken.ActiveRecord'
-local ByteArray    = require 'arken.ByteArray'
 local template     = require 'arken.template'
 local HttpEnv      = require 'arken.net.HttpEnv'
 
