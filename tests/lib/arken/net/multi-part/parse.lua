@@ -3,6 +3,7 @@ local HttpEnv   = require "arken.net.HttpEnv"
 local multipart = require "arken.net.multi-part"
 
 local header = os.read(mvm.path() .. '/tests/bindings/net/HttpEnv/example-2.txt')
+
 local parser = HttpEnv.new(header)
 local test = {}
 
@@ -52,6 +53,19 @@ test.should_parse_first_field_myfile = function()
   assert(myfile.contentType == 'Content-Type: image/png', myfile.contentType)
   assert(myfile.data:left(1000):contains('PNG'), myfile.data:left(10))
   assert(#myfile.data == 311, #myfile.data)
+end
+
+test.should_parse_end_field_myfile = function()
+  local header = os.read(mvm.path() .. '/tests/bindings/net/HttpEnv/example-3.txt')
+  local parser = HttpEnv.new(header)
+  local result = multipart.parse(parser:headerDone())
+  local myfile = result.file
+  assert(type(myfile) == 'table', type(myfile))
+  assert(myfile.name == '35210105030501000134550000000441141143278918.xml', myfile.name)
+  assert(myfile.contentType == 'Content-Type: text/xml', myfile.contentType)
+  print("teste do print" .. myfile.data:right(10) .. "teste d print")
+  assert(myfile.data:endsWith('</nfeProc>'), myfile.data:right(10))
+  assert(#myfile.data == 11445, #myfile.data)
 end
 
 return test
