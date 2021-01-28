@@ -6,7 +6,7 @@ local header = os.read(mvm.path() .. '/tests/bindings/net/HttpEnv/example-2.txt'
 
 local parser = HttpEnv.new(header)
 local test = {}
---[[
+
 test.should_parse_requestUri = function()
   assert(parser:requestUri() == '/app/fornecedor/filtrar/indexPerform', parser:requestUri())
 end
@@ -54,7 +54,7 @@ test.should_parse_first_field_myfile = function()
   assert(myfile.data:left(1000):contains('PNG'), myfile.data:left(10))
   assert(#myfile.data == 311, #myfile.data)
 end
-]]
+
 test.should_parse_end_field_myfile = function()
   local header = os.read(mvm.path() .. '/tests/bindings/net/HttpEnv/example-3.txt')
   local parser = HttpEnv.new(header)
