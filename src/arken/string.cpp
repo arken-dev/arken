@@ -559,6 +559,7 @@ char * string::mid(const char * string, int pos, int len, int string_len, size_t
 
   if ( len < 0 ) {
     len = (size_t) string_len + (len+1);
+    len = len - pos;
   }
 
   if ( len < 0 ) {
@@ -1516,7 +1517,7 @@ string string::mid(int pos, int len)
 {
   size_t _len;
   char * result = string::mid(m_data, pos, len, m_size, &_len);
-  return string::consume( result, len );
+  return string::consume( result , _len );
 }
 
 string string::md5()
