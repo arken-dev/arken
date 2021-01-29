@@ -153,14 +153,20 @@ void mvm::init(int argc, char ** argv)
 
   if( strcmp(os::name(), "windows") == 0 ) {
     s_arkenPath = s_arkenPath.capitalize();
+    s_cpackagePath.append("./?.dll;");
+    s_cpackagePath.append("./clib/?.dll;");
     s_cpackagePath.append(s_arkenPath).append("/clib/?.dll");
   }
 
   if( strcmp(os::name(), "linux") == 0 ) {
+    s_cpackagePath.append("./?.so;");
+    s_cpackagePath.append("./clib/?.so;");
     s_cpackagePath.append(s_arkenPath).append("/clib/?.so");
   }
 
   if( strcmp(os::name(), "macos") == 0 ) {
+    s_cpackagePath.append("./?.dylib;");
+    s_cpackagePath.append("./clib/?.dylib;");
     s_cpackagePath.append(s_arkenPath).append("/clib/?.dylib");
   }
 
