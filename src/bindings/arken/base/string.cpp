@@ -26,13 +26,9 @@ arken_string_new( lua_State *L ) {
   if(lua_gettop(L) == 0) { // number of arguments
     str = new string();
   } else {
-    if( lua_isnumber(L, 1) ) {
-      str = new string(lua_tointeger(L, 1));
-    } else {
-      size_t len;
-      const char *s = luaL_checklstring(L, 1, &len);
-      str = new string(s, len);
-    }
+    size_t len;
+    const char *s = luaL_checklstring(L, 1, &len);
+    str = new string(s, len);
   }
   string **ptr = (string **)lua_newuserdata(L, sizeof(string*));
   *ptr = str;
