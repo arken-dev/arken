@@ -1365,7 +1365,7 @@ string & string::prepend(const char * data)
 {
   size_t len = strlen(data);
   m_capacity = m_size + len + m_reserve;
-  char * tmp = new char[m_capacity];
+  char * tmp = new char[m_capacity+1];
 
   for(size_t i=0; i < len; i++) {
     tmp[i] = data[i];
@@ -1762,7 +1762,7 @@ string::List::List(const List &obj)
 
   if( m_size > 0 ) {
     for(int i = 0; i < m_size; i++) {
-      m_array[i] = new string(obj.m_array[i]->data());
+      m_array[i] = new string(obj.m_array[i]->data(), obj.m_array[i]->size());
     }
   }
 
@@ -1793,7 +1793,7 @@ List & string::List::operator=(const List &obj)
 
   if( m_size > 0 ) {
     for(int i = 0; i < m_size; i++) {
-      this->m_array[i] = new string(obj.m_array[i]->data());
+      this->m_array[i] = new string(obj.m_array[i]->data(), obj.m_array[i]->size());
     }
   }
 
