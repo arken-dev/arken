@@ -1279,14 +1279,6 @@ string::string(const char * data)
   m_data[m_size] = '\0';
 }
 
-string::string(size_t reserve)
-{
-  m_reserve   = reserve;
-  m_size      = 0;
-  m_data      = new char[m_reserve]();
-  m_capacity  = m_size;
-}
-
 string::string(const arken::string & str)
 {
   m_reserve   = str.m_reserve;

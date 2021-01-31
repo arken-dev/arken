@@ -82,7 +82,6 @@ namespace arken {
     string();
     string(const char * str);
     string(const char * str, size_t size);
-    string(size_t reserve);
     string(const arken::string &str);
     ~string();
 

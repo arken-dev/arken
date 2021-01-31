@@ -318,7 +318,8 @@ string SMTP::rfc2822Date()
 {
   time_t rawtime;
   struct tm * timeinfo;
-  string buffer(80);// = new char[80];
+  string buffer;
+  buffer.reserve(80);
 
   time(&rawtime);
   timeinfo = localtime (&rawtime);
