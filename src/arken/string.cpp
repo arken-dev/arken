@@ -1253,7 +1253,7 @@ char * string::sha1(const char * str)
 
 string::string()
 {
-  m_reserve  = 1024;
+  m_reserve  = 0;
   m_size     = 0;
   m_data     = new char[1]();
   m_capacity = m_size;
@@ -1261,9 +1261,9 @@ string::string()
 
 string::string(const char * data, size_t size)
 {
-  m_reserve   = 1024;
   m_size      = size;
-  m_capacity  = m_size;
+  m_reserve   = size;
+  m_capacity  = size;
   m_data      = new char[m_size + 1];
   memcpy( m_data, data, size );
   m_data[m_size] = '\0';
@@ -1271,8 +1271,8 @@ string::string(const char * data, size_t size)
 
 string::string(const char * data)
 {
-  m_reserve   = 1024;
   m_size      = strlen(data);
+  m_reserve   = m_size;
   m_capacity  = m_size;
   m_data      = new char[m_size + 1];
   strcpy(m_data, data);
@@ -1349,15 +1349,7 @@ string & string::append(std::string str)
 
 string & string::append(const char * data, size_t len)
 {
-  if( (m_size + len) >= m_capacity ) {
-    char * tmp = m_data;
-    m_capacity = m_size + len + m_reserve;
-    m_data     = new char[m_capacity];
-    for(size_t i = 0; i < m_size; i++) {
-      m_data[i] = tmp[i];
-    }
-    delete[] tmp;
-  }
+  reserve(m_size + len);
 
   for(size_t i=0; i < len; i++, m_size++) {
     m_data[m_size] = data[i];
@@ -1373,7 +1365,7 @@ string & string::prepend(const char * data)
 {
   size_t len = strlen(data);
   m_capacity = m_size + len + m_reserve;
-  char * tmp = new char[m_capacity];
+  char * tmp = new char[m_capacity+1];
 
   for(size_t i=0; i < len; i++) {
     tmp[i] = data[i];
@@ -1549,7 +1541,18 @@ string string::replace(const char before, const char after, int start)
 
 void string::reserve(size_t reserve)
 {
-  m_reserve = reserve;
+  if( reserve >= m_capacity ) {
+    char * tmp = m_data;
+    m_capacity = reserve + m_reserve;
+    m_data     = new char[m_capacity+1];
+    for(size_t i = 0; i < m_size; i++) {
+      m_data[i] = tmp[i];
+    }
+    m_data[m_size] = '\0';
+    delete[] tmp;
+
+    m_reserve = reserve + (m_reserve * 2);
+  }
 }
 
 size_t string::reserve()
@@ -1759,7 +1762,7 @@ string::List::List(const List &obj)
 
   if( m_size > 0 ) {
     for(int i = 0; i < m_size; i++) {
-      m_array[i] = new string(obj.m_array[i]->data());
+      m_array[i] = new string(obj.m_array[i]->data(), obj.m_array[i]->size());
     }
   }
 
@@ -1790,7 +1793,7 @@ List & string::List::operator=(const List &obj)
 
   if( m_size > 0 ) {
     for(int i = 0; i < m_size; i++) {
-      this->m_array[i] = new string(obj.m_array[i]->data());
+      this->m_array[i] = new string(obj.m_array[i]->data(), obj.m_array[i]->size());
     }
   }
 
