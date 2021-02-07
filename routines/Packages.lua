@@ -1,7 +1,7 @@
 local HttpClient = require('arken.net.HttpClient')
 local zip        = require('arken.compress.zip')
+local ARKEN_PATH = require('arken.mvm').path()
 local packages   = string.format("%s/config/packages", ARKEN_PATH)
-
 
 local Packages = Class.new("routines.Packages")
 
