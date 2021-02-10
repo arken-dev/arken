@@ -27,7 +27,7 @@ end
 test['should empty string for new line char'] = function()
   local str1 = "\n"
   local str2 = ""
-  assert( str1:rightTrimmed() == str2 )
+  assert( str1:rightTrimmed() == str2, str1 )
 end
 
 test['should empty string for return and new line chars'] = function()

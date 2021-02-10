@@ -708,7 +708,7 @@ char * string::repeated(const char *string, int times)
   int result_len = (len*times);
   char * result = new char[result_len + 1];
   int i = 0, j = 0;
-  while( i < result_len) {
+  while( i < result_len ) {
     for(j=0; j < len; j++) {
       result[i] = string[j];
       i++;
@@ -790,11 +790,11 @@ char * string::simplified(const char *string)
 
   len = strlen(string);
 
-  while(simplified_special_char(string[i])) {
+  while(i < len && simplified_special_char(string[i])) {
     i++;
   }
 
-  while(simplified_special_char(string[len-1])) {
+  while(len > 0 && simplified_special_char(string[len-1])) {
     len--;
   }
 
@@ -1026,7 +1026,7 @@ char * string::trimmed(const char *string)
   }
 
   size = len - i;
-  if( size < 0 ) {
+  if( size <= 0 ) {
     result = new char[1]();
   } else {
     result = new char[size + 1];
@@ -1051,11 +1051,11 @@ char * string::leftTrimmed(const char *string)
 
   len = strlen(string);
 
-  while(trim_special_char(string[i])) {
+  while(i < len && trim_special_char(string[i])) {
     i++;
   }
 
-  if( (len - i) < 0 ) {
+  if( (len - i) <= 0 ) {
     result = new char[1]();
   } else {
     result = new char[(len-i) + 2];
@@ -1080,15 +1080,15 @@ char * string::rightTrimmed(const char *string)
 
   len = strlen(string);
 
-  while(trim_special_char(string[len])) {
+  while(len > 0 && trim_special_char(string[len-1])) {
     len--;
   }
 
-  if( (len - i) < 0 ) {
+  if( (len - i) <= 0 ) {
     result = new char[1]();
   } else {
     result = new char[(len-i) + 2];
-    while(i <= len) {
+    while(i < len) {
       result[j] = string[i];
       i++;
       j++;
