@@ -1017,11 +1017,11 @@ char * string::trimmed(const char *string)
 
   len = strlen(string);
 
-  while(trim_special_char(string[i])) {
+  while(i < len && trim_special_char(string[i])) {
     i++;
   }
 
-  while(trim_special_char(string[len-1])) {
+  while(len > 0 && trim_special_char(string[len-1])) {
     len--;
   }
 
