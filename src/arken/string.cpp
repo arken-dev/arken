@@ -1012,7 +1012,7 @@ char * string::trimmed(const char *string)
 {
   int i = 0;
   int j = 0;
-  int len;
+  int len, size;
   char * result;
 
   len = strlen(string);
@@ -1021,15 +1021,16 @@ char * string::trimmed(const char *string)
     i++;
   }
 
-  while(trim_special_char(string[len])) {
+  while(trim_special_char(string[len-1])) {
     len--;
   }
 
-  if( (len - i) < 0 ) {
+  size = len - i;
+  if( size < 0 ) {
     result = new char[1]();
   } else {
-    result = new char[(len-i) + 2];
-    while(i <= len) {
+    result = new char[size + 1];
+    while(j < size) {
       result[j] = string[i];
       i++;
       j++;
