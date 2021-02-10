@@ -6,6 +6,19 @@ test['should remove blanks from the beginning and the end'] = function()
   assert( str1:simplified() == str2 )
 end
 
+test['should remove blanks from the left'] = function()
+  local str1 = "  this is a test"
+  local str2 = "this is a test"
+  assert( str1:simplified() == str2 )
+end
+
+test['should remove blanks from the right'] = function()
+  local str1 = "this is a test     "
+  local str2 = "this is a test"
+  assert( str1:simplified() == str2 )
+end
+
+
 test['should remove one char blank from the beginning and the end'] = function()
   local str1 = " this is a test "
   local str2 = "this is a test"
@@ -22,6 +35,12 @@ test['should remove break line throughout the string'] = function()
   local str1 = "\nthis\nis\na\ntest\n"
   local str2 = "this is a test"
   assert( str1:simplified() == str2 )
+end
+
+test['should remove new lines and white spaces'] = function()
+  local str1 = "\n \nthis is a test\n \n"
+  local str2 = "\n \nthis is a test"
+  assert( str1:rightTrimmed() == str2 )
 end
 
 test['should remove tab throughout the string'] = function()
@@ -44,6 +63,9 @@ test['should return empty string for many invalid chars'] = function()
   assert( str:simplified() == "" )
 
   str = "\n\r "
+  assert( str:simplified() == "" )
+
+  str = "\n"
   assert( str:simplified() == "" )
 
   str = " "
@@ -69,6 +91,30 @@ end
 test['should equal empty string'] = function()
   local str = ""
   assert( str:simplified() == str )
+end
+
+test['should string with one char'] = function()
+  local str1 = "("
+  local str2 = "("
+  assert( str1:simplified() == str2, str1:rightTrimmed() )
+end
+
+test['should string with one char with space right'] = function()
+  local str1 = "( "
+  local str2 = "("
+  assert( str1:simplified() == str2, str1:rightTrimmed() )
+end
+
+test['should string with one char with space left'] = function()
+  local str1 = " ("
+  local str2 = "("
+  assert( str1:simplified() == str2, str2:rightTrimmed() )
+end
+
+test['should string with one char with space right'] = function()
+  local str1 = "( "
+  local str2 = "("
+  assert( str1:simplified() == str2, str1:rightTrimmed() )
 end
 
 return test
