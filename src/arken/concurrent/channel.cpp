@@ -56,7 +56,7 @@ void channel::run()
 
   //lua_pushlstring(L,  m_uuid, 37); //push channel
   channel **ptr = (channel **)lua_newuserdata(L, sizeof(channel*));
-  *ptr = this;
+  *ptr = new channel(*this);
   luaL_getmetatable(L, "arken.concurrent.channel.metatable");
   lua_setmetatable(L, -2);
 
@@ -123,6 +123,19 @@ channel::channel(const char * fileName, const char * params, bool purge)
     m_write, m_read, m_write_mtx, m_read_mtx, m_write_condition, m_read_condition, m_uuid
   );
 
+}
+
+channel::channel(const channel &obj) {
+  m_read            = obj.m_read;
+  m_write           = obj.m_write;
+  m_read_mtx        = obj.m_read_mtx;
+  m_write_mtx       = obj.m_write_mtx;
+  m_read_condition  = obj.m_read_condition;
+  m_write_condition = obj.m_write_condition;
+  m_finished        = false;
+  m_release         = false;
+  m_client          = obj.m_client;
+  m_uuid            = obj.m_uuid;
 }
 
 channel * channel::client()

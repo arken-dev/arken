@@ -51,7 +51,8 @@ namespace concurrent {
       string uuid
     );
 
-    channel( const char * fileName, const char * params, bool purge = false);
+    channel(const char * fileName, const char * params, bool purge = false);
+    channel(const channel &obj);
     ~channel();
 
     bool empty();

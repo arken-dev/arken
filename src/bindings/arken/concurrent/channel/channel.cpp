@@ -103,9 +103,7 @@ arken_concurrent_channel_instance_method_finished( lua_State *L ) {
 static int
 arken_concurrent_channel_instance_method_destruct( lua_State *L ) {
   channel * chn = checkChannel( L );
-  if( !chn->client() ) {
-    delete chn;
-  }
+  delete chn;
   return 0;
 }
 
