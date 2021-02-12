@@ -59,9 +59,9 @@ void Log::append(const char * value)
 {
   std::unique_lock<std::mutex> lck(mtx);
 
-  std::string container = *m_containers[m_fileName];
-  container.append(value);
-  container.append("\n");
+  std::string * container = m_containers[m_fileName];
+  container->append(value);
+  container->append("\n");
 
   int  max   = m_max[m_fileName];
   int  count = m_count[m_fileName];
