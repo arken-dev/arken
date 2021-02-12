@@ -7,7 +7,6 @@
 #define _ARKEN_LOG_
 
 #include <fstream>
-#include <mutex>
 #include <unordered_map>
 
 namespace arken
@@ -20,15 +19,12 @@ namespace arken
     std::string m_fileName;
 
     static std::unordered_map<std::string, int>           m_references;
+    static std::unordered_map<std::string, int>           m_count;
+    static std::unordered_map<std::string, int>           m_max;
     static std::unordered_map<std::string, std::string *> m_containers;
-    static std::unordered_map<std::string, std::mutex  *> m_mutexes;
-    static std::unordered_map<std::string, std::mutex  *> m_dumps;
-
-    void lock();
-    void unlock();
 
     public:
-    Log(const char * fileName);
+    Log(const char * fileName, int max = -1);
     ~Log();
     void append(const char * value);
     void log(const char * level, const char * log);

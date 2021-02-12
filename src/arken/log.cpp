@@ -6,51 +6,73 @@
 #include <arken/base>
 #include <arken/log>
 #include <ctime>
+#include <mutex>
 
 using namespace arken;
 
+std::unordered_map<std::string, int>           Log::m_count;
 std::unordered_map<std::string, int>           Log::m_references;
+std::unordered_map<std::string, int>           Log::m_max;
 std::unordered_map<std::string, std::string *> Log::m_containers;
-std::unordered_map<std::string, std::mutex  *> Log::m_mutexes;
-std::unordered_map<std::string, std::mutex  *> Log::m_dumps;
-static std::mutex m;
 
-Log::Log(const char * fileName)
+static std::mutex mtx;
+
+Log::Log(const char * fileName, int max)
 {
-  m.lock();
-  m_fileName = fileName;
+  std::unique_lock<std::mutex> lck(mtx);
+
+  if( string::contains(fileName, "/") ) {
+    m_fileName = fileName;
+  } else {
+    m_fileName = os::pwd();
+    m_fileName.append("/logs/");
+    m_fileName.append(fileName);
+    m_fileName.append(".log");
+  }
+
   if ( m_references.count(m_fileName) == 0 ) {
+    m_max[m_fileName]           = max;
+    m_count[m_fileName]         = 1;
     m_references[m_fileName]    = 0;
-    m_mutexes[m_fileName]       = new std::mutex;
-    m_dumps[m_fileName]         = new std::mutex;
     m_containers[m_fileName]    = new std::string("");
   }
+
   m_references[m_fileName]++;
-  m.unlock();
 }
 
 Log::~Log()
 {
-  m.lock();
+  std::unique_lock<std::mutex> lck(mtx);
+
   m_references[m_fileName]--;
+
   if( m_references[m_fileName] == 0 ) {
-    delete m_mutexes[m_fileName];
-    delete m_dumps[m_fileName];
     delete m_containers[m_fileName];
     m_containers.erase(m_fileName);
-    m_mutexes.erase(m_fileName);
-    m_dumps.erase(m_fileName);
     m_references.erase(m_fileName);
+    m_max.erase(m_fileName);
+    m_count.erase(m_fileName);
   }
-  m.unlock();
 }
 
 void Log::append(const char * value)
 {
-  this->lock();
-  m_containers[m_fileName]->append(value);
-  m_containers[m_fileName]->append("\n");
-  this->unlock();
+  std::unique_lock<std::mutex> lck(mtx);
+
+  std::string container = *m_containers[m_fileName];
+  container.append(value);
+  container.append("\n");
+
+  int  max   = m_max[m_fileName];
+  int  count = m_count[m_fileName];
+
+  if( max > 0 && count >= max ) {
+    this->dump();
+    count = 0;
+  }
+
+  count++;
+  m_count[m_fileName] = count;
 }
 
 void Log::log(const char * level, const char * value)
@@ -98,27 +120,15 @@ void Log::fatal(const char * value)
 
 void Log::dump()
 {
-  m.lock();
-  std::string * tmp = m_containers[m_fileName];
-  m_containers[m_fileName]  = new std::string("");
-  m.unlock();
+  std::unique_lock<std::mutex> lck(mtx);
 
-  m_dumps[m_fileName]->lock();
+  std::string *tmp = m_containers[m_fileName];
+  m_containers[m_fileName]  = new std::string("");
+
   // write file
   std::ofstream file;
-  file.open (m_fileName, std::ofstream::out | std::ofstream::app);
+  file.open(m_fileName, std::ofstream::out | std::ofstream::app);
   file << *tmp;
   file.close();
   delete tmp;
-  m_dumps[m_fileName]->unlock();
-}
-
-void Log::lock()
-{
-  m_mutexes[m_fileName]->lock();
-}
-
-void Log::unlock()
-{
-  m_mutexes[m_fileName]->unlock();
 }
