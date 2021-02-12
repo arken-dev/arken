@@ -67,7 +67,7 @@ void Log::append(const char * value)
   int  count = m_count[m_fileName];
 
   if( max > 0 && count >= max ) {
-    this->dump();
+    this->_dump();
     count = 0;
   }
 
@@ -121,7 +121,11 @@ void Log::fatal(const char * value)
 void Log::dump()
 {
   std::unique_lock<std::mutex> lck(mtx);
+  this->_dump();
+}
 
+void Log::_dump()
+{
   std::string *tmp = m_containers[m_fileName];
   m_containers[m_fileName]  = new std::string("");
 

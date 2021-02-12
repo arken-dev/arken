@@ -35,6 +35,7 @@ namespace arken
     void error(const char * value);
     void fatal(const char * value);
     void dump();
+    void _dump();
 
   };
 
