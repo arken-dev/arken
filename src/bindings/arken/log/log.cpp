@@ -25,7 +25,7 @@ checkLog( lua_State *L ) {
 static int
 arken_LogClassMethodNew( lua_State *L ) {
   const char *str = (char *) luaL_checkstring(L, 1);
-  int max = 1;
+  int max = -1;
   if(lua_gettop(L) == 2) { // number of arguments
     max = luaL_checkinteger(L, 2);
   }
