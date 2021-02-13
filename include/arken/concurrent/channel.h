@@ -26,6 +26,8 @@ namespace concurrent {
     std::shared_ptr<std::condition_variable> m_read_condition;
     std::shared_ptr<std::condition_variable> m_write_condition;
 
+    std::shared_ptr<bool>  m_ref_bool;
+
     string m_uuid;
     string m_params;
     string m_fileName;
@@ -48,7 +50,8 @@ namespace concurrent {
       std::shared_ptr<std::mutex> write_mtx,
       std::shared_ptr<std::condition_variable> read_condition,
       std::shared_ptr<std::condition_variable> write_condition,
-      string uuid
+      string uuid,
+      std::shared_ptr<bool> ref_bool
     );
 
     channel(const char * fileName, const char * params, bool purge = false);
@@ -56,6 +59,7 @@ namespace concurrent {
     ~channel();
 
     bool empty();
+    bool finished();
     void write(std::string message);
     string uuid();
     std::string read();
