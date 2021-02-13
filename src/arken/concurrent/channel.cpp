@@ -67,8 +67,9 @@ void channel::run()
     fprintf(stderr, "erro no inicio: %s\n", lua_tostring(L, -1));
   }
 
-  m_write->push("channel is finished");
-  m_write_condition->notify_one();
+  write("channel is finished");
+  //m_write->push("channel is finished");
+  //m_write_condition->notify_one();
   m_client->m_finished = true;
 
   // GC
