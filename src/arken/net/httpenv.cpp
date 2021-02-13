@@ -7,7 +7,7 @@ extern "C" {
   #include <http11/http11_parser.h>
 }
 
-#include <arken/base>
+#include <arken/net/httpenv.h>
 
 using namespace arken::net;
 
