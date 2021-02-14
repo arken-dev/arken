@@ -1,1 +1,5 @@
-clang-tidy-6.0 -fix $1 -checks=-*,clang-analyzer-*,-clang-analyzer-cplusplus*,modernize-* -- -I src/vendors/mongrel2 -I include -std=c++11
+clang-tidy-6.0 -fix $1 \
+  -checks=-*,clang-analyzer-*,-clang-analyzer-cplusplus*,modernize-*,readability-*,google-* -- \
+  -I src/vendors/mongrel2 \
+  -I include -std=c++11   \
+  -I deps/include/
