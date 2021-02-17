@@ -30,18 +30,21 @@ namespace concurrent {
 
     class node {
       friend class naiad;
+
       string m_uuid;
       string m_fileName;
       string m_params;
-      int    m_priority;
-      bool   m_purge;
-      double m_microtime;
-      private:
+      int    m_priority{0};
+      double m_microtime{0};
+      bool   m_purge{false};
+
       node(const char * fileName, const char * params, int priority = 0, bool purge = false);
+
       public:
       node();
       node(const node &obj);
-      bool operator()(naiad::node* n1, naiad::node* n2);
+      bool operator()(const naiad::node &n1, const naiad::node &n2);
+      operator bool() const;
       void run();
       string uuid();
       int    priority();
@@ -49,12 +52,13 @@ namespace concurrent {
     };
 
     static naiad::node start(const char * fileName, const char * params, int priority = 0, bool purge = false);
-    static std::priority_queue<naiad::node, std::vector<naiad::node *>, naiad::node> s_priority_queue;
-    static std::mutex * s_mutex;
-    static void push(naiad::node * node);
+    static std::priority_queue<naiad::node, std::vector<naiad::node>, naiad::node> s_priority_queue;
+    static std::mutex s_mutex;
+    static void push(const naiad::node & node);
+
 
     public:
-    static naiad::node * dequeue();
+    static naiad::node dequeue();
     static std::atomic<int> s_actives;
     static std::atomic<int> s_max;
 
