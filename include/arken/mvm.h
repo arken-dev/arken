@@ -38,7 +38,8 @@ namespace concurrent
     bool finished();
     void finished(bool flag);
   };
-}
+
+} // namespace concurrent
 
 class instance;
 
@@ -147,5 +148,5 @@ class instance {
 
 };
 
-}
+} // namespace arken
 #endif // ARKENMVM_H

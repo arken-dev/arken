@@ -30,7 +30,7 @@ class Config
   bool service();
 };
 
-}
-}
+} // namespace net
+} // namespace arken
 
 #endif
