@@ -4,15 +4,14 @@
 // license that can be found in the LICENSE file.
 
 #include <lua/lua.hpp>
+#include <lua/json/lock.h>
 #include <arken/base>
 #include <arken/cache>
 #include <arken/mvm>
 #include <memory>
 
-char * json_lock_encode(lua_State *L);
-void   json_lock_decode(lua_State *L, const char * params);
-
-using namespace arken::concurrent;
+namespace arken {
+namespace concurrent {
 
 void channel::wait()
 {
@@ -209,3 +208,6 @@ bool channel::finished()
 {
   return (*m_ref_bool.get()) == true;
 }
+
+} // namespace concurrent
+} // namespace arken

@@ -16,6 +16,6 @@ class base64 {
   static char * encode(const char * data);
 };
 
-}
+} // namespace arken
 
 #endif
