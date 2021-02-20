@@ -51,7 +51,7 @@ class HttpClient
 
 };
 
-}
-}
+} // namespace net
+} // namespace arken
 
 #endif

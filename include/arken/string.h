@@ -174,7 +174,7 @@ namespace arken {
 
   };
 
-}
+} // namespace arken
 
 std::ostream & operator<<(std::ostream & os, const arken::string & str);
 std::ostream & operator<<(std::ostream & os, const arken::string * str);

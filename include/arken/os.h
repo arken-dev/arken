@@ -51,6 +51,6 @@ namespace arken {
     static string read(const char * path);
     static char   * root();
   };
-}
+} // namespace arken
 
 #endif

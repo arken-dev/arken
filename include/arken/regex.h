@@ -22,6 +22,6 @@ class regex {
   static List * scan(const char * string, const char * regex);
 };
 
-}
+} // namespace arken
 
 #endif

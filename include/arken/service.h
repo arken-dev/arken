@@ -37,6 +37,6 @@ namespace arken
     service();
 
   };
-}
+} // namespace arken
 
 #endif // ARKENSERVICE_H

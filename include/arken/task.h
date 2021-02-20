@@ -49,6 +49,6 @@ namespace arken
 
   };
 
-}
+} // namespace arken
 
 #endif // _ARKEN_TASK_

@@ -20,6 +20,6 @@ class utf8 {
 
 };
 
-}
+} // namespace arken
 
 #endif
