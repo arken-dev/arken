@@ -184,5 +184,5 @@ naiad::node::operator bool() const {
   return m_microtime > 0;
 }
 
-}  // namespace arken
 }  // namespace concurrent
+}  // namespace arken
