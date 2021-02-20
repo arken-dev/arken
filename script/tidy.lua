@@ -1,5 +1,7 @@
 #!/usr/bin/env arken
 
+local debug = arg[1] == '--debug' or false
+
 -- Enabled checks:
 local options = {
 -- android-cloexec-accept
@@ -314,7 +316,9 @@ local list = os.glob("src/arken/concurrent", "cpp$", true)
 
 for fileName in list:each() do
   local cmd = string.format(tidy, fileName, checks)
-  print(cmd)
+  if debug then
+    print(cmd)
+  end
   os.execute(cmd)
   print(fileName)
 end
