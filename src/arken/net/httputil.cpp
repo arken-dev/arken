@@ -5,7 +5,8 @@
 
 #include <arken/base>
 
-using namespace arken::net;
+namespace arken {
+namespace net {
 
 const char * HttpUtil::status(int code)
 {
@@ -75,3 +76,6 @@ const char * HttpUtil::status(int code)
 
   return list[code];
 }
+
+} // namespace net
+} // namespace arken

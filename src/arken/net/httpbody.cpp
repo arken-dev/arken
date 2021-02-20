@@ -6,7 +6,8 @@
 #include <arken/base>
 #include <arken/net/httpbody.h>
 
-using namespace arken::net;
+namespace arken {
+namespace net {
 
 HttpBody::HttpBody(const char * buffer, size_t size)
 {
@@ -73,3 +74,6 @@ void HttpBody::release()
     m_release = true;
   }
 }
+
+} // namespace net
+} // namespace arken
