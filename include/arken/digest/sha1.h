@@ -8,6 +8,7 @@
 
 namespace arken {
 namespace digest {
+
 class sha1 {
   public:
   static char * hash(const char * value);
@@ -15,7 +16,7 @@ class sha1 {
   static char * file(const char * path);
 };
 
-}
-}
+} // namespace digest
+} // namespace arken
 
 #endif
