@@ -16,7 +16,7 @@ class zip
 };
 
 
-}
-}
+} // namespace compress
+} // namespace arken
 
 #endif
