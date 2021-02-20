@@ -1,6 +1,7 @@
 #!/usr/bin/env arken
 
 -- Enabled checks:
+local options = {
 -- android-cloexec-accept
 -- android-cloexec-accept4
 -- android-cloexec-creat
@@ -147,8 +148,8 @@
 -- fuchsia-overloaded-operator
 -- fuchsia-virtual-inheritance
 -- google-build-explicit-make-pair
--- * google-build-namespaces
--- * google-build-using-namespace
+ 'google-build-namespaces',
+ 'google-build-using-namespace',
 -- google-default-arguments
 -- google-explicit-constructor
 -- google-global-names-in-headers
@@ -157,7 +158,7 @@
 -- google-readability-braces-around-statements
 -- google-readability-casting
 -- google-readability-function-size
--- * google-readability-namespace-comments
+  'google-readability-namespace-comments',
 -- google-readability-redundant-smartptr-get
 -- google-readability-todo
 -- google-runtime-int
@@ -291,12 +292,14 @@
 -- readability-static-accessed-through-instance
 -- readability-static-definition-in-anonymous-namespace
 -- readability-uniqueptr-delete-release
+}
+
+local checks = table.concat(options, ', ')
 
 local tidy = [[
-clang-tidy-6.0 %s -system-headers \
-  -checks=google-build-using-namespace,\
-    google-readability-namespace-comments, \
-    google-build-namespaces \
+clang-tidy-6.0 %s \
+  -header-filter=arken/.* \
+  -checks='%s' \
   -- \
   -std=c++11 \
   -I src/vendors/mongrel2 \
@@ -308,8 +311,9 @@ clang-tidy-6.0 %s -system-headers \
 ]]
 
 local list = os.glob("src/arken/concurrent", "cpp$", true)
+
 for fileName in list:each() do
-  local cmd = string.format(tidy, fileName)
+  local cmd = string.format(tidy, fileName, checks)
   print(cmd)
   os.execute(cmd)
   print(fileName)
