@@ -56,7 +56,7 @@ void channel::run()
 
   //lua_pushlstring(L,  m_uuid, 37); //push channel
   channel **ptr = (channel **)lua_newuserdata(L, sizeof(channel*));
-  *ptr = this;
+  *ptr = new channel(*this);
   luaL_getmetatable(L, "arken.concurrent.channel.metatable");
   lua_setmetatable(L, -2);
 
@@ -67,9 +67,11 @@ void channel::run()
     fprintf(stderr, "erro no inicio: %s\n", lua_tostring(L, -1));
   }
 
-  m_write->push("channel is finished");
-  m_write_condition->notify_one();
-  m_client->m_finished = true;
+  write("channel is finished");
+  //m_write->push("channel is finished");
+  //m_write_condition->notify_one();
+  //m_client->m_finished = true;
+  (*m_ref_bool.get()) = true;
 
   // GC
   if( m_purge ) {
@@ -88,7 +90,8 @@ channel::channel(
   std::shared_ptr<std::mutex> write_mtx,
   std::shared_ptr<std::condition_variable> read_condition,
   std::shared_ptr<std::condition_variable> write_condition,
-  string uuid
+  string uuid,
+  std::shared_ptr<bool> ref_bool
 )
 {
   m_read            = read;
@@ -101,6 +104,7 @@ channel::channel(
   m_release         = true;
   m_client          = nullptr;
   m_uuid            = uuid;
+  m_ref_bool        = ref_bool;
 }
 
 channel::channel(const char * fileName, const char * params, bool purge)
@@ -111,6 +115,7 @@ channel::channel(const char * fileName, const char * params, bool purge)
   m_write_mtx       = std::shared_ptr<std::mutex>(new std::mutex);
   m_read_condition  = std::shared_ptr<std::condition_variable>(new std::condition_variable);
   m_write_condition = std::shared_ptr<std::condition_variable>(new std::condition_variable);
+  m_ref_bool        = std::shared_ptr<bool>(new bool(false));
 
   m_uuid     = os::uuid();
   m_fileName = fileName;
@@ -120,9 +125,23 @@ channel::channel(const char * fileName, const char * params, bool purge)
   m_release  = true;
 
   m_client = new channel(
-    m_write, m_read, m_write_mtx, m_read_mtx, m_write_condition, m_read_condition, m_uuid
+    m_write, m_read, m_write_mtx, m_read_mtx, m_write_condition, m_read_condition, m_uuid, m_ref_bool
   );
 
+}
+
+channel::channel(const channel &obj) {
+  m_read            = obj.m_read;
+  m_write           = obj.m_write;
+  m_read_mtx        = obj.m_read_mtx;
+  m_write_mtx       = obj.m_write_mtx;
+  m_read_condition  = obj.m_read_condition;
+  m_write_condition = obj.m_write_condition;
+  m_finished        = false;
+  m_release         = false;
+  m_client          = obj.m_client;
+  m_uuid            = obj.m_uuid;
+  m_ref_bool        = obj.m_ref_bool;
 }
 
 channel * channel::client()
@@ -184,4 +203,9 @@ std::string channel::read()
 string channel::uuid()
 {
   return m_uuid;
+}
+
+bool channel::finished()
+{
+  return (*m_ref_bool.get()) == true;
 }

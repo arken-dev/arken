@@ -25,8 +25,13 @@ checkLog( lua_State *L ) {
 static int
 arken_LogClassMethodNew( lua_State *L ) {
   const char *str = (char *) luaL_checkstring(L, 1);
+  int max = -1;
+  if(lua_gettop(L) == 2) { // number of arguments
+    max = luaL_checkinteger(L, 2);
+  }
+
   Log **ptr = (Log **)lua_newuserdata(L, sizeof(Log*));
-  *ptr = new Log(Log(str));
+  *ptr = new Log(Log(str, max));
   luaL_getmetatable(L, "Log.metatable");
   lua_setmetatable(L, -2);
   return 1;

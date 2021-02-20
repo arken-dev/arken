@@ -10,8 +10,8 @@ void   json_lock_decode(lua_State *L, const char * params);
 using mvm = arken::mvm;
 using namespace arken::concurrent;
 
-std::priority_queue<naiad::node, std::vector<naiad::node *>, naiad::node> naiad::s_priority_queue;
-std::mutex * naiad::s_mutex = new std::mutex;
+std::priority_queue<naiad::node, std::vector<naiad::node>, naiad::node> naiad::s_priority_queue;
+std::mutex naiad::s_mutex;
 std::atomic<int> naiad::s_max(1);
 std::atomic<int> naiad::s_actives(0);
 
@@ -28,13 +28,11 @@ naiad::~naiad()
 void naiad::run()
 {
   while (true) {
-    naiad::node * n = dequeue();
-    if( n == nullptr ) {
+    naiad::node node = dequeue();
+    if( !node ) {
       break;
-    } else {
-      n->run();
-      delete n;
     }
+    node.run();
   }
 }
 
@@ -45,15 +43,15 @@ bool naiad::release()
 
 naiad::node naiad::start(const char * fileName, const char * params, int priority, bool purge)
 {
-  std::unique_lock<std::mutex> lck(*naiad::s_mutex);
-  naiad::node * node = new naiad::node(fileName, params, priority, purge);
+  std::unique_lock<std::mutex> lck(naiad::s_mutex);
+  naiad::node node = naiad::node(fileName, params, priority, purge);
   naiad::push( node );
 
   if(naiad::s_actives < naiad::s_max) {
     mvm::concurrent( new naiad() );
   }
 
-  return naiad::node(*node);
+  return node;
 }
 
 naiad::node::node()
@@ -78,13 +76,13 @@ naiad::node::node(const char * fileName, const char * params, int priority, bool
   m_microtime = os::microtime();
 }
 
-bool naiad::node::operator()(naiad::node* n1, naiad::node* n2)
+bool naiad::node::operator()(const naiad::node &n1, const naiad::node &n2)
 {
-  if( n1->m_priority == n2->m_priority ) {
-    return n1->m_microtime > n2->m_microtime;
-  } else {
-    return n1->m_priority < n2->m_priority;
+  if( n1.m_priority == n2.m_priority ) {
+    return n1.m_microtime > n2.m_microtime;
   }
+
+  return n1.m_priority < n2.m_priority;
 }
 
 void naiad::node::run()
@@ -139,19 +137,19 @@ void naiad::node::run()
   }
 }
 
-void naiad::push(naiad::node * ptr)
+void naiad::push(const naiad::node & node)
 {
-  naiad::s_priority_queue.push( ptr );
+  naiad::s_priority_queue.push( node );
 }
 
-naiad::node * naiad::dequeue()
+naiad::node naiad::dequeue()
 {
-  std::unique_lock<std::mutex> lck(*naiad::s_mutex);
+  std::unique_lock<std::mutex> lck(naiad::s_mutex);
   if (naiad::s_priority_queue.empty()) {
-    return nullptr;
+    return naiad::node();
   }
 
-  naiad::node * n = naiad::s_priority_queue.top();
+  naiad::node n = naiad::s_priority_queue.top();
   naiad::s_priority_queue.pop();
   return n;
 }
@@ -174,4 +172,8 @@ int naiad::node::priority()
 double naiad::node::microtime()
 {
   return m_microtime;
+}
+
+naiad::node::operator bool() const {
+  return m_microtime > 0;
 }
