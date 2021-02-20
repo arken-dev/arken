@@ -52,7 +52,7 @@ namespace concurrent {
     };
 
     static naiad::node start(const char * fileName, const char * params, int priority = 0, bool purge = false);
-    static std::priority_queue<naiad::node, std::vector<naiad::node>, naiad::node> s_priority_queue;
+    static std::priority_queue<naiad::node, std::vector<naiad::node>, naiad::node> & priority_queue();
     static std::mutex s_mutex;
     static void push(const naiad::node & node);
 

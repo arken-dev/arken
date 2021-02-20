@@ -2,15 +2,15 @@
 #include <arken/os.h>
 #include <cstdio>
 #include <lua/lua.hpp>
+#include <lua/json/lock.h>
 #include <arken/mvm>
 
-char * json_lock_encode(lua_State *L);
-void   json_lock_decode(lua_State *L, const char * params);
+
+namespace arken {
+namespace concurrent {
 
 using mvm = arken::mvm;
-using namespace arken::concurrent;
 
-std::priority_queue<naiad::node, std::vector<naiad::node>, naiad::node> naiad::s_priority_queue;
 std::mutex naiad::s_mutex;
 std::atomic<int> naiad::s_max(1);
 std::atomic<int> naiad::s_actives(0);
@@ -23,6 +23,12 @@ naiad::naiad()
 naiad::~naiad()
 {
   naiad::s_actives--;
+}
+
+std::priority_queue<naiad::node, std::vector<naiad::node>, naiad::node> & naiad::priority_queue()
+{
+  static std::priority_queue<naiad::node, std::vector<naiad::node>, naiad::node> s_priority_queue;
+  return s_priority_queue;
 }
 
 void naiad::run()
@@ -139,18 +145,18 @@ void naiad::node::run()
 
 void naiad::push(const naiad::node & node)
 {
-  naiad::s_priority_queue.push( node );
+  naiad::priority_queue().push( node );
 }
 
 naiad::node naiad::dequeue()
 {
   std::unique_lock<std::mutex> lck(naiad::s_mutex);
-  if (naiad::s_priority_queue.empty()) {
+  if (naiad::priority_queue().empty()) {
     return naiad::node();
   }
 
-  naiad::node n = naiad::s_priority_queue.top();
-  naiad::s_priority_queue.pop();
+  naiad::node n = naiad::priority_queue().top();
+  naiad::priority_queue().pop();
   return n;
 }
 
@@ -177,3 +183,6 @@ double naiad::node::microtime()
 naiad::node::operator bool() const {
   return m_microtime > 0;
 }
+
+}  // namespace arken
+}  // namespace concurrent
