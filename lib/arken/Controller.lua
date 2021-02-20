@@ -89,10 +89,14 @@ function Controller:url(params)
 end
 
 function Controller:redirect(params)
-  local url    = self:url(params)
-  local host   = self:env():field("Host")
-  local header = "Location: http://" .. host .. url
-  if url:startsWith('http://') then
+  local url      = self:url(params)
+  local host     = self:env():field("Host")
+  local protocol = self:env():field("X-Forwarded-Proto")
+  if empty(protocol) then
+    protocol = "http"
+  end
+  local header = "Location: ".. protocol .. "://" .. host .. url
+  if url:startsWith('http://') or url:startsWith('https://') then
     header = "Location: " .. url
   end
   return 302, {header}, nil
