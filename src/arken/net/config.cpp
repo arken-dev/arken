@@ -9,12 +9,13 @@
 #include <arken/concurrent/service.h>
 #include <lua/lua.hpp>
 
+namespace arken {
+namespace net {
+
 using mvm     = arken::mvm;
 using Config  = arken::net::Config;
 using Log     = arken::Log;
 using service = arken::concurrent::service;
-
-using namespace arken::net;
 
 Config::Config(string path)
 {
@@ -217,3 +218,6 @@ bool Config::service()
 {
   return m_service;
 }
+
+} // namespace net
+} // namespace arken

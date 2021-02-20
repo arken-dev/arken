@@ -10,9 +10,11 @@
 #include <arken/base>
 #include <iostream>
 
-using arken::string;
-using namespace arken::net;
 
+namespace arken {
+namespace net {
+
+using arken::string;
 
 uint64_t HttpClient::callback(void *contents, size_t size, size_t nmemb, void *userp)
 {
@@ -250,3 +252,6 @@ string HttpClient::perform()
     return string::consume( body );
   }
 }
+
+} // namespace net
+} // namespace arken

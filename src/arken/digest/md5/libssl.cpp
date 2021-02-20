@@ -3,7 +3,8 @@ extern "C" {
 #include <openssl/md5.h>
 }
 
-using namespace arken::digest;
+namespace arken {
+namespace digest {
 
 char * md5::hash(const char * hash)
 {
@@ -41,3 +42,6 @@ char * md5::file(const char * path)
 
   return result;
 }
+
+} // namespace digest
+} // namespace arken

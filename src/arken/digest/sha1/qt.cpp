@@ -7,6 +7,10 @@
 #include <arken/base>
 #include <QCryptographicHash>
 
+
+namespace arken {
+namespace digest {
+
 using namespace arken::digest;
 
 char * sha1::hash(const char * hash)
@@ -40,3 +44,6 @@ char * sha1::file(const char * path)
 
   return result;
 }
+
+} // namespace digest
+} // namespace arken

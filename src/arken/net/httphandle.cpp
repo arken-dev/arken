@@ -7,7 +7,8 @@
 #include <arken/base>
 #include <string>
 
-using namespace arken::net;
+namespace arken {
+namespace net {
 
 using arken::net::HttpBody;
 using arken::net::HttpUtil;
@@ -89,3 +90,6 @@ std::string HttpHandle::sync(const char * data, size_t size)
 
   return buffer;
 }
+
+} // namespace net
+} // namespace arken
