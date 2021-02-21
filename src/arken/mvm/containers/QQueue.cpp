@@ -7,7 +7,7 @@
 #include <arken/mvm>
 #include <QQueue>
 
-using namespace arken;
+namespace arken {
 
 static QMutex s_mutex;
 static QQueue<mvm::data *> * s_container = new QQueue<mvm::data *>;
@@ -40,3 +40,5 @@ bool mvm::container::empty()
   QMutexLocker ml(&s_mutex);
   return s_container->empty();
 }
+
+} // namespace arken

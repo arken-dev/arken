@@ -81,7 +81,7 @@ class mvm {
   };
 
 
-  static std::atomic<double> s_uptime;
+  static std::atomic<double>   s_uptime;
   static std::atomic<uint32_t> s_gc;
   static std::atomic<uint32_t> s_version;
   static std::atomic<uint32_t> s_pool;
