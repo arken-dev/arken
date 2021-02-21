@@ -4,7 +4,7 @@
 
 namespace arken {
 
-using namespace boost::filesystem;
+using boost::filesystem::path;
 
 char * os::abspath(const char * p)
 {
