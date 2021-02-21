@@ -9,7 +9,7 @@
 #include <arken/task>
 #include <arken/mvm>
 
-using namespace arken;
+namespace arken {
 
 using arken::cache;
 
@@ -139,3 +139,5 @@ const char * task::work::fileName()
 {
   return m_fileName.c_str();
 }
+
+} // namespace arken

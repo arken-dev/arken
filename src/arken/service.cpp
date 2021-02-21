@@ -9,7 +9,8 @@
 #include <arken/mvm>
 #include <arken/service>
 
-using namespace arken;
+namespace arken {
+
 using cache = arken::cache;
 using mvm   = arken::mvm;
 using List  = arken::string::List;
@@ -195,3 +196,5 @@ void service::run(char * uuid, char * fileName)
   } // while
 
 }
+
+} // namespace arken

@@ -9,7 +9,7 @@ extern "C" {
   #include <base64/ap_base64.h>
 }
 
-using namespace arken;
+namespace arken {
 
 char * base64::decode(const char * encoded, size_t * size)
 {
@@ -34,3 +34,5 @@ char * base64::encode(const char * plain, int len)
   Base64encode(encoded, plain, len);
   return encoded;
 }
+
+} // namespace arken

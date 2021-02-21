@@ -7,7 +7,7 @@
 #include <arken/utf8>
 #include <QTextCodec>
 
-using namespace arken;
+namespace arken {
 
 char * utf8::upper(const char * string)
 {
@@ -66,3 +66,5 @@ char * utf8::encode(const char * string, const char * charset)
   result[raw.size()] = '\0';
   return result;
 }
+
+} // namespace arken

@@ -11,8 +11,6 @@
 namespace arken {
 namespace digest {
 
-using namespace arken::digest;
-
 char * sha1::hash(const char * hash)
 {
   return sha1::hash(hash, strlen(hash));
