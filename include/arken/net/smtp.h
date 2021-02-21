@@ -15,13 +15,15 @@
 #include <arken/os.h>
 #include <arken/string.h>
 
-using string = arken::string;
 
 namespace arken {
 namespace net {
 
 class SMTP
 {
+
+  using string = arken::string;
+
   private:
 
   string m_url;
@@ -89,5 +91,6 @@ class SMTP
 
 };
 
-}}
+} // namespace net
+} // namespace arken
 #endif
