@@ -1,10 +1,10 @@
 #include <arken/image.h>
 
-using namespace arken;
-
+namespace arken {
 
 Image::Image(const char * path)
 {
   m_path = path;
 }
 
+} // namespace

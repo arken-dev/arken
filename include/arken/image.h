@@ -6,7 +6,7 @@
 #ifndef _ARKEN_IMAGE_
 #define _ARKEN_IMAGE_
 
-#include<arken/base>
+#include <arken/base>
 
 namespace arken
 {
@@ -22,6 +22,6 @@ class Image {
 
 };
 
-}
+} // namespace arken
 
 #endif

@@ -9,7 +9,7 @@
 #include <QStringList>
 #include <cstring>
 
-using namespace arken;
+namespace arken {
 
 bool regex::ematch(const char * string, const char * regex)
 {
@@ -88,3 +88,5 @@ List * regex::scan(const char * string, const char * regex)
   }
   return list;
 }
+
+} // namespace arken
