@@ -7,7 +7,7 @@
 #include <gio/gio.h>
 
 
-using namespace arken;
+namespace arken {
 
 void notify::send(const char * title, const char * message, const char * icon)
 {
@@ -22,3 +22,5 @@ void notify::send(const char * title, const char * message, const char * icon)
   g_object_unref(notification);
   g_object_unref(application);
 }
+
+} // namespace arken

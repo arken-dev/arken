@@ -6,8 +6,7 @@
 #include <libnotify/notify.h>
 #include <arken/notify.h>
 
-using namespace arken;
-
+namespace arken {
 
 void notify::send(const char * title, const char * message, const char * icon)
 {
@@ -29,3 +28,5 @@ void notify::send(const char * title, const char * message, const char * icon)
   g_object_unref(G_OBJECT(Notify));
   notify_uninit();
 }
+
+} // namespace arken
