@@ -312,7 +312,7 @@ clang-tidy-6.0 %s \
   -fPIC
 ]]
 
-local list = os.glob("src/arken/notify", "cpp$", true)
+local list = os.glob("src/arken", "cpp$", true)
 
 for fileName in list:each() do
   local cmd = string.format(tidy, fileName, checks)

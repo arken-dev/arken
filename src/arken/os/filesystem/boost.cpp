@@ -2,6 +2,8 @@
 #include <boost/filesystem.hpp>
 #include <boost/asio/ip/host_name.hpp>
 
+namespace arken {
+
 using namespace boost::filesystem;
 
 char * os::abspath(const char * p)
@@ -190,3 +192,5 @@ char * os::root()
   result[size] = '\0';
   return result;
 }
+
+} // namespace arken

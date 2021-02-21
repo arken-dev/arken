@@ -7,6 +7,7 @@
 #include <arken/net/smtp.h>
 
 using arken::net::SMTP;
+using arken::string;
 
 /**
  * checkSMTP
