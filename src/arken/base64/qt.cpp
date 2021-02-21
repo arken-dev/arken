@@ -28,4 +28,4 @@ char * base64::encode(const char * plain, int len)
   return result;
 }
 
-} // namespace base64
+} // namespace arken
