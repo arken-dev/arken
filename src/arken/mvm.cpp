@@ -6,7 +6,7 @@
 #include <arken/base>
 #include <arken/mvm>
 
-using namespace arken;
+namespace arken {
 
 int     mvm::s_argc(0);
 char ** mvm::s_argv(0);
@@ -501,3 +501,5 @@ void mvm::wait()
     os::sleep(0.05);
   }
 }
+
+} // namespace arken
