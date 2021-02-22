@@ -677,7 +677,7 @@ char * string::rightJustified(const char * string, size_t size, const char * pad
 
   if( size < str_len or pad_len == 0 ) {
     result = new char[str_len + 1];
-    strcpy(result, string);
+    strncpy(result, string, str_len);
     result[str_len] = '\0';
   } else {
     result = new char[size + 1];
@@ -1276,7 +1276,7 @@ string::string(const char * data)
   m_reserve   = m_size;
   m_capacity  = m_size;
   m_data      = new char[m_size + 1];
-  strcpy(m_data, data);
+  strncpy(m_data, data, m_size);
   m_data[m_size] = '\0';
 }
 
