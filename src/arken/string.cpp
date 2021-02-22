@@ -89,7 +89,7 @@ char * string::capitalize(const char * string)
   int len = strlen(string);
   char * result  = new char[len + 1];
 
-  strcpy(result, string);
+  strncpy(result, string, len);
   result[0] = toupper(string[0]);
 
   return result;
@@ -104,7 +104,7 @@ char * string::center(const char * string, size_t size, const char * pad)
 
   if( size < str_len or pad_len == 0 ) {
     result = new char[ str_len + 1 ];
-    strcpy(result, string);
+    strncpy(result, string, str_len);
     result[str_len] = '\0';
   } else {
     result = new char[ size + 1 ];
@@ -644,7 +644,7 @@ char * string::leftJustified(const char * string, size_t size, const char * pad)
 
   if( size < str_len or pad_len == 0 ) {
     result = new char[str_len + 1];
-    strcpy(result, string);
+    strncpy(result, string, str_len);
     result[str_len] = '\0';
   } else {
     result = new char[size + 1];
