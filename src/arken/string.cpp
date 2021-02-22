@@ -1681,7 +1681,7 @@ string & string::operator=(const char * data)
   m_size      = strlen(data);
   m_capacity  = m_size;
   m_data      = new char[m_size + 1];
-  strcpy(m_data, data);
+  strncpy(m_data, data, m_size);
   m_data[m_size] = '\0';
 
   return *this;
@@ -1696,7 +1696,7 @@ string & string::operator=(const string * str)
   m_size      = str->m_size;
   m_capacity  = str->m_size;
   m_data      = new char[m_size + 1];
-  strcpy(m_data, str->m_data);
+  strncpy(m_data, str->m_data, m_size);
   m_data[m_size] = '\0';
 
   return *this;
