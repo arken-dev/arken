@@ -863,18 +863,32 @@ char * string::replace(const char * original, const char * pattern, const char *
       // copy the original string, 
       // replacing all the instances of the pattern
       char * retptr = returned + start;
+      size_t position = 0;
       for (oriptr = original + start; (patloc = strstr(oriptr, pattern)); oriptr = patloc + patlen)
       {
         size_t const skplen = patloc - oriptr;
+        position += skplen;
         // copy the section until the occurence of the pattern
         strncpy(retptr, oriptr, skplen);
         retptr += skplen;
+
         // copy the replacement 
         strncpy(retptr, replacement, replen);
-        retptr += replen;
+        retptr   += replen;
+        position += replen;
       }
-      // copy the rest of the string.
-      strcpy(retptr, oriptr);
+      size_t result = retlen - (position + start);
+      //strcpy(retptr, oriptr);
+      if( result > 0 ) {
+        strncpy(retptr, oriptr, result);
+      }
+      std::cout << std::endl;
+      std::cout << "--------------------------------------------------------" << std::endl;
+      std::cout << "result " << result << std::endl;
+      std::cout << "retlen " << retlen << std::endl;
+      std::cout << oriptr << std::endl;
+      std::cout << returned << std::endl;
+      returned[retlen] = '\0';
     }
     return returned;
   }
