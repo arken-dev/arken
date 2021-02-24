@@ -36,9 +36,15 @@ test['should replace multiple string with major size not end'] = function()
   assert( res == "th*** ***", res )
 end
 
-test['should replace a smaller string for greater string'] = function()
+test['should replace a all "is"'] = function()
   local str = "this is a test"
-  assert( str:replace(" is ", " is not ") == "this is not a test" )
+  local res = str:replace("is", "is not")
+  assert( res == "this not is not a test", res )
+end
+
+test['should replace a smaller string for greater string'] = function()
+local str = "this is a test"
+assert( str:replace(" is ", " is not ") == "this is not a test" )
 end
 
 test['should replace a greater string for smaller string'] = function()
@@ -50,6 +56,7 @@ test['should replace a string for empty string'] = function()
   local str = "this is not a test"
   assert( str:replace(" not ", " ") == "this is a test" )
 end
+
 test['should preserve string not valid string'] = function()
   local str = "this is not a test"
   assert( str:replace("yes", "") == "this is not a test" )
@@ -64,6 +71,12 @@ test['should replace a single char'] = function()
   local str   = "this is a test"
   local value = str:replace("i", "|")
   assert( value == "th|s |s a test", value )
+end
+
+test['should replace a two char'] = function()
+  local str   = "this is a test"
+  local value = str:replace("is", "|!")
+  assert( value == "th|! |! a test", value )
 end
 
 test['should replace a single char start'] = function()

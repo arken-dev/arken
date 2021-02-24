@@ -882,12 +882,6 @@ char * string::replace(const char * original, const char * pattern, const char *
       if( result > 0 ) {
         strncpy(retptr, oriptr, result);
       }
-      std::cout << std::endl;
-      std::cout << "--------------------------------------------------------" << std::endl;
-      std::cout << "result " << result << std::endl;
-      std::cout << "retlen " << retlen << std::endl;
-      std::cout << oriptr << std::endl;
-      std::cout << returned << std::endl;
       returned[retlen] = '\0';
     }
     return returned;
