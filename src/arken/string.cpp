@@ -91,6 +91,7 @@ char * string::capitalize(const char * string)
 
   strncpy(result, string, len);
   result[0] = toupper(string[0]);
+  result[len] = '\0';
 
   return result;
 }
