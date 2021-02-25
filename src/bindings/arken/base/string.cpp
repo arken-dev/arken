@@ -305,12 +305,8 @@ arken_string_leftJustified( lua_State *L ) {
 static int
 arken_string_prefix( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
-  char chr = '.';
-  char * result;
-  if(lua_gettop(L) == 2) { /* número de argumentos */
-    chr =  luaL_checkstring(L, 2)[0];
-  }
-  result = string::prefix(string, chr);
+  const char * pattern = luaL_checkstring(L, 2);;
+  char * result = string::prefix(string, pattern);
   lua_pushstring(L, result);  /* push result */
   delete[] result;
   return 1;
@@ -821,12 +817,8 @@ static int
 arken_StringInstanceMethodPrefix( lua_State *L ) {
   string * udata = checkString( L );
   string result;
-  if(lua_gettop(L) == 2) { // number of arguments
-    const char * chr = luaL_checkstring(L, 2);
-    result = udata->prefix(chr[0]);
-  } else {
-    result = udata->prefix();
-  }
+  const char * pattern = luaL_checkstring(L, 2);
+  result = udata->prefix(pattern);
   lua_pushlstring(L, result.data(), result.size());
   return 1;
 }

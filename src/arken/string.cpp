@@ -969,28 +969,19 @@ char *  string::suffix(const char * raw, char chr)
   return result;
 }
 
-char *  string::prefix(const char * raw, char chr)
+char *  string::prefix(const char * raw, const char * pattern)
 {
-  char * result = 0;
-  int i, j;
-  int point = 0;
   int len = strlen(raw);
+  char * result = 0;
+  //int i, j;
+  //int point = 0;
 
-  for( i = 0; i < len; i++) {
-    if( raw[i] == chr ) {
-      point = i-1;
-      break;
-    }
-  }
-
-  if( point > 0 ) {
-    point++;
-    result = new char[point + 1];
-    j = 0;
-    for( i = 0; i < point; i++, j++) {
-      result[j] = raw[i];
-    }
-    result[point] = '\0';
+  const char * ptrstr = strstr(raw, pattern);
+  int position = (raw - ptrstr) * -1;
+  if( position > 0 && position < len) {
+    result = new char[position + 1];
+    strncpy(result, raw, position);
+    result[position] = '\0';
   } else {
     result = new char[1]();
   }
@@ -1532,9 +1523,9 @@ string string::normalize()
   return arken::string::consume(string::normalize(m_data));
 }
 
-string string::prefix(const char chr)
+string string::prefix(const char * pattern)
 {
-  return arken::string::consume(string::prefix(m_data, chr));
+  return arken::string::consume(string::prefix(m_data, pattern));
 }
 
 string string::simplified()

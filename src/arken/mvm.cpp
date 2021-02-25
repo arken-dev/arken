@@ -152,10 +152,10 @@ void mvm::init(int argc, char ** argv)
   //TODO
   string path = os::executablePath();
   //s_arkenPath     = os::executablePath().prefix("bin").left(-1).capitalize();
-  //s_arkenPath     = os::executablePath();
-  //int lastIndexOf = s_arkenPath.lastIndexOf("bin");
-  //s_arkenPath     = s_arkenPath.left(lastIndexOf-1);
-  s_arkenPath = path.prefix("bin").left(-1);
+  s_arkenPath     = os::executablePath();
+  int lastIndexOf = s_arkenPath.lastIndexOf("bin");
+  s_arkenPath     = s_arkenPath.left(lastIndexOf-1);
+  //s_arkenPath = path.prefix("bin").left(-1);
 
   s_packagePath.
     append("./?.lua;").
