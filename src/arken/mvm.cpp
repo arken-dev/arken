@@ -8,6 +8,8 @@
 
 namespace arken {
 
+using arken::string;
+
 int     mvm::s_argc(0);
 char ** mvm::s_argv(0);
 
@@ -151,20 +153,20 @@ void mvm::init(int argc, char ** argv)
     append(s_arkenPath).append("/lib/?.lua;").
     append(s_arkenPath).append("/packages/?.lua");
 
-  if( strcmp(os::name(), "windows") == 0 ) {
+  if( string::equals(os::name(), "windows") ) {
     s_arkenPath = s_arkenPath.capitalize();
     s_cpackagePath.append("./?.dll;");
     s_cpackagePath.append("./clib/?.dll;");
     s_cpackagePath.append(s_arkenPath).append("/clib/?.dll");
   }
 
-  if( strcmp(os::name(), "linux") == 0 ) {
+  if( string::equals(os::name(), "linux") ) {
     s_cpackagePath.append("./?.so;");
     s_cpackagePath.append("./clib/?.so;");
     s_cpackagePath.append(s_arkenPath).append("/clib/?.so");
   }
 
-  if( strcmp(os::name(), "macos") == 0 ) {
+  if( string::equals(os::name(), "macos") ) {
     s_cpackagePath.append("./?.dylib;");
     s_cpackagePath.append("./clib/?.dylib;");
     s_cpackagePath.append(s_arkenPath).append("/clib/?.dylib");
