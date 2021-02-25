@@ -62,7 +62,7 @@ bool arken::compress::zip::decompress(const char * namefile, const char * output
             if (sb.name[len - 1] == '/') {
                 if( dirname == 0 ) {
                   dirname = new char[len+1];
-                  strcpy(dirname, sb.name);
+                  strncpy(dirname, sb.name, len);
                   dirname[len-1] = '\0';
                 }
                 safe_create_dir(sb.name);
