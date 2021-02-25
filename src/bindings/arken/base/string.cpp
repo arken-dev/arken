@@ -383,7 +383,7 @@ arken_string_split( lua_State *L ) {
   const char  * pattern = luaL_checkstring(L, 2);
   List list = string::split(string, len, pattern);
   List **ptr  = (List **)lua_newuserdata(L, sizeof(List*));
-  *ptr = List::consume(list);
+  *ptr = new List(list);
   luaL_getmetatable(L, "arken.string.List.metatable");
   lua_setmetatable(L, -2);
 
@@ -950,7 +950,7 @@ arken_StringInstanceMethodSplit( lua_State *L ) {
   const char  * pattern = luaL_checkstring(L, 2);
   List list  = udata->split(pattern);
   List **ptr = (List **)lua_newuserdata(L, sizeof(List*));
-  *ptr = List::consume(list);
+  *ptr = new List(list);
   luaL_getmetatable(L, "arken.string.List.metatable");
   lua_setmetatable(L, -2);
   return 1;

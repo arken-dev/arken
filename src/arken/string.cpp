@@ -1772,22 +1772,6 @@ List & string::List::operator=(const List &obj)
   return *this;
 }
 
-List * string::List::consume(List &obj)
-{
-  List *list = new List(0);
-  list->m_cursor   = 0;
-  list->m_size     = obj.m_size;
-  list->m_resource = obj.m_resource;
-  list->m_array    = obj.m_array;
-
-  obj.m_array    = nullptr;
-  obj.m_size     = 0;
-  obj.m_resource = 0;
-
-  return list;
-}
-
-
 string::List::~List()
 {
 

@@ -107,7 +107,7 @@ static int arken_os_glob( lua_State *L ) {
   }
 
   List **ptr = (List **)lua_newuserdata(L, sizeof(List*));
-  *ptr = List::consume(list);
+  *ptr = new List(list);
   luaL_getmetatable(L, "arken.string.List.metatable");
   lua_setmetatable(L, -2);
 
