@@ -1395,17 +1395,17 @@ string & string::prepend(const char * data)
 
 string string::camelCase(bool lcfirst)
 {
-  return arken::string::consume(string::camelCase(m_data, lcfirst));
+  return string::camelCase(m_data, lcfirst);
 }
 
 string string::capitalize()
 {
-  return arken::string::consume(string::capitalize(m_data));
+  return string::capitalize(m_data);
 }
 
 string string::center(size_t size, const char * pad)
 {
-  return arken::string::consume(string::center(m_data, size, pad));
+  return string::center(m_data, size, pad);
 }
 
 void string::clear()
@@ -1426,7 +1426,7 @@ bool string::contains(const char * str)
 
 string string::chop(int n)
 {
-  return arken::string::consume(string::chop(m_data, n));
+  return string::chop(m_data, n);
 }
 
 int string::count(const char * str)
@@ -1436,14 +1436,14 @@ int string::count(const char * str)
 
 string string::dasherize()
 {
-  return arken::string::consume(string::dasherize(m_data));
+  return string::dasherize(m_data);
 }
 
 string string::decode64()
 {
   size_t size;
   char * decoded = string::decode64(m_data, &size);
-  return arken::string::consume(decoded, size);
+  return arken::string(decoded, size);
 }
 
 string string::encode64()
