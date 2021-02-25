@@ -7,6 +7,7 @@
 #define _ARKEN_NET_HTTP_CLIENT_
 
 #include <curl/curl.h>
+#include <string>
 #include <arken/base>
 
 using string = arken::string;
@@ -22,7 +23,7 @@ class HttpClient
   char       * m_url;
   char       * m_body;
   char       * m_data;
-  char       * m_message;
+  string       m_message;
   bool         m_failure;
   uint32_t     m_status;
   uint64_t     m_size;
@@ -44,8 +45,7 @@ class HttpClient
   char * body();
   const
   char * data();
-  const
-  char * message();
+  string message();
   int    status();
   bool   failure();
 

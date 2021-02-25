@@ -137,7 +137,7 @@ string os::read(const char * path)
     file.read(buffer, length);
     file.close();
     buffer[length] = '\0';
-    return string::consume( buffer, length );
+    return string( buffer, length );
   }
 
 }

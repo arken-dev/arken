@@ -10,7 +10,6 @@
 #include <arken/base>
 #include <iostream>
 
-
 namespace arken {
 namespace net {
 
@@ -45,7 +44,6 @@ HttpClient::HttpClient(const char * url)
 
   m_body    = NULL;
   m_data    = NULL;
-  m_message = NULL;
   m_size    = 0;
   m_list    = 0;
   m_failure = false;
@@ -98,7 +96,6 @@ HttpClient::~HttpClient()
   delete[] m_url;
   if( m_data )    delete[] m_data;
   if( m_body )    delete[] m_body;
-  if( m_message ) delete[] m_message;
 
 }
 
@@ -182,7 +179,7 @@ const char * HttpClient::data()
   return m_data;
 }
 
-const char * HttpClient::message()
+string HttpClient::message()
 {
   return m_message;
 }
@@ -194,7 +191,6 @@ bool HttpClient::failure()
 
 string HttpClient::perform()
 {
-  char    * body;
   int       index;
   CURLcode  res;
 
@@ -206,16 +202,14 @@ string HttpClient::perform()
 
   // out of memory
   if ( m_failure ) {
-    return string::consume( new char[1]() );
+    return string();
   }
 
   // check for errors
   if( res != CURLE_OK ) {
     m_failure = true;
-    const char * message = curl_easy_strerror(res);
-    m_message = new char[strlen(message)+1];
-    strcpy(m_message, message);
-    return string::consume( new char[1]() );
+    m_message = curl_easy_strerror(res);
+    return string();
   }
 
   if( m_size ) {
@@ -236,20 +230,19 @@ string HttpClient::perform()
       index += 4;
       size_t size = (m_size-index);
       if( size > 0 ) {
-        body = string::mid(m_data, index, size);
-        return string::consume( body, size );
+        char * body = string::mid(m_data, index, size);
+        string b = body;
+        delete[] body;
+        return b;
       } else {
-        body = new char[1]();
-        return string::consume( body );
+        return string();
       }
     } else {
-      body = new char[1]();
-      return string::consume( body );
+      return string();
     }
   } else {
     m_status = 0;
-    body = new char[1]();
-    return string::consume( body );
+    return string();
   }
 }
 

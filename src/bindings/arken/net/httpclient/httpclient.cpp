@@ -7,6 +7,7 @@
 #include <arken/base>
 
 using arken::net::HttpClient;
+using arken::string;
 
 /**
  * checkHttpClient
@@ -123,7 +124,7 @@ arken_HttpClientInstanceMethodData( lua_State *L ) {
 static int
 arken_HttpClientInstanceMethodMessage( lua_State *L ) {
   HttpClient * udata   = checkHttpClient( L );
-  const char * message = udata->message();
+  string message = udata->message();
   lua_pushstring(L, message);
   return 1;
 }

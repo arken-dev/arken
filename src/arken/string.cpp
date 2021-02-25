@@ -1298,47 +1298,6 @@ string::string(const arken::string & str)
   m_data[m_size] = '\0';
 }
 
-string string::consume(char * data)
-{
-
-  arken::string tmp;
-  delete[] tmp.m_data;
-
-  tmp.m_data = data;
-  tmp.m_size = strlen(data);
-  tmp.m_capacity = tmp.m_size;
-
-  return tmp;
-}
-
-string string::consume(char * data, size_t size)
-{
-  arken::string tmp;
-  delete[] tmp.m_data;
-
-  tmp.m_data = data;
-  tmp.m_size = size;
-  tmp.m_capacity = tmp.m_size;
-
-  return tmp;
-}
-
-string * string::consume(arken::string str)
-{
-  arken::string * tmp = new string;
-  delete[] tmp->m_data;
-
-  tmp->m_data = str.m_data;
-  tmp->m_size = str.m_size;
-  tmp->m_capacity = tmp->m_size;
-
-  str.m_data     = new char[1]();
-  str.m_size     = 0;
-  str.m_capacity = 0;
-
-  return tmp;
-}
-
 string::~string()
 {
   if( m_data )
@@ -1448,7 +1407,7 @@ string string::decode64()
 
 string string::encode64()
 {
-  return arken::string::consume(string::encode64(m_data, m_size));
+  return string::encode64(m_data, m_size);
 }
 
 bool string::equals(const char * data)
@@ -1458,22 +1417,22 @@ bool string::equals(const char * data)
 
 string string::escape()
 {
-  return arken::string::consume(string::escape(m_data));
+  return string::escape(m_data);
 }
 
 string string::encode(const char * charset)
 {
-  return arken::string::consume(string::encode(m_data, charset));
+  return string::encode(m_data, charset);
 }
 
 string string::decode(const char * charset)
 {
-  return arken::string::consume(string::decode(m_data, charset));
+  return string::decode(m_data, charset);
 }
 
 string string::escapeHtml()
 {
-  return arken::string::consume(string::escapeHtml(m_data));
+  return string::escapeHtml(m_data);
 }
 
 int string::indexOf(const char * str, int i)
@@ -1483,7 +1442,7 @@ int string::indexOf(const char * str, int i)
 
 string string::insert(int len, const char * ba)
 {
-  return arken::string::consume(string::insert(m_data, len, ba));
+  return string::insert(m_data, len, ba);
 }
 
 bool string::endsWith(const char * ba)
@@ -1498,54 +1457,54 @@ int string::lastIndexOf(const char * str)
 
 string string::left(int len)
 {
-  return string::consume( string::left(m_data, len) );
+  return string::left(m_data, len);
 }
 
 string string::leftJustified(size_t size, const char * pad)
 {
-  return string::consume( string::leftJustified(m_data, size, pad) );
+  return string::leftJustified(m_data, size, pad);
 }
 
 string string::mid(int pos, int len)
 {
   size_t _len;
   char * result = string::mid(m_data, pos, len, m_size, &_len);
-  return string::consume( result , _len );
+  return string(result , _len);
 }
 
 string string::md5()
 {
-  return arken::string::consume(md5::hash(m_data, m_size));
+  return md5::hash(m_data, m_size);
 }
 
 string string::normalize()
 {
-  return arken::string::consume(string::normalize(m_data));
+  return string::normalize(m_data);
 }
 
 string string::prefix(const char * pattern)
 {
-  return arken::string::consume(string::prefix(m_data, pattern));
+  return string::prefix(m_data, pattern);
 }
 
 string string::simplified()
 {
-  return arken::string::consume(string::simplified(m_data));
+  return string::simplified(m_data);
 }
 
 string string::repeated(int times)
 {
-  return arken::string::consume(string::repeated(m_data, times));
+  return string::repeated(m_data, times);
 }
 
 string string::replace(const char * before, const char * after, int start)
 {
-  return arken::string::consume(string::replace(m_data, before, after, start));
+  return string::replace(m_data, before, after, start);
 }
 
 string string::replace(const char before, const char after, int start)
 {
-  return arken::string::consume(string::replace(m_data, before, after, start));
+  return string::replace(m_data, before, after, start);
 }
 
 void string::reserve(size_t reserve)
@@ -1571,22 +1530,22 @@ size_t string::reserve()
 
 string string::right(int len)
 {
-  return arken::string::consume(string::right(m_data, len));
+  return string::right(m_data, len);
 }
 
 string string::rightJustified(size_t size, const char * pad)
 {
-  return arken::string::consume(string::rightJustified(m_data, size, pad));
+  return string::rightJustified(m_data, size, pad);
 }
 
 string string::sha1()
 {
-  return arken::string::consume(string::sha1(m_data));
+  return string::sha1(m_data);
 }
 
 string string::suffix(const char chr)
 {
-  return arken::string::consume(string::suffix(m_data, chr));
+  return string::suffix(m_data, chr);
 }
 
 char * string::data() const
@@ -1603,17 +1562,17 @@ char * string::release()
 
 string string::trimmed()
 {
-  return arken::string::consume(string::trimmed(m_data));
+  return string::trimmed(m_data);
 }
 
 string string::leftTrimmed()
 {
-  return arken::string::consume(string::leftTrimmed(m_data));
+  return string::leftTrimmed(m_data);
 }
 
 string string::rightTrimmed()
 {
-  return arken::string::consume(string::rightTrimmed(m_data));
+  return string::rightTrimmed(m_data);
 }
 
 bool string::startsWith(const char * str)
@@ -1623,12 +1582,12 @@ bool string::startsWith(const char * str)
 
 string string::truncate(int pos, const char *omission, const char separator)
 {
-  return arken::string::consume(string::truncate(m_data, pos, omission, separator));
+  return string::truncate(m_data, pos, omission, separator);
 }
 
 string string::underscore()
 {
-  return arken::string::consume(string::underscore(m_data));
+  return string::underscore(m_data);
 }
 
 List string::split(const char * pattern)
