@@ -537,12 +537,20 @@ char * string::left(const char * string, int len)
 {
   int i;
   int string_len = strlen(string);
-  char * result  = new char[len+1];
+
+  if( len < 0 ) {
+    len = string_len + len;
+  }
+
+  if( len < 0 ) {
+    return new char[1]();
+  }
 
   if( len > string_len ) {
     len = string_len;
   }
 
+  char * result  = new char[len+1];
   for(i=0; i < len; i++) {
     result[i] = string[i];
   }
