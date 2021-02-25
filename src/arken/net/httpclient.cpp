@@ -202,14 +202,14 @@ string HttpClient::perform()
 
   // out of memory
   if ( m_failure ) {
-    return string();
+    return {};
   }
 
   // check for errors
   if( res != CURLE_OK ) {
     m_failure = true;
     m_message = curl_easy_strerror(res);
-    return string();
+    return {};
   }
 
   if( m_size ) {
@@ -217,6 +217,7 @@ string HttpClient::perform()
     index = string::lastIndexOf(m_data, "HTTP");
     index = string::indexOf(m_data, " ", index);
     if( index > -1 ) {
+      //m_status = m_data.mid(index+1, index+4).atoi();
       char * status = string::mid(m_data, index + 1, index + 4);
       m_status = atoi(status);
       delete status;
@@ -230,19 +231,20 @@ string HttpClient::perform()
       index += 4;
       size_t size = (m_size-index);
       if( size > 0 ) {
+        //return m_data.mid(index, size);
         char * body = string::mid(m_data, index, size);
         string b = body;
         delete[] body;
         return b;
       } else {
-        return string();
+        return {};
       }
     } else {
-      return string();
+      return {};
     }
   } else {
     m_status = 0;
-    return string();
+    return {};
   }
 }
 
