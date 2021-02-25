@@ -5,10 +5,16 @@
 
 #include <arken/base>
 #include <arken/mvm>
+#include <map>
 
 namespace arken {
 
 using arken::string;
+
+// TODO acessor
+static std::map<const char *, const char *> s_cext {
+  {"linux", "so"}, {"windows", "dll"}, {"macos", "dylib"},
+};
 
 int     mvm::s_argc(0);
 char ** mvm::s_argv(0);
@@ -132,9 +138,9 @@ void mvm::init(int argc, char ** argv)
   s_argc  = argc;
   s_argv  = new char*[argc+1];
   for( int i=0; i < argc; i++ ) {
-    int len = strlen(argv[i]) + 1;
-    s_argv[i] = new char[len]();
-    strcpy(s_argv[i], argv[i]);
+    int len = strlen(argv[i]);
+    s_argv[i] = new char[len+1]();
+    strncpy(s_argv[i], argv[i], len);
   }
 
   // env
@@ -143,6 +149,8 @@ void mvm::init(int argc, char ** argv)
     mvm::env(env);
   }
 
+  //TODO
+  //s_arkenPath     = os::executablePath().prefix("bin").left(-1).capitalize();
   s_arkenPath     = os::executablePath();
   int lastIndexOf = s_arkenPath.lastIndexOf("bin");
   s_arkenPath     = s_arkenPath.left(lastIndexOf-1);
@@ -153,24 +161,17 @@ void mvm::init(int argc, char ** argv)
     append(s_arkenPath).append("/lib/?.lua;").
     append(s_arkenPath).append("/packages/?.lua");
 
-  if( string::equals(os::name(), "windows") ) {
-    s_arkenPath = s_arkenPath.capitalize();
-    s_cpackagePath.append("./?.dll;");
-    s_cpackagePath.append("./clib/?.dll;");
-    s_cpackagePath.append(s_arkenPath).append("/clib/?.dll");
-  }
-
-  if( string::equals(os::name(), "linux") ) {
-    s_cpackagePath.append("./?.so;");
-    s_cpackagePath.append("./clib/?.so;");
-    s_cpackagePath.append(s_arkenPath).append("/clib/?.so");
-  }
-
-  if( string::equals(os::name(), "macos") ) {
-    s_cpackagePath.append("./?.dylib;");
-    s_cpackagePath.append("./clib/?.dylib;");
-    s_cpackagePath.append(s_arkenPath).append("/clib/?.dylib");
-  }
+  //TODO capitalize windows
+  const char * cext = s_cext[os::name()];
+  s_arkenPath = s_arkenPath.capitalize();
+  s_cpackagePath.
+  append("./?.").
+  append(cext).
+  append(";./clib/?.").
+  append(cext).
+  append(";").
+  append(s_arkenPath).append("/clib/?.").
+  append(cext);
 
   s_profilePath = s_arkenPath;
   s_profilePath.append("/profile.lua");
