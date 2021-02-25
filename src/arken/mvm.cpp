@@ -11,11 +11,6 @@ namespace arken {
 
 using arken::string;
 
-// TODO acessor
-static std::map<const char *, const char *> s_cext {
-  {"linux", "so"}, {"windows", "dll"}, {"macos", "dylib"},
-};
-
 int     mvm::s_argc(0);
 char ** mvm::s_argv(0);
 
@@ -42,6 +37,11 @@ string mvm::s_env = "development";
 
 static std::mutex mtx;
 static std::map <std::string, int> s_config;
+// TODO acessor
+static std::map<const char *, const char *> s_cext {
+  {"linux", "so"}, {"windows", "dll"}, {"macos", "dylib"},
+};
+
 
 void mvm_pool()
 {
@@ -162,6 +162,7 @@ void mvm::init(int argc, char ** argv)
     append(s_arkenPath).append("/packages/?.lua");
 
   //TODO capitalize windows
+  //const char * cext = mvm:cext();
   const char * cext = s_cext[os::name()];
   s_arkenPath = s_arkenPath.capitalize();
   s_cpackagePath.
