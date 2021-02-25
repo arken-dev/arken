@@ -160,9 +160,7 @@ void mvm::init(int argc, char ** argv)
     append(s_arkenPath).append("/packages/?.lua");
 
   //TODO capitalize windows
-  //const char * cext = mvm:cext();
-  const char * cext = s_cext[os::name()];
-  s_arkenPath = s_arkenPath.capitalize();
+  const char * cext = mvm::cext();
   s_cpackagePath.
   append("./?.").
   append(cext).
@@ -467,6 +465,10 @@ concurrent::Base * mvm::get()
   return pointer;
 }
 
+//-----------------------------------------------------------------------------
+// ENV
+//-----------------------------------------------------------------------------
+
 void mvm::env(const char * env)
 {
   s_env = env;
@@ -476,6 +478,16 @@ const char * mvm::env()
 {
   return s_env;
 }
+
+//-----------------------------------------------------------------------------
+// CEXT
+//-----------------------------------------------------------------------------
+
+const char * mvm::cext()
+{
+  return s_cext[os::name()];
+}
+
 
 void mvm::concurrent(concurrent::Base * pointer)
 {

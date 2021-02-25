@@ -133,7 +133,7 @@ class mvm {
   static void wait();
   static void env(const char * value);
   static const char * env();
-
+  static const char * cext();
 };
 
 class instance {
