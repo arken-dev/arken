@@ -20,9 +20,9 @@ class HttpClient
   private:
   curl_slist * m_list;
   CURL       * m_curl;
-  char       * m_url;
-  char       * m_body;
-  char       * m_data;
+  string       m_url;
+  string       m_body;
+  string       m_data;
   string       m_message;
   bool         m_failure;
   uint32_t     m_status;
@@ -41,10 +41,8 @@ class HttpClient
   string performPost();
   string performPut();
   string performDelete();
-  const
-  char * body();
-  const
-  char * data();
+  string body();
+  string data();
   string message();
   int    status();
   bool   failure();

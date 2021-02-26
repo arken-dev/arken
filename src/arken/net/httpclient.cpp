@@ -19,7 +19,7 @@ uint64_t HttpClient::callback(void *contents, size_t size, size_t nmemb, void *u
 {
   size_t realsize = size * nmemb;
   HttpClient * client = (HttpClient *)userp;
-
+  /*
   client->m_data = (char *) realloc(client->m_data, client->m_size + realsize + 1);
 
   // out of memory
@@ -32,18 +32,16 @@ uint64_t HttpClient::callback(void *contents, size_t size, size_t nmemb, void *u
   memcpy(&(client->m_data[client->m_size]), contents, realsize);
   client->m_size += realsize;
   client->m_data[client->m_size] = 0;
+  */
+  client->m_data.append((const char *) contents);
 
   return realsize;
 }
 
 HttpClient::HttpClient(const char * url)
 {
-  //url
-  m_url = new char[strlen(url) + 1];
-  strcpy(m_url, url);
+  m_url = url;
 
-  m_body    = NULL;
-  m_data    = NULL;
   m_size    = 0;
   m_list    = 0;
   m_failure = false;
@@ -92,11 +90,6 @@ HttpClient::~HttpClient()
   // we're done with libcurl, so clean it up
   curl_global_cleanup();
 
-  // free memory
-  delete[] m_url;
-  if( m_data )    delete[] m_data;
-  if( m_body )    delete[] m_body;
-
 }
 
 void HttpClient::appendHeader(const char * header)
@@ -115,14 +108,10 @@ void HttpClient::setVerbose(bool verbose)
 
 void HttpClient::setBody(const char * body)
 {
-  size_t size;
-  size = strlen(body);
-  m_body = new char[size + 1];
-  strcpy(m_body, body);
-  m_body[size] = '\0';
+  m_body = body;
 }
 
-const char * HttpClient::body()
+string HttpClient::body()
 {
   return m_body;
 }
@@ -138,9 +127,9 @@ string HttpClient::performPost()
   /* POST */
   curl_easy_setopt(m_curl, CURLOPT_CUSTOMREQUEST, "POST");
   curl_easy_setopt(m_curl, CURLOPT_POST, 1);
-  if( m_body ) {
-    curl_easy_setopt(m_curl, CURLOPT_POSTFIELDS, m_body);
-    curl_easy_setopt(m_curl, CURLOPT_POSTFIELDSIZE, strlen(m_body));
+  if( !m_body.empty() ) {
+    curl_easy_setopt(m_curl, CURLOPT_POSTFIELDS, m_body.data() );
+    curl_easy_setopt(m_curl, CURLOPT_POSTFIELDSIZE, m_body.size() );
   }
 
   return perform();
@@ -152,9 +141,9 @@ string HttpClient::performPut()
   /* PUT */
   curl_easy_setopt(m_curl, CURLOPT_CUSTOMREQUEST, "PUT");
   curl_easy_setopt(m_curl, CURLOPT_POST, 1);
-  if( m_body ) {
-    curl_easy_setopt(m_curl, CURLOPT_POSTFIELDS, m_body);
-    curl_easy_setopt(m_curl, CURLOPT_POSTFIELDSIZE, strlen(m_body));
+  if( !m_body.empty() ) {
+    curl_easy_setopt(m_curl, CURLOPT_POSTFIELDS, m_body.data());
+    curl_easy_setopt(m_curl, CURLOPT_POSTFIELDSIZE, m_body.size());
   }
 
   return perform();
@@ -174,7 +163,7 @@ int HttpClient::status()
   return m_status;
 }
 
-const char * HttpClient::data()
+string HttpClient::data()
 {
   return m_data;
 }
@@ -212,30 +201,26 @@ string HttpClient::perform()
     return {};
   }
 
-  if( m_size ) {
+  if( m_data.size() > 0 ) {
     // parse status
-    index = string::lastIndexOf(m_data, "HTTP");
-    index = string::indexOf(m_data, " ", index);
+    index = m_data.lastIndexOf("HTTP");
+    index = m_data.indexOf(" ", index);
     if( index > -1 ) {
       //m_status = m_data.mid(index+1, index+4).atoi();
-      char * status = string::mid(m_data, index + 1, index + 4);
-      m_status = atoi(status);
-      delete status;
+      string status = m_data.mid(index + 1, index + 4);
+      // TODO atoi in arken:string
+      m_status = atoi(status.data());
     } else {
       m_status = 0;
     }
 
     //parse body
-    index = string::lastIndexOf(m_data, "\r\n\r\n");
+    index = m_data.lastIndexOf("\r\n\r\n");
     if( index > 0 ) {
       index += 4;
-      size_t size = (m_size-index);
+      size_t size = (m_data.size()-index);
       if( size > 0 ) {
-        //return m_data.mid(index, size);
-        char * body = string::mid(m_data, index, size);
-        string b = body;
-        delete[] body;
-        return b;
+        return m_data.mid(index, size);
       } else {
         return {};
       }
