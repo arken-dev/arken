@@ -1562,7 +1562,8 @@ char * string::release()
 
 string string::trimmed()
 {
-  return string::trimmed(m_data);
+  std::unique_ptr<char> result( string::trimmed(m_data) );
+  return string(result.get());
 }
 
 string string::leftTrimmed()
