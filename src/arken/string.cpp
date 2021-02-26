@@ -1468,8 +1468,8 @@ string string::leftJustified(size_t size, const char * pad)
 string string::mid(int pos, int len)
 {
   size_t _len;
-  char * result = string::mid(m_data, pos, len, m_size, &_len);
-  return string(result , _len);
+  std::unique_ptr<char> result( string::mid(m_data, pos, len, m_size, &_len) );
+  return string(result.get() , _len);
 }
 
 string string::md5()
