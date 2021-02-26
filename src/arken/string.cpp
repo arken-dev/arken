@@ -1264,7 +1264,7 @@ string::string()
 {
   m_reserve  = 0;
   m_size     = 0;
-  m_data     = nullptr;//new char[1]();
+  m_data     = new char[1]();
   m_capacity = m_size;
 }
 
