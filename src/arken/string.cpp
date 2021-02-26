@@ -1264,7 +1264,7 @@ string::string()
 {
   m_reserve  = 0;
   m_size     = 0;
-  m_data     = new char[1]();
+  m_data     = nullptr;//new char[1]();
   m_capacity = m_size;
 }
 
@@ -1562,8 +1562,12 @@ char * string::release()
 
 string string::trimmed()
 {
-  std::unique_ptr<char> result( string::trimmed(m_data) );
-  return string(result.get());
+  string dt;
+  dt.m_data = string::trimmed(m_data);
+  dt.m_size = strlen(dt.m_data);
+  return dt;
+  //std::unique_ptr<char> result( string::trimmed(m_data) );
+  //return string(result.get());
 }
 
 string string::leftTrimmed()
