@@ -201,7 +201,7 @@ string HttpClient::perform()
     return {};
   }
 
-  if( m_data.size() > 0 ) {
+  if( !m_data.empty() ) {
     // parse status
     index = m_data.lastIndexOf("HTTP");
     index = m_data.indexOf(" ", index);
