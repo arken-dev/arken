@@ -19,22 +19,7 @@ uint64_t HttpClient::callback(void *contents, size_t size, size_t nmemb, void *u
 {
   size_t realsize = size * nmemb;
   HttpClient * client = (HttpClient *)userp;
-  /*
-  client->m_data = (char *) realloc(client->m_data, client->m_size + realsize + 1);
-
-  // out of memory
-  if( client->m_data == NULL ) {
-    client->m_failure = true;
-    client->m_message = new char[14]{'o', 'u', 't', ' ', 'o', 'f', ' ', 'm', 'e', 'm', 'o', 'r', 'y', '\0'};
-    return 0;
-  }
-
-  memcpy(&(client->m_data[client->m_size]), contents, realsize);
-  client->m_size += realsize;
-  client->m_data[client->m_size] = 0;
-  */
   client->m_data.append((const char *) contents);
-
   return realsize;
 }
 
