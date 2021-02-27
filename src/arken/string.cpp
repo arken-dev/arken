@@ -1288,6 +1288,22 @@ string::string(const char * data)
   m_data[m_size] = '\0';
 }
 
+string::string(char * && data)
+{
+  m_data      = data;
+  m_size      = strlen(m_data);
+  m_reserve   = m_size;
+  m_capacity  = m_size;
+}
+
+string::string(char * && data, size_t size)
+{
+  m_data      = data;
+  m_size      = size;
+  m_reserve   = m_size;
+  m_capacity  = m_size;
+}
+
 string::string(const arken::string & str)
 {
   m_reserve   = str.m_reserve;
@@ -1300,8 +1316,9 @@ string::string(const arken::string & str)
 
 string::~string()
 {
-  if( m_data )
+  if( m_data ) {
     delete[] m_data;
+  }
 }
 
 string & string::append(const char * data)
@@ -1548,7 +1565,7 @@ string string::suffix(const char chr)
   return string::suffix(m_data, chr);
 }
 
-char * string::data() const
+const char * string::data() const
 {
   return this->m_data;
 }
@@ -1562,12 +1579,11 @@ char * string::release()
 
 string string::trimmed()
 {
-  string dt;
-  dt.m_data = string::trimmed(m_data);
-  dt.m_size = strlen(dt.m_data);
-  return dt;
-  //std::unique_ptr<char> result( string::trimmed(m_data) );
-  //return string(result.get());
+  //string dt;
+  //dt.m_data = string::trimmed(m_data);
+  //dt.m_size = strlen(dt.m_data);
+  //return dt;
+  return string::trimmed(m_data);
 }
 
 string string::leftTrimmed()

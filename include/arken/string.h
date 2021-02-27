@@ -76,12 +76,11 @@ class string {
   // INSTANCE METHODS
   //---------------------------------------------------------------------------
 
-  static string   consume(char * str);
-  static string   consume(char * str, size_t size);
-  static string * consume(arken::string str);
   string();
   string(const char * str);
   string(const char * str, size_t size);
+  string(char * && str);
+  string(char * && str, size_t size);
   string(const arken::string &str);
   ~string();
 
@@ -135,7 +134,7 @@ class string {
   string rightTrimmed();
   string truncate(int pos, const char * omission = "...", const char separator = ' ');
   string underscore();
-  char  * data() const;
+  const char  * data() const;
   // explicit conversion
   operator const char *() const { return m_data; }
   string & operator=(const string &str);
