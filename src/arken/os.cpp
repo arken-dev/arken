@@ -128,7 +128,7 @@ string os::read(const char * path)
   } else {
     char * buffer;
     std::ifstream file;
-    int length;
+    size_t length;
     file.open(path);
     file.seekg(0, std::ios::end);
     length = file.tellg();
@@ -137,7 +137,7 @@ string os::read(const char * path)
     file.read(buffer, length);
     file.close();
     buffer[length] = '\0';
-    return string( buffer, length );
+    return string( std::move(buffer), length );
   }
 
 }
