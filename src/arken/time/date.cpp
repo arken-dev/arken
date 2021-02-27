@@ -48,12 +48,12 @@ Date Date::fromString(const char * string,  const char * format)
 
 string Date::toString(const char * format)
 {
-  return string(QDate::toString(format).toLocal8Bit().data());
+  return string(QDate::toString(format).toLocal8Bit().constData());
 }
 
 string Date::toString()
 {
-  return string(QDate::toString("yyyy/MM/dd").toLocal8Bit().data());
+  return string(QDate::toString("yyyy/MM/dd").toLocal8Bit().constData());
 }
 
 Date * Date::parse(const char * str)

@@ -24,12 +24,12 @@ Time Time::fromString(const char * string,  const char * format)
 
 string Time::toString(const char * format)
 {
-  return string(QTime::toString(format).toLocal8Bit().data());
+  return string(QTime::toString(format).toLocal8Bit().constData());
 }
 
 string Time::toString()
 {
-  return string(QTime::toString("hh:mm:ss.z").toLocal8Bit().data());
+  return string(QTime::toString("hh:mm:ss.z").toLocal8Bit().constData());
 }
 
 Time * Time::parse(const char * str)

@@ -72,12 +72,12 @@ DateTime DateTime::fromString(const char * string,  const char * format)
 
 string DateTime::toString(const char * format)
 {
-  return string(QDateTime::toString(format).toLocal8Bit().data());
+  return string(QDateTime::toString(format).toLocal8Bit().constData());
 }
 
 string DateTime::toString()
 {
-  return string(QDateTime::toString("yyyy/MM/dd hh:mm:ss.zzz").toLocal8Bit().data());
+  return string(QDateTime::toString("yyyy/MM/dd hh:mm:ss.zzz").toLocal8Bit().constData());
 }
 
 DateTime * DateTime::parse(const char * str)
