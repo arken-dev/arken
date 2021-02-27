@@ -1418,8 +1418,8 @@ string string::dasherize()
 string string::decode64()
 {
   size_t size;
-  char * decoded = string::decode64(m_data, &size);
-  return arken::string(decoded, size);
+  char * result = string::decode64(m_data, &size);
+  return string(std::move(result) , size);
 }
 
 string string::encode64()
@@ -1484,9 +1484,9 @@ string string::leftJustified(size_t size, const char * pad)
 
 string string::mid(int pos, int len)
 {
-  size_t _len;
-  std::unique_ptr<char> result( string::mid(m_data, pos, len, m_size, &_len) );
-  return string(result.get() , _len);
+  size_t size;
+  char * result = string::mid(m_data, pos, len, m_size, &size);
+  return string(std::move(result) , size);
 }
 
 string string::md5()
@@ -1570,6 +1570,7 @@ const char * string::data() const
   return this->m_data;
 }
 
+// TODO revisar o uso
 char * string::release()
 {
   char * tmp = this->m_data;
