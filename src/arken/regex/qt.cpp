@@ -36,7 +36,7 @@ List * regex::split(const char * string, const char * regex)
   while ((poss = qregex.indexIn(string, poss)) != -1) {
     list->append(qstr.mid(older, poss-older).replace(qregex, "").toLocal8Bit());
     older = poss;
-    poss  += qregex.matchedLength();
+    poss += qregex.matchedLength();
   }
   if( older < qstr.size() ) {
      list->append(qstr.mid(older, qstr.size() -older).replace(qregex, "").toLocal8Bit());
