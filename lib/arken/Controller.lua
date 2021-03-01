@@ -162,6 +162,15 @@ function Controller:render_html(params)
     if flag then
       self._yield = result
     else
+      if type(result) == "table" then
+        local errors = ""
+        for key, value in pairs(result) do
+          if key ~= "traceback" then
+            errors = errors .. " - " .. value .. "\n"
+          end
+        end
+        result = errors
+      end
       return 500, {'Content-Type: text/plain'}, file .. '\n\n' .. result .. '\n\n' .. template.debug(file)
     end
 
