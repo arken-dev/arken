@@ -7,7 +7,6 @@
 #include <lua/json/lock.h>
 #include <arken/base>
 #include <arken/cache>
-#include <arken/task>
 #include <arken/mvm>
 
 namespace arken {

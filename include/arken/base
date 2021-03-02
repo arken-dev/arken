@@ -17,8 +17,6 @@
 #include <arken/log.h>
 #include <arken/mvm.h>
 #include <arken/regex.h>
-#include <arken/service.h>
-#include <arken/task.h>
 #include <arken/time/date.h>
 #include <arken/time/datetime.h>
 #include <arken/time/time.h>

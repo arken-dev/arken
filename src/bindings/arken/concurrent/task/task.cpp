@@ -5,7 +5,7 @@
 
 #include <lua/lua.hpp>
 #include <arken/base>
-#include <arken/task>
+#include <arken/concurrent/task.h>
 
 using task = arken::concurrent::task;
 
