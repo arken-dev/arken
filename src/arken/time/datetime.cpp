@@ -86,28 +86,34 @@ string DateTime::toString()
 DateTime * DateTime::parse(const char * str)
 {
   char format[25];
+  size_t size = 10;
 
   if(str[4] == '-') {
-    strcpy(format, "yyyy-MM-dd");
+    strncpy(format, "yyyy-MM-dd", 10);
   } else if(str[4] == '/') {
-    strcpy(format, "yyyy/MM/dd");
+    strncpy(format, "yyyy/MM/dd", 10);
   } else if(str[5] == '-') {
-    strcpy(format, "dd-MM-yyyy");
+    strncpy(format, "dd-MM-yyyy", 10);
   } else {
-    strcpy(format, "dd/MM/yyyy");
+    strncpy(format, "dd/MM/yyyy", 10);
   }
 
   if(str[13] == ':') {
-    strcat(format, " hh:mm");
+    strncat(format, " hh:mm", 6);
+    size += 6;
   }
 
   if(str[16] == ':') {
-    strcat(format, ":ss");
+    strncat(format, ":ss", 3);
+    size += 3;
   }
 
   if(str[19] == '.') {
-    strcat(format, ".z");
+    strncat(format, ".z", 2);
+    size += 2;
   }
+  format[size] = '\0';
+
   DateTime result = DateTime::fromString(str, format);
   if( result.isValid() ) {
     return new DateTime(result);
