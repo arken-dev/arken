@@ -21,7 +21,7 @@ char * md5::hash(const char * hash, int length)
   QByteArray hex = QCryptographicHash::hash(QByteArray(hash, length), QCryptographicHash::Md5).toHex();
   const char * data = hex.data();
   char * result = new char[33];
-  strcpy(result, data);
+  strncpy(result, data, 32);
   result[32] = '\0';
   return result;
 }
