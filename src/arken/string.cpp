@@ -3,8 +3,13 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#include <arken/base>
-#include <QDebug>
+#include <arken/string.h>
+#include <arken/base64.h>
+#include <arken/digest/md5.h>
+#include <arken/digest/sha1.h>
+#include <arken/utf8.h>
+
+namespace arken {
 
 using base64 = arken::base64;
 using md5    = arken::digest::md5;
@@ -1636,17 +1641,6 @@ bool string::empty()
 // OPERATORS
 //-----------------------------------------------------------------------------
 
-std::ostream & operator<<(std::ostream & os, const arken::string * str)
-{
-   os << str->data();
-   return os;
-}
-std::ostream & operator<<(std::ostream & os, const arken::string & str)
-{
-   os << str.data();
-   return os;
-}
-
 string & string::operator=(const string &a)
 {
   if( m_data )
@@ -1961,4 +1955,21 @@ const char * string::List::each()
   m_cursor++;
 
   return result;
+}
+
+} // namespace arken
+
+//-----------------------------------------------------------------------------
+// COUT
+//-----------------------------------------------------------------------------
+
+std::ostream & operator<<(std::ostream & os, const arken::string * str)
+{
+   os << str->data();
+   return os;
+}
+std::ostream & operator<<(std::ostream & os, const arken::string & str)
+{
+   os << str.data();
+   return os;
 }

@@ -3,7 +3,8 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#include <arken/base>
+#include <map>
+#include <arken/net/httputil.h>
 
 namespace arken {
 namespace net {

@@ -5,14 +5,12 @@
 
 #include <lua/lua.hpp>
 #include <lua/json/lock.h>
-#include <arken/base>
-#include <arken/cache>
 #include <arken/mvm>
+#include <arken/os.h>
+#include <arken/concurrent/task.h>
 
 namespace arken {
 namespace concurrent {
-
-using cache = arken::cache;
 
 void task::wait()
 {

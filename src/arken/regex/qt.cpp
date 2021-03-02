@@ -3,11 +3,12 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#include <arken/base>
 #include <QRegExp>
 #include <QString>
 #include <QStringList>
 #include <cstring>
+
+#include <arken/regex.h>
 
 namespace arken {
 

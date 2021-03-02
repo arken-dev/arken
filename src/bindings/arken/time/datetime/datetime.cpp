@@ -5,6 +5,8 @@
 
 #include <lua/lua.hpp>
 #include <arken/base>
+#include <arken/time/date.h>
+#include <arken/time/datetime.h>
 
 using arken::time::DateTime;
 using arken::time::Date;

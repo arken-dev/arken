@@ -6,6 +6,8 @@
 #ifndef _ARKEN_BASE64_
 #define _ARKEN_BASE64_
 
+#include<cstddef>
+
 namespace arken
 {
 

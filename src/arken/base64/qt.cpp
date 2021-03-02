@@ -1,4 +1,4 @@
-#include <arken/base>
+#include <arken/base64.h>
 #include <QByteArray>
 
 namespace arken {

@@ -3,12 +3,11 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#include <arken/base>
 #include <curl/curl.h>
+#include <iostream>
 #include <cstdlib>
 #include <cstring>
-#include <arken/base>
-#include <iostream>
+#include <arken/net/httpclient.h>
 
 namespace arken {
 namespace net {

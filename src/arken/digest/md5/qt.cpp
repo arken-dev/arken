@@ -4,7 +4,8 @@
 // license that can be found in the LICENSE file.
 
 #include <cstring>
-#include <arken/base>
+#include <fstream>
+#include <arken/digest/md5.h>
 #include <QCryptographicHash>
 
 namespace arken {

@@ -4,9 +4,12 @@
 // license that can be found in the LICENSE file.
 
 #include <arken/base>
+#include <arken/time/datetime.h>
 #include <iostream>
 
-using arken::time::DateTime;
+
+namespace arken {
+namespace time {
 
 DateTime DateTime::currentDateTime()
 {
@@ -112,3 +115,6 @@ DateTime * DateTime::parse(const char * str)
     return 0;
   }
 }
+
+} // namespace time
+} // namespace arken

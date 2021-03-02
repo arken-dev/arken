@@ -6,6 +6,7 @@
 #include <iostream>
 #include <fstream>
 #include <arken/net/config.h>
+#include <arken/log.h>
 #include <arken/concurrent/service.h>
 #include <lua/lua.hpp>
 

@@ -4,8 +4,12 @@
 // license that can be found in the LICENSE file.
 
 #include <lua/lua.hpp>
-#include <arken/base>
 #include <string>
+#include <arken/net/httpbody.h>
+#include <arken/net/httpenv.h>
+#include <arken/net/httputil.h>
+#include <arken/net/httphandle.h>
+#include <arken/mvm.h>
 
 namespace arken {
 namespace net {

@@ -5,6 +5,7 @@
 
 #include <lua/lua.hpp>
 #include <arken/base>
+#include <arken/time/time.h>
 
 using arken::time::Time;
 

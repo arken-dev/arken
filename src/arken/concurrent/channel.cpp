@@ -5,9 +5,7 @@
 
 #include <lua/lua.hpp>
 #include <lua/json/lock.h>
-#include <arken/base>
-#include <arken/cache>
-#include <arken/mvm>
+#include <arken/concurrent/channel.h>
 #include <memory>
 
 namespace arken {

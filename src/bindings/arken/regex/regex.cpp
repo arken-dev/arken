@@ -5,6 +5,7 @@
 
 #include <lua/lua.hpp>
 #include <arken/base>
+#include <arken/regex.h>
 
 using List = arken::string::List;
 using arken::regex;

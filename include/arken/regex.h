@@ -6,10 +6,12 @@
 #ifndef _ARKEN_REGEX_
 #define _ARKEN_REGEX_
 
-using List = arken::string::List;
+#include <arken/base>
 
 namespace arken
 {
+
+using List = arken::string::List;
 
 class regex {
   public:

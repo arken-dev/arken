@@ -5,6 +5,7 @@
 
 #include <lua/lua.hpp>
 #include <arken/base>
+#include <arken/net/httpclient.h>
 
 using arken::net::HttpClient;
 using arken::string;

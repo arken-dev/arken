@@ -5,6 +5,7 @@
 
 #include <lua/lua.hpp>
 #include <arken/base>
+#include <arken/digest/sha1.h>
 
 using sha1 = arken::digest::sha1;
 

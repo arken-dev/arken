@@ -4,8 +4,10 @@
 // license that can be found in the LICENSE file.
 
 #include <arken/base>
+#include <arken/time/time.h>
 
-using arken::time::Time;
+namespace arken {
+namespace time {
 
 Time Time::currentTime()
 {
@@ -51,3 +53,6 @@ Time * Time::parse(const char * str)
     return 0;
   }
 }
+
+} // namespace time
+} // namespace arken

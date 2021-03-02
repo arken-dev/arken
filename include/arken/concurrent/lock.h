@@ -8,6 +8,7 @@
 
 #include <mutex>
 #include <unordered_map>
+#include <arken/base>
 
 namespace arken
 {

@@ -11,8 +11,8 @@
 
 namespace arken {
 
+//using string = arken::string;
 using List   = arken::string::List;
-using string = arken::string;
 
 class os {
   public:

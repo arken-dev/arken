@@ -4,10 +4,11 @@
 // license that can be found in the LICENSE file.
 
 #include <arken/base>
+#include <arken/time/date.h>
 
 
-using arken::time::Date;
-using arken::string;
+namespace arken {
+namespace time {
 
 Date Date::currentDate()
 {
@@ -77,3 +78,6 @@ Date * Date::parse(const char * str)
     return 0;
   }
 }
+
+} // namespace time
+} // namespace arken
