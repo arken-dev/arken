@@ -12,9 +12,10 @@ namespace net {
 HttpBody::HttpBody(const char * buffer, size_t size)
 {
   m_release = false;
-  m_buffer  = new char[size];
+  m_buffer  = new char[size+1];
   m_size    = size;
-  strcpy(m_buffer, buffer);
+  memcpy( m_buffer, buffer, size );
+  m_buffer[size] = '\0';
 }
 
 HttpBody::HttpBody(char * buffer, size_t size)

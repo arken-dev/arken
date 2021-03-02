@@ -56,7 +56,7 @@ char * regex::replace(const char * string, const char * regex, const char * afte
   QString str(string);
   QString aft = str.replace(QRegExp(regex), after);
   char * result = new char[aft.size() + 1];
-  strcpy(result, aft.toLocal8Bit().data());
+  strncpy(result, aft.toLocal8Bit().data(), aft.size());
   return result;
 }
 

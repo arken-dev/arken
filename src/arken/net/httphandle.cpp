@@ -55,6 +55,9 @@ std::string HttpHandle::sync(const char * data, size_t size)
   } else {
 
     code = lua_tointeger( L, 1 );
+    if( code < 0 ) {
+      code = 500;
+    }
 
     buffer.append(HttpUtil::status(code));
     buffer.append("\r\n");
@@ -68,7 +71,6 @@ std::string HttpHandle::sync(const char * data, size_t size)
 
     if( ! lua_isnil(L, 3) ) {
      if( code < 0 ) {
-        code = 500;
         result = luaL_checklstring( L , -1, &len );
         buffer.append(result, len);
       } else {
