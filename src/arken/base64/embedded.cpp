@@ -4,6 +4,7 @@
 // license that can be found in the LICENSE file.
 
 #include <arken/base>
+#include <arken/base64.h>
 
 extern "C" {
   #include <base64/ap_base64.h>

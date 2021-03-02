@@ -6,6 +6,7 @@
 #include <arken/base>
 #include <arken/mvm>
 #include <QQueue>
+#include <QMutex>
 
 namespace arken {
 

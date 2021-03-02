@@ -1,4 +1,7 @@
+#include <fstream>
 #include <arken/base>
+#include <arken/digest/md5.h>
+
 extern "C" {
 #include <openssl/md5.h>
 }

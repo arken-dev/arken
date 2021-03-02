@@ -3,7 +3,10 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+#include <fstream>
 #include <arken/base>
+#include <arken/digest/md5.h>
+
 extern "C" {
 #include <digest/md5.h>
 }

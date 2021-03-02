@@ -1,4 +1,7 @@
+#include <fstream>
 #include <arken/base>
+#include <arken/digest/sha1.h>
+
 extern "C" {
 #include <openssl/sha.h>
 }
