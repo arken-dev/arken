@@ -144,10 +144,7 @@ void mvm::init(int argc, char ** argv)
   }
 
   // env
-  const char * env = getenv("ARKEN_ENV");
-  if( env ) {
-    mvm::env(env);
-  }
+  mvm::env( getenv("ARKEN_ENV") );
 
   //TODO
   string path = os::executablePath();
@@ -471,7 +468,9 @@ concurrent::Base * mvm::get()
 
 void mvm::env(const char * env)
 {
-  s_env = env;
+  if( env != nullptr ) {
+    s_env = env;
+  }
 }
 
 const char * mvm::env()
