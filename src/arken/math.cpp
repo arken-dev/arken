@@ -93,17 +93,14 @@ char * math::format(double value, int decimals, char dec_point, char thousands_s
   if( index == -1 ) {
     index = string::indexOf(tmp, ",");
   }
-  int idx   = index;
-  int len   = index;
-  int t     = 0;
+  int idx  = index;
+  int len  = index;
+  int t    = 0;
 
   if( decimals == 0 ) {
-    idx = slen-1;
-    len = slen-1;
+    idx   = slen-1;
+    len   = slen-1;
     index = slen-1;
-  } else {
-    idx = index;
-    len = index;
   }
 
   if(thousands_sep) {
