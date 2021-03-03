@@ -34,7 +34,6 @@ string mvm::s_packagePath  = "";
 string mvm::s_cpackagePath = "";
 string mvm::s_env = "development";
 
-
 static std::mutex mtx;
 static std::map <std::string, int> s_config;
 // TODO acessor
@@ -136,12 +135,18 @@ void mvm::config()
 void mvm::init(int argc, char ** argv)
 {
   s_argc  = argc;
+  s_argv  = argv;
+
+  /*
+  // the copy of memory in main does not seem to be necessary
+  s_argc  = argc;
   s_argv  = new char*[argc+1];
   for( int i=0; i < argc; i++ ) {
     int len = strlen(argv[i]);
     s_argv[i] = new char[len+1]();
     strncpy(s_argv[i], argv[i], len);
   }
+  */
 
   // env
   mvm::env( getenv("ARKEN_ENV") );
