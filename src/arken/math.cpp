@@ -89,10 +89,13 @@ char * math::format(double value, int decimals, char dec_point, char thousands_s
   }
 
   char * res;
-  size_t index = string::indexOf(tmp, ".");
-  size_t idx   = index;
-  size_t len   = index;
-  size_t t     = 0;
+  int index = string::indexOf(tmp, ".");
+  if( index == -1 ) {
+    index = string::indexOf(tmp, ",");
+  }
+  int idx   = index;
+  int len   = index;
+  int t     = 0;
 
   if( decimals == 0 ) {
     idx = slen-1;
