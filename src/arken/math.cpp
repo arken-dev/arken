@@ -89,6 +89,7 @@ char * math::format(double value, int decimals, char dec_point, char thousands_s
   }
 
   char * res;
+  // TODO dec_point get env
   int index = string::indexOf(tmp, ".");
   if( index == -1 ) {
     index = string::indexOf(tmp, ",");
