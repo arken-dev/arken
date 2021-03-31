@@ -1702,6 +1702,16 @@ string & string::operator=(const string * str)
   return *this;
 }
 
+bool string::operator<(const string &str) const
+{
+  return std::strcmp(m_data, str.m_data) < 0;
+}
+
+bool string::operator==(const string &str) const
+{
+  return std::strcmp(m_data, str.m_data) == 0;
+}
+
 //-----------------------------------------------------------------------------
 // LIST
 //-----------------------------------------------------------------------------

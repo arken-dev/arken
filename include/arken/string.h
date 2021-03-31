@@ -13,7 +13,7 @@
 
 namespace arken {
   class string {
-
+    friend std::hash<arken::string>;
 
     private:
     char   * m_data;
@@ -138,9 +138,12 @@ namespace arken {
     char  * data() const;
     // explicit conversion
     operator const char *() const { return m_data; }
+
     string & operator=(const string &str);
     string & operator=(const string *str);
     string & operator=(const char   *str);
+    bool   operator < (const string &str) const;
+    bool   operator == (const string &str) const;
 
     class List
     {
@@ -178,5 +181,22 @@ namespace arken {
 
 std::ostream & operator<<(std::ostream & os, const arken::string & str);
 std::ostream & operator<<(std::ostream & os, const arken::string * str);
+
+namespace std {
+    template<>
+    struct hash<arken::string> {
+        size_t operator()(const arken::string & str) const {
+          //return std::hash< std::string >()( str.data() );
+          int seed = 131;//31  131 1313 13131131313 etc//
+          size_t hash = 0;
+          size_t size = str.m_size;
+          char * data = str.m_data;
+          for( size_t i=0; i < size; i++ ) {
+            hash = (hash * seed) + (data[i]);
+          }
+          return hash & (0x7FFFFFFF);
+        }
+    };
+}
 
 #endif
