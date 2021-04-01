@@ -6,7 +6,8 @@
 #ifndef _ARKEN_CONCURRENT_TRITON_
 #define _ARKEN_CONCURRENT_TRITON_
 
-#include <arken/mvm.h>
+#include <arken/base>
+#include <arken/mvm>
 #include <mutex>
 #include <queue>
 #include <unordered_map>
