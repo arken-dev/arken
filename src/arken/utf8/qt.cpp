@@ -9,6 +9,19 @@
 
 using namespace arken;
 
+char * utf8::sub(const char * string, int i, int j)
+{
+  QString str(string);
+  if( j < 0 ) {
+    j= str.size();
+  }
+  QByteArray tmp = str.mid(i, (j-i)+1).toLocal8Bit();
+  char * result  = new char[tmp.size() + 1];
+  strcpy(result, tmp);
+  result[tmp.size()] = '\0';
+  return result;
+}
+
 char * utf8::upper(const char * string)
 {
   QByteArray tmp = QString(string).toUpper().toLocal8Bit();

@@ -11,6 +11,7 @@ namespace arken
 
 class utf8 {
   public:
+  static char * sub(const char * string, int i, int j=-1);
   static char * upper(const char * string);
   static char * lower(const char * string);
   static char * format(const char * string);
