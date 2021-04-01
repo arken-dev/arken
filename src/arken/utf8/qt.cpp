@@ -17,7 +17,7 @@ char * utf8::sub(const char * string, int i, int j)
   }
   QByteArray tmp = str.mid(i, (j-i)+1).toLocal8Bit();
   char * result  = new char[tmp.size() + 1];
-  strcpy(result, tmp);
+  strncpy(result, tmp, tmp.size());
   result[tmp.size()] = '\0';
   return result;
 }
