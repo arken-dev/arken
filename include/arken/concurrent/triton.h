@@ -28,8 +28,8 @@ namespace concurrent {
     bool m_release;
     bool m_purge;
 
-    std::unordered_map<std::string, std::string *> m_result;
-    std::unordered_map<std::string, int> m_total;
+    std::unordered_map<string, string *> m_result;
+    std::unordered_map<string, int> m_total;
     std::queue<string> m_queue;
     std::mutex m_mutex;
 

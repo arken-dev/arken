@@ -165,31 +165,31 @@ void triton::enqueue(string value)
 void triton::append(string key, string result)
 {
   std::unique_lock<std::mutex> lck(m_mutex);
-  if( m_result.count(key.data()) > 0 ) {
-    std::string * value = m_result.at(key.data());
-    value->append(result.data());
+  if( m_result.count(key) > 0 ) {
+    string * value = m_result.at(key);
+    value->append(result);
   } else {
-    m_result[key.data()] = new std::string(result.data());
+    m_result[key] = new string(result);
   }
 }
 
 void triton::count(string key)
 {
   std::unique_lock<std::mutex> lck(m_mutex);
-  if( m_total.count(key.data()) > 0 ) {
-    int value = m_total.at(key.data());
+  if( m_total.count(key) > 0 ) {
+    int value = m_total.at(key);
     value++;
-    m_total[key.data()] = value;
+    m_total[key] = value;
   } else {
-    m_total[key.data()] = 1;
+    m_total[key] = 1;
   }
 }
 
 int triton::total(string key)
 {
   std::unique_lock<std::mutex> lck(m_mutex);
-  if( m_total.count(key.data()) > 0 ) {
-    return m_total.at(key.data());
+  if( m_total.count(key) > 0 ) {
+    return m_total.at(key);
   } else {
     return 0;
   }
@@ -203,8 +203,8 @@ string triton::uuid()
 string triton::result(string key)
 {
   std::unique_lock<std::mutex> lck(m_mutex);
-  if( m_result.count(key.data()) > 0 ) {
-    return m_result.at(key.data())->c_str();
+  if( m_result.count(key) > 0 ) {
+    return *m_result.at(key);
   } else {
     return "";
   }
@@ -343,31 +343,31 @@ unsigned int triton::node::number()
 void triton::node::append(string key, string result)
 {
   std::unique_lock<std::mutex> lck(m_triton->m_mutex);
-  if( m_triton->m_result.count(key.data()) > 0 ) {
-    std::string * value = m_triton->m_result.at(key.data());
-    value->append(result.data());
+  if( m_triton->m_result.count(key) > 0 ) {
+    string * value = m_triton->m_result.at(key);
+    value->append(result);
   } else {
-    m_triton->m_result[key.data()] = new std::string(result.data());
+    m_triton->m_result[key] = new string(result);
   }
 }
 
 void triton::node::count(string key)
 {
   std::unique_lock<std::mutex> lck(m_triton->m_mutex);
-  if( m_triton->m_total.count(key.data()) > 0 ) {
-    int value = m_triton->m_total.at(key.data());
+  if( m_triton->m_total.count(key) > 0 ) {
+    int value = m_triton->m_total.at(key);
     value++;
-    m_triton->m_total[key.data()] = value;
+    m_triton->m_total[key] = value;
   } else {
-    m_triton->m_total[key.data()] = 1;
+    m_triton->m_total[key] = 1;
   }
 }
 
 int triton::node::total(string key)
 {
   std::unique_lock<std::mutex> lck(m_triton->m_mutex);
-  if( m_triton->m_total.count(key.data()) > 0 ) {
-    return m_triton->m_total.at(key.data());
+  if( m_triton->m_total.count(key) > 0 ) {
+    return m_triton->m_total.at(key);
   } else {
     return 0;
   }
@@ -376,8 +376,8 @@ int triton::node::total(string key)
 string triton::node::result(string key)
 {
   std::unique_lock<std::mutex> lck(m_triton->m_mutex);
-  if( m_triton->m_result.count(key.data()) > 0 ) {
-    return m_triton->m_result.at(key.data())->c_str();
+  if( m_triton->m_result.count(key) > 0 ) {
+    return *m_triton->m_result.at(key);
   } else {
     return "";
   }
