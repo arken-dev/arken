@@ -30,7 +30,7 @@ namespace concurrent {
 
     std::unordered_map<std::string, std::string *> m_result;
     std::unordered_map<std::string, int> m_total;
-    std::queue<std::string> m_queue;
+    std::queue<string> m_queue;
     std::mutex m_mutex;
 
     void run();
@@ -60,7 +60,7 @@ namespace concurrent {
       unsigned int m_number = 0;
 
       bool release();
-      const char * dequeue();
+      string dequeue();
       void run();
       node(triton * ptr, string fileName, int number);
 

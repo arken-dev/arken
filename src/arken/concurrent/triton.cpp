@@ -159,7 +159,7 @@ void triton::perform(unsigned int cores)
 void triton::enqueue(string value)
 {
   std::unique_lock<std::mutex> lck(m_mutex);
-  m_queue.push(value.data());
+  m_queue.push(value);
 }
 
 void triton::append(string key, string result)
@@ -210,13 +210,13 @@ string triton::result(string key)
   }
 }
 
-const char * triton::node::dequeue()
+string triton::node::dequeue()
 {
   std::unique_lock<std::mutex> lck(m_triton->m_mutex);
   if( m_triton->m_queue.empty() ) {
-    return nullptr;
+    return string();
   } else {
-    const char * result = m_triton->m_queue.front().c_str();
+    string result = m_triton->m_queue.front();
     m_triton->m_queue.pop();
     return result;
   }
@@ -289,8 +289,8 @@ void triton::node::run()
 
   while( true ) {
 
-    const char * value = dequeue();
-    if( value == nullptr ) {
+    string value = dequeue();
+    if( value.empty() ) {
       break;
     }
 
