@@ -4,10 +4,11 @@
 // license that can be found in the LICENSE file.
 
 #include <arken/base>
+#include <arken/time/date.h>
 
 
-using arken::time::Date;
-using arken::string;
+namespace arken {
+namespace time {
 
 Date Date::currentDate()
 {
@@ -48,27 +49,28 @@ Date Date::fromString(const char * string,  const char * format)
 
 string Date::toString(const char * format)
 {
-  return string(QDate::toString(format).toLocal8Bit().data());
+  return string(QDate::toString(format).toLocal8Bit().constData());
 }
 
 string Date::toString()
 {
-  return string(QDate::toString("yyyy/MM/dd").toLocal8Bit().data());
+  return string(QDate::toString("yyyy/MM/dd").toLocal8Bit().constData());
 }
 
 Date * Date::parse(const char * str)
 {
-  char format[15];
+  char format[11];
 
   if(str[4] == '-') {
-    strcpy(format, "yyyy-MM-dd");
+    strncpy(format, "yyyy-MM-dd", 10);
   } else if(str[4] == '/') {
-    strcpy(format, "yyyy/MM/dd");
+    strncpy(format, "yyyy/MM/dd", 10);
   } else if(str[5] == '-') {
-    strcpy(format, "dd-MM-yyyy");
+    strncpy(format, "dd-MM-yyyy", 10);
   } else {
-    strcpy(format, "dd/MM/yyyy");
+    strncpy(format, "dd/MM/yyyy", 10);
   }
+  format[10] = '\0';
 
   Date result = Date::fromString(str, format);
   if( result.isValid() ) {
@@ -77,3 +79,6 @@ Date * Date::parse(const char * str)
     return 0;
   }
 }
+
+} // namespace time
+} // namespace arken
