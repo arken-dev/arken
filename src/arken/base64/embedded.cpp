@@ -4,20 +4,19 @@
 // license that can be found in the LICENSE file.
 
 #include <arken/base>
+#include <arken/base64.h>
 
 extern "C" {
   #include <base64/ap_base64.h>
 }
 
-using namespace arken;
+namespace arken {
 
 char * base64::decode(const char * encoded, size_t * size)
 {
   size_t decode_len = Base64decode_len(encoded);
-  *size = decode_len;
-  char * plain = new char[decode_len + 1];
-  plain[decode_len] = '\0';
-  Base64decode(plain, encoded);
+  char * plain = new char[decode_len];
+  *size = Base64decode(plain, encoded);
   return plain;
 }
 
@@ -34,3 +33,5 @@ char * base64::encode(const char * plain, int len)
   Base64encode(encoded, plain, len);
   return encoded;
 }
+
+} // namespace arken

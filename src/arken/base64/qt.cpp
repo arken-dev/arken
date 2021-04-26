@@ -1,7 +1,7 @@
-#include <arken/base>
+#include <arken/base64.h>
 #include <QByteArray>
 
-using namespace arken;
+namespace arken {
 
 char * base64::decode(const char * encoded, size_t * size)
 {
@@ -24,6 +24,9 @@ char * base64::encode(const char * plain, int len)
   QByteArray ba(plain, len);
   QByteArray encoded = ba.toBase64();
   char * result = new char[encoded.size()+1];
-  strcpy(result, encoded.data());
+  strncpy(result, encoded.data(), encoded.size());
+  result[encoded.size()] = '\0';
   return result;
 }
+
+} // namespace arken
