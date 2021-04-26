@@ -318,13 +318,12 @@ string SMTP::rfc2822Date()
 {
   time_t rawtime;
   struct tm * timeinfo;
-  string buffer;
-  buffer.reserve(80);
+  char * buffer = new char[80+1];
 
   time(&rawtime);
   timeinfo = localtime (&rawtime);
 
-  strftime(buffer.data(), 80, "%a, %d %b %Y %H:%M:%S %Z", timeinfo);
+  strftime(buffer, 80, "%a, %d %b %Y %H:%M:%S %Z", timeinfo);
 
   return buffer;
 }
