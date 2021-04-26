@@ -45,7 +45,7 @@ namespace concurrent {
     static string start(const char * fileName, const char * params, bool purge = false);
     static void wait();
     void perform(unsigned int cores);
-    void enqueue(string node);
+    void enqueue(string && node);
     void append(string key, string result);
     void count(string key);
     int  total(string);
