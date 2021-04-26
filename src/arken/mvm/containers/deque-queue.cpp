@@ -7,7 +7,7 @@
 #include <arken/mvm>
 #include <deque>
 
-using namespace arken;
+namespace arken {
 
 static std::mutex mtx;
 static std::deque<mvm::data *> * s_container = new std::deque<mvm::data *>;
@@ -42,3 +42,5 @@ bool mvm::container::empty()
   std::unique_lock<std::mutex> lck(mtx);
   return s_container->empty();
 }
+
+} // namespace arken

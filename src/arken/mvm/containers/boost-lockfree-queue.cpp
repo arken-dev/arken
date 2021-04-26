@@ -9,7 +9,7 @@
 // TODO spsc not works I accept your help
 #include <boost/lockfree/queue.hpp>
 
-using namespace arken;
+namespace arken {
 
 static boost::lockfree::queue<mvm::data *> s_container{1024};
 
@@ -39,3 +39,5 @@ bool mvm::container::empty()
 {
   return s_container.empty();
 }
+
+} // namespace arken
