@@ -1,3 +1,5 @@
+#include <arken/string.h>
+#include <arken/os.h>
 #include <arken/net/smtp.h>
 #include <curl/curl.h>
 #include <time.h>
@@ -6,6 +8,9 @@
 
 namespace arken {
 namespace net {
+
+using List = arken::string::List;
+using os   = arken::os;
 
 size_t SMTP::payload_source(void *ptr, size_t size, size_t nmemb, void *userp)
 {
