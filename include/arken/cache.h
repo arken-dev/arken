@@ -38,6 +38,6 @@ class cache {
 
 };
 
-}
+} // namespace arken
 
 #endif // ARKENCACHE_H

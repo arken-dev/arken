@@ -24,6 +24,6 @@ namespace arken {
     static double truncate(double number, int precision);
     static char * format(double number, int decimals=0, char dec_point='.', char thousands_sep=',');
   };
-}
+} // namespace arken
 
 #endif

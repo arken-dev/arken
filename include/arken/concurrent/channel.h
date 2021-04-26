@@ -7,7 +7,7 @@
 #define _ARKEN_CONCURRENT_CHANNEL_
 
 #include <arken/base>
-#include <arken/mvm.h>
+#include <arken/mvm>
 #include <memory>
 
 namespace arken {

@@ -6,14 +6,12 @@
 #ifndef _ARKEN_CONCURRENT_NAIAD_
 #define _ARKEN_CONCURRENT_NAIAD_
 
+#include <arken/base>
 #include <arken/mvm>
 #include <queue>
 #include <vector>
 #include <mutex>
 #include <atomic>
-#include <arken/string.h>
-
-using string = arken::string;
 
 namespace arken {
 namespace concurrent {

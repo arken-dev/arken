@@ -9,6 +9,7 @@
 #include <string>
 #include <cstring>
 #include <iostream>
+#include <arken/base>
 #include <arken/mvm>
 
 namespace arken {

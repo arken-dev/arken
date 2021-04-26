@@ -31,7 +31,7 @@ class HttpBody
   void release();
 };
 
-}
-}
+} // namespace net
+} // namespace arken
 
 #endif

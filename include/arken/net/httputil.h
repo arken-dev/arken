@@ -15,6 +15,6 @@ class HttpUtil
   static const char * status(int code);
 };
 
-}
-}
+} // namespace net
+} // namespace arken
 #endif

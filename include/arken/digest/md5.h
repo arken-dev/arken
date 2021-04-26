@@ -16,7 +16,7 @@ class md5 {
   static char * file(const char * path);
 };
 
-}
-}
+} // namespace digest
+} // namespace arken
 
 #endif

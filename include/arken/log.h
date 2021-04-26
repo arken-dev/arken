@@ -39,5 +39,5 @@ namespace arken
 
   };
 
-} // namespace
+} // namespace arken
 #endif

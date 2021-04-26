@@ -6,12 +6,15 @@
 #ifndef _ARKEN_REGEX_
 #define _ARKEN_REGEX_
 
-using List = arken::string::List;
+#include <arken/base>
 
 namespace arken
 {
 
+
 class regex {
+  using List = arken::string::List;
+
   public:
   static bool ematch(const char * string, const char * regex);
   static int index(const char * string, const char * regex);
@@ -22,6 +25,6 @@ class regex {
   static List * scan(const char * string, const char * regex);
 };
 
-}
+} // namespace arken
 
 #endif
