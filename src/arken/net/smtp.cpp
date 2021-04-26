@@ -4,7 +4,8 @@
 #include <ctime>
 #include <memory>
 
-using namespace arken::net;
+namespace arken {
+namespace net {
 
 size_t SMTP::payload_source(void *ptr, size_t size, size_t nmemb, void *userp)
 {
@@ -410,3 +411,6 @@ bool SMTP::verbose()
 {
   return m_verbose;
 }
+
+} // namespace net
+} // namespace arken
