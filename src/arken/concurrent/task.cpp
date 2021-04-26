@@ -4,16 +4,13 @@
 // license that can be found in the LICENSE file.
 
 #include <lua/lua.hpp>
-#include <arken/base>
-#include <arken/cache>
-#include <arken/task>
+#include <lua/json/lock.h>
 #include <arken/mvm>
+#include <arken/os.h>
+#include <arken/concurrent/task.h>
 
-char * json_lock_encode(lua_State *L);
-void   json_lock_decode(lua_State *L, const char * params);
-
-using namespace arken::concurrent;
-using cache = arken::cache;
+namespace arken {
+namespace concurrent {
 
 void task::wait()
 {
@@ -86,3 +83,6 @@ task::task(const char * fileName, const char * params, bool purge)
   m_purge    = purge;
   m_release  = true;
 }
+
+} // namespace concurrent
+} // namespace arken

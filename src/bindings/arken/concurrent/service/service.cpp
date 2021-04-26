@@ -47,7 +47,7 @@ arken_service_start(lua_State *L) {
 
 static int
 arken_service_wait(lua_State *L) {
-  mvm::wait();
+  service::wait();
   return 0;
 }
 

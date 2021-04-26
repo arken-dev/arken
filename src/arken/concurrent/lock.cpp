@@ -3,13 +3,12 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#include <arken/base>
+#include <arken/concurrent/lock.h>
 
-using namespace arken;
+namespace arken {
 
 std::unordered_map<std::string, int>          Lock::m_references;
 std::unordered_map<std::string, std::mutex *> Lock::m_containers;
-
 static std::mutex m;
 
 Lock::Lock(const char * index)
@@ -45,3 +44,5 @@ void Lock::disable()
 {
   m_containers[m_index]->unlock();
 }
+
+} // namespace arken

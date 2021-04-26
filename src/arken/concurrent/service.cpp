@@ -1,11 +1,10 @@
+#include <lua/lua.hpp>
+#include <lua/json/lock.h>
 #include <arken/concurrent/service.h>
 #include <arken/os.h>
 
-using namespace arken::concurrent;
-using os = arken::os;
-
-char * json_lock_encode(lua_State *L);
-void   json_lock_decode(lua_State *L, const char * params);
+namespace arken {
+namespace concurrent {
 
 service::service( const char * fileName, const char * params, bool purge )
 {
@@ -122,3 +121,6 @@ void service::load(const char * dirName)
     service::start(list[i], "{}", false);
   }
 }
+
+} // namespace concurrent
+} // namespace arken

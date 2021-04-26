@@ -5,7 +5,7 @@
 
 #include <lua/lua.hpp>
 #include <arken/base>
-
+#include <arken/concurrent/lock.h>
 
 using arken::Lock;
 

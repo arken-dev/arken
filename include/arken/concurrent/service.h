@@ -6,11 +6,9 @@
 #ifndef _ARKEN_CONCURRENT_SERVICE_
 #define _ARKEN_CONCURRENT_SERVICE_
 
-#include <arken/string.h>
-#include <arken/mvm.h>
 
-using string = arken::string;
-using mvm    = arken::mvm;
+#include <arken/base>
+#include <arken/mvm>
 
 namespace arken {
 namespace concurrent {
