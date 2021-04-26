@@ -1,8 +1,7 @@
 #include <arken/image.h>
 #include <QImage>
 
-using namespace arken;
-
+namespace arken {
 
 void Image::save(const char * path, int quality)
 {
@@ -10,3 +9,5 @@ void Image::save(const char * path, int quality)
   string format = string(path).suffix(".");
   image.save(path, format.data(), quality);
 }
+
+} // namespace arken
