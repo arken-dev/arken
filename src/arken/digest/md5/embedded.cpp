@@ -3,12 +3,16 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+#include <fstream>
 #include <arken/base>
+#include <arken/digest/md5.h>
+
 extern "C" {
 #include <digest/md5.h>
 }
 
-using namespace arken::digest;
+namespace arken {
+namespace digest {
 
 char * md5::hash(const char * hash)
 {
@@ -46,3 +50,6 @@ char * md5::file(const char * path)
 
   return result;
 }
+
+} // namespace digest
+} // namespace arken

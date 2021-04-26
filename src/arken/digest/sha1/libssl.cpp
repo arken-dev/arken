@@ -1,9 +1,13 @@
+#include <fstream>
 #include <arken/base>
+#include <arken/digest/sha1.h>
+
 extern "C" {
 #include <openssl/sha.h>
 }
 
-using namespace arken::digest;
+namespace arken {
+namespace digest {
 
 char * sha1::hash(const char * hash)
 {
@@ -40,3 +44,6 @@ char * sha1::file(const char * path)
 
   return result;
 }
+
+} // namespace digest
+} // namespace arken

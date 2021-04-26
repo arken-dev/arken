@@ -3,12 +3,16 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#include <arken/base>
 extern "C" {
 #include <digest/sha1.h>
 }
 
-using namespace arken::digest;
+#include <fstream>
+#include <arken/base>
+#include <arken/digest/sha1.h>
+
+namespace arken {
+namespace digest {
 
 char * sha1::hash(const char * hash)
 {
@@ -46,3 +50,6 @@ char * sha1::file(const char * path)
 
   return result;
 }
+
+} // namespace digest
+} // namespace arken
