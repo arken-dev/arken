@@ -3,13 +3,17 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#include <arken/base>
 #include <QRegExp>
 #include <QString>
 #include <QStringList>
 #include <cstring>
 
-using namespace arken;
+#include <arken/regex.h>
+#include <arken/string.h>
+
+using List = arken::string::List;
+
+namespace arken {
 
 bool regex::ematch(const char * string, const char * regex)
 {
@@ -36,7 +40,7 @@ List * regex::split(const char * string, const char * regex)
   while ((poss = qregex.indexIn(string, poss)) != -1) {
     list->append(qstr.mid(older, poss-older).replace(qregex, "").toLocal8Bit());
     older = poss;
-    poss  += qregex.matchedLength();
+    poss += qregex.matchedLength();
   }
   if( older < qstr.size() ) {
      list->append(qstr.mid(older, qstr.size() -older).replace(qregex, "").toLocal8Bit());
@@ -55,7 +59,8 @@ char * regex::replace(const char * string, const char * regex, const char * afte
   QString str(string);
   QString aft = str.replace(QRegExp(regex), after);
   char * result = new char[aft.size() + 1];
-  strcpy(result, aft.toLocal8Bit().data());
+  strncpy(result, aft.toLocal8Bit().data(), aft.size());
+  result[aft.size()] = '\0';
   return result;
 }
 
@@ -88,3 +93,5 @@ List * regex::scan(const char * string, const char * regex)
   }
   return list;
 }
+
+} // namespace arken

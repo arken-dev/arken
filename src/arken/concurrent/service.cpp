@@ -2,6 +2,9 @@
 #include <lua/json/lock.h>
 #include <arken/concurrent/service.h>
 #include <arken/os.h>
+#include <arken/string.h>
+
+using List = arken::string::List;
 
 namespace arken {
 namespace concurrent {

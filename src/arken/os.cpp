@@ -15,6 +15,7 @@
 
 using HttpClient = arken::net::HttpClient;
 using string = arken::string;
+using List   = arken::string::List;
 
 bool os::compare(const char * path1, const char * path2)
 {
