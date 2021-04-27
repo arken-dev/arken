@@ -144,7 +144,8 @@ string os::read(const char * path)
     file.read(buffer, length);
     file.close();
     buffer[length] = '\0';
-    return string( std::move(buffer), length );
+    //return string( std::move(buffer), length );
+    return string::consume( buffer, length );
   }
 
 }
