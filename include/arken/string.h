@@ -143,8 +143,8 @@ class string {
   string & operator=(const string &str);
   string & operator=(const string *str);
   string & operator=(const char   *str);
-  bool   operator < (const string &str) const;
-  bool   operator == (const string &str) const;
+  bool operator < (const string &str) const;
+  bool operator == (const string &str) const;
 
   class List
   {
@@ -198,6 +198,6 @@ namespace std {
           return hash & (0x7FFFFFFF);
         }
     };
-} // namespace arken
+} // namespace std
 
 #endif
