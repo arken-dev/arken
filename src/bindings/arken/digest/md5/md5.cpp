@@ -5,6 +5,7 @@
 
 #include <lua/lua.hpp>
 #include <arken/base>
+#include <arken/digest/md5.h>
 
 using md5 = arken::digest::md5;
 
