@@ -6,7 +6,7 @@
 #include <arken/base>
 #include <arken/cache>
 
-using namespace arken;
+namespace arken {
 
 std::mutex cache::s_mutex;
 std::unordered_map<std::string, cache::data *> * cache::s_cache = new std::unordered_map<std::string, cache::data *>;
@@ -58,7 +58,7 @@ cache::data::data(const char * value, int expires)
 
   int size = strlen(value);
   m_value  = new char[size + 1];
-  strcpy(m_value, value);
+  strncpy(m_value, value, size);
   m_value[size] = '\0';
 
   if( expires < 0 ) {
@@ -86,3 +86,5 @@ bool cache::data::isExpires()
     return false;
   }
 }
+
+} // namespace arken
