@@ -10,6 +10,8 @@
 #include <QRegExp>
 #include <QThread>
 
+namespace arken {
+
 char * os::abspath(const char * path)
 {
   QFileInfo info(path);
@@ -200,3 +202,5 @@ char * os::root()
   result[root.size()] = '\0';
   return result;
 }
+
+} // namespace arken
