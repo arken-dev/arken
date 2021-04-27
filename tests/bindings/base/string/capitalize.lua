@@ -1,21 +1,21 @@
 local test = {}
 
 test['should upper first string'] = function()
-  str1 = "this is a test"
-  str2 = "This is a test"
-  assert( str1:capitalize() == str2 )
+  local str = "this is a test"
+  local res = str:capitalize()
+  assert( str:capitalize() == "This is a test", res )
 end
 
 test['should keep first string upper'] = function()
-  str1 = "This is a test"
-  str2 = "This is a test"
-  assert( str1:capitalize() == str2 )
+  local str = "This is a test"
+  local res = str:capitalize()
+  assert( str:capitalize() == "This is a test", res )
 end
 
 test['should keep blank string first'] = function()
-  str1 = " This is a test"
-  str2 = " This is a test"
-  assert( str1:capitalize() == str2 )
+  local str = " This is a test"
+  local res = str:capitalize()
+  assert( str:capitalize() == " This is a test", res )
 end
 
 return test
