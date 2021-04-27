@@ -15,7 +15,7 @@ end
 test['should return complete name of not identify char'] = function()
   local str = "this is # a test"
   local res = str:prefix('*')
-  assert(res == res, string.format("%s => type(%s)", res, type(res)))
+  assert(res == "", string.format("%s => type(%s)", res, type(res)))
 end
 
 test['should return complete prefix of many chars'] = function()
