@@ -24,4 +24,10 @@ test['should return complete prefix of many chars'] = function()
   assert(res == "this ", res)
 end
 
+test['should return complete prefix of many chars'] = function()
+  local str = "this is a test"
+  local res = str:prefix("is a")
+  assert(res == "this ", res)
+end
+
 return test
