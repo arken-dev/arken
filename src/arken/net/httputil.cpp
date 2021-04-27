@@ -3,9 +3,11 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#include <arken/base>
+#include <map>
+#include <arken/net/httputil.h>
 
-using namespace arken::net;
+namespace arken {
+namespace net {
 
 const char * HttpUtil::status(int code)
 {
@@ -75,3 +77,6 @@ const char * HttpUtil::status(int code)
 
   return list[code];
 }
+
+} // namespace net
+} // namespace arken

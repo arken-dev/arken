@@ -9,7 +9,8 @@ extern "C" {
 
 #include <arken/net/httpenv.h>
 
-using namespace arken::net;
+namespace arken {
+namespace net {
 
 static void
 http_field_cb(void *data, const char *field, size_t flen, const char *value, size_t vlen)
@@ -277,3 +278,6 @@ const char * HttpEnv::data()
 {
   return m_data;
 }
+
+} // namespace net
+} // namespace arken
