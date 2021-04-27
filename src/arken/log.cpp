@@ -8,7 +8,7 @@
 #include <ctime>
 #include <mutex>
 
-using namespace arken;
+namespace arken {
 
 std::unordered_map<std::string, int>           Log::m_count;
 std::unordered_map<std::string, int>           Log::m_references;
@@ -136,3 +136,5 @@ void Log::_dump()
   file.close();
   delete tmp;
 }
+
+} // namespace arken
