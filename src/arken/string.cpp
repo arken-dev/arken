@@ -1581,7 +1581,7 @@ string string::suffix(const char chr)
   return arken::string::consume(string::suffix(m_data, chr));
 }
 
-char * string::data() const
+const char * string::data() const
 {
   return this->m_data;
 }

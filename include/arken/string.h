@@ -136,7 +136,7 @@ class string {
   string rightTrimmed();
   string truncate(int pos, const char * omission = "...", const char separator = ' ');
   string underscore();
-  char  * data() const;
+  const char * data() const;
   // explicit conversion
   operator const char *() const { return m_data; }
 
