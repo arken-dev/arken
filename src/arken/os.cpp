@@ -3,7 +3,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#include <arken/base>
+#include <arken/string.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -12,10 +12,16 @@
 #include <chrono>
 #include <iostream>
 #include <fstream>
+#include <arken/net/HttpClient>
+
+#include <QDir>
+#include <QDirIterator>
 
 using HttpClient = arken::net::HttpClient;
 using string = arken::string;
 using List   = arken::string::List;
+
+namespace arken {
 
 bool os::compare(const char * path1, const char * path2)
 {
@@ -129,7 +135,7 @@ string os::read(const char * path)
   } else {
     char * buffer;
     std::ifstream file;
-    int length;
+    size_t length;
     file.open(path);
     file.seekg(0, std::ios::end);
     length = file.tellg();
@@ -138,7 +144,9 @@ string os::read(const char * path)
     file.read(buffer, length);
     file.close();
     buffer[length] = '\0';
-    return string::consume( buffer, length );
+    return string( std::move(buffer), length );
   }
 
 }
+
+} // namespace arken
