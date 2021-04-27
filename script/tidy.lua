@@ -305,6 +305,7 @@ clang-tidy-6.0 %s \
   -- \
   -std=c++11 \
   -I src/vendors/mongrel2 \
+  -I src/embedded \
   -I include \
   -I deps/include \
   -I /opt/objectdata/Qt-5.7.0/include \
@@ -312,7 +313,7 @@ clang-tidy-6.0 %s \
   -fPIC
 ]]
 
-local list = os.glob("src/arken/concurrent", "cpp$", true)
+local list = os.glob("src/arken", "cpp$", true)
 
 for fileName in list:each() do
   local cmd = string.format(tidy, fileName, checks)
