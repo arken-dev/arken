@@ -7,7 +7,7 @@
 #include <arken/utf8>
 #include <QTextCodec>
 
-using namespace arken;
+namespace arken {
 
 char * utf8::sub(const char * string, int i, int j)
 {
@@ -26,7 +26,7 @@ char * utf8::upper(const char * string)
 {
   QByteArray tmp = QString(string).toUpper().toLocal8Bit();
   char * result  = new char[tmp.size() + 1];
-  strcpy(result, tmp);
+  strncpy(result, tmp, tmp.size());
   result[tmp.size()] = '\0';
   return result;
 }
@@ -35,7 +35,7 @@ char * utf8::lower(const char * string)
 {
   QByteArray tmp = QString(string).toLower().toLocal8Bit();
   char * result  = new char[tmp.size() + 1];
-  strcpy(result, tmp);
+  strncpy(result, tmp, tmp.size());
   result[tmp.size()] = '\0';
   return result;
 }
@@ -44,7 +44,7 @@ char * utf8::format(const char * string)
 {
   QByteArray tmp = QString(string).toLocal8Bit();
   char * result = new char[tmp.size() + 1];
-  strcpy(result, tmp);
+  strncpy(result, tmp, tmp.size());
   result[tmp.size()] = '\0';
   return result;
 }
@@ -65,7 +65,7 @@ char * utf8::decode(const char * string, const char * charset)
   QString    tmp = codec->toUnicode(string);
   QByteArray raw = tmp.toLocal8Bit();
   char * result = new char[raw.size() + 1];
-  strcpy(result, raw.data());
+  strncpy(result, raw.data(), raw.size());
   result[raw.size()] = '\0';
   return result;
 }
@@ -75,7 +75,9 @@ char * utf8::encode(const char * string, const char * charset)
   QTextCodec *codec = QTextCodec::codecForName(charset);
   QByteArray raw = codec->fromUnicode(string);
   char * result = new char[raw.size() + 1];
-  strcpy(result, raw.data());
+  strncpy(result, raw.data(), raw.size());
   result[raw.size()] = '\0';
   return result;
 }
+
+} // namespace arken
