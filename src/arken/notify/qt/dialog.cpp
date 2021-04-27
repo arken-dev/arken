@@ -14,8 +14,12 @@
 #include <QFile>
 #include <QKeyEvent>
 #include <QFile>
+#include <QJsonObject>
+#include <QJsonParseError>
+#include <QTimer>
 #include <mutex>
 #include <arken/mvm.h>
+#include <arken/notify.h>
 
 #define DEBUG_CONSOLE false
 
