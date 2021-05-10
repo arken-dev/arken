@@ -169,7 +169,9 @@ bool SMTP::perform()
         slist = curl_slist_append(slist, list[i]);
       }
     } else {
-      slist = curl_slist_append(slist, m_copy_mail.data());
+      if( ! m_copy_mail.empty() ) {
+        slist = curl_slist_append(slist, m_copy_mail.data());
+      }
     }
 
     if(! m_reply_to_mail.empty()) {
