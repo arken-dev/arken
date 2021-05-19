@@ -150,8 +150,8 @@ local options = {
 -- fuchsia-overloaded-operator
 -- fuchsia-virtual-inheritance
 -- google-build-explicit-make-pair
- 'google-build-namespaces',
- 'google-build-using-namespace',
+  'google-build-namespaces',
+  'google-build-using-namespace',
 -- google-default-arguments
 -- google-explicit-constructor
 -- google-global-names-in-headers
@@ -247,7 +247,7 @@ local options = {
 -- modernize-use-equals-default
 -- modernize-use-equals-delete
 -- modernize-use-noexcept
--- modernize-use-nullptr
+  'modernize-use-nullptr',
 -- modernize-use-override
 -- modernize-use-transparent-functors
 -- modernize-use-using
