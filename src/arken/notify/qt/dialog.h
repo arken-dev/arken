@@ -39,7 +39,7 @@ public:
     bool m_autoclose   = true;
     qint64 m_currenttime = 0;
 
-    explicit Dialog(QWidget *parent = 0);
+    explicit Dialog(QWidget *parent = nullptr);
     ~Dialog();
     void mouseReleaseEvent(QMouseEvent * event);
     void fecharAlerta();

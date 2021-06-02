@@ -38,7 +38,8 @@ namespace concurrent
     bool finished();
     void finished(bool flag);
   };
-}
+
+} // namespace concurrent
 
 class instance;
 
@@ -80,7 +81,7 @@ class mvm {
   };
 
 
-  static std::atomic<double> s_uptime;
+  static std::atomic<double>   s_uptime;
   static std::atomic<uint32_t> s_gc;
   static std::atomic<uint32_t> s_version;
   static std::atomic<uint32_t> s_pool;
@@ -111,6 +112,7 @@ class mvm {
   ~mvm() {};
 
   public:
+  static void args(int argc, char ** argv);
   static void init(int argc, char ** argv);
   static void config();
   static void log(const char * value);
@@ -132,7 +134,7 @@ class mvm {
   static void wait();
   static void env(const char * value);
   static const char * env();
-
+  static const char * cext();
 };
 
 class instance {
@@ -147,5 +149,5 @@ class instance {
 
 };
 
-}
-#endif // ARKENMVM_H
+} // namespace arken
+#endif // _ARKEN_MVM_

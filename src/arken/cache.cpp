@@ -16,13 +16,13 @@ const char * cache::value(const char * key)
   std::unique_lock<std::mutex> lck(s_mutex);
 
   if (s_cache->find(key) == s_cache->end()) {
-    return NULL;
+    return nullptr;
   } else {
     cache::data * data = s_cache->at(key);
     if ( data->isExpires() ) {
       s_cache->erase(key);
       delete data;
-      return NULL;
+      return nullptr;
     } else {
       return data->value();
     }

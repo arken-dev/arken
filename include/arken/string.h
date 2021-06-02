@@ -14,6 +14,7 @@
 namespace arken {
 
 class string {
+
   friend std::hash<arken::string>;
 
   private:
@@ -51,11 +52,11 @@ class string {
   static int    lastIndexOf(const char * string, const char * str);
   static char * left(const char *string, int len);
   static char * leftJustified(const char * string, size_t size, const char * pad);
-  static char * mid(const char * string, int pos, int len = -1, int string_len = 0, size_t * _len = 0);
+  static char * mid(const char * string, int pos, int len = -1, int string_len = 0, size_t * _len = nullptr);
   static char * md5(const char * string);
   static char * md5(const char * string, size_t len);
   static char * normalize(const char * string);
-  static char * prefix(const char * raw, const char chr = '.');
+  static char * prefix(const char * raw, const char * chr);
   static char * simplified(const char *buffer);
   static char * repeated(const char *buffer, int times);
   static char * replace(const char * string, const char * before, const char * after, int start = 0);
@@ -63,6 +64,7 @@ class string {
   static char * right(const char * buffer, int len);
   static char * rightJustified(const char * string, size_t size, const char * pad);
   static char * sha1(const char * string);
+  static char * sha1(const char * string, size_t len);
   static List split(const char * string, const char * pattern);
   static List split(const char * string, size_t len, const char * pattern);
   static char * suffix(const char * raw, const char chr = '.');
@@ -77,12 +79,12 @@ class string {
   // INSTANCE METHODS
   //---------------------------------------------------------------------------
 
-  static string   consume(char * str);
-  static string   consume(char * str, size_t size);
-  static string * consume(arken::string str);
   string();
   string(const char * str);
   string(const char * str, size_t size);
+  string(string && str);
+  string(char * && str);
+  string(char * && str, size_t size);
   string(const arken::string &str);
   ~string();
 
@@ -115,7 +117,7 @@ class string {
   string mid(int pos, int len = -1);
   string md5();
   string normalize();
-  string prefix(const char chr = '.');
+  string prefix(const char * chr);
   string & prepend(const char * str);
   string simplified();
   char * release();
@@ -139,7 +141,6 @@ class string {
   const char * data() const;
   // explicit conversion
   operator const char *() const { return m_data; }
-
   string & operator=(const string &str);
   string & operator=(const string *str);
   string & operator=(const char   *str);

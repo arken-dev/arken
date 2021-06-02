@@ -30,7 +30,7 @@ void mvm::container::back(mvm::data * data)
 
 mvm::data * mvm::container::pop()
 {
-  mvm::data * data = 0;
+  mvm::data * data = nullptr;
   s_container.pop(data);
   return data;
 }

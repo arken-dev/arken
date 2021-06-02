@@ -3,8 +3,13 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#include <arken/base>
-#include <QDebug>
+#include <arken/string.h>
+#include <arken/base64.h>
+#include <arken/digest/md5.h>
+#include <arken/digest/sha1.h>
+#include <arken/utf8.h>
+
+namespace arken {
 
 using base64 = arken::base64;
 using md5    = arken::digest::md5;
@@ -89,8 +94,9 @@ char * string::capitalize(const char * string)
   int len = strlen(string);
   char * result  = new char[len + 1];
 
-  strcpy(result, string);
+  strncpy(result, string, len);
   result[0] = toupper(string[0]);
+  result[len] = '\0';
 
   return result;
 }
@@ -104,7 +110,7 @@ char * string::center(const char * string, size_t size, const char * pad)
 
   if( size < str_len or pad_len == 0 ) {
     result = new char[ str_len + 1 ];
-    strcpy(result, string);
+    strncpy(result, string, str_len);
     result[str_len] = '\0';
   } else {
     result = new char[ size + 1 ];
@@ -536,12 +542,20 @@ char * string::left(const char * string, int len)
 {
   int i;
   int string_len = strlen(string);
-  char * result  = new char[len+1];
+
+  if( len < 0 ) {
+    len = string_len + len;
+  }
+
+  if( len < 0 ) {
+    return new char[1]();
+  }
 
   if( len > string_len ) {
     len = string_len;
   }
 
+  char * result  = new char[len+1];
   for(i=0; i < len; i++) {
     result[i] = string[i];
   }
@@ -644,7 +658,7 @@ char * string::leftJustified(const char * string, size_t size, const char * pad)
 
   if( size < str_len or pad_len == 0 ) {
     result = new char[str_len + 1];
-    strcpy(result, string);
+    strncpy(result, string, str_len);
     result[str_len] = '\0';
   } else {
     result = new char[size + 1];
@@ -677,7 +691,7 @@ char * string::rightJustified(const char * string, size_t size, const char * pad
 
   if( size < str_len or pad_len == 0 ) {
     result = new char[str_len + 1];
-    strcpy(result, string);
+    strncpy(result, string, str_len);
     result[str_len] = '\0';
   } else {
     result = new char[size + 1];
@@ -848,7 +862,7 @@ char * string::replace(const char * original, const char * pattern, const char *
     size_t const retlen = orilen + patcnt * (replen - patlen);
     char * const returned = new char[retlen + 1];
 
-    if (returned != NULL)
+    if (returned != nullptr)
     {
       if ( start < 0 ) {
         start = orilen + start;
@@ -863,18 +877,26 @@ char * string::replace(const char * original, const char * pattern, const char *
       // copy the original string, 
       // replacing all the instances of the pattern
       char * retptr = returned + start;
+      size_t position = 0;
       for (oriptr = original + start; (patloc = strstr(oriptr, pattern)); oriptr = patloc + patlen)
       {
         size_t const skplen = patloc - oriptr;
+        position += skplen;
         // copy the section until the occurence of the pattern
         strncpy(retptr, oriptr, skplen);
         retptr += skplen;
+
         // copy the replacement 
         strncpy(retptr, replacement, replen);
-        retptr += replen;
+        retptr   += replen;
+        position += replen;
       }
-      // copy the rest of the string.
-      strcpy(retptr, oriptr);
+      size_t result = retlen - (position + start);
+      //strcpy(retptr, oriptr);
+      if( result > 0 ) {
+        strncpy(retptr, oriptr, result);
+      }
+      returned[retlen] = '\0';
     }
     return returned;
   }
@@ -925,7 +947,7 @@ List string::split(const char * raw, size_t len, const char * pattern)
 
 char *  string::suffix(const char * raw, char chr)
 {
-  char * result = 0;
+  char * result = nullptr;
   int i, j;
   int point = 0;
   int len = strlen(raw);
@@ -952,28 +974,19 @@ char *  string::suffix(const char * raw, char chr)
   return result;
 }
 
-char *  string::prefix(const char * raw, char chr)
+char *  string::prefix(const char * raw, const char * pattern)
 {
-  char * result = 0;
-  int i, j;
-  int point = 0;
   int len = strlen(raw);
+  char * result = nullptr;
+  //int i, j;
+  //int point = 0;
 
-  for( i = 0; i < len; i++) {
-    if( raw[i] == chr ) {
-      point = i-1;
-      break;
-    }
-  }
-
-  if( point > 0 ) {
-    point++;
-    result = new char[point + 1];
-    j = 0;
-    for( i = 0; i < point; i++, j++) {
-      result[j] = raw[i];
-    }
-    result[point] = '\0';
+  const char * ptrstr = strstr(raw, pattern);
+  int position = (raw - ptrstr) * -1;
+  if( position > 0 && position < len) {
+    result = new char[position + 1];
+    strncpy(result, raw, position);
+    result[position] = '\0';
   } else {
     result = new char[1]();
   }
@@ -1107,7 +1120,7 @@ char * string::truncate(const char *string, int pos, const char * omission, cons
 
   string_len = strlen(string);
 
-  if( omission == 0 ) {
+  if( omission == nullptr ) {
     omission_len = 0;
   } else {
     omission_len = strlen(omission);
@@ -1248,6 +1261,12 @@ char * string::sha1(const char * str)
   return sha1::hash(str);
 }
 
+
+char * string::sha1(const char * str, size_t len)
+{
+  return sha1::hash(str, len);
+}
+
 //-----------------------------------------------------------------------------
 // CLASS
 //-----------------------------------------------------------------------------
@@ -1276,8 +1295,37 @@ string::string(const char * data)
   m_reserve   = m_size;
   m_capacity  = m_size;
   m_data      = new char[m_size + 1];
-  strcpy(m_data, data);
+  strncpy(m_data, data, m_size);
   m_data[m_size] = '\0';
+}
+
+string::string( string && str )
+{
+  m_data      = str.m_data;
+  m_size      = str.m_size;
+  m_reserve   = m_size;
+  m_capacity  = m_size;
+
+  str.m_reserve  = 0;
+  str.m_size     = 0;
+  str.m_capacity = 0;
+  str.m_data     = new char[1]();
+}
+
+string::string(char * && data)
+{
+  m_data      = data;
+  m_size      = strlen(m_data);
+  m_reserve   = m_size;
+  m_capacity  = m_size;
+}
+
+string::string(char * && data, size_t size)
+{
+  m_data      = data;
+  m_size      = size;
+  m_reserve   = m_size;
+  m_capacity  = m_size;
 }
 
 string::string(const arken::string & str)
@@ -1290,51 +1338,11 @@ string::string(const arken::string & str)
   m_data[m_size] = '\0';
 }
 
-string string::consume(char * data)
-{
-
-  arken::string tmp;
-  delete[] tmp.m_data;
-
-  tmp.m_data = data;
-  tmp.m_size = strlen(data);
-  tmp.m_capacity = tmp.m_size;
-
-  return tmp;
-}
-
-string string::consume(char * data, size_t size)
-{
-  arken::string tmp;
-  delete[] tmp.m_data;
-
-  tmp.m_data = data;
-  tmp.m_size = size;
-  tmp.m_capacity = tmp.m_size;
-
-  return tmp;
-}
-
-string * string::consume(arken::string str)
-{
-  arken::string * tmp = new string;
-  delete[] tmp->m_data;
-
-  tmp->m_data = str.m_data;
-  tmp->m_size = str.m_size;
-  tmp->m_capacity = tmp->m_size;
-
-  str.m_data     = new char[1]();
-  str.m_size     = 0;
-  str.m_capacity = 0;
-
-  return tmp;
-}
-
 string::~string()
 {
-  if( m_data )
+  if( m_data ) {
     delete[] m_data;
+  }
 }
 
 string & string::append(const char * data)
@@ -1387,17 +1395,17 @@ string & string::prepend(const char * data)
 
 string string::camelCase(bool lcfirst)
 {
-  return arken::string::consume(string::camelCase(m_data, lcfirst));
+  return string::camelCase(m_data, lcfirst);
 }
 
 string string::capitalize()
 {
-  return arken::string::consume(string::capitalize(m_data));
+  return string::capitalize(m_data);
 }
 
 string string::center(size_t size, const char * pad)
 {
-  return arken::string::consume(string::center(m_data, size, pad));
+  return string::center(m_data, size, pad);
 }
 
 void string::clear()
@@ -1418,7 +1426,7 @@ bool string::contains(const char * str)
 
 string string::chop(int n)
 {
-  return arken::string::consume(string::chop(m_data, n));
+  return string::chop(m_data, n);
 }
 
 int string::count(const char * str)
@@ -1428,19 +1436,19 @@ int string::count(const char * str)
 
 string string::dasherize()
 {
-  return arken::string::consume(string::dasherize(m_data));
+  return string::dasherize(m_data);
 }
 
 string string::decode64()
 {
   size_t size;
-  char * decoded = string::decode64(m_data, &size);
-  return arken::string::consume(decoded, size);
+  char * result = string::decode64(m_data, &size);
+  return string(std::move(result) , size);
 }
 
 string string::encode64()
 {
-  return arken::string::consume(string::encode64(m_data, m_size));
+  return string::encode64(m_data, m_size);
 }
 
 bool string::equals(const char * data)
@@ -1450,22 +1458,22 @@ bool string::equals(const char * data)
 
 string string::escape()
 {
-  return arken::string::consume(string::escape(m_data));
+  return string::escape(m_data);
 }
 
 string string::encode(const char * charset)
 {
-  return arken::string::consume(string::encode(m_data, charset));
+  return string::encode(m_data, charset);
 }
 
 string string::decode(const char * charset)
 {
-  return arken::string::consume(string::decode(m_data, charset));
+  return string::decode(m_data, charset);
 }
 
 string string::escapeHtml()
 {
-  return arken::string::consume(string::escapeHtml(m_data));
+  return string::escapeHtml(m_data);
 }
 
 int string::indexOf(const char * str, int i)
@@ -1475,7 +1483,7 @@ int string::indexOf(const char * str, int i)
 
 string string::insert(int len, const char * ba)
 {
-  return arken::string::consume(string::insert(m_data, len, ba));
+  return string::insert(m_data, len, ba);
 }
 
 bool string::endsWith(const char * ba)
@@ -1490,54 +1498,54 @@ int string::lastIndexOf(const char * str)
 
 string string::left(int len)
 {
-  return string::consume( string::left(m_data, len) );
+  return string::left(m_data, len);
 }
 
 string string::leftJustified(size_t size, const char * pad)
 {
-  return string::consume( string::leftJustified(m_data, size, pad) );
+  return string::leftJustified(m_data, size, pad);
 }
 
 string string::mid(int pos, int len)
 {
-  size_t _len;
-  char * result = string::mid(m_data, pos, len, m_size, &_len);
-  return string::consume( result , _len );
+  size_t size;
+  char * result = string::mid(m_data, pos, len, m_size, &size);
+  return string(std::move(result) , size);
 }
 
 string string::md5()
 {
-  return arken::string::consume(md5::hash(m_data, m_size));
+  return md5::hash(m_data, m_size);
 }
 
 string string::normalize()
 {
-  return arken::string::consume(string::normalize(m_data));
+  return string::normalize(m_data);
 }
 
-string string::prefix(const char chr)
+string string::prefix(const char * pattern)
 {
-  return arken::string::consume(string::prefix(m_data, chr));
+  return string::prefix(m_data, pattern);
 }
 
 string string::simplified()
 {
-  return arken::string::consume(string::simplified(m_data));
+  return string::simplified(m_data);
 }
 
 string string::repeated(int times)
 {
-  return arken::string::consume(string::repeated(m_data, times));
+  return string::repeated(m_data, times);
 }
 
 string string::replace(const char * before, const char * after, int start)
 {
-  return arken::string::consume(string::replace(m_data, before, after, start));
+  return string::replace(m_data, before, after, start);
 }
 
 string string::replace(const char before, const char after, int start)
 {
-  return arken::string::consume(string::replace(m_data, before, after, start));
+  return string::replace(m_data, before, after, start);
 }
 
 void string::reserve(size_t reserve)
@@ -1563,22 +1571,22 @@ size_t string::reserve()
 
 string string::right(int len)
 {
-  return arken::string::consume(string::right(m_data, len));
+  return string::right(m_data, len);
 }
 
 string string::rightJustified(size_t size, const char * pad)
 {
-  return arken::string::consume(string::rightJustified(m_data, size, pad));
+  return string::rightJustified(m_data, size, pad);
 }
 
 string string::sha1()
 {
-  return arken::string::consume(string::sha1(m_data));
+  return string::sha1(m_data);
 }
 
 string string::suffix(const char chr)
 {
-  return arken::string::consume(string::suffix(m_data, chr));
+  return string::suffix(m_data, chr);
 }
 
 const char * string::data() const
@@ -1586,26 +1594,31 @@ const char * string::data() const
   return this->m_data;
 }
 
+// TODO revisar o uso
 char * string::release()
 {
   char * tmp = this->m_data;
-  this->m_data = NULL;
+  this->m_data = nullptr;
   return tmp;
 }
 
 string string::trimmed()
 {
-  return arken::string::consume(string::trimmed(m_data));
+  //string dt;
+  //dt.m_data = string::trimmed(m_data);
+  //dt.m_size = strlen(dt.m_data);
+  //return dt;
+  return string::trimmed(m_data);
 }
 
 string string::leftTrimmed()
 {
-  return arken::string::consume(string::leftTrimmed(m_data));
+  return string::leftTrimmed(m_data);
 }
 
 string string::rightTrimmed()
 {
-  return arken::string::consume(string::rightTrimmed(m_data));
+  return string::rightTrimmed(m_data);
 }
 
 bool string::startsWith(const char * str)
@@ -1615,12 +1628,12 @@ bool string::startsWith(const char * str)
 
 string string::truncate(int pos, const char *omission, const char separator)
 {
-  return arken::string::consume(string::truncate(m_data, pos, omission, separator));
+  return string::truncate(m_data, pos, omission, separator);
 }
 
 string string::underscore()
 {
-  return arken::string::consume(string::underscore(m_data));
+  return string::underscore(m_data);
 }
 
 List string::split(const char * pattern)
@@ -1647,17 +1660,6 @@ bool string::empty()
 // OPERATORS
 //-----------------------------------------------------------------------------
 
-std::ostream & operator<<(std::ostream & os, const arken::string * str)
-{
-   os << str->data();
-   return os;
-}
-std::ostream & operator<<(std::ostream & os, const arken::string & str)
-{
-   os << str.data();
-   return os;
-}
-
 string & string::operator=(const string &a)
 {
   if( m_data )
@@ -1667,7 +1669,7 @@ string & string::operator=(const string &a)
   m_size      = a.m_size;
   m_capacity  = a.m_size;
   m_data      = new char[m_size + 1];
-  strcpy(m_data, a.m_data);
+  strncpy(m_data, a.m_data, m_size);
   m_data[m_size] = '\0';
   return *this;
 }
@@ -1681,7 +1683,7 @@ string & string::operator=(const char * data)
   m_size      = strlen(data);
   m_capacity  = m_size;
   m_data      = new char[m_size + 1];
-  strcpy(m_data, data);
+  strncpy(m_data, data, m_size);
   m_data[m_size] = '\0';
 
   return *this;
@@ -1696,7 +1698,7 @@ string & string::operator=(const string * str)
   m_size      = str->m_size;
   m_capacity  = str->m_size;
   m_data      = new char[m_size + 1];
-  strcpy(m_data, str->m_data);
+  strncpy(m_data, str->m_data, m_size);
   m_data[m_size] = '\0';
 
   return *this;
@@ -1732,20 +1734,20 @@ void string::List::init()
     }
   }
 
-  if( m_array != 0 ) {
+  if( m_array != nullptr ) {
     delete m_array;
   }
 
   m_array = array;
 
   for(int i = m_size; i < m_resource; i++) {
-    m_array[i] = 0;
+    m_array[i] = nullptr;
   }
 }
 
 string::List::List()
 {
-  m_array    = 0;
+  m_array    = nullptr;
   m_size     = 0;
   m_resource = 10;
   init();
@@ -1778,7 +1780,7 @@ string::List::List(const List &obj)
   }
 
   for(int i = m_size; i < m_resource; i++) {
-    m_array[i] = 0;
+    m_array[i] = nullptr;
   }
 }
 
@@ -1809,34 +1811,18 @@ List & string::List::operator=(const List &obj)
   }
 
   for(int i = m_size; i < m_resource; i++) {
-    m_array[i] = 0;
+    m_array[i] = nullptr;
   }
 
   return *this;
 }
-
-List * string::List::consume(List &obj)
-{
-  List *list = new List(0);
-  list->m_cursor   = 0;
-  list->m_size     = obj.m_size;
-  list->m_resource = obj.m_resource;
-  list->m_array    = obj.m_array;
-
-  obj.m_array    = nullptr;
-  obj.m_size     = 0;
-  obj.m_resource = 0;
-
-  return list;
-}
-
 
 string::List::~List()
 {
 
   if( m_array ) {
     for(int i = 0; i < m_size; i++) {
-      if( m_array[i] != 0 ) {
+      if( m_array[i] != nullptr ) {
         delete m_array[i];
       }
     }
@@ -1847,7 +1833,7 @@ string::List::~List()
 
 void string::List::replace(int pos, const char * value)
 {
-  if( m_array[pos] != 0 ) {
+  if( m_array[pos] != nullptr ) {
     delete m_array[pos];
   }
 
@@ -1909,7 +1895,7 @@ const char * string::List::at(int pos)
   }
 
   string * ba = m_array[pos];
-  if( ba == 0 || ba->size() == 0 ) {
+  if( ba == nullptr || ba->size() == 0 ) {
     return nullptr;
   } else {
     return m_array[pos]->data();
@@ -1931,9 +1917,9 @@ const char * string::List::at(int pos, int * len)
 
   string * ba = m_array[pos];
 
-  if( ba == 0 || ba->size() == 0 ) {
+  if( ba == nullptr || ba->size() == 0 ) {
     * len = 0;
-    return 0;
+    return nullptr;
   } else {
     *len = ba->size();
     return ba->data();
@@ -1991,11 +1977,28 @@ const char * string::List::each()
 {
 
   if( m_cursor >= m_size ) {
-    return NULL;
+    return nullptr;
   }
 
   const char * result = at(m_cursor);
   m_cursor++;
 
   return result;
+}
+
+} // namespace arken
+
+//-----------------------------------------------------------------------------
+// COUT
+//-----------------------------------------------------------------------------
+
+std::ostream & operator<<(std::ostream & os, const arken::string * str)
+{
+   os << str->data();
+   return os;
+}
+std::ostream & operator<<(std::ostream & os, const arken::string & str)
+{
+   os << str.data();
+   return os;
 }

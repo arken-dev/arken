@@ -12,7 +12,7 @@ namespace compress {
 class zip
 {
   public:
-  static bool decompress(const char * namefile, const char * output = 0);
+  static bool decompress(const char * namefile, const char * output = nullptr);
 };
 
 

@@ -38,6 +38,13 @@ void run()
   }
 }
 
+void load()
+{
+  if( app == nullptr ) {
+    new std::thread(run);
+  }
+} //NOLINT(clang-analyzer-cplusplus.NewDeleteLeaks)
+
 NotifyNode::NotifyNode(QString status, QString title, QString message) {
   m_status  = status;
   m_title   = title;
@@ -247,9 +254,7 @@ void Dialog::send(NotifyNode* node)
 
   std::unique_lock<std::mutex> lck(s_mtx);
 
-  if( app == nullptr ) {
-    new std::thread(run);
-  }
+  load();
 
   s_queue.push(node);
 }

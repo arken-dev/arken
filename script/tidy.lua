@@ -1,6 +1,7 @@
 #!/usr/bin/env arken
 
-local debug = arg[1] == '--debug' or false
+local dir = ( arg[1] and os.exists(arg[1]) ) and arg[1] or "src/arken"
+local verbose = (arg[1] == '--verbose' or arg[2] == '--verbose' ) and true or false
 
 -- Enabled checks:
 local options = {
@@ -250,7 +251,7 @@ local options = {
   'modernize-use-nullptr',
 -- modernize-use-override
 -- modernize-use-transparent-functors
--- modernize-use-using
+  'modernize-use-using',
 -- mpi-buffer-deref
 -- mpi-type-mismatch
 -- objc-avoid-nserror-init
@@ -310,16 +311,24 @@ clang-tidy-6.0 %s \
   -I deps/include \
   -I /opt/objectdata/Qt-5.7.0/include \
   -I /opt/objectdata/Qt-5.7.0/include/QtCore \
-  -fPIC
+  -I /opt/objectdata/Qt-5.6.0/include/QtGui \
+  -I /opt/objectdata/Qt-5.7.0/include/QtNetwork \
+  -I /opt/objectdata/Qt-5.7.0/include/QtWidgets \
+  -I /usr/include/glib-2.0 \
+  -I /usr/lib/x86_64-linux-gnu/glib-2.0/include \
+  -I /usr/include/gdk-pixbuf-2.0 \
+  -I /usr/include/gdk-pixbuf-2.0/gdk-pixbuf \
+  -fPIC \
+   2> /dev/null
 ]]
 
-local list = os.glob("src/arken", "cpp$", true)
+local list = os.glob(dir, "cpp$", true)
 
 for fileName in list:each() do
   local cmd = string.format(tidy, fileName, checks)
-  if debug then
+  if verbose then
     print(cmd)
+    print(fileName)
   end
   os.execute(cmd)
-  print(fileName)
 end

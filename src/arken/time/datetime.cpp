@@ -118,7 +118,7 @@ DateTime * DateTime::parse(const char * str)
   if( result.isValid() ) {
     return new DateTime(result);
   } else {
-    return 0;
+    return nullptr;
   }
 }
 

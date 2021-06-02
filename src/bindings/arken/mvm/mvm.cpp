@@ -85,6 +85,13 @@ arken_mvm_env(lua_State *L) {
   }
 }
 
+static int
+arken_mvm_cext(lua_State *L) {
+  const char * cext = mvm::cext();
+  lua_pushstring(L, cext);
+  return 1;
+}
+
 static void
 register_arken_mvm( lua_State *L ) {
   static const luaL_reg Map[] = {
@@ -99,6 +106,7 @@ register_arken_mvm( lua_State *L ) {
     {"wait",    arken_mvm_wait},
     {"path",    arken_mvm_path},
     {"env",     arken_mvm_env},
+    {"cext",    arken_mvm_cext},
     {NULL, NULL}
   };
   luaL_newmetatable(L, "mvm");

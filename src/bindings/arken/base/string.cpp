@@ -106,8 +106,9 @@ arken_string_md5( lua_State *L ) {
 
 static int
 arken_string_sha1( lua_State *L ) {
-  const char * str = luaL_checkstring(L, 1);
-  char * result = string::sha1(str);
+  size_t len;
+  const char * str = luaL_checklstring(L, 1, &len);
+  char * result = string::sha1(str, len);
   lua_pushstring(L, result);  /* push result */
   delete[] result;
   return 1;
@@ -305,12 +306,8 @@ arken_string_leftJustified( lua_State *L ) {
 static int
 arken_string_prefix( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
-  char chr = '.';
-  char * result;
-  if(lua_gettop(L) == 2) { /* número de argumentos */
-    chr =  luaL_checkstring(L, 2)[0];
-  }
-  result = string::prefix(string, chr);
+  const char * pattern = luaL_checkstring(L, 2);;
+  char * result = string::prefix(string, pattern);
   lua_pushstring(L, result);  /* push result */
   delete[] result;
   return 1;
@@ -387,7 +384,7 @@ arken_string_split( lua_State *L ) {
   const char  * pattern = luaL_checkstring(L, 2);
   List list = string::split(string, len, pattern);
   List **ptr  = (List **)lua_newuserdata(L, sizeof(List*));
-  *ptr = List::consume(list);
+  *ptr = new List(list);
   luaL_getmetatable(L, "arken.string.List.metatable");
   lua_setmetatable(L, -2);
 
@@ -821,12 +818,8 @@ static int
 arken_StringInstanceMethodPrefix( lua_State *L ) {
   string * udata = checkString( L );
   string result;
-  if(lua_gettop(L) == 2) { // number of arguments
-    const char * chr = luaL_checkstring(L, 2);
-    result = udata->prefix(chr[0]);
-  } else {
-    result = udata->prefix();
-  }
+  const char * pattern = luaL_checkstring(L, 2);
+  result = udata->prefix(pattern);
   lua_pushlstring(L, result.data(), result.size());
   return 1;
 }
@@ -958,7 +951,7 @@ arken_StringInstanceMethodSplit( lua_State *L ) {
   const char  * pattern = luaL_checkstring(L, 2);
   List list  = udata->split(pattern);
   List **ptr = (List **)lua_newuserdata(L, sizeof(List*));
-  *ptr = List::consume(list);
+  *ptr = new List(list);
   luaL_getmetatable(L, "arken.string.List.metatable");
   lua_setmetatable(L, -2);
   return 1;

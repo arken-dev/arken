@@ -4,10 +4,15 @@
 // license that can be found in the LICENSE file.
 
 #include <lua/lua.hpp>
-#include <arken/base>
 #include <string>
+#include <arken/net/httpbody.h>
+#include <arken/net/httpenv.h>
+#include <arken/net/httputil.h>
+#include <arken/net/httphandle.h>
+#include <arken/mvm.h>
 
-using namespace arken::net;
+namespace arken {
+namespace net {
 
 using arken::net::HttpBody;
 using arken::net::HttpUtil;
@@ -50,6 +55,9 @@ std::string HttpHandle::sync(const char * data, size_t size)
   } else {
 
     code = lua_tointeger( L, 1 );
+    if( code < 0 ) {
+      code = 500;
+    }
 
     buffer.append(HttpUtil::status(code));
     buffer.append("\r\n");
@@ -63,7 +71,6 @@ std::string HttpHandle::sync(const char * data, size_t size)
 
     if( ! lua_isnil(L, 3) ) {
      if( code < 0 ) {
-        code = 500;
         result = luaL_checklstring( L , -1, &len );
         buffer.append(result, len);
       } else {
@@ -89,3 +96,6 @@ std::string HttpHandle::sync(const char * data, size_t size)
 
   return buffer;
 }
+
+} // namespace net
+} // namespace arken

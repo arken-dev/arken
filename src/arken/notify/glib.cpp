@@ -12,12 +12,12 @@ namespace arken {
 void notify::send(const char * title, const char * message, const char * icon)
 {
   GApplication *application = g_application_new("arken.notification", G_APPLICATION_FLAGS_NONE);
-  g_application_register (application, NULL, NULL);
+  g_application_register (application, nullptr, nullptr);
   GNotification *notification = g_notification_new(title);
   g_notification_set_body (notification, message);
   GIcon *gicon = g_themed_icon_new("dialog-information");
   g_notification_set_icon(notification, gicon);
-  g_application_send_notification(application, NULL, notification);
+  g_application_send_notification(application, nullptr, notification);
   g_object_unref(gicon);
   g_object_unref(notification);
   g_object_unref(application);

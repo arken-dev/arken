@@ -3,49 +3,32 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#include <arken/base>
 #include <curl/curl.h>
+#include <iostream>
 #include <cstdlib>
 #include <cstring>
-#include <arken/base>
-#include <iostream>
+#include <arken/net/httpclient.h>
+
+namespace arken {
+namespace net {
 
 using arken::string;
-using namespace arken::net;
-
 
 uint64_t HttpClient::callback(void *contents, size_t size, size_t nmemb, void *userp)
 {
   size_t realsize = size * nmemb;
   HttpClient * client = (HttpClient *)userp;
-
-  client->m_data = (char *) realloc(client->m_data, client->m_size + realsize + 1);
-
-  // out of memory
-  if( client->m_data == NULL ) {
-    client->m_failure = true;
-    client->m_message = new char[14]{'o', 'u', 't', ' ', 'o', 'f', ' ', 'm', 'e', 'm', 'o', 'r', 'y', '\0'};
-    return 0;
-  }
-
-  memcpy(&(client->m_data[client->m_size]), contents, realsize);
-  client->m_size += realsize;
-  client->m_data[client->m_size] = 0;
-
+  client->m_data.append((const char *) contents, realsize);
   return realsize;
 }
 
 HttpClient::HttpClient(const char * url)
 {
-  //url
-  m_url = new char[strlen(url) + 1];
-  strcpy(m_url, url);
+  m_url = url;
 
-  m_body    = NULL;
-  m_data    = NULL;
-  m_message = NULL;
+  m_status  = 0;
   m_size    = 0;
-  m_list    = 0;
+  m_list    = nullptr;
   m_failure = false;
 
   // init globlal
@@ -92,12 +75,6 @@ HttpClient::~HttpClient()
   // we're done with libcurl, so clean it up
   curl_global_cleanup();
 
-  // free memory
-  delete[] m_url;
-  if( m_data )    delete[] m_data;
-  if( m_body )    delete[] m_body;
-  if( m_message ) delete[] m_message;
-
 }
 
 void HttpClient::appendHeader(const char * header)
@@ -116,14 +93,10 @@ void HttpClient::setVerbose(bool verbose)
 
 void HttpClient::setBody(const char * body)
 {
-  size_t size;
-  size = strlen(body);
-  m_body = new char[size + 1];
-  strcpy(m_body, body);
-  m_body[size] = '\0';
+  m_body = body;
 }
 
-const char * HttpClient::body()
+string HttpClient::body()
 {
   return m_body;
 }
@@ -139,9 +112,9 @@ string HttpClient::performPost()
   /* POST */
   curl_easy_setopt(m_curl, CURLOPT_CUSTOMREQUEST, "POST");
   curl_easy_setopt(m_curl, CURLOPT_POST, 1);
-  if( m_body ) {
-    curl_easy_setopt(m_curl, CURLOPT_POSTFIELDS, m_body);
-    curl_easy_setopt(m_curl, CURLOPT_POSTFIELDSIZE, strlen(m_body));
+  if( !m_body.empty() ) {
+    curl_easy_setopt(m_curl, CURLOPT_POSTFIELDS, m_body.data() );
+    curl_easy_setopt(m_curl, CURLOPT_POSTFIELDSIZE, m_body.size() );
   }
 
   return perform();
@@ -153,9 +126,9 @@ string HttpClient::performPut()
   /* PUT */
   curl_easy_setopt(m_curl, CURLOPT_CUSTOMREQUEST, "PUT");
   curl_easy_setopt(m_curl, CURLOPT_POST, 1);
-  if( m_body ) {
-    curl_easy_setopt(m_curl, CURLOPT_POSTFIELDS, m_body);
-    curl_easy_setopt(m_curl, CURLOPT_POSTFIELDSIZE, strlen(m_body));
+  if( !m_body.empty() ) {
+    curl_easy_setopt(m_curl, CURLOPT_POSTFIELDS, m_body.data());
+    curl_easy_setopt(m_curl, CURLOPT_POSTFIELDSIZE, m_body.size());
   }
 
   return perform();
@@ -175,12 +148,12 @@ int HttpClient::status()
   return m_status;
 }
 
-const char * HttpClient::data()
+string HttpClient::data()
 {
   return m_data;
 }
 
-const char * HttpClient::message()
+string HttpClient::message()
 {
   return m_message;
 }
@@ -192,7 +165,6 @@ bool HttpClient::failure()
 
 string HttpClient::perform()
 {
-  char    * body;
   int       index;
   CURLcode  res;
 
@@ -204,49 +176,47 @@ string HttpClient::perform()
 
   // out of memory
   if ( m_failure ) {
-    return string::consume( new char[1]() );
+    return {};
   }
 
   // check for errors
   if( res != CURLE_OK ) {
     m_failure = true;
-    const char * message = curl_easy_strerror(res);
-    m_message = new char[strlen(message)+1];
-    strcpy(m_message, message);
-    return string::consume( new char[1]() );
+    m_message = curl_easy_strerror(res);
+    return {};
   }
 
-  if( m_size ) {
+  if( !m_data.empty() ) {
     // parse status
-    index = string::lastIndexOf(m_data, "HTTP");
-    index = string::indexOf(m_data, " ", index);
+    index = m_data.lastIndexOf("HTTP");
+    index = m_data.indexOf(" ", index);
     if( index > -1 ) {
-      char * status = string::mid(m_data, index + 1, index + 4);
+      //m_status = m_data.mid(index+1, index+4).atoi();
+      string status = m_data.mid(index + 1, index + 4);
+      // TODO atoi in arken:string
       m_status = atoi(status);
-      delete status;
     } else {
       m_status = 0;
     }
 
     //parse body
-    index = string::lastIndexOf(m_data, "\r\n\r\n");
+    index = m_data.lastIndexOf("\r\n\r\n");
     if( index > 0 ) {
       index += 4;
-      size_t size = (m_size-index);
+      size_t size = (m_data.size()-index);
       if( size > 0 ) {
-        body = string::mid(m_data, index, size);
-        return string::consume( body, size );
+        return m_data.mid(index, size);
       } else {
-        body = new char[1]();
-        return string::consume( body );
+        return {};
       }
     } else {
-      body = new char[1]();
-      return string::consume( body );
+      return {};
     }
   } else {
     m_status = 0;
-    body = new char[1]();
-    return string::consume( body );
+    return {};
   }
 }
+
+} // namespace net
+} // namespace arken

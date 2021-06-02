@@ -4,11 +4,11 @@
 #include <arken/mvm.h>
 #include <GL/freeglut.h>
 #include <GL/glut.h>
-#include <dialog.h>
 #include <iostream>
 #include <thread>
 #include <string>
 #include <arken/base>
+#include "dialog.h"
 
 using arken::mvm;
 
@@ -27,6 +27,14 @@ void run()
   std::cout << "after create dialog" << dialog << std::endl;
   glutMainLoop();
 }
+
+void load()
+{
+  if( dialog == nullptr ) {
+    std::cout << "run... " << std::endl;
+    new std::thread(run);
+  }
+} //NOLINT(clang-analyzer-cplusplus.NewDeleteLeaks)
 
 void RenderString(GLdouble x, GLdouble y, const std::string &string)
 {
@@ -159,10 +167,8 @@ void Dialog::send(NotifyNode* node)
   std::unique_lock<std::mutex> lck(s_mtx);
 
   std::cout << " before thread " << dialog << " app " << std::endl;
-  if( dialog == nullptr ) {
-    std::cout << "run... " << std::endl;
-    new std::thread(run);
-  }
+
+  load();
 
   s_queue.push(node);
 }

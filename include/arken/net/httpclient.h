@@ -9,8 +9,6 @@
 #include <curl/curl.h>
 #include <arken/base>
 
-using string = arken::string;
-
 namespace arken {
 namespace net {
 
@@ -19,10 +17,10 @@ class HttpClient
   private:
   curl_slist * m_list;
   CURL       * m_curl;
-  char       * m_url;
-  char       * m_body;
-  char       * m_data;
-  char       * m_message;
+  string       m_url;
+  string       m_body;
+  string       m_data;
+  string       m_message;
   bool         m_failure;
   uint32_t     m_status;
   uint64_t     m_size;
@@ -40,18 +38,15 @@ class HttpClient
   string performPost();
   string performPut();
   string performDelete();
-  const
-  char * body();
-  const
-  char * data();
-  const
-  char * message();
+  string body();
+  string data();
+  string message();
   int    status();
   bool   failure();
 
 };
 
-}
-}
+} // namespace net
+} // namespace arken
 
 #endif

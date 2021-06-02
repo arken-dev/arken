@@ -6,14 +6,16 @@
 #include <arken/base>
 #include <arken/net/httpbody.h>
 
-using namespace arken::net;
+namespace arken {
+namespace net {
 
 HttpBody::HttpBody(const char * buffer, size_t size)
 {
   m_release = false;
-  m_buffer  = new char[size];
+  m_buffer  = new char[size+1];
   m_size    = size;
-  strcpy(m_buffer, buffer);
+  memcpy( m_buffer, buffer, size );
+  m_buffer[size] = '\0';
 }
 
 HttpBody::HttpBody(char * buffer, size_t size)
@@ -68,8 +70,11 @@ void HttpBody::release()
 {
   if( m_release == false ) {
     delete[] m_buffer;
-    m_buffer  = 0;
+    m_buffer  = nullptr;
     m_size    = 0;
     m_release = true;
   }
 }
+
+} // namespace net
+} // namespace arken

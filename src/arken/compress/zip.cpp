@@ -2,7 +2,7 @@
 // All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
-#include<iostream>
+#include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -22,6 +22,7 @@
 #include <sys/types.h>
 #include <zip.h>
 
+#include <arken/base>
 #include <arken/compress/zip.h>
 
 static void safe_create_dir(const char *dir)
@@ -34,11 +35,11 @@ static void safe_create_dir(const char *dir)
     }
 }
 
-bool arken::compress::zip::decompress(const char * namefile, const char * output)
+bool arken::compress::zip::decompress(const char * archive, const char * output)
 {
 
-    char * dirname = 0;
-    const char *archive;
+    // TODO change arken::string
+    string dirname;
     struct ::zip *za;
     struct zip_file *zf;
     struct zip_stat sb;
@@ -48,8 +49,7 @@ bool arken::compress::zip::decompress(const char * namefile, const char * output
     int fd;
     unsigned long sum;
 
-    archive = namefile;
-    if ((za = zip_open(archive, 0, &err)) == NULL) {
+    if ((za = zip_open(archive, 0, &err)) == nullptr) {
         zip_error_to_str(buf, sizeof(buf), err, errno);
         fprintf(stderr, "can't open zip archive `%s': %s/n",
             archive, buf);
@@ -60,10 +60,8 @@ bool arken::compress::zip::decompress(const char * namefile, const char * output
         if (zip_stat_index(za, i, 0, &sb) == 0) {
             len = strlen(sb.name);
             if (sb.name[len - 1] == '/') {
-                if( dirname == 0 ) {
-                  dirname = new char[len+1];
-                  strcpy(dirname, sb.name);
-                  dirname[len-1] = '\0';
+                if( dirname.empty() ) {
+                  dirname = sb.name;
                 }
                 safe_create_dir(sb.name);
             } else {
@@ -108,10 +106,10 @@ bool arken::compress::zip::decompress(const char * namefile, const char * output
       rename(dirname, output);
     }
 
-    if( dirname ) {
+    //if( dirname ) {
       //std::cout << "limpando " << dirname;
-      delete[] dirname;
-    }
+      //delete[] dirname;
+    //}
 
     return true;
 }

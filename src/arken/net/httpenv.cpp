@@ -153,13 +153,13 @@ HttpEnv::HttpEnv(const char * data, size_t len)
 
   parser->data = this;
 
-  m_fragment      = NULL;
-  m_requestPath   = NULL;
-  m_queryString   = NULL;
-  m_requestMethod = NULL;
-  m_requestUri    = NULL;
-  m_httpVersion   = NULL;
-  m_headerDone    = NULL;
+  m_fragment      = nullptr;
+  m_requestPath   = nullptr;
+  m_queryString   = nullptr;
+  m_requestMethod = nullptr;
+  m_requestUri    = nullptr;
+  m_httpVersion   = nullptr;
+  m_headerDone    = nullptr;
   m_headerDoneLength = 0u;
 
   http_parser_execute(parser, data, len, 0);

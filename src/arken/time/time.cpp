@@ -55,7 +55,7 @@ Time * Time::parse(const char * str)
   if( result.isValid() ) {
     return new Time(result);
   } else {
-    return 0;
+    return nullptr;
   }
 }
 

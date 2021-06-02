@@ -89,18 +89,19 @@ char * math::format(double value, int decimals, char dec_point, char thousands_s
   }
 
   char * res;
-  size_t index = string::indexOf(tmp, ".");
-  size_t idx   = index;
-  size_t len   = index;
-  size_t t     = 0;
+  // TODO dec_point get env
+  int index = string::indexOf(tmp, ".");
+  if( index == -1 ) {
+    index = string::indexOf(tmp, ",");
+  }
+  int idx  = index;
+  int len  = index;
+  int t    = 0;
 
   if( decimals == 0 ) {
-    idx = slen-1;
-    len = slen-1;
+    idx   = slen-1;
+    len   = slen-1;
     index = slen-1;
-  } else {
-    idx = index;
-    len = index;
   }
 
   if(thousands_sep) {

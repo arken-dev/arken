@@ -76,7 +76,7 @@ Date * Date::parse(const char * str)
   if( result.isValid() ) {
     return new Date(result);
   } else {
-    return 0;
+    return nullptr;
   }
 }
 

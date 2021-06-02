@@ -5,11 +5,14 @@
 
 #include <arken/base>
 #include <arken/mvm>
+#include <map>
 
-using namespace arken;
+namespace arken {
 
-int     mvm::s_argc(0);
-char ** mvm::s_argv(0);
+using arken::string;
+
+int     mvm::s_argc{0};
+char ** mvm::s_argv{nullptr};
 
 std::atomic<uint32_t> mvm::s_gc(0);
 std::atomic<uint32_t> mvm::s_version(0);
@@ -31,40 +34,8 @@ string mvm::s_packagePath  = "";
 string mvm::s_cpackagePath = "";
 string mvm::s_env = "development";
 
-
 static std::mutex mtx;
 static std::map <std::string, int> s_config;
-
-void mvm_pool()
-{
-  while( true ) {
-    int log = mvm::at("pool.log");
-    if( log ) {
-      mvm::log("pool...");
-    }
-    mtx.lock();
-    int count = mvm::at("pool.size") - mvm::s_pool;
-    mtx.unlock();
-    if (count > 0) {
-      for(int i=1; i < count; i++) {
-        mvm::push( new mvm::data() );
-      }
-    }
-    mvm::pause("pool.pause");
-  }
-}
-
-void mvm_gc()
-{
-  while( true ) {
-    int log = mvm::at("gc.log");
-    if( log ) {
-      mvm::log("gc ...");
-    }
-    mvm::gc();
-    mvm::pause("gc.pause");
-  }
-}
 
 void mvm::set(std::string key, int value)
 {
@@ -125,25 +96,29 @@ void mvm::config()
   }
 }
 
-void mvm::init(int argc, char ** argv)
+void mvm::args(int argc, char ** argv)
 {
   s_argc  = argc;
   s_argv  = new char*[argc+1];
   for( int i=0; i < argc; i++ ) {
-    int len = strlen(argv[i]) + 1;
-    s_argv[i] = new char[len]();
-    strcpy(s_argv[i], argv[i]);
+    int len = strlen(argv[i]);
+    s_argv[i] = new char[len+1]();
+    strncpy(s_argv[i], argv[i], len);
   }
+}
+
+void mvm::init(int argc, char ** argv)
+{
+
+  // args
+  mvm::args(argc, argv);
 
   // env
-  const char * env = getenv("ARKEN_ENV");
-  if( env ) {
-    mvm::env(env);
-  }
+  mvm::env( getenv("ARKEN_ENV") );
 
-  s_arkenPath     = os::executablePath();
-  int lastIndexOf = s_arkenPath.lastIndexOf("bin");
-  s_arkenPath     = s_arkenPath.left(lastIndexOf-1);
+  //TODO
+  string path = os::executablePath();
+  s_arkenPath = path.prefix("bin").left(-1);
 
   s_packagePath.
     append("./?.lua;").
@@ -151,24 +126,12 @@ void mvm::init(int argc, char ** argv)
     append(s_arkenPath).append("/lib/?.lua;").
     append(s_arkenPath).append("/packages/?.lua");
 
-  if( strcmp(os::name(), "windows") == 0 ) {
-    s_arkenPath = s_arkenPath.capitalize();
-    s_cpackagePath.append("./?.dll;");
-    s_cpackagePath.append("./clib/?.dll;");
-    s_cpackagePath.append(s_arkenPath).append("/clib/?.dll");
-  }
-
-  if( strcmp(os::name(), "linux") == 0 ) {
-    s_cpackagePath.append("./?.so;");
-    s_cpackagePath.append("./clib/?.so;");
-    s_cpackagePath.append(s_arkenPath).append("/clib/?.so");
-  }
-
-  if( strcmp(os::name(), "macos") == 0 ) {
-    s_cpackagePath.append("./?.dylib;");
-    s_cpackagePath.append("./clib/?.dylib;");
-    s_cpackagePath.append(s_arkenPath).append("/clib/?.dylib");
-  }
+  //TODO capitalize windows
+  const char * cext = mvm::cext();
+  s_cpackagePath.
+  append(".").append("/?.").append(cext).
+  append(";").append("./clib/?.").append(cext).
+  append(";").append(s_arkenPath).append("/clib/?.").append(cext);
 
   s_profilePath = s_arkenPath;
   s_profilePath.append("/profile.lua");
@@ -178,9 +141,6 @@ void mvm::init(int argc, char ** argv)
   container::init();
 
   mvm::config();
-
-  new std::thread(mvm_pool);
-  new std::thread(mvm_gc);
 
 }
 
@@ -278,12 +238,12 @@ uint32_t mvm::gc()
   uint32_t i = 0;
   mvm::data * data;
 
-  s_gc ++;
+  mvm::s_gc ++;
   data = mvm::pop();
 
-  while( data->m_gc != s_gc ) {
+  while( data->m_gc != mvm::s_gc ) {
     lua_gc(data->state(), LUA_GCCOLLECT, 0);
-    data->m_gc = s_gc;
+    data->m_gc = mvm::s_gc;
 
     mvm::back(data);
     i++;
@@ -465,15 +425,34 @@ concurrent::Base * mvm::get()
   return pointer;
 }
 
+//-----------------------------------------------------------------------------
+// ENV
+//-----------------------------------------------------------------------------
+
 void mvm::env(const char * env)
 {
-  s_env = env;
+  if( env != nullptr ) {
+    s_env = env;
+  }
 }
 
 const char * mvm::env()
 {
   return s_env;
 }
+
+//-----------------------------------------------------------------------------
+// CEXT
+//-----------------------------------------------------------------------------
+
+const char * mvm::cext()
+{
+  static std::map<const char *, const char *> s_cext {
+    {"linux", "so"}, {"windows", "dll"}, {"macos", "dylib"},
+  };
+  return s_cext[os::name()];
+}
+
 
 void mvm::concurrent(concurrent::Base * pointer)
 {
@@ -501,3 +480,5 @@ void mvm::wait()
     os::sleep(0.05);
   }
 }
+
+} // namespace arken

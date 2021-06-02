@@ -9,7 +9,7 @@ char * os::executablePath()
   int ret       = proc_pidpath(pid, result, (sizeof(char) * PROC_PIDPATHINFO_MAXSIZE));
   if( ret <= 0 ) {
     delete[] result;
-    return 0;
+    return nullptr;
   } else {
     return result;
   }
