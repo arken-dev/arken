@@ -20,7 +20,7 @@ char * sha1::hash(const char * hash)
 char * sha1::hash(const char * hash, int length)
 {
   const char * data = QCryptographicHash::hash(QByteArray(hash, length), QCryptographicHash::Sha1).toHex().data();
-  char * result = new char[41];
+  auto result = new char[41];
   strncpy(result, data, 40);
   result[40] = '\0';
   return result;

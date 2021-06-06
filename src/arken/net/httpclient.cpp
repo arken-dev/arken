@@ -17,8 +17,8 @@ using arken::string;
 uint64_t HttpClient::callback(void *contents, size_t size, size_t nmemb, void *userp)
 {
   size_t realsize = size * nmemb;
-  HttpClient * client = (HttpClient *)userp;
-  client->m_data.append((const char *) contents, realsize);
+  auto client = static_cast<HttpClient *>(userp);
+  client->m_data.append(static_cast<const char *>(contents), realsize);
   return realsize;
 }
 

@@ -70,7 +70,7 @@ void task::run()
 
 string task::start(const char * fileName, const char * params, bool purge)
 {
-  task * ptr = new task(fileName, params, purge);
+  auto ptr = new task(fileName, params, purge);
   mvm::concurrent(ptr);
   return ptr->m_uuid;
 }

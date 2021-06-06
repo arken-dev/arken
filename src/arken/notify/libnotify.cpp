@@ -25,7 +25,7 @@ void notify::send(const char * title, const char * message, const char * icon)
   notify_init("Arken Notify");
   NotifyNotification * Notify = notify_notification_new(title, message, icon);
   notify_notification_show(Notify, nullptr);
-  g_object_unref(G_OBJECT(Notify));
+  g_object_unref(G_OBJECT(Notify));//NOLINT(cppcoreguidelines-pro-type-cstyle-cast)
   notify_uninit();
 }
 

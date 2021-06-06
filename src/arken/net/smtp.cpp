@@ -14,7 +14,7 @@ using os   = arken::os;
 
 size_t SMTP::payload_source(void *ptr, size_t size, size_t nmemb, void *userp)
 {
-  SMTP *upload_ctx = (SMTP *)userp;
+  auto upload_ctx = static_cast<SMTP *>(userp);
   const char *data;
 
   if((size == 0) || (nmemb == 0) || ((size*nmemb) < 1)) {
@@ -326,7 +326,7 @@ string SMTP::rfc2822Date()
 {
   time_t rawtime;
   struct tm * timeinfo;
-  char * buffer = new char[80+1];
+  auto buffer = new char[80+1];
 
   time(&rawtime);
   timeinfo = localtime (&rawtime);

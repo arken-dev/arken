@@ -108,7 +108,7 @@ Dialog::Dialog(QWidget *parent) :
 
     if( !fileName.isEmpty() && config.exists() ) {
       config.open(QIODevice::ReadOnly);
-      QJsonParseError * error = new QJsonParseError();
+      auto error = new QJsonParseError();
       QJsonDocument json = QJsonDocument::fromJson(config.readAll(), error);
       if( error->error != 0 ) {
         qDebug() << error->errorString();

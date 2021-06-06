@@ -40,7 +40,7 @@ HttpBody * HttpBody::loadFile(const char *path)
 
 HttpBody * HttpBody::loadBuffer(const char * buffer, size_t size)
 {
-  char * tmp = new char[size + 1];
+  auto tmp = new char[size + 1];
   memcpy( tmp , buffer, size );
   tmp[size] = '\0';
   return new HttpBody(tmp, size);

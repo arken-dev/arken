@@ -67,7 +67,7 @@ void triton::run()
   lua_pushstring(L, "start");
   lua_gettable(L, -2);
 
-  triton **ptr = (triton **)lua_newuserdata(L, sizeof(triton *));
+  auto ptr = static_cast<triton **>(lua_newuserdata(L, sizeof(triton *)));
   *ptr = this;
   luaL_getmetatable(L, "arken.concurrent.triton.metatable");
   lua_setmetatable(L, -2);
@@ -101,7 +101,7 @@ void triton::run()
   lua_pushstring(L, "stop");
   lua_gettable(L, -2);
 
-  triton **stop = (triton **)lua_newuserdata(L, sizeof(triton *));
+  auto stop = static_cast<triton **>(lua_newuserdata(L, sizeof(triton *)));
   *stop = this;
   luaL_getmetatable(L, "arken.concurrent.triton.metatable");
   lua_setmetatable(L, -2);
@@ -116,7 +116,7 @@ void triton::run()
 
 string triton::start(const char * fileName, const char * params, bool purge)
 {
-  triton * ptr = new triton(fileName, params, purge);
+  auto ptr = new triton(fileName, params, purge);
   mvm::concurrent(ptr);
   return ptr->m_uuid;
 }
@@ -274,7 +274,7 @@ void triton::node::run()
   lua_pushstring(L, "before");
   lua_gettable(L, -2);
 
-  triton::node **ptr = (triton::node **)lua_newuserdata(L, sizeof(triton::node *));
+  auto ptr = static_cast<triton::node **>(lua_newuserdata(L, sizeof(triton::node *)));
   *ptr = this;
   luaL_getmetatable(L, "arken.concurrent.triton.node.metatable");
   lua_setmetatable(L, -2);
@@ -297,7 +297,7 @@ void triton::node::run()
     lua_pushstring(L, "run");
     lua_gettable(L, -2);
 
-    triton::node **ptr = (triton::node **)lua_newuserdata(L, sizeof(triton::node *));
+    auto ptr = static_cast<triton::node **>(lua_newuserdata(L, sizeof(triton::node *)));
     *ptr = this;
     luaL_getmetatable(L, "arken.concurrent.triton.node.metatable");
     lua_setmetatable(L, -2);
@@ -316,7 +316,7 @@ void triton::node::run()
   lua_pushstring(L, "after");
   lua_gettable(L, -2);
 
-  ptr  = (triton::node **)lua_newuserdata(L, sizeof(triton::node *));
+  ptr  = static_cast<triton::node **>(lua_newuserdata(L, sizeof(triton::node *)));
   *ptr = this;
   luaL_getmetatable(L, "arken.concurrent.triton.node.metatable");
   lua_setmetatable(L, -2);

@@ -7,6 +7,7 @@ extern "C" {
   #include <http11/http11_parser.h>
 }
 
+#include <memory>
 #include <arken/net/httpenv.h>
 
 namespace arken {
@@ -17,19 +18,19 @@ http_field_cb(void *data, const char *field, size_t flen, const char *value, siz
 {
   size_t i;
 
-  char * m_field = new char[flen+1];
+  auto m_field = new char[flen+1];
   for(i = 0; i < flen; i++) {
     m_field[i] = field[i];
   }
   m_field[i] = '\0';
 
-  char * m_value = new char[vlen+1];
+  auto m_value = new char[vlen+1];
   for(i = 0; i < vlen; i++) {
     m_value[i] = value[i];
   }
   m_value[i] = '\0';
 
-  HttpEnv * p = (HttpEnv *) data;
+  auto p = static_cast<HttpEnv *> (data);
   p->setField(m_field, m_value);
   delete[] m_field;
   delete[] m_value;
@@ -39,13 +40,13 @@ static void
 on_fragment_cb(void * data, const char * at, size_t length)
 {
   size_t i;
-  char * tmp = new char[length+1];
+  auto tmp = new char[length+1];
   for(i = 0; i < length; i++) {
     tmp[i] = at[i];
   }
   tmp[i] = '\0';
 
-  HttpEnv * p = (HttpEnv *) data;
+  auto p = static_cast<HttpEnv *> (data);
   p->setFragment(tmp);
 }
 
@@ -53,13 +54,13 @@ static void
 on_header_done_cb(void *data, const char *at, size_t length)
 {
   size_t i;
-  char * tmp = new char[length+1];
+  auto tmp = new char[length+1];
   for(i = 0; i < length; i++) {
     tmp[i] = at[i];
   }
   tmp[i] = '\0';
 
-  HttpEnv * p = (HttpEnv *) data;
+  auto p = static_cast<HttpEnv *> (data);
   p->setHeaderDone(tmp, length);
 }
 
@@ -67,13 +68,13 @@ static void
 on_http_version_cb(void *data, const char *at, size_t length)
 {
   size_t i;
-  char * tmp = new char[length+1];
+  auto tmp = new char[length+1];
   for(i = 0; i < length; i++) {
     tmp[i] = at[i];
   }
   tmp[i] = '\0';
 
-  HttpEnv * p = (HttpEnv *) data;
+  auto p = static_cast<HttpEnv *> (data);
   p->setHttpVersion(tmp);
 }
 
@@ -81,13 +82,13 @@ static void
 on_request_uri_cb(void *data, const char *at, size_t length)
 {
   size_t i;
-  char * tmp = new char[length+1];
+  auto tmp = new char[length+1];
   for(i = 0; i < length; i++) {
     tmp[i] = at[i];
   }
   tmp[i] = '\0';
 
-  HttpEnv * p = (HttpEnv *) data;
+  auto p = static_cast<HttpEnv *> (data);
   p->setRequestUri(tmp);
 }
 
@@ -95,13 +96,13 @@ static void
 on_request_method_cb(void *data, const char *at, size_t length)
 {
   size_t i;
-  char * tmp = new char[length+1];
+  auto tmp = new char[length+1];
   for(i = 0; i < length; i++) {
     tmp[i] = at[i];
   }
   tmp[i] = '\0';
 
-  HttpEnv * p = (HttpEnv *) data;
+  auto p = static_cast<HttpEnv *> (data);
   p->setRequestMethod(tmp);
 }
 
@@ -109,13 +110,13 @@ static void
 on_request_path_cb(void *data, const char *at, size_t length)
 {
   size_t i;
-  char * tmp = new char[length+1];
+  auto tmp = new char[length+1];
   for(i =0; i < length; ++i) {
     tmp[i] = at[i];
   }
   tmp[i] = '\0';
 
-  HttpEnv * p = (HttpEnv *) data;
+  auto p = static_cast<HttpEnv *> (data);
   p->setRequestPath(tmp);
 }
 
@@ -123,13 +124,13 @@ static void
 on_query_string_cb(void *data, const char *at, size_t length)
 {
   size_t i;
-  char * tmp = new char[length+1];
+  auto tmp = new char[length+1];
   for(i =0; i < length; ++i) {
     tmp[i] = at[i];
   }
   tmp[i] = '\0';
 
-  HttpEnv * p = (HttpEnv *) data;
+  auto p = static_cast<HttpEnv *> (data);
   p->setQueryString(tmp);
 }
 
@@ -139,8 +140,8 @@ HttpEnv::HttpEnv(const char * data, size_t len)
   m_data = data;
   m_len  = len;
 
-  http_parser * parser = (http_parser *) malloc(sizeof(http_parser));
-  http_parser_init(parser);
+  std::unique_ptr<http_parser> parser(new http_parser);
+  http_parser_init(parser.get());
 
   parser->http_field     = http_field_cb;
   parser->request_method = on_request_method_cb;
@@ -162,8 +163,7 @@ HttpEnv::HttpEnv(const char * data, size_t len)
   m_headerDone    = nullptr;
   m_headerDoneLength = 0u;
 
-  http_parser_execute(parser, data, len, 0);
-  free(parser);
+  http_parser_execute(parser.get(), data, len, 0);
 }
 
 HttpEnv::~HttpEnv()

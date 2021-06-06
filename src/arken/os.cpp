@@ -44,7 +44,7 @@ bool os::compare(const char * path1, const char * path2)
 
 void os::sleep(double msecs)
 {
-  int value = int(msecs * 1000);
+  auto value = int(msecs * 1000);
   std::this_thread::sleep_for(std::chrono::milliseconds(value));
 }
 

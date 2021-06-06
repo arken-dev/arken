@@ -122,7 +122,7 @@ void naiad::node::run()
   }
 
   //lua_pushlstring(L,  m_uuid, 37);
-  naiad::node **ptr = (naiad::node **)lua_newuserdata(L, sizeof(naiad::node*));
+  auto ptr = static_cast<naiad::node **>(lua_newuserdata(L, sizeof(naiad::node*)));
   *ptr = new naiad::node(*this);
   luaL_getmetatable(L, "arken.concurrent.naiad.node.metatable");
   lua_setmetatable(L, -2);

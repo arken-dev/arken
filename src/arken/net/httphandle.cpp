@@ -33,8 +33,8 @@ std::string HttpHandle::sync(const char * data, size_t size)
   lua_settop(L, 0);
   lua_getglobal(L, "dispatch");
 
-  HttpEnv **ptr = (HttpEnv **)lua_newuserdata(L, sizeof(HttpEnv*));
-  *ptr= new HttpEnv(data, size);
+  auto ptr = static_cast<HttpEnv **>(lua_newuserdata(L, sizeof(HttpEnv*)));
+  *ptr = new HttpEnv(data, size);
   luaL_getmetatable(L, "HttpEnv.metatable");
   lua_setmetatable(L, -2);
 
@@ -75,7 +75,7 @@ std::string HttpHandle::sync(const char * data, size_t size)
         buffer.append(result, len);
       } else {
         if( lua_isuserdata( L, 3 ) ) {
-          HttpBody * body = *(HttpBody **) lua_touserdata(L, 3);
+          HttpBody * body = *static_cast<HttpBody **> (lua_touserdata(L, 3));
           buffer.append("Content-Length:");
           buffer.append(std::to_string(body->size()));
           buffer.append("\r\n\r\n");

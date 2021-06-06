@@ -15,7 +15,7 @@ namespace arken {
 char * base64::decode(const char * encoded, size_t * size)
 {
   size_t decode_len = Base64decode_len(encoded);
-  char * plain = new char[decode_len];
+  auto plain = new char[decode_len];
   *size = Base64decode(plain, encoded);
   return plain;
 }
@@ -29,7 +29,7 @@ char * base64::encode(const char * plain)
 char * base64::encode(const char * plain, int len)
 {
   int encoded_len = Base64encode_len(len);
-  char * encoded  = new char[encoded_len];
+  auto encoded = new char[encoded_len];
   Base64encode(encoded, plain, len);
   return encoded;
 }

@@ -22,7 +22,7 @@ char * md5::hash(const char * hash)
 char * md5::hash(const char * hash, int length)
 {
   unsigned char x[16];
-  char * out = new char[33];
+  auto out = new char[33];
   int i;
   md5_buffer (hash, length, x);
   for (i = 0; i < 16; i++)

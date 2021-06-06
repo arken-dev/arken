@@ -64,7 +64,7 @@ void service::run()
     }
   }
 
-  service **ptr = (service **)lua_newuserdata(L, sizeof(service*));
+  auto ptr = static_cast<service **>(lua_newuserdata(L, sizeof(service*)));
   *ptr = this;
   luaL_getmetatable(L, "arken.concurrent.service.metatable");
   lua_setmetatable(L, -2);

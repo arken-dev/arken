@@ -16,7 +16,7 @@ char * os::uuid()
   // uuid_generate_time(uuid);
 
   // unparse (to string)
-  char * result = new char[37];// ex. "1b4e28ba-2fa1-11d2-883f-0016d3cca427" + "\0"
+  auto result = new char[37];// ex. "1b4e28ba-2fa1-11d2-883f-0016d3cca427" + "\0"
   uuid_unparse_lower(uuid, result);
   return result;
 }

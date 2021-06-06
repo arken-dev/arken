@@ -52,7 +52,7 @@ void channel::run()
   }
 
   //lua_pushlstring(L,  m_uuid, 37); //push channel
-  channel **ptr = (channel **)lua_newuserdata(L, sizeof(channel*));
+  auto ptr = static_cast<channel **>(lua_newuserdata(L, sizeof(channel*)));
   *ptr = new channel(*this);
   luaL_getmetatable(L, "arken.concurrent.channel.metatable");
   lua_setmetatable(L, -2);
@@ -148,7 +148,7 @@ channel * channel::client()
 
 channel * channel::start(const char * fileName, const char * params, bool purge)
 {
-  channel * c = new channel(fileName, params, purge);
+  auto c = new channel(fileName, params, purge);
   mvm::concurrent(c);
 
   return c->client();

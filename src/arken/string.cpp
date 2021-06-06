@@ -22,7 +22,7 @@ char * string::append(const char * string, const char * ba)
   int string_len = strlen(string);
   int ba_len     = strlen(ba);
   int result_len = string_len + ba_len;
-  char * result  = new char[result_len + 1];
+  auto result    = new char[result_len + 1];
   int i, j = 0;
   for(i = 0; i < string_len; i++){
     result[j] = string[i];
@@ -92,7 +92,7 @@ char * string::camelCase(const char * string, bool lcfirst)
 char * string::capitalize(const char * string)
 {
   int len = strlen(string);
-  char * result  = new char[len + 1];
+  auto result = new char[len + 1];
 
   strncpy(result, string, len);
   result[0] = toupper(string[0]);
@@ -244,7 +244,7 @@ char * string::dasherize(const char *string)
 {
   int len = strlen(string);
   int i, j = 0, flag1 = 1, flag2 = 1;
-  char * result = new char[arken_string_dasherize_len(string, len)+1];
+  auto result = new char[arken_string_dasherize_len(string, len)+1];
 
   for(i = 0; i < len; i++) {
     if(isupper(string[i])) {
@@ -490,7 +490,7 @@ char * string::insert(const char * string, int len, const char * ba)
   int string_len = strlen(string);
   int ba_len     = strlen(ba);
   int size       = string_len + ba_len;
-  char * result  = new char[size + 1];
+  auto result    = new char[size + 1];
   int p, i, j;
 
   for(p=0, i=0; i < len; p++, i++){
@@ -555,7 +555,7 @@ char * string::left(const char * string, int len)
     len = string_len;
   }
 
-  char * result  = new char[len+1];
+  auto result = new char[len+1];
   for(i=0; i < len; i++) {
     result[i] = string[i];
   }
@@ -720,7 +720,7 @@ char * string::repeated(const char *string, int times)
 {
   int len = strlen(string);
   int result_len = (len*times);
-  char * result = new char[result_len + 1];
+  auto result = new char[result_len + 1];
   int i = 0, j = 0;
   while( i < result_len ) {
     for(j=0; j < len; j++) {
@@ -737,7 +737,7 @@ char * string::replace(const char *string, const char before, const char after, 
 {
   int i, j;
   int string_len = strlen(string);
-  char * result  = new char[string_len + 1];
+  auto result = new char[string_len + 1];
 
   if ( start < 0 ) {
     start = string_len + start;
@@ -860,7 +860,7 @@ char * string::replace(const char * original, const char * pattern, const char *
   {
     // allocate memory for the new string
     size_t const retlen = orilen + patcnt * (replen - patlen);
-    char * const returned = new char[retlen + 1];
+    auto const returned = new char[retlen + 1];
 
     if (returned != nullptr)
     {
@@ -922,7 +922,7 @@ List string::split(const char * raw, size_t len, const char * pattern)
       other = raw + flag;
       size = i - flag;
       if( size > 0 ) {
-        char * tmp = new char[size + 1];
+        auto tmp = new char[size + 1];
         memcpy( tmp, other, size );
         tmp[size] = '\0';
         list.append(tmp, size);
@@ -1212,7 +1212,7 @@ char * string::underscore(const char *string)
 {
   int len = strlen(string);
   int i, j = 0, flag1 = 1, flag2 = 1;
-  char * result = new char[arken_string_underscore_len(string,len) + 1];
+  auto result = new char[arken_string_underscore_len(string,len) + 1];
   for(i = 0; i < len; i++) {
     if(isupper(string[i])) {
       if(flag1 == 0) {
@@ -1374,7 +1374,7 @@ string & string::prepend(const char * data)
 {
   size_t len = strlen(data);
   m_capacity = m_size + len + m_reserve;
-  char * tmp = new char[m_capacity+1];
+  auto tmp = new char[m_capacity+1];
 
   for(size_t i=0; i < len; i++) {
     tmp[i] = data[i];
@@ -1726,7 +1726,7 @@ void string::List::init()
     m_resource *= 2;
   }
 
-  string **array = new string*[m_resource];
+  auto **array = new string*[m_resource];
 
   if( m_size > 0 ) {
     for(int i = 0; i < m_size; i++) {

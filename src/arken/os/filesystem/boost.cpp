@@ -10,7 +10,7 @@ char * os::abspath(const char * p)
 {
   path path = boost::filesystem::absolute(p);
   size_t size = path.string().size();
-  char * result =  new char[size + 1];
+  auto result = new char[size + 1];
   strncpy(result, path.string().c_str(), size);
   result[size] = '\0';
   return result;
@@ -20,7 +20,7 @@ char * os::basename(const char * p)
 {
   path path = boost::filesystem::absolute(p).parent_path();
   size_t size = path.string().size();
-  char * result =  new char[size + 1];
+  auto result =  new char[size + 1];
   strncpy(result, path.string().c_str(), size);
   result[size] = '\0';
   return result;
@@ -66,7 +66,7 @@ char * os::dirpath(const char * p)
 {
   path path = boost::filesystem::absolute(p).parent_path();
   size_t size = path.string().size();
-  char * result =  new char[size + 1];
+  auto result = new char[size + 1];
   strncpy(result, path.string().c_str(), size);
   result[size] = '\0';
   return result;
@@ -85,7 +85,7 @@ char * os::home()
   } else {
     path path = boost::filesystem::absolute(p);
     size_t size = path.string().size();
-    char * result =  new char[size + 1];
+    auto result = new char[size + 1];
     strncpy(result, path.string().c_str(), size);
     result[size] = '\0';
     return result;
@@ -96,7 +96,7 @@ char * os::hostname()
 {
   std::string hostname = boost::asio::ip::host_name();
   size_t size = hostname.size();
-  char * result = new char[size + 1];
+  auto result = new char[size + 1];
   strncpy(result, hostname.c_str(), size);
   result[hostname.size()] = '\0';
   return result;
@@ -141,7 +141,7 @@ char * os::pwd()
 {
   path cwd = boost::filesystem::current_path();
   size_t size = cwd.string().size();
-  char * result =  new char[size + 1];
+  auto result = new char[size + 1];
   strncpy(result, cwd.string().c_str(), size);
   result[size] = '\0';
   return result;
@@ -167,7 +167,7 @@ char * os::target(const char * p)
 {
   path target = boost::filesystem::read_symlink(p);
   size_t size = target.string().size();
-  char * result =  new char[size + 1];
+  auto result = new char[size + 1];
   strncpy(result, target.string().c_str(), size);
   result[size] = '\0';
   return result;
@@ -177,7 +177,7 @@ char * os::temp()
 {
   path path = boost::filesystem::temp_directory_path();
   size_t size = path.string().size();
-  char * result =  new char[size + 1];
+  auto result = new char[size + 1];
   strncpy(result, path.string().c_str(), size);
   result[size] = '\0';
   return result;
@@ -186,9 +186,9 @@ char * os::temp()
 
 char * os::root()
 {
-  path root     = boost::filesystem::current_path().root_directory();
-  size_t size   = root.string().size();
-  char * result =  new char[size + 1];
+  path root   = boost::filesystem::current_path().root_directory();
+  size_t size = root.string().size();
+  auto result = new char[size + 1];
   strncpy(result, root.string().c_str(), size);
   result[size] = '\0';
   return result;

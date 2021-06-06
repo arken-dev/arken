@@ -16,7 +16,7 @@ char * os::abspath(const char * path)
 {
   QFileInfo info(path);
   QByteArray abspath = info.absoluteFilePath().toLocal8Bit();
-  char * result = new char[abspath.size() + 1];
+  auto result = new char[abspath.size() + 1];
   strncpy(result, abspath, abspath.size());
   result[abspath.size()] = '\0';
   return result;
@@ -26,7 +26,7 @@ char * os::basename(const char * path)
 {
   QFileInfo info(path);
   QByteArray basename = info.fileName().toLocal8Bit();
-  char * result = new char[basename.size() + 1];
+  auto result = new char[basename.size() + 1];
   strncpy(result, basename, basename.size());
   result[basename.size()] = '\0';
   return result;
@@ -88,7 +88,7 @@ char * os::dirpath(const char * path)
 {
   QFileInfo info(path);
   QByteArray dirpath = info.absoluteFilePath().toLocal8Bit();
-  char * result = new char[dirpath.size() + 1];
+  auto result = new char[dirpath.size() + 1];
   strncpy(result, dirpath, dirpath.size());
   result[dirpath.size()] = '\0';
   return result;
@@ -102,7 +102,7 @@ bool os::exists(const char * path)
 char * os::home()
 {
   QByteArray homePath = QDir::homePath().toLocal8Bit();
-  char * result = new char[homePath.size()+1];
+  auto result = new char[homePath.size()+1];
   strncpy(result, homePath, homePath.size());
   result[homePath.size()] = '\0';
   return result;
@@ -111,7 +111,7 @@ char * os::home()
 char * os::hostname()
 {
   QByteArray hostname = QHostInfo::localHostName().toLocal8Bit();
-  char * result = new char[hostname.size() + 1];
+  auto result = new char[hostname.size() + 1];
   strncpy(result, hostname, hostname.size());
   result[hostname.size()] = '\0';
   return result;
@@ -158,7 +158,7 @@ bool os::mkpath(const char * dirpath)
 char * os::pwd()
 {
   QByteArray pwd = QDir::currentPath().toLocal8Bit();
-  char * result = new char[pwd.size() + 1];
+  auto result = new char[pwd.size() + 1];
   strncpy(result, pwd, pwd.size());
   result[pwd.size()] = '\0';
   return result;
@@ -179,7 +179,7 @@ bool os::rmpath(const char * dirpath)
 char * os::target(const char * path)
 {
   QByteArray target = QFile::symLinkTarget(path).toLocal8Bit();
-  char * result  = new char[target.size() + 1];
+  auto result = new char[target.size() + 1];
   strncpy(result, target, target.size());
   result[target.size()] = '\0';
   return result;
@@ -188,7 +188,7 @@ char * os::target(const char * path)
 char * os::temp()
 {
   QByteArray temp = QDir::tempPath().toLocal8Bit();
-  char * result = new char[temp.size() + 1];
+  auto result = new char[temp.size() + 1];
   strncpy(result, temp, temp.size());
   result[temp.size()] = '\0';
   return result;
@@ -197,7 +197,7 @@ char * os::temp()
 char * os::root()
 {
   QByteArray root = QDir::rootPath().toLocal8Bit();
-  char * result = new char[root.size() + 1];
+  auto result = new char[root.size() + 1];
   strncpy(result, root, root.size());
   result[root.size()] = '\0';
   return result;

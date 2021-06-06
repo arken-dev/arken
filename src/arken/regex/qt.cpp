@@ -33,7 +33,7 @@ int regex::index(const char * string, const char * regex, int offset)
 List * regex::split(const char * string, const char * regex)
 {
   QRegExp qregex(regex);
-  List *list = new List();
+  auto list = new List();
   QString qstr(string);
   int older = 0;
   int poss  = 0;
@@ -58,7 +58,7 @@ char * regex::replace(const char * string, const char * regex, const char * afte
 {
   QString str(string);
   QString aft = str.replace(QRegExp(regex), after);
-  char * result = new char[aft.size() + 1];
+  auto result = new char[aft.size() + 1];
   strncpy(result, aft.toLocal8Bit().data(), aft.size());
   result[aft.size()] = '\0';
   return result;
@@ -67,7 +67,7 @@ char * regex::replace(const char * string, const char * regex, const char * afte
 List * regex::scan(const char * string, const char * regex)
 {
   QRegExp qregex(regex);
-  List *list = new List();
+  auto list = new List();
   QString qstr(string);
   int older = 0;
   int poss  = 0;

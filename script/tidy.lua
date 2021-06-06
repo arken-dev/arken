@@ -133,13 +133,13 @@ local options = {
 -- clang-analyzer-valist.Unterminated
 -- cppcoreguidelines-c-copy-assignment-signature
 -- cppcoreguidelines-interfaces-global-init
--- cppcoreguidelines-no-malloc
+  'cppcoreguidelines-no-malloc',
 -- cppcoreguidelines-owning-memory
 -- cppcoreguidelines-pro-bounds-array-to-pointer-decay
 -- cppcoreguidelines-pro-bounds-constant-array-index
 -- cppcoreguidelines-pro-bounds-pointer-arithmetic
--- cppcoreguidelines-pro-type-const-cast
--- cppcoreguidelines-pro-type-cstyle-cast
+  'cppcoreguidelines-pro-type-const-cast',
+  'cppcoreguidelines-pro-type-cstyle-cast',
 -- cppcoreguidelines-pro-type-member-init
 -- cppcoreguidelines-pro-type-reinterpret-cast
 -- cppcoreguidelines-pro-type-static-cast-downcast
@@ -241,7 +241,7 @@ local options = {
 -- modernize-return-braced-init-list
 -- modernize-shrink-to-fit
 -- modernize-unary-static-assert
--- modernize-use-auto
+  'modernize-use-auto',
 -- modernize-use-bool-literals
 -- modernize-use-default-member-init
 -- modernize-use-emplace
