@@ -61,6 +61,7 @@ add_library(
   ${image}
   ${mvm-container}
   ${net}
+  ${httpserver}
   ${arken-notify}
   ${os} ${os-executablePath} ${os-filesystem} ${os-name} ${os-pid} ${os-uuid}
   ${concurrent}
@@ -120,4 +121,9 @@ endif()
 if(ARKEN_OS_FILESYSTEM STREQUAL "boost")
   message(STATUS "link libarken with ${Boost_LIBRARIES}")
   target_link_libraries(arken pthread m ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
+endif()
+
+if(ARKEN_NET_HTTPSERVER STREQUAL "linux/model-1")
+  add_subdirectory(${PROJECT_SOURCE_DIR}/src/arken/net/httpserver/linux/model-1/base)
+  target_link_libraries(arken libserver_base)
 endif()
