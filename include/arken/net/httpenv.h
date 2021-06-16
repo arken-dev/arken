@@ -7,6 +7,7 @@
 #define _ARKEN_NET_HTTP_ENV_
 
 #include <map>
+#include <arken/string.h>
 
 namespace arken {
 namespace net {
@@ -14,43 +15,43 @@ namespace net {
 class HttpEnv
 {
 
-  std::map<std::string, std::string> m_fields;
+  using string = arken::string;
+  std::map<string, string> m_fields;
 
   const
   char * m_data;
-  char * m_fragment;
-  char * m_requestPath;
-  char * m_queryString;
-  char * m_requestMethod;
-  char * m_requestUri;
-  char * m_httpVersion;
-  char * m_headerDone;
-  size_t m_headerDoneLength;
   size_t m_len;
+  string m_fragment;
+  string m_requestPath;
+  string m_queryString;
+  string m_requestMethod;
+  string m_requestUri;
+  string m_httpVersion;
+  string m_headerDone;
 
   public:
   HttpEnv(const char * data, size_t len);
   ~HttpEnv();
 
-  void  setField(const char * fragment, const char * value);
-  void  setFragment(char * fragment);
-  void  setQueryString(char * queryString);
-  void  setRequestPath(char * requestPath);
-  void  setRequestMethod(char * requestMethod);
-  void  setRequestUri(char * requestUri);
-  void  setHttpVersion(char * httpVersion);
-  void  setHeaderDone(char * headerDone, size_t length);
+  void  setField(string fragment, string value);
+  void  setFragment(const char *at, size_t len);
+  void  setQueryString(const char *at, size_t len);
+  void  setRequestPath(const char *at, size_t len);
+  void  setRequestMethod(const char *at, size_t len);
+  void  setRequestUri(const char *at, size_t len);
+  void  setHttpVersion(const char *at, size_t len);
+  void  setHeaderDone(const char * at, size_t len);
 
-  const char * fragment();
-  const char * queryString();
-  const char * requestPath();
-  const char * requestMethod();
-  const char * requestUri();
-  const char * httpVersion();
-  const char * headerDone();
-  const char * field(const char *);
+  string fragment();
+  string queryString();
+  string requestPath();
+  string requestMethod();
+  string requestUri();
+  string httpVersion();
+  string headerDone();
+  string field(const char *);
   const char * data();
-  size_t headerDoneLength();
+  size_t len();
 
 };
 

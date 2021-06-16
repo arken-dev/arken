@@ -1306,10 +1306,7 @@ string::string( string && str )
   m_reserve   = m_size;
   m_capacity  = m_size;
 
-  str.m_reserve  = 0;
-  str.m_size     = 0;
-  str.m_capacity = 0;
-  str.m_data     = new char[1]();
+  str.m_data  = nullptr;
 }
 
 string::string(char * && data)
@@ -1659,6 +1656,21 @@ bool string::empty()
 //-----------------------------------------------------------------------------
 // OPERATORS
 //-----------------------------------------------------------------------------
+
+string & string::operator=(string && str)
+{
+  if( m_data )
+    delete[] m_data;
+
+  m_data      = str.m_data;
+  m_size      = str.m_size;
+  m_reserve   = m_size;
+  m_capacity  = m_size;
+
+  str.m_data  = nullptr;
+  return *this;
+}
+
 
 string & string::operator=(const string &a)
 {

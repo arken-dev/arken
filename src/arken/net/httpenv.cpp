@@ -16,122 +16,57 @@ namespace net {
 static void
 http_field_cb(void *data, const char *field, size_t flen, const char *value, size_t vlen)
 {
-  size_t i;
-
-  auto m_field = new char[flen+1];
-  for(i = 0; i < flen; i++) {
-    m_field[i] = field[i];
-  }
-  m_field[i] = '\0';
-
-  auto m_value = new char[vlen+1];
-  for(i = 0; i < vlen; i++) {
-    m_value[i] = value[i];
-  }
-  m_value[i] = '\0';
-
   auto p = static_cast<HttpEnv *> (data);
-  p->setField(m_field, m_value);
-  delete[] m_field;
-  delete[] m_value;
+  p->setField(string(field, flen), string(value, vlen));
 }
 
 static void
-on_fragment_cb(void * data, const char * at, size_t length)
+on_fragment_cb(void * data, const char * at, size_t len)
 {
-  size_t i;
-  auto tmp = new char[length+1];
-  for(i = 0; i < length; i++) {
-    tmp[i] = at[i];
-  }
-  tmp[i] = '\0';
-
   auto p = static_cast<HttpEnv *> (data);
-  p->setFragment(tmp);
+  p->setFragment(at, len);
 }
 
 static void
-on_header_done_cb(void *data, const char *at, size_t length)
+on_header_done_cb(void *data, const char *at, size_t len)
 {
-  size_t i;
-  auto tmp = new char[length+1];
-  for(i = 0; i < length; i++) {
-    tmp[i] = at[i];
-  }
-  tmp[i] = '\0';
-
   auto p = static_cast<HttpEnv *> (data);
-  p->setHeaderDone(tmp, length);
+  p->setHeaderDone(at, len);
 }
 
 static void
-on_http_version_cb(void *data, const char *at, size_t length)
+on_http_version_cb(void *data, const char *at, size_t len)
 {
-  size_t i;
-  auto tmp = new char[length+1];
-  for(i = 0; i < length; i++) {
-    tmp[i] = at[i];
-  }
-  tmp[i] = '\0';
-
   auto p = static_cast<HttpEnv *> (data);
-  p->setHttpVersion(tmp);
+  p->setHttpVersion(at, len);
 }
 
 static void
-on_request_uri_cb(void *data, const char *at, size_t length)
+on_request_uri_cb(void *data, const char *at, size_t len)
 {
-  size_t i;
-  auto tmp = new char[length+1];
-  for(i = 0; i < length; i++) {
-    tmp[i] = at[i];
-  }
-  tmp[i] = '\0';
-
   auto p = static_cast<HttpEnv *> (data);
-  p->setRequestUri(tmp);
+  p->setRequestUri(at, len);
 }
 
 static void
-on_request_method_cb(void *data, const char *at, size_t length)
+on_request_method_cb(void *data, const char *at, size_t len)
 {
-  size_t i;
-  auto tmp = new char[length+1];
-  for(i = 0; i < length; i++) {
-    tmp[i] = at[i];
-  }
-  tmp[i] = '\0';
-
   auto p = static_cast<HttpEnv *> (data);
-  p->setRequestMethod(tmp);
+  p->setRequestMethod(at, len);
 }
 
 static void
-on_request_path_cb(void *data, const char *at, size_t length)
+on_request_path_cb(void *data, const char *value, size_t len)
 {
-  size_t i;
-  auto tmp = new char[length+1];
-  for(i =0; i < length; ++i) {
-    tmp[i] = at[i];
-  }
-  tmp[i] = '\0';
-
   auto p = static_cast<HttpEnv *> (data);
-  p->setRequestPath(tmp);
+  p->setRequestPath(value, len);
 }
 
 static void
-on_query_string_cb(void *data, const char *at, size_t length)
+on_query_string_cb(void *data, const char *value, size_t len)
 {
-  size_t i;
-  auto tmp = new char[length+1];
-  for(i =0; i < length; ++i) {
-    tmp[i] = at[i];
-  }
-  tmp[i] = '\0';
-
   auto p = static_cast<HttpEnv *> (data);
-  p->setQueryString(tmp);
+  p->setQueryString(value, len);
 }
 
 HttpEnv::HttpEnv(const char * data, size_t len)
@@ -154,129 +89,101 @@ HttpEnv::HttpEnv(const char * data, size_t len)
 
   parser->data = this;
 
-  m_fragment      = nullptr;
-  m_requestPath   = nullptr;
-  m_queryString   = nullptr;
-  m_requestMethod = nullptr;
-  m_requestUri    = nullptr;
-  m_httpVersion   = nullptr;
-  m_headerDone    = nullptr;
-  m_headerDoneLength = 0u;
-
   http_parser_execute(parser.get(), data, len, 0);
 }
 
 HttpEnv::~HttpEnv()
 {
-  if(m_fragment)
-    delete m_fragment;
-  if(m_requestPath)
-    delete m_requestPath;
-  if(m_queryString)
-    delete m_queryString;
-  if(m_requestMethod)
-    delete m_requestMethod;
-  if(m_requestUri)
-    delete m_requestUri;
-  if(m_httpVersion)
-    delete m_httpVersion;
-  if(m_headerDone)
-    delete m_headerDone;
 }
 
-void HttpEnv::setField(const char * field, const char * value)
+void HttpEnv::setField(string field, string value)
 {
-  std::string fl(field);
-  std::string vl(value);
-  m_fields[fl] = vl;
+  m_fields[field] = value;
 }
 
-void HttpEnv::setFragment(char * fragment)
+void HttpEnv::setFragment(const char * at, size_t len)
 {
-  m_fragment = fragment;
+  m_fragment = string(at, len);
 }
 
-void HttpEnv::setHeaderDone(char * headerDone, size_t length)
+void HttpEnv::setHeaderDone(const char * at, size_t len)
 {
-  m_headerDoneLength = length;
-  m_headerDone = headerDone;
+  m_headerDone = string(at, len);
 }
 
-void HttpEnv::setQueryString(char * queryString)
+void HttpEnv::setQueryString(const char * at, size_t len)
 {
-  m_queryString = queryString;
+  m_queryString = string(at, len);
 }
 
-void HttpEnv::setRequestPath(char * requestPath)
+void HttpEnv::setRequestPath(const char * at, size_t len)
 {
-  m_requestPath = requestPath;
+  m_requestPath = string(at, len);
 }
 
-void HttpEnv::setRequestMethod(char * requestMethod)
+void HttpEnv::setRequestMethod(const char * at, size_t len)
 {
-  m_requestMethod = requestMethod;
+  m_requestMethod = string(at, len);
 }
 
-void HttpEnv::setRequestUri(char * requestUri)
+void HttpEnv::setRequestUri(const char * at, size_t len)
 {
-  m_requestUri = requestUri;
+  m_requestUri = string(at, len);
 }
 
-void HttpEnv::setHttpVersion(char * httpVersion)
+void HttpEnv::setHttpVersion(const char * at, size_t len)
 {
-  m_httpVersion = httpVersion;
+  m_httpVersion = string(at, len);
 }
 
-const char * HttpEnv::queryString()
+string HttpEnv::queryString()
 {
   return m_queryString;
 }
 
-const char * HttpEnv::requestPath()
+string HttpEnv::requestPath()
 {
   return m_requestPath;
 }
 
-const char * HttpEnv::requestMethod()
+string HttpEnv::requestMethod()
 {
   return m_requestMethod;
 }
 
-const char * HttpEnv::requestUri()
+string HttpEnv::requestUri()
 {
   return m_requestUri;
 }
 
-const char * HttpEnv::httpVersion()
+string HttpEnv::httpVersion()
 {
   return m_httpVersion;
 }
 
-const char * HttpEnv::headerDone()
+string HttpEnv::headerDone()
 {
   return m_headerDone;
 }
 
-size_t HttpEnv::headerDoneLength()
-{
-  return m_headerDoneLength;
-}
-
-
-const char * HttpEnv::fragment()
+string HttpEnv::fragment()
 {
   return m_fragment;
 }
 
-const char * HttpEnv::field(const char * field)
+string HttpEnv::field(const char * key)
 {
-  std::string str(field);
-  return m_fields[str].c_str();
+  return m_fields[key];
 }
 
 const char * HttpEnv::data()
 {
   return m_data;
+}
+
+size_t HttpEnv::len()
+{
+  return m_len;
 }
 
 } // namespace net
