@@ -7,7 +7,8 @@
 #include <arken/base>
 #include <arken/concurrent/naiad.h>
 
-using naiad = arken::concurrent::naiad;
+using naiad  = arken::concurrent::naiad;
+using Shared = arken::concurrent::Shared;
 
 char * json_lock_encode(lua_State *L);
 void   json_lock_decode(lua_State *L, const char * data);
@@ -118,6 +119,25 @@ arken_concurrent_channel_node_instance_method_microtime( lua_State *L ) {
 }
 
 static int
+arken_concurrent_channel_node_instance_method_shared( lua_State *L ) {
+  naiad::node * node = checkNode( L );
+  int rv;
+  lua_getglobal(L, "require");
+  lua_pushstring(L, "arken.concurrent.Shared");
+  rv = lua_pcall(L, 1, 0, 0);
+  if (rv) {
+    fprintf(stderr, "%s\n", lua_tostring(L, -1));
+  }
+
+  Shared **ptr = (Shared **)lua_newuserdata(L, sizeof(Shared*));
+  *ptr = new Shared(node->shared());
+  luaL_getmetatable(L, "arken.concurrent.Shared.metatable");
+  lua_setmetatable(L, -2);
+
+  return 1;
+}
+
+static int
 arken_concurrent_channel_node_instance_method_destruct( lua_State *L ) {
   naiad::node * node = checkNode( L );
   delete node;
@@ -129,6 +149,7 @@ luaL_reg NaiadNodeInstanceMethods[] = {
   {"uuid",      arken_concurrent_channel_node_instance_method_uuid},
   {"priority",  arken_concurrent_channel_node_instance_method_priority},
   {"microtime", arken_concurrent_channel_node_instance_method_microtime},
+  {"shared",    arken_concurrent_channel_node_instance_method_shared},
   {"__gc",      arken_concurrent_channel_node_instance_method_destruct},
   {NULL, NULL}
 };

@@ -210,6 +210,11 @@ string triton::result(string key)
   }
 }
 
+Shared triton::shared()
+{
+  return m_shared;
+}
+
 string triton::node::dequeue()
 {
   std::unique_lock<std::mutex> lck(m_triton->m_mutex);
@@ -224,10 +229,10 @@ string triton::node::dequeue()
 
 triton::node::node(triton * ptr, string fileName, int number)
 {
-
   m_triton   = ptr;
   m_fileName = fileName;
   m_number   = number;
+  m_shared   = m_triton->m_shared;
 }
 
 void triton::node::run()
@@ -386,6 +391,11 @@ string triton::node::result(string key)
 string triton::node::uuid()
 {
   return m_triton->m_uuid;
+}
+
+Shared triton::node::shared()
+{
+  return m_shared;
 }
 
 } // namespace concurrent

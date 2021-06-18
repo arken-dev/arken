@@ -49,6 +49,7 @@ end
 
 function M.run(triton, fileName)
   local tests     = {}
+  local shared    = triton:shared()
   local dirName   = fileName:replace(".lua", ""):replace("/app", "/tests")
   local modelName = dirName:replace("./tests/models/", ""):replace("/", ".")
 
@@ -68,18 +69,27 @@ function M.run(triton, fileName)
   coverage.stop()
 
   for fileName, result in pairs(results) do
+    local count  = 0
+    local status = {}
     for description, result in pairs(result) do
-      triton:count('tests')
+      count = count + 1
       if result.status ~= 'ok' then
         local buffer = description .. '\n'
         if result.msg and tostring(result.msg):len() > 0  then
           buffer = buffer .. tostring(result.msg) .. '\n'
         end
-        triton:append('message', fileName .. '\n' .. buffer)
+        shared:append('message', fileName .. '\n' .. buffer)
       end
 
-      triton:count(result.status)
+      status[result.status] = status[result.status] or 0
+      status[result.status] = status[result.status] + 1
     end
+
+    shared:increment('tests', count)
+    for status, total in pairs(status) do
+      shared:increment(status, total)
+    end
+
   end
 
   local dir     = 'coverage'
@@ -112,9 +122,10 @@ end
 
 function M.stop(triton)
   --os.exit()
+  local shared = triton:shared()
   local dir    = 'coverage'
   local tpl    = mvm.path() .. "/lib/arken/coverage/templates/index.html"
-  local data   = {files = files, time = (os.microtime() - start), total = triton:total('tests') }
+  local data   = {files = files, time = (os.microtime() - start), total = shared:getNumber('tests') }
   local buffer = template.execute(tpl, data)
 
   local file   = io.open((dir .. "/" .. 'index.html'), "w")
@@ -122,8 +133,8 @@ function M.stop(triton)
   file:close()
 
   local result = "%i tests, %i pendings, %i failures, %.4f%% coverage"
-  print('\n' .. triton:result('message'))
-  print(string.format(result, triton:total('tests'), triton:total('failure'), triton:total('pending'), data.coverage))
+  print('\n' .. shared:getString('message'))
+  print(string.format(result, shared:getNumber('tests'), shared:getNumber('failure'), shared:getNumber('pending'), data.coverage))
   print(string.format("Finished in %.2f seconds", os.microtime() - start))
 end
 

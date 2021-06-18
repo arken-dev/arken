@@ -70,6 +70,7 @@ naiad::node::node(const node &obj)
   m_params    = obj.m_params;
   m_priority  = obj.m_priority;
   m_microtime = obj.m_microtime;
+  m_shared    = obj.m_shared;
 }
 
 naiad::node::node(const char * fileName, const char * params, int priority, bool purge)
@@ -80,6 +81,7 @@ naiad::node::node(const char * fileName, const char * params, int priority, bool
   m_purge     = purge;
   m_uuid      = os::uuid();
   m_microtime = os::microtime();
+
 }
 
 bool naiad::node::operator()(const naiad::node &n1, const naiad::node &n2)
@@ -182,6 +184,11 @@ double naiad::node::microtime()
 
 naiad::node::operator bool() const {
   return m_microtime > 0;
+}
+
+Shared naiad::node::shared()
+{
+  return m_shared;
 }
 
 }  // namespace concurrent

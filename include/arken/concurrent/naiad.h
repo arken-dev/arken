@@ -6,17 +6,21 @@
 #ifndef _ARKEN_CONCURRENT_NAIAD_
 #define _ARKEN_CONCURRENT_NAIAD_
 
-#include <arken/base>
-#include <arken/mvm>
 #include <queue>
-#include <vector>
 #include <mutex>
 #include <atomic>
+#include <vector>
+#include <arken/mvm>
+#include <arken/string.h>
+#include <arken/concurrent/shared.h>
 
 namespace arken {
 namespace concurrent {
 
   class naiad : public Base {
+
+    using string = arken::string;
+    using Shared = arken::concurrent::Shared;
 
     naiad();
     ~naiad();
@@ -27,6 +31,7 @@ namespace concurrent {
     static void wait();
 
     class node {
+
       friend class naiad;
 
       string m_uuid;
@@ -35,6 +40,7 @@ namespace concurrent {
       int    m_priority{0};
       double m_microtime{0};
       bool   m_purge{false};
+      Shared m_shared;
 
       node(const char * fileName, const char * params, int priority = 0, bool purge = false);
 
@@ -47,6 +53,7 @@ namespace concurrent {
       string uuid();
       int    priority();
       double microtime();
+      Shared shared();
     };
 
     static naiad::node start(const char * fileName, const char * params, int priority = 0, bool purge = false);

@@ -8,6 +8,7 @@
 
 #include <arken/base>
 #include <arken/mvm>
+#include <arken/concurrent/shared.h>
 #include <mutex>
 #include <queue>
 #include <unordered_map>
@@ -17,6 +18,8 @@ namespace arken {
 namespace concurrent {
 
   class triton : public Base {
+
+    using Shared = arken::concurrent::Shared;
 
     private:
 
@@ -32,6 +35,8 @@ namespace concurrent {
     std::unordered_map<string, int> m_total;
     std::queue<string> m_queue;
     std::mutex m_mutex;
+
+    Shared m_shared;
 
     void run();
     bool release();
@@ -51,13 +56,16 @@ namespace concurrent {
     int  total(string);
     string result(string key);
     string uuid();
+    Shared shared();
 
     public:
     class node : public Base {
       friend class triton;
+
       string   m_fileName;
       triton * m_triton;
       unsigned int m_number = 0;
+      Shared m_shared;
 
       bool release();
       string dequeue();
@@ -71,7 +79,7 @@ namespace concurrent {
       void append(string key, string result);
       string result(string key);
       string uuid();
-
+      Shared shared();
 
     };
 

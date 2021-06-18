@@ -8,6 +8,7 @@
 #include <arken/concurrent/triton.h>
 
 using triton = arken::concurrent::triton;
+using Shared = arken::concurrent::Shared;
 
 char * json_lock_encode(lua_State *L);
 void   json_lock_decode(lua_State *L, const char * data);
@@ -120,6 +121,26 @@ arken_concurrent_triton_instance_method_uuid( lua_State *L ) {
   return 1;
 }
 
+static int
+arken_concurrent_triton_instance_method_shared( lua_State *L ) {
+  triton * pointer = checkTriton( L );
+  int rv;
+  lua_getglobal(L, "require");
+  lua_pushstring(L, "arken.concurrent.Shared");
+  rv = lua_pcall(L, 1, 0, 0);
+  if (rv) {
+    fprintf(stderr, "%s\n", lua_tostring(L, -1));
+  }
+
+  Shared **ptr = (Shared **)lua_newuserdata(L, sizeof(Shared*));
+  *ptr = new Shared(pointer->shared());
+  luaL_getmetatable(L, "arken.concurrent.Shared.metatable");
+  lua_setmetatable(L, -2);
+
+  return 1;
+}
+
+
 //-----------------------------------------------------------------------------
 // TRITON INSTANCE METHODS
 //-----------------------------------------------------------------------------
@@ -132,6 +153,7 @@ luaL_reg ChannelInstanceMethods[] = {
   {"append",  arken_concurrent_triton_instance_method_append},
   {"result",  arken_concurrent_triton_instance_method_result},
   {"uuid",    arken_concurrent_triton_instance_method_uuid},
+  {"shared",  arken_concurrent_triton_instance_method_shared},
   {NULL, NULL}
 };
 
@@ -197,6 +219,26 @@ arken_concurrent_triton_node_instance_method_uuid( lua_State *L ) {
   return 1;
 }
 
+static int
+arken_concurrent_triton_node_instance_method_shared( lua_State *L ) {
+  triton::node * node = checkTritonNode( L );
+  int rv;
+  lua_getglobal(L, "require");
+  lua_pushstring(L, "arken.concurrent.Shared");
+  rv = lua_pcall(L, 1, 0, 0);
+  if (rv) {
+    fprintf(stderr, "%s\n", lua_tostring(L, -1));
+  }
+
+  Shared **ptr = (Shared **)lua_newuserdata(L, sizeof(Shared*));
+  *ptr = new Shared(node->shared());
+  luaL_getmetatable(L, "arken.concurrent.Shared.metatable");
+  lua_setmetatable(L, -2);
+
+  return 1;
+}
+
+
 
 static const
 luaL_reg TritonNodeInstanceMethods[] = {
@@ -206,6 +248,7 @@ luaL_reg TritonNodeInstanceMethods[] = {
   {"result",  arken_concurrent_triton_node_instance_method_result},
   {"number",  arken_concurrent_triton_node_instance_method_number},
   {"uuid",    arken_concurrent_triton_node_instance_method_uuid},
+  {"shared",  arken_concurrent_triton_node_instance_method_shared},
   {NULL, NULL}
 };
 
