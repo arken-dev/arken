@@ -44,6 +44,7 @@ file(GLOB image    ${CMAKE_CURRENT_SOURCE_DIR}/image/*.cpp)
 file(GLOB os       ${CMAKE_CURRENT_SOURCE_DIR}/os/*.c)
 file(GLOB net      ${CMAKE_CURRENT_SOURCE_DIR}/net/*.cpp)
 file(GLOB concurrent ${CMAKE_CURRENT_SOURCE_DIR}/concurrent/*.cpp)
+file(GLOB concurrent-task ${CMAKE_CURRENT_SOURCE_DIR}/concurrent/task/*.cpp)
 file(GLOB compress ${CMAKE_CURRENT_SOURCE_DIR}/compress/*.cpp)
 file(GLOB time     ${CMAKE_CURRENT_SOURCE_DIR}/time/*.cpp)
 
@@ -64,7 +65,7 @@ add_library(
   ${httpserver}
   ${arken-notify}
   ${os} ${os-executablePath} ${os-filesystem} ${os-name} ${os-pid} ${os-uuid}
-  ${concurrent}
+  ${concurrent} ${concurrent-task}
   ${regex}
   ${time}
   ${mongrel2}
