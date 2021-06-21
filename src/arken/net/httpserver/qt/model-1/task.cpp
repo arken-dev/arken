@@ -6,10 +6,10 @@
 #include <QTcpSocket>
 #include <lua/lua.hpp>
 #include <arken/base>
-#include <arken/net/httphandle.h>
+#include <arken/net/httpserver.h>
 #include <task.h>
 
-using arken::net::HttpHandle;
+using arken::net::HttpServer;
 
 MirandaTask::MirandaTask(qintptr descriptor)
 {
@@ -38,7 +38,7 @@ void MirandaTask::run()
   }
 
   // Process Request
-  data   = HttpHandle::sync(buffer.data(), buffer.size());
+  data   = HttpServer::handler(buffer.data(), buffer.size());
   result = data.c_str();
   size   = data.size();
 

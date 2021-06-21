@@ -13,9 +13,9 @@
 #include <boost/bind.hpp>
 #include "request_handler.hpp"
 #include <arken/base>
-#include <arken/net/httphandle.h>
+#include <arken/net/httpserver.h>
 
-using arken::net::HttpHandle;
+using arken::net::HttpServer;
 
 
 namespace http {
@@ -45,7 +45,7 @@ void connection::start()
 
 void connection::http_handle(const char * bytes, std::size_t bytes_transfered)
 {
-  std::string result = HttpHandle::sync(bytes, bytes_transfered);
+  std::string result = HttpServer::handler(bytes, bytes_transfered);
   if( result.size() < 4096 ) {
     boost::asio::async_write(socket_, boost::asio::buffer(result),
       boost::bind(&connection::handle_write, shared_from_this(),

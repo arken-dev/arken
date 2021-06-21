@@ -15,15 +15,22 @@ class HttpServer
 {
   using string = arken::string;
 
+  static
+  string dispatcher;
   string m_address;
   string m_pid;
   int    m_port;
   int    m_threads;
 
   public:
+
+  static
+  std::string handler(const char * data, size_t size);
+
   HttpServer(const char * address, int port);
   void setThreads(int threads);
   void setPid(const char * pid);
+  void setDispatcher(string dispatcher);
   void start();
 
 };

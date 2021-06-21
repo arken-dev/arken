@@ -53,7 +53,7 @@ registerHttpServerClassMethods( lua_State *L ) {
 
 static int
 arken_HttpServerInstanceMethodStart( lua_State *L ) {
-  HttpServer * udata  = checkHttpServer( L );
+  HttpServer * udata = checkHttpServer( L );
   udata->start();
   return 0;
 }
@@ -75,6 +75,14 @@ arken_HttpServerInstanceMethodSetPid( lua_State *L ) {
 }
 
 static int
+arken_HttpServerInstanceMethodSetDispatcher( lua_State *L ) {
+  HttpServer * udata  = checkHttpServer( L );
+  const char * dispatcher = luaL_checkstring(L, 2);
+  udata->setDispatcher(dispatcher);
+  return 0;
+}
+
+static int
 arken_HttpServerInstanceMethodDestruct( lua_State *L ) {
   HttpServer *udata = checkHttpServer( L );
   delete udata;
@@ -83,10 +91,11 @@ arken_HttpServerInstanceMethodDestruct( lua_State *L ) {
 
 static const
 luaL_reg HttpServerInstanceMethods[] = {
-  {"start", arken_HttpServerInstanceMethodStart},
-  {"setThreads", arken_HttpServerInstanceMethodSetThreads},
-  {"setPid", arken_HttpServerInstanceMethodSetPid},
-  {"__gc",  arken_HttpServerInstanceMethodDestruct},
+  {"start",         arken_HttpServerInstanceMethodStart},
+  {"setThreads",    arken_HttpServerInstanceMethodSetThreads},
+  {"setPid",        arken_HttpServerInstanceMethodSetPid},
+  {"setDispatcher", arken_HttpServerInstanceMethodSetDispatcher},
+  {"__gc",          arken_HttpServerInstanceMethodDestruct},
   {NULL, NULL}
 };
 

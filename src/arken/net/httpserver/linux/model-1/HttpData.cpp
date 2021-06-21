@@ -13,9 +13,9 @@
 #include <sys/stat.h>
 #include <sys/mman.h>
 #include <iostream>
-#include <arken/net/httphandle.h>
+#include <arken/net/httpserver.h>
 
-using HttpHandle = arken::net::HttpHandle;
+using HttpServer = arken::net::HttpServer;
 
 using namespace std;
 
@@ -606,7 +606,7 @@ HeaderState HttpData::parseHeaders()
 AnalysisState HttpData::analysisRequest()
 {
 
-  string result = HttpHandle::sync(inBuffer_.c_str(), inBuffer_.size());
+  std::string result = HttpServer::handler(inBuffer_.c_str(), inBuffer_.size());
   //outBuffer_ = result;
   outBuffer_.append(result);
 

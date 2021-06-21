@@ -14,10 +14,9 @@
 #include <boost/bind.hpp>
 #include "request_handler.hpp"
 #include <arken/base>
-#include <arken/net/httphandle.h>
+#include <arken/net/httpserver.h>
 
-using arken::net::HttpHandle;
-
+using arken::net::HttpServer;
 
 namespace http {
 namespace server3 {
@@ -49,7 +48,7 @@ void connection::start()
 void connection::handle_largefile(const boost::system::error_code& e)
 {
   if( (os::microtime() - microtime) > 1 ) {
-    std::string result = HttpHandle::sync(data_.c_str(), data_.size());
+    std::string result = HttpServer::handler(data_.c_str(), data_.size());
     boost::asio::async_write(socket_, boost::asio::buffer(result),
         boost::bind(&connection::handle_write, shared_from_this(),
           boost::asio::placeholders::error));
@@ -63,7 +62,7 @@ void connection::handle_read(const boost::system::error_code& e,
   if (!e)
   {
     if( microtime == 0 && bytes_transferred < 4096 ) {
-      std::string result = HttpHandle::sync(buffer_.data(), bytes_transferred);
+      std::string result = HttpServer::handler(buffer_.data(), bytes_transferred);
       boost::asio::async_write(socket_, boost::asio::buffer(result),
           boost::bind(&connection::handle_write, shared_from_this(),
             boost::asio::placeholders::error));
@@ -89,7 +88,7 @@ void connection::handle_read(const boost::system::error_code& e,
       //request_handler_.handle_request(request_, reply_);
       std::cout << buffer_.data() << std::endl;
       std::cout << "processado requisicao bytes_transferred " << bytes_transferred << std::endl;
-      std::string result = HttpHandle::sync(buffer_.data(), bytes_transferred);
+      std::string result = HttpServer::handler(buffer_.data(), bytes_transferred);
       boost::asio::async_write(socket_, boost::asio::buffer(result),
           boost::bind(&connection::handle_write, shared_from_this(),
             boost::asio::placeholders::error));
