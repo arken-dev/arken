@@ -100,7 +100,7 @@ registerNaiadClassMethods( lua_State *L ) {
 static int
 arken_concurrent_channel_node_instance_method_uuid( lua_State *L ) {
   balanced::node * node = checkNode( L );
-  lua_pushlstring(L, node->uuid(), 37);
+  lua_pushlstring(L, node->uuid(), 36);
   return 1;
 }
 
