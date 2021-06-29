@@ -46,6 +46,7 @@ class string {
   static bool   equals(const char * str1, const char * str2);
   static char * escape(const char * string);
   static char * escapeHtml(const char * string);
+  static size_t hash(const char * string, size_t size);
   static int    indexOf(const char * string, const char * str, int i = 0);
   static char * insert(const char * string, int len, const char * ba);
   static bool   endsWith(const char * string, const char * ba);
@@ -105,6 +106,7 @@ class string {
   string decode(const char * charset);
   string escape();
   string escapeHtml();
+  size_t hash() const;
   bool   empty();
   bool   equals(const char * str);
   int    indexOf(const char * str, int i = 0);
@@ -189,15 +191,7 @@ namespace std {
     template<>
     struct hash<arken::string> {
         size_t operator()(const arken::string & str) const {
-          //return std::hash< std::string >()( str.data() );
-          int seed = 131;//31  131 1313 13131131313 etc//
-          size_t hash = 0;
-          size_t size = str.m_size;
-          char * data = str.m_data;
-          for( size_t i=0; i < size; i++ ) {
-            hash = (hash * seed) + (data[i]);
-          }
-          return hash & (0x7FFFFFFF);
+          return str.hash();
         }
     };
 } // namespace std

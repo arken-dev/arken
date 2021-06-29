@@ -218,6 +218,15 @@ arken_string_escapeHtml( lua_State *L ) {
 }
 
 static int
+arken_string_hash( lua_State *L ) {
+  size_t len;
+  const char *str = luaL_checklstring(L, 1, &len);
+  size_t result = string::hash(str, len);
+  lua_pushnumber(L, result);
+  return 1;
+}
+
+static int
 arken_string_indexOf( lua_State *L ) {
   const char *string = luaL_checkstring(L, 1);
   const char *str    = luaL_checkstring(L, 2);
@@ -500,6 +509,7 @@ StringClassMethods[] = {
   {"endsWith",       arken_string_endsWith},
   {"escape",         arken_string_escape},
   {"escapeHtml",     arken_string_escapeHtml},
+  {"hash",           arken_string_hash},
   {"encode",         arken_string_encode},
   {"decode",         arken_string_decode},
   {"encode64",       arken_string_encode64},
@@ -628,6 +638,14 @@ arken_StringInstanceMethodEscapeHtml( lua_State *L ) {
   string * udata = checkString( L );
   string result  = udata->escapeHtml();
   lua_pushlstring(L, result.data(), result.size());
+  return 1;
+}
+
+static int
+arken_StringInstanceMethodHash( lua_State *L ) {
+  string * udata  = checkString( L );
+  size_t   result = udata->hash();
+  lua_pushnumber(L, result);
   return 1;
 }
 
@@ -1022,6 +1040,7 @@ luaL_reg StringInstanceMethods[] = {
   {"decode64",       arken_StringInstanceMethodDecode64},
   {"encode64",       arken_StringInstanceMethodEncode64},
   {"escapeHtml",     arken_StringInstanceMethodEscapeHtml},
+  {"hash",           arken_StringInstanceMethodHash},
   {"indexOf",        arken_StringInstanceMethodIndexOf},
   {"endsWith",       arken_StringInstanceMethodEndsWith},
   {"equals",         arken_StringInstanceMethodEquals},

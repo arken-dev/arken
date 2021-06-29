@@ -441,6 +441,16 @@ char * string::escapeHtml(const char * string)
   return result;
 }
 
+size_t string::hash(const char * data, size_t size)
+{
+  int seed    = 131;
+  size_t hash = 0;
+  for( size_t i=0; i < size; i++ ) {
+    hash = (hash * seed) + (data[i]);
+  }
+  return hash & (0x7FFFFFFF);
+}
+
 bool string::endsWith(const char * string, const char * str)
 {
    int string_len = strlen(string);
@@ -1471,6 +1481,11 @@ string string::decode(const char * charset)
 string string::escapeHtml()
 {
   return string::escapeHtml(m_data);
+}
+
+size_t string::hash() const
+{
+  return string::hash(m_data, m_size);
 }
 
 int string::indexOf(const char * str, int i)
