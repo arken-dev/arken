@@ -1,4 +1,4 @@
-local triton = require('arken.concurrent.triton')
+local worker = require('arken.concurrent.worker')
 local mvm    = require('arken.mvm')
 
 local Coverage = Class.new("routines.Coverage")
@@ -14,8 +14,8 @@ Coverage.help.models = [[
 ]]
 
 function Coverage:models()
-  triton.start('triton.coverage.models');
-  triton.wait();
+  worker.start('workers.coverage.models');
+  worker.wait();
 end
 
 -------------------------------------------------------------------------------
@@ -27,8 +27,8 @@ Coverage.help.migrate = [[
 ]]
 
 function Coverage:migrate()
-  triton.start('triton.migrate');
-  triton.wait();
+  worker.start('workers.migrate');
+  worker.wait();
 end
 
 return Coverage

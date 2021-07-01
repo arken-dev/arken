@@ -148,13 +148,13 @@ Test.help.all = [[
 ]]
 
 function Test:all()
-  local triton = require('arken.concurrent.triton')
+  local worker = require('arken.concurrent.worker')
   local path   = self:params()[1]
   if not os.exists(path) then
     error(string.format('%s not exists', path))
   end
-  triton.start('triton.tests', { path = path });
-  triton.wait();
+  worker.start('workers.tests', { path = path });
+  worker.wait();
 end
 
 return Test

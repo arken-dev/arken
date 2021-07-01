@@ -1,0 +1,92 @@
+// Copyright 2016 The Arken Platform Authors.
+// All rights reserved.
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE file.
+
+#ifndef _ARKEN_CONCURRENT_WORKER_
+#define _ARKEN_CONCURRENT_WORKER_
+
+#include <arken/base>
+#include <arken/mvm>
+#include <arken/concurrent/shared.h>
+#include <mutex>
+#include <queue>
+#include <unordered_map>
+#include <string>
+
+namespace arken {
+namespace concurrent {
+
+  class worker : public Base {
+
+    using Shared = arken::concurrent::Shared;
+
+    private:
+
+    string m_uuid;
+    string m_params;
+    string m_fileName;
+
+    bool m_finished;
+    bool m_release;
+    bool m_purge;
+
+    std::unordered_map<string, string *> m_result;
+    std::unordered_map<string, int> m_total;
+    std::queue<string> m_queue;
+    std::mutex m_mutex;
+
+    Shared m_shared;
+
+    void run();
+    bool release();
+    bool purge();
+
+    public:
+
+    worker( const char * fileName, const char * params, bool purge );
+    ~worker();
+
+    static string start(const char * fileName, const char * params, bool purge = false);
+    static void wait();
+    void perform(unsigned int cores);
+    void enqueue(string && node);
+    void append(string key, string result);
+    void count(string key);
+    int  total(string);
+    string result(string key);
+    string uuid();
+    Shared shared();
+
+    public:
+    class node : public Base {
+      friend class worker;
+
+      string   m_fileName;
+      worker * m_worker;
+      uint32_t m_number = 0;
+      Shared   m_shared;
+
+      bool release();
+      string dequeue();
+      void run();
+      node(worker * ptr, string fileName, uint32_t number);
+
+      public:
+      uint32_t number();
+      int  total(string);
+      void count(string key);
+      void append(string key, string result);
+      string result(string key);
+      string uuid();
+      Shared shared();
+
+    };
+
+    static void working(node * n);
+  };
+
+
+} // namespace concurrent
+} // namespace arken
+#endif // _ARKEN_CONCURRENT_WORKER_
