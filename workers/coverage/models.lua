@@ -90,7 +90,6 @@ function M.run(worker, fileName)
     for status, total in pairs(status) do
       shared:increment(status, total)
     end
-
   end
 
   local dir     = 'coverage'
