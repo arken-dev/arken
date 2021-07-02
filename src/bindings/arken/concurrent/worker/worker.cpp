@@ -80,40 +80,6 @@ arken_concurrent_worker_instance_method_enqueue( lua_State *L ) {
 }
 
 static int
-arken_concurrent_worker_instance_method_count( lua_State *L ) {
-  worker * pointer = checkWorker( L );
-  const char * key = luaL_checkstring(L, 2);
-  pointer->count(key);
-  return 0;
-}
-
-static int
-arken_concurrent_worker_instance_method_total( lua_State *L ) {
-  worker * pointer   = checkWorker( L );
-  const char * label = luaL_checkstring(L, 2);
-  lua_pushinteger(L, pointer->total(label));
-  return 1;
-}
-
-static int
-arken_concurrent_worker_instance_method_append( lua_State *L ) {
-  worker * pointer    = checkWorker( L );
-  const char * key    = luaL_checkstring(L, 2);
-  const char * result = luaL_checkstring(L, 3);
-  pointer->append(key, result);
-  return 0;
-}
-
-static int
-arken_concurrent_worker_instance_method_result( lua_State *L ) {
-  worker * pointer = checkWorker( L );
-  const char * key = luaL_checkstring(L, 2);
-  lua_pushstring(L, pointer->result(key));
-
-  return 1;
-}
-
-static int
 arken_concurrent_worker_instance_method_uuid( lua_State *L ) {
   worker * pointer = checkWorker( L );
   lua_pushstring(L, pointer->uuid());
@@ -148,10 +114,6 @@ arken_concurrent_worker_instance_method_shared( lua_State *L ) {
 static const
 luaL_reg ChannelInstanceMethods[] = {
   {"enqueue", arken_concurrent_worker_instance_method_enqueue},
-  {"count",   arken_concurrent_worker_instance_method_count},
-  {"total",   arken_concurrent_worker_instance_method_total},
-  {"append",  arken_concurrent_worker_instance_method_append},
-  {"result",  arken_concurrent_worker_instance_method_result},
   {"uuid",    arken_concurrent_worker_instance_method_uuid},
   {"shared",  arken_concurrent_worker_instance_method_shared},
   {NULL, NULL}
@@ -168,40 +130,6 @@ registerChannelInstanceMethods( lua_State *L ) {
 //-----------------------------------------------------------------------------
 // TRITON NODE INSTANCE METHODS
 //-----------------------------------------------------------------------------
-
-static int
-arken_concurrent_worker_node_instance_method_count( lua_State *L ) {
-  worker::node * pointer = checkWorkerNode( L );
-  const char * key = luaL_checkstring(L, 2);
-  pointer->count(key);
-  return 0;
-}
-
-static int
-arken_concurrent_worker_node_instance_method_total( lua_State *L ) {
-  worker::node * pointer   = checkWorkerNode( L );
-  const char * label = luaL_checkstring(L, 2);
-  lua_pushinteger(L, pointer->total(label));
-  return 1;
-}
-
-static int
-arken_concurrent_worker_node_instance_method_append( lua_State *L ) {
-  worker::node * pointer    = checkWorkerNode( L );
-  const char * key    = luaL_checkstring(L, 2);
-  const char * result = luaL_checkstring(L, 3);
-  pointer->append(key, result);
-  return 0;
-}
-
-static int
-arken_concurrent_worker_node_instance_method_result( lua_State *L ) {
-  worker::node * pointer = checkWorkerNode( L );
-  const char * key       = luaL_checkstring(L, 2);
-  lua_pushstring(L, pointer->result(key));
-
-  return 1;
-}
 
 static int
 arken_concurrent_worker_node_instance_method_number( lua_State *L ) {
@@ -242,10 +170,6 @@ arken_concurrent_worker_node_instance_method_shared( lua_State *L ) {
 
 static const
 luaL_reg WorkerNodeInstanceMethods[] = {
-  {"count",   arken_concurrent_worker_node_instance_method_count},
-  {"total",   arken_concurrent_worker_node_instance_method_total},
-  {"append",  arken_concurrent_worker_node_instance_method_append},
-  {"result",  arken_concurrent_worker_node_instance_method_result},
   {"number",  arken_concurrent_worker_node_instance_method_number},
   {"uuid",    arken_concurrent_worker_node_instance_method_uuid},
   {"shared",  arken_concurrent_worker_node_instance_method_shared},

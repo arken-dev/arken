@@ -31,11 +31,8 @@ namespace concurrent {
     bool m_release;
     bool m_purge;
 
-    std::unordered_map<string, string *> m_result;
-    std::unordered_map<string, int> m_total;
     std::queue<string> m_queue;
     std::mutex m_mutex;
-
     Shared m_shared;
 
     void run();
@@ -51,10 +48,6 @@ namespace concurrent {
     static void wait();
     void perform(unsigned int cores);
     void enqueue(string && node);
-    void append(string key, string result);
-    void count(string key);
-    int  total(string);
-    string result(string key);
     string uuid();
     Shared shared();
 
@@ -74,10 +67,6 @@ namespace concurrent {
 
       public:
       uint32_t number();
-      int  total(string);
-      void count(string key);
-      void append(string key, string result);
-      string result(string key);
       string uuid();
       Shared shared();
 

@@ -189,52 +189,9 @@ void worker::enqueue(string && value)
   m_queue.push(std::move(value));
 }
 
-void worker::append(string key, string result)
-{
-  std::unique_lock<std::mutex> lck(m_mutex);
-  if( m_result.count(key) > 0 ) {
-    string * value = m_result.at(key);
-    value->append(result);
-  } else {
-    m_result[key] = new string(result);
-  }
-}
-
-void worker::count(string key)
-{
-  std::unique_lock<std::mutex> lck(m_mutex);
-  if( m_total.count(key) > 0 ) {
-    int value = m_total.at(key);
-    value++;
-    m_total[key] = value;
-  } else {
-    m_total[key] = 1;
-  }
-}
-
-int worker::total(string key)
-{
-  std::unique_lock<std::mutex> lck(m_mutex);
-  if( m_total.count(key) > 0 ) {
-    return m_total.at(key);
-  } else {
-    return 0;
-  }
-}
-
 string worker::uuid()
 {
   return m_uuid;
-}
-
-string worker::result(string key)
-{
-  std::unique_lock<std::mutex> lck(m_mutex);
-  if( m_result.count(key) > 0 ) {
-    return *m_result.at(key);
-  } else {
-    return "";
-  }
 }
 
 Shared worker::shared()
@@ -368,49 +325,6 @@ bool worker::node::release()
 uint32_t worker::node::number()
 {
   return m_number;
-}
-
-void worker::node::append(string key, string result)
-{
-  std::unique_lock<std::mutex> lck(m_worker->m_mutex);
-  if( m_worker->m_result.count(key) > 0 ) {
-    string * value = m_worker->m_result.at(key);
-    value->append(result);
-  } else {
-    m_worker->m_result[key] = new string(result);
-  }
-}
-
-void worker::node::count(string key)
-{
-  std::unique_lock<std::mutex> lck(m_worker->m_mutex);
-  if( m_worker->m_total.count(key) > 0 ) {
-    int value = m_worker->m_total.at(key);
-    value++;
-    m_worker->m_total[key] = value;
-  } else {
-    m_worker->m_total[key] = 1;
-  }
-}
-
-int worker::node::total(string key)
-{
-  std::unique_lock<std::mutex> lck(m_worker->m_mutex);
-  if( m_worker->m_total.count(key) > 0 ) {
-    return m_worker->m_total.at(key);
-  } else {
-    return 0;
-  }
-}
-
-string worker::node::result(string key)
-{
-  std::unique_lock<std::mutex> lck(m_worker->m_mutex);
-  if( m_worker->m_result.count(key) > 0 ) {
-    return *m_worker->m_result.at(key);
-  } else {
-    return "";
-  }
 }
 
 string worker::node::uuid()
