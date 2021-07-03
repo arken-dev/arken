@@ -48,6 +48,14 @@ arken_string_append( lua_State *L ) {
 }
 
 static int
+arken_string_blank( lua_State *L ) {
+  const char *str = luaL_checkstring(L, 1);
+  bool result = string::blank(str);
+  lua_pushboolean(L, result);
+  return 1;
+}
+
+static int
 arken_string_camelCase( lua_State *L ) {
   char * result;
   const char *string = luaL_checkstring(L, 1);
@@ -177,6 +185,14 @@ arken_string_equals( lua_State *L ) {
     lua_pushboolean(L, result);
   }
 
+  return 1;
+}
+
+static int
+arken_string_empty( lua_State *L ) {
+  const char * str1 = luaL_checkstring(L, 1);
+  bool result = string::empty(str1);
+  lua_pushboolean(L, result);
   return 1;
 }
 
@@ -500,6 +516,7 @@ static const luaL_reg
 StringClassMethods[] = {
   {"new",            arken_string_new},
   {"append",         arken_string_append},
+  {"blank",          arken_string_blank},
   {"camelCase",      arken_string_camelCase},
   {"capitalize",     arken_string_capitalize},
   {"center",         arken_string_center},
@@ -514,6 +531,7 @@ StringClassMethods[] = {
   {"decode",         arken_string_decode},
   {"encode64",       arken_string_encode64},
   {"equals",         arken_string_equals},
+  {"empty",          arken_string_empty},
   {"decode64",       arken_string_decode64},
   {"dasherize",      arken_string_dasherize},
   {"indexOf",        arken_string_indexOf},
@@ -566,6 +584,14 @@ arken_StringInstanceMethodClear( lua_State *L ) {
   string * udata = checkString( L );
   udata->clear();
   return 0;
+}
+
+static int
+arken_StringInstanceMethodBlank( lua_State *L ) {
+  string * udata = checkString( L );
+  bool result = udata->blank();
+  lua_pushboolean(L, result);
+  return 1;
 }
 
 static int
@@ -1026,6 +1052,7 @@ arken_StringInstanceMethodDestruct( lua_State *L ) {
 static const
 luaL_reg StringInstanceMethods[] = {
   {"append",         arken_StringInstanceMethodAppend},
+  {"blank",          arken_StringInstanceMethodBlank},
   {"center",         arken_StringInstanceMethodCenter},
   {"chop",           arken_StringInstanceMethodChop},
   {"clear",          arken_StringInstanceMethodClear},

@@ -32,17 +32,20 @@ class string {
   class List;
 
   static char * append(const char * string, const char * str);
+  static bool   blank(const char * string);
   static char * camelCase(const char * string, bool lcfirst = false);
   static char * capitalize(const char * string);
   static char * center(const char * string, size_t size, const char * pad);
-  static bool   contains(const char * string, const char * str);
   static char * chop(const char * string, int n);
+  static bool   contains(const char * string, const char * str);
   static int    count(const char * str1, const char * str2);
   static char * dasherize(const char *string);
-  static char * encode64(const char *string, size_t size);
-  static char * decode64(const char *string, size_t * size);
-  static char * encode(const char *string, const char *charset);
   static char * decode(const char *string, const char *charset);
+  static char * decode64(const char *string, size_t * size);
+  static bool   empty(const char *string);
+
+  static char * encode64(const char *string, size_t size);
+  static char * encode(const char *string, const char *charset);
   static bool   equals(const char * str1, const char * str2);
   static char * escape(const char * string);
   static char * escapeHtml(const char * string);
@@ -92,6 +95,7 @@ class string {
   string & append(const char * str);
   string & append(const char * str, size_t len);
   string & append(std::string str);
+  bool   blank();
   string camelCase(bool lcfirst = false);
   string capitalize();
   string center(size_t size, const char * pad);

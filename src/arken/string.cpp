@@ -46,6 +46,19 @@ static bool inline string_camelCase_special_char(char chr)
   }
 }
 
+bool string::blank(const char * str)
+{
+  bool result = true;
+  size_t len  = strlen(str);
+  for(size_t i = 0; i < len; i++) {
+    if( str[i] > 32 ) {
+      result = false;
+      break;
+    }
+  }
+  return result;
+}
+
 char * string::camelCase(const char * string, bool lcfirst)
 {
   int i, j;
@@ -288,6 +301,11 @@ char * string::encode64(const char * str, size_t size)
 char * string::decode64(const char * str, size_t * size)
 {
   return base64::decode(str, size);
+}
+
+bool string::empty(const char * str)
+{
+  return strlen(str) == 0;
 }
 
 char * string::encode(const char * string, const char * charset)
@@ -1400,6 +1418,11 @@ string & string::prepend(const char * data)
   return *this;
 }
 
+bool string::blank()
+{
+  return string::blank(m_data);
+}
+
 string string::camelCase(bool lcfirst)
 {
   return string::camelCase(m_data, lcfirst);
@@ -2033,4 +2056,23 @@ std::ostream & operator<<(std::ostream & os, const arken::string & str)
 {
    os << str.data();
    return os;
+}
+
+//-----------------------------------------------------------------------------
+// C INTERFACE
+//-----------------------------------------------------------------------------
+
+extern "C" char * arken_string_camelCase(const char * str, bool lcfirst)
+{
+  return arken::string::camelCase(str, lcfirst);
+}
+
+extern "C" char * arken_string_capitalize(const char *str)
+{
+  return arken::string::capitalize(str);
+}
+
+extern "C" char * arken_string_simplified(const char *str)
+{
+  return arken::string::simplified(str);
 }
