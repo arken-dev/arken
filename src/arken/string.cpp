@@ -1968,6 +1968,11 @@ int string::List::size()
   return m_size;
 }
 
+int string::List::cursor()
+{
+  return m_cursor;
+}
+
 char * string::List::join(const char * separator)
 {
   char * result;

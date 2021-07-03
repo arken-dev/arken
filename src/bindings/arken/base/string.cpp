@@ -1159,12 +1159,38 @@ arken_string_list_each( lua_State *L ) {
 }
 
 static int
+arken_string_list_ipairs( lua_State *L ) {
+  int i = lua_upvalueindex(1);
+  luaL_checktype(L, i, LUA_TLIGHTUSERDATA);
+  List * ba  = (List *) lua_touserdata(L, i);
+  const char * result = ba->each();
+  if( result == NULL ) {
+    lua_pushnil(L);
+    return 1;
+  } else {
+    lua_pushinteger(L, ba->cursor());
+    lua_pushstring(L, result);
+    return 2;
+  }
+}
+
+
+static int
 arken_string_ListInstanceMethodEach( lua_State *L ) {
   List * udata  = checkList( L );
   lua_pushlightuserdata(L, udata);
   lua_pushcclosure(L, arken_string_list_each, 1);
   return 1;
 }
+
+static int
+arken_string_ListInstanceMethodIpairs( lua_State *L ) {
+  List * udata  = checkList( L );
+  lua_pushlightuserdata(L, udata);
+  lua_pushcclosure(L, arken_string_list_ipairs, 1);
+  return 1;
+}
+
 
 static int
 arken_string_ListInstanceMethodFirst( lua_State *L ) {
@@ -1221,6 +1247,7 @@ luaL_reg arken_string_ListInstanceMethods[] = {
   {"append",  arken_string_ListInstanceMethodAppend},
   {"at",      arken_string_ListInstanceMethodAt},
   {"each",    arken_string_ListInstanceMethodEach},
+  {"__ipairs", arken_string_ListInstanceMethodIpairs},
   {"first",   arken_string_ListInstanceMethodFirst},
   {"last",    arken_string_ListInstanceMethodLast},
   {"join",    arken_string_ListInstanceMethodJoin},

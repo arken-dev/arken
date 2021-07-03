@@ -178,6 +178,7 @@ class string {
     const char *each();
     char * join(const char * separator);
     int size();
+    int cursor();
   };
 
 };
