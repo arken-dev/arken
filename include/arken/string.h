@@ -43,41 +43,46 @@ class string {
   static char * decode(const char *string, const char *charset);
   static char * decode64(const char *string, size_t * size);
   static bool   empty(const char *string);
-
-  static char * encode64(const char *string, size_t size);
   static char * encode(const char *string, const char *charset);
+  static char * encode64(const char *string, size_t size);
+  static bool   endsWith(const char * string, const char * ba);
   static bool   equals(const char * str1, const char * str2);
   static char * escape(const char * string);
   static char * escapeHtml(const char * string);
   static size_t hash(const char * string, size_t size);
   static int    indexOf(const char * string, const char * str, int i = 0);
   static char * insert(const char * string, int len, const char * ba);
-  static bool   endsWith(const char * string, const char * ba);
   static int    lastIndexOf(const char * string, const char * str);
   static char * left(const char *string, int len);
   static char * leftJustified(const char * string, size_t size, const char * pad);
-  static char * mid(const char * string, int pos, int len = -1, int string_len = 0, size_t * _len = nullptr);
-  static char * md5(const char * string);
+  static char * leftTrimmed(const char * string);
+  // len
+  // lower
   static char * md5(const char * string, size_t len);
+  static char * mid(const char * string, int pos, int len = -1, int string_len = 0, size_t * _len = nullptr);
   static char * normalize(const char * string);
   static char * prefix(const char * raw, const char * chr);
-  static char * simplified(const char *buffer);
+  // prepend ???
+  // static char * rep(const char *buffer, int times);
   static char * repeated(const char *buffer, int times);
   static char * replace(const char * string, const char * before, const char * after, int start = 0);
+  // replaceChar ???
   static char * replace(const char * string, const char before, const char after, int start = 0);
+  // reverse
   static char * right(const char * buffer, int len);
   static char * rightJustified(const char * string, size_t size, const char * pad);
-  static char * sha1(const char * string);
+  static char * rightTrimmed(const char * string);
   static char * sha1(const char * string, size_t len);
+  static char * simplified(const char *buffer);
   static List split(const char * string, const char * pattern);
   static List split(const char * string, size_t len, const char * pattern);
-  static char * suffix(const char * raw, const char chr = '.');
   static bool   startsWith(const char * string, const char *str);
+  // sub
+  static char * suffix(const char * raw, const char chr = '.');
   static char * trimmed(const char * string);
-  static char * leftTrimmed(const char * string);
-  static char * rightTrimmed(const char * string);
   static char * truncate(const char * string, int pos, const char *omission = "...", const char separator = ' ');
   static char * underscore(const char * string);
+  // upper
 
   //---------------------------------------------------------------------------
   // INSTANCE METHODS
@@ -99,52 +104,58 @@ class string {
   string camelCase(bool lcfirst = false);
   string capitalize();
   string center(size_t size, const char * pad);
-  bool   contains(const char * str);
   string chop(int n);
-  void   clear();
+  bool   contains(const char * str);
   int    count(const char * str2);
+  void   clear();
   string dasherize();
-  string encode64();
-  string decode64();
-  string encode(const char * charset);
+  const char * data() const;
   string decode(const char * charset);
+  string decode64();
+  bool   empty();
+  string encode(const char * charset);
+  string encode64();
+  bool   endsWith(const char * ba);
+  bool   equals(const char * str);
   string escape();
   string escapeHtml();
   size_t hash() const;
-  bool   empty();
-  bool   equals(const char * str);
   int    indexOf(const char * str, int i = 0);
   string insert(int len, const char * ba);
-  bool   endsWith(const char * ba);
   int    lastIndexOf(const char * str);
   string left(int len);
   string leftJustified(size_t size, const char * pad);
+  string leftTrimmed();
   size_t len();
-  string mid(int pos, int len = -1);
+  // lower
   string md5();
+  string mid(int pos, int len = -1);
   string normalize();
   string prefix(const char * chr);
   string & prepend(const char * str);
-  string simplified();
   char * release();
+  // rep
   string repeated(int times);
   string replace(const char * before, const char * after, int start = 0);
+  // replaceChar ???
   string replace(const char before, const char after, int start = 0);
+  // reverse
   void   reserve(size_t reserve);
   size_t reserve();
   string right(int len);
   string rightJustified(size_t size, const char * pad);
+  string rightTrimmed();
   string sha1();
+  string simplified();
   size_t size();
   List split(const char * pattern);
-  string suffix(const char chr = '.');
   bool   startsWith(const char *str);
+  // sub
+  string suffix(const char chr = '.');
   string trimmed();
-  string leftTrimmed();
-  string rightTrimmed();
   string truncate(int pos, const char * omission = "...", const char separator = ' ');
   string underscore();
-  const char * data() const;
+  //upper
   // explicit conversion
   operator const char *() const { return m_data; }
   string & operator=(const string &str);

@@ -1274,21 +1274,10 @@ char * string::underscore(const char *string)
   return result;
 }
 
-char * string::md5(const char * str)
-{
-  return md5::hash(str);
-}
-
 char * string::md5(const char * str, size_t len)
 {
   return md5::hash(str, len);
 }
-
-char * string::sha1(const char * str)
-{
-  return sha1::hash(str);
-}
-
 
 char * string::sha1(const char * str, size_t len)
 {
@@ -1616,7 +1605,7 @@ string string::rightJustified(size_t size, const char * pad)
 
 string string::sha1()
 {
-  return string::sha1(m_data);
+  return string::sha1(m_data, m_size);
 }
 
 string string::suffix(const char chr)
