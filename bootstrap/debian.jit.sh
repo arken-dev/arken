@@ -8,10 +8,11 @@ apt-get install        \
   libzip-dev
 
 cd tmp
-wget -c http://luajit.org/download/LuaJIT-2.0.4.tar.gz
-tar -xzvf LuaJIT-2.0.4.tar.gz
-cp ../bootstrap/debian/Makefile.jit LuaJIT-2.0.4/src/Makefile
-cd LuaJIT-2.0.4
+LUAJITVERSION=2.0.5
+wget -c http://luajit.org/download/LuaJIT-$LUAJITVERSION.tar.gz
+tar -xzvf LuaJIT-$LUAJITVERSION.tar.gz
+cp ../bootstrap/debian/Makefile.jit LuaJIT-$LUAJITVERSION/src/Makefile
+cd LuaJIT-$LUAJITVERSION
 make
 make install PREFIX=$PWD/../luajit
 mkdir -p tmp
@@ -23,6 +24,8 @@ cp liblua.so ../../../deps/liblua.so
 cd ..
 mkdir -p ../../deps/include
 cp -pr ../luajit/include/luajit-2.0/ ../../deps/include/lua
-#rm -Rf LuaJIT-2.0.4
-#rm -Rf tmp.tar.gz
-#rm -Rf luajit
+cd ..
+rm LuaJIT-$LUAJITVERSION.tar.gz
+rm -Rf LuaJIT-$LUAJITVERSION
+rm -Rf tmp.tar.gz
+rm -Rf luajit
