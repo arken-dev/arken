@@ -11,7 +11,6 @@
 
 namespace arken {
 
-using utf8   = arken::utf8;
 using List   = arken::string::List;
 
 char * string::append(const char * string, const char * ba)
