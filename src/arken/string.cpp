@@ -11,9 +11,7 @@
 
 namespace arken {
 
-using md5    = arken::digest::md5;
 using utf8   = arken::utf8;
-using sha1   = arken::digest::sha1;
 using List   = arken::string::List;
 
 char * string::append(const char * string, const char * ba)
@@ -1275,12 +1273,12 @@ char * string::underscore(const char *string)
 
 char * string::md5(const char * str, size_t len)
 {
-  return md5::hash(str, len);
+  return digest::md5::hash(str, len);
 }
 
 char * string::sha1(const char * str, size_t len)
 {
-  return sha1::hash(str, len);
+  return digest::sha1::hash(str, len);
 }
 
 //-----------------------------------------------------------------------------
@@ -1538,7 +1536,7 @@ string string::mid(int pos, int len)
 
 string string::md5()
 {
-  return md5::hash(m_data, m_size);
+  return digest::md5::hash(m_data, m_size);
 }
 
 string string::normalize()
@@ -1604,7 +1602,7 @@ string string::rightJustified(size_t size, const char * pad)
 
 string string::sha1()
 {
-  return string::sha1(m_data, m_size);
+  return digest::sha1::hash(m_data, m_size);
 }
 
 string string::suffix(const char chr)
