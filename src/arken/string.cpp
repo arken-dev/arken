@@ -11,7 +11,6 @@
 
 namespace arken {
 
-using base64 = arken::base64;
 using md5    = arken::digest::md5;
 using utf8   = arken::utf8;
 using sha1   = arken::digest::sha1;
