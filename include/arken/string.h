@@ -15,8 +15,6 @@ namespace arken {
 
 class string {
 
-  friend std::hash<arken::string>;
-
   private:
   char   * m_data;
   size_t   m_size;

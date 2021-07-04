@@ -11,7 +11,7 @@
 
 namespace arken {
 
-using List   = arken::string::List;
+using List = arken::string::List;
 
 char * string::append(const char * string, const char * ba)
 {
