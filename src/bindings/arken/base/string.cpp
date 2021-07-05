@@ -542,9 +542,18 @@ StringClassMethods[] = {
   {"mid",            arken_string_mid},
   {"normalize",      arken_string_normalize},
   {"prefix",         arken_string_prefix},
+  // deprecate methods
   {"leftJustified",  arken_string_leftJustified},
   {"rightJustified", arken_string_rightJustified},
+  // new methods
+  {"padLeft",        arken_string_leftJustified},
+  {"padRight",       arken_string_rightJustified},
+
+  //deprecate method
   {"simplified",     arken_string_simplified},
+  // new method
+  {"squish",         arken_string_simplified},
+
   {"repeated",       arken_string_repeated},
   {"replace",        arken_string_replace},
   {"right",          arken_string_right},
@@ -552,9 +561,15 @@ StringClassMethods[] = {
   {"startsWith",     arken_string_startsWith},
   {"split",          arken_string_split},
   {"suffix",         arken_string_suffix},
+  // deprecate methods
   {"trimmed",        arken_string_trimmed},
   {"leftTrimmed",    arken_string_leftTrimmed},
   {"rightTrimmed",   arken_string_rightTrimmed},
+  // new methods
+  {"trim",           arken_string_trimmed},
+  {"trimLeft",       arken_string_leftTrimmed},
+  {"trimRight",      arken_string_rightTrimmed},
+
   {"truncate",       arken_string_truncate},
   {"underscore",     arken_string_underscore},
   {NULL, NULL}
