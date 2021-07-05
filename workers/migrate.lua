@@ -1,3 +1,4 @@
+ARKEN_ENV = os.getenv("ARKEN_ENV") or "test"
 local Migrate = require('routines.Migrate')
 local M = {}
 
