@@ -78,7 +78,7 @@ rhea.help = function(module)
 
     for k, v in pairs(module.help) do
       local space = string.rep(' ', size - #k)
-      help = help .. k .. space .. ' # ' .. v:trimmed():replace('\n', margem) .. '\n'
+      help = help .. k .. space .. ' # ' .. v:trim():replace('\n', margem) .. '\n'
     end
 
     rhea.output(help)
@@ -128,7 +128,7 @@ rhea.run = function(args)
         if object.help[action] then
           local help   = object.help[action]
           local margem = '\n' .. string.rep(' ', #action + 1)
-          rhea.output(action .. ' # ' .. help:trimmed():replace('\n', margem))
+          rhea.output(action .. ' # ' .. help:trim():replace('\n', margem))
         else
           rhea.output(action .. ": undocumented")
         end

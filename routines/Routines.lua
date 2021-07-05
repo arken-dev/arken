@@ -21,7 +21,7 @@ local helpOutput = function(module, search)
       if search == nil or (k:contains(search) or v:contains(search)) then
         flag = true
         local space = string.rep(' ', size - #k)
-        help = help .. k .. space .. ' # ' .. v:trimmed():replace('\n', margem) .. '\n'
+        help = help .. k .. space .. ' # ' .. v:trim():replace('\n', margem) .. '\n'
       end
     end
 
