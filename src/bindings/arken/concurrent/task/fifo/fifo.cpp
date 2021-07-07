@@ -126,6 +126,13 @@ arken_concurrent_channel_node_instance_method_shared( lua_State *L ) {
 }
 
 static int
+arken_concurrent_channel_node_instance_method_finished( lua_State *L ) {
+  fifo::node * node = checkNode( L );
+  lua_pushboolean(L, node->finished());
+  return 1;
+}
+
+static int
 arken_concurrent_channel_node_instance_method_destruct( lua_State *L ) {
   fifo::node * node = checkNode( L );
   delete node;
@@ -137,6 +144,7 @@ luaL_reg NaiadNodeInstanceMethods[] = {
   {"uuid",      arken_concurrent_channel_node_instance_method_uuid},
   {"microtime", arken_concurrent_channel_node_instance_method_microtime},
   {"shared",    arken_concurrent_channel_node_instance_method_shared},
+  {"finished",  arken_concurrent_channel_node_instance_method_finished},
   {"__gc",      arken_concurrent_channel_node_instance_method_destruct},
   {NULL, NULL}
 };

@@ -94,6 +94,7 @@ scheduled::node::node(const node &obj)
   m_name      = obj.m_name;
   m_microtime = obj.m_microtime;
   m_shared    = obj.m_shared;
+  m_ref_bool  = obj.m_ref_bool;
 }
 
 scheduled::node::node(const char * fileName, const char * params, const char * name, bool purge)
@@ -104,6 +105,7 @@ scheduled::node::node(const char * fileName, const char * params, const char * n
   m_purge     = purge;
   m_uuid      = os::uuid();
   m_microtime = os::microtime();
+  m_ref_bool  = std::shared_ptr<bool>(new bool(false));
 }
 
 scheduled::node::~node()
@@ -177,6 +179,8 @@ void scheduled::node::run()
       scheduled::position() = 0;
     }
   }
+
+  (*m_ref_bool.get()) = true;
 }
 
 void scheduled::push(const scheduled::node & node)
@@ -277,6 +281,12 @@ Shared scheduled::node::shared()
 {
   return m_shared;
 }
+
+bool scheduled::node::finished()
+{
+  return (*m_ref_bool.get()) == true;
+}
+
 
 }  // namespace task
 }  // namespace concurrent

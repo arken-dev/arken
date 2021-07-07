@@ -71,6 +71,7 @@ fifo::node::node(const node &obj)
   m_params    = obj.m_params;
   m_microtime = obj.m_microtime;
   m_shared    = obj.m_shared;
+  m_ref_bool  = obj.m_ref_bool;
 }
 
 fifo::node::node(const char * fileName, const char * params, bool purge)
@@ -80,7 +81,7 @@ fifo::node::node(const char * fileName, const char * params, bool purge)
   m_purge     = purge;
   m_uuid      = os::uuid();
   m_microtime = os::microtime();
-
+  m_ref_bool  = std::shared_ptr<bool>(new bool(false));
 }
 
 void fifo::node::run()
@@ -125,6 +126,7 @@ void fifo::node::run()
   if (rv) {
     fprintf(stderr, "erro no inicio: %s\n", lua_tostring(L, -1));
   }
+  (*m_ref_bool.get()) = true;
 
   // GC
   if( m_purge ) {
@@ -175,6 +177,12 @@ Shared fifo::node::shared()
 {
   return m_shared;
 }
+
+bool fifo::node::finished()
+{
+  return (*m_ref_bool.get()) == true;
+}
+
 
 }  // namespace task
 }  // namespace concurrent

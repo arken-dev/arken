@@ -10,6 +10,7 @@
 #include <mutex>
 #include <atomic>
 #include <vector>
+#include <memory>
 #include <arken/mvm>
 #include <arken/string.h>
 #include <arken/concurrent/shared.h>
@@ -42,6 +43,7 @@ namespace task {
       double m_microtime{0};
       bool   m_purge{false};
       Shared m_shared;
+      std::shared_ptr<bool>  m_ref_bool;
 
       node(const char * fileName, const char * params, int priority = 0, bool purge = false);
 
@@ -55,6 +57,7 @@ namespace task {
       int    priority();
       double microtime();
       Shared shared();
+      bool   finished();
     };
 
     static priority::node start(const char * fileName, const char * params, int priority = 0, bool purge = false);

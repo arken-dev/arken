@@ -92,6 +92,7 @@ balanced::node::node(const node &obj)
   m_name      = obj.m_name;
   m_microtime = obj.m_microtime;
   m_shared    = obj.m_shared;
+  m_ref_bool  = obj.m_ref_bool;
 }
 
 balanced::node::node(const char * fileName, const char * params, const char * name, bool purge)
@@ -102,6 +103,7 @@ balanced::node::node(const char * fileName, const char * params, const char * na
   m_purge     = purge;
   m_uuid      = os::uuid();
   m_microtime = os::microtime();
+  m_ref_bool  = std::shared_ptr<bool>(new bool(false));
 }
 
 void balanced::node::run()
@@ -154,6 +156,8 @@ void balanced::node::run()
   } else {
     lua_gc(L, LUA_GCCOLLECT, 0);
   }
+
+  (*m_ref_bool.get()) = true;
 }
 
 void balanced::push(const balanced::node & node)
@@ -235,6 +239,10 @@ Shared balanced::node::shared()
   return m_shared;
 }
 
+bool balanced::node::finished()
+{
+  return (*m_ref_bool.get()) == true;
+}
 
 }  // namespace task
 }  // namespace concurrent

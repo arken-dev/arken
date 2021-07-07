@@ -11,6 +11,7 @@
 #include <unordered_map>
 #include <mutex>
 #include <atomic>
+#include <memory>
 #include <arken/mvm>
 #include <arken/string.h>
 #include <arken/concurrent/shared.h>
@@ -42,6 +43,7 @@ namespace task {
       double m_microtime{0};
       bool   m_purge{false};
       Shared m_shared;
+      std::shared_ptr<bool>  m_ref_bool;
 
       node(const char * fileName, const char * params, const char * name, bool purge = false);
 
@@ -54,6 +56,7 @@ namespace task {
       string name();
       double microtime();
       Shared shared();
+      bool finished();
     };
 
     static balanced::node start(const char * fileName, const char * params,

@@ -10,6 +10,7 @@
 #include <mutex>
 #include <atomic>
 #include <vector>
+#include <memory>
 #include <arken/mvm>
 #include <arken/string.h>
 #include <arken/concurrent/shared.h>
@@ -35,12 +36,14 @@ namespace task {
 
       friend class fifo;
 
+
       string m_uuid;
       string m_fileName;
       string m_params;
       double m_microtime{0};
       bool   m_purge{false};
       Shared m_shared;
+      std::shared_ptr<bool>  m_ref_bool;
 
       node(const char * fileName, const char * params, bool purge = false);
 
@@ -52,6 +55,7 @@ namespace task {
       string uuid();
       double microtime();
       Shared shared();
+      bool finished();
     };
 
     static fifo::node start(const char * fileName, const char * params, bool purge = false);
