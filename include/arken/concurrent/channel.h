@@ -29,7 +29,7 @@ namespace concurrent {
     std::shared_ptr<std::condition_variable> m_read_condition;
     std::shared_ptr<std::condition_variable> m_write_condition;
 
-    std::shared_ptr<bool>  m_ref_bool;
+    std::shared_ptr<std::atomic<bool>>  m_ref_bool;
 
     string m_uuid;
     string m_params;
@@ -55,7 +55,7 @@ namespace concurrent {
       std::shared_ptr<std::condition_variable> read_condition,
       std::shared_ptr<std::condition_variable> write_condition,
       string uuid,
-      std::shared_ptr<bool> ref_bool,
+      std::shared_ptr<std::atomic<bool>> ref_bool,
       Shared shared
     );
 

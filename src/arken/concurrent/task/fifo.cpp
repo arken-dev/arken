@@ -81,7 +81,7 @@ fifo::node::node(const char * fileName, const char * params, bool purge)
   m_purge     = purge;
   m_uuid      = os::uuid();
   m_microtime = os::microtime();
-  m_ref_bool  = std::shared_ptr<bool>(new bool(false));
+  m_ref_bool  = std::shared_ptr<std::atomic<bool>>(new std::atomic<bool>(false));
 }
 
 void fifo::node::run()

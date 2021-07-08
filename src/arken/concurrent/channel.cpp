@@ -88,7 +88,7 @@ channel::channel(
   std::shared_ptr<std::condition_variable> read_condition,
   std::shared_ptr<std::condition_variable> write_condition,
   string uuid,
-  std::shared_ptr<bool> ref_bool,
+  std::shared_ptr<std::atomic<bool>> ref_bool,
   Shared shared
 )
 {
@@ -114,7 +114,7 @@ channel::channel(const char * fileName, const char * params, bool purge)
   m_write_mtx       = std::shared_ptr<std::mutex>(new std::mutex);
   m_read_condition  = std::shared_ptr<std::condition_variable>(new std::condition_variable);
   m_write_condition = std::shared_ptr<std::condition_variable>(new std::condition_variable);
-  m_ref_bool        = std::shared_ptr<bool>(new bool(false));
+  m_ref_bool        = std::shared_ptr<std::atomic<bool>>(new std::atomic<bool>(false));
 
   m_uuid     = os::uuid();
   m_fileName = fileName;

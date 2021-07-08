@@ -105,7 +105,7 @@ scheduled::node::node(const char * fileName, const char * params, const char * n
   m_purge     = purge;
   m_uuid      = os::uuid();
   m_microtime = os::microtime();
-  m_ref_bool  = std::shared_ptr<bool>(new bool(false));
+  m_ref_bool  = std::shared_ptr<std::atomic<bool>>(new std::atomic<bool>(false));
 }
 
 scheduled::node::~node()
