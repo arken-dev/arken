@@ -8,12 +8,15 @@
 
 #include <arken/base>
 #include <arken/mvm>
+#include <arken/concurrent/shared.h>
 #include <memory>
 
 namespace arken {
 namespace concurrent {
 
   class channel : public Base {
+
+    using Shared = arken::concurrent::Shared;
 
     private:
 
@@ -31,6 +34,7 @@ namespace concurrent {
     string m_uuid;
     string m_params;
     string m_fileName;
+    Shared m_shared;
 
     channel * m_client;
 
@@ -51,7 +55,8 @@ namespace concurrent {
       std::shared_ptr<std::condition_variable> read_condition,
       std::shared_ptr<std::condition_variable> write_condition,
       string uuid,
-      std::shared_ptr<bool> ref_bool
+      std::shared_ptr<bool> ref_bool,
+      Shared shared
     );
 
     channel(const char * fileName, const char * params, bool purge = false);
@@ -62,6 +67,7 @@ namespace concurrent {
     bool finished();
     void write(std::string message);
     string uuid();
+    Shared shared();
     std::string read();
     channel * client();
 

@@ -88,7 +88,8 @@ channel::channel(
   std::shared_ptr<std::condition_variable> read_condition,
   std::shared_ptr<std::condition_variable> write_condition,
   string uuid,
-  std::shared_ptr<bool> ref_bool
+  std::shared_ptr<bool> ref_bool,
+  Shared shared
 )
 {
   m_read            = read;
@@ -102,6 +103,7 @@ channel::channel(
   m_client          = nullptr;
   m_uuid            = uuid;
   m_ref_bool        = ref_bool;
+  m_shared          = shared;
 }
 
 channel::channel(const char * fileName, const char * params, bool purge)
@@ -122,7 +124,8 @@ channel::channel(const char * fileName, const char * params, bool purge)
   m_release  = true;
 
   m_client = new channel(
-    m_write, m_read, m_write_mtx, m_read_mtx, m_write_condition, m_read_condition, m_uuid, m_ref_bool
+    m_write, m_read, m_write_mtx, m_read_mtx, m_write_condition,
+    m_read_condition, m_uuid, m_ref_bool, m_shared
   );
 
 }
@@ -139,6 +142,7 @@ channel::channel(const channel &obj) {
   m_client          = obj.m_client;
   m_uuid            = obj.m_uuid;
   m_ref_bool        = obj.m_ref_bool;
+  m_shared          = obj.m_shared;
 }
 
 channel * channel::client()
@@ -200,6 +204,11 @@ std::string channel::read()
 string channel::uuid()
 {
   return m_uuid;
+}
+
+Shared channel::shared()
+{
+  return m_shared;
 }
 
 bool channel::finished()
