@@ -977,9 +977,9 @@ char *  string::suffix(const char * raw, const char * pattern)
   if( index == -1 ) {
     result = new char[1]();
   } else {
+    size_t i   = 0;
     size_t len = strlen(raw);
-    size_t i = 0;
-    size_t j = strlen(pattern) + index;
+    size_t j   = strlen(pattern) + index;
     result = new char[len - j];
     while( j < len ) {
       result[i] = raw[j];
@@ -994,15 +994,18 @@ char *  string::suffix(const char * raw, const char * pattern)
 char *  string::prefix(const char * raw, const char * pattern)
 {
   char * result;
-  const char * ptrstr = strstr(raw, pattern);
+  int index = string::indexOf(raw, pattern);
 
-  if( ptrstr ) {
-    size_t len = ptrstr - raw;
-    result = new char[len + 1];
-    strncpy(result, raw, len);
-    result[len] = '\0';
-  } else {
+  if( index == -1 ) {
     result = new char[1]();
+  } else {
+    int i  = 0;
+    result = new char[index];
+    while( i < index ) {
+      result[i] = raw[i];
+      i++;
+    }
+    result[index] = '\0';
   }
 
   return result;
