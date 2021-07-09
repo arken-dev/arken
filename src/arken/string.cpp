@@ -757,7 +757,7 @@ char * string::repeated(const char *string, int times)
   return result;
 }
 
-char * string::replace(const char *string, const char before, const char after, int start)
+char * string::replaceChar(const char *string, const char before, const char after, int start)
 {
   int i, j;
   int string_len = strlen(string);
@@ -865,6 +865,7 @@ char * string::simplified(const char *string)
 }
 
 //http://stackoverflow.com/questions/779875/what-is-the-function-to-replace-string-in-c
+// refactory using indexOf
 char * string::replace(const char * original, const char * pattern, const char * replacement, int start)
 {
   size_t const replen = strlen(replacement);
@@ -1556,9 +1557,9 @@ string string::replace(const char * before, const char * after, int start)
   return string::replace(m_data, before, after, start);
 }
 
-string string::replace(const char before, const char after, int start)
+string string::replaceChar(const char before, const char after, int start)
 {
-  return string::replace(m_data, before, after, start);
+  return string::replaceChar(m_data, before, after, start);
 }
 
 void string::reserve(size_t reserve)

@@ -64,8 +64,7 @@ class string {
   // static char * rep(const char *buffer, int times);
   static char * repeated(const char *buffer, int times);
   static char * replace(const char * string, const char * before, const char * after, int start = 0);
-  // replaceChar ???
-  static char * replace(const char * string, const char before, const char after, int start = 0);
+  static char * replaceChar(const char * string, const char before, const char after, int start = 0);
   // reverse
   static char * right(const char * buffer, int len);
   static char * rightJustified(const char * string, size_t size, const char * pad);
@@ -135,8 +134,7 @@ class string {
   // rep
   string repeated(int times);
   string replace(const char * before, const char * after, int start = 0);
-  // replaceChar ???
-  string replace(const char before, const char after, int start = 0);
+  string replaceChar(const char before, const char after, int start = 0);
   // reverse
   void   reserve(size_t reserve);
   size_t reserve();
