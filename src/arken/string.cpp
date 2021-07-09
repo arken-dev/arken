@@ -971,16 +971,16 @@ List string::split(const char * raw, size_t len, const char * pattern)
 
 char *  string::suffix(const char * raw, const char * pattern)
 {
-  char * result = nullptr;
+  char * result;
   const char * ptrstr = strstr(raw, pattern);
-  if( ptrstr == nullptr ) {
-    result = new char[1]();
-  } else {
+  if( ptrstr ) {
     ptrstr = ptrstr + strlen(pattern);
-    size_t size = strlen(ptrstr);
-    result = new char[size + 1];
-    strncpy(result, ptrstr, size);
-    result[size] = '\0';
+    size_t len = strlen(ptrstr);
+    result = new char[len + 1];
+    strncpy(result, ptrstr, len);
+    result[len] = '\0';
+  } else {
+    result = new char[1]();
   }
 
   return result;
@@ -988,17 +988,14 @@ char *  string::suffix(const char * raw, const char * pattern)
 
 char *  string::prefix(const char * raw, const char * pattern)
 {
-  int len = strlen(raw);
-  char * result = nullptr;
-  //int i, j;
-  //int point = 0;
-
+  char * result;
   const char * ptrstr = strstr(raw, pattern);
-  int position = (raw - ptrstr) * -1;
-  if( position > 0 && position < len) {
-    result = new char[position + 1];
-    strncpy(result, raw, position);
-    result[position] = '\0';
+
+  if( ptrstr ) {
+    size_t len = ptrstr - raw;
+    result = new char[len + 1];
+    strncpy(result, raw, len);
+    result[len] = '\0';
   } else {
     result = new char[1]();
   }
