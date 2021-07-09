@@ -390,13 +390,9 @@ arken_string_startsWith( lua_State *L ) {
 
 static int
 arken_string_suffix( lua_State *L ) {
-  const char * string = luaL_checkstring(L, 1);
-  char chr = '.';
-  char * result;
-  if(lua_gettop(L) == 2) { /* número de argumentos */
-    chr =  luaL_checkstring(L, 2)[0];
-  }
-  result = string::suffix(string, chr);
+  const char * string  = luaL_checkstring(L, 1);
+  const char * pattern = luaL_checkstring(L, 2);
+  char * result  = string::suffix(string, pattern);;
   lua_pushstring(L, result);  /* push result */
   delete[] result;
   return 1;
@@ -911,13 +907,8 @@ arken_StringInstanceMethodSimplified( lua_State *L ) {
 static int
 arken_StringInstanceMethodSuffix( lua_State *L ) {
   string * udata = checkString( L );
-  string result;
-  if(lua_gettop(L) == 2) { // number of arguments
-    const char * chr = luaL_checkstring(L, 2);
-    result = udata->suffix(chr[0]);
-  } else {
-    result = udata->suffix();
-  }
+  const char * chr = luaL_checkstring(L, 2);
+  string result = udata->suffix(chr);
   lua_pushlstring(L, result.data(), result.size());
   return 1;
 }

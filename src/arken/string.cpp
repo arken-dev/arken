@@ -969,30 +969,18 @@ List string::split(const char * raw, size_t len, const char * pattern)
   return list;
 }
 
-char *  string::suffix(const char * raw, char chr)
+char *  string::suffix(const char * raw, const char * pattern)
 {
   char * result = nullptr;
-  int i, j;
-  int point = 0;
-  int len = strlen(raw);
-
-  for( i = len; i > 0; i--) {
-    if( raw[i] == chr ) {
-      point = i;
-      break;
-    }
-  }
-
-  if( point > 0 ) {
-    point++;
-    result = new char[(len - point) + 1];
-    j = 0;
-    for( i = point; i < len; i++, j++) {
-      result[j] = raw[i];
-    }
-    result[(len - point)] = '\0';
-  } else {
+  const char * ptrstr = strstr(raw, pattern);
+  if( ptrstr == nullptr ) {
     result = new char[1]();
+  } else {
+    ptrstr = ptrstr + strlen(pattern);
+    size_t size = strlen(ptrstr);
+    result = new char[size + 1];
+    strncpy(result, ptrstr, size);
+    result[size] = '\0';
   }
 
   return result;
@@ -1604,9 +1592,9 @@ string string::sha1()
   return digest::sha1::hash(m_data, m_size);
 }
 
-string string::suffix(const char chr)
+string string::suffix(const char * pattern)
 {
-  return string::suffix(m_data, chr);
+  return string::suffix(m_data, pattern);
 }
 
 const char * string::data() const

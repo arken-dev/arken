@@ -76,7 +76,7 @@ class string {
   static List split(const char * string, size_t len, const char * pattern);
   static bool   startsWith(const char * string, const char *str);
   // sub
-  static char * suffix(const char * raw, const char chr = '.');
+  static char * suffix(const char * raw, const char * chr);
   static char * trimmed(const char * string);
   static char * truncate(const char * string, int pos, const char *omission = "...", const char separator = ' ');
   static char * underscore(const char * string);
@@ -149,7 +149,7 @@ class string {
   List split(const char * pattern);
   bool   startsWith(const char *str);
   // sub
-  string suffix(const char chr = '.');
+  string suffix(const char * pattern);
   string trimmed();
   string truncate(int pos, const char * omission = "...", const char separator = ' ');
   string underscore();
