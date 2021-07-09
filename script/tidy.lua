@@ -1,6 +1,6 @@
 #!/usr/bin/env arken
 
-local dir = ( arg[1] and os.exists(arg[1]) ) and arg[1] or "src/arken"
+local arg1 = ( arg[1] and os.exists(arg[1]) ) and arg[1] or "src/arken"
 local verbose = (arg[1] == '--verbose' or arg[2] == '--verbose' ) and true or false
 
 -- Enabled checks:
@@ -322,13 +322,20 @@ clang-tidy-6.0 %s \
    2> /dev/null
 ]]
 
-local list = os.glob(dir, "cpp$", true)
-
-for fileName in list:each() do
+local tidy = function(fileName)
   local cmd = string.format(tidy, fileName, checks)
   if verbose then
     print(cmd)
     print(fileName)
   end
   os.execute(cmd)
+end
+
+if os.isfile(arg1) then
+  tidy(arg1)
+else
+  local list = os.glob(dir, "cpp$", true)
+  for fileName in list:each() do
+    tidy(fileName)
+  end
 end
