@@ -972,15 +972,20 @@ List string::split(const char * raw, size_t len, const char * pattern)
 char *  string::suffix(const char * raw, const char * pattern)
 {
   char * result;
-  const char * ptrstr = strstr(raw, pattern);
-  if( ptrstr ) {
-    ptrstr = ptrstr + strlen(pattern);
-    size_t len = strlen(ptrstr);
-    result = new char[len + 1];
-    strncpy(result, ptrstr, len);
-    result[len] = '\0';
-  } else {
+  int index = string::lastIndexOf(raw, pattern);
+
+  if( index == -1 ) {
     result = new char[1]();
+  } else {
+    size_t len = strlen(raw);
+    size_t i = 0;
+    size_t j = strlen(pattern) + index;
+    result = new char[len - j];
+    while( j < len ) {
+      result[i] = raw[j];
+      i++; j++;
+    }
+    result[i] = '\0';
   }
 
   return result;

@@ -42,7 +42,7 @@ function Migrate:run()
   for _, fileName in ipairs(list) do
     local index   = fileName:lastIndexOf('/') + 1
     local version = fileName:mid(index, 14)
-    local suffix  = fileName:suffix()
+    local suffix  = fileName:suffix(".")
 
     if self.list[version] then
       Migrate.output(string.format("%s version ok", version))
