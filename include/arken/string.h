@@ -52,13 +52,13 @@ class string {
   static char * insert(const char * string, int len, const char * ba);
   static int    lastIndexOf(const char * string, const char * str);
   static char * left(const char *string, int len);
-  static char * leftJustified(const char * string, size_t size, const char * pad);
-  static char * leftTrimmed(const char * string);
   // len
   // lower
   static char * md5(const char * string, size_t len);
   static char * mid(const char * string, int pos, int len = -1, int string_len = 0, size_t * _len = nullptr);
   static char * normalize(const char * string);
+  static char * padLeft(const char * string, size_t size, const char * pad);
+  static char * padRight(const char * string, size_t size, const char * pad);
   static char * prefix(const char * raw, const char * chr);
   // prepend ???
   // static char * rep(const char *buffer, int times);
@@ -67,16 +67,16 @@ class string {
   static char * replaceChar(const char * string, const char before, const char after, int start = 0);
   // reverse
   static char * right(const char * buffer, int len);
-  static char * rightJustified(const char * string, size_t size, const char * pad);
-  static char * rightTrimmed(const char * string);
   static char * sha1(const char * string, size_t len);
-  static char * simplified(const char *buffer);
+  static char * squish(const char *buffer);
   static List split(const char * string, const char * pattern);
   static List split(const char * string, size_t len, const char * pattern);
   static bool   startsWith(const char * string, const char *str);
   // sub
   static char * suffix(const char * raw, const char * chr);
-  static char * trimmed(const char * string);
+  static char * trim(const char * string);
+  static char * trimLeft(const char * string);
+  static char * trimRight(const char * string);
   static char * truncate(const char * string, int pos, const char *omission = "...", const char separator = ' ');
   static char * underscore(const char * string);
   // upper
@@ -121,13 +121,13 @@ class string {
   string insert(int len, const char * ba);
   int    lastIndexOf(const char * str);
   string left(int len);
-  string leftJustified(size_t size, const char * pad);
-  string leftTrimmed();
   size_t len();
   // lower
   string md5();
   string mid(int pos, int len = -1);
   string normalize();
+  string padLeft(size_t size, const char * pad);
+  string padRight(size_t size, const char * pad);
   string prefix(const char * chr);
   string & prepend(const char * str);
   char * release();
@@ -139,16 +139,17 @@ class string {
   void   reserve(size_t reserve);
   size_t reserve();
   string right(int len);
-  string rightJustified(size_t size, const char * pad);
-  string rightTrimmed();
   string sha1();
-  string simplified();
+  string squish();
   size_t size();
   List split(const char * pattern);
   bool   startsWith(const char *str);
   // sub
   string suffix(const char * pattern);
-  string trimmed();
+  string trim();
+  string trimLeft();
+  string trimRight();
+
   string truncate(int pos, const char * omission = "...", const char separator = ' ');
   string underscore();
   //upper

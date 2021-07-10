@@ -318,11 +318,11 @@ arken_string_normalize( lua_State *L ) {
 }
 
 static int
-arken_string_leftJustified( lua_State *L ) {
+arken_string_padLeft( lua_State *L ) {
   const char *string = luaL_checkstring(L, 1);
   int size           = luaL_checkinteger(L, 2);
   const char *pad    = luaL_checkstring(L, 3);
-  char *result       = string::leftJustified(string, size, pad);
+  char *result       = string::padLeft(string, size, pad);
   lua_pushstring(L, result);
   delete[] result;
   return 1;
@@ -340,11 +340,11 @@ arken_string_prefix( lua_State *L ) {
 
 
 static int
-arken_string_rightJustified( lua_State *L ) {
+arken_string_padRight( lua_State *L ) {
   const char *string = luaL_checkstring(L, 1);
   int size           = luaL_checkinteger(L, 2);
   const char *pad    = luaL_checkstring(L, 3);
-  char *result       = string::rightJustified(string, size, pad);
+  char *result       = string::padRight(string, size, pad);
   lua_pushstring(L, result);
   delete[] result;
   return 1;
@@ -371,9 +371,9 @@ arken_string_right( lua_State *L ) {
 }
 
 static int
-arken_string_simplified( lua_State *L ) {
+arken_string_squish( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
-  char * result = string::simplified(string);
+  char * result = string::squish(string);
   lua_pushstring(L, result);  /* push result */
   delete[] result;
   return 1;
@@ -453,27 +453,27 @@ arken_string_replaceChar( lua_State *L ) {
 }
 
 static int
-arken_string_trimmed( lua_State *L ) {
+arken_string_trim( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
-  char * result       = string::trimmed(string);
+  char * result       = string::trim(string);
   lua_pushstring(L, result);  /* push result */
   delete[] result;
   return 1;
 }
 
 static int
-arken_string_leftTrimmed( lua_State *L ) {
+arken_string_trimLeft( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
-  char * result       = string::leftTrimmed(string);
+  char * result       = string::trimLeft(string);
   lua_pushstring(L, result);  /* push result */
   delete[] result;
   return 1;
 }
 
 static int
-arken_string_rightTrimmed( lua_State *L ) {
-  const char * string = luaL_checkstring(L, 1);
-  char * result       = string::rightTrimmed(string);
+arken_string_trimRight( lua_State *L ) {
+  const char * str = luaL_checkstring(L, 1);
+  char * result    = string::trimRight(str);
   lua_pushstring(L, result);  /* push result */
   delete[] result;
   return 1;
@@ -551,19 +551,10 @@ StringClassMethods[] = {
   {"md5",            arken_string_md5},
   {"mid",            arken_string_mid},
   {"normalize",      arken_string_normalize},
+  {"padLeft",        arken_string_padLeft},
+  {"padRight",       arken_string_padRight},
   {"prefix",         arken_string_prefix},
-  // deprecate methods
-  {"leftJustified",  arken_string_leftJustified},
-  {"rightJustified", arken_string_rightJustified},
-  // new methods
-  {"padLeft",        arken_string_leftJustified},
-  {"padRight",       arken_string_rightJustified},
-
-  //deprecate method
-  {"simplified",     arken_string_simplified},
-  // new method
-  {"squish",         arken_string_simplified},
-
+  {"squish",         arken_string_squish},
   {"repeated",       arken_string_repeated},
   {"replace",        arken_string_replace},
   {"replaceChar",    arken_string_replaceChar},
@@ -572,17 +563,18 @@ StringClassMethods[] = {
   {"startsWith",     arken_string_startsWith},
   {"split",          arken_string_split},
   {"suffix",         arken_string_suffix},
-  // deprecate methods
-  {"trimmed",        arken_string_trimmed},
-  {"leftTrimmed",    arken_string_leftTrimmed},
-  {"rightTrimmed",   arken_string_rightTrimmed},
-  // new methods
-  {"trim",           arken_string_trimmed},
-  {"trimLeft",       arken_string_leftTrimmed},
-  {"trimRight",      arken_string_rightTrimmed},
-
+  {"trim",           arken_string_trim},
+  {"trimLeft",       arken_string_trimLeft},
+  {"trimRight",      arken_string_trimRight},
   {"truncate",       arken_string_truncate},
   {"underscore",     arken_string_underscore},
+  // deprecate methods
+  {"trimmed",        arken_string_trim},
+  {"leftTrimmed",    arken_string_trimLeft},
+  {"rightTrimmed",   arken_string_trimRight},
+  {"simplified",     arken_string_squish},
+  {"leftJustified",  arken_string_padLeft},
+  {"rightJustified", arken_string_padRight},
   {NULL, NULL}
 };
 
@@ -755,11 +747,11 @@ arken_StringInstanceMethodLeft( lua_State *L ) {
 }
 
 static int
-arken_StringInstanceMethodLeftJustified( lua_State *L ) {
+arken_StringInstanceMethodPadLeft( lua_State *L ) {
   string * udata   = checkString( L );
   size_t size      = luaL_checkinteger(L, 2);
   const char * pad = luaL_checkstring(L, 3);
-  string result    = udata->leftJustified(size, pad);
+  string result    = udata->padLeft(size, pad);
   lua_pushlstring(L, result.data(), result.size());
   return 1;
 }
@@ -864,11 +856,11 @@ arken_StringInstanceMethodRight( lua_State *L ) {
 }
 
 static int
-arken_StringInstanceMethodRightJustified( lua_State *L ) {
+arken_StringInstanceMethodPadRight( lua_State *L ) {
   string * udata   = checkString( L );
   size_t size      = luaL_checkinteger(L, 2);
   const char * pad = luaL_checkstring(L, 3);
-  string result    = udata->rightJustified(size, pad);
+  string result    = udata->padRight(size, pad);
   lua_pushlstring(L, result.data(), result.size());
   return 1;
 }
@@ -926,9 +918,9 @@ arken_StringInstanceMethodSha1( lua_State *L ) {
 }
 
 static int
-arken_StringInstanceMethodSimplified( lua_State *L ) {
+arken_StringInstanceMethodSquish( lua_State *L ) {
   string *  udata = checkString( L );
-  string result = udata->simplified();
+  string result = udata->squish();
   lua_pushlstring(L, result.data(), result.size());
   return 1;
 }
@@ -943,17 +935,17 @@ arken_StringInstanceMethodSuffix( lua_State *L ) {
 }
 
 static int
-arken_StringInstanceMethodLeftTrimmed( lua_State *L ) {
+arken_StringInstanceMethodTrimLeft( lua_State *L ) {
   string *  udata = checkString( L );
-  string result   = udata->leftTrimmed();
+  string result   = udata->trimLeft();
   lua_pushlstring(L, result.data(), result.size());
   return 1;
 }
 
 static int
-arken_StringInstanceMethodTrimmed( lua_State *L ) {
+arken_StringInstanceMethodTrim( lua_State *L ) {
   string *  udata = checkString( L );
-  string result   = udata->trimmed();
+  string result   = udata->trim();
   lua_pushlstring(L, result.data(), result.size());
   return 1;
 }
@@ -967,9 +959,9 @@ arken_StringInstanceMethodStartsWith( lua_State *L ) {
 }
 
 static int
-arken_StringInstanceMethodRightTrimmed( lua_State *L ) {
+arken_StringInstanceMethodTrimRight( lua_State *L ) {
   string *  udata = checkString( L );
-  string result   = udata->rightTrimmed();
+  string result   = udata->trimRight();
   lua_pushlstring(L, result.data(), result.size());
   return 1;
 }
@@ -1108,12 +1100,13 @@ luaL_reg StringInstanceMethods[] = {
   {"equals",         arken_StringInstanceMethodEquals},
   {"lastIndexOf",    arken_StringInstanceMethodLastIndexOf},
   {"left",           arken_StringInstanceMethodLeft},
-  {"leftJustified",  arken_StringInstanceMethodLeftJustified},
   {"mid",            arken_StringInstanceMethodMid},
   {"insert",         arken_StringInstanceMethodInsert},
   {"len",            arken_StringInstanceMethodLen},
   {"md5",            arken_StringInstanceMethodMd5},
   {"normalize",      arken_StringInstanceMethodNormalize},
+  {"padLeft",        arken_StringInstanceMethodPadLeft},
+  {"padRight",       arken_StringInstanceMethodPadRight},
   {"prepend",        arken_StringInstanceMethodPrepend},
   {"prefix",         arken_StringInstanceMethodPrefix},
   {"repeated",       arken_StringInstanceMethodRepeated},
@@ -1121,21 +1114,31 @@ luaL_reg StringInstanceMethods[] = {
   {"replaceChar",    arken_StringInstanceMethodReplaceChar},
   {"reserve",        arken_StringInstanceMethodReserve},
   {"right",          arken_StringInstanceMethodRight},
-  {"rightJustified", arken_StringInstanceMethodRightJustified},
+
+
   {"sha1",           arken_StringInstanceMethodSha1},
   {"size",           arken_StringInstanceMethodSize},
-  {"simplified",     arken_StringInstanceMethodSimplified},
+  {"squish",         arken_StringInstanceMethodSquish},
   {"suffix",         arken_StringInstanceMethodSuffix},
-  {"trimmed",        arken_StringInstanceMethodTrimmed},
-  {"rightTrimmed",   arken_StringInstanceMethodRightTrimmed},
   {"split",          arken_StringInstanceMethodSplit},
-  {"leftTrimmed",    arken_StringInstanceMethodLeftTrimmed},
+  {"trim",           arken_StringInstanceMethodTrim},
+  {"trimLeft",       arken_StringInstanceMethodTrimLeft},
+  {"trimRight",      arken_StringInstanceMethodTrimRight},
   {"truncate",       arken_StringInstanceMethodTruncate},
   {"underscore",     arken_StringInstanceMethodUnderscore},
   {"startsWith",     arken_StringInstanceMethodStartsWith},
   {"__tostring",     arken_StringInstanceMethodToString},
   {"__len",          arken_StringInstanceMethodToLen},
   {"__gc",           arken_StringInstanceMethodDestruct},
+
+  //deprecated methods
+  {"simplified",     arken_StringInstanceMethodSquish},
+  {"trimmed",        arken_StringInstanceMethodTrim},
+  {"leftTrimmed",    arken_StringInstanceMethodTrimLeft},
+  {"rightTrimmed",   arken_StringInstanceMethodTrimRight},
+  {"leftJustified",  arken_StringInstanceMethodPadLeft},
+  {"rightJustified", arken_StringInstanceMethodPadRight},
+
   {NULL, NULL}
 };
 

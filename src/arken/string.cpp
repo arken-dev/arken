@@ -186,6 +186,12 @@ int string::count(const char * str1, const char * str2)
   return result;
 }
 
+// TODO refactory chop only one last \r\n
+// "string\r\n".chop   #=> "string"
+// "string\n\r".chop   #=> "string\n"
+// "string\n".chop     #=> "string"
+// "string".chop       #=> "strin"
+// "x".chop.chop       #=> ""
 char * string::chop(const char * string, int n)
 {
   char * result;
@@ -674,7 +680,7 @@ char * string::normalize(const char *string)
   return result;
 }
 
-char * string::leftJustified(const char * string, size_t size, const char * pad)
+char * string::padLeft(const char * string, size_t size, const char * pad)
 {
   size_t str_len = strlen(string);
   size_t pad_len = strlen(pad);
@@ -706,7 +712,7 @@ char * string::leftJustified(const char * string, size_t size, const char * pad)
   return result;
 }
 
-char * string::rightJustified(const char * string, size_t size, const char * pad)
+char * string::padRight(const char * string, size_t size, const char * pad)
 {
   size_t str_len = strlen(string);
   size_t pad_len = strlen(pad);
@@ -809,7 +815,7 @@ char * string::right(const char *string, int len)
   return result;
 }
 
-static inline bool simplified_special_char(const char chr)
+static inline bool squish_special_char(const char chr)
 {
   if( chr >= 0 and chr <= 32 ) {
     return true;
@@ -818,7 +824,7 @@ static inline bool simplified_special_char(const char chr)
   }
 }
 
-char * string::simplified(const char *string)
+char * string::squish(const char *string)
 {
   int i = 0;
   int j = 0;
@@ -828,11 +834,11 @@ char * string::simplified(const char *string)
 
   len = strlen(string);
 
-  while(i < len && simplified_special_char(string[i])) {
+  while(i < len && squish_special_char(string[i])) {
     i++;
   }
 
-  while(len > 0 && simplified_special_char(string[len-1])) {
+  while(len > 0 && squish_special_char(string[len-1])) {
     len--;
   }
 
@@ -841,7 +847,7 @@ char * string::simplified(const char *string)
   } else {
     result = new char[len + 1];
     while(i < len) {
-      if( simplified_special_char(string[i]) ) {
+      if( squish_special_char(string[i]) ) {
         if( f ) {
           i++;
         } else {
@@ -1039,7 +1045,7 @@ static inline bool trim_special_char(const char chr)
   }
 }
 
-char * string::trimmed(const char *string)
+char * string::trim(const char *string)
 {
   int i = 0;
   int j = 0;
@@ -1073,7 +1079,7 @@ char * string::trimmed(const char *string)
   return result;
 }
 
-char * string::leftTrimmed(const char *string)
+char * string::trimLeft(const char *string)
 {
   int i = 0;
   int j = 0;
@@ -1102,7 +1108,7 @@ char * string::leftTrimmed(const char *string)
   return result;
 }
 
-char * string::rightTrimmed(const char *string)
+char * string::trimRight(const char *string)
 {
   int i = 0;
   int j = 0;
@@ -1515,9 +1521,9 @@ string string::left(int len)
   return string::left(m_data, len);
 }
 
-string string::leftJustified(size_t size, const char * pad)
+string string::padLeft(size_t size, const char * pad)
 {
-  return string::leftJustified(m_data, size, pad);
+  return string::padLeft(m_data, size, pad);
 }
 
 string string::mid(int pos, int len)
@@ -1542,9 +1548,9 @@ string string::prefix(const char * pattern)
   return string::prefix(m_data, pattern);
 }
 
-string string::simplified()
+string string::squish()
 {
-  return string::simplified(m_data);
+  return string::squish(m_data);
 }
 
 string string::repeated(int times)
@@ -1588,9 +1594,9 @@ string string::right(int len)
   return string::right(m_data, len);
 }
 
-string string::rightJustified(size_t size, const char * pad)
+string string::padRight(size_t size, const char * pad)
 {
-  return string::rightJustified(m_data, size, pad);
+  return string::padRight(m_data, size, pad);
 }
 
 string string::sha1()
@@ -1616,23 +1622,23 @@ char * string::release()
   return tmp;
 }
 
-string string::trimmed()
+string string::trim()
 {
   //string dt;
-  //dt.m_data = string::trimmed(m_data);
+  //dt.m_data = string::trim(m_data);
   //dt.m_size = strlen(dt.m_data);
   //return dt;
-  return string::trimmed(m_data);
+  return string::trim(m_data);
 }
 
-string string::leftTrimmed()
+string string::trimLeft()
 {
-  return string::leftTrimmed(m_data);
+  return string::trimLeft(m_data);
 }
 
-string string::rightTrimmed()
+string string::trimRight()
 {
-  return string::rightTrimmed(m_data);
+  return string::trimRight(m_data);
 }
 
 bool string::startsWith(const char * str)
@@ -2051,7 +2057,7 @@ extern "C" char * arken_string_capitalize(const char *str)
   return arken::string::capitalize(str);
 }
 
-extern "C" char * arken_string_simplified(const char *str)
+extern "C" char * arken_string_squish(const char *str)
 {
-  return arken::string::simplified(str);
+  return arken::string::squish(str);
 }
