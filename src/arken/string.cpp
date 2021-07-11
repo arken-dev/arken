@@ -987,7 +987,7 @@ char *  string::suffix(const char * raw, const char * pattern)
     size_t i   = 0;
     size_t len = strlen(raw);
     size_t j   = strlen(pattern) + index;
-    result = new char[len - j];
+    result = new char[(len - j)+1];
     while( j < len ) {
       result[i] = raw[j];
       i++; j++;
@@ -1007,7 +1007,7 @@ char *  string::prefix(const char * raw, const char * pattern)
     result = new char[1]();
   } else {
     int i  = 0;
-    result = new char[index];
+    result = new char[index+1];
     while( i < index ) {
       result[i] = raw[i];
       i++;
