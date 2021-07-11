@@ -766,15 +766,15 @@ char * string::repeated(const char *string, int times)
 char * string::replaceChar(const char *string, const char before, const char after, int start)
 {
   int i, j;
-  int string_len = strlen(string);
-  auto result = new char[string_len + 1];
+  int  len = strlen(string);
+  auto result = new char[len + 1];
 
   if ( start < 0 ) {
-    start = string_len + start;
+    start = len + start;
   }
 
-  if ( start > string_len ) {
-    start = string_len;
+  if ( start > len ) {
+    start = len;
   }
 
   if ( start > 0 ) {
@@ -783,7 +783,7 @@ char * string::replaceChar(const char *string, const char before, const char aft
     }
   }
 
-  for(i = start, j = start; i < string_len; i++) {
+  for(i = start, j = start; i < len; i++) {
     if( string[i] == before) {
       result[j] = after;
       j++;
