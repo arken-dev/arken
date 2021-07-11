@@ -773,6 +773,10 @@ char * string::replaceChar(const char *string, const char before, const char aft
     start = string_len + start;
   }
 
+  if ( start > string_len ) {
+    start = string_len;
+  }
+
   if ( start > 0 ) {
     for( int k = 0; k < start; k++) {
       result[k] = string[k];
@@ -781,10 +785,8 @@ char * string::replaceChar(const char *string, const char before, const char aft
 
   for(i = start, j = start; i < string_len; i++) {
     if( string[i] == before) {
-      if( after != '\0' ) {
-        result[j] = after;
-        j++;
-      }
+      result[j] = after;
+      j++;
     } else {
       result[j] = string[i];
       j++;
