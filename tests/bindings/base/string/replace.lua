@@ -6,7 +6,7 @@ test['should replace multiple string with equal size'] = function()
   assert( res == "th** ** a test", res )
 end
 
-test['should replace multiple string with equal size'] = function()
+test['should replace multiple string with diff size'] = function()
   local str = "this is a test"
   local res = str:replace("is", "*")
   assert( res == "th* * a test", res )

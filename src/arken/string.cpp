@@ -872,67 +872,60 @@ char * string::squish(const char *string)
   return result;
 }
 
-//http://stackoverflow.com/questions/779875/what-is-the-function-to-replace-string-in-c
-// refactory using indexOf
-char * string::replace(const char * original, const char * pattern, const char * replacement, int start)
+char * string::replace(const char * string, const char * before, const char * after, int start)
 {
-  size_t const replen = strlen(replacement);
-  size_t const patlen = strlen(pattern);
-  size_t const orilen = strlen(original);
+  int count = 0;
+  int i = 0;
+  int j = 0;
+  int pos;
+  size_t string_len = strlen(string);
+  size_t before_len = strlen(before);
+  size_t after_len  = strlen(after);
+  size_t result_len;
+  char * result;
 
-  size_t patcnt = 0;
-  const char * oriptr;
-  const char * patloc;
-
-  // find how many times the pattern occurs in the original string
-  for (oriptr = original; (patloc = strstr(oriptr, pattern)); oriptr = patloc + patlen)
-  {
-    patcnt++;
+  if( start < 0 ) {
+    start = string_len + start;
   }
 
-  {
-    // allocate memory for the new string
-    size_t const retlen = orilen + patcnt * (replen - patlen);
-    auto const returned = new char[retlen + 1];
+  pos = start;
 
-    if (returned != nullptr)
-    {
-      if ( start < 0 ) {
-        start = orilen + start;
-      }
+  while( (pos = string::indexOf(string, before, pos)) != -1 ) {
+    pos++;
+    count++;
+  }
 
-      if ( start > 0 ) {
-        for( int k = 0; k < start; k++) {
-          returned[k] = original[k];
-        }
-      }
+  result_len = string_len + (after_len - before_len) * count;
+  result = new char[result_len + 1];
 
-      // copy the original string, 
-      // replacing all the instances of the pattern
-      char * retptr = returned + start;
-      size_t position = 0;
-      for (oriptr = original + start; (patloc = strstr(oriptr, pattern)); oriptr = patloc + patlen)
-      {
-        size_t const skplen = patloc - oriptr;
-        position += skplen;
-        // copy the section until the occurence of the pattern
-        strncpy(retptr, oriptr, skplen);
-        retptr += skplen;
+  pos = start;
 
-        // copy the replacement 
-        strncpy(retptr, replacement, replen);
-        retptr   += replen;
-        position += replen;
-      }
-      size_t result = retlen - (position + start);
-      //strcpy(retptr, oriptr);
-      if( result > 0 ) {
-        strncpy(retptr, oriptr, result);
-      }
-      returned[retlen] = '\0';
+  while( (pos = string::indexOf(string, before, pos)) != -1 ) {
+
+    while( j < pos ) {
+      result[i] = string[j];
+      i++;
+      j++;
     }
-    return returned;
+
+    j += before_len;
+    for(size_t k = 0; k < after_len; k++) {
+      result[i] = after[k];
+      i++;
+    }
+
+    pos++;
   }
+
+  while( static_cast<unsigned int>(j) < string_len ) {
+    result[i] = string[j];
+    i++;
+    j++;
+  }
+
+  result[i] = '\0';
+
+  return result;
 }
 
 List string::split(const char * raw, const char * pattern)
