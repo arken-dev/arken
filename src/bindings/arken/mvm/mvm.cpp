@@ -92,6 +92,20 @@ arken_mvm_cext(lua_State *L) {
   return 1;
 }
 
+static int
+arken_mvm_threads(lua_State *L) {
+  if(lua_gettop(L) == 1) { // number of arguments
+    int threads = luaL_checkinteger(L, 1);
+    mvm::threads(threads);
+    return 0;
+  } else {
+    int threads = mvm::threads();
+    lua_pushinteger(L, threads);
+    return 1;
+  }
+}
+
+
 static void
 register_arken_mvm( lua_State *L ) {
   static const luaL_reg Map[] = {
@@ -107,6 +121,7 @@ register_arken_mvm( lua_State *L ) {
     {"path",    arken_mvm_path},
     {"env",     arken_mvm_env},
     {"cext",    arken_mvm_cext},
+    {"threads", arken_mvm_threads},
     {NULL, NULL}
   };
   luaL_newmetatable(L, "mvm");

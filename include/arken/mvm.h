@@ -125,6 +125,7 @@ class mvm {
   static uint32_t gc();
   static uint32_t clear();
   static uint32_t threads();
+  static void threads(uint32_t threads);
   static void push(mvm::data *);
   static void back(mvm::data *);
   static double uptime();
