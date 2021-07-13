@@ -1007,7 +1007,7 @@ char *  string::prefix(const char * raw, const char * pattern)
       result[i] = raw[i];
       i++;
     }
-    result[index] = '\0';
+    result[i] = '\0';
   }
 
   return result;
