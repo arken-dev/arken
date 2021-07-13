@@ -192,24 +192,26 @@ int string::count(const char * str1, const char * str2)
 // "string\n".chop     #=> "string"
 // "string".chop       #=> "strin"
 // "x".chop.chop       #=> ""
-char * string::chop(const char * string, int n)
+char * string::chop(const char * str)
 {
-  char * result;
-  int len = strlen(string);
+  size_t len = strlen(str);
+  char * res;
 
-  if ( n > len ) {
-    result = new char[1]();
+  if( len == 0 ) {
+    res = new char[1]();
   } else {
-    int size = len - n;
-    result = new char[size+1];
-    int i;
-    for( i = 0; i < size; i ++ ) {
-      result[i] = string[i];
+    len--;
+    if( str[len-1] == '\r' ) {
+      len--;
     }
-    result[i] = '\0';
+    res = new char[len + 1];
+    for(size_t i=0; i < len; i++) {
+      res[i] = str[i];
+    }
+    res[len] = '\0';
   }
 
-  return result;
+  return res;
 }
 
 static inline int arken_string_dasherize_special_char(const char *string, int i)
@@ -1434,9 +1436,9 @@ bool string::contains(const char * str)
   return arken::string::contains(m_data, str);
 }
 
-string string::chop(int n)
+string string::chop()
 {
-  return string::chop(m_data, n);
+  return string::chop(m_data);
 }
 
 int string::count(const char * str)

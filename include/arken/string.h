@@ -34,7 +34,7 @@ class string {
   static char * camelCase(const char * string, bool lcfirst = false);
   static char * capitalize(const char * string);
   static char * center(const char * string, size_t size, const char * pad);
-  static char * chop(const char * string, int n);
+  static char * chop(const char * string);
   static bool   contains(const char * string, const char * str);
   static int    count(const char * str1, const char * str2);
   static char * dasherize(const char *string);
@@ -101,7 +101,7 @@ class string {
   string camelCase(bool lcfirst = false);
   string capitalize();
   string center(size_t size, const char * pad);
-  string chop(int n);
+  string chop();
   bool   contains(const char * str);
   int    count(const char * str2);
   void   clear();

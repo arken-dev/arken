@@ -95,8 +95,7 @@ arken_string_center( lua_State *L ) {
 static int
 arken_string_chop( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
-  int n =  luaL_checkinteger(L, 2);
-  char * result = string::chop(string, n);
+  char * result = string::chop(string);
   lua_pushstring(L, result);  /* push result */
   delete[] result;
   return 1;
@@ -655,8 +654,7 @@ arken_StringInstanceMethodCount( lua_State *L ) {
 static int
 arken_StringInstanceMethodChop( lua_State *L ) {
   string * udata = checkString( L );
-  int n = luaL_checkinteger(L, 2);
-  string result = udata->chop(n);
+  string result = udata->chop();
   lua_pushlstring(L, result.data(), result.size());
   return 1;
 }
