@@ -65,7 +65,7 @@ add_library(
   ${httpserver}
   ${arken-notify}
   ${os} ${os-executablePath} ${os-filesystem} ${os-name} ${os-pid} ${os-uuid}
-  ${concurrent} ${concurrent-task}
+  ${concurrent} ${concurrent-task} ${arken-concurrent-worker}
   ${regex}
   ${time}
   ${mongrel2}

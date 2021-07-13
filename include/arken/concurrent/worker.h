@@ -35,12 +35,11 @@ namespace concurrent {
     std::mutex m_mutex;
     Shared m_shared;
 
-    void run();
     bool release();
     bool purge();
+    void run();
 
     public:
-
     worker( const char * fileName, const char * params, bool purge );
     ~worker();
 
@@ -62,17 +61,16 @@ namespace concurrent {
 
       bool release();
       string dequeue();
-      void run();
       node(worker * ptr, string fileName, uint32_t number);
 
       public:
+      void run();
       uint32_t number();
       string uuid();
       Shared shared();
 
     };
 
-    static void working(node * n);
   };
 
 
