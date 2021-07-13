@@ -1,5 +1,5 @@
-local test = {}
 local md5  = require('arken.digest.md5')
+local test = {}
 
 test['should return md5 calc'] = function()
   local result = md5.file('util/tests/digest/file.txt')
