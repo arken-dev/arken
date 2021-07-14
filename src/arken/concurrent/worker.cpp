@@ -13,6 +13,8 @@
 namespace arken {
 namespace concurrent {
 
+std::atomic<uint32_t> worker::s_max{0};
+
 void worker::wait()
 {
   mvm::wait();
@@ -109,12 +111,18 @@ void worker::run()
     luaL_error(L, "no final nao e table table not found");
   }
 
-
   //---------------------------------------------------------------------------
   // PERFORM
   //---------------------------------------------------------------------------
 
-  unsigned int cores = os::cores();
+  unsigned int cores;
+
+  if( s_max ) {
+    cores = s_max;
+  } else {
+    cores = os::cores();
+  }
+
   if( m_queue.size() < cores ) {
     cores = m_queue.size();
   }

@@ -7,7 +7,7 @@ set_property(
 )
 
 if(ARKEN_CONCURRENT_WORKER STREQUAL "")
-  set(ARKEN_CONCURRENT_WORKER "standalone")
+  set(ARKEN_CONCURRENT_WORKER "mvm")
 endif()
 
 set( arken-concurrent-worker ${PROJECT_SOURCE_DIR}/src/arken/concurrent/worker/${ARKEN_CONCURRENT_WORKER}.cpp )

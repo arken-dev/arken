@@ -10,11 +10,10 @@ namespace arken {
 namespace concurrent {
 namespace task {
 
-using mvm = arken::mvm;
 
 std::mutex fifo::s_mutex;
-std::atomic<uint32_t> fifo::s_max(mvm::threads());
-std::atomic<uint32_t> fifo::s_actives(0);
+std::atomic<uint32_t> fifo::s_max{mvm::threads()};
+std::atomic<uint32_t> fifo::s_actives{0};
 
 fifo::fifo()
 {
@@ -182,7 +181,6 @@ bool fifo::node::finished()
 {
   return (*m_ref_bool.get()) == true;
 }
-
 
 }  // namespace task
 }  // namespace concurrent

@@ -21,6 +21,7 @@ namespace task {
 
   class fifo : public Base {
 
+    using mvm    = arken::mvm;
     using string = arken::string;
     using Shared = arken::concurrent::Shared;
 

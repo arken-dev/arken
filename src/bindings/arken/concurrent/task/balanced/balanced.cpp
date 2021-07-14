@@ -80,7 +80,6 @@ arken_balanced_actives(lua_State *L) {
   return 1;
 }
 
-
 static const luaL_reg NaiadClassMethods[] = {
   {"start",   arken_balanced_start},
   {"wait",    arken_balanced_wait},
@@ -169,7 +168,6 @@ registerNodeInstanceMethods( lua_State *L ) {
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
-
 
 extern "C" {
   int

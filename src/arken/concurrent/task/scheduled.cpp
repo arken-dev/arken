@@ -11,8 +11,8 @@ namespace concurrent {
 namespace task {
 
 std::mutex scheduled::s_mutex;
-std::atomic<int> scheduled::s_max{1};
-std::atomic<int> scheduled::s_actives{0};
+std::atomic<uint32_t> scheduled::s_max{mvm::threads()};
+std::atomic<uint32_t> scheduled::s_actives{0};
 
 scheduled::scheduled()
 {
@@ -286,7 +286,6 @@ bool scheduled::node::finished()
 {
   return (*m_ref_bool.get()) == true;
 }
-
 
 }  // namespace task
 }  // namespace concurrent

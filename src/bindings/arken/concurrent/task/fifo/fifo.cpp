@@ -23,7 +23,6 @@ checkNode( lua_State *L ) {
   return *(fifo::node **) luaL_checkudata(L, 1, "arken.concurrent.task.fifo.node.metatable");
 }
 
-
 //-----------------------------------------------------------------------------
 // Class Methods
 //-----------------------------------------------------------------------------
@@ -74,7 +73,6 @@ arken_fifo_actives(lua_State *L) {
   lua_pushinteger(L, fifo::s_actives);
   return 1;
 }
-
 
 static const luaL_reg NaiadClassMethods[] = {
   {"start",   arken_fifo_start},

@@ -57,9 +57,17 @@ arken_worker_wait(lua_State *L) {
   return 0;
 }
 
+static int
+arken_worker_max(lua_State *L) {
+  int max = luaL_checkinteger(L, 1);
+  worker::s_max = max;
+  return 0;
+}
+
 static const luaL_reg TaskClassMethods[] = {
   {"start", arken_worker_start},
   {"wait",  arken_worker_wait},
+  {"max",   arken_worker_max},
   {NULL, NULL}
 };
 

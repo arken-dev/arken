@@ -21,6 +21,7 @@ namespace task {
 
   class priority : public Base {
 
+    using mvm    = arken::mvm;
     using string = arken::string;
     using Shared = arken::concurrent::Shared;
 
@@ -68,8 +69,8 @@ namespace task {
 
     public:
     static priority::node dequeue();
-    static std::atomic<int> s_actives;
-    static std::atomic<int> s_max;
+    static std::atomic<uint32_t> s_actives;
+    static std::atomic<uint32_t> s_max;
 
   };
 

@@ -10,11 +10,9 @@ namespace arken {
 namespace concurrent {
 namespace task {
 
-using mvm = arken::mvm;
-
 std::mutex priority::s_mutex;
-std::atomic<int> priority::s_max(1);
-std::atomic<int> priority::s_actives(0);
+std::atomic<uint32_t> priority::s_max{mvm::threads()};
+std::atomic<uint32_t> priority::s_actives{0};
 
 priority::priority()
 {

@@ -49,6 +49,8 @@ namespace concurrent {
     void enqueue(string && node);
     string uuid();
     Shared shared();
+    static std::atomic<uint32_t> s_max;
+
 
     public:
     class node : public Base {

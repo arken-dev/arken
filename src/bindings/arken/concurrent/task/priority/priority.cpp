@@ -23,7 +23,6 @@ checkNode( lua_State *L ) {
   return *(priority::node **) luaL_checkudata(L, 1, "arken.concurrent.task.priority.node.metatable");
 }
 
-
 //-----------------------------------------------------------------------------
 // Class Methods
 //-----------------------------------------------------------------------------
@@ -79,7 +78,6 @@ arken_priority_actives(lua_State *L) {
   lua_pushinteger(L, priority::s_actives);
   return 1;
 }
-
 
 static const luaL_reg NaiadClassMethods[] = {
   {"start",   arken_priority_start},
@@ -169,7 +167,6 @@ registerNodeInstanceMethods( lua_State *L ) {
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
-
 
 extern "C" {
   int

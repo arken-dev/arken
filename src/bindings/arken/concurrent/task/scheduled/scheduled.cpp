@@ -23,7 +23,6 @@ checkNode( lua_State *L ) {
   return *(scheduled::node **) luaL_checkudata(L, 1, "arken.concurrent.task.scheduled.node.metatable");
 }
 
-
 //-----------------------------------------------------------------------------
 // Class Methods
 //-----------------------------------------------------------------------------
@@ -79,7 +78,6 @@ arken_scheduled_actives(lua_State *L) {
   lua_pushinteger(L, scheduled::s_actives);
   return 1;
 }
-
 
 static const luaL_reg NaiadClassMethods[] = {
   {"start",   arken_scheduled_start},
@@ -169,7 +167,6 @@ registerNodeInstanceMethods( lua_State *L ) {
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
-
 
 extern "C" {
   int

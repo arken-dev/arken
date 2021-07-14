@@ -11,12 +11,9 @@ namespace arken {
 namespace concurrent {
 namespace task {
 
-using mvm    = arken::mvm;
-using string = arken::string;
-
 std::mutex balanced::s_mutex;
-std::atomic<int> balanced::s_max{1};
-std::atomic<int> balanced::s_actives{0};
+std::atomic<uint32_t> balanced::s_max{mvm::threads()};
+std::atomic<uint32_t> balanced::s_actives{0};
 
 balanced::balanced()
 {
