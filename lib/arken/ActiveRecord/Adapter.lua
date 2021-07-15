@@ -736,7 +736,7 @@ function ActiveRecord_Adapter.dateParserValue(value)
 end
 
 function ActiveRecord_Adapter.numberParserValue(value)
-  if tostring(value):contains(',') then
+  if type(value) == 'string' and value:contains(',') then
     return tonumber(value:replace('.', ''):replace(',', '.'))
   else
     return tonumber(value)
