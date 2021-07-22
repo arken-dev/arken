@@ -1141,6 +1141,15 @@ char * string::truncate(const char *string, int pos, const char * omission, cons
 
   string_len = strlen(string);
 
+  if( string_len < pos ) {
+    result = new char[ string_len + 1 ];
+    for( int i=0; i < string_len; i++ ) {
+      result[i] = string[i];
+    }
+    result[string_len] = '\0';
+    return result;
+  }
+
   if( omission == nullptr ) {
     omission_len = 0;
   } else {
