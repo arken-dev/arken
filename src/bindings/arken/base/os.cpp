@@ -267,6 +267,7 @@ int luaopen_arken_os( lua_State *L ) {
     {"exists",     arken_os_exists},
     {"executablePath", arken_os_executablePath},
     {"glob",       arken_os_glob},
+    {"find",       arken_os_glob},
     {"home",       arken_os_home},
     {"hostname",   arken_os_hostname},
     {"isfile",     arken_os_isfile},

@@ -25,7 +25,7 @@ function M.start(worker)
     os.mkdir(dir)
   end
 
-  local list = os.glob('./app/models', true)
+  local list = os.find('./app/models', true)
   for i = 1, list:size() do
     local filePath = list:at(i)
     if filePath:endsWith(".lua") then
@@ -54,7 +54,7 @@ function M.run(worker, fileName)
   local dirName   = fileName:replace(".lua", ""):replace("/app", "/tests")
   local modelName = dirName:replace("./tests/models/", ""):replace("/", ".")
 
-  local list = os.glob(dirName)
+  local list = os.find(dirName)
   package.loaded[modelName] = nil
 
   for i = 1, list:size() do
