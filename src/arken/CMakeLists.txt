@@ -42,6 +42,7 @@ include_directories(${PROJECT_SOURCE_DIR}/src/vendors/mongrel2/http11)
 file(GLOB src      ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
 file(GLOB image    ${CMAKE_CURRENT_SOURCE_DIR}/image/*.cpp)
 file(GLOB os       ${CMAKE_CURRENT_SOURCE_DIR}/os/*.c)
+file(GLOB os-glob  ${PROJECT_SOURCE_DIR}/src/vendors/apple/glob.c)
 file(GLOB net      ${CMAKE_CURRENT_SOURCE_DIR}/net/*.cpp)
 file(GLOB concurrent ${CMAKE_CURRENT_SOURCE_DIR}/concurrent/*.cpp)
 file(GLOB concurrent-task ${CMAKE_CURRENT_SOURCE_DIR}/concurrent/task/*.cpp)
@@ -64,7 +65,7 @@ add_library(
   ${net}
   ${httpserver}
   ${arken-notify}
-  ${os} ${os-executablePath} ${os-filesystem} ${os-name} ${os-pid} ${os-uuid}
+  ${os} ${os-executablePath} ${os-filesystem} ${os-name} ${os-pid} ${os-uuid} ${os-glob}
   ${concurrent} ${concurrent-task} ${arken-concurrent-worker}
   ${regex}
   ${time}

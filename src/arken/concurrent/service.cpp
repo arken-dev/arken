@@ -118,7 +118,7 @@ bool service::loop(int secs)
 
 void service::load(const char * dirName)
 {
-  List list = os::glob(dirName, ".lua$");
+  List list = os::find(dirName, ".lua$");
   for( int i = 0; i < list.size(); i++ ) {
     std::cout << "start service " << list[i] << std::endl;
     service::start(list[i], "{}", false);

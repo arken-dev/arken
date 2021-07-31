@@ -13,6 +13,7 @@
 #include <iostream>
 #include <fstream>
 #include <arken/net/HttpClient>
+#include <apple/glob.h>
 
 #include <QDir>
 #include <QDirIterator>
@@ -53,12 +54,33 @@ unsigned int os::cores()
   return std::thread::hardware_concurrency();
 }
 
-List os::glob(const char * dir)
+List os::glob(const char * pattern)
 {
-  return os::glob(dir, false);
+  std::cout << "glob posix " << pattern << std::endl;
+  List list;
+  glob_t paths;
+  int retval;
+
+  paths.gl_pathc = 0;
+  paths.gl_offs  = 0;
+  paths.gl_pathv = NULL;
+
+  retval = ::glob( pattern, GLOB_NOCHECK | GLOB_BRACE, NULL, &paths );
+  if( retval == 0 ) {
+    for( int idx = 0; idx < paths.gl_pathc; idx++ ) {
+      //printf( "[%d]: %s\n", idx, paths.gl_pathv[idx] );
+      list.append( paths.gl_pathv[idx] );
+    }
+
+    globfree( &paths );
+  } else {
+    puts( "glob() failed" );
+  }
+
+  return list;
 }
 
-List os::glob(const char * dir, bool sub)
+List os::find(const char * dir, bool sub)
 {
   List list;
   QDirIterator::IteratorFlags flags;
@@ -77,12 +99,7 @@ List os::glob(const char * dir, bool sub)
   return list;
 }
 
-List os::glob(const char * dir, const char * regex)
-{
-  return os::glob(dir, regex, false);
-}
-
-List os::glob(const char * dir, const char * regex, bool sub)
+List os::find(const char * dir, const char * regex, bool sub)
 {
 
   QRegExp qregex(regex);

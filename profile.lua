@@ -17,7 +17,7 @@ require 'arken.package'
 -------------------------------------------------------------------------------
 
 local mvm  = require 'arken.mvm'
-local list = os.glob(mvm.path() .. '/profile.d', '.lua$')
+local list = os.find(mvm.path() .. '/profile.d', '.lua$')
 
 for fileName in list:each() do
   dofile(fileName)

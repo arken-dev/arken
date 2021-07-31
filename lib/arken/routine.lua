@@ -101,7 +101,7 @@ rhea.run = function(args)
       end
     end
     for _, str in ipairs(path) do
-      local list = os.glob(str, "\\.lua$", false)
+      local list = os.find(str, "\\.lua$", false)
       for i = 1, list:size() do
         local module = dofile(list:at(i))
         rhea.output(module.className:underscore())

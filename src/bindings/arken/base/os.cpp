@@ -89,21 +89,34 @@ static int arken_os_executablePath( lua_State *L ) {
 static int arken_os_glob( lua_State *L ) {
   const char * path = luaL_checkstring(L, 1);
   List list(0);
+  list = os::glob( path );
+
+  List **ptr = (List **)lua_newuserdata(L, sizeof(List*));
+  *ptr = new List(list);
+  luaL_getmetatable(L, "arken.string.List.metatable");
+  lua_setmetatable(L, -2);
+
+  return 1;
+}
+
+static int arken_os_find( lua_State *L ) {
+  const char * path = luaL_checkstring(L, 1);
+  List list(0);
 
   if( lua_gettop(L) == 1 ) { /* número de argumentos */
-    list = os::glob( path );
+    list = os::find( path );
   }
 
   if( lua_gettop(L) == 2 ) { /* número de argumentos */
     if( lua_isboolean(L, 2) ) {
-      list = os::glob( path, lua_toboolean(L, 2) );
+      list = os::find( path, lua_toboolean(L, 2) );
     } else {
-      list = os::glob( path, lua_tostring(L, 2) );
+      list = os::find( path, lua_tostring(L, 2) );
     }
   }
 
   if( lua_gettop(L) == 3 ) { /* número de argumentos */
-    list = os::glob( path, lua_tostring(L, 2), lua_toboolean(L, 3) );
+    list = os::find( path, lua_tostring(L, 2), lua_toboolean(L, 3) );
   }
 
   List **ptr = (List **)lua_newuserdata(L, sizeof(List*));
@@ -113,6 +126,7 @@ static int arken_os_glob( lua_State *L ) {
 
   return 1;
 }
+
 
 static int arken_os_home( lua_State *L ) {
   char * result = os::home();
@@ -267,7 +281,7 @@ int luaopen_arken_os( lua_State *L ) {
     {"exists",     arken_os_exists},
     {"executablePath", arken_os_executablePath},
     {"glob",       arken_os_glob},
-    {"find",       arken_os_glob},
+    {"find",       arken_os_find},
     {"home",       arken_os_home},
     {"hostname",   arken_os_hostname},
     {"isfile",     arken_os_isfile},
