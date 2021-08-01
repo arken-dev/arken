@@ -25,13 +25,11 @@ function M.start(worker)
     os.mkdir(dir)
   end
 
-  local list = os.find('./app/models', true)
+  local list = os.find('./app/models', '\\.lua$', true)
   for i = 1, list:size() do
     local filePath = list:at(i)
-    if filePath:endsWith(".lua") then
-      table.insert(files, filePath)
-      worker:enqueue(filePath)
-    end
+    table.insert(files, filePath)
+    worker:enqueue(filePath)
   end
 end
 
