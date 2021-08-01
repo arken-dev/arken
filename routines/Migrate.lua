@@ -32,10 +32,10 @@ function Migrate:runPrepare()
 end
 
 function Migrate:run()
-  local glob = os.glob(Migrate.dir, ".*(lua$|sql$)", true)
-  local list = {}
-  for i = 1, glob:size() do
-    table.insert(list, glob:at(i))
+  local files = os.find(Migrate.dir, ".*(lua$|sql$)")
+  local list  = {}
+  for i = 1, files:size() do
+    table.insert(list, files:at(i))
   end
   table.sort(list)
 
