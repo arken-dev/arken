@@ -108,11 +108,7 @@ static int arken_os_find( lua_State *L ) {
   }
 
   if( lua_gettop(L) == 2 ) { /* número de argumentos */
-    if( lua_isboolean(L, 2) ) {
-      list = os::find( path, lua_toboolean(L, 2) );
-    } else {
-      list = os::find( path, lua_tostring(L, 2) );
-    }
+    list = os::find( path, luaL_checkstring(L, 2) );
   }
 
   if( lua_gettop(L) == 3 ) { /* número de argumentos */

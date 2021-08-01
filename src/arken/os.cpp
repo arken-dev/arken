@@ -80,25 +80,6 @@ List os::glob(const char * pattern)
   return list;
 }
 
-List os::find(const char * dir, bool sub)
-{
-  List list;
-  QDirIterator::IteratorFlags flags;
-
-  if( sub ) {
-    flags = QDirIterator::Subdirectories;
-  }
-
-  QDirIterator iterator(QString(dir), flags);
-
-  while( iterator.hasNext() ) {
-    iterator.next();
-    list.append( iterator.fileInfo().filePath().toLocal8Bit().data() );
-  }
-
-  return list;
-}
-
 List os::find(const char * dir, const char * regex, bool sub)
 {
 
