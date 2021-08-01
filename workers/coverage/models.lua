@@ -52,14 +52,12 @@ function M.run(worker, fileName)
   local dirName   = fileName:replace(".lua", ""):replace("/app", "/tests")
   local modelName = dirName:replace("./tests/models/", ""):replace("/", ".")
 
-  local list = os.find(dirName)
+  local list = os.find(dirName, '\\.lua$')
   package.loaded[modelName] = nil
 
   for i = 1, list:size() do
     local filePath = list:at(i)
-    if filePath:endsWith(".lua") then
-      table.insert(tests, filePath)
-    end
+    table.insert(tests, filePath)
   end
 
   coverage.reset()
