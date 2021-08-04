@@ -571,4 +571,14 @@ test['format 106.66666666667 to 106,67'] = function()
   assert( value == '106,67' )
 end
 
+test['format -0.003 to 0,00'] = function()
+  local value = math.format(tonumber('-0.003'), 2, ',', '.')
+  assert( value == '0,00' )
+end
+
+test['format -0.003 to -0,003'] = function()
+  local value = math.format(tonumber('-0.003'), 3, ',', '.')
+  assert( value == '-0,003', value )
+end
+
 return test

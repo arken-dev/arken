@@ -94,6 +94,7 @@ char * math::format(double value, int decimals, char dec_point, char thousands_s
   if( index == -1 ) {
     index = string::indexOf(tmp, ",");
   }
+
   int idx  = index;
   int len  = index;
   int t    = 0;
@@ -113,8 +114,10 @@ char * math::format(double value, int decimals, char dec_point, char thousands_s
     if (ts % 3 == 0) {
       t--;
     }
-    len += t;
-    idx += t;
+    if( t > 0 ) {
+      len += t;
+      idx += t;
+    }
   }
 
   if (decimals == 0) {
