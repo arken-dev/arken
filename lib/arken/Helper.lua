@@ -293,7 +293,7 @@ function Helper:selectHash(field, list, value, options)
     options.multiple = nil
   end
 
-  html = html .. [[ id=%q name=%q ]]
+  html = html .. [[ id=%q name=%q style=%q >]]
   html = string.format(html, field:normalize(), field, style)
   html = html .. self:htmlOptions(options)
   html = html .. ' >'
