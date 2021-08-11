@@ -9,19 +9,25 @@
 
 #include <arken/base>
 #include <arken/mvm>
+#include <unordered_map>
 
 namespace arken {
 namespace concurrent {
 
   class service : public Base {
 
+    static
+    std::atomic<uint32_t> s_version;
+    static
+    std::unordered_map<string, bool> s_references;
+    static
+    string s_dirName;
+
     uint32_t m_version;
-
-    bool m_purge;
-    bool m_release;
-
-    string m_fileName;
-    string m_params;
+    bool     m_purge;
+    bool     m_release;
+    string   m_fileName;
+    string   m_params;
 
     service( const char * fileName, const char * params, bool purge = false);
     ~service();

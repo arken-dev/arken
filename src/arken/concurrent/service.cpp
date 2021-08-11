@@ -9,6 +9,10 @@ using List = arken::string::List;
 namespace arken {
 namespace concurrent {
 
+std::atomic<uint32_t> service::s_version(mvm::version());
+std::unordered_map<string, bool> service::s_references;
+string service::s_dirName;
+
 service::service( const char * fileName, const char * params, bool purge )
 {
   m_version  = mvm::version();
@@ -16,6 +20,8 @@ service::service( const char * fileName, const char * params, bool purge )
   m_params   = params;
   m_purge    = purge;
   m_release  = true;
+
+  s_references[fileName] = true;
 }
 
 service::~service()
@@ -84,8 +90,19 @@ void service::run()
     lua_gc(L, LUA_GCCOLLECT, 0);
   }
 
+  if( service::s_version < mvm::version() ) {
+    service::s_version = mvm::version();
+    std::cout << "reloading service ..." << std::endl;
+    service::load(s_dirName);
+  }
+
   os::sleep(1);
-  mvm::concurrent( new service(m_fileName, m_params, m_purge) );
+  if (os::exists(m_fileName)) {
+    mvm::concurrent( new service(m_fileName, m_params, m_purge) );
+  } else {
+    std::cout << "erase service " << m_fileName << std::endl;
+    s_references.erase(m_fileName);
+  }
 } //run
 
 bool service::release()
@@ -118,10 +135,16 @@ bool service::loop(int secs)
 
 void service::load(const char * dirName)
 {
+  if( s_dirName.empty() ) {
+    s_dirName = dirName;
+  }
+
   List list = os::find(dirName, ".lua$");
   for( int i = 0; i < list.size(); i++ ) {
     std::cout << "start service " << list[i] << std::endl;
-    service::start(list[i], "{}", false);
+    if( service::s_references.count( list[i] ) == 0 ) {
+      service::start(list[i], "{}", false);
+    }
   }
 }
 
