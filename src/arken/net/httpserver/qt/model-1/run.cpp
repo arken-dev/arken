@@ -12,7 +12,7 @@
 namespace arken {
 namespace net {
 
-void HttpServer::start()
+void HttpServer::run()
 {
   std::cout << "start arken.net.HttpServer (qt-model-1) " << m_address <<
      ":" << m_port << " (" << m_threads << ") threads..." << std::endl;

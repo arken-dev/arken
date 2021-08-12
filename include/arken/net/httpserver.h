@@ -19,6 +19,7 @@ class HttpServer
   string dispatcher;
   string m_address;
   string m_pid;
+  string m_service;
   int    m_port;
   int    m_threads;
 
@@ -31,7 +32,11 @@ class HttpServer
   void setThreads(int threads);
   void setPid(const char * pid);
   void setDispatcher(string dispatcher);
+  void setService(string service);
   void start();
+
+  private:
+  void run();
 
 };
 

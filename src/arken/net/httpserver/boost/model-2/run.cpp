@@ -18,7 +18,7 @@
 namespace arken {
 namespace net {
 
-void HttpServer::start()
+void HttpServer::run()
 {
   try
   {

@@ -21,7 +21,7 @@ int arkenFileLoad(lua_State *L, const char * filename)
     return rv;
   }
 
-  rv = lua_pcall(L, 0, 0, lua_gettop(L) - 1);
+  rv = lua_pcall(L, 0, 0, 0);
   if (rv) {
     fprintf(stderr, "%s\n", lua_tostring(L, -1));
     return rv;

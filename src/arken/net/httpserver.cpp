@@ -11,6 +11,7 @@
 #include <arken/net/httpbody.h>
 #include <arken/net/httpenv.h>
 #include <arken/net/httputil.h>
+#include <arken/concurrent/service.h>
 
 namespace arken {
 namespace net {
@@ -39,6 +40,25 @@ void HttpServer::setDispatcher(string dispatcher)
   HttpServer::dispatcher = dispatcher;
 }
 
+void HttpServer::setService(string service)
+{
+  m_service = service;
+}
+
+void HttpServer::start()
+{
+
+  if( !m_service.empty() ) {
+    if( os::exists(m_service) ) {
+      std::cout << "load service in " << m_service << std::endl;
+      arken::concurrent::service::load(m_service);
+    } else {
+      std::cout << "dir service " << m_service << " not exists" << std::endl;
+    }
+  }
+
+  this->run();
+}
 
 std::string HttpServer::handler(const char * data, size_t size)
 {
