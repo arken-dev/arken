@@ -1,4 +1,6 @@
 #include <QMutex>
+#include <arken/string.h>
+#include <arken/os.h>
 
 extern "C" {
 #include <json.h>
@@ -87,6 +89,20 @@ json_decode_data(lua_State *L) {
 }
 
 static int
+json_decode_file(lua_State *L) {
+
+  const char * fileName = luaL_checkstring(L, 1);
+  if( arken::os::exists(fileName) ) {
+    json_lock_decode(L, arken::os::read(fileName));
+    return 1;
+  } else {
+    lua_pushstring(L, arken::string("file ").append(fileName).append("not exists"));
+    lua_error(L);
+    return 0;
+  }
+}
+
+static int
 json_encode_data(lua_State *L) {
   char * data = json_lock_encode(L);
   lua_pushstring(L, data);
@@ -99,6 +115,7 @@ extern "C" {
     static const luaL_reg Map[] = {
       {"decode", json_decode_data},
       {"encode", json_encode_data},
+      {"file",   json_decode_file},
       {NULL, NULL}
     };
     luaL_newmetatable(L, "json");
