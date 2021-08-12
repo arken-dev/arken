@@ -12,6 +12,7 @@ namespace concurrent {
 std::atomic<uint32_t> service::s_version(mvm::version());
 std::unordered_map<string, bool> service::s_references;
 string service::s_dirName;
+std::mutex service::s_mutex;
 
 service::service( const char * fileName, const char * params, bool purge )
 {
@@ -90,8 +91,7 @@ void service::run()
     lua_gc(L, LUA_GCCOLLECT, 0);
   }
 
-  if( service::s_version < mvm::version() ) {
-    service::s_version = mvm::version();
+  if( checkReload() ) {
     std::cout << "reloading service ..." << std::endl;
     service::load(s_dirName);
   }
@@ -104,6 +104,19 @@ void service::run()
     s_references.erase(m_fileName);
   }
 } //run
+
+bool service::checkReload()
+{
+  std::unique_lock<std::mutex> lck(service::s_mutex);
+
+  bool result = false;
+  if( service::s_version < mvm::version() ) {
+    service::s_version = mvm::version();
+    result = true;
+  }
+
+  return result;
+}
 
 bool service::release()
 {
