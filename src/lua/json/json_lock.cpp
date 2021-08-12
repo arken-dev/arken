@@ -96,7 +96,7 @@ json_decode_file(lua_State *L) {
     json_lock_decode(L, arken::os::read(fileName));
     return 1;
   } else {
-    lua_pushstring(L, arken::string("file ").append(fileName).append("not exists"));
+    lua_pushstring(L, arken::string("file ").append(fileName).append(" not exists"));
     lua_error(L);
     return 0;
   }
