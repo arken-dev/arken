@@ -83,10 +83,10 @@ arken_HttpServerInstanceMethodSetDispatcher( lua_State *L ) {
 }
 
 static int
-arken_HttpServerInstanceMethodSetService( lua_State *L ) {
+arken_HttpServerInstanceMethodAddService( lua_State *L ) {
   HttpServer * udata  = checkHttpServer( L );
   const char * service = luaL_checkstring(L, 2);
-  udata->setService(service);
+  udata->addService(service);
   return 0;
 }
 
@@ -103,7 +103,7 @@ luaL_reg HttpServerInstanceMethods[] = {
   {"setThreads",    arken_HttpServerInstanceMethodSetThreads},
   {"setPid",        arken_HttpServerInstanceMethodSetPid},
   {"setDispatcher", arken_HttpServerInstanceMethodSetDispatcher},
-  {"setService",    arken_HttpServerInstanceMethodSetService},
+  {"addService",    arken_HttpServerInstanceMethodAddService},
   {"__gc",          arken_HttpServerInstanceMethodDestruct},
   {NULL, NULL}
 };

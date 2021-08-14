@@ -11,7 +11,7 @@ namespace concurrent {
 
 std::atomic<uint32_t> service::s_version(mvm::version());
 std::unordered_map<string, bool> service::s_references;
-string service::s_dirName;
+std::vector<string> service::s_dirName;
 std::mutex service::s_mutex;
 
 service::service( const char * fileName, const char * params, bool purge )
@@ -93,7 +93,7 @@ void service::run()
 
   if( checkReload() ) {
     std::cout << "reloading service ..." << std::endl;
-    service::load(s_dirName);
+    service::reload();
   }
 
   os::sleep(1);
@@ -146,19 +146,38 @@ bool service::loop(int secs)
   return true;
 }
 
-void service::load(const char * dirName)
+void service::reload()
 {
-  if( s_dirName.empty() ) {
-    s_dirName = dirName;
+  for( size_t i=0; i < s_dirName.size(); i++ ) {
+    service::run(s_dirName[i]);
   }
+}
+
+void service::run(const char * dirName)
+{
 
   List list = os::find(dirName, ".lua$");
+
   for( int i = 0; i < list.size(); i++ ) {
     std::cout << "start service " << list[i] << std::endl;
     if( service::s_references.count( list[i] ) == 0 ) {
       service::start(list[i], "{}", false);
     }
   }
+}
+
+void service::load(const char * dirName)
+{
+
+  std::cout << "load " << dirName << std::endl;
+  if( ! os::exists(dirName) ) {
+    std::cout << "not exists " << dirName << std::endl;
+    return;
+  }
+
+  s_dirName.push_back(dirName);
+  service::run(dirName);
+
 }
 
 } // namespace concurrent

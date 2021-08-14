@@ -6,6 +6,7 @@
 #ifndef _ARKEN_NET_HTTP_SERVER_
 #define _ARKEN_NET_HTTP_SERVER_
 
+#include <vector>
 #include <arken/string.h>
 
 namespace arken {
@@ -19,7 +20,7 @@ class HttpServer
   string dispatcher;
   string m_address;
   string m_pid;
-  string m_service;
+  std::vector<string> m_service;
   int    m_port;
   int    m_threads;
 
@@ -32,7 +33,7 @@ class HttpServer
   void setThreads(int threads);
   void setPid(const char * pid);
   void setDispatcher(string dispatcher);
-  void setService(string service);
+  void addService(string service);
   void start();
 
   private:

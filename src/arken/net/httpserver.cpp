@@ -13,6 +13,8 @@
 #include <arken/net/httputil.h>
 #include <arken/concurrent/service.h>
 
+using service = arken::concurrent::service;
+
 namespace arken {
 namespace net {
 
@@ -40,20 +42,17 @@ void HttpServer::setDispatcher(string dispatcher)
   HttpServer::dispatcher = dispatcher;
 }
 
-void HttpServer::setService(string service)
+void HttpServer::addService(string service)
 {
-  m_service = service;
+  std::cout << "add service " << service << std::endl;
+  m_service.push_back(service);
 }
 
 void HttpServer::start()
 {
-
-  if( !m_service.empty() ) {
-    if( os::exists(m_service) ) {
-      std::cout << "load service in " << m_service << std::endl;
-      arken::concurrent::service::load(m_service);
-    } else {
-      std::cout << "dir service " << m_service << " not exists" << std::endl;
+  if( m_service.size() > 0 ) {
+    for( size_t i=0; i < m_service.size(); i++ ) {
+      service::load(m_service[i]);
     }
   }
 

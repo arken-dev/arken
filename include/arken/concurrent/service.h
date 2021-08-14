@@ -6,8 +6,8 @@
 #ifndef _ARKEN_CONCURRENT_SERVICE_
 #define _ARKEN_CONCURRENT_SERVICE_
 
-
 #include <mutex>
+#include <vector>
 #include <unordered_map>
 #include <arken/base>
 #include <arken/mvm>
@@ -22,7 +22,7 @@ namespace concurrent {
     static
     std::unordered_map<string, bool> s_references;
     static
-    string s_dirName;
+    std::vector<string> s_dirName;
     static
     std::mutex s_mutex;
 
@@ -40,6 +40,8 @@ namespace concurrent {
     public:
     static void start(const char * fileName, const char * params, bool purge = false);
     static void load(const char * dirName);
+    static void run(const char * dirName);
+    static void reload();
     static void wait();
     static bool checkReload();
     bool loop(int secs);
