@@ -56,7 +56,6 @@ unsigned int os::cores()
 
 List os::glob(const char * pattern)
 {
-  std::cout << "glob posix " << pattern << std::endl;
   List list;
   glob_t paths;
   int retval;
@@ -67,8 +66,8 @@ List os::glob(const char * pattern)
 
   retval = ::glob( pattern, GLOB_NOCHECK | GLOB_BRACE, NULL, &paths );
   if( retval == 0 ) {
+
     for( int idx = 0; idx < paths.gl_pathc; idx++ ) {
-      //printf( "[%d]: %s\n", idx, paths.gl_pathv[idx] );
       list.append( paths.gl_pathv[idx] );
     }
 
