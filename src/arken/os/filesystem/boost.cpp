@@ -173,7 +173,7 @@ char * os::target(const char * p)
   return result;
 }
 
-char * os::temp()
+char * os::tmp()
 {
   path path = boost::filesystem::temp_directory_path();
   size_t size = path.string().size();

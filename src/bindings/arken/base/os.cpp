@@ -229,8 +229,8 @@ static int arken_os_target( lua_State *L ) {
   return 1;
 }
 
-static int arken_os_temp( lua_State *L ) {
-  char * result = os::temp();
+static int arken_os_tmp( lua_State *L ) {
+  char * result = os::tmp();
   lua_pushstring( L, result );
   delete[] result;
   return 1;
@@ -294,7 +294,7 @@ int luaopen_arken_os( lua_State *L ) {
     {"rmpath",     arken_os_rmpath},
     {"read",       arken_os_read},
     {"target",     arken_os_target},
-    {"temp",       arken_os_temp},
+    {"tmp",        arken_os_tmp},
     {"touch",      arken_os_touch},
     {"sleep",      arken_os_sleep},
     {"uuid",       arken_os_uuid},

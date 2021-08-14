@@ -185,7 +185,7 @@ char * os::target(const char * path)
   return result;
 }
 
-char * os::temp()
+char * os::tmp()
 {
   QByteArray temp = QDir::tempPath().toLocal8Bit();
   auto result = new char[temp.size() + 1];

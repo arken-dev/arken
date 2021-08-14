@@ -46,7 +46,7 @@ class os {
   static bool     rmpath(const char * dirpath);
   static void     sleep(double secs);
   static char   * target(const char * path);
-  static char   * temp();
+  static char   * tmp();
   static bool     touch(const char * path);
   static char   * uuid();
   static string read(const char * path);
