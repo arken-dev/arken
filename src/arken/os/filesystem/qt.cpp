@@ -32,7 +32,7 @@ char * os::basename(const char * path)
   return result;
 }
 
-uint os::atime(const char * path)
+size_t os::atime(const char * path)
 {
   return QFileInfo(path).lastRead().toTime_t();
 }
@@ -79,7 +79,7 @@ bool os::chdir(const char * dirpath)
   return QDir::setCurrent( dirpath );
 }
 
-uint os::ctime(const char * path)
+size_t os::ctime(const char * path)
 {
   return QFileInfo(path).lastModified().toTime_t();
 }

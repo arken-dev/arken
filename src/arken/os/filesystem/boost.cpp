@@ -26,10 +26,10 @@ char * os::basename(const char * p)
   return result;
 }
 
-uint os::atime(const char * p)
+size_t os::atime(const char * p)
 {
   std::time_t t = boost::filesystem::last_write_time(p);
-  return (uint) t;
+  return (size_t) t;
 }
 
 bool os::copy(const char * source, const char * destination, bool force = false)
@@ -56,10 +56,10 @@ bool os::chdir(const char * dirpath)
   return p.string().compare(os::pwd());
 }
 
-uint os::ctime(const char * p)
+size_t os::ctime(const char * p)
 {
   std::time_t t = boost::filesystem::last_write_time(p);
-  return (uint) t;
+  return (size_t) t;
 }
 
 char * os::dirpath(const char * p)

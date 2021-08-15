@@ -18,13 +18,13 @@ class os {
 
   public:
   static char   * abspath(const char * path);
-  static uint     atime(const char * path);
+  static size_t   atime(const char * path);
   static char   * basename(const char * path);
   static bool     compare(const char * path1, const char * path2);
   static bool     copy(const char * source, const char * destination, bool force);
   static unsigned int cores();
   static bool     chdir(const char * dirpath);
-  static uint     ctime(const char * path);
+  static size_t   ctime(const char * path);
   static char   * dirpath(const char * path);
   static bool     exists(const char * path);
   static char   * executablePath();
