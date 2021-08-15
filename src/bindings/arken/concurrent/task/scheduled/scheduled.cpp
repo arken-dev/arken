@@ -135,11 +135,18 @@ arken_concurrent_channel_node_instance_method_shared( lua_State *L ) {
   return 1;
 }
 
- static int
+static int
 arken_concurrent_channel_node_instance_method_finished( lua_State *L ) {
   scheduled::node * node = checkNode( L );
   lua_pushboolean(L, node->finished());
   return 1;
+}
+
+static int
+arken_concurrent_channel_node_instance_method_wait( lua_State *L ) {
+  scheduled::node * node = checkNode( L );
+  node->wait();
+  return 0;
 }
 
 static int
@@ -156,6 +163,7 @@ luaL_reg NaiadNodeInstanceMethods[] = {
   {"microtime", arken_concurrent_channel_node_instance_method_microtime},
   {"shared",    arken_concurrent_channel_node_instance_method_shared},
   {"finished",  arken_concurrent_channel_node_instance_method_finished},
+  {"wait",      arken_concurrent_channel_node_instance_method_wait},
   {"__gc",      arken_concurrent_channel_node_instance_method_destruct},
   {NULL, NULL}
 };

@@ -58,6 +58,7 @@ namespace task {
       double microtime();
       Shared shared();
       bool finished();
+      void wait();
     };
 
     static balanced::node start(const char * fileName, const char * params,

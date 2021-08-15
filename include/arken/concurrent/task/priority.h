@@ -59,6 +59,7 @@ namespace task {
       double microtime();
       Shared shared();
       bool   finished();
+      void   wait();
     };
 
     static priority::node start(const char * fileName, const char * params, int priority = 0, bool purge = false);

@@ -316,6 +316,13 @@ bool singular::node::finished()
   return (*m_ref_bool.get()) == true;
 }
 
+void singular::node::wait()
+{
+  while ((*m_ref_bool.get()) == false) {
+    os::sleep(0.05);
+  }
+}
+
 }  // namespace task
 }  // namespace concurrent
 }  // namespace arken
