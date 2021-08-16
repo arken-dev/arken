@@ -64,6 +64,8 @@ namespace task {
 
     static singular::node start(const char * fileName, const char * params,
       const char * name = "default", bool purge = false);
+    static singular::node emplace(const char * fileName, const char * params,
+      const char * name = "default", bool purge = false);
     static std::queue<singular::node> &queue();
     static std::vector<string> &vector();
     static std::unordered_map<string, std::queue<singular::node>> &map();
