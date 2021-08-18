@@ -205,7 +205,8 @@ void singular::node::run()
 
   // flag open runners
 
-  runners()[m_name] = true;
+  (*m_ref_bool.get()) = true;
+  runners()[m_name]   = true;
 
   std::unique_lock<std::mutex> lck(singular::s_mutex);
 
@@ -225,7 +226,6 @@ void singular::node::run()
   }
 
 
-  (*m_ref_bool.get()) = true;
 }
 
 void singular::push(const singular::node & node)
