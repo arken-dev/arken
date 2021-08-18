@@ -103,6 +103,25 @@ singular::node singular::emplace(const char * fileName, const char * params, con
   return {};
 }
 
+singular::node singular::place(const char * fileName, const char * params, const char * name, bool purge)
+{
+  std::unique_lock<std::mutex> lck(singular::s_mutex);
+
+  if( singular::runners().count(name) == 0 ) {
+
+    singular::node node = singular::node(fileName, params, name, purge);
+    singular::push( node );
+
+    if(singular::s_actives < singular::runners().size() && singular::s_actives < singular::s_max) {
+      mvm::concurrent( new singular() );
+    }
+
+    return node;
+  } //if
+
+  return {};
+}
+
 
 singular::node::node()
 {}
