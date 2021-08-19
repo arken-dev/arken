@@ -125,7 +125,6 @@ void fifo::node::run()
   if (rv) {
     fprintf(stderr, "erro no inicio: %s\n", lua_tostring(L, -1));
   }
-  (*m_ref_bool.get()) = true;
 
   // GC
   if( m_purge ) {
@@ -134,6 +133,8 @@ void fifo::node::run()
   } else {
     lua_gc(L, LUA_GCCOLLECT, 0);
   }
+
+  (*m_ref_bool.get()) = true;
 }
 
 void fifo::push(const fifo::node & node)

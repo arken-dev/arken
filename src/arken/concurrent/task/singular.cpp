@@ -203,8 +203,6 @@ void singular::node::run()
     lua_gc(L, LUA_GCCOLLECT, 0);
   }
 
-  // flag open runners
-
   (*m_ref_bool.get()) = true;
   runners()[m_name]   = true;
 

@@ -163,9 +163,11 @@ void scheduled::node::run()
     lua_gc(L, LUA_GCCOLLECT, 0);
   }
 
-  // decrease runners
-  std::unique_lock<std::mutex> lck(scheduled::s_mutex);
+  (*m_ref_bool.get()) = true;
   runners()[m_name]--;
+
+  std::unique_lock<std::mutex> lck(scheduled::s_mutex);
+
   if( runners()[m_name] == 0 && map()[m_name].size() == 0 ) {
     map().erase(m_name);
     runners().erase(m_name);
@@ -180,7 +182,6 @@ void scheduled::node::run()
     }
   }
 
-  (*m_ref_bool.get()) = true;
 }
 
 void scheduled::push(const scheduled::node & node)
