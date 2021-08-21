@@ -36,20 +36,16 @@ string Time::toString()
 
 Time * Time::parse(const char * str)
 {
-  char format[11];
-  strncpy(format, "hh:mm", 5);
-  size_t size = 5;
+  string format;
+  format.append("hh:mm");
 
   if(str[5] == ':') {
-    strncat(format, ":ss", 3);
-    size += 3;
+    format.append(":ss");
   }
 
   if(str[8] == '.') {
-    strncat(format, ".z", 2);
-    size += 2;
+    format.append(".z");
   }
-  format[size] = '\0';
 
   Time result = Time::fromString(str, format);
   if( result.isValid() ) {

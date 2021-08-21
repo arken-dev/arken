@@ -59,18 +59,17 @@ string Date::toString()
 
 Date * Date::parse(const char * str)
 {
-  char format[11];
+  string format;
 
   if(str[4] == '-') {
-    strncpy(format, "yyyy-MM-dd", 10);
+    format.append("yyyy-MM-dd");
   } else if(str[4] == '/') {
-    strncpy(format, "yyyy/MM/dd", 10);
+    format.append("yyyy/MM/dd");
   } else if(str[5] == '-') {
-    strncpy(format, "dd-MM-yyyy", 10);
+    format.append("dd-MM-yyyy");
   } else {
-    strncpy(format, "dd/MM/yyyy", 10);
+    format.append("dd/MM/yyyy");
   }
-  format[10] = '\0';
 
   Date result = Date::fromString(str, format);
   if( result.isValid() ) {
