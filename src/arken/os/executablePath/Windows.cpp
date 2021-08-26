@@ -1,9 +1,9 @@
 #include <arken/base>
 #include <windows.h>
 
-char * os::executablePath()
+string os::executablePath()
 {
-  auto path = new char[_MAX_PATH+1];
+  auto path = new char[_MAX_PATH+1]();
   GetModuleFileName(NULL, path, _MAX_PATH);
-  return path;
+  return string(std::move(path));
 }

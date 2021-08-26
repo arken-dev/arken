@@ -1,6 +1,6 @@
 #include <arken/base>
 
-char * os::executablePath()
+string os::executablePath()
 {
   return os::target("/proc/self/exe");
 }

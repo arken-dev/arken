@@ -1354,6 +1354,16 @@ string::string(const arken::string & str)
   m_data[m_size] = '\0';
 }
 
+string::string(const std::string & str)
+{
+  m_size      = str.size();
+  m_reserve   = m_size;
+  m_capacity  = m_size;
+  m_data      = new char[m_size + 1];
+  memcpy( m_data, str.c_str(), str.size() );
+  m_data[m_size] = '\0';
+}
+
 string::~string()
 {
   if( m_data ) {

@@ -6,24 +6,16 @@ namespace arken {
 
 using boost::filesystem::path;
 
-char * os::abspath(const char * p)
+string os::abspath(const char * p)
 {
   path path = boost::filesystem::absolute(p);
-  size_t size = path.string().size();
-  auto result = new char[size + 1];
-  strncpy(result, path.string().c_str(), size);
-  result[size] = '\0';
-  return result;
+  return string(path.string());
 }
 
-char * os::basename(const char * p)
+string os::basename(const char * p)
 {
   path path = boost::filesystem::absolute(p).parent_path();
-  size_t size = path.string().size();
-  auto result =  new char[size + 1];
-  strncpy(result, path.string().c_str(), size);
-  result[size] = '\0';
-  return result;
+  return string(path.string());
 }
 
 size_t os::atime(const char * p)
@@ -62,14 +54,10 @@ size_t os::ctime(const char * p)
   return (size_t) t;
 }
 
-char * os::dirpath(const char * p)
+string os::dirpath(const char * p)
 {
   path path = boost::filesystem::absolute(p).parent_path();
-  size_t size = path.string().size();
-  auto result = new char[size + 1];
-  strncpy(result, path.string().c_str(), size);
-  result[size] = '\0';
-  return result;
+  return string(path.string());
 }
 
 bool os::exists(const char * path)
@@ -77,29 +65,21 @@ bool os::exists(const char * path)
   return boost::filesystem::exists(path);
 }
 
-char * os::home()
+string os::home()
 {
   const char * p = getenv("HOME");
   if( p == nullptr ) {
-    return new char{'\0'};
+    return string();
   } else {
     path path = boost::filesystem::absolute(p);
-    size_t size = path.string().size();
-    auto result = new char[size + 1];
-    strncpy(result, path.string().c_str(), size);
-    result[size] = '\0';
-    return result;
+    return string(path.string());
   }
 }
 
-char * os::hostname()
+string os::hostname()
 {
   std::string hostname = boost::asio::ip::host_name();
-  size_t size = hostname.size();
-  auto result = new char[size + 1];
-  strncpy(result, hostname.c_str(), size);
-  result[hostname.size()] = '\0';
-  return result;
+  return string(hostname);
 }
 
 bool os::isdir(const char * path)
@@ -137,14 +117,10 @@ bool os::mkpath(const char * dirpath)
   return boost::filesystem::create_directories(dirpath);
 }
 
-char * os::pwd()
+string os::pwd()
 {
   path cwd = boost::filesystem::current_path();
-  size_t size = cwd.string().size();
-  auto result = new char[size + 1];
-  strncpy(result, cwd.string().c_str(), size);
-  result[size] = '\0';
-  return result;
+  return string(cwd.string());
 }
 
 bool os::rmdir(const char * dirpath)
@@ -163,35 +139,22 @@ bool os::rmpath(const char * dirpath)
   return result > 0;
 }
 
-char * os::target(const char * p)
+string os::target(const char * p)
 {
   path target = boost::filesystem::read_symlink(p);
-  size_t size = target.string().size();
-  auto result = new char[size + 1];
-  strncpy(result, target.string().c_str(), size);
-  result[size] = '\0';
-  return result;
+  return string(target.string());
 }
 
-char * os::tmp()
+string os::tmp()
 {
-  path path = boost::filesystem::temp_directory_path();
-  size_t size = path.string().size();
-  auto result = new char[size + 1];
-  strncpy(result, path.string().c_str(), size);
-  result[size] = '\0';
-  return result;
+  path tmp = boost::filesystem::temp_directory_path();
+  return string(tmp.string());
 }
 
-
-char * os::root()
+string os::root()
 {
-  path root   = boost::filesystem::current_path().root_directory();
-  size_t size = root.string().size();
-  auto result = new char[size + 1];
-  strncpy(result, root.string().c_str(), size);
-  result[size] = '\0';
-  return result;
+  path root = boost::filesystem::current_path().root_directory();
+  return string(root.string());
 }
 
 } // namespace arken

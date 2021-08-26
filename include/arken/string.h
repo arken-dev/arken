@@ -92,6 +92,7 @@ class string {
   string(char * && str);
   string(char * && str, size_t size);
   string(const arken::string &str);
+  string(const std::string &str);
   ~string();
 
   string & append(const char * str);

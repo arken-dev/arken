@@ -12,24 +12,18 @@
 
 namespace arken {
 
-char * os::abspath(const char * path)
+string os::abspath(const char * path)
 {
   QFileInfo info(path);
   QByteArray abspath = info.absoluteFilePath().toLocal8Bit();
-  auto result = new char[abspath.size() + 1];
-  strncpy(result, abspath, abspath.size());
-  result[abspath.size()] = '\0';
-  return result;
+  return string(abspath.constData(), abspath.size());
 }
 
-char * os::basename(const char * path)
+string os::basename(const char * path)
 {
   QFileInfo info(path);
   QByteArray basename = info.fileName().toLocal8Bit();
-  auto result = new char[basename.size() + 1];
-  strncpy(result, basename, basename.size());
-  result[basename.size()] = '\0';
-  return result;
+  return string(basename.constData(), basename.size());
 }
 
 size_t os::atime(const char * path)
@@ -84,14 +78,11 @@ size_t os::ctime(const char * path)
   return QFileInfo(path).lastModified().toTime_t();
 }
 
-char * os::dirpath(const char * path)
+string os::dirpath(const char * path)
 {
   QFileInfo info(path);
   QByteArray dirpath = info.absoluteFilePath().toLocal8Bit();
-  auto result = new char[dirpath.size() + 1];
-  strncpy(result, dirpath, dirpath.size());
-  result[dirpath.size()] = '\0';
-  return result;
+  return string(dirpath.constData(), dirpath.size());
 }
 
 bool os::exists(const char * path)
@@ -99,22 +90,16 @@ bool os::exists(const char * path)
   return QFile::exists(path);
 }
 
-char * os::home()
+string os::home()
 {
   QByteArray homePath = QDir::homePath().toLocal8Bit();
-  auto result = new char[homePath.size()+1];
-  strncpy(result, homePath, homePath.size());
-  result[homePath.size()] = '\0';
-  return result;
+  return string(homePath.constData(), homePath.size());
 }
 
-char * os::hostname()
+string os::hostname()
 {
   QByteArray hostname = QHostInfo::localHostName().toLocal8Bit();
-  auto result = new char[hostname.size() + 1];
-  strncpy(result, hostname, hostname.size());
-  result[hostname.size()] = '\0';
-  return result;
+  return string(hostname.constData(), hostname.size());
 }
 
 bool os::isdir(const char * path)
@@ -155,13 +140,10 @@ bool os::mkpath(const char * dirpath)
   return dir.mkpath(dirpath);
 }
 
-char * os::pwd()
+string os::pwd()
 {
   QByteArray pwd = QDir::currentPath().toLocal8Bit();
-  auto result = new char[pwd.size() + 1];
-  strncpy(result, pwd, pwd.size());
-  result[pwd.size()] = '\0';
-  return result;
+  return string(pwd.constData(), pwd.size());
 }
 
 bool os::rmdir(const char * dirname)
@@ -176,31 +158,22 @@ bool os::rmpath(const char * dirpath)
   return dir.rmpath(dirpath);
 }
 
-char * os::target(const char * path)
+string os::target(const char * path)
 {
   QByteArray target = QFile::symLinkTarget(path).toLocal8Bit();
-  auto result = new char[target.size() + 1];
-  strncpy(result, target, target.size());
-  result[target.size()] = '\0';
-  return result;
+  return string(target.constData(), target.size());
 }
 
-char * os::tmp()
+string os::tmp()
 {
-  QByteArray temp = QDir::tempPath().toLocal8Bit();
-  auto result = new char[temp.size() + 1];
-  strncpy(result, temp, temp.size());
-  result[temp.size()] = '\0';
-  return result;
+  QByteArray tmp = QDir::tempPath().toLocal8Bit();
+  return string(tmp.constData(), tmp.size());
 }
 
-char * os::root()
+string os::root()
 {
   QByteArray root = QDir::rootPath().toLocal8Bit();
-  auto result = new char[root.size() + 1];
-  strncpy(result, root, root.size());
-  result[root.size()] = '\0';
-  return result;
+  return string(root.constData(), root.size());
 }
 
 } // namespace arken

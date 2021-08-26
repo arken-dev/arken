@@ -10,17 +10,15 @@ using List = arken::string::List;
 
 static int arken_os_abspath( lua_State *L ) {
   const char * path = luaL_checkstring(L, 1);
-  char * result = os::abspath(path);
-  lua_pushstring( L, result );
-  delete[] result;
+  string result = os::abspath(path);
+  lua_pushlstring( L, result.data(), result.size() );
   return 1;
 }
 
 static int arken_os_basename( lua_State *L ) {
   const char * path = luaL_checkstring(L, 1);
-  char * result = os::basename(path);
-  lua_pushstring( L, result );
-  delete[] result;
+  string result = os::basename(path);
+  lua_pushlstring( L, result.data(), result.size() );
   return 1;
 }
 
@@ -67,9 +65,8 @@ static int arken_os_ctime( lua_State *L ) {
 
 static int arken_os_dirpath( lua_State *L ) {
   const char * path = luaL_checkstring(L, 1);
-  char * result = os::dirpath(path);
-  lua_pushstring( L, result );
-  delete[] result;
+  string result = os::dirpath(path);
+  lua_pushlstring( L, result.data(), result.size() );
   return 1;
 }
 
@@ -80,9 +77,8 @@ static int arken_os_exists( lua_State *L ) {
 }
 
 static int arken_os_executablePath( lua_State *L ) {
-  char * result = os::executablePath();
-  lua_pushstring( L, result );
-  delete[] result;
+  string result = os::executablePath();
+  lua_pushlstring( L, result.data(), result.size() );
   return 1;
 }
 
@@ -125,16 +121,14 @@ static int arken_os_find( lua_State *L ) {
 
 
 static int arken_os_home( lua_State *L ) {
-  char * result = os::home();
-  lua_pushstring( L, result );
-  delete[] result;
+  string result = os::home();
+  lua_pushlstring( L, result.data(), result.size() );
   return 1;
 }
 
 static int arken_os_hostname( lua_State *L ) {
-  char * result = os::hostname();
-  lua_pushstring( L, result );
-  delete[] result;
+  string result = os::hostname();
+  lua_pushlstring( L, result.data(), result.size() );
   return 1;
 }
 
@@ -192,9 +186,8 @@ static int arken_os_name( lua_State *L ) {
 }
 
 static int arken_os_pwd( lua_State *L ) {
-  char * result = os::pwd();
-  lua_pushstring( L, result );
-  delete[] result;
+  string result = os::pwd();
+  lua_pushlstring( L, result.data(), result.size() );
   return 1;
 }
 
@@ -223,16 +216,14 @@ static int arken_os_sleep( lua_State *L ) {
 
 static int arken_os_target( lua_State *L ) {
   const char * path = luaL_checkstring(L, 1);
-  char * result = os::target(path);
-  lua_pushstring( L, result );
-  delete[] result;
+  string result = os::target(path);
+  lua_pushlstring( L, result.data(), result.size() );
   return 1;
 }
 
 static int arken_os_tmp( lua_State *L ) {
-  char * result = os::tmp();
-  lua_pushstring( L, result );
-  delete[] result;
+  string result = os::tmp();
+  lua_pushlstring( L, result.data(), result.size() );
   return 1;
 }
 
@@ -243,9 +234,8 @@ static int arken_os_touch( lua_State *L ) {
 }
 
 static int arken_os_uuid( lua_State *L ) {
-  char * result = os::uuid();
-  lua_pushstring( L, result );
-  delete[] result;
+  string result = os::uuid();
+  lua_pushlstring( L, result.data(), result.size() );
   return 1;
 }
 
@@ -257,9 +247,8 @@ static int arken_os_read( lua_State *L ) {
 }
 
 static int arken_os_root( lua_State *L ) {
-  char * result = os::root();
-  lua_pushstring( L, result );
-  delete[] result;
+  string result = os::root();
+  lua_pushlstring( L, result.data(), result.size() );
   return 1;
 }
 
