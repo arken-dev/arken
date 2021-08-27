@@ -13,12 +13,6 @@ char * base64::decode(const char * encoded, size_t * size)
   return result;
 }
 
-char * base64::encode(const char * plain)
-{
-  int len = strlen(plain);
-  return base64::encode(plain, len);
-}
-
 char * base64::encode(const char * plain, int len)
 {
   QByteArray ba(plain, len);

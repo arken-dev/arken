@@ -20,12 +20,6 @@ char * base64::decode(const char * encoded, size_t * size)
   return plain;
 }
 
-char * base64::encode(const char * plain)
-{
-  int len = strlen(plain);
-  return base64::encode(plain, len);
-}
-
 char * base64::encode(const char * plain, int len)
 {
   int encoded_len = Base64encode_len(len);

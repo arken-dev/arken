@@ -15,7 +15,6 @@ class base64 {
   public:
   static char * decode(const char * data, size_t *size);
   static char * encode(const char * data, int len);
-  static char * encode(const char * data);
 };
 
 } // namespace arken
