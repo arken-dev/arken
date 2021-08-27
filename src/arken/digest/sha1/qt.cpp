@@ -12,11 +12,6 @@
 namespace arken {
 namespace digest {
 
-char * sha1::hash(const char * hash)
-{
-  return sha1::hash(hash, strlen(hash));
-}
-
 char * sha1::hash(const char * hash, int length)
 {
   const char * data = QCryptographicHash::hash(QByteArray(hash, length), QCryptographicHash::Sha1).toHex().data();

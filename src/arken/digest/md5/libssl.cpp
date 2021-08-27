@@ -9,11 +9,6 @@ extern "C" {
 namespace arken {
 namespace digest {
 
-char * md5::hash(const char * hash)
-{
-  return md5::hash(hash, strlen(hash));
-}
-
 char * md5::hash(const char * string, int length)
 {
   unsigned char digest[MD5_DIGEST_LENGTH];
