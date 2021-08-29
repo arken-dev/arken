@@ -8,9 +8,7 @@
 #
 # ------------------------------------------------------------------------------
 
-set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/clib/arken/time)
-set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/clib/arken/time)
-
 add_subdirectory(date)
 add_subdirectory(datetime)
-add_subdirectory(time)
+#add_subdirectory(time)
+add_subdirectory(time-new)
