@@ -12,8 +12,6 @@
 namespace arken
 {
 
-  // TODO isValid ???
-  // TODO fromString => parse(str, fmt) ???
   class Time
   {
     using string = arken::string;
