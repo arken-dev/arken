@@ -9,14 +9,21 @@ local M = {}
 -------------------------------------------------------------------------------
 
 function M:start(params)
-  print('tests in path ' .. params.path )
-  local list = os.glob(params.path, true)
+  local path = params.path
+  local list = os.find(path, ".lua$", true)
   for i = 1, list:size() do
     local filePath = list:at(i)
-    if filePath:endsWith(".lua") then
-      self:enqueue(filePath)
-    end
+    self:enqueue(filePath)
   end
+end
+
+-------------------------------------------------------------------------------
+-- BEFORE
+-------------------------------------------------------------------------------
+
+function M:before(worker)
+  local ActiveRecord = require('arken.ActiveRecord')
+  ActiveRecord.loadConfig{ number = self:number() }
 end
 
 -------------------------------------------------------------------------------
