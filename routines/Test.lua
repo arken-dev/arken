@@ -11,6 +11,9 @@ local run = function(file)
   local buffer = ""
 
   package.reload()
+  -- TODO check is
+  os.setlocale("C", "numeric")
+
 
   local init      = os.microtime()
   local icon      = "ok"
