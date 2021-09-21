@@ -99,10 +99,10 @@ function M.run(worker, fileName)
   file:close()
 
   file = io.open((dir .. "/" .. fileName:replace("/", "-") .. '.json'), "w")
-
   file:write(json.encode(data))
-
   file:close()
+
+  collectgarbage("collect")
 end
 
 -------------------------------------------------------------------------------
