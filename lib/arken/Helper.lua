@@ -137,6 +137,17 @@ function Helper:intField(field, value, options)
   return self:textField(field, value, options)
 end
 
+function Helper:timeField(field, value, options)
+  options            = options            or {}
+  options.onblur     = options.onblur     or "inputBlur( this )"
+  options.onfocus    = options.onfocus    or "inputFocus( this )"
+  options.onkeypress = options.onkeypress or "inputPress( this, event )"
+  options.onkeyup    = options.onkeyup    or "format_invert(this, '**:**')"
+  options.style      = options.style      or "width:95px;text-align:right"
+
+  return self:textField(field, value, options)
+end
+
 function Helper:dateField(field, value, options)
   options            = options            or {}
   options.onblur     = options.onblur     or "inputBlur( this )"
@@ -492,7 +503,7 @@ function Helper:autoComplete(field, resource, options)
            }));
          },
          error: function(params1, params2, params3) {
-         //alert(params1+' - '+params2+' - '+params3);
+         /*alert(params1+' - '+params2+' - '+params3);*/
          }
        })
      },
