@@ -501,4 +501,66 @@ function FormHelper:toggleField(field, options)
   return string.format(html, self:buildName(field), checked) .. ' />' .. label
 end
 
+---------------------------------------------------------------------------------------
+-- AUTO LIST
+---------------------------------------------------------------------------------------
+-- Necessário criar uma função que devolva em nome do campo, exemplo: field = usuario
+-- Deve existir portanto uma funcao com nome usuario ou um relacionamento com esse nome
+function FormHelper:autoList(field, resource)
+  local controller
+  local action
+  if type(resource) == 'table' then
+    controller = resource.controller
+    action     = resource.action or 'index'
+  else
+    controller = resource
+  end
+  if type(self.data[field]) ~= 'function' then
+    error(field .. " is not a function")
+  end
+  local text    = self.data[field](self.data) or ""
+  local display = 'visible'
+  if self.data[field .. '_id'] then
+    display = 'none'
+  end
+  local label = "<a href='#' onclick='AutoList.input(%q, %q)' title='clique aqui para trocar'>%s</a>"
+  label = string.format(label, field, self:buildName(field .. "_id"), text)
+
+  local func  = string.format([[AutoList.select(%q, %q, %q, ui);]],
+    field, self:buildName(field .. "_id"), self:buildId(field .. "_id")
+  )
+  local input = self:autoComplete( 'autolist[' .. field .. ']',
+    { controller = controller, action = action },
+    { ['select'] = func, style='width:250;display:' .. display }
+  )
+
+  local link  = self.helper:link {
+    img    = 'icons/refresh.gif',
+    url    = '#',
+    click  = string.format([[AutoList.list('%s', '%s', '%s', '%s');]],
+      field, self:buildName(field .. "_id"), self:buildId(field .. "_id"),
+      self:url({ controller = controller, action = 'select', field = self:buildName(field .. "_id") })
+    )
+  }
+
+  local html = [[
+    <table cellspacing='0' cellpadding='0'>
+      <tr>
+        <td width='250'>
+          %s
+          <div id='autolist_%s_container' style='width:250px;display:%s'>%s</div>
+        </td>
+        <td>&nbsp;</td>
+        <td>%s</td>
+      </tr>
+    </table>
+  ]]
+  if display == 'none' then
+    display = 'visible'
+  else
+    display = 'none'
+  end
+  return string.format(html, input, field, display, label, link)
+end
+
 return FormHelper
