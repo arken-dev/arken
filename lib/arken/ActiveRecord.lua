@@ -48,8 +48,10 @@ ActiveRecord.inherit = function(class)
       if self[class.primaryKey] == nil then
         return nil
       else
-        local  record = Class.lookup(params.record)
-        return record.find{[params.foreignKey] = self[self.primaryKey]}
+        local  record    = Class.lookup(params.record)
+        local conditions = params.conditions or {}
+        conditions[params.foreignKey] = self[self.primaryKey]
+        return record.find(conditions)
       end
     end
   end
