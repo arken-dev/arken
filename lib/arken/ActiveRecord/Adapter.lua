@@ -281,7 +281,7 @@ function ActiveRecord_Adapter:find(params)
       return ActiveRecord_Adapter.cache[key]
     else
        if ActiveRecord_Adapter.neat[key] and ActiveRecord_Adapter.cache[key] ~= false then
-         local neat = ActiveRecord_Adapter.neat[key]
+         local neat   = ActiveRecord_Adapter.neat[key]
          local record = { newRecord = false }
          for k, v in pairs(neat) do
            record[k] = v
@@ -422,6 +422,7 @@ function ActiveRecord_Adapter:rollback()
   ActiveRecord_Adapter.errors  = Array.new()
   ActiveRecord_Adapter.cache   = {}
   ActiveRecord_Adapter.pending = {}
+  --ActiveRecord_Adapter.neat    = {}
   if ARKEN_ENV == 'test' then
     ActiveRecord_Adapter.savePoint = ActiveRecord_Adapter.savePoint - 1
     if ActiveRecord_Adapter.savePoint < 1 then
@@ -442,7 +443,7 @@ end
 function ActiveRecord_Adapter:commit()
   ActiveRecord_Adapter.errors  = Array.new()
   ActiveRecord_Adapter.cache   = {}
-  ActiveRecord_Adapter.neat    = {}
+  --ActiveRecord_Adapter.neat    = {}
   ActiveRecord_Adapter.pending = {}
   if ARKEN_ENV == 'test' then
     ActiveRecord_Adapter.savePoint = ActiveRecord_Adapter.savePoint - 1

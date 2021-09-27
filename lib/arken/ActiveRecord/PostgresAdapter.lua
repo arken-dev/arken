@@ -93,30 +93,40 @@ function ActiveRecord_PostgresAdapter:update(record)
   local sql = 'UPDATE ' .. self.tableName .. ' SET '
   local col = ''
   local key = self.tableName .. '_' .. tostring(record.id)
+  local result = false
+
+  -- TODO change in method
+  local neat = Adapter.pending[key] or Adapter.neat[key] or {}
 
   if self:columns().updated_at then
     record.updated_at = self:createTimestamp()
   end
 
-  for column, properties in pairs(self:columns()) do
+  --for column, properties in pairs(self:columns()) do
+
+  for column, changes in pairs(self:columns()) do
     local value = record[column]
-    if column ~= self.primaryKey then
-      if #col > 0 then
-        col = col .. ', '
+    if value ~= neat[column] then
+      if column ~= self.primaryKey then
+        if #col > 0 then
+          col = col .. ', '
+        end
+        col = col .. '"' .. column ..'"' .. " = " .. self:escape(value)
       end
-      col = col .. '"' .. column ..'"' .. " = " .. self:escape(value)
     end
   end
-  local result = false
-  local where = ' WHERE ' .. self.primaryKey .. " = " .. self:escape(record[self.primaryKey])
-  sql = sql .. col .. where
-  result = self:execute(sql)
-  -- pending
-  local pending = Adapter.pending[record:cacheKey()] or {}
-  for column, properties in pairs(self:columns()) do
-    pending[column] = record[column]
+
+  if not empty(col) then
+    local where = ' WHERE ' .. self.primaryKey .. " = " .. self:escape(record[self.primaryKey])
+    sql = sql .. col .. where
+    result = self:execute(sql)
+    -- pending
+    local pending = Adapter.pending[record:cacheKey()] or {}
+    for column, properties in pairs(self:columns()) do
+      pending[column] = record[column]
+    end
+    Adapter.pending[record:cacheKey()] = pending
   end
-  Adapter.pending[record:cacheKey()] = pending
 
   return result
 end
