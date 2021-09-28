@@ -3,6 +3,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+
 #include <string>
 #include <lua/lua.hpp>
 #include <arken/os.h>
@@ -141,7 +142,7 @@ std::string HttpServer::handler(const char * data, size_t size)
     }
   }
 
-  return std::move(buffer);
+  return std::string(std::move(buffer));
 }
 
 
