@@ -3,50 +3,43 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#ifndef _ARKEN_TIME_
-#define _ARKEN_TIME_
+#ifndef _ARKEN_CHRONO_DATE_
+#define _ARKEN_CHRONO_DATE_
 
 #include <ctime>
 #include <arken/string.h>
 
-namespace arken
-{
+namespace arken {
+namespace chrono {
 
-  class Time
+  class Date
   {
+
     using string = arken::string;
 
-    private:
+    protected:
     std::time_t m_time;
     std::tm     m_calendar;
 
     public:
-    Time();
-    Time(const Time &obj);
+    Date();
+    Date(const Date &obj);
 
-    static Time now();
-    static Time parse(const char * value);
-    static Time parse(const char * value, const char * format);
+    static Date today();
+    static Date parse(const char * value);
+    static Date parse(const char * value, const char * format);
 
-    Time addYears(int years);
-    Time addMonths(int months);
-    Time addDays(int days);
-    Time addHours(int hours);
-    Time addMinutes(int secs);
-    Time addSecs(int secs);
+    Date addYears(int years);
+    Date addMonths(int months);
+    Date addDays(int days);
 
-    Time beginningOfDay();
-    Time endOfDay();
-    Time beginningOfMonth();
-    Time endOfMonth();
+    Date beginningOfMonth();
+    Date endOfMonth();
 
     int year();
     int month();
     int mon();
     int day();
-    int hour();
-    int min();
-    int sec();
     int mday();
     int wday();
     int yday();
@@ -70,5 +63,6 @@ namespace arken
 
   };
 
+} // namespace chrono
 } // namespace arken
 #endif

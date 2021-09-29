@@ -13,12 +13,8 @@ include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${PROJECT_SOURCE_DIR}/deps/include)
 
 add_library(
-  Time SHARED time.cpp
+  arken.chrono.Date SHARED date.cpp
 )
 
-find_package(Qt5Core)
-find_package(Qt5Network)
-
-set_target_properties(Time PROPERTIES PREFIX "")
-
-target_link_libraries(Time Qt5::Core Qt5::Network arken lua)
+set_target_properties(arken.chrono.Date PROPERTIES LIBRARY_OUTPUT_NAME "Date" PREFIX "")
+target_link_libraries(arken.chrono.Date arken lua)

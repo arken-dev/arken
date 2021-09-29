@@ -48,6 +48,7 @@ file(GLOB concurrent ${CMAKE_CURRENT_SOURCE_DIR}/concurrent/*.cpp)
 file(GLOB concurrent-task ${CMAKE_CURRENT_SOURCE_DIR}/concurrent/task/*.cpp)
 file(GLOB compress ${CMAKE_CURRENT_SOURCE_DIR}/compress/*.cpp)
 file(GLOB time     ${CMAKE_CURRENT_SOURCE_DIR}/time/*.cpp)
+file(GLOB chrono   ${CMAKE_CURRENT_SOURCE_DIR}/chrono/*.cpp)
 
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/deps)
 set(mongrel2 ${PROJECT_SOURCE_DIR}/src/vendors/mongrel2/http11/http11_parser.c)
@@ -58,6 +59,7 @@ add_library(
   ${base64}
   ${base64-embedded}
   ${compress}
+  ${chrono}
   ${digest}
   ${digest-embedded}
   ${image}

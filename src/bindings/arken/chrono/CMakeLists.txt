@@ -8,6 +8,7 @@
 #
 # ------------------------------------------------------------------------------
 
+set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/clib/arken/chrono)
+
 add_subdirectory(date)
-add_subdirectory(datetime)
 add_subdirectory(time)

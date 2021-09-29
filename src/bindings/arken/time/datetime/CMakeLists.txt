@@ -14,12 +14,12 @@ include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${PROJECT_SOURCE_DIR}/deps/include)
 
 add_library(
-  DateTime SHARED datetime.cpp
+  time.DateTime SHARED datetime.cpp
 )
 
 find_package(Qt5Core)
 find_package(Qt5Network)
 
-set_target_properties(DateTime PROPERTIES PREFIX "")
+set_target_properties(time.DateTime PROPERTIES LIBRARY_OUTPUT_NAME "DateTime" PREFIX "")
 
-target_link_libraries(DateTime Qt5::Core Qt5::Network arken lua)
+target_link_libraries(time.DateTime Qt5::Core Qt5::Network arken lua)

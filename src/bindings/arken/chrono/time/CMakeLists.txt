@@ -8,6 +8,13 @@
 #
 # ------------------------------------------------------------------------------
 
-add_subdirectory(date)
-add_subdirectory(datetime)
-add_subdirectory(time)
+include_directories(.)
+include_directories(${PROJECT_SOURCE_DIR}/include)
+include_directories(${PROJECT_SOURCE_DIR}/deps/include)
+
+add_library(
+  arken.chrono.Time SHARED time.cpp
+)
+
+set_target_properties(arken.chrono.Time PROPERTIES LIBRARY_OUTPUT_NAME "Time" PREFIX "")
+target_link_libraries(arken.chrono.Time arken lua)

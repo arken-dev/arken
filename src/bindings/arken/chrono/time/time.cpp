@@ -4,9 +4,9 @@
 // license that can be found in the LICENSE file.
 
 #include <lua/lua.hpp>
-#include <arken/time.h>
+#include <arken/chrono/time.h>
 
-using arken::Time;
+using arken::chrono::Time;
 using arken::string;
 
 /**
@@ -21,6 +21,15 @@ checkTime( lua_State *L ) {
 /**
  * ClassMethods
  */
+
+static int
+arken_TimeClassMethodToday( lua_State *L ) {
+  Time **ptr = (Time **)lua_newuserdata(L, sizeof(Time*));
+  *ptr = new Time((Time) Time::today());
+  luaL_getmetatable(L, "Time.metatable");
+  lua_setmetatable(L, -2);
+  return 1;
+}
 
 static int
 arken_TimeClassMethodNow( lua_State *L ) {
@@ -54,6 +63,7 @@ arken_TimeClassMethodParse( lua_State *L ) {
 
 static const luaL_reg TimeClassMethods[] = {
   {"now",        arken_TimeClassMethodNow},
+  {"today",      arken_TimeClassMethodToday},
   {"parse",      arken_TimeClassMethodParse},
   {NULL, NULL}
 };
@@ -438,7 +448,7 @@ registerTimeInstanceMethods( lua_State *L ) {
 
 extern "C" {
   int
-  luaopen_arken_Time( lua_State *L ) {
+  luaopen_arken_chrono_Time( lua_State *L ) {
     registerTimeInstanceMethods(L);
     registerTimeClassMethods(L);
     return 1;

@@ -15,12 +15,12 @@ include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${PROJECT_SOURCE_DIR}/deps/include)
 
 add_library(
-  Time SHARED time.cpp
+  time.Time SHARED time.cpp
 )
 
 find_package(Qt5Core)
 find_package(Qt5Network)
 
-set_target_properties(Time PROPERTIES PREFIX "")
+set_target_properties(time.Time PROPERTIES LIBRARY_OUTPUT_NAME "Time" PREFIX "")
 
-target_link_libraries(Time Qt5::Core Qt5::Network arken lua)
+target_link_libraries(time.Time Qt5::Core Qt5::Network arken lua)
