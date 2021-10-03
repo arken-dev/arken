@@ -2,6 +2,8 @@
 // All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
+// https://stackoverflow.com/questions/36897781/how-to-uppercase-lowercase-utf-8-characters-in-c
+// https://www.py4u.net/discuss/75078
 
 #include <arken/base>
 #include <arken/utf8>
