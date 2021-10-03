@@ -52,7 +52,10 @@ List * regex::split(const char * string, const char * regex)
     list->append(matches.prefix().str().c_str());
     str = matches.suffix().str();
   }
-  list->append(str.c_str());
+
+  if( str.size() > 0 ) {
+    list->append(str.c_str());
+  }
 
   return list;
 }
