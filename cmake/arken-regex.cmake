@@ -3,17 +3,17 @@ set(ARKEN_REGEX "" CACHE STRING
 
 set_property(
   CACHE ARKEN_REGEX PROPERTY STRINGS
-  "" qt
+  "" qt std
 )
 
 if(ARKEN_REGEX STREQUAL "")
   if(ARKEN_BACKEND STREQUAL "embedded")
     message("ARKEN REGEX not contain embedded option, force qt")
-    set(ARKEN_REGEX "qt")
+    set(ARKEN_REGEX "std")
   elseif(ARKEN_BACKEND STREQUAL "benchmark")
-    set(ARKEN_REGEX "qt")
+    set(ARKEN_REGEX "std")
   else()
-    set(ARKEN_REGEX "qt")
+    set(ARKEN_REGEX "std")
   endif()
 endif()
 
