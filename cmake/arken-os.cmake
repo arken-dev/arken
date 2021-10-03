@@ -13,11 +13,11 @@ set(ARKEN_OS_FILESYSTEM "" CACHE STRING
 
 set_property(
   CACHE ARKEN_OS_FILESYSTEM PROPERTY STRINGS
-  "" qt boost
+  "" qt boost std
 )
 
 if(ARKEN_OS_FILESYSTEM STREQUAL "")
-  set(ARKEN_OS_FILESYSTEM "qt")
+  set(ARKEN_OS_FILESYSTEM "std")
 endif()
 
 if(ARKEN_OS_FILESYSTEM STREQUAL "boost")

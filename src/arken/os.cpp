@@ -14,11 +14,9 @@
 #include <fstream>
 #include <arken/net/HttpClient>
 #include <apple/glob.h>
+#include <regex>
+#include <filesystem>
 
-#include <QDir>
-#include <QDirIterator>
-
-using HttpClient = arken::net::HttpClient;
 using string = arken::string;
 using List   = arken::string::List;
 
@@ -56,6 +54,7 @@ unsigned int os::cores()
 
 List os::glob(const char * pattern)
 {
+
   List list;
   glob_t paths;
   int retval;
@@ -79,23 +78,32 @@ List os::glob(const char * pattern)
   return list;
 }
 
-List os::find(const char * dir, const char * regex, bool sub)
+List os::find(const char * dir, const char * rgx, bool recursive)
 {
+  namespace fs = std::filesystem;
 
-  QRegExp qregex(regex);
   List list;
-  QDirIterator::IteratorFlags flags;
+  std::regex exp(rgx);
 
-  if( sub ) {
-    flags = QDirIterator::Subdirectories;
+  if( ! os::exists(dir) ) {
+    return list;
   }
 
-  QDirIterator iterator(QString(dir), flags);
-
-  while( iterator.hasNext() ) {
-    iterator.next();
-    if( qregex.indexIn(iterator.fileInfo().filePath(), 0) != -1 ) {
-      list.append( iterator.fileInfo().filePath().toLocal8Bit().data() );
+  if( recursive ) {
+    for(auto& p: fs::recursive_directory_iterator(dir)) {
+       std::smatch matches;
+       std::string path(p.path().string());
+       if( std::regex_search(path, matches, exp) ) {
+         list.append( std::string(path).c_str() );
+       }
+    }
+  } else {
+    for(auto& p: fs::directory_iterator(dir)) {
+       std::smatch matches;
+       std::string path(p.path().string());
+       if( std::regex_search(path, matches, exp) ) {
+         list.append( std::string(path).c_str() );
+       }
     }
   }
 
@@ -125,6 +133,7 @@ bool os::touch(const char * path)
 
 string os::read(const char * path)
 {
+  using HttpClient = arken::net::HttpClient;
 
   if (string::startsWith(path, "http://") || string::startsWith(path, "https://") ) {
     HttpClient client(path);
