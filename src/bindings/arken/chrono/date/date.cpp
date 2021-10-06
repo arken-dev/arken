@@ -15,8 +15,14 @@ using arken::string;
 
 Date *
 checkDate( lua_State *L ) {
-  return *(Date **) luaL_checkudata(L, 1, "Date.metatable");
+  return *(Date **) luaL_checkudata(L, 1, "arken.chrono.Date.metatable");
 }
+
+Date *
+checkDate( lua_State *L, int i ) {
+  return *(Date **) luaL_checkudata(L, i, "arken.chrono.Date.metatable");
+}
+
 
 /**
  * ClassMethods
@@ -26,7 +32,16 @@ static int
 arken_DateClassMethodToday( lua_State *L ) {
   Date **ptr = (Date **)lua_newuserdata(L, sizeof(Date*));
   *ptr = new Date(Date::today());
-  luaL_getmetatable(L, "Date.metatable");
+  luaL_getmetatable(L, "arken.chrono.Date.metatable");
+  lua_setmetatable(L, -2);
+  return 1;
+}
+
+static int
+arken_DateClassMethodCurrentDate( lua_State *L ) {
+  Date **ptr = (Date **)lua_newuserdata(L, sizeof(Date*));
+  *ptr = new Date(Date::currentDate());
+  luaL_getmetatable(L, "arken.chrono.Date.metatable");
   lua_setmetatable(L, -2);
   return 1;
 }
@@ -44,7 +59,7 @@ arken_DateClassMethodParse( lua_State *L ) {
   if( dt.isValid() ) {
     Date **ptr = (Date **)lua_newuserdata(L, sizeof(Date*));
     *ptr = new Date(dt);
-    luaL_getmetatable(L, "Date.metatable");
+    luaL_getmetatable(L, "arken.chrono.Date.metatable");
     lua_setmetatable(L, -2);
   } else {
     lua_pushnil(L);
@@ -53,14 +68,15 @@ arken_DateClassMethodParse( lua_State *L ) {
 }
 
 static const luaL_reg DateClassMethods[] = {
-  {"today",      arken_DateClassMethodToday},
-  {"parse",      arken_DateClassMethodParse},
+  {"today",       arken_DateClassMethodToday},
+  {"currentDate", arken_DateClassMethodCurrentDate},
+  {"parse",       arken_DateClassMethodParse},
   {NULL, NULL}
 };
 
 void static
 registerDateClassMethods( lua_State *L ) {
-  luaL_newmetatable(L, "Date");
+  luaL_newmetatable(L, "arken.chrono.Date");
   luaL_register(L, NULL, DateClassMethods);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
@@ -110,7 +126,7 @@ arken_DateInstanceMethodAddYears( lua_State *L ) {
 
   Date **ptr = (Date **)lua_newuserdata(L, sizeof(Date*));
   *ptr= new Date(other);
-  luaL_getmetatable(L, "Date.metatable");
+  luaL_getmetatable(L, "arken.chrono.Date.metatable");
   lua_setmetatable(L, -2);
 
   return 1;
@@ -124,7 +140,7 @@ arken_DateInstanceMethodAddMonths( lua_State *L ) {
 
   Date **ptr = (Date **)lua_newuserdata(L, sizeof(Date*));
   *ptr= new Date(other);
-  luaL_getmetatable(L, "Date.metatable");
+  luaL_getmetatable(L, "arken.chrono.Date.metatable");
   lua_setmetatable(L, -2);
 
   return 1;
@@ -138,7 +154,7 @@ arken_DateInstanceMethodAddDays( lua_State *L ) {
 
   Date **ptr = (Date **)lua_newuserdata(L, sizeof(Date*));
   *ptr= new Date(other);
-  luaL_getmetatable(L, "Date.metatable");
+  luaL_getmetatable(L, "arken.chrono.Date.metatable");
   lua_setmetatable(L, -2);
 
   return 1;
@@ -151,7 +167,7 @@ arken_DateInstanceMethodBeginningOfMonth( lua_State *L ) {
 
   Date **ptr = (Date **)lua_newuserdata(L, sizeof(Date*));
   *ptr= new Date(result);
-  luaL_getmetatable(L, "Date.metatable");
+  luaL_getmetatable(L, "arken.chrono.Date.metatable");
   lua_setmetatable(L, -2);
 
   return 1;
@@ -164,7 +180,7 @@ arken_DateInstanceMethodEndOfMonth( lua_State *L ) {
 
   Date **ptr = (Date **)lua_newuserdata(L, sizeof(Date*));
   *ptr= new Date(result);
-  luaL_getmetatable(L, "Date.metatable");
+  luaL_getmetatable(L, "arken.chrono.Date.metatable");
   lua_setmetatable(L, -2);
 
   return 1;
@@ -276,9 +292,23 @@ arken_DateInstanceMethodWday( lua_State *L ) {
 }
 
 static int
+arken_DateInstanceMethodDayOfWeek( lua_State *L ) {
+  Date *t   = checkDate( L );
+  lua_pushinteger(L, t->dayOfWeek());
+  return 1;
+}
+
+static int
 arken_DateInstanceMethodYday( lua_State *L ) {
   Date *t   = checkDate( L );
   lua_pushinteger(L, t->yday());
+  return 1;
+}
+
+static int
+arken_DateInstanceMethodDayOfYear( lua_State *L ) {
+  Date *t = checkDate( L );
+  lua_pushinteger(L, t->dayOfYear());
   return 1;
 }
 
@@ -293,6 +323,51 @@ static int
 arken_DateInstanceMethodDate( lua_State *L ) {
   Date *t = checkDate( L );
   lua_pushnumber(L, t->time());
+  return 1;
+}
+
+static int
+arken_DateInstanceMethodLessEqual( lua_State *L ) {
+  Date *dt1 = checkDate( L );
+  Date *dt2 = *(Date **) luaL_checkudata(L, 2, "arken.chrono.Date.metatable");
+
+  lua_pushboolean(L, (*dt1) <= (*dt2));
+  return 1;
+}
+
+static int
+arken_DateInstanceMethodLessThan( lua_State *L ) {
+  Date *dt1 = checkDate( L );
+  Date *dt2 = *(Date **) luaL_checkudata(L, 2, "arken.chrono.Date.metatable");
+
+  lua_pushboolean(L, (*dt1) < (*dt2));
+  return 1;
+}
+
+static int
+arken_DateInstanceMethodEqual( lua_State *L ) {
+  Date *dt1 = checkDate( L );
+  Date *dt2 = *(Date **) luaL_checkudata(L, 2, "arken.chrono.Date.metatable");
+  lua_pushboolean(L, (*dt1) == (*dt2));
+  return 1;
+}
+
+static int
+arken_DateInstanceMethodConcat( lua_State *L ) {
+  Date *dt;
+  string concat;
+  const char * str;
+  const char * format = "%Y-%m-%d";
+  if(lua_isstring(L, 1)) {
+    str = lua_tostring(L, 1);
+    dt  = checkDate( L, 2 );
+    concat = dt->strftime(format).prepend(str);
+  } else {
+    dt  = checkDate( L, 1 );
+    str = lua_tostring(L, 2);
+    concat = dt->strftime(format).append(str);
+  }
+  lua_pushstring(L, concat);
   return 1;
 }
 
@@ -322,16 +397,22 @@ luaL_reg DateInstanceMethods[] = {
   {"wday",        arken_DateInstanceMethodWday},
   {"yday",        arken_DateInstanceMethodYday},
   {"daysInMonth", arken_DateInstanceMethodDaysInMonth},
+  {"dayOfWeek",   arken_DateInstanceMethodDayOfWeek},
+  {"dayOfYear",   arken_DateInstanceMethodDayOfYear},
   {"time",        arken_DateInstanceMethodDate},
   {"toString",    arken_DateInstanceMethodToString},
   {"__tostring",  arken_DateInstanceMethodToString},
   {"__gc",        arken_DateInstanceMethodDestruct},
+  {"__lt",        arken_DateInstanceMethodLessThan},
+  {"__le",        arken_DateInstanceMethodLessEqual},
+  {"__eq",        arken_DateInstanceMethodEqual},
+  {"__concat",    arken_DateInstanceMethodConcat},
   {NULL, NULL}
 };
 
 void static
 registerDateInstanceMethods( lua_State *L ) {
-  luaL_newmetatable(L, "Date.metatable");
+  luaL_newmetatable(L, "arken.chrono.Date.metatable");
   luaL_register(L, NULL, DateInstanceMethods);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");

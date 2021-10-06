@@ -33,6 +33,26 @@ Time Time::now()
   return t;
 }
 
+Time Time::currentDateTime()
+{
+  Time t;
+  t.m_time = std::time(nullptr);
+  std::tm * timeinfo = std::localtime(&t.m_time);
+
+  t.m_calendar.tm_sec   = timeinfo->tm_sec;
+  t.m_calendar.tm_min   = timeinfo->tm_min;
+  t.m_calendar.tm_hour  = timeinfo->tm_hour;
+  t.m_calendar.tm_mday  = timeinfo->tm_mday;
+  t.m_calendar.tm_mon   = timeinfo->tm_mon;
+  t.m_calendar.tm_year  = timeinfo->tm_year;
+  t.m_calendar.tm_wday  = timeinfo->tm_wday;
+  t.m_calendar.tm_yday  = timeinfo->tm_yday;
+  t.m_calendar.tm_isdst = timeinfo->tm_isdst;
+
+  return t;
+}
+
+
 Time Time::parse(const char * str)
 {
   string format;
@@ -70,10 +90,12 @@ Time Time::parse(const char * str, const char * fmt)
   t.m_calendar.tm_year  = 0;
   t.m_calendar.tm_wday  = 0;
   t.m_calendar.tm_yday  = 0;
-  t.m_calendar.tm_isdst = 0;
+  t.m_calendar.tm_isdst = -1;
 
   if ( strptime(str, fmt, &t.m_calendar) ) {
     t.m_time = std::mktime(&t.m_calendar);
+  } else {
+    t.m_calendar.tm_year = 0;
   }
 
   return t;
@@ -205,9 +227,14 @@ int Time::sec()
 string Time::toString()
 {
   string format("%Y-%m-%d %H:%M:%S");
-  char * result = new char[100];
+  char * result = new char[100]();
   std::strftime(result, 100, format, &m_calendar);
   return string(std::move(result));
+}
+
+Date Time::date()
+{
+  return Date::parse(this->strftime("%Y-%m-%d"));
 }
 
 } // namespace chrono

@@ -23,6 +23,7 @@ namespace chrono {
     Time(const Date &obj) : Date(obj) { };
 
     static Time now();
+    static Time currentDateTime();
     static Time parse(const char * value);
     static Time parse(const char * value, const char * format);
 
@@ -43,6 +44,7 @@ namespace chrono {
     int sec();
 
     string toString();
+    Date date();
 
   };
 

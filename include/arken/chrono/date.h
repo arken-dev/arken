@@ -26,6 +26,7 @@ namespace chrono {
     Date(const Date &obj);
 
     static Date today();
+    static Date currentDate();
     static Date parse(const char * value);
     static Date parse(const char * value, const char * format);
 
@@ -43,6 +44,9 @@ namespace chrono {
     int mday();
     int wday();
     int yday();
+
+    int dayOfWeek();
+    int dayOfYear();
     int daysInMonth();
 
     time_t time();
@@ -61,6 +65,11 @@ namespace chrono {
     string strftime(const char *);
     string toString();
 
+    bool operator <  (const Date &dt) const;
+    bool operator <= (const Date &dt) const;
+    bool operator >  (const Date &dt) const;
+    bool operator >= (const Date &dt) const;
+    bool operator == (const Date &dt) const;
   };
 
 } // namespace chrono

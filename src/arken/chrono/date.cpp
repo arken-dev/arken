@@ -35,6 +35,28 @@ Date Date::today()
   return t;
 }
 
+Date Date::currentDate()
+{
+  Date t;
+  t.m_time = std::time(nullptr);
+  std::tm * timeinfo = std::localtime(&t.m_time);
+
+  t.m_time -= (timeinfo->tm_sec + (timeinfo->tm_min * 60) + (timeinfo->tm_hour * 60 * 60));
+
+  t.m_calendar.tm_sec   = 0;
+  t.m_calendar.tm_min   = 0;
+  t.m_calendar.tm_hour  = 0;
+  t.m_calendar.tm_mday  = timeinfo->tm_mday;
+  t.m_calendar.tm_mon   = timeinfo->tm_mon;
+  t.m_calendar.tm_year  = timeinfo->tm_year;
+  t.m_calendar.tm_wday  = timeinfo->tm_wday;
+  t.m_calendar.tm_yday  = timeinfo->tm_yday;
+  t.m_calendar.tm_isdst = timeinfo->tm_isdst;
+
+  return t;
+}
+
+
 Date Date::parse(const char * str)
 {
   string format;
@@ -71,6 +93,8 @@ Date Date::parse(const char * str, const char * fmt)
     t.m_calendar.tm_min  = 0;
     t.m_calendar.tm_hour = 0;
     t.m_time = std::mktime(&t.m_calendar);
+  } else {
+    t.m_calendar.tm_year = 0;
   }
 
   return t;
@@ -155,6 +179,16 @@ int Date::wday()
   return m_calendar.tm_wday;
 }
 
+int Date::dayOfWeek()
+{
+  return m_calendar.tm_wday;
+}
+
+int Date::dayOfYear()
+{
+  return m_calendar.tm_yday;
+}
+
 int Date::yday()
 {
   return m_calendar.tm_yday;
@@ -230,7 +264,7 @@ string Date::asctime()
 
 string Date::strftime(const char * format)
 {
-  char * result = new char[100];
+  char * result = new char[100]();
   std::strftime(result, 100, format, &m_calendar);
   return string(std::move(result));
 }
@@ -241,6 +275,31 @@ string Date::toString()
   char * result = new char[100];
   std::strftime(result, 100, format, &m_calendar);
   return string(std::move(result));
+}
+
+bool Date::operator<(const Date &dt) const
+{
+  return m_time < dt.m_time;
+}
+
+bool Date::operator<=(const Date &dt) const
+{
+  return m_time <= dt.m_time;
+}
+
+bool Date::operator>(const Date &dt) const
+{
+  return m_time > dt.m_time;
+}
+
+bool Date::operator>=(const Date &dt) const
+{
+  return m_time >= dt.m_time;
+}
+
+bool Date::operator==(const Date &dt) const
+{
+  return m_time == dt.m_time;
 }
 
 } // namespace chrono
