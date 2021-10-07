@@ -523,8 +523,8 @@ function FormHelper:autoList(field, resource)
   if self.data[field .. '_id'] then
     display = 'none'
   end
-  local label = "<a href='#' onclick='AutoList.input(%q, %q)' title='clique aqui para trocar'>%s</a>"
-  label = string.format(label, field, self:buildName(field .. "_id"), text)
+  local label = "<a href='#' onclick='AutoList.input(%q, %q)' title='clique aqui para trocar'>%s</a><input type='hidden' name='form[%s_id]' id='form_%s_id' value='%s' />"
+  label = string.format(label, field, self:buildName(field .. "_id"), text, field, field, self.data[field .. "_id"])
 
   local func  = string.format([[AutoList.select(%q, %q, %q, ui);]],
     field, self:buildName(field .. "_id"), self:buildId(field .. "_id")
