@@ -58,8 +58,7 @@ cache::data::data(const char * value, int expires)
 
   int size = strlen(value);
   m_value  = new char[size + 1];
-  strncpy(m_value, value, size);
-  m_value[size] = '\0';
+  strncpy(m_value, value, size + 1);
 
   if( expires < 0 ) {
     m_expires = -1;
