@@ -147,6 +147,8 @@ void mvm::init(int argc, char ** argv)
 instance mvm::instance(bool create)
 {
 
+  std::unique_lock<std::mutex> lck(mtx);
+
   if( create ) {
     return new mvm::data();
   }
@@ -157,6 +159,8 @@ instance mvm::instance(bool create)
     delete data;
     data = new mvm::data();
   }
+
+  lck.unlock();
 
   return arken::instance(data);
 }
@@ -295,6 +299,7 @@ const char *  mvm::path()
 
 mvm::data::data(uint32_t version)
 {
+
   int rv;
   m_version = version;
   m_gc      = s_gc;
