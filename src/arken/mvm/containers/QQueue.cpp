@@ -11,7 +11,7 @@
 namespace arken {
 
 static QMutex s_mutex;
-static QQueue<mvm::data *> * s_container = new QQueue<mvm::data *>;
+static QQueue<mvm::data *> s_container;
 
 void mvm::container::init()
 {
@@ -21,25 +21,30 @@ void mvm::container::init()
 void mvm::container::push(mvm::data * data)
 {
   QMutexLocker ml(&s_mutex);
-  s_container->enqueue(data);
+  s_container.enqueue(data);
 }
 
 void mvm::container::back(mvm::data * data)
 {
   QMutexLocker ml(&s_mutex);
-  s_container->enqueue(data);
+  s_container.enqueue(data);
 }
 
 mvm::data * mvm::container::pop()
 {
   QMutexLocker ml(&s_mutex);
-  return s_container->dequeue();
+
+  if( s_container.empty() ) {
+    return nullptr;
+  }
+
+  return s_container.dequeue();
 }
 
 bool mvm::container::empty()
 {
   QMutexLocker ml(&s_mutex);
-  return s_container->empty();
+  return s_container.empty();
 }
 
 } // namespace arken

@@ -10,37 +10,42 @@
 namespace arken {
 
 static std::mutex mtx;
-static std::vector<mvm::data *> * s_container = new std::vector<mvm::data *>;
+static std::vector<mvm::data *> s_container;
 
 void mvm::container::init()
 {
-  s_container->reserve(100);
+  s_container.reserve(100);
 }
 
 void mvm::container::push(mvm::data * data)
 {
   std::unique_lock<std::mutex> lck(mtx);
-  s_container->push_back(data);
+  s_container.push_back(data);
 }
 
 void mvm::container::back(mvm::data * data)
 {
   std::unique_lock<std::mutex> lck(mtx);
-  s_container->insert(s_container->begin(), data);
+  s_container.insert(s_container.begin(), data);
 }
 
 mvm::data * mvm::container::pop()
 {
   std::unique_lock<std::mutex> lck(mtx);
-  mvm::data * data = s_container->back();
-  s_container->pop_back();
+
+  if( s_container.empty() ) {
+    return nullptr;
+  }
+
+  mvm::data * data = s_container.back();
+  s_container.pop_back();
   return data;
 }
 
 bool mvm::container::empty()
 {
   std::unique_lock<std::mutex> lck(mtx);
-  return s_container->empty();
+  return s_container.empty();
 }
 
 } // namespace arken

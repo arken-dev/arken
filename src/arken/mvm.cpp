@@ -147,36 +147,24 @@ void mvm::init(int argc, char ** argv)
 instance mvm::instance(bool create)
 {
 
-  std::unique_lock<std::mutex> lck(mtx);
-
   if( create ) {
-    return new mvm::data();
+    return arken::instance( new mvm::data() );
   }
 
-  mvm::data * data = pop();
+  mvm::data * data = mvm::pop();
 
   if( mvm::s_version != data->m_version ) {
     delete data;
     data = new mvm::data();
   }
 
-  lck.unlock();
-
   return arken::instance(data);
 }
 
 void mvm::push(mvm::data * data)
 {
-  if( mvm::s_version != data->m_version ) {
-    delete data;
-  } else {
-    if ( data->m_gc != mvm::s_gc ) {
-      lua_gc(data->state(), LUA_GCCOLLECT, 0);
-      data->m_gc = s_gc;
-    }
-    container::push(data);
-    s_pool ++;
-  }
+  container::push(data);
+  s_pool ++;
 }
 
 void mvm::back(mvm::data * data)
@@ -191,11 +179,14 @@ void mvm::back(mvm::data * data)
 
 mvm::data * mvm::pop()
 {
-  if( container::empty() ) {
-    return new mvm::data();
-  }
   mvm::data * data = container::pop();
-  s_pool --;
+
+  if( ! data ) {
+    return new mvm::data();
+  } else {
+    s_pool --;
+  }
+
   return data;
 }
 
