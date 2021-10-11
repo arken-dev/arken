@@ -1,4 +1,4 @@
-#include <QMutex>
+#include <mutex>
 #include <arken/string.h>
 #include <arken/os.h>
 
@@ -6,12 +6,12 @@ extern "C" {
 #include <json.h>
 }
 
-static QMutex s_mutex;
+static std::mutex mtx;
 
 char * json_lock_encode(lua_State *l)
 {
 
-  QMutexLocker ml(&s_mutex);
+  std::unique_lock<std::mutex> lck(mtx);
 
   json_config_t *cfg = json_fetch_config();
   strbuf_t local_encode_buf;
@@ -45,7 +45,7 @@ char * json_lock_encode(lua_State *l)
 void json_lock_decode(lua_State *l, const char * data)
 {
 
-  QMutexLocker ml(&s_mutex);
+  std::unique_lock<std::mutex> lck(mtx);
 
   json_parse_t json;
   json_token_t token;
