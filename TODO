@@ -11,9 +11,8 @@ web
 - name route
 - helpers revision
 
-time
+chrono
 - Date
-- DateTime
 - Time
 
 http://ruby-doc.org/core-2.4.0/String.html
