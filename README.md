@@ -1,4 +1,4 @@
-# ARKEN PLATFORM
+# ARKEN CORE
 
 Arken is a industrial platform for web development (and others) of extremely fast and scalable
 
