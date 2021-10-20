@@ -137,6 +137,7 @@ class mvm {
   static void env(const char * value);
   static const char * env();
   static const char * cext();
+  static uint32_t actives();
 };
 
 class instance {

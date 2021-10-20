@@ -473,6 +473,11 @@ void mvm::concurrent(concurrent::Base * pointer)
   concurrent_actives++;
 }
 
+uint32_t mvm::actives()
+{
+  return concurrent_actives;
+}
+
 void mvm::wait()
 {
   while( true ) {

@@ -73,6 +73,12 @@ arken_mvm_wait(lua_State *L) {
 }
 
 static int
+arken_mvm_actives(lua_State *L) {
+  lua_pushnumber(L, mvm::actives());
+  return 1;
+}
+
+static int
 arken_mvm_env(lua_State *L) {
   if(lua_gettop(L) == 1) { // number of arguments
     const char *env = luaL_checkstring(L, 1);
@@ -122,6 +128,7 @@ register_arken_mvm( lua_State *L ) {
     {"env",     arken_mvm_env},
     {"cext",    arken_mvm_cext},
     {"threads", arken_mvm_threads},
+    {"actives", arken_mvm_actives},
     {NULL, NULL}
   };
   luaL_newmetatable(L, "mvm");

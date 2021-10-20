@@ -361,6 +361,11 @@ void singular::node::wait()
   }
 }
 
+uint32_t singular::actives()
+{
+  return s_actives;
+}
+
 }  // namespace task
 }  // namespace concurrent
 }  // namespace arken

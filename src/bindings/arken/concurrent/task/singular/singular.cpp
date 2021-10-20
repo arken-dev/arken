@@ -136,13 +136,18 @@ arken_singular_wait(lua_State *L) {
 static int
 arken_singular_max(lua_State *L) {
   int max = luaL_checkinteger(L, 1);
-  singular::s_max = max;
-  return 0;
+  if(lua_gettop(L) == 1) { /* número de argumentos */
+    singular::s_max = max;
+    return 0;
+  } else {
+    lua_pushinteger(L, singular::s_max);
+    return 1;
+  }
 }
 
 static int
 arken_singular_actives(lua_State *L) {
-  lua_pushinteger(L, singular::s_actives);
+  lua_pushinteger(L, singular::actives());
   return 1;
 }
 

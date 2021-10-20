@@ -80,6 +80,7 @@ namespace task {
     static singular::node dequeue();
     static std::atomic<uint32_t> s_actives;
     static std::atomic<uint32_t> s_max;
+    static uint32_t actives();
 
   };
 
