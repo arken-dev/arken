@@ -151,6 +151,13 @@ arken_singular_actives(lua_State *L) {
   return 1;
 }
 
+static int
+arken_singular_inspect( lua_State *L ) {
+  lua_pushstring(L, singular::inspect());
+  return 1;
+}
+
+
 static const luaL_reg NaiadClassMethods[] = {
   {"start",   arken_singular_start},
   {"emplace", arken_singular_emplace},
@@ -158,6 +165,7 @@ static const luaL_reg NaiadClassMethods[] = {
   {"wait",    arken_singular_wait},
   {"max",     arken_singular_max},
   {"actives", arken_singular_actives},
+  {"inspect", arken_singular_inspect},
   {NULL, NULL}
 };
 

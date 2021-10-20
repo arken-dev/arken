@@ -5,6 +5,7 @@
 #include <lua/json/lock.h>
 #include <arken/mvm>
 #include <arken/string.h>
+#include <algorithm>
 
 namespace arken {
 namespace concurrent {
@@ -13,6 +14,9 @@ namespace task {
 std::mutex singular::s_mutex;
 std::atomic<uint32_t> singular::s_max{mvm::threads()};
 std::atomic<uint32_t> singular::s_actives{0};
+
+std::mutex s_inspect_mutex;
+std::map<string, string> s_inspect_map;
 
 singular::singular()
 {
@@ -61,7 +65,15 @@ void singular::run()
     if( !node ) {
       break;
     }
+    string tmp;
+    tmp.append(node.name()).append("#").append(node.m_fileName).append("#").append(node.params());
+    s_inspect_mutex.lock();
+    s_inspect_map[node.uuid()] = tmp;
+    s_inspect_mutex.unlock();
     node.run();
+    s_inspect_mutex.lock();
+    s_inspect_map.erase(node.uuid());
+    s_inspect_mutex.unlock();
   }
 }
 
@@ -335,6 +347,11 @@ string singular::node::name()
   return m_name;
 }
 
+string singular::node::params()
+{
+  return m_params;
+}
+
 double singular::node::microtime()
 {
   return m_microtime;
@@ -364,6 +381,21 @@ void singular::node::wait()
 uint32_t singular::actives()
 {
   return s_actives;
+}
+
+string singular::inspect()
+{
+  string tmp;
+  s_inspect_mutex.lock();
+  for (std::pair<string, string> element : s_inspect_map) {
+    if( tmp.size() > 0 ) {
+      tmp.append("|");
+    }
+    tmp.append(element.second);
+  }
+  s_inspect_mutex.unlock();
+
+  return tmp;
 }
 
 }  // namespace task

@@ -12,6 +12,7 @@
 #include <mutex>
 #include <atomic>
 #include <memory>
+#include <map>
 #include <arken/mvm>
 #include <arken/string.h>
 #include <arken/concurrent/shared.h>
@@ -56,6 +57,7 @@ namespace task {
       void run();
       string uuid();
       string name();
+      string params();
       double microtime();
       Shared shared();
       bool finished();
@@ -81,6 +83,7 @@ namespace task {
     static std::atomic<uint32_t> s_actives;
     static std::atomic<uint32_t> s_max;
     static uint32_t actives();
+    static string inspect();
 
   };
 
