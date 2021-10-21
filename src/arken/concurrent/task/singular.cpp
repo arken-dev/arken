@@ -387,16 +387,35 @@ uint32_t singular::actives()
 
 string singular::inspect()
 {
-  string tmp("[");
+  string tmp("{");
+
+  tmp.append("\"running\": [");
   s_inspect_mutex.lock();
+  int c = 0;
   for (std::pair<string, string> element : s_inspect_map) {
-    if( tmp.size() > 1 ) {
+    if( c > 0 ) {
       tmp.append(",");
     }
     tmp.append("\"").append(element.second).append("\"");
+    c++;
   }
   s_inspect_mutex.unlock();
-  tmp.append("]");
+  tmp.append("],");
+  tmp.append("\"queues\": {");
+
+  singular::s_mutex.lock();
+  c = 0;
+  for (std::pair<string, std::queue<singular::node>> element : singular::map()) {
+    if( c > 0 ) {
+      tmp.append(",");
+    }
+    tmp.append("\"").append(element.first).append("\": ");
+    tmp.append(std::to_string(element.second.size()));
+    c++;
+  }
+  singular::s_mutex.unlock();
+  tmp.append("}");
+  tmp.append("}");
   return tmp;
 }
 
