@@ -15,11 +15,13 @@ std::mutex singular::s_mutex;
 std::atomic<uint32_t> singular::s_max{mvm::threads()};
 std::atomic<uint32_t> singular::s_actives{0};
 
-std::mutex s_inspect_mutex;
-std::map<string, string> s_inspect_map;
+static std::mutex s_inspect_mutex;
+static std::map<string, string> s_inspect_map;
 
 singular::singular()
 {
+  m_uuid    = os::uuid();
+  m_inspect = "arken.concurrent.task.singular";
   singular::s_actives++;
 }
 
@@ -66,7 +68,7 @@ void singular::run()
       break;
     }
     string tmp;
-    tmp.append(node.name()).append("#").append(node.m_fileName).append("#").append(node.params());
+    tmp.append(node.m_fileName).append("#").append(node.params()).append("#").append(node.name());
     s_inspect_mutex.lock();
     s_inspect_map[node.uuid()] = tmp;
     s_inspect_mutex.unlock();
@@ -385,16 +387,16 @@ uint32_t singular::actives()
 
 string singular::inspect()
 {
-  string tmp;
+  string tmp("[");
   s_inspect_mutex.lock();
   for (std::pair<string, string> element : s_inspect_map) {
-    if( tmp.size() > 0 ) {
-      tmp.append("|");
+    if( tmp.size() > 1 ) {
+      tmp.append(",");
     }
-    tmp.append(element.second);
+    tmp.append("\"").append(element.second).append("\"");
   }
   s_inspect_mutex.unlock();
-
+  tmp.append("]");
   return tmp;
 }
 

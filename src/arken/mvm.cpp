@@ -37,6 +37,9 @@ string mvm::s_env = "development";
 static std::mutex mtx;
 static std::map <std::string, int> s_config;
 
+static std::mutex s_inspect_mutex;
+static std::map<string, string> s_inspect_map;
+
 void mvm::set(std::string key, int value)
 {
   mtx.lock();
@@ -392,13 +395,22 @@ lua_State * instance::release()
 void mvm::working()
 {
   while( true ) {
-    concurrent::Base * pointer = mvm::get();
-    pointer->run();
+    concurrent::Base * ptr = mvm::get();
 
-    if( pointer->release() ) {
-      delete pointer;
+    s_inspect_mutex.lock();
+    s_inspect_map[ptr->uuid()] = ptr->inspect();
+    s_inspect_mutex.unlock();
+ 
+    ptr->run();
+
+    s_inspect_mutex.lock();
+    s_inspect_map.erase(ptr->uuid());
+    s_inspect_mutex.unlock();
+ 
+    if( ptr->release() ) {
+      delete ptr;
     } else {
-      pointer->finished(true);
+      ptr->finished(true);
     }
 
     concurrent_actives--;
@@ -414,9 +426,19 @@ bool concurrent::Base::finished()
   return m_finished;
 }
 
+string concurrent::Base::uuid()
+{
+  return m_uuid;
+}
+
 void concurrent::Base::finished(bool flag)
 {
   m_finished = flag;
+}
+
+string concurrent::Base::inspect()
+{
+  return m_inspect;
 }
 
 concurrent::Base * mvm::get()
@@ -476,6 +498,21 @@ void mvm::concurrent(concurrent::Base * pointer)
 uint32_t mvm::actives()
 {
   return concurrent_actives;
+}
+
+string mvm::inspect()
+{
+  string tmp("[");
+  s_inspect_mutex.lock();
+  for (std::pair<string, string> element : s_inspect_map) {
+    if( tmp.size() > 1 ) {
+      tmp.append(",");
+    }
+    tmp.append("\"").append(element.second).append("\"");
+  }
+  s_inspect_mutex.unlock();
+  tmp.append("]");
+  return tmp;
 }
 
 void mvm::wait()

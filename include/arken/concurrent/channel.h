@@ -31,7 +31,6 @@ namespace concurrent {
 
     std::shared_ptr<std::atomic<bool>>  m_ref_bool;
 
-    string m_uuid;
     string m_params;
     string m_fileName;
     Shared m_shared;

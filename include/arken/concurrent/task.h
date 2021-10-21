@@ -19,7 +19,6 @@ namespace concurrent {
 
     private:
 
-    string m_uuid;
     string m_params;
     string m_fileName;
     bool m_release;

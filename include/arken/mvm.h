@@ -30,13 +30,17 @@ namespace concurrent
 
     protected:
     std::atomic<bool> m_finished = ATOMIC_VAR_INIT(false);
+    string m_uuid;
+    string m_inspect;
 
     public:
     virtual void run() = 0;
     virtual bool release() = 0;
     virtual ~Base();
-    bool finished();
-    void finished(bool flag);
+    bool   finished();
+    void   finished(bool flag);
+    string inspect();
+    string uuid();
   };
 
 } // namespace concurrent
@@ -138,6 +142,7 @@ class mvm {
   static const char * env();
   static const char * cext();
   static uint32_t actives();
+  static string inspect();
 };
 
 class instance {

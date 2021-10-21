@@ -111,6 +111,11 @@ arken_mvm_threads(lua_State *L) {
   }
 }
 
+static int
+arken_mvm_inspect(lua_State *L) {
+  lua_pushstring(L, mvm::inspect());
+  return 1;
+}
 
 static void
 register_arken_mvm( lua_State *L ) {
@@ -129,6 +134,7 @@ register_arken_mvm( lua_State *L ) {
     {"cext",    arken_mvm_cext},
     {"threads", arken_mvm_threads},
     {"actives", arken_mvm_actives},
+    {"inspect", arken_mvm_inspect},
     {NULL, NULL}
   };
   luaL_newmetatable(L, "mvm");
