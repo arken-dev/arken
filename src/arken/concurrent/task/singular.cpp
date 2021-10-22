@@ -88,11 +88,12 @@ bool singular::release()
 singular::node singular::start(const char * fileName, const char * params, const char * name, bool purge)
 {
   std::unique_lock<std::mutex> lck(singular::s_mutex);
+  size_t size = runners().size();
 
   singular::node node = singular::node(fileName, params, name, purge);
   singular::push( node );
 
-  if(singular::s_actives < singular::runners().size() && singular::s_actives < singular::s_max) {
+  if(runners().size() > size && singular::s_actives < singular::s_max) {
     mvm::concurrent( new singular() );
   }
 
@@ -104,11 +105,12 @@ singular::node singular::emplace(const char * fileName, const char * params, con
   std::unique_lock<std::mutex> lck(singular::s_mutex);
 
   if( singular::map().count(name) == 0 || singular::map()[name].empty() ) {
+    size_t size = runners().size();
 
     singular::node node = singular::node(fileName, params, name, purge);
     singular::push( node );
 
-    if(singular::s_actives < singular::runners().size() && singular::s_actives < singular::s_max) {
+    if(runners().size() > size && singular::s_actives < singular::s_max) {
       mvm::concurrent( new singular() );
     }
 
@@ -122,12 +124,13 @@ singular::node singular::place(const char * fileName, const char * params, const
 {
   std::unique_lock<std::mutex> lck(singular::s_mutex);
 
-  if( singular::runners().count(name) == 0 ) {
+  if( runners().count(name) == 0 ) {
+    size_t size = runners().size();
 
     singular::node node = singular::node(fileName, params, name, purge);
     singular::push( node );
 
-    if(singular::s_actives < singular::runners().size() && singular::s_actives < singular::s_max) {
+    if(runners().size() > size && singular::s_actives < singular::s_max) {
       mvm::concurrent( new singular() );
     }
 
@@ -238,7 +241,6 @@ void singular::node::run()
     }
   }
 
-
 }
 
 void singular::push(const singular::node & node)
@@ -251,7 +253,7 @@ void singular::push(const singular::node & node)
   }
 
 /*
-  if( singular::runners().count(node.m_name) == 0 ) {
+  if( runners().count(node.m_name) == 0 ) {
     runners()[node.m_name] = true;
   }
 */
