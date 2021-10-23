@@ -413,6 +413,7 @@ void mvm::working()
       ptr->finished(true);
     }
 
+    std::unique_lock<std::mutex> lck(*concurrent_mutex);
     concurrent_actives--;
 
   } // while
