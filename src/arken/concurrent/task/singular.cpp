@@ -27,6 +27,7 @@ singular::singular()
 
 singular::~singular()
 {
+  std::unique_lock<std::mutex> lck(singular::s_mutex);
   singular::s_actives--;
 }
 
