@@ -219,23 +219,24 @@ void singular::node::run()
     lua_gc(L, LUA_GCCOLLECT, 0);
   }
 
-  (*m_ref_bool.get()) = true;
-  runners()[m_name]   = true;
 
   std::unique_lock<std::mutex> lck(singular::s_mutex);
+
+  (*m_ref_bool.get()) = true;
+  runners()[m_name]   = true;
 
   if( map()[m_name].size() == 0 ) {
     map().erase(m_name);
     runners().erase(m_name);
 
-    for(size_t p=0; p < singular::vector().size(); p++ ) {
-      if( singular::vector().at(p) == m_name ) {
-        singular::vector().erase(singular::vector().begin()+p);
+    for(size_t p=0; p < vector().size(); p++ ) {
+      if( vector().at(p) == m_name ) {
+        vector().erase(vector().begin()+p);
         break;
       }
     }
-    if( singular::position() >= singular::vector().size() ) {
-      singular::position() = 0;
+    if( position() > vector().size() ) {
+      position() = 0;
     }
   }
 
@@ -243,62 +244,49 @@ void singular::node::run()
 
 void singular::push(const singular::node & node)
 {
-  // TODO resolve .data() map arken:string
-  if( singular::map().count(node.m_name) == 0 ) {
+  if( map().count(node.m_name) == 0 ) {
     runners()[node.m_name] = true;
-    singular::map()[node.m_name] = std::queue<singular::node>();
-    singular::vector().push_back(node.m_name);
+    map()[node.m_name] = std::queue<singular::node>();
+    vector().push_back(node.m_name);
   }
 
-/*
-  if( runners().count(node.m_name) == 0 ) {
-    runners()[node.m_name] = true;
-  }
-*/
-
-  singular::map()[node.m_name].push( node );
+  map()[node.m_name].push( node );
 }
 
 singular::node singular::dequeue()
 {
 
   std::unique_lock<std::mutex> lck(singular::s_mutex);
-  std::vector<string> &vector = singular::vector();
-  std::unordered_map<string, std::queue<singular::node>> &map = singular::map();
 
-  if( vector.empty() ) {
+  if( vector().empty() ) {
     return {};
   }
 
-  if( s_actives > vector.size() ) {
+  if( s_actives > vector().size() ) {
     return {};
   }
 
   string name;
   string current;
 
-  while( true ) {
+  // for actual position to end vector size
+  for(size_t pos = position(); pos < vector().size(); pos++) {
 
-    // for actual position to end vector size
-    for(size_t pos = position(); pos < vector.size(); pos++) {
+    current = vector().at(pos);
 
-      current = vector.at(pos);
-
-      if (runners()[current]) {
-        name = current;
-        break;
-      }
-
-    } // for
-
-    if(! name.empty()) {
+    if (runners()[current]) {
+      name = current;
       break;
     }
+
+  } // for
+
+  if( name.empty() ) {
 
     // for initial vector to position
     for(size_t pos = 0; pos < position(); pos++) {
 
-      current = vector.at(pos);
+      current = vector().at(pos);
 
       if (runners()[current]) {
         name = current;
@@ -307,29 +295,20 @@ singular::node singular::dequeue()
 
     } // for
 
-    if(! name.empty()) {
-      break;
-    }
-
-    // wait find
-    os::sleep(1);
-
-  } // while
-
-  singular::position()++;
-  if( singular::position() >= vector.size() ) {
-    singular::position() = 0;
   }
 
-  if( map[name].empty() ) {
+  position()++;
+
+  if( position() > vector().size() ) {
+    position() = 0;
+  }
+
+  if( name.empty() || map()[name].empty() ) {
     return {};
   } else {
-    // flag runners
     runners()[name] = false;
-
-    singular::node n = map[name].front();
-    map[name].pop();
-
+    singular::node n = map()[name].front();
+    map()[name].pop();
     return n;
   }
 
