@@ -6,8 +6,8 @@
 local Array     = require('arken.Array')
 local Class     = require('arken.oop.Class')
 local toboolean = require('arken.toboolean')
-local Date      = require('arken.time.Date')
-local DateTime  = require('arken.time.DateTime')
+local Date      = require('arken.chrono.Date')
+local Time      = require('arken.chrono.Time')
 
 local ActiveRecord_Adapter = Class.new("ActiveRecord.Adapter")
 
@@ -610,22 +610,22 @@ function ActiveRecord_Adapter.read_value_string(value)
 end
 
 function ActiveRecord_Adapter.read_value_timestamp(value)
-  return DateTime.fromString(value:mid(1, value:indexOf('.') + 3), 'yyyy/MM/dd hh:mm:ss.zzz')
+  return DateTime.parse(value:mid(1, value:indexOf('.') + 3), '%Y/%m/%d %H:%M:%S')
 end
 
 function ActiveRecord_Adapter.read_value_datetime(value)
   if value:sub(5, 5) == '-' then
-    return DateTime.fromString(value:left(19), 'yyyy-MM-dd hh:mm:ss')
+    return Time.parse(value:left(19), '%Y-%m-%d %H:%M:%S')
   else
-    return DateTime.fromString(value:left(19), 'yyyy/MM/dd hh:mm:ss')
+    return Time.parse(value:left(19), '%Y/%m/%d %H:%M:%S')
   end
 end
 
 function ActiveRecord_Adapter.read_value_date(value)
   if value:sub(5, 5) == '-' then
-    return Date.fromString(value:left(10), 'yyyy-MM-dd')
+    return Date.parse(value:left(10), '%Y-%M-%d')
   else
-    return Date.fromString(value:left(10), 'yyyy/MM/dd')
+    return Date.parse(value:left(10), '%Y/%M/%d')
   end
 end
 
