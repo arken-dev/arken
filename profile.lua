@@ -28,7 +28,7 @@ end
 -------------------------------------------------------------------------------
 
 if mvm.path() ~= os.pwd() then
-  local profile = os.pwd() .. '/profile.lua'
+  local profile = os.pwd() .. '/config/profile.lua'
   if os.exists(profile) then
     dofile(profile)
   end
