@@ -94,7 +94,6 @@ class mvm {
   static char  ** s_argv;
   static string   s_arkenPath;
   static string   s_profilePath;
-  static string   s_dispatchPath;
   static string   s_packagePath;
   static string   s_cpackagePath;
   static string   s_env;
