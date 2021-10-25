@@ -29,7 +29,6 @@ std::atomic<uint32_t> mvm::concurrent_actives{0};
 
 string mvm::s_arkenPath    = "";
 string mvm::s_profilePath  = "";
-string mvm::s_dispatchPath = "";
 string mvm::s_packagePath  = "";
 string mvm::s_cpackagePath = "";
 string mvm::s_env = "development";
@@ -138,8 +137,6 @@ void mvm::init(int argc, char ** argv)
 
   s_profilePath = s_arkenPath;
   s_profilePath.append("/profile.lua");
-
-  s_dispatchPath.append("dispatch.lua");
 
   container::init();
 
@@ -331,11 +328,6 @@ mvm::data::data(uint32_t version)
   rv = lua_pcall(m_State, 0, 0, 0);
   if (rv) {
     fprintf(stderr, "%s\n", lua_tostring(m_State, -1));
-  }
-
-  if( os::exists(s_dispatchPath) ) {
-    luaL_loadfile(m_State, s_dispatchPath );
-    lua_pcall(m_State, 0, 0, 0);
   }
 
   int log = mvm::at("pool.log");
