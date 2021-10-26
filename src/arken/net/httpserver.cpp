@@ -19,7 +19,7 @@ using service = arken::concurrent::service;
 namespace arken {
 namespace net {
 
-string HttpServer::dispatcher = "dispatcher";
+string HttpServer::dispatcher = "arken.net.dispatcher";
 
 HttpServer::HttpServer(const char * address, int port)
 {

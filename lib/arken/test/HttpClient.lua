@@ -1,5 +1,5 @@
 local HttpClient = Class.new("arken.test.HttpClient")
-local dispatch   = require "arken.net.dispatch"
+local dispatch   = require "arken.net.dispatcher"
 local HttpEnv    = require "arken.net.HttpEnv"
 local template   = require "arken.template"
 local mvm        = require "arken.mvm"
