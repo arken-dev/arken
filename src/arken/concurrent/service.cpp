@@ -24,8 +24,8 @@ service::service( const char * fileName, const char * params, bool purge )
   m_release  = true;
   m_inspect.
     append("arken.concurrent.service: ").
-    append(fileName).append("#").
-    append(params);
+    append(m_fileName).append("#").
+    append(m_params.escape());
 
   s_references[fileName] = true;
 }

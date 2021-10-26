@@ -68,9 +68,12 @@ void singular::run()
     if( !node ) {
       break;
     }
-    string tmp("{");
-    tmp.append("\"fileName\":").append("\"").append(node.m_fileName).append("\", \"params\":").append(node.params()).append(",\"name\": \"").append(node.name()).append("\"");
-    tmp.append("}");
+    string tmp;
+    tmp.
+      append(node.m_fileName).append("#").
+      append(node.m_params.escape()).append("#").
+      append(node.name());
+
     s_inspect_mutex.lock();
     s_inspect_map[node.uuid()] = tmp;
     s_inspect_mutex.unlock();
@@ -376,7 +379,7 @@ string singular::inspect()
     if( c > 0 ) {
       tmp.append(",");
     }
-    tmp.append(element.second);
+    tmp.append("\"").append(element.second).append("\"");
     c++;
   }
   s_inspect_mutex.unlock();
