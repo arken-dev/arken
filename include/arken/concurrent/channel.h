@@ -10,6 +10,7 @@
 #include <arken/mvm>
 #include <arken/concurrent/shared.h>
 #include <memory>
+#include <queue>
 
 namespace arken {
 namespace concurrent {

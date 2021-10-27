@@ -31,13 +31,14 @@ string mvm::s_arkenPath    = "";
 string mvm::s_profilePath  = "";
 string mvm::s_packagePath  = "";
 string mvm::s_cpackagePath = "";
-string mvm::s_env = "development";
+string mvm::s_env          = "development";
 
 static std::mutex mtx;
 static std::map <std::string, int> s_config;
 
 static std::mutex s_inspect_mutex;
-static std::map<string, string> s_inspect_map;
+static std::map<string, string> s_running_inspect;
+static std::map<string, string> s_wait_inspect;
 
 void mvm::set(std::string key, int value)
 {
@@ -390,13 +391,14 @@ void mvm::working()
     concurrent::Base * ptr = mvm::get();
 
     s_inspect_mutex.lock();
-    s_inspect_map[ptr->uuid()] = ptr->inspect();
+    s_wait_inspect.erase(ptr->uuid());
+    s_running_inspect[ptr->uuid()] = ptr->inspect();
     s_inspect_mutex.unlock();
  
     ptr->run();
 
     s_inspect_mutex.lock();
-    s_inspect_map.erase(ptr->uuid());
+    s_running_inspect.erase(ptr->uuid());
     s_inspect_mutex.unlock();
  
     if( ptr->release() ) {
@@ -482,10 +484,13 @@ void mvm::concurrent(concurrent::Base * pointer)
   if( concurrent_workers->size() < concurrent_max && (concurrent_workers->size() - concurrent_actives) == 0  ) {
     concurrent_workers->push_back(std::thread(working));
   }
-
   concurrent_queue->push(pointer);
   concurrent_condition->notify_one();
   concurrent_actives++;
+
+  s_inspect_mutex.lock();
+  s_wait_inspect[pointer->uuid()] = pointer->inspect();
+  s_inspect_mutex.unlock();
 }
 
 uint32_t mvm::actives()
@@ -495,16 +500,35 @@ uint32_t mvm::actives()
 
 string mvm::inspect()
 {
-  string tmp("[");
   s_inspect_mutex.lock();
-  for (std::pair<string, string> element : s_inspect_map) {
-    if( tmp.size() > 1 ) {
+
+  int count = 0;
+  string tmp("{");
+  tmp.append("\"running\": [");
+
+  for (std::pair<string, string> element : s_running_inspect) {
+    if( count > 0 ) {
       tmp.append(",");
     }
     tmp.append("\"").append(element.second).append("\"");
+    count++;
   }
+
+  tmp.append("],");
+
+  count = 0;
+  tmp.append("\"wait\": [");
+  for (std::pair<string, string> element : s_wait_inspect) {
+    if( count > 0 ) {
+      tmp.append(",");
+    }
+    tmp.append("\"").append(element.second).append("\"");
+    count++;
+  }
+  tmp.append("]}");
+
   s_inspect_mutex.unlock();
-  tmp.append("]");
+
   return tmp;
 }
 

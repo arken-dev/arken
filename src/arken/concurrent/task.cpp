@@ -82,6 +82,12 @@ task::task(const char * fileName, const char * params, bool purge)
   m_params   = params;
   m_purge    = purge;
   m_release  = true;
+
+  m_inspect.
+    append("arken.concurrent.task: ").
+    append(m_fileName).append("#").
+    append(m_params.escape());
+
 }
 
 } // namespace concurrent
