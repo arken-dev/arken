@@ -31,12 +31,6 @@ singular::~singular()
   singular::s_actives--;
 }
 
-std::queue<singular::node> & singular::queue()
-{
-  static std::queue<singular::node> s_queue;
-  return s_queue;
-}
-
 std::vector<string> & singular::vector()
 {
   static std::vector<string> s_vector;
