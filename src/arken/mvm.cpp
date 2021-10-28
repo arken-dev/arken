@@ -400,7 +400,7 @@ void mvm::working()
     s_inspect_mutex.lock();
     s_running_inspect.erase(ptr->uuid());
     s_inspect_mutex.unlock();
- 
+
     if( ptr->release() ) {
       delete ptr;
     } else {
@@ -530,6 +530,11 @@ string mvm::inspect()
   s_inspect_mutex.unlock();
 
   return tmp;
+}
+
+size_t mvm::workers()
+{
+  return concurrent_workers->size();
 }
 
 void mvm::wait()

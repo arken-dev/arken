@@ -142,6 +142,7 @@ class mvm {
   static const char * cext();
   static uint32_t actives();
   static string inspect();
+  static size_t workers();
 };
 
 class instance {

@@ -21,6 +21,12 @@ arken_mvm_reload(lua_State *L) {
 }
 
 static int
+arken_mvm_workers(lua_State *L) {
+  lua_pushnumber(L, mvm::workers());
+  return 1;
+}
+
+static int
 arken_mvm_path(lua_State *L) {
   // TODO rename arkenPath => path
   lua_pushstring(L, mvm::path());
@@ -135,6 +141,7 @@ register_arken_mvm( lua_State *L ) {
     {"threads", arken_mvm_threads},
     {"actives", arken_mvm_actives},
     {"inspect", arken_mvm_inspect},
+    {"workers", arken_mvm_workers},
     {NULL, NULL}
   };
   luaL_newmetatable(L, "mvm");

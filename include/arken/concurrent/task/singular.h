@@ -28,7 +28,6 @@ namespace task {
     using Shared = arken::concurrent::Shared;
 
     singular();
-    ~singular();
 
     public:
     void run();
@@ -42,6 +41,7 @@ namespace task {
       string m_fileName;
       string m_params;
       string m_name;
+      string m_inspect;
       double m_microtime{0};
       bool   m_purge{false};
       Shared m_shared;
@@ -51,13 +51,13 @@ namespace task {
 
       public:
       node();
-      ~node();
       node(const node &obj);
       operator bool() const;
       void run();
       string uuid();
       string name();
       string params();
+      string inspect();
       double microtime();
       Shared shared();
       bool finished();

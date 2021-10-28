@@ -25,12 +25,6 @@ singular::singular()
   singular::s_actives++;
 }
 
-singular::~singular()
-{
-  std::unique_lock<std::mutex> lck(singular::s_mutex);
-  singular::s_actives--;
-}
-
 std::vector<string> & singular::vector()
 {
   static std::vector<string> s_vector;
@@ -62,14 +56,9 @@ void singular::run()
     if( !node ) {
       break;
     }
-    string tmp;
-    tmp.
-      append(node.m_fileName).append("#").
-      append(node.m_params.escape()).append("#").
-      append(node.name());
 
     s_inspect_mutex.lock();
-    s_inspect_map[node.uuid()] = tmp;
+    s_inspect_map[node.uuid()] = node.inspect();
     s_inspect_mutex.unlock();
     node.run();
     s_inspect_mutex.lock();
@@ -90,7 +79,7 @@ singular::node singular::start(const char * fileName, const char * params, const
   singular::node node = singular::node(fileName, params, name, purge);
   singular::push( node );
 
-  if( singular::s_actives < singular::s_max ) {
+  if( singular::s_actives < singular::s_max && singular::s_actives < singular::runners().size() ) {
     mvm::concurrent( new singular() );
   }
 
@@ -135,9 +124,7 @@ singular::node singular::place(const char * fileName, const char * params, const
   return {};
 }
 
-
-singular::node::node()
-{}
+singular::node::node() = default;
 
 singular::node::node(const node &obj)
 {
@@ -148,6 +135,12 @@ singular::node::node(const node &obj)
   m_microtime = obj.m_microtime;
   m_shared    = obj.m_shared;
   m_ref_bool  = obj.m_ref_bool;
+
+  m_inspect.
+    append(m_fileName).append("#").
+    append(m_params.escape()).append("#").
+    append(m_name.escape());
+
 }
 
 singular::node::node(const char * fileName, const char * params, const char * name, bool purge)
@@ -159,10 +152,12 @@ singular::node::node(const char * fileName, const char * params, const char * na
   m_uuid      = os::uuid();
   m_microtime = os::microtime();
   m_ref_bool  = std::shared_ptr<std::atomic<bool>>(new std::atomic<bool>(false));
-}
+  m_inspect.
+    append(m_fileName).append("#").
+    append(m_params.escape()).append("#").
+    append(m_name.escape());
 
-singular::node::~node()
-{ }
+}
 
 void singular::node::run()
 {
@@ -220,9 +215,8 @@ void singular::node::run()
   std::unique_lock<std::mutex> lck(singular::s_mutex);
 
   (*m_ref_bool.get()) = true;
-  runners()[m_name]   = true;
 
-  if( map()[m_name].size() == 0 ) {
+  if( map()[m_name].empty() ) {
     map().erase(m_name);
     runners().erase(m_name);
 
@@ -235,6 +229,8 @@ void singular::node::run()
     if( position() > vector().size() ) {
       position() = 0;
     }
+  } else {
+    runners()[m_name] = true;
   }
 
 }
@@ -255,11 +251,8 @@ singular::node singular::dequeue()
 
   std::unique_lock<std::mutex> lck(singular::s_mutex);
 
-  if( vector().empty() ) {
-    return {};
-  }
-
   if( s_actives > vector().size() ) {
+    singular::s_actives--;
     return {};
   }
 
@@ -301,6 +294,7 @@ singular::node singular::dequeue()
   }
 
   if( name.empty() || map()[name].empty() ) {
+    singular::s_actives--;
     return {};
   } else {
     runners()[name] = false;
@@ -329,6 +323,11 @@ string singular::node::name()
 string singular::node::params()
 {
   return m_params;
+}
+
+string singular::node::inspect()
+{
+  return m_inspect;
 }
 
 double singular::node::microtime()
