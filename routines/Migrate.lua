@@ -76,9 +76,9 @@ Migrate.help.generate = [[
 ]]
 
 function Migrate:generate()
-  local DateTime  = require('arken.time.DateTime')
+  local Time      = require('arken.chrono.Time')
   local params    = self:params()
-  local timestamp = Migrate.timestamp or DateTime.currentDateTime():toString('yyyyMMddhhmmss')
+  local timestamp = Migrate.timestamp or Time.now():strftime('%Y%m%d%H%M%S')
   local name      = tostring(params[1]):underscore()
   if name == 'nil' then
     error('arg for migrate name')
