@@ -72,16 +72,26 @@ static int arken_utf8_len( lua_State *L ) {
   return 1;
 }
 
+static int arken_utf8_sanitize( lua_State *L ) {
+  const char * string = luaL_checkstring(L, 1);
+  char * result = utf8::sanitize(string);
+  lua_pushstring( L, result );
+  delete[] result;
+  return 1;
+}
+
+
 static void
 register_arken_utf8( lua_State *L ) {
   static const luaL_reg Map[] = {
-    {"sub",    arken_utf8_sub},
-    {"lower",  arken_utf8_lower},
-    {"upper",  arken_utf8_upper},
-    {"format", arken_utf8_format},
-    {"len",    arken_utf8_len},
-    {"decode", arken_utf8_decode},
-    {"encode", arken_utf8_encode},
+    {"sub",      arken_utf8_sub},
+    {"lower",    arken_utf8_lower},
+    {"upper",    arken_utf8_upper},
+    {"format",   arken_utf8_format},
+    {"len",      arken_utf8_len},
+    {"decode",   arken_utf8_decode},
+    {"encode",   arken_utf8_encode},
+    {"sanitize", arken_utf8_sanitize},
     {NULL, NULL}
   };
   luaL_newmetatable(L, "utf8");

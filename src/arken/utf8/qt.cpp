@@ -82,4 +82,39 @@ char * utf8::encode(const char * string, const char * charset)
   return result;
 }
 
+char * utf8::sanitize(const char * string)
+{
+  size_t origlen = strlen(string);
+  char * result  = new char[origlen+1];
+  int i = 0, j = 0;
+  while (string[i]) {
+    if ( string[i] == -61 ) {
+      //std::cout << "dentro de utf8" << std::endl;
+      if ( string[i + 1] < 0 && string[i + 1] != -61 ) {
+        char * tmp = new char[3]();
+        tmp[0] = string[i];
+        result[j] = string[i];
+        j++; i++;
+        tmp[1] = string[i];
+        result[j] = string[i];
+        j++; i++;
+        //std::cout << "achei duas" << tmp << std::endl;
+      } else {
+        i++;
+      }
+    } else {
+      //std::cout << "caracter não utf8:" << (int) string[i] << " char " << string[i] << std::endl;
+      if( string[i] > 0 ) {
+        result[j] = string[i];
+        j++; i++;
+      } else {
+        i++;
+      }
+    }
+  }
+  //std::cout << "tamanho de j " << j << std::endl;
+  result[j] = '\0';
+  return result;
+}
+
 } // namespace arken
