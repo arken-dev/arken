@@ -55,7 +55,7 @@ set(ARKEN_OS_UUID "" CACHE STRING
 
 set_property(
   CACHE ARKEN_OS_UUID PROPERTY STRINGS
-  "" qt libuuid
+  "" qt libuuid Linux
 )
 
 if(ARKEN_OS_UUID STREQUAL "")
