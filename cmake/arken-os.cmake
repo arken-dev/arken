@@ -59,13 +59,7 @@ set_property(
 )
 
 if(ARKEN_OS_UUID STREQUAL "")
-  if(ARKEN_BACKEND STREQUAL "embedded")
-    set(ARKEN_OS_UUID "libuuid")
-  elseif(ARKEN_BACKEND STREQUAL "benchmark")
-    set(ARKEN_OS_UUID "qt")
-  else()
-    set(ARKEN_OS_UUID "qt")
-  endif()
+  set(ARKEN_OS_UUID "libuuid")
 endif()
 
 set(os-uuid ${PROJECT_SOURCE_DIR}/src/arken/os/uuid/${ARKEN_OS_UUID}.cpp)
