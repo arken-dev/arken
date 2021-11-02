@@ -24,22 +24,56 @@ char * utf8::sub(const char * string, int i, int j)
   return result;
 }
 
-char * utf8::upper(const char * string)
+char * utf8::upper(const char * str)
 {
-  QByteArray tmp = QString(string).toUpper().toLocal8Bit();
-  auto result    = new char[tmp.size() + 1];
-  strncpy(result, tmp, tmp.size());
-  result[tmp.size()] = '\0';
-  return result;
+  size_t i   = 0;
+  size_t len = strlen(str);
+  char * res = new char[len+1];
+
+  while( str[i] ) {
+
+    if( str[i] == -61 && (str[i+1] >= -95 && str[i+1] <= -67) ) {
+      res[i] = str[i];
+      i++;
+      res[i] = str[i] - 32;
+    } else if( str[i] >= 97 && str[i] <= 122 ) {
+      res[i] = str[i] - 32;
+    } else {
+      res[i] = str[i];
+    }
+
+    i++;
+  }
+
+  res[i] = '\0';
+
+  return res;
 }
 
-char * utf8::lower(const char * string)
+char * utf8::lower(const char * str)
 {
-  QByteArray tmp = QString(string).toLower().toLocal8Bit();
-  auto result    = new char[tmp.size() + 1];
-  strncpy(result, tmp, tmp.size());
-  result[tmp.size()] = '\0';
-  return result;
+  size_t i   = 0;
+  size_t len = strlen(str);
+  char * res = new char[len+1];
+
+  while( str[i] ) {
+
+    if( str[i] == -61 && (str[i+1] >= -127 && str[i+1] <= -99) ) {
+      res[i] = str[i];
+      i++;
+      res[i] = str[i] + 32;
+    } else if( str[i] >= 65 && str[i] <= 90 ) {
+      res[i] = str[i] + 32;
+    } else {
+      res[i] = str[i];
+    }
+
+    i++;
+  }
+
+  res[i] = '\0';
+
+  return res;
 }
 
 char * utf8::format(const char * string)
