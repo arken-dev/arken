@@ -124,11 +124,8 @@ char * utf8::sanitize(const char * string)
   while (string[i]) {
     if ( string[i] == -61 ) {
       if ( string[i + 1] < 0 && string[i + 1] != -61 ) {
-        char * tmp = new char[3]();
-        tmp[0] = string[i];
         result[j] = string[i];
         j++; i++;
-        tmp[1] = string[i];
         result[j] = string[i];
         j++; i++;
       } else {
