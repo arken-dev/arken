@@ -60,6 +60,19 @@ char * utf8::sub(const char * str, int p1, int p2)
   return res;
 }
 
+char * utf8::mid(const char * str, int p1, int p2)
+{
+
+  if( p2 < 0 ) {
+    p2 = (utf8::len(str) - 1);
+  } else {
+    p2 = p1 + p2;
+  }
+
+  return utf8::sub(str, p1, p2);
+}
+
+
 char * utf8::upper(const char * str)
 {
   size_t i   = 0;
