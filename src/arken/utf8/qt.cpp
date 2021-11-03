@@ -9,6 +9,7 @@
 // https://www.asciitable.com/
 // https://cs.stanford.edu/people/miles/iso8859.html
 // https://www.utf8-chartable.de/
+// https://github.com/dart-lang/http/issues/175
 
 #include <arken/base>
 #include <arken/utf8>
@@ -18,7 +19,6 @@ namespace arken {
 
 char * utf8::sub(const char * str, int p1, int p2)
 {
-
 
   int i  = 0;
   int j  = 0;
