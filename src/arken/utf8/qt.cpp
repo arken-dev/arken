@@ -4,6 +4,11 @@
 // license that can be found in the LICENSE file.
 // https://stackoverflow.com/questions/36897781/how-to-uppercase-lowercase-utf-8-characters-in-c
 // https://www.py4u.net/discuss/75078
+// https://www.ime.usp.br/~pf/algoritmos/apend/unicode.html
+// https://pt.wikipedia.org/wiki/ISO/IEC_8859-1
+// https://www.asciitable.com/
+// https://cs.stanford.edu/people/miles/iso8859.html
+// https://www.utf8-chartable.de/
 
 #include <arken/base>
 #include <arken/utf8>
@@ -116,32 +121,32 @@ char * utf8::encode(const char * string, const char * charset)
   return result;
 }
 
-char * utf8::sanitize(const char * string)
+char * utf8::sanitize(const char * str)
 {
-  size_t origlen = strlen(string);
-  char * result  = new char[origlen+1];
+  size_t len = strlen(str);
+  char * res = new char[len+1];
   int i = 0, j = 0;
-  while (string[i]) {
-    if ( string[i] == -61 ) {
-      if ( string[i + 1] < 0 && string[i + 1] != -61 ) {
-        result[j] = string[i];
+  while (str[i]) {
+    if ( str[i] == -61 ) {
+      if ( str[i + 1] < 0 && str[i + 1] != -61 ) {
+        res[j] = str[i];
         j++; i++;
-        result[j] = string[i];
+        res[j] = str[i];
         j++; i++;
       } else {
         i++;
       }
     } else {
-      if( string[i] > 0 ) {
-        result[j] = string[i];
+      if( str[i] > 0 ) {
+        res[j] = str[i];
         j++; i++;
       } else {
         i++;
       }
     }
   }
-  result[j] = '\0';
-  return result;
+  res[j] = '\0';
+  return res;
 }
 
 } // namespace arken
