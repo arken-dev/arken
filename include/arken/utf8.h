@@ -16,8 +16,8 @@ class utf8 {
   static char * upper(const char * string);
   static char * lower(const char * string);
   static char * format(const char * string);
-  static char * encode(const char * string, const char * charset);
-  static char * decode(const char * string, const char * charset);
+  static char * encode(const char * string);
+  static char * decode(const char * string);
   static int len(const char * string);
   static char * sanitize(const char * string);
 

@@ -144,25 +144,69 @@ int utf8::len(const char * string)
   return j;
 }
 
-char * utf8::decode(const char * string, const char * charset)
+char * utf8::decode(const char * str)
 {
-  QTextCodec *codec = QTextCodec::codecForName(charset);
-  QString    tmp = codec->toUnicode(string);
-  QByteArray raw = tmp.toLocal8Bit();
-  auto result    = new char[raw.size() + 1];
-  strncpy(result, raw.data(), raw.size());
-  result[raw.size()] = '\0';
-  return result;
+  int c = 0;
+  int i = 0;
+  int j = 0;
+
+  while(str[i]) {
+    if( str[i] == -61 ) {
+      c++;
+    }
+    i++;
+  }
+
+  char * res = new char[(i-c)+1];
+
+  i = 0;
+
+  while( str[i] ) {
+    if( str[i] == -61 ) {
+      i++;
+      res[j] = str[i] + 64;
+    } else {
+      res[j] = str[i];
+    }
+    i++;
+    j++;
+  }
+  res[j] = '\0';
+
+  return res;
 }
 
-char * utf8::encode(const char * string, const char * charset)
+char * utf8::encode(const char * str)
 {
-  QTextCodec *codec = QTextCodec::codecForName(charset);
-  QByteArray raw = codec->fromUnicode(string);
-  auto result    = new char[raw.size() + 1];
-  strncpy(result, raw.data(), raw.size());
-  result[raw.size()] = '\0';
-  return result;
+  int c = 0;
+  int i = 0;
+  int j = 0;
+
+  while(str[i]) {
+    if( str[i] < 0 ) {
+      c++;
+    }
+    i++;
+  }
+
+  char * res = new char[(i+c)+1];
+
+  i = 0;
+
+  while( str[i] ) {
+    if( str[i] < 0 ) {
+      res[j] = -61;
+      j++;
+      res[j] = str[i] - 64;
+    } else {
+      res[j] = str[i];
+    }
+    i++;
+    j++;
+  }
+  res[j] = '\0';
+
+  return res;
 }
 
 char * utf8::sanitize(const char * str)

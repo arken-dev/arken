@@ -151,26 +151,6 @@ arken_string_encode64( lua_State *L ) {
 }
 
 static int
-arken_string_decode( lua_State *L ) {
-  const char *value   = luaL_checkstring(L, 1);
-  const char *charset = luaL_checkstring(L, 2);
-  char * result   = string::decode(value, charset);
-  lua_pushstring(L, result);
-  delete[] result;
-  return 1;
-}
-
-static int
-arken_string_encode( lua_State *L ) {
-  const char *value   = luaL_checkstring(L, 1);
-  const char *charset = luaL_checkstring(L, 2);
-  char * result   = string::encode(value, charset);
-  lua_pushstring(L, result);
-  delete[] result;
-  return 1;
-}
-
-static int
 arken_string_equals( lua_State *L ) {
   if( lua_isuserdata(L, 2) ) {
     const char * str = luaL_checkstring(L, 1);
@@ -536,8 +516,6 @@ StringClassMethods[] = {
   {"escape",         arken_string_escape},
   {"escapeHtml",     arken_string_escapeHtml},
   {"hash",           arken_string_hash},
-  {"encode",         arken_string_encode},
-  {"decode",         arken_string_decode},
   {"encode64",       arken_string_encode64},
   {"equals",         arken_string_equals},
   {"empty",          arken_string_empty},
@@ -880,29 +858,11 @@ arken_StringInstanceMethodDecode64( lua_State *L ) {
 }
 
 static int
-arken_StringInstanceMethodEncode( lua_State *L ) {
-  string * udata = checkString( L );
-  const char * charset = luaL_checkstring(L, 2);
-  string result  = udata->encode(charset);
-  lua_pushlstring(L, result.data(), result.size());
-  return 1;
-}
-
-static int
 arken_StringInstanceMethodPrefix( lua_State *L ) {
   string * udata = checkString( L );
   string result;
   const char * pattern = luaL_checkstring(L, 2);
   result = udata->prefix(pattern);
-  lua_pushlstring(L, result.data(), result.size());
-  return 1;
-}
-
-static int
-arken_StringInstanceMethodDecode( lua_State *L ) {
-  string * udata = checkString( L );
-  const char * charset = luaL_checkstring(L, 2);
-  string result  = udata->decode(charset);
   lua_pushlstring(L, result.data(), result.size());
   return 1;
 }
@@ -1087,8 +1047,6 @@ luaL_reg StringInstanceMethods[] = {
   {"count",          arken_StringInstanceMethodCount},
   {"dasherize",      arken_StringInstanceMethodDasherize},
   {"escape",         arken_StringInstanceMethodEscape},
-  {"decode",         arken_StringInstanceMethodDecode},
-  {"encode",         arken_StringInstanceMethodEncode},
   {"decode64",       arken_StringInstanceMethodDecode64},
   {"encode64",       arken_StringInstanceMethodEncode64},
   {"escapeHtml",     arken_StringInstanceMethodEscapeHtml},

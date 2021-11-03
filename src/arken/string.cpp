@@ -310,16 +310,6 @@ bool string::empty(const char * str)
   return strlen(str) == 0;
 }
 
-char * string::encode(const char * string, const char * charset)
-{
-  return utf8::encode(string, charset);
-}
-
-char * string::decode(const char * string, const char * charset)
-{
-  return utf8::decode(string, charset);
-}
-
 bool string::equals(const char * str1, const char * str2)
 {
   return strcmp(str1, str2) == 0;
@@ -1485,16 +1475,6 @@ bool string::equals(const char * data)
 string string::escape()
 {
   return string::escape(m_data);
-}
-
-string string::encode(const char * charset)
-{
-  return string::encode(m_data, charset);
-}
-
-string string::decode(const char * charset)
-{
-  return string::decode(m_data, charset);
 }
 
 string string::escapeHtml()

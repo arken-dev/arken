@@ -66,18 +66,16 @@ static int arken_utf8_format( lua_State *L ) {
 }
 
 static int arken_utf8_decode( lua_State *L ) {
-  const char * string  = luaL_checkstring(L, 1);
-  const char * charset = luaL_checkstring(L, 2);
-  char * result = utf8::decode(string, charset);
+  const char * str = luaL_checkstring(L, 1);
+  char * result = utf8::decode(str);
   lua_pushstring( L, result );
   delete[] result;
   return 1;
 }
 
 static int arken_utf8_encode( lua_State *L ) {
-  const char * string  = luaL_checkstring(L, 1);
-  const char * charset = luaL_checkstring(L, 2);
-  char * result = utf8::encode(string, charset);
+  const char * str = luaL_checkstring(L, 1);
+  char * result = utf8::encode(str);
   lua_pushstring( L, result );
   return 1;
 }
