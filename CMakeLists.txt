@@ -25,7 +25,6 @@ include(arken-mvm)
 include(arken-net-httpserver)
 include(arken-os)
 include(arken-regex)
-include(arken-utf8)
 include(arken-notify)
 
 option(WITHOUT_QT "with(out) QT library")
