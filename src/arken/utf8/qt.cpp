@@ -16,17 +16,48 @@
 
 namespace arken {
 
-char * utf8::sub(const char * string, int i, int j)
+char * utf8::sub(const char * str, int p1, int p2)
 {
-  QString str(string);
-  if( j < 0 ) {
-    j= str.size();
+
+
+  int i  = 0;
+  int j  = 0;
+  int v1 = 0;
+  int v2 = 0;
+
+  if( p2 < 0 ) {
+    p2 = utf8::len(str) - 1;
   }
-  QByteArray tmp = str.mid(i, (j-i)+1).toLocal8Bit();
-  auto result    = new char[tmp.size() + 1];
-  strncpy(result, tmp, tmp.size());
-  result[tmp.size()] = '\0';
-  return result;
+
+  while( str[i] ) {
+
+    if( j == p1 ) {
+      v1 = i;
+    }
+
+    if( str[i] == -61 ) {
+      i++;
+    }
+
+    if( j == p2 ) {
+      v2 = i;
+    }
+
+    i++;
+    j++;
+
+  }
+
+  int size   = (v2 - v1) + 1;
+  char * res = new char[size+1];
+  int a = 0;
+  for(int b=v1; a < size; a++, b++) {
+    res[a] = str[b];
+  }
+
+  res[size] = '\0';
+
+  return res;
 }
 
 char * utf8::upper(const char * str)

@@ -10,8 +10,8 @@
 using arken::utf8;
 
 static int arken_utf8_sub( lua_State *L ) {
-  const char * string = luaL_checkstring(L, 1);
-  int i = luaL_checkinteger(L, 2);
+  const char * str = luaL_checkstring(L, 1);
+  int i = luaL_checkinteger(L, 2) - 1;
   int j = -1;
   if(lua_gettop(L) == 3) { // number of arguments
     j = luaL_checkinteger(L, 3);
@@ -19,7 +19,7 @@ static int arken_utf8_sub( lua_State *L ) {
       j--;
     }
   }
-  char * result = utf8::sub(string, --i, j);
+  char * result = utf8::sub(str, i, j);
   lua_pushstring( L, result );
   delete[] result;
   return 1;
