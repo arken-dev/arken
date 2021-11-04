@@ -35,4 +35,10 @@ test['should keep empty string'] = function()
   assert( res == '', res )
 end
 
+test['should accented vowels '] = function()
+  local str = os.read('util/latin1/vogais-com-acento.txt')
+  local res = utf8.encode(str)
+  assert( res == 'ÁÉÍÓÚáéíóúÀÈÌÒÙàèìòù', res )
+end
+
 return test
