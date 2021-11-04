@@ -12,7 +12,7 @@ if(ARKEN_DIGEST STREQUAL "")
   elseif(ARKEN_BACKEND STREQUAL "benchmark")
     set(ARKEN_DIGEST "qt")
   else()
-    set(ARKEN_DIGEST "qt")
+    set(ARKEN_DIGEST "embedded")
   endif()
 endif()
 

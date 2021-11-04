@@ -12,7 +12,7 @@ if(ARKEN_BASE64 STREQUAL "")
   elseif(ARKEN_BACKEND STREQUAL "benchmark")
     set(ARKEN_BASE64 "embedded")
   else()
-    set(ARKEN_BASE64 "qt")
+    set(ARKEN_BASE64 "embedded")
   endif()
 endif()
 
