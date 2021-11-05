@@ -7,7 +7,7 @@ set_property(
 )
 
 if(ARKEN_NOTIFY STREQUAL "")
-  set(ARKEN_NOTIFY "qt")
+  set(ARKEN_NOTIFY "libnotify")
 endif()
 
 if(ARKEN_NOTIFY STREQUAL "qt")
