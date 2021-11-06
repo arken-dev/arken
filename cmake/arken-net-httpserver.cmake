@@ -8,6 +8,7 @@ set_property(
   "boost/model-2"
   "boost/model-3"
   "linux/model-1"
+  "libev"
 )
 
 

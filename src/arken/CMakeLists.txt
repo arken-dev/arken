@@ -145,3 +145,8 @@ if(ARKEN_NET_HTTPSERVER STREQUAL "boost/model-3")
   SET(Boost_USE_MULTITHREADED ON)
   target_link_libraries(arken pthread m ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
 endif()
+
+if(ARKEN_NET_HTTPSERVER STREQUAL "libev")
+  #add_subdirectory(${PROJECT_SOURCE_DIR}/src/arken/net/httpserver/linux/model-1/base)
+  target_link_libraries(arken ev)
+endif()
