@@ -4,7 +4,6 @@
 // license that can be found in the LICENSE file.
 
 #include <arken/net/httpserver.h>
-#include <arken/net/config.h>
 #include <arken/mvm.h>
 #include <string>
 #include "EventLoop.h"
