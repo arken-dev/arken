@@ -28,6 +28,7 @@ class HttpServer
 
   static
   std::string handler(const char * data, size_t size);
+  static const char * status(int code);
 
   HttpServer(const char * address, int port);
   void setThreads(int threads);
