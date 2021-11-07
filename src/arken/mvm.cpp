@@ -6,6 +6,7 @@
 #include <arken/base>
 #include <arken/mvm>
 #include <map>
+#include <clocale>
 
 namespace arken {
 
@@ -307,7 +308,6 @@ mvm::data::data(uint32_t version)
 
   lua_pop(m_State, 1);
 
-  //---------------------------------------------
   int top, i;
 
   lua_settop(m_State, 0);
@@ -394,7 +394,7 @@ void mvm::working()
     s_wait_inspect.erase(ptr->uuid());
     s_running_inspect[ptr->uuid()] = ptr->inspect();
     s_inspect_mutex.unlock();
- 
+
     ptr->run();
 
     s_inspect_mutex.lock();
@@ -549,6 +549,32 @@ void mvm::wait()
     // TODO improved whithout sleep
     os::sleep(0.05);
   }
+}
+
+char * mvm::setlocale(string locale, string category)
+{
+  int value;
+  if( category.equals("all") ) {
+    value = LC_ALL;
+  } else if ( category.equals("collate") ) {
+    value = LC_COLLATE;
+  } else if ( category.equals("ctype") ) {
+    value = LC_CTYPE;
+  } else if ( category.equals("monetary") ) {
+    value = LC_MONETARY;
+  } else if ( category.equals("numeric") ) {
+    value = LC_NUMERIC;
+  } else if ( category.equals("time") ) {
+    value = LC_TIME;
+  } else {
+    value = LC_ALL;
+  }
+  return std::setlocale(value, locale);
+}
+
+char * mvm::setlocale(string locale)
+{
+  return std::setlocale(LC_ALL, locale);
 }
 
 } // namespace arken

@@ -143,6 +143,9 @@ class mvm {
   static uint32_t actives();
   static string inspect();
   static size_t workers();
+  static char * setlocale(string locale, string category);
+  static char * setlocale(string locale);
+
 };
 
 class instance {

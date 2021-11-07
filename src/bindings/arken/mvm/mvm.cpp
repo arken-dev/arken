@@ -123,6 +123,27 @@ arken_mvm_inspect(lua_State *L) {
   return 1;
 }
 
+static int
+arken_mvm_setlocale(lua_State *L) {
+  char * result = nullptr;
+  if(lua_gettop(L) == 2) { // number of arguments
+    const char * locale   = luaL_checkstring(L, 1);
+    const char * category = luaL_checkstring(L, 2);
+    result = mvm::setlocale(locale, category);
+  } else {
+    const char * locale   = luaL_checkstring(L, 1);
+    result = mvm::setlocale(locale);
+  }
+
+  if( result ) {
+    lua_pushstring(L, result);
+  } else {
+    lua_pushnil(L);
+  }
+
+  return 1;
+}
+
 static void
 register_arken_mvm( lua_State *L ) {
   static const luaL_reg Map[] = {
@@ -142,6 +163,7 @@ register_arken_mvm( lua_State *L ) {
     {"actives", arken_mvm_actives},
     {"inspect", arken_mvm_inspect},
     {"workers", arken_mvm_workers},
+    {"setlocale", arken_mvm_setlocale},
     {NULL, NULL}
   };
   luaL_newmetatable(L, "mvm");
