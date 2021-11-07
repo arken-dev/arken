@@ -55,11 +55,11 @@ set(ARKEN_OS_UUID "" CACHE STRING
 
 set_property(
   CACHE ARKEN_OS_UUID PROPERTY STRINGS
-  "" qt libuuid Linux
+  "" qt libuuid libssl Linux
 )
 
 if(ARKEN_OS_UUID STREQUAL "")
-  set(ARKEN_OS_UUID "libuuid")
+  set(ARKEN_OS_UUID "libssl")
 endif()
 
 set(os-uuid ${PROJECT_SOURCE_DIR}/src/arken/os/uuid/${ARKEN_OS_UUID}.cpp)
