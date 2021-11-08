@@ -74,16 +74,15 @@ static void read_cb(struct ev_loop *loop, struct ev_io *watcher, int revents)
     char buf[MAX_MESSAGE_LEN+1] = {0};
     ssize_t ret = recv(watcher->fd, buf, MAX_MESSAGE_LEN, MSG_DONTWAIT);
     std::string data;
-
     if( ret < MAX_MESSAGE_LEN ) {
         buf[ret] = '\0';
         data = HttpServer::handler(buf, sizeof(buf));
     } else {
       std::string tmp;
-      tmp.append(buf);
+      tmp.append(buf, ret);
       do {
         ret = recv(watcher->fd, buf, MAX_MESSAGE_LEN, MSG_DONTWAIT);
-        tmp.append(buf);
+        tmp.append(buf, ret);
       } while(ret == MAX_MESSAGE_LEN);
       data = HttpServer::handler(tmp.c_str(), tmp.size());
     }
