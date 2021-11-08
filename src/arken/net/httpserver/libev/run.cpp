@@ -56,15 +56,24 @@ static int create_serverfd(char const *addr, uint16_t u16port)
     struct sockaddr_in server;
 
     fd = socket(AF_INET, SOCK_STREAM, 0);
-    if (fd < 0) err_message("socket err\n");
+    if (fd < 0) {
+      std::cerr << "socket err\n";
+      throw;
+    }
 
     server.sin_family = AF_INET;
     server.sin_port = htons(u16port);
     inet_pton(AF_INET, addr, &server.sin_addr);
 
-    if (bind(fd, (struct sockaddr *)&server, sizeof(server)) < 0) err_message("bind err\n");
+    if (bind(fd, (struct sockaddr *)&server, sizeof(server)) < 0) {
+      std::cerr << "bind err\n";
+      throw;
+    }
 
-    if (listen(fd, 10) < 0) err_message("listen err\n");
+    if (listen(fd, 10) < 0) {
+      std::cerr << "listen err\n";
+      throw;
+    }
 
     return fd;
 }
