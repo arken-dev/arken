@@ -155,7 +155,7 @@ instance mvm::instance(bool create)
 
   mvm::data * data = mvm::pop();
 
-  if( mvm::s_version != data->m_version ) {
+  if( mvm::s_version > data->m_version ) {
     delete data;
     data = new mvm::data();
   }
@@ -196,7 +196,6 @@ double mvm::reload()
 {
   double init = os::microtime();
   int log = mvm::at("pool.log");
-  mvm::s_version++;
 
   if( log ) {
     char buffer[30];
@@ -206,17 +205,19 @@ double mvm::reload()
 
   while( true ) {
     mvm::data * data = mvm::pop();
-    if( data->m_version == mvm::s_version ) {
+    if( data->m_version > mvm::s_version ) {
       mvm::push(data);
+      mvm::s_version++;
       break;
     } else {
       if( log ) {
         mvm::log("mvm create and delete");
       }
-      mvm::back(new mvm::data());
+      mvm::back(new mvm::data(mvm::s_version + 1));
       delete data;
     }
   }
+
   return os::microtime() - init;
 }
 
