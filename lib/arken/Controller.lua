@@ -99,7 +99,7 @@ function Controller:redirect(params)
   if url:startsWith('http://') or url:startsWith('https://') then
     header = "Location: " .. url
   end
-  return 302, {header}, nil
+  return 302, {header}, ""
 end
 
 function Controller:render_js(params)
