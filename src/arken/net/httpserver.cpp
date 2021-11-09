@@ -97,6 +97,9 @@ std::string HttpServer::handler(const char * data, size_t size)
       buffer.append(std::to_string(len));
       buffer.append("\r\n\r\n");
       buffer.append(result, len);
+    } else {
+      buffer.append("Content-Length:0");
+      buffer.append("\r\n\r\n");
     }
 
   } else {
@@ -137,7 +140,8 @@ std::string HttpServer::handler(const char * data, size_t size)
         }
       }
     } else {
-      buffer.append("\r\n");
+      buffer.append("Content-Length:0");
+      buffer.append("\r\n\r\n");
     }
   }
 
