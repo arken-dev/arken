@@ -114,7 +114,7 @@ static void read_cb(struct ev_loop *loop, struct ev_io *watcher, int revents)
         return;
     } else {
         --client_number;
-        ev_io_stop(EV_A_ watcher);
+        ev_io_stop(loop, watcher);
         close(watcher->fd);
         free(watcher);
     }
@@ -134,7 +134,7 @@ static void accept_cb(struct ev_loop *loop, struct ev_io *watcher, int revents)
             // cast ...
             client = (ev_io *) calloc(1, sizeof(*client));
             ev_io_init(client, read_cb, connfd, EV_READ);
-            ev_io_start(EV_A_ client);
+            ev_io_start(loop, client);
         }
 
     } else if ((connfd < 0) && (errno == EAGAIN || errno == EWOULDBLOCK)) {
