@@ -98,7 +98,7 @@ std::string HttpServer::handler(const char * data, size_t size)
       buffer.append("\r\n\r\n");
       buffer.append(result, len);
     } else {
-      buffer.append("Content-Length:0");
+      buffer.append("Content-Length: 0");
       buffer.append("\r\n\r\n");
     }
 
@@ -119,7 +119,7 @@ std::string HttpServer::handler(const char * data, size_t size)
       }
     }
 
-    if( ! lua_isnil(L, 3) ) {
+    if( ! lua_isnil( L, 3 ) ) {
      if( code < 0 ) {
         result = luaL_checklstring( L , -1, &len );
         buffer.append(result, len);
@@ -140,7 +140,7 @@ std::string HttpServer::handler(const char * data, size_t size)
         }
       }
     } else {
-      buffer.append("Content-Length:0");
+      buffer.append("Content-Length: 0");
       buffer.append("\r\n\r\n");
     }
   }
