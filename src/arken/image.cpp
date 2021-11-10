@@ -20,6 +20,10 @@ void Image::save(const char * path, int quality)
   /* Read the input image */
   MagickReadImage(mw, m_path);
 
+  if( quality > 0 ) {
+    MagickSetImageCompressionQuality(mw, quality);
+  }
+
   /* write it */
   MagickWriteImage(mw, path);
 
