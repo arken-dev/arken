@@ -8,16 +8,6 @@
 #
 # ------------------------------------------------------------------------------
 
-FIND_PACKAGE(ImageMagick
-  REQUIRED
-  COMPONENTS MagickWand
-)
-
-INCLUDE_DIRECTORIES(
-  ${ImageMagick_INCLUDE_DIRS}
-  ${ImageMagick_MagickWand_INCLUDE_DIRS}
-)
-
 if(ARKEN_NOTIFY STREQUAL "libnotify")
   find_package(PkgConfig REQUIRED)
   find_package(GTK2 REQUIRED gtk)

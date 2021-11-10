@@ -7,15 +7,13 @@
 #include <arken/base>
 #include <arken/image.h>
 
-using arken::Image;
-
 /**
  * checkImage
  */
 
-Image *
-checkImage( lua_State *L ) {
-  return *(Image **) luaL_checkudata(L, 1, "Image.metatable");
+arken::Image *
+checkImage( lua_State *L , int position = 1) {
+  return *(arken::Image **) luaL_checkudata(L, position, "Image.metatable");
 }
 
 /**
@@ -24,10 +22,18 @@ checkImage( lua_State *L ) {
 
 static int
 arken_ImageClassMethodNew( lua_State *L ) {
-  size_t len;
-  const char *path = (char *) lua_tolstring(L, 1, &len);
-  Image **ptr = (Image **)lua_newuserdata(L, sizeof(Image*));
-  *ptr= new Image(Image(path));
+  arken::Image **ptr = (arken::Image **)lua_newuserdata(L, sizeof(Image*));
+
+  if(lua_gettop(L) == 4) { // number of arguments
+    int width  = luaL_checkinteger(L, 1);
+    int height = luaL_checkinteger(L, 2);
+    const char *color = lua_tostring(L, 3);
+   *ptr = new arken::Image(width, height, color);
+  } else {
+    size_t len;
+    const char *path = (char *) lua_tolstring(L, 1, &len);
+    *ptr= new arken::Image(path);
+  }
   luaL_getmetatable(L, "Image.metatable");
   lua_setmetatable(L, -2);
   return 1;
@@ -52,25 +58,68 @@ registerImageClassMethods( lua_State *L ) {
 
 static int
 arken_ImageInstanceMethodSave( lua_State *L ) {
-  Image *image = checkImage( L );
+  arken::Image *image = checkImage( L );
   const char * path= lua_tostring(L, 2);
   int quality = lua_tointeger(L, 3);
   image->save(path, quality);
   return 0;
 }
 
+static int
+arken_ImageInstanceMethodResize( lua_State *L ) {
+  arken::Image *image = checkImage( L );
+  int width  = lua_tointeger(L, 3);
+  int height = lua_tointeger(L, 3);
+  image->resize(width, height);
+  return 0;
+}
+
+static int
+arken_ImageInstanceMethodWidth( lua_State *L ) {
+  arken::Image *image = checkImage( L );
+  lua_pushinteger(L, image->width());
+  return 1;
+}
+
+static int
+arken_ImageInstanceMethodHeight( lua_State *L ) {
+  arken::Image *image = checkImage( L );
+  lua_pushinteger(L, image->height());
+  return 1;
+}
 
 static int
 arken_ImageInstanceMethodDestruct( lua_State *L ) {
-  Image *image = checkImage( L );
+  arken::Image *image = checkImage( L );
   delete image;
   return 0;
 }
 
+static int
+arken_ImageInstanceMethodComposite( lua_State *L ) {
+  if(lua_gettop(L) == 4) { // number of arguments
+    arken::Image *img1 = checkImage( L, 1 );
+    arken::Image *img2 = checkImage( L, 2 );
+    size_t x = (size_t) luaL_checkinteger(L, 3);
+    size_t y = (size_t) luaL_checkinteger(L, 4);
+    img1->composite(img2, x, y);
+  } else {
+    arken::Image *img1 = checkImage( L, 1 );
+    arken::Image *img2 = checkImage( L, 2 );
+    img1->composite(img2);
+  }
+  return 0;
+}
+
+
 static const
 luaL_reg ImageInstanceMethods[] = {
-  {"save", arken_ImageInstanceMethodSave},
-  {"__gc", arken_ImageInstanceMethodDestruct},
+  {"resize",    arken_ImageInstanceMethodResize},
+  {"save",      arken_ImageInstanceMethodSave},
+  {"width",     arken_ImageInstanceMethodWidth},
+  {"height",    arken_ImageInstanceMethodHeight},
+  {"composite", arken_ImageInstanceMethodComposite},
+  {"__gc",      arken_ImageInstanceMethodDestruct},
   {NULL, NULL}
 };
 

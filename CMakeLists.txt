@@ -27,6 +27,16 @@ include(arken-os)
 include(arken-regex)
 include(arken-notify)
 
+FIND_PACKAGE(ImageMagick
+  REQUIRED
+  COMPONENTS MagickWand
+)
+
+INCLUDE_DIRECTORIES(
+  ${ImageMagick_INCLUDE_DIRS}
+  ${ImageMagick_MagickWand_INCLUDE_DIRS}
+)
+
 option(WITHOUT_QT "with(out) QT library")
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
