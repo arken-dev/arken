@@ -8,6 +8,16 @@
 #
 # ------------------------------------------------------------------------------
 
+FIND_PACKAGE(ImageMagick
+  REQUIRED
+  COMPONENTS MagickWand
+)
+
+INCLUDE_DIRECTORIES(
+  ${ImageMagick_INCLUDE_DIRS}
+  ${ImageMagick_MagickWand_INCLUDE_DIRS}
+)
+
 if(ARKEN_NOTIFY STREQUAL "libnotify")
   find_package(PkgConfig REQUIRED)
   find_package(GTK2 REQUIRED gtk)
@@ -40,7 +50,6 @@ include_directories(${PROJECT_SOURCE_DIR}/src/vendors/mongrel2)
 include_directories(${PROJECT_SOURCE_DIR}/src/vendors/mongrel2/http11)
 
 file(GLOB src      ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
-file(GLOB image    ${CMAKE_CURRENT_SOURCE_DIR}/image/*.cpp)
 file(GLOB os       ${CMAKE_CURRENT_SOURCE_DIR}/os/*.c)
 file(GLOB os-glob  ${PROJECT_SOURCE_DIR}/src/vendors/apple/glob.c)
 file(GLOB net      ${CMAKE_CURRENT_SOURCE_DIR}/net/*.cpp)
@@ -62,7 +71,6 @@ add_library(
   ${chrono}
   ${digest}
   ${digest-embedded}
-  ${image}
   ${mvm-container}
   ${net}
   ${httpserver}
@@ -155,3 +163,5 @@ if(ARKEN_NET_HTTPSERVER STREQUAL "libev")
   #add_subdirectory(${PROJECT_SOURCE_DIR}/src/arken/net/httpserver/linux/model-1/base)
   target_link_libraries(arken ev)
 endif()
+
+target_link_libraries(arken ${ImageMagick_LIBRARIES} ${ImageMagick_MagickWand_LIBRARY})
