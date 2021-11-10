@@ -7,7 +7,17 @@
 #include <arken/base>
 #include <arken/compress/zip.h>
 
-using arken::compress::zip;
+using arken::compress::Zip;
+
+/**
+ * checkZip
+ */
+
+Zip *
+checkZip( lua_State *L ) {
+  return *(Zip **) luaL_checkudata(L, 1, "arken.compress.Zip.metatable");
+}
+
 
 /**
  * ClassMethods
@@ -20,26 +30,93 @@ arken_compress_zip_descompress( lua_State *L ) {
   if(lua_gettop(L) == 2) { // number of arguments
     output = luaL_checkstring(L, 2);
   }
-  lua_pushboolean(L, zip::decompress(filename, output) );
+  lua_pushboolean(L, Zip::decompress(filename, output) );
   return 1;
 }
 
+static int
+arken_compress_zip_new( lua_State *L ) {
+  const char * filename = luaL_checkstring(L, 1);
+  Zip **ptr = (Zip **)lua_newuserdata(L, sizeof(Zip*));
+  *ptr = new Zip(filename);
+  luaL_getmetatable(L, "arken.compress.Zip.metatable");
+  lua_setmetatable(L, -2);
+
+  return 1;
+}
+
+
 static const luaL_reg arken_compress_zip_methods[] = {
   {"decompress", arken_compress_zip_descompress},
+  {"new",        arken_compress_zip_new},
   {NULL, NULL}
 };
 
 void static
 register_arken_compress_zip( lua_State *L ) {
-  luaL_newmetatable(L, "arken.compress.zip");
+  luaL_newmetatable(L, "arken.compress.Zip");
   luaL_register(L, NULL, arken_compress_zip_methods);
+  lua_pushvalue(L, -1);
+  lua_setfield(L, -1, "__index");
+}
+
+/**
+ * InstanceMethods
+ */
+
+static int
+arken_ZipInstanceMethodDestruct( lua_State *L ) {
+  Zip *udata = checkZip( L );
+  delete udata;
+  return 0;
+}
+
+static int
+arken_ZipInstanceMethodAddFile( lua_State *L ) {
+  Zip * udata  = checkZip( L );
+  const char * filename = luaL_checkstring(L, 2);
+  udata->addFile(filename);
+  return 0;
+}
+
+static int
+arken_ZipInstanceMethodAddBuffer( lua_State *L ) {
+  Zip * udata  = checkZip( L );
+  const char * filename = luaL_checkstring(L, 2);
+  size_t len;
+  const char * buf = luaL_checklstring(L, 3, &len);
+  udata->addBuffer(filename, buf, len);
+  return 0;
+}
+
+static int
+arken_ZipInstanceMethodSave( lua_State *L ) {
+  Zip * udata  = checkZip( L );
+  udata->save();
+  return 0;
+}
+
+static const
+luaL_reg ZipInstanceMethods[] = {
+  {"addFile",   arken_ZipInstanceMethodAddFile},
+  {"addBuffer", arken_ZipInstanceMethodAddBuffer},
+  {"save",      arken_ZipInstanceMethodSave},
+  {"__gc",      arken_ZipInstanceMethodDestruct},
+  {NULL, NULL}
+};
+
+void static
+register_arken_zip_instance_methods( lua_State *L ) {
+  luaL_newmetatable(L, "arken.compress.Zip.metatable");
+  luaL_register(L, NULL, ZipInstanceMethods);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
 
 extern "C" {
   int
-  luaopen_arken_compress_zip( lua_State *L ) {
+  luaopen_arken_compress_Zip( lua_State *L ) {
+    register_arken_zip_instance_methods(L);
     register_arken_compress_zip(L);
     return 1;
   }

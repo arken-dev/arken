@@ -19,6 +19,6 @@ add_library(
 find_package(Qt5Core)
 find_package(Qt5Network)
 
-set_target_properties(zip-binding PROPERTIES PREFIX "" OUTPUT_NAME zip)
+set_target_properties(zip-binding PROPERTIES PREFIX "" OUTPUT_NAME Zip)
 
 target_link_libraries(zip-binding arken lua)

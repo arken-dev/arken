@@ -35,10 +35,50 @@ static void safe_create_dir(const char *dir)
     }
 }
 
-bool arken::compress::zip::decompress(const char * archive, const char * output)
+namespace arken {
+namespace compress {
+
+Zip::Zip(const char * namefile)
 {
 
-    // TODO change arken::string
+    int err = 0;
+    m_zip = zip_open(namefile, ZIP_CREATE, &err);
+}
+
+Zip::~Zip()
+{
+  if( m_closed == false ) {
+    zip_close(m_zip);
+  }
+}
+
+void Zip::addFile(const char * path)
+{
+  string buf  = os::read(path);
+  string name = string(path).suffix("/");
+  addBuffer(name, buf.data(), buf.size());
+}
+
+void Zip::addBuffer(const char * name, const char * buf, size_t size)
+{
+  zip_source *s;
+
+  if ((s=zip_source_buffer(m_zip, buf, size, 0)) == NULL ||
+    zip_file_add(m_zip, name, s, ZIP_FL_ENC_UTF_8) < 0) {
+    zip_source_free(s);
+    printf("error adding file: %s\n", zip_strerror(m_zip));
+  }
+
+}
+
+void Zip::save()
+{
+  zip_close(m_zip);
+  m_closed = true;
+}
+
+bool Zip::decompress(const char * archive, const char * output)
+{
     string dirname;
     struct ::zip *za;
     struct zip_file *zf;
@@ -96,20 +136,17 @@ bool arken::compress::zip::decompress(const char * archive, const char * output)
         }
     }
 
-    if (zip_close(za) == -1) {
-        fprintf(stderr, "can't close zip archive `%s'\n", archive);
-        return false;
-    }
+  if (zip_close(za) == -1) {
+    fprintf(stderr, "can't close zip archive `%s'\n", archive);
+    return false;
+  }
 
-    if( output ) {
-      //printf("rename %s => %s", dirname, output);
-      rename(dirname, output);
-    }
+  if( output ) {
+    rename(dirname, output);
+  }
 
-    //if( dirname ) {
-      //std::cout << "limpando " << dirname;
-      //delete[] dirname;
-    //}
-
-    return true;
+  return true;
 }
+
+} // namespace compress
+} // namespace arken
