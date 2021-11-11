@@ -18,7 +18,7 @@ class Zip
   bool  m_closed;
 
   public:
-  static bool decompress(const char * namefile, const char * output = nullptr);
+  static bool extract(const char * namefile, const char * output = nullptr);
   Zip(const char * namefile);
   ~Zip();
   void addFile(const char * path);

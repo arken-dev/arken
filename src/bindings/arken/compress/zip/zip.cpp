@@ -24,13 +24,13 @@ checkZip( lua_State *L ) {
  */
 
 static int
-arken_compress_zip_descompress( lua_State *L ) {
+arken_compress_zip_extract( lua_State *L ) {
   const char * filename = luaL_checkstring(L, 1);
   const char * output   = 0;
   if(lua_gettop(L) == 2) { // number of arguments
     output = luaL_checkstring(L, 2);
   }
-  lua_pushboolean(L, Zip::decompress(filename, output) );
+  lua_pushboolean(L, Zip::extract(filename, output) );
   return 1;
 }
 
@@ -47,7 +47,7 @@ arken_compress_zip_new( lua_State *L ) {
 
 
 static const luaL_reg arken_compress_zip_methods[] = {
-  {"decompress", arken_compress_zip_descompress},
+  {"extract",    arken_compress_zip_extract},
   {"new",        arken_compress_zip_new},
   {NULL, NULL}
 };

@@ -77,7 +77,7 @@ void Zip::save()
   m_closed = true;
 }
 
-bool Zip::decompress(const char * archive, const char * output)
+bool Zip::extract(const char * archive, const char * output)
 {
     string dirname;
     struct ::zip *za;
@@ -105,7 +105,7 @@ bool Zip::decompress(const char * archive, const char * output)
                 }
                 safe_create_dir(sb.name);
             } else {
-                printf("decompress %s (%lu)\n", sb.name, sb.size);
+                printf("extract %s (%lu)\n", sb.name, sb.size);
                 zf = zip_fopen_index(za, i, 0);
                 if (!zf) {
                     fprintf(stderr, "boese, boese/n");
