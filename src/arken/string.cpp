@@ -734,6 +734,88 @@ char * string::padRight(const char * string, size_t size, const char * pad)
   return result;
 }
 
+char * string::remove(const char * str, const char * rep, int start)
+{
+  size_t str_len = strlen(str);
+  size_t rep_len = strlen(rep);
+  int pos   = start;
+  int count = 0;
+
+  while( (pos = string::indexOf(str, rep, pos)) != -1 ) {
+    pos++;
+    count++;
+  }
+
+  size_t reslen = str_len - ( rep_len * count );
+  char * res = new char[reslen + 1];
+  int i = 0;
+  int j = 0;
+
+  while( (pos = string::indexOf(str, rep, pos)) != -1 ) {
+    while( j < pos ) {
+      res[i] = str[j];
+      i++;
+      j++;
+    }
+
+    j += rep_len;
+    pos++;
+  }
+
+  while( static_cast<unsigned int>(j) < str_len ) {
+    res[i] = str[j];
+    i++;
+    j++;
+  }
+
+
+  res[reslen] = '\0';
+
+  return res;
+}
+
+char * string::removeChar(const char *string, const char rep, int start)
+{
+  int  len = strlen(string);
+  auto result = new char[len + 1];
+  auto count  = 0;
+  auto i = 0;
+  int  j;
+
+  while(string[i]) {
+    if( string[i] == rep ) {
+      count++;
+    }
+    i++;
+  }
+
+  if ( start < 0 ) {
+    start = len + start;
+  }
+
+  if ( start > len ) {
+    start = len;
+  }
+
+  if ( start > 0 ) {
+    for( int k = 0; k < start; k++) {
+      result[k] = string[k];
+    }
+  }
+
+  for(i = start, j = start; i < len; i++) {
+    if( string[i] != rep ) {
+      result[j] = string[i];
+      j++;
+    }
+  }
+
+  result[j] = '\0';
+
+  return result;
+}
+
+
 char * string::repeated(const char *string, int times)
 {
   int len = strlen(string);
@@ -773,8 +855,10 @@ char * string::replaceChar(const char *string, const char before, const char aft
 
   for(i = start, j = start; i < len; i++) {
     if( string[i] == before) {
-      result[j] = after;
-      j++;
+      if( after ) {
+        result[j] = after;
+        j++;
+      }
     } else {
       result[j] = string[i];
       j++;

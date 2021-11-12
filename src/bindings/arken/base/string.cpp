@@ -432,6 +432,44 @@ arken_string_replaceChar( lua_State *L ) {
 }
 
 static int
+arken_string_remove( lua_State *L ) {
+  const char * string = luaL_checkstring(L, 1);
+  const char * before = luaL_checkstring(L, 2);
+  int start = 0;
+
+  if(lua_gettop(L) > 2) { /* número de argumentos */
+    start = luaL_checkinteger(L, 3);
+    if( start >= 0 ) {
+      start = start - 1;
+    }
+  }
+
+  char * result = string::remove(string, before, start);
+  lua_pushstring(L, result);  /* push result */
+  delete[] result;
+  return 1;
+}
+
+static int
+arken_string_removeChar( lua_State *L ) {
+  const char * string = luaL_checkstring(L, 1);
+  const char * before = luaL_checkstring(L, 2);
+  int start = 0;
+
+  if(lua_gettop(L) > 2) { /* número de argumentos */
+    start = luaL_checkinteger(L, 3);
+    if( start >= 0 ) {
+      start = start - 1;
+    }
+  }
+
+  char * result = string::removeChar(string, before[0], start);
+  lua_pushstring(L, result);  /* push result */
+  delete[] result;
+  return 1;
+}
+
+static int
 arken_string_trim( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   char * result       = string::trim(string);
@@ -535,6 +573,8 @@ StringClassMethods[] = {
   {"repeated",       arken_string_repeated},
   {"replace",        arken_string_replace},
   {"replaceChar",    arken_string_replaceChar},
+  {"remove",         arken_string_remove},
+  {"removeChar",     arken_string_removeChar},
   {"right",          arken_string_right},
   {"sha1",           arken_string_sha1},
   {"startsWith",     arken_string_startsWith},

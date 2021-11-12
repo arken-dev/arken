@@ -60,6 +60,8 @@ class string {
   static char * prefix(const char * raw, const char * chr);
   // prepend ???
   // static char * rep(const char *buffer, int times);
+  static char * remove(const char *str, const char *rep, int start = 0);
+  static char * removeChar(const char * string, const char rep, int start = 0);
   static char * repeated(const char *buffer, int times);
   static char * replace(const char * string, const char * before, const char * after, int start = 0);
   static char * replaceChar(const char * string, const char before, const char after, int start = 0);
