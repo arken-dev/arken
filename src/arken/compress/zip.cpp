@@ -54,8 +54,8 @@ Zip::~Zip()
 
 void Zip::addFile(const char * path)
 {
+  string name = os::basename(path);
   string buf  = os::read(path);
-  string name = string(path).suffix("/");
   addBuffer(name, buf.data(), buf.size());
 }
 
