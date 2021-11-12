@@ -29,7 +29,7 @@ string os::abspath(const char * p)
 
 string os::basename(const char * p)
 {
-  path path = std::filesystem::absolute(p).parent_path();
+  path path = std::filesystem::absolute(p).filename();
   return string(path.string());
 }
 
