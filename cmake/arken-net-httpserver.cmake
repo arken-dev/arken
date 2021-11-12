@@ -13,7 +13,7 @@ set_property(
 
 
 if(ARKEN_NET_HTTPSERVER STREQUAL "")
-  set(ARKEN_NET_HTTPSERVER "qt/model-1")
+  set(ARKEN_NET_HTTPSERVER "libev")
 endif()
 
 include_directories("src/arken/net/httpserver/${ARKEN_NET_HTTPSERVER}")
