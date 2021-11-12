@@ -55,26 +55,31 @@ Zip::~Zip()
 void Zip::addFile(const char * path)
 {
   string name = os::basename(path);
-  string buf  = os::read(path);
-  addBuffer(name, buf.data(), buf.size());
+  string buff = os::read(path);
+  addBuffer(name.data(), buff.data(), buff.size());
 }
 
-void Zip::addBuffer(const char * name, const char * buf, size_t size)
+void Zip::addBuffer(const char * name, const char * buff, size_t size)
 {
-  zip_source *s;
+  zip_source *source;
+  string n(name);
+  string b(buff);
 
-  if ((s=zip_source_buffer(m_zip, buf, size, 0)) == NULL ||
-    zip_file_add(m_zip, name, s, ZIP_FL_ENC_UTF_8) < 0) {
-    zip_source_free(s);
+  if ((source=zip_source_buffer(m_zip, b.data(), b.size(), 0)) == NULL ||
+    zip_file_add(m_zip, n, source, ZIP_FL_OVERWRITE) < 0) {
+    zip_source_free(source);
     printf("error adding file: %s\n", zip_strerror(m_zip));
   }
 
+  m_storage.push_back(std::move(n));
+  m_storage.push_back(std::move(b));
 }
 
 void Zip::save()
 {
   zip_close(m_zip);
   m_closed = true;
+  m_storage.clear();
 }
 
 bool Zip::extract(const char * archive, const char * output)

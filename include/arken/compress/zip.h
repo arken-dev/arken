@@ -7,6 +7,7 @@
 #define _ARKEN_COMPRESS_ZIP_
 
 #include <zip.h>
+#include <vector>
 
 namespace arken {
 namespace compress {
@@ -16,6 +17,11 @@ class Zip
   private:
   zip * m_zip;
   bool  m_closed;
+
+  /**
+   * buffers are stored because they are used until zip_close for calling
+   */
+  std::vector<string> m_storage;
 
   public:
   static bool extract(const char * namefile, const char * output = nullptr);
