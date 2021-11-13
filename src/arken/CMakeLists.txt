@@ -155,3 +155,6 @@ if(ARKEN_NET_HTTPSERVER STREQUAL "libev")
 endif()
 
 target_link_libraries(arken ${ImageMagick_LIBRARIES} ${ImageMagick_MagickWand_LIBRARY})
+
+#Barcode
+target_link_libraries(arken /opt/objectdata/zxing-cpp/build/core/libZXing.so )

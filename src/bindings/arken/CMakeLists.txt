@@ -16,6 +16,7 @@ find_package(Qt5Widgets)
 find_package(Qt5Gui)
 
 add_subdirectory(base)
+add_subdirectory(barcode)
 add_subdirectory(base64)
 add_subdirectory(cache)
 add_subdirectory(chrono)
