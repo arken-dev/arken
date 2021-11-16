@@ -3,7 +3,7 @@ set(ARKEN_MVM_CONTAINER "" CACHE STRING
 
 set_property(
   CACHE ARKEN_MVM_CONTAINER PROPERTY STRINGS
-  "" queue deque-stack deque-queue list-stack list-queue vector QQueue boost-lockfree-queue
+  "" queue deque-stack deque-queue list-stack list-queue vector boost-lockfree-queue
 )
 
 if(ARKEN_MVM_CONTAINER STREQUAL "")
