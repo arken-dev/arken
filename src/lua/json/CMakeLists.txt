@@ -21,8 +21,6 @@ add_library(
   json.c strbuf.c g_fmt.c dtoa.c json_lock.cpp #fpconv.c
 )
 
-find_package(Qt5Core)
-
 set_target_properties(json PROPERTIES PREFIX "")
 
-target_link_libraries(json Qt5::Core lua)
+target_link_libraries(json lua)

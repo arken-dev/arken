@@ -3,17 +3,11 @@ set(ARKEN_DIGEST "" CACHE STRING
 
 set_property(
   CACHE ARKEN_DIGEST PROPERTY STRINGS
-  "" qt embedded libssl
+  "" embedded libssl
 )
 
 if(ARKEN_DIGEST STREQUAL "")
-  if(ARKEN_BACKEND STREQUAL "embedded")
-    set(ARKEN_DIGEST "embedded")
-  elseif(ARKEN_BACKEND STREQUAL "benchmark")
-    set(ARKEN_DIGEST "qt")
-  else()
-    set(ARKEN_DIGEST "embedded")
-  endif()
+  set(ARKEN_DIGEST "embedded")
 endif()
 
 if(ARKEN_DIGEST STREQUAL "embedded")

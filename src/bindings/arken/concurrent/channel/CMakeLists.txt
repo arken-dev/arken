@@ -16,9 +16,6 @@ add_library(
   arken_concurrent_channel SHARED channel.cpp
 )
 
-find_package(Qt5Core)
-find_package(Qt5Network)
-
 set_target_properties(arken_concurrent_channel PROPERTIES OUTPUT_NAME channel PREFIX "")
 
-target_link_libraries(arken_concurrent_channel Qt5::Core Qt5::Network arken lua json)
+target_link_libraries(arken_concurrent_channel arken lua json)

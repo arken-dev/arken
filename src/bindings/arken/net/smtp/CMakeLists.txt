@@ -16,9 +16,5 @@ add_library(
   SMTP SHARED smtp.cpp
 )
 
-#find_package(Qt5Core)
-#find_package(Qt5Network)
-
 set_target_properties(SMTP PROPERTIES PREFIX "")
 target_link_libraries(SMTP arken)
-#target_link_libraries(SMTP Qt5::Core Qt5::Network arken lua)

@@ -6,9 +6,6 @@
 #include <lua/lua.hpp>
 #include <arken/base>
 #include <arken/net/httpbody.h>
-#include <QtCore>
-#include <iostream>
-#include <QByteArray>
 
 using arken::net::HttpBody;
 

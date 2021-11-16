@@ -3,9 +3,6 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#include <iostream>
-#include <QtCore>
-#include <QByteArray>
 #include <lua/lua.hpp>
 #include <arken/base>
 #include <arken/net/httpenv.h>

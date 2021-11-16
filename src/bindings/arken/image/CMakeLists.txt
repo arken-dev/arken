@@ -16,9 +16,6 @@ add_library(
   Image SHARED image.cpp
 )
 
-find_package(Qt5Core)
-find_package(Qt5Network)
-
 set_target_properties(Image PROPERTIES PREFIX "")
 
-target_link_libraries(Image Qt5::Core Qt5::Network arken lua)
+target_link_libraries(Image arken lua)

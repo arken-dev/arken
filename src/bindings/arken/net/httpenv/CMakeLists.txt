@@ -14,9 +14,6 @@ add_library(
   HttpEnv SHARED httpenv.cpp
 )
 
-find_package(Qt5Core)
-find_package(Qt5Network)
-
 set_target_properties(HttpEnv PROPERTIES PREFIX "")
 
-target_link_libraries(HttpEnv Qt5::Core Qt5::Network arken lua)
+target_link_libraries(HttpEnv arken lua)

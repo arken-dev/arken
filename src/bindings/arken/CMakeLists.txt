@@ -10,11 +10,6 @@
 
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/clib/arken)
 
-find_package(Qt5Core)
-find_package(Qt5Network)
-find_package(Qt5Widgets)
-find_package(Qt5Gui)
-
 add_subdirectory(base)
 add_subdirectory(barcode)
 add_subdirectory(base64)

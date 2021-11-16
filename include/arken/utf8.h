@@ -15,7 +15,6 @@ class utf8 {
   static char * mid(const char * string, int i, int j=-1);
   static char * upper(const char * string);
   static char * lower(const char * string);
-  static char * format(const char * string);
   static char * encode(const char * string);
   static char * decode(const char * string);
   static char * sanitize(const char * string);

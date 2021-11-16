@@ -13,7 +13,6 @@
 
 #include <arken/base>
 #include <arken/utf8>
-#include <QTextCodec>
 
 namespace arken {
 
@@ -123,15 +122,6 @@ char * utf8::lower(const char * str)
   res[i] = '\0';
 
   return res;
-}
-
-char * utf8::format(const char * string)
-{
-  QByteArray tmp = QString(string).toLocal8Bit();
-  auto result    = new char[tmp.size() + 1];
-  strncpy(result, tmp, tmp.size());
-  result[tmp.size()] = '\0';
-  return result;
 }
 
 int utf8::len(const char * string)

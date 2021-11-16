@@ -18,9 +18,6 @@ add_library(
   arken_concurrent_task_fifo SHARED fifo.cpp
 )
 
-find_package(Qt5Core)
-find_package(Qt5Network)
-
 set_target_properties(arken_concurrent_task_fifo PROPERTIES OUTPUT_NAME fifo PREFIX "")
 
-target_link_libraries(arken_concurrent_task_fifo Qt5::Core Qt5::Network arken lua json)
+target_link_libraries(arken_concurrent_task_fifo arken lua json)

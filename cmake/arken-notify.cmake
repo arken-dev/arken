@@ -20,4 +20,13 @@ else()
   set( arken-notify ${PROJECT_SOURCE_DIR}/src/arken/notify/${ARKEN_NOTIFY}.cpp )
 endif()
 
+if(ARKEN_NOTIFY STREQUAL "qt")
+  find_package(Qt5Core)
+  find_package(Qt5Network)
+  find_package(Qt5Gui)
+  find_package(Qt5Widgets)
+  include_directories(${Qt5Widgets_INCLUDE_DIRS})
+  include_directories(${PROJECT_SOURCE_DIR}/src/arken/notify/qt)
+endif()
+
 message("ARKEN NOTIFY.............: ${ARKEN_NOTIFY}")

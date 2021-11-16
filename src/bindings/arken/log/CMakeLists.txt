@@ -16,9 +16,6 @@ add_library(
   Log SHARED log.cpp
 )
 
-find_package(Qt5Core)
-find_package(Qt5Network)
-
 set_target_properties(Log PROPERTIES PREFIX "")
 
-target_link_libraries(Log Qt5::Core Qt5::Network arken lua)
+target_link_libraries(Log arken lua)

@@ -16,9 +16,6 @@ add_library(
   arken_concurrent_worker SHARED worker.cpp
 )
 
-find_package(Qt5Core)
-find_package(Qt5Network)
-
 set_target_properties(arken_concurrent_worker PROPERTIES OUTPUT_NAME worker PREFIX "")
 
-target_link_libraries(arken_concurrent_worker Qt5::Core Qt5::Network arken lua json)
+target_link_libraries(arken_concurrent_worker arken lua json)

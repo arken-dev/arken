@@ -16,9 +16,6 @@ add_library(
   mvm SHARED mvm.cpp
 )
 
-find_package(Qt5Core)
-find_package(Qt5Network)
-
 set_target_properties(mvm PROPERTIES PREFIX "")
 
-target_link_libraries(mvm Qt5::Core Qt5::Network arken lua json)
+target_link_libraries(mvm arken lua)

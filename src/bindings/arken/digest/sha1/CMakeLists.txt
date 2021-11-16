@@ -16,9 +16,6 @@ add_library(
   sha1 SHARED sha1.cpp
 )
 
-find_package(Qt5Core)
-find_package(Qt5Network)
-
 set_target_properties(sha1 PROPERTIES PREFIX "")
 
-target_link_libraries(sha1 Qt5::Core Qt5::Network arken lua)
+target_link_libraries(sha1 arken lua)

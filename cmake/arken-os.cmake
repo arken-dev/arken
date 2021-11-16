@@ -13,7 +13,7 @@ set(ARKEN_OS_FILESYSTEM "" CACHE STRING
 
 set_property(
   CACHE ARKEN_OS_FILESYSTEM PROPERTY STRINGS
-  "" qt boost std
+  "" boost std
 )
 
 if(ARKEN_OS_FILESYSTEM STREQUAL "")
@@ -55,7 +55,7 @@ set(ARKEN_OS_UUID "" CACHE STRING
 
 set_property(
   CACHE ARKEN_OS_UUID PROPERTY STRINGS
-  "" qt libuuid libssl Linux
+  "" libuuid libssl Linux
 )
 
 if(ARKEN_OS_UUID STREQUAL "")

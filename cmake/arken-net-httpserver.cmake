@@ -19,5 +19,4 @@ endif()
 include_directories("src/arken/net/httpserver/${ARKEN_NET_HTTPSERVER}")
 file(GLOB httpserver "src/arken/net/httpserver/${ARKEN_NET_HTTPSERVER}/*.cpp")
 
-
 message("ARKEN NET_HTTPSERVER....: ${ARKEN_NET_HTTPSERVER}")

@@ -16,9 +16,6 @@ add_library(
   base SHARED base.cpp math.cpp os.cpp string.cpp
 )
 
-find_package(Qt5Core)
-find_package(Qt5Network)
-
 set_target_properties(base PROPERTIES PREFIX "")
 
-target_link_libraries(base Qt5::Core Qt5::Network arken lua curl)
+target_link_libraries(base arken lua curl)

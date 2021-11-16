@@ -16,9 +16,6 @@ add_library(
   odebug SHARED odebug.cpp
 )
 
-find_package(Qt5Core)
-find_package(Qt5Network)
-
 set_target_properties(odebug PROPERTIES PREFIX "")
 
-target_link_libraries(odebug Qt5::Core Qt5::Network arken lua)
+target_link_libraries(odebug arken lua)

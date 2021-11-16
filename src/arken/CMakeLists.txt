@@ -8,6 +8,17 @@
 #
 # ------------------------------------------------------------------------------
 
+FIND_PACKAGE(ImageMagick
+  REQUIRED
+  COMPONENTS MagickWand
+)
+
+INCLUDE_DIRECTORIES(
+  ${ImageMagick_INCLUDE_DIRS}
+  ${ImageMagick_MagickWand_INCLUDE_DIRS}
+)
+
+
 if(ARKEN_NOTIFY STREQUAL "libnotify")
   find_package(PkgConfig REQUIRED)
   find_package(GTK2 REQUIRED gtk)
@@ -73,16 +84,6 @@ add_library(
   ${utf8}
 )
 
-find_package(Qt5Core)
-find_package(Qt5Network)
-find_package(Qt5Gui)
-find_package(Qt5Widgets)
-
-target_link_libraries(arken Qt5::Core)
-target_link_libraries(arken Qt5::Network)
-target_link_libraries(arken Qt5::Gui)
-target_link_libraries(arken Qt5::Widgets)
-
 target_link_libraries(arken zip)
 target_link_libraries(arken curl)
 target_link_libraries(arken lua)
@@ -95,6 +96,7 @@ if(ARKEN_NOTIFY STREQUAL "libnotify")
 endif()
 
 if(ARKEN_NOTIFY STREQUAL "qt")
+  target_link_libraries(arken Qt5::Core Qt5::Network Qt5::Gui Qt5::Widgets)
   include_directories(${PROJECT_SOURCE_DIR}/src/arken/notify/qt)
 endif()
 
@@ -150,7 +152,6 @@ if(ARKEN_NET_HTTPSERVER STREQUAL "boost/model-3")
 endif()
 
 if(ARKEN_NET_HTTPSERVER STREQUAL "libev")
-  #add_subdirectory(${PROJECT_SOURCE_DIR}/src/arken/net/httpserver/linux/model-1/base)
   target_link_libraries(arken ev)
 endif()
 

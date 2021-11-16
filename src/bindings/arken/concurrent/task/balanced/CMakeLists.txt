@@ -18,9 +18,6 @@ add_library(
   arken_concurrent_task_balanced SHARED balanced.cpp
 )
 
-find_package(Qt5Core)
-find_package(Qt5Network)
-
 set_target_properties(arken_concurrent_task_balanced PROPERTIES OUTPUT_NAME balanced PREFIX "")
 
-target_link_libraries(arken_concurrent_task_balanced Qt5::Core Qt5::Network arken lua json)
+target_link_libraries(arken_concurrent_task_balanced arken lua json)

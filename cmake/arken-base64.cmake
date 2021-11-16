@@ -3,7 +3,7 @@ set(ARKEN_BASE64 "" CACHE STRING
 
 set_property(
   CACHE ARKEN_BASE64 PROPERTY STRINGS
-  "" qt embedded
+  "" libssl embedded
 )
 
 if(ARKEN_BASE64 STREQUAL "")

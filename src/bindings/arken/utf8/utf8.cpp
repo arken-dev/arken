@@ -57,14 +57,6 @@ static int arken_utf8_upper( lua_State *L ) {
   return 1;
 }
 
-static int arken_utf8_format( lua_State *L ) {
-  const char * string = luaL_checkstring(L, 1);
-  char * result = utf8::format(string);
-  lua_pushstring( L, result );
-  delete[] result;
-  return 1;
-}
-
 static int arken_utf8_decode( lua_State *L ) {
   const char * str = luaL_checkstring(L, 1);
   char * result = utf8::decode(str);
@@ -113,7 +105,6 @@ register_arken_utf8( lua_State *L ) {
     {"mid",      arken_utf8_mid},
     {"lower",    arken_utf8_lower},
     {"upper",    arken_utf8_upper},
-    {"format",   arken_utf8_format},
     {"len",      arken_utf8_len},
     {"decode",   arken_utf8_decode},
     {"encode",   arken_utf8_encode},

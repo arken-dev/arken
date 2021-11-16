@@ -16,9 +16,6 @@ add_library(
   md5 SHARED md5.cpp
 )
 
-find_package(Qt5Core)
-find_package(Qt5Network)
-
 set_target_properties(md5 PROPERTIES PREFIX "")
 
-target_link_libraries(md5 Qt5::Core Qt5::Network arken lua)
+target_link_libraries(md5 arken lua)

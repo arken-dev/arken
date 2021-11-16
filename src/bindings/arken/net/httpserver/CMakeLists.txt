@@ -16,9 +16,6 @@ add_library(
   HttpServer SHARED httpserver.cpp
 )
 
-find_package(Qt5Core)
-find_package(Qt5Network)
-
 set_target_properties(HttpServer PROPERTIES PREFIX "")
 
-target_link_libraries(HttpServer Qt5::Core Qt5::Network arken lua)
+target_link_libraries(HttpServer arken lua)

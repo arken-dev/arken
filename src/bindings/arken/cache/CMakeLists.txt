@@ -16,9 +16,6 @@ add_library(
   cache SHARED cache.cpp
 )
 
-find_package(Qt5Core)
-find_package(Qt5Network)
-
 set_target_properties(cache PROPERTIES PREFIX "")
 
-target_link_libraries(cache Qt5::Core Qt5::Network arken lua json)
+target_link_libraries(cache arken lua)
