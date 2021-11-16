@@ -25,12 +25,16 @@ checkBarcode( lua_State *L , int position = 1) {
 static int
 arken_BarcodeClassMethodNew( lua_State *L ) {
   arken::Barcode **ptr = (arken::Barcode **)lua_newuserdata(L, sizeof(Barcode*));
-
   int width  = luaL_checkinteger(L, 1);
   int height = luaL_checkinteger(L, 2);
   const char *format = lua_tostring(L, 3);
-  const char *text   = lua_tostring(L, 4);
-  *ptr = new arken::Barcode(width, height, format, text);
+  if(lua_gettop(L) == 5) { // number of arguments
+    std::cout << "informou o text..." << std::endl;
+    const char *text   = lua_tostring(L, 4);
+    *ptr = new arken::Barcode(width, height, format, text);
+  } else {
+    *ptr = new arken::Barcode(width, height, format);
+  }
 
   luaL_getmetatable(L, "Barcode.metatable");
   lua_setmetatable(L, -2);
@@ -55,6 +59,13 @@ registerBarcodeClassMethods( lua_State *L ) {
  */
 
 static int
+arken_BarcodeInstanceMethodSetText( lua_State *L ) {
+  arken::Barcode *barcode = checkBarcode( L );
+  const char * text = lua_tostring(L, 2);
+  barcode->setText(text);
+  return 0;
+}
+static int
 arken_BarcodeInstanceMethodSave( lua_State *L ) {
   arken::Barcode *barcode = checkBarcode( L );
   const char * path = lua_tostring(L, 2);
@@ -72,6 +83,7 @@ arken_BarcodeInstanceMethodDestruct( lua_State *L ) {
 
 static const
 luaL_reg BarcodeInstanceMethods[] = {
+  {"setText",   arken_BarcodeInstanceMethodSetText},
   {"save",      arken_BarcodeInstanceMethodSave},
   {"__gc",      arken_BarcodeInstanceMethodDestruct},
   {NULL, NULL}

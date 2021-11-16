@@ -27,8 +27,9 @@ class Barcode {
   string m_text;
 
   public:
-  Barcode(int width, int height, string format, string text);
+  Barcode(int width, int height, string format, string text = "not found");
   ~Barcode();
+  void setText(string text);
   void save(string path);
 };
 

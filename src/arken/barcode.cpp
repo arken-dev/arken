@@ -30,6 +30,11 @@ Barcode::~Barcode()
 
 }
 
+void Barcode::setText(string text)
+{
+  m_text = text;
+}
+
 void Barcode::save(string path)
 {
   ZXing::CharacterSet encoding = ZXing::CharacterSet::Unknown;
