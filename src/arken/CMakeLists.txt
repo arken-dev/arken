@@ -132,6 +132,10 @@ if(ARKEN_OS_FILESYSTEM STREQUAL "boost")
   target_link_libraries(arken pthread m ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
 endif()
 
+if(ARKEN_NET_HTTPSERVER STREQUAL "qt")
+  target_link_libraries(arken Qt5::Core Qt5::Network Qt5::Gui Qt5::Widgets)
+endif()
+
 if(ARKEN_NET_HTTPSERVER STREQUAL "linux/model-1")
   add_subdirectory(${PROJECT_SOURCE_DIR}/src/arken/net/httpserver/linux/model-1/base)
   target_link_libraries(arken libserver_base)

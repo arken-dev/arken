@@ -1,5 +1,5 @@
 local HttpClient = require('arken.net.HttpClient')
-local zip        = require('arken.compress.zip')
+local zip        = require('arken.compress.Zip')
 local mvm        = require('arken.mvm')
 local packages   = string.format("%s/config/packages", mvm.path())
 
