@@ -16,6 +16,14 @@ if(ARKEN_NET_HTTPSERVER STREQUAL "")
   set(ARKEN_NET_HTTPSERVER "libev")
 endif()
 
+if(ARKEN_NOTIFY STREQUAL "qt")
+  find_package(Qt5Core)
+  find_package(Qt5Network)
+  find_package(Qt5Gui)
+  find_package(Qt5Widgets)
+  include_directories(${Qt5Widgets_INCLUDE_DIRS})
+endif()
+
 include_directories("src/arken/net/httpserver/${ARKEN_NET_HTTPSERVER}")
 file(GLOB httpserver "src/arken/net/httpserver/${ARKEN_NET_HTTPSERVER}/*.cpp")
 
