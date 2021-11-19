@@ -112,10 +112,8 @@ string HttpClient::performPost()
   /* POST */
   curl_easy_setopt(m_curl, CURLOPT_CUSTOMREQUEST, "POST");
   curl_easy_setopt(m_curl, CURLOPT_POST, 1);
-  if( !m_body.empty() ) {
-    curl_easy_setopt(m_curl, CURLOPT_POSTFIELDS, m_body.data() );
-    curl_easy_setopt(m_curl, CURLOPT_POSTFIELDSIZE, m_body.size() );
-  }
+  curl_easy_setopt(m_curl, CURLOPT_POSTFIELDS, m_body.data() );
+  curl_easy_setopt(m_curl, CURLOPT_POSTFIELDSIZE, m_body.size() );
 
   return perform();
 }
@@ -126,10 +124,8 @@ string HttpClient::performPut()
   /* PUT */
   curl_easy_setopt(m_curl, CURLOPT_CUSTOMREQUEST, "PUT");
   curl_easy_setopt(m_curl, CURLOPT_POST, 1);
-  if( !m_body.empty() ) {
-    curl_easy_setopt(m_curl, CURLOPT_POSTFIELDS, m_body.data());
-    curl_easy_setopt(m_curl, CURLOPT_POSTFIELDSIZE, m_body.size());
-  }
+  curl_easy_setopt(m_curl, CURLOPT_POSTFIELDS, m_body.data());
+  curl_easy_setopt(m_curl, CURLOPT_POSTFIELDSIZE, m_body.size());
 
   return perform();
 }
