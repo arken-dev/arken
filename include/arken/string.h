@@ -176,6 +176,7 @@ class string {
     List();
     List(int resource);
     List(const List &obj);
+    List(List && obj);
     static List * consume(List &obj);
     ~List();
     void replace(int pos, const char * value);

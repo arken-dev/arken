@@ -1893,6 +1893,16 @@ string::List::List(const List &obj)
   }
 }
 
+// Move Constructor
+string::List::List( List && obj )
+{
+  m_cursor    = 0;
+  m_size      = obj.m_size;
+  m_resource  = obj.m_resource;
+  m_array     = obj.m_array;
+  obj.m_array = nullptr;
+}
+
 List & string::List::operator=(const List &obj)
 {
 
