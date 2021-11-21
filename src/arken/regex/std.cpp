@@ -40,21 +40,21 @@ int regex::index(const char * string, const char * regex, int offset)
   return matches.position() + offset;
 }
 
-List * regex::split(const char * string, const char * regex)
+List regex::split(const char * string, const char * regex)
 {
-  auto list = new List();
+  List list;
 
   std::string str(string);
   std::regex exp(regex);
   std::smatch matches;
 
   while (std::regex_search(str, matches, exp)) {
-    list->append(matches.prefix().str().c_str());
+    list.append(matches.prefix().str().c_str());
     str = matches.suffix().str();
   }
 
   if( str.size() > 0 ) {
-    list->append(str.c_str());
+    list.append(str.c_str());
   }
 
   return list;
@@ -80,18 +80,17 @@ char * regex::replace(const char * string, const char * regex, const char * afte
   return result;
 }
 
-List * regex::scan(const char * string, const char * regex)
+List regex::scan(const char * string, const char * regex)
 {
-  auto list = new List();
+  List list;
 
   std::string str(string);
   std::regex exp(regex);
   std::smatch matches;
 
   while (std::regex_search(str, matches, exp)) {
-    list->append(matches.str().c_str());
+    list.append(matches.str().c_str());
     str = matches.suffix().str();
-    std::cout << "str " << str << std::endl;
   }
 
   return list;

@@ -51,12 +51,11 @@ static int arken_regex_replace( lua_State *L ) {
 }
 
 static int arken_regex_scan( lua_State *L ) {
-  List * list;
   const char  * string = luaL_checkstring(L, 1);
   const char  * regex  = luaL_checkstring(L, 2);
-  list = regex::scan(string, regex);
+  List list = regex::scan(string, regex);
   List **ptr = (List **)lua_newuserdata(L, sizeof(List*));
-  *ptr = list;
+  *ptr = new List(std::move(list));
   luaL_getmetatable(L, "arken.string.List.metatable");
   lua_setmetatable(L, -2);
 
@@ -66,9 +65,9 @@ static int arken_regex_scan( lua_State *L ) {
 static int arken_regex_split( lua_State *L ) {
   const char  * string = luaL_checkstring(L, 1);
   const char  * regex  = luaL_checkstring(L, 2);
-  List * list   = regex::split(string, regex);
+  List list  = regex::split(string, regex);
   List **ptr = (List **)lua_newuserdata(L, sizeof(List*));
-  *ptr = list;
+  *ptr = new List(std::move(list));
   luaL_getmetatable(L, "arken.string.List.metatable");
   lua_setmetatable(L, -2);
 
