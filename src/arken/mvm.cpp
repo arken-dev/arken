@@ -471,7 +471,7 @@ const char * mvm::env()
 
 const char * mvm::cext()
 {
-  static std::map<const char *, const char *> s_cext {
+  static std::map<const string, const string> s_cext {
     {"linux", "so"}, {"windows", "dll"}, {"macos", "dylib"},
   };
   return s_cext[os::name()];
