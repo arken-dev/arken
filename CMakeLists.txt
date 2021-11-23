@@ -44,7 +44,14 @@ include_directories(${PROJECT_SOURCE_DIR}/deps/include)
 include_directories(${PROJECT_SOURCE_DIR}/src/embedded)
 include_directories(${PROJECT_SOURCE_DIR}/src/vendors)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++17 -O2 -finline-functions")
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++17")
+
+if ( NOT ARKEN_DEBUG )
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -finline-functions")
+else()
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g")
+endif()
 
 if (NOT WIN32)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC ")
