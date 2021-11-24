@@ -6,25 +6,27 @@
 #ifndef _ARKEN_NET_HTTP_CLIENT_
 #define _ARKEN_NET_HTTP_CLIENT_
 
-#include <curl/curl.h>
 #include <arken/base>
+#include <vector>
 
 namespace arken {
 namespace net {
 
 class HttpClient
 {
+  using vector = std::vector<string>;
+
   private:
-  curl_slist * m_list;
-  CURL       * m_curl;
   string       m_url;
   string       m_body;
   string       m_data;
   string       m_message;
   bool         m_failure;
+  bool         m_verbose;
   uint32_t     m_status;
   uint64_t     m_size;
-  string       perform();
+  vector       m_headers;
+  string       perform(string method = "");
   static
   uint64_t     callback(void *contents, size_t size, size_t nmemb, void *userp);
 

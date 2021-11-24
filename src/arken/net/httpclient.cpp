@@ -8,11 +8,12 @@
 #include <cstdlib>
 #include <cstring>
 #include <arken/net/httpclient.h>
+#include <atomic>
+
+static std::atomic<bool> curl_global_init_flag = ATOMIC_VAR_INIT(true);
 
 namespace arken {
 namespace net {
-
-using arken::string;
 
 uint64_t HttpClient::callback(void *contents, size_t size, size_t nmemb, void *userp)
 {
@@ -24,71 +25,23 @@ uint64_t HttpClient::callback(void *contents, size_t size, size_t nmemb, void *u
 
 HttpClient::HttpClient(const char * url)
 {
-  m_url = url;
-
+  m_url     = url;
   m_status  = 0;
   m_size    = 0;
-  m_list    = nullptr;
   m_failure = false;
-
-  // init globlal
-  curl_global_init(CURL_GLOBAL_ALL);
-
-  // init the curl session
-  m_curl = curl_easy_init();
-
-  // url
-  curl_easy_setopt(m_curl, CURLOPT_URL, url);
-
-  // example.com is redirected, so we tell libcurl to follow redirection
-  curl_easy_setopt(m_curl, CURLOPT_FOLLOWLOCATION, 1L);
-
-  curl_easy_setopt(m_curl, CURLOPT_TIMEOUT, 60L);
-
-  // send all data to this function
-  curl_easy_setopt(m_curl, CURLOPT_WRITEFUNCTION, HttpClient::callback);
-
-  // we pass our 'chunk' struct to the callback function
-  curl_easy_setopt(m_curl, CURLOPT_WRITEDATA, (void *)this);
-
-  // headers
-  curl_easy_setopt(m_curl, CURLOPT_HEADER, 1);
-
-  // some servers don't like requests that are made without a user-agent field, so we provide one
-  curl_easy_setopt(m_curl, CURLOPT_USERAGENT, "libcurl-agent/1.0");
-
-  // https://curl.haxx.se/docs/sslcerts.html
-  // Tell libcurl to not verify the peer. With libcurl you disable this with
-  // curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, FALSE);
-  // With the curl command line tool, you disable this with -k/--insecure.
-  curl_easy_setopt(m_curl, CURLOPT_SSL_VERIFYPEER, 0);
+  m_verbose = false;
 }
 
-HttpClient::~HttpClient()
-{
-  // cleanup curl stuff
-  curl_easy_cleanup(m_curl);
-
-  /* Free the list */
-  curl_slist_free_all(m_list);
-
-  // we're done with libcurl, so clean it up
-  curl_global_cleanup();
-
-}
+HttpClient::~HttpClient() = default;
 
 void HttpClient::appendHeader(const char * header)
 {
-   m_list = curl_slist_append(m_list, header);
+  m_headers.push_back(header);
 }
 
 void HttpClient::setVerbose(bool verbose)
 {
-  if( verbose ) {
-    curl_easy_setopt(m_curl, CURLOPT_VERBOSE, 1L);
-  } else {
-    curl_easy_setopt(m_curl, CURLOPT_VERBOSE, 0L);
-  }
+  m_verbose = verbose;
 }
 
 void HttpClient::setBody(const char * body)
@@ -108,35 +61,17 @@ string HttpClient::performGet()
 
 string HttpClient::performPost()
 {
-
-  /* POST */
-  curl_easy_setopt(m_curl, CURLOPT_CUSTOMREQUEST, "POST");
-  curl_easy_setopt(m_curl, CURLOPT_POST, 1);
-  curl_easy_setopt(m_curl, CURLOPT_POSTFIELDS, m_body.data() );
-  curl_easy_setopt(m_curl, CURLOPT_POSTFIELDSIZE, m_body.size() );
-
-  return perform();
+  return perform("POST");
 }
 
 string HttpClient::performPut()
 {
-
-  /* PUT */
-  curl_easy_setopt(m_curl, CURLOPT_CUSTOMREQUEST, "PUT");
-  curl_easy_setopt(m_curl, CURLOPT_POST, 1);
-  curl_easy_setopt(m_curl, CURLOPT_POSTFIELDS, m_body.data());
-  curl_easy_setopt(m_curl, CURLOPT_POSTFIELDSIZE, m_body.size());
-
-  return perform();
+  return perform("PUT");
 }
 
 string HttpClient::performDelete()
 {
-
-  /* DELETE */
-  curl_easy_setopt(m_curl, CURLOPT_CUSTOMREQUEST, "DELETE");
-
-  return perform();
+  return perform("DELETE");
 }
 
 int HttpClient::status()
@@ -159,16 +94,89 @@ bool HttpClient::failure()
   return m_failure;
 }
 
-string HttpClient::perform()
+string HttpClient::perform(string method)
 {
-  int       index;
-  CURLcode  res;
+  curl_slist * list = nullptr;
+  CURL       * curl;
+  int          index;
+  CURLcode     res;
+
+  // init globlal
+  if( curl_global_init_flag ) {
+    curl_global_init(CURL_GLOBAL_ALL);
+    curl_global_init_flag = false;
+  }
+
+  // init the curl session
+  curl = curl_easy_init();
+
+  // url
+  curl_easy_setopt(curl, CURLOPT_URL, m_url.data());
+
+  // verbose
+  if( m_verbose ) {
+    curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
+  } else {
+    curl_easy_setopt(curl, CURLOPT_VERBOSE, 0L);
+  }
+
+  // example.com is redirected, so we tell libcurl to follow redirection
+  curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+
+  curl_easy_setopt(curl, CURLOPT_TIMEOUT, 60L);
+
+  // send all data to this function
+  curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, HttpClient::callback);
+
+  // we pass our 'chunk' struct to the callback function
+  curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)this);
+
+  // headers
+  curl_easy_setopt(curl, CURLOPT_HEADER, 1);
+
+  // some servers don't like requests that are made without a user-agent field, so we provide one
+  curl_easy_setopt(curl, CURLOPT_USERAGENT, "libcurl-agent/1.0");
+
+  // https://curl.haxx.se/docs/sslcerts.html
+  // Tell libcurl to not verify the peer. With libcurl you disable this with
+  // curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, FALSE);
+  // With the curl command line tool, you disable this with -k/--insecure.
+  curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0);
+
+  for(size_t i=0; i < m_headers.size(); i++) {
+    list = curl_slist_append(list, m_headers[i].data());
+  }
 
   // set our custom set of headers
-  curl_easy_setopt(m_curl, CURLOPT_HTTPHEADER, m_list);
+  if( list ) {
+    curl_easy_setopt(curl, CURLOPT_HTTPHEADER, list);
+  }
+
+  // POST PUT DELETE
+  if( !method.empty() ) {
+    curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, method.data());
+  }
+
+  // POST PUT
+  if( method.equals("POST") || method.equals("PUT") ) {
+    curl_easy_setopt(curl, CURLOPT_POST, 1);
+    curl_easy_setopt(curl, CURLOPT_POSTFIELDS, m_body.data());
+    curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, m_body.size());
+  }
 
   // perform
-  res = curl_easy_perform(m_curl);
+  res = curl_easy_perform(curl);
+
+  // cleanup curl stuff
+  curl_easy_cleanup(curl);
+
+  /* Free the list */
+  if( list ) {
+    curl_slist_free_all(list);
+  }
+
+  // we're done with libcurl, so clean it up
+  // curl_global_cleanup();
 
   // out of memory
   if ( m_failure ) {
@@ -195,7 +203,7 @@ string HttpClient::perform()
       m_status = 0;
     }
 
-    //parse body
+    // parse body TODO refactory return {}
     index = m_data.lastIndexOf("\r\n\r\n");
     if( index > 0 ) {
       index += 4;
