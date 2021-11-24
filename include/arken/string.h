@@ -133,6 +133,8 @@ class string {
   string & prepend(const char * str);
   char * release();
   // rep
+  string remove(const char *rep, int start = 0);
+  string removeChar(const char rep, int start = 0);
   string repeated(int times);
   string replace(const char * before, const char * after, int start = 0);
   string replaceChar(const char before, const char after, int start = 0);

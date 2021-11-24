@@ -686,6 +686,13 @@ arken_StringInstanceMethodDasherize( lua_State *L ) {
 }
 
 static int
+arken_StringInstanceMethodEmpty( lua_State *L ) {
+  string * udata = checkString( L );
+  lua_pushboolean(L, udata->empty());
+  return 1;
+}
+
+static int
 arken_StringInstanceMethodEscape( lua_State *L ) {
   string * udata = checkString( L );
   string result  = udata->escape();
@@ -739,8 +746,7 @@ static int
 arken_StringInstanceMethodEndsWith( lua_State *L ) {
   string * udata  = checkString( L );
   const char * ba = luaL_checkstring(L, 2);
-  bool result     = udata->endsWith(ba);
-  lua_pushboolean(L, result);
+  lua_pushboolean(L, udata->endsWith(ba));
   return 1;
 }
 
@@ -798,6 +804,42 @@ arken_StringInstanceMethodNormalize( lua_State *L ) {
   string * udata = checkString( L );
   string result  = udata->normalize();
   lua_pushlstring(L, result.data(), result.size());
+  return 1;
+}
+
+static int
+arken_StringInstanceMethodRemove( lua_State *L ) {
+  string * udata = checkString( L );
+  const char * before = luaL_checkstring(L, 2);
+  int start = 0;
+
+  if(lua_gettop(L) > 2) { /* número de argumentos */
+    start = luaL_checkinteger(L, 3);
+    if( start >= 0 ) {
+      start = start - 1;
+    }
+  }
+
+  string result = udata->remove(before, start);
+  lua_pushlstring(L, result.data(), result.size());  /* push result */
+  return 1;
+}
+
+static int
+arken_StringInstanceMethodRemoveChar( lua_State *L ) {
+  string * udata = checkString( L );
+  const char * before = luaL_checkstring(L, 2);
+  int start = 0;
+
+  if(lua_gettop(L) > 2) { /* número de argumentos */
+    start = luaL_checkinteger(L, 3);
+    if( start >= 0 ) {
+      start = start - 1;
+    }
+  }
+
+  string result = udata->removeChar(before[0], start);
+  lua_pushlstring(L, result.data(), result.size());  /* push result */
   return 1;
 }
 
@@ -1086,6 +1128,7 @@ luaL_reg StringInstanceMethods[] = {
   {"contains",       arken_StringInstanceMethodContains},
   {"count",          arken_StringInstanceMethodCount},
   {"dasherize",      arken_StringInstanceMethodDasherize},
+  {"empty",          arken_StringInstanceMethodEmpty},
   {"escape",         arken_StringInstanceMethodEscape},
   {"decode64",       arken_StringInstanceMethodDecode64},
   {"encode64",       arken_StringInstanceMethodEncode64},
@@ -1106,12 +1149,12 @@ luaL_reg StringInstanceMethods[] = {
   {"prepend",        arken_StringInstanceMethodPrepend},
   {"prefix",         arken_StringInstanceMethodPrefix},
   {"repeated",       arken_StringInstanceMethodRepeated},
+  {"remove",         arken_StringInstanceMethodRemove},
+  {"removeChar",     arken_StringInstanceMethodRemoveChar},
   {"replace",        arken_StringInstanceMethodReplace},
   {"replaceChar",    arken_StringInstanceMethodReplaceChar},
   {"reserve",        arken_StringInstanceMethodReserve},
   {"right",          arken_StringInstanceMethodRight},
-
-
   {"sha1",           arken_StringInstanceMethodSha1},
   {"size",           arken_StringInstanceMethodSize},
   {"squish",         arken_StringInstanceMethodSquish},

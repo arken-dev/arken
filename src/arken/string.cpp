@@ -513,6 +513,10 @@ char * string::insert(const char * string, int len, const char * ba)
   auto result    = new char[size + 1];
   int p, i, j;
 
+  if( len > string_len ) {
+    len = 0;
+  }
+
   for(p=0, i=0; i < len; p++, i++){
     result[p] = string[i];
   }
@@ -876,6 +880,11 @@ char * string::right(const char *string, int len)
   char * result;
 
   string_len = strlen(string);
+
+  if( len > string_len || len < 0 ) {
+    len = string_len;
+  }
+
   j = string_len - len;
 
   result = new char[len + 1];
@@ -1626,6 +1635,16 @@ string string::prefix(const char * pattern)
 string string::squish()
 {
   return string::squish(m_data);
+}
+
+string string::remove(const char * rep, int start)
+{
+  return string::remove(m_data, rep, start);
+}
+
+string string::removeChar(const char rep, int start)
+{
+  return string::removeChar(m_data, rep, start);
 }
 
 string string::repeated(int times)
