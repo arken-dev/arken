@@ -46,7 +46,7 @@ local run = function(file)
       if result.status ~= 'ok' then
         buffer = buffer .. '<b>' .. description .. '</b>' .. '\n'
         if result.msg and tostring(result.msg):len() > 0  then
-          buffer = buffer .. tostring(result.msg) .. '\n\n'
+          buffer = buffer .. tostring(result.msg:escapeHtml()) .. '\n\n'
         end
       end
 
