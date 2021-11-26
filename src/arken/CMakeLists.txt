@@ -104,6 +104,8 @@ if(ARKEN_NOTIFY STREQUAL "opengl")
   include_directories(${PROJECT_SOURCE_DIR}/src/arken/notify/opengl)
 endif()
 
+target_link_libraries(arken pthread m)
+
 if(ARKEN_NOTIFY STREQUAL "glib")
   message(STATUS ${GLIB_LIBRARIES})
   target_link_libraries(arken ${GLIB_LIBRARIES})

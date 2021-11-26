@@ -6,8 +6,23 @@
 #include <lua/lua.hpp>
 #include <arken/base>
 #include <arken/mvm>
+#include <arken/log>
 #include <iostream>
 #include <cstdio>
+#define GOOGLE_BREAKPAD_ENABLED 1
+
+
+#ifdef GOOGLE_BREAKPAD_ENABLED
+#include "client/linux/handler/exception_handler.h"
+static bool dumpCallback(const google_breakpad::MinidumpDescriptor& descriptor,
+void* context, bool succeeded) {
+  arken::Log log("dumps");
+  log.info(descriptor.path());
+  log.dump();
+  printf("Dump path: %s\n", descriptor.path());
+  return succeeded;
+}
+#endif
 
 using arken::mvm;
 
@@ -30,14 +45,14 @@ int arkenFileLoad(lua_State *L, const char * filename)
   return rv;
 }
 
-void arkenConsolePrintAround(string &buffer)
+void arkenConsolePrintAround(arken::string &buffer)
 {
   buffer = buffer.mid(1);
   buffer.prepend("print(");
   buffer.append(")");
 }
 
-bool arkenConsoleIncrementLevel(string &row)
+bool arkenConsoleIncrementLevel(arken::string &row)
 {
   /* if */
   if(row.startsWith("if ") or row.contains(" if ")) {
@@ -62,7 +77,7 @@ bool arkenConsoleIncrementLevel(string &row)
   return false;
 }
 
-bool arkenConsoleDecrementLevel(string &row)
+bool arkenConsoleDecrementLevel(arken::string &row)
 {
   /* end */
   if(row.startsWith("end") or row.contains(" end ")) {
@@ -104,9 +119,9 @@ int arkenConsoleLoad(lua_State *L)
   int rv = 0;
   int level = 0;
   char cmd[255];
-  std::string line;
-  string row;
-  string buffer;
+  std::string   line;
+  arken::string row;
+  arken::string buffer;
 
   while(true) {
     sprintf(cmd, "arken %i> ", level);
@@ -152,14 +167,22 @@ int arkenConsoleLoad(lua_State *L)
 
 int main(int argc, char * argv[])
 {
+  #ifdef GOOGLE_BREAKPAD_ENABLED
+    arken::string path = os::pwd();
+    path.append("/logs/dumps");
+    google_breakpad::MinidumpDescriptor descriptor(path.data());
+    google_breakpad::ExceptionHandler eh(descriptor, NULL, dumpCallback, NULL, true, -1);
+    std::cout << "google breakpad enabled..." << std::endl;
+    std::cout << "path descriptor " << path << std::endl;
+  #endif
 
   mvm::init(argc, argv);
   os::sleep(0.1); // waiting mvm output log
 
   int rv = 0;
-  string  arkenPath;
-  string  task;
-  string  arg1;
+  arken::string  arkenPath;
+  arken::string  task;
+  arken::string  arg1;
   arken::instance i = mvm::instance();
   lua_State  * L = i.state();
 
@@ -170,7 +193,7 @@ int main(int argc, char * argv[])
   if( os::exists(argv[1]) ) {
     return arkenFileLoad(L, argv[1]);
   } else {
-    if (string::contains(argv[1], ":")) {
+    if (arken::string::contains(argv[1], ":")) {
       executeRoutine(L);
     } else {
       fprintf(stderr, "No such file or directory %s\n", argv[1]);
