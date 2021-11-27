@@ -11,7 +11,7 @@
 #include <atomic>
 #include <mutex>
 
-static uint32_t   global_counter{0};
+static uint32_t   global_count{0};
 static std::mutex global_mutex;
 
 namespace arken {
@@ -105,10 +105,10 @@ string HttpClient::perform(string method)
 
   // init globlal
   global_mutex.lock();
-  if( global_counter == 0 ) {
+  if( global_count == 0 ) {
     curl_global_init(CURL_GLOBAL_ALL);
   }
-  global_counter++;
+  global_count++;
   global_mutex.unlock();
 
   // init the curl session
@@ -181,8 +181,8 @@ string HttpClient::perform(string method)
 
   // we're done with libcurl, so clean it up
   global_mutex.lock();
-  global_counter--;
-  if( global_counter == 0 ) {
+  global_count--;
+  if( global_count == 0 ) {
     curl_global_cleanup();
   }
   global_mutex.unlock();
