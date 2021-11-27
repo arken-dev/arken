@@ -106,6 +106,7 @@ string HttpClient::perform(string method)
   // init globlal
   global_mutex.lock();
   if( global_count == 0 ) {
+    std::cout << "curl_global_init" << std::endl;
     curl_global_init(CURL_GLOBAL_ALL);
   }
   global_count++;
@@ -183,6 +184,7 @@ string HttpClient::perform(string method)
   global_mutex.lock();
   global_count--;
   if( global_count == 0 ) {
+    std::cout << "curl_global_cleanup" << std::endl;
     curl_global_cleanup();
   }
   global_mutex.unlock();
