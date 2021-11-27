@@ -164,7 +164,7 @@ string HttpClient::perform(string method)
 
   // POST PUT
   if( method.equals("POST") || method.equals("PUT") ) {
-    curl_easy_setopt(curl, CURLOPT_POST, 1);
+    //curl_easy_setopt(curl, CURLOPT_POST, 1);
     curl_easy_setopt(curl, CURLOPT_POSTFIELDS, m_body.data());
     curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, m_body.size());
   }
