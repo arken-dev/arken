@@ -9,8 +9,10 @@
 #include <cstring>
 #include <arken/net/httpclient.h>
 #include <atomic>
+#include <mutex>
 
-static std::atomic<bool> curl_global_init_flag = ATOMIC_VAR_INIT(true);
+static uint32_t   global_counter{0};
+static std::mutex global_mutex;
 
 namespace arken {
 namespace net {
@@ -102,10 +104,12 @@ string HttpClient::perform(string method)
   CURLcode     res;
 
   // init globlal
-  if( curl_global_init_flag ) {
+  global_mutex.lock();
+  if( global_counter == 0 ) {
     curl_global_init(CURL_GLOBAL_ALL);
-    curl_global_init_flag = false;
   }
+  global_counter++;
+  global_mutex.unlock();
 
   // init the curl session
   curl = curl_easy_init();
@@ -176,7 +180,12 @@ string HttpClient::perform(string method)
   }
 
   // we're done with libcurl, so clean it up
-  // curl_global_cleanup();
+  global_mutex.lock();
+  global_counter--;
+  if( global_counter == 0 ) {
+    curl_global_cleanup();
+  }
+  global_mutex.unlock();
 
   // out of memory
   if ( m_failure ) {
