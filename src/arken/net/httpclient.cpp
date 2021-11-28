@@ -45,7 +45,7 @@ void HttpClient::setVerbose(bool verbose)
   m_verbose = verbose;
 }
 
-void HttpClient::setBody(const char * body)
+void HttpClient::setBody(string body)
 {
   m_body = body;
 }

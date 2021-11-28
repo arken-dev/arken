@@ -34,7 +34,7 @@ class HttpClient
   ~HttpClient();
   void appendHeader(const char * header);
   void setVerbose(bool verbose);
-  void setBody(const char * body);
+  void setBody(string body);
   string performGet();
   string performPost();
   string performPut();

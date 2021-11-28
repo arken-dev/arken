@@ -68,17 +68,18 @@ arken_HttpClientInstanceMethodSetVerbose( lua_State *L ) {
 
 static int
 arken_HttpClientInstanceMethodSetBody( lua_State *L ) {
+  size_t len;
   HttpClient * udata = checkHttpClient( L );
-  const char * body  = luaL_checkstring(L, 2);
-  udata->setBody(body);
+  const char * body  = luaL_checklstring(L, 2, &len);
+  udata->setBody(string(body, len));
   return 0;
 }
 
 static int
 arken_HttpClientInstanceMethodBody( lua_State *L ) {
   HttpClient * udata = checkHttpClient( L );
-  const char * body  = udata->body();
-  lua_pushstring(L, body);
+  string body = udata->body();
+  lua_pushlstring(L, body.data(), body.size());
   return 1;
 }
 
@@ -117,7 +118,7 @@ arken_HttpClientInstanceMethodPerformDelete( lua_State *L ) {
 static int
 arken_HttpClientInstanceMethodData( lua_State *L ) {
   HttpClient * udata = checkHttpClient( L );
-  string data  = udata->data();
+  string data = udata->data();
   lua_pushlstring(L, data.data(), data.size());
   return 1;
 }
@@ -153,19 +154,19 @@ arken_HttpClientInstanceMethodDestruct( lua_State *L ) {
 
 static const
 luaL_reg HttpClientInstanceMethods[] = {
-  {"appendHeader", arken_HttpClientInstanceMethodAppendHeader},
-  {"setVerbose", arken_HttpClientInstanceMethodSetVerbose},
-  {"setBody", arken_HttpClientInstanceMethodSetBody},
-  {"body", arken_HttpClientInstanceMethodBody},
-  {"performGet", arken_HttpClientInstanceMethodPerformGet},
-  {"performPost", arken_HttpClientInstanceMethodPerformPost},
-  {"performPut", arken_HttpClientInstanceMethodPerformPut},
+  {"appendHeader",  arken_HttpClientInstanceMethodAppendHeader},
+  {"setVerbose",    arken_HttpClientInstanceMethodSetVerbose},
+  {"setBody",       arken_HttpClientInstanceMethodSetBody},
+  {"body",          arken_HttpClientInstanceMethodBody},
+  {"performGet",    arken_HttpClientInstanceMethodPerformGet},
+  {"performPost",   arken_HttpClientInstanceMethodPerformPost},
+  {"performPut",    arken_HttpClientInstanceMethodPerformPut},
   {"performDelete", arken_HttpClientInstanceMethodPerformDelete},
   {"status",        arken_HttpClientInstanceMethodStatus},
-  {"data",        arken_HttpClientInstanceMethodData},
-  {"failure",     arken_HttpClientInstanceMethodFailure},
-  {"message",     arken_HttpClientInstanceMethodMessage},
-  {"__gc", arken_HttpClientInstanceMethodDestruct},
+  {"data",          arken_HttpClientInstanceMethodData},
+  {"failure",       arken_HttpClientInstanceMethodFailure},
+  {"message",       arken_HttpClientInstanceMethodMessage},
+  {"__gc",          arken_HttpClientInstanceMethodDestruct},
   {NULL, NULL}
 };
 
