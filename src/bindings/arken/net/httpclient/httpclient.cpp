@@ -117,8 +117,8 @@ arken_HttpClientInstanceMethodPerformDelete( lua_State *L ) {
 static int
 arken_HttpClientInstanceMethodData( lua_State *L ) {
   HttpClient * udata = checkHttpClient( L );
-  const char * data  = udata->data();
-  lua_pushstring(L, data);
+  string data  = udata->data();
+  lua_pushlstring(L, data.data(), data.size());
   return 1;
 }
 
@@ -126,7 +126,7 @@ static int
 arken_HttpClientInstanceMethodMessage( lua_State *L ) {
   HttpClient * udata   = checkHttpClient( L );
   string message = udata->message();
-  lua_pushstring(L, message);
+  lua_pushlstring(L, message.data(), message.size());
   return 1;
 }
 

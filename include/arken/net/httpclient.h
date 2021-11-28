@@ -24,7 +24,6 @@ class HttpClient
   bool         m_failure;
   bool         m_verbose;
   uint32_t     m_status;
-  uint64_t     m_size;
   vector       m_headers;
   string       perform(string method = "");
   static
