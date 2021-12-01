@@ -24,7 +24,7 @@ class HttpClient
   string       m_cert;
   string       m_certKey;
   bool         m_verbose;
-  bool         m_sslVerifyPeer
+  bool         m_sslVerifyPeer;
   long         m_sslVerifyHost;
   long         m_sslVersion;
   long         m_uslSsl;

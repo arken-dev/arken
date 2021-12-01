@@ -143,13 +143,11 @@ string HttpClient::perform(string method)
 
   // https://curl.haxx.se/docs/sslcerts.html
   // Tell libcurl to not verify the peer. With libcurl you disable this with
-  // curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, FALSE);
-  // With the curl command line tool, you disable this with -k/--insecure.
-  // if ( m_sslVerifyPeer ) {
-  //  curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 1L);
-  //} else {
-  curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0);
-  // }
+  if ( m_sslVerifyPeer ) {
+    curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 1L);
+  } else {
+    curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
+  }
 
   for(size_t i=0; i < m_headers.size(); i++) {
     list = curl_slist_append(list, m_headers[i].data());
