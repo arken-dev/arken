@@ -32,6 +32,9 @@ HttpClient::HttpClient(const char * url)
   m_failure = false;
   m_verbose = false;
   m_sslVerifyPeer = false;
+  m_sslVerifyHost = -1;
+  m_sslVersion    = -1;
+  m_useSsl        = -1;
 }
 
 HttpClient::~HttpClient() = default;
@@ -117,13 +120,6 @@ string HttpClient::perform(string method)
   // url
   curl_easy_setopt(curl, CURLOPT_URL, m_url.data());
 
-  // verbose
-  if( m_verbose ) {
-    curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
-  } else {
-    curl_easy_setopt(curl, CURLOPT_VERBOSE, 0L);
-  }
-
   // example.com is redirected, so we tell libcurl to follow redirection
   curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
 
@@ -141,12 +137,34 @@ string HttpClient::perform(string method)
   // some servers don't like requests that are made without a user-agent field, so we provide one
   curl_easy_setopt(curl, CURLOPT_USERAGENT, "libcurl-agent/1.0");
 
+  // verbose
+  if( m_verbose ) {
+    curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
+  } else {
+    curl_easy_setopt(curl, CURLOPT_VERBOSE, 0L);
+  }
+
+  // https://curl.se/libcurl/c/CURLOPT_SSL_VERIFYPEER.html
   // https://curl.haxx.se/docs/sslcerts.html
-  // Tell libcurl to not verify the peer. With libcurl you disable this with
   if ( m_sslVerifyPeer ) {
     curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 1L);
   } else {
     curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
+  }
+
+  // https://curl.se/libcurl/c/CURLOPT_SSL_VERIFYHOST.html
+  if( m_sslVerifyHost > 0 ) {
+    curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, m_sslVerifyHost);
+  }
+
+  // https://curl.se/libcurl/c/CURLOPT_USE_SSL.html
+  if( m_useSsl > 0 ) {
+    curl_easy_setopt(curl, CURLOPT_USE_SSL, m_useSsl);
+  }
+
+  // https://curl.se/libcurl/c/CURLOPT_SSLVERSION.html
+  if( m_sslVersion > 0 ) {
+    curl_easy_setopt(curl, CURLOPT_SSLVERSION, m_sslVersion);
   }
 
   for(size_t i=0; i < m_headers.size(); i++) {
@@ -258,9 +276,9 @@ void HttpClient::setSslVersion(long sslVersion)
   m_sslVersion = sslVersion;
 }
 
-void HttpClient::setUseSsl(long sslVersion)
+void HttpClient::setUseSsl(long useSsl)
 {
-  m_sslVersion = sslVersion;
+  m_useSsl = useSsl;
 }
 
 } // namespace net

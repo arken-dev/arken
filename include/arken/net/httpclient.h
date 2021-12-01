@@ -27,7 +27,7 @@ class HttpClient
   bool         m_sslVerifyPeer;
   long         m_sslVerifyHost;
   long         m_sslVersion;
-  long         m_uslSsl;
+  long         m_useSsl;
   bool         m_failure;
   uint32_t     m_status;
   vector       m_headers;
