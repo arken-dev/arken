@@ -67,6 +67,38 @@ arken_HttpClientInstanceMethodSetVerbose( lua_State *L ) {
 }
 
 static int
+arken_HttpClientInstanceMethodSetSslVerifyPeer( lua_State *L ) {
+  HttpClient *udata  = checkHttpClient( L );
+  bool sslVerifyPeer = lua_toboolean(L, 2);
+  udata->setSslVerifyPeer(sslVerifyPeer);
+  return 0;
+}
+
+static int
+arken_HttpClientInstanceMethodSetSslVerifyHost( lua_State *L ) {
+  HttpClient *udata  = checkHttpClient( L );
+  long sslVerifyHost = (long) luaL_checkint(L, 2);
+  udata->setSslVerifyHost(sslVerifyHost);
+  return 0;
+}
+
+static int
+arken_HttpClientInstanceMethodSetSslVersion( lua_State *L ) {
+  HttpClient *udata  = checkHttpClient( L );
+  long sslVersion = (long) luaL_checkint(L, 2);
+  udata->setSslVersion(sslVersion);
+  return 0;
+}
+
+static int
+arken_HttpClientInstanceMethodSetUseSsl( lua_State *L ) {
+  HttpClient *udata  = checkHttpClient( L );
+  long useSsl = (long) luaL_checkint(L, 2);
+  udata->setUseSsl(useSsl);
+  return 0;
+}
+
+static int
 arken_HttpClientInstanceMethodSetBody( lua_State *L ) {
   size_t len;
   HttpClient * udata = checkHttpClient( L );
@@ -156,6 +188,10 @@ static const
 luaL_reg HttpClientInstanceMethods[] = {
   {"appendHeader",  arken_HttpClientInstanceMethodAppendHeader},
   {"setVerbose",    arken_HttpClientInstanceMethodSetVerbose},
+  {"setSslVerifyPeer", arken_HttpClientInstanceMethodSetSslVerifyPeer},
+  {"setSslVerifyHost", arken_HttpClientInstanceMethodSetSslVerifyHost},
+  {"setSslVersion", arken_HttpClientInstanceMethodSetSslVersion},
+  {"setUseSsl",     arken_HttpClientInstanceMethodSetUseSsl},
   {"setBody",       arken_HttpClientInstanceMethodSetBody},
   {"body",          arken_HttpClientInstanceMethodBody},
   {"performGet",    arken_HttpClientInstanceMethodPerformGet},
