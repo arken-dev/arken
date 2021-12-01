@@ -234,5 +234,35 @@ string HttpClient::perform(string method)
   }
 }
 
+void HttpClient::setCert(string path_cert)
+{
+
+}
+
+void setCertKey(string path_key)
+{
+
+}
+
+void setSslVerifyPeer(bool sslVerifyPeer)
+{
+
+}
+
+void setSslVerifyHost(long sslVerifyHost)
+{
+
+}
+
+void setSslVersion(long sslVersion)
+{
+
+}
+
+void setUseSsl(long version)
+{
+
+}
+
 } // namespace net
 } // namespace arken
