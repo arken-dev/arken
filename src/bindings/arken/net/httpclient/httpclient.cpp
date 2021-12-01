@@ -108,6 +108,24 @@ arken_HttpClientInstanceMethodSetBody( lua_State *L ) {
 }
 
 static int
+arken_HttpClientInstanceMethodSetCert( lua_State *L ) {
+  size_t len;
+  HttpClient * udata = checkHttpClient( L );
+  const char * cert  = luaL_checklstring(L, 2, &len);
+  udata->setCert(string(cert, len));
+  return 0;
+}
+
+static int
+arken_HttpClientInstanceMethodSetCertKey( lua_State *L ) {
+  size_t len;
+  HttpClient * udata = checkHttpClient( L );
+  const char * key = luaL_checklstring(L, 2, &len);
+  udata->setCertKey(string(key, len));
+  return 0;
+}
+
+static int
 arken_HttpClientInstanceMethodBody( lua_State *L ) {
   HttpClient * udata = checkHttpClient( L );
   string body = udata->body();
@@ -193,6 +211,8 @@ luaL_reg HttpClientInstanceMethods[] = {
   {"setSslVersion", arken_HttpClientInstanceMethodSetSslVersion},
   {"setUseSsl",     arken_HttpClientInstanceMethodSetUseSsl},
   {"setBody",       arken_HttpClientInstanceMethodSetBody},
+  {"setCert",       arken_HttpClientInstanceMethodSetCert},
+  {"setCertKey",    arken_HttpClientInstanceMethodSetCertKey},
   {"body",          arken_HttpClientInstanceMethodBody},
   {"performGet",    arken_HttpClientInstanceMethodPerformGet},
   {"performPost",   arken_HttpClientInstanceMethodPerformPost},

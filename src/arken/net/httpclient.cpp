@@ -144,6 +144,16 @@ string HttpClient::perform(string method)
     curl_easy_setopt(curl, CURLOPT_VERBOSE, 0L);
   }
 
+  // https://curl.se/libcurl/c/CURLOPT_SSLCERT.html
+  if( ! m_cert.empty()  ) {
+    curl_easy_setopt(curl, CURLOPT_SSLCERT, m_cert.data());
+  }
+
+  // https://curl.se/libcurl/c/CURLOPT_SSLKEY.html
+  if( ! m_certKey.empty()  ) {
+    curl_easy_setopt(curl, CURLOPT_SSLKEY, m_certKey.data());
+  }
+
   // https://curl.se/libcurl/c/CURLOPT_SSL_VERIFYPEER.html
   // https://curl.haxx.se/docs/sslcerts.html
   if ( m_sslVerifyPeer ) {
@@ -182,7 +192,7 @@ string HttpClient::perform(string method)
   }
 
   // POST PUT
-  if( method.equals("POST") || method.equals("PUT") ) {
+  if( method.equals("POST") || method.equals("PUT") || m_body.size() > 0) {
     //curl_easy_setopt(curl, CURLOPT_POST, 1);
     curl_easy_setopt(curl, CURLOPT_POSTFIELDS, m_body.data());
     curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, m_body.size());
