@@ -21,8 +21,14 @@ class HttpClient
   string       m_body;
   string       m_data;
   string       m_message;
-  bool         m_failure;
+  string       m_cert;
+  string       m_certKey;
   bool         m_verbose;
+  bool         m_sslVerifyPeer
+  long         m_sslVerifyHost;
+  long         m_sslVersion;
+  long         m_uslSsl;
+  bool         m_failure;
   uint32_t     m_status;
   vector       m_headers;
   string       perform(string method = "");
@@ -35,12 +41,12 @@ class HttpClient
   void appendHeader(const char * header);
   void setVerbose(bool verbose);
   void setBody(string body);
-  void setCert(string path_cert);
-  void setCertKey(string path_key);
+  void setCert(string cert);
+  void setCertKey(string certKey);
   void setSslVerifyPeer(bool sslVerifyPeer);
   void setSslVerifyHost(long sslVerifyHost);
   void setSslVersion(long sslVersion);
-  void setUseSsl(long version);
+  void setUseSsl(long useSsl);
   string performGet();
   string performPost();
   string performPut();

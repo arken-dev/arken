@@ -31,6 +31,7 @@ HttpClient::HttpClient(const char * url)
   m_status  = 0;
   m_failure = false;
   m_verbose = false;
+  m_sslVerifyPeer = false;
 }
 
 HttpClient::~HttpClient() = default;
