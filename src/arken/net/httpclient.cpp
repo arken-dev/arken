@@ -233,34 +233,34 @@ string HttpClient::perform(string method)
   }
 }
 
-void HttpClient::setCert(string path_cert)
+void HttpClient::setCert(string cert)
 {
-
+  m_cert = cert;
 }
 
-void setCertKey(string path_key)
+void HttpClient::setCertKey(string certKey)
 {
-
+  m_certKey = certKey;
 }
 
-void setSslVerifyPeer(bool sslVerifyPeer)
+void HttpClient::setSslVerifyPeer(bool sslVerifyPeer)
 {
-
+  m_sslVerifyPeer = sslVerifyPeer;
 }
 
-void setSslVerifyHost(long sslVerifyHost)
+void HttpClient::setSslVerifyHost(long sslVerifyHost)
 {
-
+  m_sslVerifyHost = sslVerifyHost;
 }
 
-void setSslVersion(long sslVersion)
+void HttpClient::setSslVersion(long sslVersion)
 {
-
+  m_sslVersion = sslVersion;
 }
 
-void setUseSsl(long version)
+void HttpClient::setUseSsl(long sslVersion)
 {
-
+  m_sslVersion = sslVersion;
 }
 
 } // namespace net
