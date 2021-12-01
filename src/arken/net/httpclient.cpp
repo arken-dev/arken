@@ -31,6 +31,10 @@ HttpClient::HttpClient(const char * url)
   m_status  = 0;
   m_failure = false;
   m_verbose = false;
+  m_sslVerifyPeer = false;
+  m_sslVerifyHost = -1;
+  m_sslVersion    = -1;
+  m_useSsl        = -1;
 }
 
 HttpClient::~HttpClient() = default;
@@ -116,13 +120,6 @@ string HttpClient::perform(string method)
   // url
   curl_easy_setopt(curl, CURLOPT_URL, m_url.data());
 
-  // verbose
-  if( m_verbose ) {
-    curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
-  } else {
-    curl_easy_setopt(curl, CURLOPT_VERBOSE, 0L);
-  }
-
   // example.com is redirected, so we tell libcurl to follow redirection
   curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
 
@@ -140,11 +137,45 @@ string HttpClient::perform(string method)
   // some servers don't like requests that are made without a user-agent field, so we provide one
   curl_easy_setopt(curl, CURLOPT_USERAGENT, "libcurl-agent/1.0");
 
+  // verbose
+  if( m_verbose ) {
+    curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
+  } else {
+    curl_easy_setopt(curl, CURLOPT_VERBOSE, 0L);
+  }
+
+  // https://curl.se/libcurl/c/CURLOPT_SSLCERT.html
+  if( ! m_cert.empty()  ) {
+    curl_easy_setopt(curl, CURLOPT_SSLCERT, m_cert.data());
+  }
+
+  // https://curl.se/libcurl/c/CURLOPT_SSLKEY.html
+  if( ! m_certKey.empty()  ) {
+    curl_easy_setopt(curl, CURLOPT_SSLKEY, m_certKey.data());
+  }
+
+  // https://curl.se/libcurl/c/CURLOPT_SSL_VERIFYPEER.html
   // https://curl.haxx.se/docs/sslcerts.html
-  // Tell libcurl to not verify the peer. With libcurl you disable this with
-  // curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, FALSE);
-  // With the curl command line tool, you disable this with -k/--insecure.
-  curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0);
+  if ( m_sslVerifyPeer ) {
+    curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 1L);
+  } else {
+    curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
+  }
+
+  // https://curl.se/libcurl/c/CURLOPT_SSL_VERIFYHOST.html
+  if( m_sslVerifyHost > 0 ) {
+    curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, m_sslVerifyHost);
+  }
+
+  // https://curl.se/libcurl/c/CURLOPT_USE_SSL.html
+  if( m_useSsl > 0 ) {
+    curl_easy_setopt(curl, CURLOPT_USE_SSL, m_useSsl);
+  }
+
+  // https://curl.se/libcurl/c/CURLOPT_SSLVERSION.html
+  if( m_sslVersion > 0 ) {
+    curl_easy_setopt(curl, CURLOPT_SSLVERSION, m_sslVersion);
+  }
 
   for(size_t i=0; i < m_headers.size(); i++) {
     list = curl_slist_append(list, m_headers[i].data());
@@ -161,7 +192,7 @@ string HttpClient::perform(string method)
   }
 
   // POST PUT
-  if( method.equals("POST") || method.equals("PUT") ) {
+  if( method.equals("POST") || method.equals("PUT") || m_body.size() > 0) {
     //curl_easy_setopt(curl, CURLOPT_POST, 1);
     curl_easy_setopt(curl, CURLOPT_POSTFIELDS, m_body.data());
     curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, m_body.size());
@@ -228,6 +259,36 @@ string HttpClient::perform(string method)
     m_status = 0;
     return {};
   }
+}
+
+void HttpClient::setCert(string cert)
+{
+  m_cert = cert;
+}
+
+void HttpClient::setCertKey(string certKey)
+{
+  m_certKey = certKey;
+}
+
+void HttpClient::setSslVerifyPeer(bool sslVerifyPeer)
+{
+  m_sslVerifyPeer = sslVerifyPeer;
+}
+
+void HttpClient::setSslVerifyHost(long sslVerifyHost)
+{
+  m_sslVerifyHost = sslVerifyHost;
+}
+
+void HttpClient::setSslVersion(long sslVersion)
+{
+  m_sslVersion = sslVersion;
+}
+
+void HttpClient::setUseSsl(long useSsl)
+{
+  m_useSsl = useSsl;
 }
 
 } // namespace net
