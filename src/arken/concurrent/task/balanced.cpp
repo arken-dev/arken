@@ -20,10 +20,7 @@ balanced::balanced()
   balanced::s_actives++;
 }
 
-balanced::~balanced()
-{
-  balanced::s_actives--;
-}
+balanced::~balanced() = default;
 
 std::queue<balanced::node> & balanced::queue()
 {
@@ -199,6 +196,7 @@ balanced::node balanced::dequeue()
   position()++;
 
   if( name.empty() ) {
+    balanced::s_actives--;
     return {};
   } else {
     balanced::node n = map[name].front();

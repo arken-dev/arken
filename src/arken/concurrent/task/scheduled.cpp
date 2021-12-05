@@ -19,10 +19,7 @@ scheduled::scheduled()
   scheduled::s_actives++;
 }
 
-scheduled::~scheduled()
-{
-  scheduled::s_actives--;
-}
+scheduled::~scheduled() = default;
 
 std::queue<scheduled::node> & scheduled::queue()
 {
@@ -207,6 +204,7 @@ scheduled::node scheduled::dequeue()
   std::unordered_map<string, std::queue<scheduled::node>> &map = scheduled::map();
 
   if( vector.empty() ) {
+    scheduled::s_actives--;
     return {};
   }
 
@@ -241,6 +239,7 @@ scheduled::node scheduled::dequeue()
   }
 
   if( map[name].empty() ) {
+    scheduled::s_actives--;
     return {};
   } else {
     // increase runners
