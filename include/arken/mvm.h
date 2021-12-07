@@ -71,7 +71,37 @@ class mvm {
     uint32_t    version();
   };
 
+  class core
+  {
+    std::vector<std::thread>       m_workers;
+    std::queue<concurrent::Base *> m_queue;
+    std::mutex                     m_mutex;
+    std::condition_variable        m_condition;
+    std::atomic<uint32_t>          m_max;
+    std::atomic<uint32_t>          m_actives;
+    std::map<string, string>       m_running;
+    std::map<string, string>       m_waiting;
+
+    core(uint32_t max);
+    ~core();
+    static core & instance();
+    static void working();
+    public:
+    static void start(concurrent::Base * pointer);
+    static concurrent::Base * get();
+    static std::queue<concurrent::Base *> & queue();
+    static std::mutex               & mutex();
+    static std::vector<std::thread> & workers();
+    static std::condition_variable  & condition();
+    static std::atomic<uint32_t>    & max();
+    static std::atomic<uint32_t>    & actives();
+    static std::map<string, string> & running();
+    static std::map<string, string> & waiting();
+
+  };
+
   class container {
+
     friend class mvm;
 
     private:
@@ -101,15 +131,6 @@ class mvm {
   private:
   static mvm::data * pop();
 
-  static std::vector<std::thread>       * concurrent_workers;
-  static std::queue<concurrent::Base *> * concurrent_queue;
-  static std::mutex                     * concurrent_mutex;
-  static std::condition_variable        * concurrent_condition;
-
-  static std::atomic<uint32_t> concurrent_max;
-  static std::atomic<uint32_t> concurrent_actives;
-
-  static concurrent::Base * get();
 
   mvm() {};
   ~mvm() {};
@@ -135,7 +156,6 @@ class mvm {
   static arken::instance instance(bool create = false);
   static const char * path();
   static void concurrent(concurrent::Base * pointer);
-  static void working();
   static void wait();
   static void env(const char * value);
   static const char * env();
