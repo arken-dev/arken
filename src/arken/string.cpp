@@ -751,7 +751,7 @@ char * string::remove(const char * str, const char * rep, int start)
   }
 
   size_t reslen = str_len - ( rep_len * count );
-  char * res = new char[reslen + 1];
+  auto res = new char[reslen + 1];
   int i = 0;
   int j = 0;
 
