@@ -264,7 +264,7 @@ string Date::asctime()
 
 string Date::strftime(const char * format)
 {
-  char * result = new char[100]();
+  auto result = new char[100]();
   std::strftime(result, 100, format, &m_calendar);
   return string(std::move(result));
 }
@@ -272,7 +272,7 @@ string Date::strftime(const char * format)
 string Date::toString()
 {
   string format("%Y-%m-%d");
-  char * result = new char[100];
+  auto result = new char[100];
   std::strftime(result, 100, format, &m_calendar);
   return string(std::move(result));
 }
