@@ -24,9 +24,9 @@ char * base64::encode(const char *input, int length)
   b64 = BIO_push(b64, buff);
   BIO_write(b64, input, length);
   BIO_flush(b64);
-  BIO_get_mem_ptr(b64, &bptr);
+  BIO_get_mem_ptr(b64, &bptr); //NOLINT(cppcoreguidelines-pro-type-cstyle-cast)
 
-  char *result = (char *)malloc(bptr->length);
+  auto result = new char[bptr->length];
   memcpy(result, bptr->data, bptr->length-1);
   result[bptr->length-1] = 0;
   BIO_free_all(b64);
@@ -43,7 +43,7 @@ char * base64::decode(const char *input, size_t * size)
   buff = BIO_new_mem_buf((void*) input, length);
   buff = BIO_push(b64, buff);
 
-  char *buffer = (char *)malloc(length * sizeof(char));
+  auto buffer = new char[length];
   memset(buffer, 0, length);
   BIO_set_flags(buff, BIO_FLAGS_BASE64_NO_NL);
   BIO_set_close(buff, BIO_CLOSE);
