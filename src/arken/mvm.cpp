@@ -584,16 +584,14 @@ void mvm::core::working()
     concurrent::Base * ptr = get();
 
     ptr->run();
-
-    if( ptr->release() ) {
-      delete ptr;
-    } else {
-      ptr->finished(true);
-    }
+    ptr->finished(true);
 
     std::unique_lock<std::mutex> lck(mutex());
     actives()--;
     running().erase(ptr->uuid());
+    if( ptr->release() ) {
+      delete ptr;
+    }
   } // while
 
 } // mvm::core::working
