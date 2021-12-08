@@ -65,7 +65,7 @@ void Zip::addBuffer(const char * name, const char * buff, size_t size)
   string n(name);
   string b(buff);
 
-  if ((source=zip_source_buffer(m_zip, b.data(), b.size(), 0)) == NULL ||
+  if ((source=zip_source_buffer(m_zip, b.data(), b.size(), 0)) == nullptr ||
     zip_file_add(m_zip, n, source, ZIP_FL_OVERWRITE) < 0) {
     zip_source_free(source);
     printf("error adding file: %s\n", zip_strerror(m_zip));
