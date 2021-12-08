@@ -334,7 +334,7 @@ end
 if os.isfile(arg1) then
   tidy(arg1)
 else
-  local list = os.glob(dir, "cpp$", true)
+  local list = os.find(arg1, "cpp$", true)
   for fileName in list:each() do
     tidy(fileName)
   end
