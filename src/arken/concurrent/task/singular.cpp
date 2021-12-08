@@ -190,7 +190,7 @@ void singular::node::run()
   }
 
   //lua_pushlstring(L,  m_uuid, 37);
-  singular::node **ptr = (singular::node **)lua_newuserdata(L, sizeof(singular::node*));
+  auto ptr = static_cast<singular::node **>(lua_newuserdata(L, sizeof(singular::node*)));
   *ptr = new singular::node(*this);
   luaL_getmetatable(L, "arken.concurrent.task.singular.node.metatable");
   lua_setmetatable(L, -2);

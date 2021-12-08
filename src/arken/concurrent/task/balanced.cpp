@@ -131,7 +131,7 @@ void balanced::node::run()
   }
 
   //lua_pushlstring(L,  m_uuid, 37);
-  balanced::node **ptr = (balanced::node **)lua_newuserdata(L, sizeof(balanced::node*));
+  auto ptr = static_cast<balanced::node **>(lua_newuserdata(L, sizeof(balanced::node*)));
   *ptr = new balanced::node(*this);
   luaL_getmetatable(L, "arken.concurrent.task.balanced.node.metatable");
   lua_setmetatable(L, -2);

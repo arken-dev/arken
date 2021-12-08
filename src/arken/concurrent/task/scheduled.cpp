@@ -139,7 +139,7 @@ void scheduled::node::run()
   }
 
   //lua_pushlstring(L,  m_uuid, 37);
-  scheduled::node **ptr = (scheduled::node **)lua_newuserdata(L, sizeof(scheduled::node*));
+  auto ptr = static_cast<scheduled::node **>(lua_newuserdata(L, sizeof(scheduled::node*)));
   *ptr = new scheduled::node(*this);
   luaL_getmetatable(L, "arken.concurrent.task.scheduled.node.metatable");
   lua_setmetatable(L, -2);
