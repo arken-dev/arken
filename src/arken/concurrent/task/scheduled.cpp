@@ -62,11 +62,6 @@ void scheduled::run()
   }
 }
 
-bool scheduled::release()
-{
-  return true;
-}
-
 scheduled::node scheduled::start(const char * fileName, const char * params, const char * name, bool purge)
 {
   std::unique_lock<std::mutex> lck(scheduled::s_mutex);

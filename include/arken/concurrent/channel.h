@@ -38,11 +38,9 @@ namespace concurrent {
 
     channel * m_client;
 
-    bool m_release;
     bool m_purge;
 
     void run();
-    bool release();
     bool purge();
 
     public:

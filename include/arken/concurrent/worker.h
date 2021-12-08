@@ -27,14 +27,12 @@ namespace concurrent {
     string m_fileName;
 
     bool m_finished;
-    bool m_release;
     bool m_purge;
 
     std::queue<string> m_queue;
     std::mutex m_mutex;
     Shared m_shared;
 
-    bool release();
     bool purge();
     void run();
 
@@ -60,7 +58,6 @@ namespace concurrent {
       uint32_t m_number = 0;
       Shared   m_shared;
 
-      bool release();
       string dequeue();
       node(worker * ptr, string fileName, uint32_t number);
 

@@ -28,13 +28,11 @@ namespace concurrent {
 
     uint32_t m_version;
     bool     m_purge;
-    bool     m_release;
     string   m_fileName;
     string   m_params;
 
     service( const char * fileName, const char * params, bool purge = false);
     ~service();
-    bool release();
     void run();
 
     public:

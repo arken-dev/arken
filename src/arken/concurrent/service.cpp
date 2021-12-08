@@ -21,7 +21,6 @@ service::service( const char * fileName, const char * params, bool purge )
   m_fileName = fileName;
   m_params   = params;
   m_purge    = purge;
-  m_release  = true;
   m_inspect.
     append("arken.concurrent.service: ").
     append(m_fileName).append("#").
@@ -121,11 +120,6 @@ bool service::checkReload()
   }
 
   return result;
-}
-
-bool service::release()
-{
-  return m_release;
 }
 
 void service::wait()

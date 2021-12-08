@@ -35,7 +35,6 @@ namespace concurrent
 
     public:
     virtual void run() = 0;
-    virtual bool release() = 0;
     virtual ~Base();
     bool   finished();
     void   finished(bool flag);

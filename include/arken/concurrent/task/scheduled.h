@@ -31,7 +31,6 @@ namespace task {
 
     public:
     void run();
-    bool release();
     static void wait();
 
     class node {

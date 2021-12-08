@@ -21,16 +21,14 @@ namespace concurrent {
 
     string m_params;
     string m_fileName;
-    bool m_release;
     bool m_purge;
 
     public:
     void run();
-    bool release();
     string uuid();
 
-    task(const char * fileName, const char * params, bool release);
-    static string start(const char * fileName, const char * params, bool release = false);
+    task(const char * fileName, const char * params, bool purge);
+    static string start(const char * fileName, const char * params, bool purge = false);
     static void wait();
     ~task();
 

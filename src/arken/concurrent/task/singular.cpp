@@ -67,11 +67,6 @@ void singular::run()
   }
 }
 
-bool singular::release()
-{
-  return true;
-}
-
 singular::node singular::start(const char * fileName, const char * params, const char * name, bool purge)
 {
   std::unique_lock<std::mutex> lck(singular::s_mutex);

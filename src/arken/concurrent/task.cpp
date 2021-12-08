@@ -20,11 +20,6 @@ void task::wait()
 task::~task()
 { }
 
-bool task::release()
-{
-  return m_release;
-}
-
 void task::run()
 {
   arken::instance i = mvm::instance( m_purge );
@@ -81,7 +76,6 @@ task::task(const char * fileName, const char * params, bool purge)
   m_uuid     = os::uuid();
   m_params   = params;
   m_purge    = purge;
-  m_release  = true;
 
   m_inspect.
     append("arken.concurrent.task: ").

@@ -57,11 +57,6 @@ void balanced::run()
   }
 }
 
-bool balanced::release()
-{
-  return true;
-}
-
 balanced::node balanced::start(const char * fileName, const char * params, const char * name, bool purge)
 {
   std::unique_lock<std::mutex> lck(balanced::s_mutex);

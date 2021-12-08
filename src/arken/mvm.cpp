@@ -581,7 +581,7 @@ void mvm::core::working()
 {
 
   while( true ) {
-    concurrent::Base * ptr = get();
+    std::unique_ptr<concurrent::Base> ptr(get());
 
     ptr->run();
     ptr->finished(true);
@@ -589,9 +589,6 @@ void mvm::core::working()
     std::unique_lock<std::mutex> lck(mutex());
     actives()--;
     running().erase(ptr->uuid());
-    if( ptr->release() ) {
-      delete ptr;
-    }
   } // while
 
 } // mvm::core::working

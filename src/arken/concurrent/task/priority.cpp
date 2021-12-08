@@ -41,11 +41,6 @@ void priority::run()
   }
 }
 
-bool priority::release()
-{
-  return true;
-}
-
 priority::node priority::start(const char * fileName, const char * params, int priority, bool purge)
 {
   std::unique_lock<std::mutex> lck(priority::s_mutex);

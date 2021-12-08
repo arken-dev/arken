@@ -23,11 +23,6 @@ void worker::wait()
 worker::~worker()
 { }
 
-bool worker::release()
-{
-  return m_release;
-}
-
 void worker::run()
 {
   int rv;
@@ -164,7 +159,6 @@ worker::worker(const char * fileName, const char * params, bool purge)
   m_fileName = fileName;
   m_params   = params;
   m_purge    = purge;
-  m_release  = true;
 }
 
 void worker::enqueue(string && value)
@@ -300,11 +294,6 @@ void worker::node::run()
     lua_settop(L, -2);
   }
 
-}
-
-bool worker::node::release()
-{
-  return false;
 }
 
 uint32_t worker::node::number()

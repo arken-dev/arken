@@ -42,11 +42,6 @@ void fifo::run()
   }
 }
 
-bool fifo::release()
-{
-  return true;
-}
-
 fifo::node fifo::start(const char * fileName, const char * params, bool purge)
 {
   std::unique_lock<std::mutex> lck(fifo::s_mutex);

@@ -99,7 +99,6 @@ channel::channel(
   m_read_condition  = read_condition;
   m_write_condition = write_condition;
   m_finished        = false;
-  m_release         = true;
   m_client          = nullptr;
   m_uuid            = uuid;
   m_ref_bool        = ref_bool;
@@ -127,7 +126,6 @@ channel::channel(const char * fileName, const char * params, bool purge)
   m_params   = params;
   m_purge    = purge;
   m_finished = false;
-  m_release  = true;
 
   m_inspect.
     append("arken.concurrent.channel: ").
@@ -149,7 +147,6 @@ channel::channel(const channel &obj) {
   m_read_condition  = obj.m_read_condition;
   m_write_condition = obj.m_write_condition;
   m_finished        = false;
-  m_release         = false;
   m_client          = obj.m_client;
   m_uuid            = obj.m_uuid;
   m_ref_bool        = obj.m_ref_bool;
@@ -172,11 +169,6 @@ channel * channel::start(const char * fileName, const char * params, bool purge)
   mvm::concurrent(c);
 
   return c->client();
-}
-
-bool channel::release()
-{
-  return m_release;
 }
 
 channel::~channel()
