@@ -10,11 +10,10 @@
 static
 std::time_t to_time_t(std::filesystem::file_time_type tp)
 {
-    using namespace std::chrono;
-    auto sctp = time_point_cast<system_clock::duration>
-      (tp - std::filesystem::file_time_type::clock::now()
-          + system_clock::now());
-    return system_clock::to_time_t(sctp);
+  auto sctp = std::chrono::time_point_cast<std::chrono::system_clock::duration>
+    (tp - std::filesystem::file_time_type::clock::now()
+      + std::chrono::system_clock::now());
+  return std::chrono::system_clock::to_time_t(sctp);
 }
 
 namespace arken {
@@ -90,7 +89,7 @@ string os::home()
 
 string os::hostname()
 {
-  char * hostname = new char[HOST_NAME_MAX+1]();
+  auto hostname = new char[HOST_NAME_MAX+1]();
   gethostname(hostname, HOST_NAME_MAX+1);
   return string(std::move(hostname));
 }

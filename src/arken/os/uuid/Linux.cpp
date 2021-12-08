@@ -3,7 +3,7 @@
 
 string os::uuid()
 {
-    char * buffer = new char[37];
+    auto buffer = new char[37];
 
     std::ifstream file;
     file.open("/proc/sys/kernel/random/uuid");

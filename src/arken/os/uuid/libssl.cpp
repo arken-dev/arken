@@ -50,7 +50,7 @@ int uuid_v4_gen(char *buffer)
 
 string os::uuid()
 {
-  char * uuidv4 = new char[37];
+  auto uuidv4 = new char[37];
   uuid_v4_gen(uuidv4);
 
   return string(std::move(uuidv4), 36);
