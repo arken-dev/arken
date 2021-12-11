@@ -8,12 +8,13 @@
 
 #include <lua/lua.hpp>
 #include <arken/string.h>
+#include <arken/os.h>
 #include <thread>
 #include <mutex>
 #include <vector>
 #include <queue>
 #include <string>
-#include <map>
+#include <unordered_map>
 #include <condition_variable>
 #include <cstring>
 #include <iostream>
@@ -30,7 +31,7 @@ namespace concurrent
 
     protected:
     std::atomic<bool> m_finished = ATOMIC_VAR_INIT(false);
-    string m_uuid;
+    string m_uuid = os::uuid();
     string m_inspect;
 
     public:
@@ -72,14 +73,15 @@ class mvm {
 
   class core
   {
+
     std::vector<std::thread>       m_workers;
     std::queue<concurrent::Base *> m_queue;
     std::mutex                     m_mutex;
     std::condition_variable        m_condition;
     std::atomic<uint32_t>          m_max;
     std::atomic<uint32_t>          m_actives;
-    std::map<string, string>       m_running;
-    std::map<string, string>       m_waiting;
+    std::unordered_map<string, string> m_running;
+    std::unordered_map<string, string> m_waiting;
 
     core(uint32_t max);
     ~core();
@@ -94,8 +96,8 @@ class mvm {
     static std::condition_variable  & condition();
     static std::atomic<uint32_t>    & max();
     static std::atomic<uint32_t>    & actives();
-    static std::map<string, string> & running();
-    static std::map<string, string> & waiting();
+    static std::unordered_map<string, string> & running();
+    static std::unordered_map<string, string> & waiting();
 
   };
 

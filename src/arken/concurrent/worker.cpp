@@ -155,10 +155,10 @@ string worker::start(const char * fileName, const char * params, bool purge)
 
 worker::worker(const char * fileName, const char * params, bool purge)
 {
-  m_uuid     = os::uuid();
   m_fileName = fileName;
   m_params   = params;
   m_purge    = purge;
+  m_inspect  = "arken.concurrent.worker";
 }
 
 void worker::enqueue(string && value)
@@ -195,6 +195,8 @@ worker::node::node(worker * ptr, string fileName, uint32_t number)
   m_fileName = fileName;
   m_number   = number;
   m_shared   = m_worker->m_shared;
+  m_inspect  = "arken.concurrent.worker.node#";
+  m_inspect.append(std::to_string(m_number));
 }
 
 void worker::node::run()

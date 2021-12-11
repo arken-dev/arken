@@ -73,7 +73,6 @@ string task::start(const char * fileName, const char * params, bool purge)
 task::task(const char * fileName, const char * params, bool purge)
 {
   m_fileName = fileName;
-  m_uuid     = os::uuid();
   m_params   = params;
   m_purge    = purge;
 

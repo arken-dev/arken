@@ -20,7 +20,6 @@ static std::map<string, string> s_inspect_map;
 
 singular::singular()
 {
-  m_uuid    = os::uuid();
   m_inspect = "arken.concurrent.task.singular";
   singular::s_actives++;
 }

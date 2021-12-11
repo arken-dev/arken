@@ -28,7 +28,7 @@ string mvm::s_cpackagePath = "";
 string mvm::s_env          = "development";
 
 static std::mutex mtx;
-static std::map <std::string, int> s_config;
+static std::unordered_map <std::string, int> s_config;
 
 void mvm::set(std::string key, int value)
 {
@@ -567,12 +567,12 @@ std::atomic<uint32_t>  & mvm::core::max()
   return instance().m_max;
 }
 
-std::map<string, string> & mvm::core::running()
+std::unordered_map<string, string> & mvm::core::running()
 {
   return instance().m_running;
 }
 
-std::map<string, string> & mvm::core::waiting()
+std::unordered_map<string, string> & mvm::core::waiting()
 {
   return instance().m_waiting;
 }
@@ -615,7 +615,7 @@ concurrent::Base * mvm::core::get()
   condition().wait(lck, []{ return ! queue().empty(); });
   pointer = queue().front();
   queue().pop();
-  waiting().erase(pointer->uuid());
+  waiting().erase(os::uuid());
   running()[pointer->uuid()] = pointer->inspect();
 
   return pointer;

@@ -74,7 +74,6 @@ priority::node::node(const char * fileName, const char * params, int priority, b
   m_params    = params;
   m_priority  = priority;
   m_purge     = purge;
-  m_uuid      = os::uuid();
   m_microtime = os::microtime();
   m_ref_bool  = std::shared_ptr<std::atomic<bool>>(new std::atomic<bool>(false));
 }

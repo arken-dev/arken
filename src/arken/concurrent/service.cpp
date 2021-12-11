@@ -17,7 +17,6 @@ std::mutex service::s_mutex;
 service::service( const char * fileName, const char * params, bool purge )
 {
   m_version  = mvm::version();
-  m_uuid     = os::uuid();
   m_fileName = fileName;
   m_params   = params;
   m_purge    = purge;

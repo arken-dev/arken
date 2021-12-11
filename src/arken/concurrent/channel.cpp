@@ -121,7 +121,6 @@ channel::channel(const char * fileName, const char * params, bool purge)
   m_write_condition = std::shared_ptr<std::condition_variable>(new std::condition_variable);
   m_ref_bool        = std::shared_ptr<std::atomic<bool>>(new std::atomic<bool>(false));
 
-  m_uuid     = os::uuid();
   m_fileName = fileName;
   m_params   = params;
   m_purge    = purge;

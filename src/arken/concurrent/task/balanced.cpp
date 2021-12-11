@@ -90,7 +90,6 @@ balanced::node::node(const char * fileName, const char * params, const char * na
   m_params    = params;
   m_name      = name;
   m_purge     = purge;
-  m_uuid      = os::uuid();
   m_microtime = os::microtime();
   m_ref_bool  = std::shared_ptr<std::atomic<bool>>(new std::atomic<bool>(false));
 }
