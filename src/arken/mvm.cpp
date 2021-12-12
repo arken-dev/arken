@@ -615,7 +615,7 @@ concurrent::Base * mvm::core::get()
   condition().wait(lck, []{ return ! queue().empty(); });
   pointer = queue().front();
   queue().pop();
-  waiting().erase(os::uuid());
+  waiting().erase(pointer->uuid());
   running()[pointer->uuid()] = pointer->inspect();
 
   return pointer;
