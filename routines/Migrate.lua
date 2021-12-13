@@ -1,10 +1,15 @@
 require 'arken.ActiveRecord'
 
-local Migrate = Class.new("routines.Migrate")
-
+local Lock     = require("arken.concurrent.Lock")
+local lock     = Lock.new("routines.Migrate#print")
+local Migrate  = Class.new("routines.Migrate")
 Migrate.help   = {}
 Migrate.dir    = nil
-Migrate.output = print
+Migrate.output = function(value)
+  lock:enable()
+  print(value)
+  lock:disable()
+end
 
 -------------------------------------------------------------------------------
 -- DIR
