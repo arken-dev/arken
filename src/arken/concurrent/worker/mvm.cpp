@@ -22,7 +22,7 @@ void worker::perform(unsigned int cores)
       }
     }
     if( flag ) {
-      return;
+      break;
     }
     os::sleep(0.05);
   }
