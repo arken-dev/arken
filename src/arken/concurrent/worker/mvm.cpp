@@ -27,6 +27,10 @@ void worker::perform(unsigned int cores)
     os::sleep(0.05);
   }
 
+  for(worker::node *n : list) {
+    delete n;
+  }
+
 }
 
 } // namespace concurrent

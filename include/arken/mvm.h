@@ -38,6 +38,7 @@ namespace concurrent
     virtual void run() = 0;
     virtual ~Base();
     bool   finished();
+    virtual bool release();
     void   finished(bool flag);
     string inspect();
     string uuid();

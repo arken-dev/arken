@@ -66,6 +66,7 @@ namespace concurrent {
       uint32_t number();
       string uuid();
       Shared shared();
+      bool release() override;
 
     };
 

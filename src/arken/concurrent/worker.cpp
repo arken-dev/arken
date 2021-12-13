@@ -298,6 +298,11 @@ void worker::node::run()
 
 }
 
+bool worker::node::release()
+{
+  return false;
+}
+
 uint32_t worker::node::number()
 {
   return m_number;
@@ -305,7 +310,7 @@ uint32_t worker::node::number()
 
 string worker::node::uuid()
 {
-  return m_worker->m_uuid;
+  return m_uuid;
 }
 
 Shared worker::node::shared()

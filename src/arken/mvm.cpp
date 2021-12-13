@@ -382,6 +382,11 @@ bool concurrent::Base::finished()
   return m_finished;
 }
 
+bool concurrent::Base::release()
+{
+  return true;
+}
+
 string concurrent::Base::uuid()
 {
   return m_uuid;
@@ -581,7 +586,7 @@ void mvm::core::working()
 {
 
   while( true ) {
-    std::unique_ptr<concurrent::Base> ptr(get());
+    concurrent::Base * ptr = get();
 
     ptr->run();
     ptr->finished(true);
@@ -589,6 +594,10 @@ void mvm::core::working()
     std::unique_lock<std::mutex> lck(mutex());
     actives()--;
     running().erase(ptr->uuid());
+
+    if( ptr->release() ) {
+      delete ptr;
+    }
   } // while
 
 } // mvm::core::working
