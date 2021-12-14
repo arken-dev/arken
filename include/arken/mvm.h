@@ -30,7 +30,7 @@ namespace concurrent
   class Base {
 
     protected:
-    std::atomic<bool> m_finished = ATOMIC_VAR_INIT(false);
+    std::shared_ptr<std::atomic<bool>> m_finished{new std::atomic<bool>(false)};
     string m_uuid = os::uuid();
     string m_inspect;
 

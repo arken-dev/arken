@@ -98,7 +98,6 @@ channel::channel(
   m_write_mtx       = write_mtx;
   m_read_condition  = read_condition;
   m_write_condition = write_condition;
-  m_finished        = false;
   m_client          = nullptr;
   m_uuid            = uuid;
   m_ref_bool        = ref_bool;
@@ -124,7 +123,6 @@ channel::channel(const char * fileName, const char * params, bool purge)
   m_fileName = fileName;
   m_params   = params;
   m_purge    = purge;
-  m_finished = false;
 
   m_inspect.
     append("arken.concurrent.channel: ").
@@ -145,7 +143,6 @@ channel::channel(const channel &obj) {
   m_write_mtx       = obj.m_write_mtx;
   m_read_condition  = obj.m_read_condition;
   m_write_condition = obj.m_write_condition;
-  m_finished        = false;
   m_client          = obj.m_client;
   m_uuid            = obj.m_uuid;
   m_ref_bool        = obj.m_ref_bool;
@@ -185,7 +182,7 @@ bool channel::empty()
 
 void channel::write(std::string message)
 {
-  if( m_finished == false ) {
+  if( this->finished() == false ) {
     std::unique_lock<std::mutex> lck(*m_write_mtx);
     m_write->push(message);
     m_write_condition->notify_one();
@@ -196,7 +193,7 @@ std::string channel::read()
 {
   std::unique_lock<std::mutex> lck(*m_read_mtx);
 
-  if( m_finished == true && m_read->empty() ) {
+  if( this->finished() == true && m_read->empty() ) {
     return std::string("channel is finished");
   }
 

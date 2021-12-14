@@ -25,8 +25,9 @@ namespace concurrent {
 
     string m_params;
     string m_fileName;
+    std::shared_ptr<std::atomic<int>> m_progress;
+    std::shared_ptr<std::atomic<int>> m_total;
 
-    bool m_finished;
     bool m_purge;
 
     std::queue<string> m_queue;
@@ -37,17 +38,19 @@ namespace concurrent {
     void run();
 
     public:
-    worker( const char * fileName, const char * params, bool purge );
+    worker(const char * fileName, const char * params, bool purge);
+    worker(const worker &obj);
     ~worker();
 
-    static string start(const char * fileName, const char * params, bool purge = false);
+    static worker start(const char * fileName, const char * params, bool purge = false);
     static void wait();
     void perform(unsigned int cores);
     void enqueue(string && node);
     string uuid();
     Shared shared();
     static std::atomic<uint32_t> s_max;
-
+    void   increment();
+    float  progress();
 
     public:
     class node : public Base {

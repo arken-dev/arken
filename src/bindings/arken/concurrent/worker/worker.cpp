@@ -43,8 +43,13 @@ arken_worker_start(lua_State *L) {
     }
     params = json_lock_encode(L);
   }
-  string uuid = worker::start( fileName, params, release );
-  lua_pushstring(L, uuid);
+
+  worker wrk = worker::start( fileName, params, release );
+  worker **ptr = (worker **)lua_newuserdata(L, sizeof(worker*));
+  *ptr = new worker(wrk);
+
+  luaL_getmetatable(L, "arken.concurrent.worker.metatable");
+  lua_setmetatable(L, -2);
 
   delete params;
 
@@ -72,7 +77,7 @@ static const luaL_reg TaskClassMethods[] = {
 };
 
 void static
-registerChannelClassMethods( lua_State *L ) {
+registerWorkerClassMethods( lua_State *L ) {
   luaL_newmetatable(L, "arken.concurrent.worker");
   luaL_register(L, NULL, TaskClassMethods);
   lua_pushvalue(L, -1);
@@ -94,6 +99,23 @@ arken_concurrent_worker_instance_method_uuid( lua_State *L ) {
 
   return 1;
 }
+
+static int
+arken_concurrent_worker_instance_method_progress( lua_State *L ) {
+  worker * pointer = checkWorker( L );
+  lua_pushnumber(L, pointer->progress());
+
+  return 1;
+}
+
+static int
+arken_concurrent_worker_instance_method_finished( lua_State *L ) {
+  worker * pointer = checkWorker( L );
+  lua_pushboolean(L, pointer->finished());
+
+  return 1;
+}
+
 
 static int
 arken_concurrent_worker_instance_method_shared( lua_State *L ) {
@@ -120,17 +142,19 @@ arken_concurrent_worker_instance_method_shared( lua_State *L ) {
 //-----------------------------------------------------------------------------
 
 static const
-luaL_reg ChannelInstanceMethods[] = {
-  {"enqueue", arken_concurrent_worker_instance_method_enqueue},
-  {"uuid",    arken_concurrent_worker_instance_method_uuid},
-  {"shared",  arken_concurrent_worker_instance_method_shared},
+luaL_reg WorkerInstanceMethods[] = {
+  {"enqueue",  arken_concurrent_worker_instance_method_enqueue},
+  {"uuid",     arken_concurrent_worker_instance_method_uuid},
+  {"shared",   arken_concurrent_worker_instance_method_shared},
+  {"progress", arken_concurrent_worker_instance_method_progress},
+  {"finished", arken_concurrent_worker_instance_method_finished},
   {NULL, NULL}
 };
 
 void static
-registerChannelInstanceMethods( lua_State *L ) {
+registerWorkerInstanceMethods( lua_State *L ) {
   luaL_newmetatable(L, "arken.concurrent.worker.metatable");
-  luaL_register(L, NULL, ChannelInstanceMethods);
+  luaL_register(L, NULL, WorkerInstanceMethods);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -197,8 +221,8 @@ extern "C" {
   int
   luaopen_arken_concurrent_worker( lua_State *L ) {
     registerWorkerNodeInstanceMethods(L);
-    registerChannelInstanceMethods(L);
-    registerChannelClassMethods(L);
+    registerWorkerInstanceMethods(L);
+    registerWorkerClassMethods(L);
     return 1;
   }
 }

@@ -122,6 +122,8 @@ void worker::run()
     cores = m_queue.size();
   }
 
+  (*m_total.get()) = m_queue.size();
+
   this->perform(cores);
 
   //---------------------------------------------------------------------------
@@ -146,11 +148,11 @@ void worker::run()
 
 } // worker::run
 
-string worker::start(const char * fileName, const char * params, bool purge)
+worker worker::start(const char * fileName, const char * params, bool purge)
 {
   auto ptr = new worker(fileName, params, purge);
   mvm::concurrent(ptr);
-  return ptr->m_uuid;
+  return worker(*ptr);
 }
 
 worker::worker(const char * fileName, const char * params, bool purge)
@@ -159,6 +161,19 @@ worker::worker(const char * fileName, const char * params, bool purge)
   m_params   = params;
   m_purge    = purge;
   m_inspect  = "arken.concurrent.worker";
+  m_total    = std::shared_ptr<std::atomic<int>>(new std::atomic<int>(0));
+  m_progress = std::shared_ptr<std::atomic<int>>(new std::atomic<int>(0));
+}
+
+worker::worker(const worker &obj)
+{
+  m_fileName = obj.m_fileName;
+  m_params   = obj.m_params;
+  m_purge    = obj.m_purge;
+  m_inspect  = obj.m_inspect;
+  m_finished = obj.m_finished;
+  m_progress = obj.m_progress;
+  m_total    = obj.m_total;
 }
 
 void worker::enqueue(string && value)
@@ -175,6 +190,20 @@ string worker::uuid()
 Shared worker::shared()
 {
   return m_shared;
+}
+
+void worker::increment()
+{
+  (*m_progress.get())++;
+}
+
+float worker::progress()
+{
+  if( *m_total.get() ) {
+    return (*m_progress.get() * 100.0 ) / *m_total.get();
+  } else {
+    return 0;
+  }
 }
 
 string worker::node::dequeue()
@@ -275,6 +304,7 @@ void worker::node::run()
       fprintf(stderr, "run => %s: %s\n", m_fileName.data(), lua_tostring(L, 2));
     }
 
+    this->m_worker->increment();
   }
 
   //---------------------------------------------------------------------------

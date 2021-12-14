@@ -379,7 +379,7 @@ concurrent::Base::~Base() = default;
 
 bool concurrent::Base::finished()
 {
-  return m_finished;
+  return (*m_finished.get());
 }
 
 bool concurrent::Base::release()
@@ -394,7 +394,7 @@ string concurrent::Base::uuid()
 
 void concurrent::Base::finished(bool flag)
 {
-  m_finished = flag;
+  (*m_finished.get()) = flag;
 }
 
 string concurrent::Base::inspect()
