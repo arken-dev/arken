@@ -279,7 +279,11 @@ function Helper:selectList(field, list, field_value, field_description, value, o
     else
       selected = ''
     end
-    html = html .. string.format(option, row[field_value], selected, row[field_description])
+    local label = row[field_description]
+    if type(label) == 'function' then
+      label = label(row)
+    end
+    html = html .. string.format(option, row[field_value], selected, label)
   end
   html = html .. "</select>"
 
