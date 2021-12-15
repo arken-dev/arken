@@ -174,6 +174,7 @@ worker::worker(const worker &obj)
   m_finished = obj.m_finished;
   m_progress = obj.m_progress;
   m_total    = obj.m_total;
+  m_shared   = obj.m_shared;
 }
 
 void worker::enqueue(string && value)
