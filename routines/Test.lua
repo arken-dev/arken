@@ -1,7 +1,8 @@
-ARKEN_ENV   = os.getenv("ARKEN_ENV") or "test"
+local mvm   = require('arken.mvm')
+local empty = require('arken.empty')
+local test  = require('arken.test')
 
-local empty  = require('arken.empty')
-local test   = require('arken.test')
+mvm.env('test')
 
 local Test = Class.new("routines.Test")
 

@@ -87,8 +87,9 @@ registerWorkerClassMethods( lua_State *L ) {
 static int
 arken_concurrent_worker_instance_method_enqueue( lua_State *L ) {
   worker * pointer = checkWorker( L );
-  const char *str = luaL_checkstring(L, 2);
-  pointer->enqueue(str);
+  char * data = json_lock_encode(L);
+  pointer->enqueue(data);
+  delete[] data;
   return 0;
 }
 

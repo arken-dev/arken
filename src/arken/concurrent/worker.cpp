@@ -287,6 +287,7 @@ void worker::node::run()
   while( true ) {
 
     string value = dequeue();
+
     if( value.empty() ) {
       break;
     }
@@ -298,7 +299,7 @@ void worker::node::run()
     *ptr = this;
     luaL_getmetatable(L, "arken.concurrent.worker.node.metatable");
     lua_setmetatable(L, -2);
-    lua_pushstring(L, value);
+    json_lock_decode(L, value.data());
 
     if( lua_pcall(L, 2, 0, 0) != 0 ) {
       fprintf(stderr, "run => %s: %s\n", m_fileName.data(), lua_tostring(L, 2));
