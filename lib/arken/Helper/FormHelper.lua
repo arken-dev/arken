@@ -526,8 +526,9 @@ function FormHelper:autoList(field, resource)
   local label = "<a href='#' onclick='AutoList.input(%q, %q)' title='clique aqui para trocar'>%s</a><input type='hidden' name='form[%s_id]' id='form_%s_id' value='%s' />"
   label = string.format(label, field, self:buildName(field .. "_id"), text, field, field, self.data[field .. "_id"] or "")
 
-  local func  = string.format([[AutoList.select(%q, %q, %q, ui);]],
-    field, self:buildName(field .. "_id"), self:buildId(field .. "_id")
+  local next_element = resource.next_element or ""
+  local func  = string.format([[AutoList.select(%q, %q, %q, ui, %q);]],
+    field, self:buildName(field .. "_id"), self:buildId(field .. "_id"), next_element
   )
   local input = self:autoComplete( 'autolist[' .. field .. ']',
     { controller = controller, action = action },
