@@ -86,7 +86,7 @@ scheduled::node::node(const node &obj)
   m_name      = obj.m_name;
   m_microtime = obj.m_microtime;
   m_shared    = obj.m_shared;
-  m_ref_bool  = obj.m_ref_bool;
+  m_finished  = obj.m_finished;
 }
 
 scheduled::node::node(const char * fileName, const char * params, const char * name, bool purge)
@@ -96,7 +96,7 @@ scheduled::node::node(const char * fileName, const char * params, const char * n
   m_name      = name;
   m_purge     = purge;
   m_microtime = os::microtime();
-  m_ref_bool  = std::shared_ptr<std::atomic<bool>>(new std::atomic<bool>(false));
+  m_finished  = std::shared_ptr<std::atomic<bool>>(new std::atomic<bool>(false));
 }
 
 scheduled::node::~node()
@@ -154,7 +154,7 @@ void scheduled::node::run()
     lua_gc(L, LUA_GCCOLLECT, 0);
   }
 
-  (*m_ref_bool.get()) = true;
+  (*m_finished.get()) = true;
   runners()[m_name]--;
 
   std::unique_lock<std::mutex> lck(scheduled::s_mutex);
@@ -278,12 +278,12 @@ Shared scheduled::node::shared()
 
 bool scheduled::node::finished()
 {
-  return (*m_ref_bool.get()) == true;
+  return (*m_finished.get()) == true;
 }
 
 void scheduled::node::wait()
 {
-  while ((*m_ref_bool.get()) == false) {
+  while ((*m_finished.get()) == false) {
     os::sleep(0.05);
   }
 }

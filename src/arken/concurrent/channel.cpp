@@ -68,7 +68,7 @@ void channel::run()
   //m_write->push("channel is finished");
   //m_write_condition->notify_one();
   //m_client->m_finished = true;
-  (*m_ref_bool.get()) = true;
+  (*m_finished.get()) = true;
 
   // GC
   if( m_purge ) {
@@ -88,7 +88,7 @@ channel::channel(
   std::shared_ptr<std::condition_variable> read_condition,
   std::shared_ptr<std::condition_variable> write_condition,
   string uuid,
-  std::shared_ptr<std::atomic<bool>> ref_bool,
+  std::shared_ptr<std::atomic<bool>> finished,
   Shared shared
 )
 {
@@ -100,7 +100,7 @@ channel::channel(
   m_write_condition = write_condition;
   m_client          = nullptr;
   m_uuid            = uuid;
-  m_ref_bool        = ref_bool;
+  m_finished        = finished;
   m_shared          = shared;
 
   m_inspect.
@@ -118,7 +118,6 @@ channel::channel(const char * fileName, const char * params, bool purge)
   m_write_mtx       = std::shared_ptr<std::mutex>(new std::mutex);
   m_read_condition  = std::shared_ptr<std::condition_variable>(new std::condition_variable);
   m_write_condition = std::shared_ptr<std::condition_variable>(new std::condition_variable);
-  m_ref_bool        = std::shared_ptr<std::atomic<bool>>(new std::atomic<bool>(false));
 
   m_fileName = fileName;
   m_params   = params;
@@ -131,7 +130,7 @@ channel::channel(const char * fileName, const char * params, bool purge)
 
   m_client = new channel(
     m_write, m_read, m_write_mtx, m_read_mtx, m_write_condition,
-    m_read_condition, m_uuid, m_ref_bool, m_shared
+    m_read_condition, m_uuid, m_finished, m_shared
   );
 
 }
@@ -145,7 +144,7 @@ channel::channel(const channel &obj) {
   m_write_condition = obj.m_write_condition;
   m_client          = obj.m_client;
   m_uuid            = obj.m_uuid;
-  m_ref_bool        = obj.m_ref_bool;
+  m_finished        = obj.m_finished;
   m_shared          = obj.m_shared;
 
   m_inspect.
@@ -213,11 +212,6 @@ string channel::uuid()
 Shared channel::shared()
 {
   return m_shared;
-}
-
-bool channel::finished()
-{
-  return (*m_ref_bool.get()) == true;
 }
 
 } // namespace concurrent

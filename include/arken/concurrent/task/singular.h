@@ -44,7 +44,7 @@ namespace task {
       double m_microtime{0};
       bool   m_purge{false};
       Shared m_shared;
-      std::shared_ptr<std::atomic<bool>>  m_ref_bool;
+      std::shared_ptr<std::atomic<bool>>  m_finished;
 
       node(const char * fileName, const char * params, const char * name, bool purge = false);
 

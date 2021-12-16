@@ -128,7 +128,7 @@ singular::node::node(const node &obj)
   m_name      = obj.m_name;
   m_microtime = obj.m_microtime;
   m_shared    = obj.m_shared;
-  m_ref_bool  = obj.m_ref_bool;
+  m_finished  = obj.m_finished;
 
   m_inspect.
     append(m_fileName).append("#").
@@ -145,7 +145,7 @@ singular::node::node(const char * fileName, const char * params, const char * na
   m_purge     = purge;
   m_uuid      = os::uuid();
   m_microtime = os::microtime();
-  m_ref_bool  = std::shared_ptr<std::atomic<bool>>(new std::atomic<bool>(false));
+  m_finished  = std::shared_ptr<std::atomic<bool>>(new std::atomic<bool>(false));
   m_inspect.
     append(m_fileName).append("#").
     append(m_params.escape()).append("#").
@@ -208,7 +208,7 @@ void singular::node::run()
 
   std::unique_lock<std::mutex> lck(singular::s_mutex);
 
-  (*m_ref_bool.get()) = true;
+  (*m_finished.get()) = true;
 
   if( map()[m_name].empty() ) {
     map().erase(m_name);
@@ -340,12 +340,12 @@ Shared singular::node::shared()
 
 bool singular::node::finished()
 {
-  return (*m_ref_bool.get()) == true;
+  return (*m_finished.get()) == true;
 }
 
 void singular::node::wait()
 {
-  while ((*m_ref_bool.get()) == false) {
+  while ((*m_finished.get()) == false) {
     os::sleep(0.05);
   }
 }

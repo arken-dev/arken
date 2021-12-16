@@ -65,7 +65,7 @@ priority::node::node(const node &obj)
   m_priority  = obj.m_priority;
   m_microtime = obj.m_microtime;
   m_shared    = obj.m_shared;
-  m_ref_bool  = obj.m_ref_bool;
+  m_finished  = obj.m_finished;
 }
 
 priority::node::node(const char * fileName, const char * params, int priority, bool purge)
@@ -75,7 +75,7 @@ priority::node::node(const char * fileName, const char * params, int priority, b
   m_priority  = priority;
   m_purge     = purge;
   m_microtime = os::microtime();
-  m_ref_bool  = std::shared_ptr<std::atomic<bool>>(new std::atomic<bool>(false));
+  m_finished  = std::shared_ptr<std::atomic<bool>>(new std::atomic<bool>(false));
 }
 
 bool priority::node::operator()(const priority::node &n1, const priority::node &n2)
@@ -138,7 +138,7 @@ void priority::node::run()
     lua_gc(L, LUA_GCCOLLECT, 0);
   }
 
-  (*m_ref_bool.get()) = true;
+  (*m_finished.get()) = true;
 }
 
 void priority::push(const priority::node & node)
@@ -189,12 +189,12 @@ Shared priority::node::shared()
 
 bool priority::node::finished()
 {
-  return (*m_ref_bool.get()) == true;
+  return (*m_finished.get()) == true;
 }
 
 void priority::node::wait()
 {
-  while ((*m_ref_bool.get()) == false) {
+  while ((*m_finished.get()) == false) {
     os::sleep(0.05);
   }
 }

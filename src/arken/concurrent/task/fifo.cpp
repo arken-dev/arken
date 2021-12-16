@@ -65,7 +65,7 @@ fifo::node::node(const node &obj)
   m_params    = obj.m_params;
   m_microtime = obj.m_microtime;
   m_shared    = obj.m_shared;
-  m_ref_bool  = obj.m_ref_bool;
+  m_finished  = obj.m_finished;
 }
 
 fifo::node::node(const char * fileName, const char * params, bool purge)
@@ -74,7 +74,7 @@ fifo::node::node(const char * fileName, const char * params, bool purge)
   m_params    = params;
   m_purge     = purge;
   m_microtime = os::microtime();
-  m_ref_bool  = std::shared_ptr<std::atomic<bool>>(new std::atomic<bool>(false));
+  m_finished  = std::shared_ptr<std::atomic<bool>>(new std::atomic<bool>(false));
 }
 
 void fifo::node::run()
@@ -128,7 +128,7 @@ void fifo::node::run()
     lua_gc(L, LUA_GCCOLLECT, 0);
   }
 
-  (*m_ref_bool.get()) = true;
+  (*m_finished.get()) = true;
 }
 
 void fifo::push(const fifo::node & node)
@@ -174,12 +174,12 @@ Shared fifo::node::shared()
 
 bool fifo::node::finished()
 {
-  return (*m_ref_bool.get()) == true;
+  return (*m_finished.get()) == true;
 }
 
 void fifo::node::wait()
 {
-  while ((*m_ref_bool.get()) == false) {
+  while ((*m_finished.get()) == false) {
     os::sleep(0.05);
   }
 }

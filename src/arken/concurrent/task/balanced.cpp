@@ -81,7 +81,7 @@ balanced::node::node(const node &obj)
   m_name      = obj.m_name;
   m_microtime = obj.m_microtime;
   m_shared    = obj.m_shared;
-  m_ref_bool  = obj.m_ref_bool;
+  m_finished  = obj.m_finished;
 }
 
 balanced::node::node(const char * fileName, const char * params, const char * name, bool purge)
@@ -91,7 +91,7 @@ balanced::node::node(const char * fileName, const char * params, const char * na
   m_name      = name;
   m_purge     = purge;
   m_microtime = os::microtime();
-  m_ref_bool  = std::shared_ptr<std::atomic<bool>>(new std::atomic<bool>(false));
+  m_finished  = std::shared_ptr<std::atomic<bool>>(new std::atomic<bool>(false));
 }
 
 void balanced::node::run()
@@ -145,7 +145,7 @@ void balanced::node::run()
     lua_gc(L, LUA_GCCOLLECT, 0);
   }
 
-  (*m_ref_bool.get()) = true;
+  (*m_finished.get()) = true;
 }
 
 void balanced::push(const balanced::node & node)
@@ -230,12 +230,12 @@ Shared balanced::node::shared()
 
 bool balanced::node::finished()
 {
-  return (*m_ref_bool.get()) == true;
+  return (*m_finished.get()) == true;
 }
 
 void balanced::node::wait()
 {
-  while ((*m_ref_bool.get()) == false) {
+  while ((*m_finished.get()) == false) {
     os::sleep(0.05);
   }
 }

@@ -30,8 +30,6 @@ namespace concurrent {
     std::shared_ptr<std::condition_variable> m_read_condition;
     std::shared_ptr<std::condition_variable> m_write_condition;
 
-    std::shared_ptr<std::atomic<bool>>  m_ref_bool;
-
     string m_params;
     string m_fileName;
     Shared m_shared;
@@ -53,7 +51,7 @@ namespace concurrent {
       std::shared_ptr<std::condition_variable> read_condition,
       std::shared_ptr<std::condition_variable> write_condition,
       string uuid,
-      std::shared_ptr<std::atomic<bool>> ref_bool,
+      std::shared_ptr<std::atomic<bool>> finished,
       Shared shared
     );
 
@@ -62,7 +60,6 @@ namespace concurrent {
     ~channel();
 
     bool empty();
-    bool finished();
     void write(std::string message);
     string uuid();
     Shared shared();
