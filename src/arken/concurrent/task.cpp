@@ -29,6 +29,14 @@ void task::run()
   int rv;
 
   lua_settop(L, 0);
+
+  lua_getglobal(L, "require");
+  lua_pushstring(L, "arken.concurrent.task");
+  rv = lua_pcall(L, 1, 0, 0);
+  if (rv) {
+    fprintf(stderr, "%s\n", lua_tostring(L, -1));
+  }
+
   if( m_fileName.endsWith(".lua") ) {
     lua_getglobal(L, "dofile");
     lua_pushstring(L, m_fileName);
@@ -45,7 +53,12 @@ void task::run()
     }
   }
 
-  lua_pushlstring(L,  m_uuid, 37);
+  //lua_pushlstring(L,  m_uuid, 37);
+  auto ptr = static_cast<task **>(lua_newuserdata(L, sizeof(task *)));
+  *ptr = new task(*this);
+  luaL_getmetatable(L, "arken.concurrent.task.metatable");
+  lua_setmetatable(L, -2);
+
   json_lock_decode(L, m_params);
 
   rv = lua_pcall(L, 2, 0, 0); // alterar para envio de 1
@@ -63,11 +76,11 @@ void task::run()
 
 } // task::run
 
-string task::start(const char * fileName, const char * params, bool purge)
+task task::start(const char * fileName, const char * params, bool purge)
 {
   auto ptr = new task(fileName, params, purge);
   mvm::concurrent(ptr);
-  return ptr->m_uuid;
+  return task(*ptr);
 }
 
 task::task(const char * fileName, const char * params, bool purge)
@@ -81,6 +94,21 @@ task::task(const char * fileName, const char * params, bool purge)
     append(m_fileName).append("#").
     append(m_params.escape());
 
+}
+
+task::task(const task &obj)
+{
+  m_fileName = obj.m_fileName;
+  m_params   = obj.m_params;
+  m_purge    = obj.m_purge;
+  m_inspect  = obj.m_inspect;
+  m_finished = obj.m_finished;
+  m_shared   = obj.m_shared;
+}
+
+Shared task::shared()
+{
+  return m_shared;
 }
 
 } // namespace concurrent

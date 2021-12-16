@@ -11,6 +11,7 @@
 #include <iostream>
 #include <arken/base>
 #include <arken/mvm>
+#include <arken/concurrent/shared.h>
 
 namespace arken {
 namespace concurrent {
@@ -21,14 +22,16 @@ namespace concurrent {
 
     string m_params;
     string m_fileName;
+    Shared m_shared;
     bool m_purge;
 
     public:
     void run();
-    string uuid();
+    Shared shared();
 
     task(const char * fileName, const char * params, bool purge);
-    static string start(const char * fileName, const char * params, bool purge = false);
+    task(const task &obj);
+    static task start(const char * fileName, const char * params, bool purge = false);
     static void wait();
     ~task();
 
