@@ -431,9 +431,9 @@ const char * mvm::cext()
 }
 
 
-void mvm::concurrent(concurrent::Base * pointer)
+void mvm::concurrent(concurrent::Base * ptr)
 {
-  mvm::core::start(pointer);
+  mvm::core::start(ptr);
 }
 
 uint32_t mvm::actives()
@@ -603,7 +603,7 @@ void mvm::core::working()
 } // mvm::core::working
 
 
-void mvm::core::start(concurrent::Base * pointer)
+void mvm::core::start(concurrent::Base * ptr)
 {
   std::unique_lock<std::mutex> lck(mutex());
 
@@ -611,23 +611,22 @@ void mvm::core::start(concurrent::Base * pointer)
     workers().push_back(std::thread(working));
   }
 
-  queue().push(pointer);
+  queue().push(ptr);
   condition().notify_one();
   actives()++;
-  waiting()[pointer->uuid()] = pointer->inspect();
+  waiting()[ptr->uuid()] = ptr->inspect();
 }
 
 concurrent::Base * mvm::core::get()
 {
-  concurrent::Base * pointer = nullptr;
   std::unique_lock<std::mutex> lck(mutex());
   condition().wait(lck, []{ return ! queue().empty(); });
-  pointer = queue().front();
+  concurrent::Base * ptr = queue().front();
   queue().pop();
-  waiting().erase(pointer->uuid());
-  running()[pointer->uuid()] = pointer->inspect();
+  waiting().erase(ptr->uuid());
+  running()[ptr->uuid()] = ptr->inspect();
 
-  return pointer;
+  return ptr;
 }
 
 } // namespace arken
