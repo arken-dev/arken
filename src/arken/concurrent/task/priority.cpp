@@ -70,6 +70,7 @@ priority::node::node(const node &obj)
 
 priority::node::node(const char * fileName, const char * params, int priority, bool purge)
 {
+  m_uuid      = os::uuid();
   m_fileName  = fileName;
   m_params    = params;
   m_priority  = priority;
