@@ -167,6 +167,7 @@ worker::worker(const char * fileName, const char * params, bool purge)
 
 worker::worker(const worker &obj)
 {
+  m_uuid     = obj.m_uuid;
   m_fileName = obj.m_fileName;
   m_params   = obj.m_params;
   m_purge    = obj.m_purge;
@@ -348,6 +349,11 @@ string worker::node::uuid()
 Shared worker::node::shared()
 {
   return m_shared;
+}
+
+worker worker::node::master()
+{
+  return worker(*m_worker);
 }
 
 } // namespace concurrent

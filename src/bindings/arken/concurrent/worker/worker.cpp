@@ -199,6 +199,18 @@ arken_concurrent_worker_node_instance_method_shared( lua_State *L ) {
   return 1;
 }
 
+static int
+arken_concurrent_worker_node_instance_method_master( lua_State *L ) {
+  worker::node * node = checkWorkerNode( L );
+
+  worker **ptr = (worker **)lua_newuserdata(L, sizeof(worker*));
+  *ptr = new worker(node->master());
+
+  luaL_getmetatable(L, "arken.concurrent.worker.metatable");
+  lua_setmetatable(L, -2);
+
+  return 1;
+}
 
 
 static const
@@ -206,6 +218,7 @@ luaL_reg WorkerNodeInstanceMethods[] = {
   {"number",  arken_concurrent_worker_node_instance_method_number},
   {"uuid",    arken_concurrent_worker_node_instance_method_uuid},
   {"shared",  arken_concurrent_worker_node_instance_method_shared},
+  {"master",  arken_concurrent_worker_node_instance_method_master},
   {NULL, NULL}
 };
 

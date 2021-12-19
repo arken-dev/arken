@@ -70,6 +70,7 @@ namespace concurrent {
       string uuid();
       Shared shared();
       bool release() override;
+      worker master();
 
     };
 
