@@ -36,6 +36,7 @@ class os {
   static bool     isfile(const char * path);
   static bool     islink(const char * path);
   static bool     link(const char * source, const char * destination, bool force);
+  static size_t   mem();
   static double   microtime();
   static bool     mkdir(const char * dirname);
   static bool     mkpath(const char * dirpath);

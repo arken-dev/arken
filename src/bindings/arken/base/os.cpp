@@ -46,6 +46,11 @@ static int arken_os_copy( lua_State *L ) {
   return 1;
 }
 
+static int arken_os_mem( lua_State *L ) {
+  lua_pushnumber( L, os::mem() );
+  return 1;
+}
+
 static int arken_os_cores( lua_State *L ) {
   lua_pushnumber( L, os::cores() );
   return 1;
@@ -273,6 +278,7 @@ int luaopen_arken_os( lua_State *L ) {
     {"isdir",      arken_os_isdir},
     {"islink",     arken_os_islink},
     {"link",       arken_os_link},
+    {"mem",        arken_os_mem},
     {"microtime",  arken_os_microtime},
     {"mkdir",      arken_os_mkdir},
     {"mkpath",     arken_os_mkpath},

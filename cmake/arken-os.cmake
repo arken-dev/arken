@@ -69,3 +69,9 @@ message("ARKEN OS UUID...........: ${ARKEN_OS_UUID}")
 if(ARKEN_OS_UUID STREQUAL "libuuid")
   message("ARKEN OS UUID not contain embedded source require install uuid-dev")
 endif()
+
+# -----------------------------------------------------------------------------
+# MEM
+# -----------------------------------------------------------------------------
+
+set(os-mem ${PROJECT_SOURCE_DIR}/src/arken/os/mem/${CMAKE_SYSTEM_NAME}.cpp)

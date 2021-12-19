@@ -76,7 +76,7 @@ add_library(
   ${net}
   ${httpserver}
   ${arken-notify}
-  ${os} ${os-executablePath} ${os-filesystem} ${os-name} ${os-pid} ${os-uuid} ${os-glob}
+  ${os} ${os-executablePath} ${os-filesystem} ${os-mem} ${os-name} ${os-pid} ${os-uuid} ${os-glob}
   ${concurrent} ${concurrent-task} ${arken-concurrent-worker}
   ${regex}
   ${time}
