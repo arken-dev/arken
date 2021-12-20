@@ -375,11 +375,40 @@ lua_State * instance::release()
   return m_data->release();
 }
 
+concurrent::Base::Base() : m_uuid{""}, m_microtime{0} {}
+
 concurrent::Base::~Base() = default;
 
 bool concurrent::Base::finished()
 {
   return (*m_finished.get());
+}
+
+bool concurrent::Base::purge()
+{
+  return m_purge;
+}
+
+concurrent::Base::operator bool() const {
+  return m_microtime > 0;
+}
+
+void concurrent::Base::wait()
+{
+  while ((*m_finished.get()) == false) {
+    os::sleep(0.05);
+  }
+}
+
+double concurrent::Base::microtime()
+{
+  return m_microtime;
+}
+
+
+arken::concurrent::Shared concurrent::Base::shared()
+{
+  return m_shared;
 }
 
 bool concurrent::Base::release()

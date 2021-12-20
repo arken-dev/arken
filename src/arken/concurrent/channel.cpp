@@ -11,11 +11,6 @@
 namespace arken {
 namespace concurrent {
 
-void channel::wait()
-{
-  mvm::wait();
-}
-
 void channel::run()
 {
   // if m_purge is true, create a new arken::instance
@@ -202,16 +197,6 @@ std::string channel::read()
   m_read->pop();
 
   return message;
-}
-
-string channel::uuid()
-{
-  return m_uuid;
-}
-
-Shared channel::shared()
-{
-  return m_shared;
 }
 
 } // namespace concurrent

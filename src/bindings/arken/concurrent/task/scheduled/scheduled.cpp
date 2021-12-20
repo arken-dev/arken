@@ -61,12 +61,6 @@ arken_scheduled_start(lua_State *L) {
 }
 
 static int
-arken_scheduled_wait(lua_State *L) {
-  scheduled::wait();
-  return 0;
-}
-
-static int
 arken_scheduled_max(lua_State *L) {
   int max = luaL_checkinteger(L, 1);
   scheduled::s_max = max;
@@ -81,7 +75,6 @@ arken_scheduled_actives(lua_State *L) {
 
 static const luaL_reg NaiadClassMethods[] = {
   {"start",   arken_scheduled_start},
-  {"wait",    arken_scheduled_wait},
   {"max",     arken_scheduled_max},
   {"actives", arken_scheduled_actives},
   {NULL, NULL}

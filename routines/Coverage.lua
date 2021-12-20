@@ -1,5 +1,6 @@
 local worker = require('arken.concurrent.worker')
 local mvm    = require('arken.mvm')
+mvm.env('test')
 
 local Coverage = Class.new("routines.Coverage")
 
@@ -15,7 +16,7 @@ Coverage.help.models = [[
 
 function Coverage:models()
   worker.start('workers.coverage.models');
-  worker.wait();
+  mvm.wait();
 end
 
 -------------------------------------------------------------------------------

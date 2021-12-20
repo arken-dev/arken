@@ -8,6 +8,7 @@
 
 #include <lua/lua.hpp>
 #include <arken/string.h>
+#include <arken/concurrent/shared.h>
 #include <arken/os.h>
 #include <thread>
 #include <mutex>
@@ -29,19 +30,32 @@ namespace concurrent
 {
   class Base {
 
+    using Shared = arken::concurrent::Shared;
+
     protected:
-    std::shared_ptr<std::atomic<bool>> m_finished{new std::atomic<bool>(false)};
-    string m_uuid = os::uuid();
+    string m_uuid{os::uuid()};
+    string m_params;
+    string m_fileName;
     string m_inspect;
+    double m_microtime{os::microtime()};
+    bool m_purge{false};
+    std::shared_ptr<std::atomic<bool>> m_finished{new std::atomic<bool>(false)};
+    Shared m_shared;
 
     public:
     virtual void run() = 0;
+    Base();
     virtual ~Base();
     bool   finished();
     virtual bool release();
     void   finished(bool flag);
     string inspect();
     string uuid();
+    bool purge();
+    Shared shared();
+    double microtime();
+    void wait();
+    operator bool() const;
   };
 
 } // namespace concurrent

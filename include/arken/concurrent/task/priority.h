@@ -21,10 +21,6 @@ namespace task {
 
   class priority : public Base {
 
-    using mvm    = arken::mvm;
-    using string = arken::string;
-    using Shared = arken::concurrent::Shared;
-
     priority();
     ~priority();
 
@@ -32,18 +28,10 @@ namespace task {
     void run();
     static void wait();
 
-    class node {
+    class node : public Base {
 
       friend class priority;
-
-      string m_uuid;
-      string m_fileName;
-      string m_params;
-      int    m_priority{0};
-      double m_microtime{0};
-      bool   m_purge{false};
-      Shared m_shared;
-      std::shared_ptr<std::atomic<bool>>  m_finished;
+      int m_priority{0};
 
       node(const char * fileName, const char * params, int priority = 0, bool purge = false);
 
@@ -51,14 +39,8 @@ namespace task {
       node();
       node(const node &obj);
       bool operator()(const priority::node &n1, const priority::node &n2);
-      operator bool() const;
+      int  priority();
       void run();
-      string uuid();
-      int    priority();
-      double microtime();
-      Shared shared();
-      bool   finished();
-      void   wait();
     };
 
     static priority::node start(const char * fileName, const char * params, int priority = 0, bool purge = false);

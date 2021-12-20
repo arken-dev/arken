@@ -61,12 +61,6 @@ arken_priority_start(lua_State *L) {
 }
 
 static int
-arken_priority_wait(lua_State *L) {
-  priority::wait();
-  return 0;
-}
-
-static int
 arken_priority_max(lua_State *L) {
   int max = luaL_checkinteger(L, 1);
   priority::s_max = max;
@@ -81,7 +75,6 @@ arken_priority_actives(lua_State *L) {
 
 static const luaL_reg NaiadClassMethods[] = {
   {"start",   arken_priority_start},
-  {"wait",    arken_priority_wait},
   {"max",     arken_priority_max},
   {"actives", arken_priority_actives},
   {NULL, NULL}

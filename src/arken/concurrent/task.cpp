@@ -12,11 +12,6 @@
 namespace arken {
 namespace concurrent {
 
-void task::wait()
-{
-  mvm::wait();
-}
-
 task::~task()
 { }
 
@@ -104,11 +99,6 @@ task::task(const task &obj)
   m_inspect  = obj.m_inspect;
   m_finished = obj.m_finished;
   m_shared   = obj.m_shared;
-}
-
-Shared task::shared()
-{
-  return m_shared;
 }
 
 } // namespace concurrent

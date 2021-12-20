@@ -148,42 +148,6 @@ fifo::node fifo::dequeue()
   return n;
 }
 
-void fifo::wait()
-{
-  mvm::wait();
-}
-
-string fifo::node::uuid()
-{
-  return m_uuid;
-}
-
-double fifo::node::microtime()
-{
-  return m_microtime;
-}
-
-fifo::node::operator bool() const {
-  return m_microtime > 0;
-}
-
-Shared fifo::node::shared()
-{
-  return m_shared;
-}
-
-bool fifo::node::finished()
-{
-  return (*m_finished.get()) == true;
-}
-
-void fifo::node::wait()
-{
-  while ((*m_finished.get()) == false) {
-    os::sleep(0.05);
-  }
-}
-
 }  // namespace task
 }  // namespace concurrent
 }  // namespace arken

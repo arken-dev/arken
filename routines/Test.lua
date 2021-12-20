@@ -158,7 +158,7 @@ function Test:all()
     error(string.format('%s not exists', path))
   end
   worker.start('workers.tests', { path = path });
-  worker.wait();
+  mvm.wait();
 end
 
 return Test

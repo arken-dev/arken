@@ -30,16 +30,11 @@ namespace concurrent {
     std::shared_ptr<std::condition_variable> m_read_condition;
     std::shared_ptr<std::condition_variable> m_write_condition;
 
-    string m_params;
-    string m_fileName;
-    Shared m_shared;
 
     channel * m_client;
 
-    bool m_purge;
 
     void run();
-    bool purge();
 
     public:
 
@@ -61,13 +56,10 @@ namespace concurrent {
 
     bool empty();
     void write(std::string message);
-    string uuid();
-    Shared shared();
     std::string read();
     channel * client();
 
     static channel * start(const char * fileName, const char * params, bool purge = false);
-    static void wait();
 
   };
 

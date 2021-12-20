@@ -22,42 +22,23 @@ namespace task {
 
   class balanced : public Base {
 
-    using mvm    = arken::mvm;
-    using string = arken::string;
-    using Shared = arken::concurrent::Shared;
-
     balanced();
     ~balanced();
 
     public:
     void run();
-    static void wait();
 
-    class node {
+    class node : public Base {
+
       friend class balanced;
-
-      string m_uuid;
-      string m_fileName;
-      string m_params;
       string m_name;
-      double m_microtime{0};
-      bool   m_purge{false};
-      Shared m_shared;
-      std::shared_ptr<std::atomic<bool>>  m_finished;
-
       node(const char * fileName, const char * params, const char * name, bool purge = false);
 
       public:
       node();
       node(const node &obj);
-      operator bool() const;
       void run();
-      string uuid();
       string name();
-      double microtime();
-      Shared shared();
-      bool finished();
-      void wait();
     };
 
     static balanced::node start(const char * fileName, const char * params,

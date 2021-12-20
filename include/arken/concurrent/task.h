@@ -18,21 +18,12 @@ namespace concurrent {
 
   class task: public Base {
 
-    private:
-
-    string m_params;
-    string m_fileName;
-    Shared m_shared;
-    bool m_purge;
-
     public:
     void run();
-    Shared shared();
 
     task(const char * fileName, const char * params, bool purge);
     task(const task &obj);
     static task start(const char * fileName, const char * params, bool purge = false);
-    static void wait();
     ~task();
 
   };

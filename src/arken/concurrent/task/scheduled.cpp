@@ -247,45 +247,9 @@ scheduled::node scheduled::dequeue()
 
 }
 
-void scheduled::wait()
-{
-  mvm::wait();
-}
-
-string scheduled::node::uuid()
-{
-  return m_uuid;
-}
-
 string scheduled::node::name()
 {
   return m_name;
-}
-
-double scheduled::node::microtime()
-{
-  return m_microtime;
-}
-
-scheduled::node::operator bool() const {
-  return m_microtime > 0;
-}
-
-Shared scheduled::node::shared()
-{
-  return m_shared;
-}
-
-bool scheduled::node::finished()
-{
-  return (*m_finished.get()) == true;
-}
-
-void scheduled::node::wait()
-{
-  while ((*m_finished.get()) == false) {
-    os::sleep(0.05);
-  }
 }
 
 }  // namespace task

@@ -121,11 +121,6 @@ bool service::checkReload()
   return result;
 }
 
-void service::wait()
-{
-  mvm::wait();
-}
-
 bool service::loop(int secs)
 {
   int i = 0;

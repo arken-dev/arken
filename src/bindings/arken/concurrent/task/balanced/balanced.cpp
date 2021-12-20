@@ -62,12 +62,6 @@ arken_balanced_start(lua_State *L) {
 }
 
 static int
-arken_balanced_wait(lua_State *L) {
-  balanced::wait();
-  return 0;
-}
-
-static int
 arken_balanced_max(lua_State *L) {
   int max = luaL_checkinteger(L, 1);
   balanced::s_max = max;
@@ -82,7 +76,6 @@ arken_balanced_actives(lua_State *L) {
 
 static const luaL_reg NaiadClassMethods[] = {
   {"start",   arken_balanced_start},
-  {"wait",    arken_balanced_wait},
   {"max",     arken_balanced_max},
   {"actives", arken_balanced_actives},
   {NULL, NULL}

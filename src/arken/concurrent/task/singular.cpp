@@ -299,55 +299,9 @@ singular::node singular::dequeue()
 
 }
 
-void singular::wait()
-{
-  mvm::wait();
-}
-
-string singular::node::uuid()
-{
-  return m_uuid;
-}
-
 string singular::node::name()
 {
   return m_name;
-}
-
-string singular::node::params()
-{
-  return m_params;
-}
-
-string singular::node::inspect()
-{
-  return m_inspect;
-}
-
-double singular::node::microtime()
-{
-  return m_microtime;
-}
-
-singular::node::operator bool() const {
-  return m_microtime > 0;
-}
-
-Shared singular::node::shared()
-{
-  return m_shared;
-}
-
-bool singular::node::finished()
-{
-  return (*m_finished.get()) == true;
-}
-
-void singular::node::wait()
-{
-  while ((*m_finished.get()) == false) {
-    os::sleep(0.05);
-  }
 }
 
 uint32_t singular::actives()

@@ -15,11 +15,6 @@ namespace concurrent {
 
 std::atomic<uint32_t> worker::s_max{0};
 
-void worker::wait()
-{
-  mvm::wait();
-}
-
 worker::~worker()
 { }
 
@@ -184,16 +179,6 @@ void worker::enqueue(string && value)
   m_queue.push(std::move(value));
 }
 
-string worker::uuid()
-{
-  return m_uuid;
-}
-
-Shared worker::shared()
-{
-  return m_shared;
-}
-
 void worker::increment()
 {
   (*m_progress.get())++;
@@ -339,16 +324,6 @@ bool worker::node::release()
 uint32_t worker::node::number()
 {
   return m_number;
-}
-
-string worker::node::uuid()
-{
-  return m_uuid;
-}
-
-Shared worker::node::shared()
-{
-  return m_shared;
 }
 
 worker worker::node::master()

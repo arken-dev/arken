@@ -56,12 +56,6 @@ arken_fifo_start(lua_State *L) {
 }
 
 static int
-arken_fifo_wait(lua_State *L) {
-  fifo::wait();
-  return 0;
-}
-
-static int
 arken_fifo_max(lua_State *L) {
   int max = luaL_checkinteger(L, 1);
   fifo::s_max = max;
@@ -76,7 +70,6 @@ arken_fifo_actives(lua_State *L) {
 
 static const luaL_reg NaiadClassMethods[] = {
   {"start",   arken_fifo_start},
-  {"wait",    arken_fifo_wait},
   {"max",     arken_fifo_max},
   {"actives", arken_fifo_actives},
   {NULL, NULL}

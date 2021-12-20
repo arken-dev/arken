@@ -159,45 +159,9 @@ priority::node priority::dequeue()
   return n;
 }
 
-void priority::wait()
-{
-  mvm::wait();
-}
-
-string priority::node::uuid()
-{
-  return m_uuid;
-}
-
 int priority::node::priority()
 {
   return m_priority;
-}
-
-double priority::node::microtime()
-{
-  return m_microtime;
-}
-
-priority::node::operator bool() const {
-  return m_microtime > 0;
-}
-
-Shared priority::node::shared()
-{
-  return m_shared;
-}
-
-bool priority::node::finished()
-{
-  return (*m_finished.get()) == true;
-}
-
-void priority::node::wait()
-{
-  while ((*m_finished.get()) == false) {
-    os::sleep(0.05);
-  }
 }
 
 }  // namespace task

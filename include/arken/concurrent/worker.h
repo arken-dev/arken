@@ -19,22 +19,13 @@ namespace concurrent {
 
   class worker : public Base {
 
-    using Shared = arken::concurrent::Shared;
-
     private:
 
-    string m_params;
-    string m_fileName;
     std::shared_ptr<std::atomic<int>> m_progress;
     std::shared_ptr<std::atomic<int>> m_total;
-
-    bool m_purge;
-
     std::queue<string> m_queue;
     std::mutex m_mutex;
-    Shared m_shared;
 
-    bool purge();
     void run();
 
     public:
@@ -43,11 +34,8 @@ namespace concurrent {
     ~worker();
 
     static worker start(const char * fileName, const char * params, bool purge = false);
-    static void wait();
     void perform(unsigned int cores);
     void enqueue(string && node);
-    string uuid();
-    Shared shared();
     static std::atomic<uint32_t> s_max;
     void   increment();
     float  progress();
@@ -56,19 +44,15 @@ namespace concurrent {
     class node : public Base {
       friend class worker;
 
-      string   m_fileName;
       worker * m_worker;
       uint32_t m_number = 0;
-      Shared   m_shared;
 
       string dequeue();
       node(worker * ptr, string fileName, uint32_t number);
 
       public:
-      void run();
+      void run() override;
       uint32_t number();
-      string uuid();
-      Shared shared();
       bool release() override;
       worker master();
 

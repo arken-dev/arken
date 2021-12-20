@@ -27,9 +27,6 @@ namespace concurrent {
     std::mutex s_mutex;
 
     uint32_t m_version;
-    bool     m_purge;
-    string   m_fileName;
-    string   m_params;
 
     service( const char * fileName, const char * params, bool purge = false);
     ~service();
@@ -40,7 +37,6 @@ namespace concurrent {
     static void load(const char * dirName);
     static void run(const char * dirName);
     static void reload();
-    static void wait();
     static bool checkReload();
     bool loop(int secs);
   };

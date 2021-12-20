@@ -23,44 +23,23 @@ namespace task {
 
   class singular : public Base {
 
-    using mvm    = arken::mvm;
-    using string = arken::string;
-    using Shared = arken::concurrent::Shared;
-
     singular();
 
     public:
     void run();
-    static void wait();
 
-    class node {
+    class node : public Base {
+
       friend class singular;
-
-      string m_uuid;
-      string m_fileName;
-      string m_params;
       string m_name;
-      string m_inspect;
-      double m_microtime{0};
-      bool   m_purge{false};
-      Shared m_shared;
-      std::shared_ptr<std::atomic<bool>>  m_finished;
 
       node(const char * fileName, const char * params, const char * name, bool purge = false);
 
       public:
       node();
       node(const node &obj);
-      operator bool() const;
       void run();
-      string uuid();
       string name();
-      string params();
-      string inspect();
-      double microtime();
-      Shared shared();
-      bool finished();
-      void wait();
     };
 
     static singular::node start(const char * fileName, const char * params,

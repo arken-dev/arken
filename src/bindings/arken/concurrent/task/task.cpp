@@ -49,15 +49,8 @@ arken_task_start(lua_State *L) {
   return 1;
 }
 
-static int
-arken_task_wait(lua_State *L) {
-  task::wait();
-  return 0;
-}
-
 static const luaL_reg TaskClassMethods[] = {
   {"start", arken_task_start},
-  {"wait",  arken_task_wait},
   {NULL, NULL}
 };
 

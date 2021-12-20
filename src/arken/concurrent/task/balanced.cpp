@@ -199,45 +199,9 @@ balanced::node balanced::dequeue()
   }
 }
 
-void balanced::wait()
-{
-  mvm::wait();
-}
-
-string balanced::node::uuid()
-{
-  return m_uuid;
-}
-
 string balanced::node::name()
 {
   return m_name;
-}
-
-double balanced::node::microtime()
-{
-  return m_microtime;
-}
-
-balanced::node::operator bool() const {
-  return m_microtime > 0;
-}
-
-Shared balanced::node::shared()
-{
-  return m_shared;
-}
-
-bool balanced::node::finished()
-{
-  return (*m_finished.get()) == true;
-}
-
-void balanced::node::wait()
-{
-  while ((*m_finished.get()) == false) {
-    os::sleep(0.05);
-  }
 }
 
 }  // namespace task

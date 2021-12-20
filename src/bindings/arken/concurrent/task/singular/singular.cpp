@@ -128,12 +128,6 @@ arken_singular_place(lua_State *L) {
 
 
 static int
-arken_singular_wait(lua_State *L) {
-  singular::wait();
-  return 0;
-}
-
-static int
 arken_singular_max(lua_State *L) {
   if(lua_gettop(L) == 1) { /* número de argumentos */
     int max = luaL_checkinteger(L, 1);
@@ -162,7 +156,6 @@ static const luaL_reg NaiadClassMethods[] = {
   {"start",   arken_singular_start},
   {"emplace", arken_singular_emplace},
   {"place",   arken_singular_place},
-  {"wait",    arken_singular_wait},
   {"max",     arken_singular_max},
   {"actives", arken_singular_actives},
   {"inspect", arken_singular_inspect},

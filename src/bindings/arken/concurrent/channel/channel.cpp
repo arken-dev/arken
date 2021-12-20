@@ -53,15 +53,8 @@ arken_channel_start(lua_State *L) {
   return 1;
 }
 
-static int
-arken_channel_wait(lua_State *L) {
-  channel::wait();
-  return 0;
-}
-
 static const luaL_reg TaskClassMethods[] = {
   {"start", arken_channel_start},
-  {"wait",  arken_channel_wait},
   {NULL, NULL}
 };
 
