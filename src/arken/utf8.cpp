@@ -48,7 +48,7 @@ char * utf8::sub(const char * str, int p1, int p2)
   }
 
   int size   = (v2 - v1) + 1;
-  char * res = new char[size+1];
+  auto res = new char[size+1];
   int a = 0;
   for(int b=v1; a < size; a++, b++) {
     res[a] = str[b];
@@ -76,7 +76,7 @@ char * utf8::upper(const char * str)
 {
   size_t i   = 0;
   size_t len = strlen(str);
-  char * res = new char[len+1];
+  auto res = new char[len+1];
 
   while( str[i] ) {
 
@@ -102,7 +102,7 @@ char * utf8::lower(const char * str)
 {
   size_t i   = 0;
   size_t len = strlen(str);
-  char * res = new char[len+1];
+  auto res = new char[len+1];
 
   while( str[i] ) {
 
@@ -147,7 +147,7 @@ char * utf8::decode(const char * str)
     i++;
   }
 
-  char * res = new char[(i-c)+1];
+  auto res = new char[(i-c)+1];
 
   i = 0;
 
@@ -179,7 +179,7 @@ char * utf8::encode(const char * str)
     i++;
   }
 
-  char * res = new char[(i+c)+1];
+  auto res = new char[(i+c)+1];
 
   i = 0;
 
@@ -202,7 +202,7 @@ char * utf8::encode(const char * str)
 char * utf8::sanitize(const char * str)
 {
   size_t len = strlen(str);
-  char * res = new char[len+1];
+  auto res = new char[len+1];
   int i = 0, j = 0;
   while (str[i]) {
     if ( str[i] == -61 ) {
@@ -240,7 +240,7 @@ char * utf8::asc(const char * str, char chr)
     i++;
   }
 
-  char * res = new char[(i-c)+1];
+  auto res = new char[(i-c)+1];
 
   i = 0;
 
