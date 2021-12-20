@@ -15,6 +15,7 @@ namespace arken {
 class os {
 
   using List   = arken::string::List;
+  using string = arken::string;
 
   public:
   static string   abspath(const char * path);
