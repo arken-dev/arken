@@ -30,13 +30,13 @@ namespace concurrent {
 
     uint32_t m_version;
 
-    service( const char * fileName, const char * params, bool purge = false);
-    service(const service &obj);
-    ~service();
     void run();
 
     public:
-    static void start(const char * fileName, const char * params, bool purge = false);
+    service( const char * fileName, const char * params, bool purge = false);
+    service(const service &obj);
+    ~service();
+    static service start(const char * fileName, const char * params, bool purge = false);
     static void load(const char * dirName);
     static void run(const char * dirName);
     static void reload();

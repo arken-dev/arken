@@ -43,9 +43,11 @@ service::~service()
 
 }
 
-void service::start(const char * fileName, const char * params, bool purge)
+service service::start(const char * fileName, const char * params, bool purge)
 {
-  mvm::concurrent( new service(fileName, params, purge) );
+  auto ptr = new service(fileName, params, purge);
+  mvm::concurrent( ptr );
+  return service(*ptr);
 }
 
 void service::run()

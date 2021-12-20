@@ -40,11 +40,17 @@ arken_service_start(lua_State *L) {
     params = json_lock_encode(L);
   }
 
-  service::start( fileName, params, purge );
+  service srv = service::start( fileName, params, purge );
+
+  service **ptr = (service **)lua_newuserdata(L, sizeof(service*));
+  *ptr = new service(srv);
+
+  luaL_getmetatable(L, "arken.concurrent.service.metatable");
+  lua_setmetatable(L, -2);
 
   delete params;
 
-  return 0;
+  return 1;
 }
 
 static const luaL_reg TaskClassMethods[] = {
