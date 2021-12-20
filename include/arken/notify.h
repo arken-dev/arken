@@ -8,8 +8,6 @@
 
 #include <arken/string.h>
 
-using string = arken::string;
-
 namespace arken
 {
 
