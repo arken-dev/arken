@@ -77,7 +77,7 @@ arken_concurrent_channel_instance_method_write( lua_State *L ) {
 static int
 arken_concurrent_channel_instance_method_read( lua_State *L ) {
   channel * chn = checkChannel( L );
-  lua_pushstring(L, chn->read().c_str());
+  lua_pushstring(L, chn->read().data());
   return 1;
 }
 

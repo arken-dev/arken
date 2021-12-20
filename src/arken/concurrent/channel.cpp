@@ -76,8 +76,8 @@ void channel::run()
 } // channel::run
 
 channel::channel(
-  std::shared_ptr<std::queue<std::string>> read,
-  std::shared_ptr<std::queue<std::string>> write,
+  std::shared_ptr<std::queue<string>> read,
+  std::shared_ptr<std::queue<string>> write,
   std::shared_ptr<std::mutex> read_mtx,
   std::shared_ptr<std::mutex> write_mtx,
   std::shared_ptr<std::condition_variable> read_condition,
@@ -107,8 +107,8 @@ channel::channel(
 
 channel::channel(const char * fileName, const char * params, bool purge)
 {
-  m_read            = std::shared_ptr<std::queue<std::string>>(new std::queue<std::string>);
-  m_write           = std::shared_ptr<std::queue<std::string>>(new std::queue<std::string>);
+  m_read            = std::shared_ptr<std::queue<string>>(new std::queue<string>);
+  m_write           = std::shared_ptr<std::queue<string>>(new std::queue<string>);
   m_read_mtx        = std::shared_ptr<std::mutex>(new std::mutex);
   m_write_mtx       = std::shared_ptr<std::mutex>(new std::mutex);
   m_read_condition  = std::shared_ptr<std::condition_variable>(new std::condition_variable);
@@ -174,7 +174,7 @@ bool channel::empty()
   return m_read->empty();
 }
 
-void channel::write(std::string message)
+void channel::write(string message)
 {
   if( this->finished() == false ) {
     std::unique_lock<std::mutex> lck(*m_write_mtx);
@@ -183,17 +183,17 @@ void channel::write(std::string message)
   }
 }
 
-std::string channel::read()
+string channel::read()
 {
   std::unique_lock<std::mutex> lck(*m_read_mtx);
 
   if( this->finished() == true && m_read->empty() ) {
-    return std::string("channel is finished");
+    return string("channel is finished");
   }
 
   m_read_condition->wait(lck, [&]{ return !m_read->empty(); });
 
-  std::string message = m_read->front();
+  string message = m_read->front();
   m_read->pop();
 
   return message;

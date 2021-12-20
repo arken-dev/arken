@@ -22,8 +22,8 @@ namespace concurrent {
 
     private:
 
-    std::shared_ptr<std::queue<std::string>> m_read;
-    std::shared_ptr<std::queue<std::string>> m_write;
+    std::shared_ptr<std::queue<string>> m_read;
+    std::shared_ptr<std::queue<string>> m_write;
 
     std::shared_ptr<std::mutex> m_read_mtx;
     std::shared_ptr<std::mutex> m_write_mtx;
@@ -40,8 +40,8 @@ namespace concurrent {
     public:
 
     channel(
-      std::shared_ptr<std::queue<std::string>> read,
-      std::shared_ptr<std::queue<std::string>> write,
+      std::shared_ptr<std::queue<string>> read,
+      std::shared_ptr<std::queue<string>> write,
       std::shared_ptr<std::mutex> read_mtx,
       std::shared_ptr<std::mutex> write_mtx,
       std::shared_ptr<std::condition_variable> read_condition,
@@ -56,8 +56,8 @@ namespace concurrent {
     ~channel();
 
     bool empty();
-    void write(std::string message);
-    std::string read();
+    void write(string message);
+    string read();
     channel * client();
 
     static channel * start(const char * fileName, const char * params, bool purge = false);
