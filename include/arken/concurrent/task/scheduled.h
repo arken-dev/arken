@@ -22,6 +22,8 @@ namespace task {
 
   class scheduled : public base {
 
+    using string = arken::string;
+
     scheduled();
     ~scheduled();
 
@@ -29,6 +31,8 @@ namespace task {
     void run();
 
     class node : public base {
+
+      using string = arken::string;
 
       friend class scheduled;
 

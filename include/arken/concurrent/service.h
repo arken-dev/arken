@@ -17,6 +17,8 @@ namespace concurrent {
 
   class service : public base {
 
+    using string = arken::string;
+
     static
     std::atomic<uint32_t> s_version;
     static

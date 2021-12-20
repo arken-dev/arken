@@ -21,8 +21,6 @@
 #include <iostream>
 #include <atomic>
 
-using arken::string;
-
 namespace arken
 {
 
@@ -31,6 +29,7 @@ namespace concurrent
   class base {
 
     using Shared = arken::concurrent::Shared;
+    using string = arken::string;
 
     protected:
     string m_uuid{os::uuid()};
@@ -63,12 +62,13 @@ namespace concurrent
 class instance;
 
 class mvm {
-
+  using string = arken::string;
   friend class instance;
 
   public:
 
   class data {
+
     friend class mvm;
     friend class instance;
 
@@ -88,6 +88,7 @@ class mvm {
 
   class core
   {
+    using string = arken::string;
 
     std::vector<std::thread>       m_workers;
     std::queue<concurrent::base *> m_queue;

@@ -22,6 +22,8 @@ namespace task {
 
   class balanced : public base {
 
+    using string = arken::string;
+
     balanced();
     ~balanced();
 
@@ -29,6 +31,8 @@ namespace task {
     void run();
 
     class node : public base {
+
+      using string = arken::string;
 
       friend class balanced;
       string m_name;

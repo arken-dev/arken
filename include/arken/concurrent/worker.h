@@ -19,6 +19,8 @@ namespace concurrent {
 
   class worker : public base {
 
+    using string = arken::string;
+
     private:
 
     std::shared_ptr<std::atomic<int>> m_progress;
@@ -42,6 +44,9 @@ namespace concurrent {
 
     public:
     class node : public base {
+
+      using string = arken::string;
+
       friend class worker;
 
       worker * m_worker;

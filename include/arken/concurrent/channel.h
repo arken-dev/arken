@@ -18,6 +18,7 @@ namespace concurrent {
   class channel : public base {
 
     using Shared = arken::concurrent::Shared;
+    using string = arken::string;
 
     private:
 

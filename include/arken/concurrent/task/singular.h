@@ -23,12 +23,15 @@ namespace task {
 
   class singular : public base {
 
+    using string = arken::string;
+
     singular();
 
     public:
     void run();
 
     class node : public base {
+      using string = arken::string;
 
       friend class singular;
       string m_name;
