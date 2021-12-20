@@ -29,6 +29,7 @@ namespace concurrent {
     uint32_t m_version;
 
     service( const char * fileName, const char * params, bool purge = false);
+    service(const service &obj);
     ~service();
     void run();
 
