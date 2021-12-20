@@ -17,7 +17,7 @@
 namespace arken {
 namespace concurrent {
 
-  class worker : public Base {
+  class worker : public base {
 
     private:
 
@@ -41,7 +41,7 @@ namespace concurrent {
     float  progress();
 
     public:
-    class node : public Base {
+    class node : public base {
       friend class worker;
 
       worker * m_worker;

@@ -15,7 +15,7 @@
 namespace arken {
 namespace concurrent {
 
-  class service : public Base {
+  class service : public base {
 
     static
     std::atomic<uint32_t> s_version;

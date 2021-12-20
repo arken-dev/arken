@@ -19,7 +19,7 @@ namespace arken {
 namespace concurrent {
 namespace task {
 
-  class fifo : public Base {
+  class fifo : public base {
 
     fifo();
     ~fifo();
@@ -27,7 +27,7 @@ namespace task {
     public:
     void run();
 
-    class node : public Base {
+    class node : public base {
       friend class fifo;
 
       node(const char * fileName, const char * params, bool purge = false);

@@ -16,7 +16,7 @@
 namespace arken {
 namespace concurrent {
 
-  class task: public Base {
+  class task: public base {
 
     public:
     void run();

@@ -28,7 +28,7 @@ namespace arken
 
 namespace concurrent
 {
-  class Base {
+  class base {
 
     using Shared = arken::concurrent::Shared;
 
@@ -44,8 +44,8 @@ namespace concurrent
 
     public:
     virtual void run() = 0;
-    Base();
-    virtual ~Base();
+    base();
+    virtual ~base();
     bool   finished();
     virtual bool release();
     void   finished(bool flag);
@@ -90,7 +90,7 @@ class mvm {
   {
 
     std::vector<std::thread>       m_workers;
-    std::queue<concurrent::Base *> m_queue;
+    std::queue<concurrent::base *> m_queue;
     std::mutex                     m_mutex;
     std::condition_variable        m_condition;
     std::atomic<uint32_t>          m_max;
@@ -103,9 +103,9 @@ class mvm {
     static core & instance();
     static void working();
     public:
-    static void start(concurrent::Base * pointer);
-    static concurrent::Base * get();
-    static std::queue<concurrent::Base *> & queue();
+    static void start(concurrent::base * pointer);
+    static concurrent::base * get();
+    static std::queue<concurrent::base *> & queue();
     static std::mutex               & mutex();
     static std::vector<std::thread> & workers();
     static std::condition_variable  & condition();
@@ -171,7 +171,7 @@ class mvm {
   static double uptime();
   static arken::instance instance(bool create = false);
   static const char * path();
-  static void concurrent(concurrent::Base * pointer);
+  static void concurrent(concurrent::base * pointer);
   static void wait();
   static void env(const char * value);
   static const char * env();

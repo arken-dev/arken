@@ -20,7 +20,7 @@ namespace arken {
 namespace concurrent {
 namespace task {
 
-  class scheduled : public Base {
+  class scheduled : public base {
 
     scheduled();
     ~scheduled();
@@ -28,7 +28,7 @@ namespace task {
     public:
     void run();
 
-    class node : public Base {
+    class node : public base {
 
       friend class scheduled;
 

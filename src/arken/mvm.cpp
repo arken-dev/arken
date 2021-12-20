@@ -375,58 +375,58 @@ lua_State * instance::release()
   return m_data->release();
 }
 
-concurrent::Base::Base() : m_uuid{""}, m_microtime{0} {}
+concurrent::base::base() : m_uuid{""}, m_microtime{0} {}
 
-concurrent::Base::~Base() = default;
+concurrent::base::~base() = default;
 
-bool concurrent::Base::finished()
+bool concurrent::base::finished()
 {
   return (*m_finished.get());
 }
 
-bool concurrent::Base::purge()
+bool concurrent::base::purge()
 {
   return m_purge;
 }
 
-concurrent::Base::operator bool() const {
+concurrent::base::operator bool() const {
   return m_microtime > 0;
 }
 
-void concurrent::Base::wait()
+void concurrent::base::wait()
 {
   while ((*m_finished.get()) == false) {
     os::sleep(0.05);
   }
 }
 
-double concurrent::Base::microtime()
+double concurrent::base::microtime()
 {
   return m_microtime;
 }
 
 
-arken::concurrent::Shared concurrent::Base::shared()
+arken::concurrent::Shared concurrent::base::shared()
 {
   return m_shared;
 }
 
-bool concurrent::Base::release()
+bool concurrent::base::release()
 {
   return true;
 }
 
-string concurrent::Base::uuid()
+string concurrent::base::uuid()
 {
   return m_uuid;
 }
 
-void concurrent::Base::finished(bool flag)
+void concurrent::base::finished(bool flag)
 {
   (*m_finished.get()) = flag;
 }
 
-string concurrent::Base::inspect()
+string concurrent::base::inspect()
 {
   return m_inspect;
 }
@@ -460,7 +460,7 @@ const char * mvm::cext()
 }
 
 
-void mvm::concurrent(concurrent::Base * ptr)
+void mvm::concurrent(concurrent::base * ptr)
 {
   mvm::core::start(ptr);
 }
@@ -571,7 +571,7 @@ mvm::core & mvm::core::instance()
   return core;
 }
 
-std::queue<concurrent::Base *> & mvm::core::queue()
+std::queue<concurrent::base *> & mvm::core::queue()
 {
   return instance().m_queue;
 }
@@ -615,7 +615,7 @@ void mvm::core::working()
 {
 
   while( true ) {
-    concurrent::Base * ptr = get();
+    concurrent::base * ptr = get();
 
     ptr->run();
     ptr->finished(true);
@@ -632,7 +632,7 @@ void mvm::core::working()
 } // mvm::core::working
 
 
-void mvm::core::start(concurrent::Base * ptr)
+void mvm::core::start(concurrent::base * ptr)
 {
   std::unique_lock<std::mutex> lck(mutex());
 
@@ -646,11 +646,11 @@ void mvm::core::start(concurrent::Base * ptr)
   waiting()[ptr->uuid()] = ptr->inspect();
 }
 
-concurrent::Base * mvm::core::get()
+concurrent::base * mvm::core::get()
 {
   std::unique_lock<std::mutex> lck(mutex());
   condition().wait(lck, []{ return ! queue().empty(); });
-  concurrent::Base * ptr = queue().front();
+  concurrent::base * ptr = queue().front();
   queue().pop();
   waiting().erase(ptr->uuid());
   running()[ptr->uuid()] = ptr->inspect();

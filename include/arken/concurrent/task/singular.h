@@ -21,14 +21,14 @@ namespace arken {
 namespace concurrent {
 namespace task {
 
-  class singular : public Base {
+  class singular : public base {
 
     singular();
 
     public:
     void run();
 
-    class node : public Base {
+    class node : public base {
 
       friend class singular;
       string m_name;

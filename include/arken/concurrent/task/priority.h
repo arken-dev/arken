@@ -19,7 +19,7 @@ namespace arken {
 namespace concurrent {
 namespace task {
 
-  class priority : public Base {
+  class priority : public base {
 
     priority();
     ~priority();
@@ -28,7 +28,7 @@ namespace task {
     void run();
     static void wait();
 
-    class node : public Base {
+    class node : public base {
 
       friend class priority;
       int m_priority{0};

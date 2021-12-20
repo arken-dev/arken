@@ -20,7 +20,7 @@ namespace arken {
 namespace concurrent {
 namespace task {
 
-  class balanced : public Base {
+  class balanced : public base {
 
     balanced();
     ~balanced();
@@ -28,7 +28,7 @@ namespace task {
     public:
     void run();
 
-    class node : public Base {
+    class node : public base {
 
       friend class balanced;
       string m_name;

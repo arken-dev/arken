@@ -15,7 +15,7 @@
 namespace arken {
 namespace concurrent {
 
-  class channel : public Base {
+  class channel : public base {
 
     using Shared = arken::concurrent::Shared;
 
