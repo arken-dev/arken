@@ -88,4 +88,4 @@ void Image::composite(Image * img, size_t x, size_t y)
 }
 
 
-} // namespace
+} // namespace arken
