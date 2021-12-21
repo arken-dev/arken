@@ -22,8 +22,10 @@ end
 -------------------------------------------------------------------------------
 
 function M:before(worker)
-  local ActiveRecord = require('arken.ActiveRecord')
-  ActiveRecord.loadConfig{ number = self:number() }
+  if os.exists( os.pwd() .. '/config/active_record.json' ) then
+    local ActiveRecord = require('arken.ActiveRecord')
+    ActiveRecord.loadConfig{ number = self:number() }
+  end
 end
 
 -------------------------------------------------------------------------------
