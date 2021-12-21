@@ -73,10 +73,17 @@ arken_priority_actives(lua_State *L) {
   return 1;
 }
 
+static int
+arken_priority_inspect( lua_State *L ) {
+  lua_pushstring(L, priority::inspect());
+  return 1;
+}
+
 static const luaL_reg NaiadClassMethods[] = {
   {"start",   arken_priority_start},
   {"max",     arken_priority_max},
   {"actives", arken_priority_actives},
+  {"inspect", arken_priority_inspect},
   {NULL, NULL}
 };
 

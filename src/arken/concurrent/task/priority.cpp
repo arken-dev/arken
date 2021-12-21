@@ -16,6 +16,8 @@ std::atomic<uint32_t> priority::s_actives{0};
 
 priority::priority()
 {
+  m_uuid    = os::uuid();
+  m_inspect = "arken.concurrent.task.priority";
   priority::s_actives++;
 }
 
@@ -33,11 +35,18 @@ std::priority_queue<priority::node, std::vector<priority::node>, priority::node>
 void priority::run()
 {
   while (true) {
+
     priority::node node = dequeue();
+
     if( !node ) {
       break;
     }
+
     node.run();
+
+    std::unique_lock<std::mutex> lck(priority::s_mutex);
+    running().erase(node.uuid());
+
   }
 }
 
@@ -66,6 +75,7 @@ priority::node::node(const node &obj)
   m_microtime = obj.m_microtime;
   m_shared    = obj.m_shared;
   m_finished  = obj.m_finished;
+  m_inspect   = obj.m_inspect;
 }
 
 priority::node::node(const char * fileName, const char * params, int priority, bool purge)
@@ -77,6 +87,10 @@ priority::node::node(const char * fileName, const char * params, int priority, b
   m_purge     = purge;
   m_microtime = os::microtime();
   m_finished  = std::shared_ptr<std::atomic<bool>>(new std::atomic<bool>(false));
+  m_inspect.
+    append("arken.concurrent.task.fifo: ").
+    append(m_fileName).append("#").
+    append(m_params.escape());
 }
 
 bool priority::node::operator()(const priority::node &n1, const priority::node &n2)
@@ -156,12 +170,42 @@ priority::node priority::dequeue()
 
   priority::node n = priority::priority_queue().top();
   priority::priority_queue().pop();
+  running()[n.uuid()] = n.inspect();
+
   return n;
 }
 
 int priority::node::priority()
 {
   return m_priority;
+}
+
+std::unordered_map<string, string> &priority::running()
+{
+  static std::unordered_map<string, string> s_running;
+  return s_running;
+}
+
+string priority::inspect()
+{
+  std::unique_lock<std::mutex> lck(priority::s_mutex);
+
+  string tmp("{");
+
+  tmp.append("\"running\": [");
+  int c = 0;
+  for (std::pair<string, string> element : running()) {
+    if( c > 0 ) {
+      tmp.append(",");
+    }
+    tmp.append("\"").append(element.second).append("\"");
+    c++;
+  }
+  tmp.append("],");
+  tmp.append("\"queue\": ");
+  tmp.append(std::to_string(priority_queue().size()));
+  tmp.append("}");
+  return tmp;
 }
 
 }  // namespace task

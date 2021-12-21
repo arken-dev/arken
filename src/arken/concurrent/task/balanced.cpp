@@ -17,6 +17,8 @@ std::atomic<uint32_t> balanced::s_actives{0};
 
 balanced::balanced()
 {
+  m_uuid    = os::uuid();
+  m_inspect = "arken.concurrent.task.balanced";
   balanced::s_actives++;
 }
 
@@ -49,11 +51,18 @@ std::unordered_map<string, std::queue<balanced::node>> & balanced::map()
 void balanced::run()
 {
   while (true) {
+
     balanced::node node = dequeue();
+
     if( !node ) {
       break;
     }
+
     node.run();
+
+    std::unique_lock<std::mutex> lck(balanced::s_mutex);
+    running().erase(node.uuid());
+
   }
 }
 
@@ -82,16 +91,22 @@ balanced::node::node(const node &obj)
   m_microtime = obj.m_microtime;
   m_shared    = obj.m_shared;
   m_finished  = obj.m_finished;
+  m_inspect   = obj.m_inspect;
 }
 
 balanced::node::node(const char * fileName, const char * params, const char * name, bool purge)
 {
+  m_uuid      = os::uuid();
   m_fileName  = fileName;
   m_params    = params;
   m_name      = name;
   m_purge     = purge;
   m_microtime = os::microtime();
   m_finished  = std::shared_ptr<std::atomic<bool>>(new std::atomic<bool>(false));
+  m_inspect.
+    append(m_fileName).append("#").
+    append(m_params.escape()).append("#").
+    append(m_name.escape());
 }
 
 void balanced::node::run()
@@ -195,6 +210,8 @@ balanced::node balanced::dequeue()
   } else {
     balanced::node n = map[name].front();
     map[name].pop();
+
+    running()[n.uuid()] = n.inspect();
     return n;
   }
 }
@@ -203,6 +220,46 @@ string balanced::node::name()
 {
   return m_name;
 }
+
+std::unordered_map<string, string> &balanced::running()
+{
+  static std::unordered_map<string, string> s_running;
+  return s_running;
+}
+
+string balanced::inspect()
+{
+  std::unique_lock<std::mutex> lck(balanced::s_mutex);
+
+  string tmp("{");
+
+  tmp.append("\"running\": [");
+  int c = 0;
+  for (std::pair<string, string> element : running()) {
+    if( c > 0 ) {
+      tmp.append(",");
+    }
+    tmp.append("\"").append(element.second).append("\"");
+    c++;
+  }
+  tmp.append("],");
+  tmp.append("\"queues\": {");
+
+  c = 0;
+  for (std::pair<string, std::queue<balanced::node>> element : balanced::map()) {
+    if( c > 0 ) {
+      tmp.append(",");
+    }
+    tmp.append("\"").append(element.first).append("\": ");
+    tmp.append(std::to_string(element.second.size()));
+    c++;
+  }
+
+  tmp.append("}");
+  tmp.append("}");
+  return tmp;
+}
+
 
 }  // namespace task
 }  // namespace concurrent

@@ -11,6 +11,7 @@
 #include <atomic>
 #include <vector>
 #include <memory>
+#include <unordered_map>
 #include <arken/mvm>
 #include <arken/string.h>
 #include <arken/concurrent/shared.h>
@@ -20,6 +21,8 @@ namespace concurrent {
 namespace task {
 
   class priority : public base {
+
+    using string = arken::string;
 
     priority();
     ~priority();
@@ -47,12 +50,13 @@ namespace task {
     static std::priority_queue<priority::node, std::vector<priority::node>, priority::node> & priority_queue();
     static std::mutex s_mutex;
     static void push(const priority::node & node);
-
+    static std::unordered_map<string, string> &running();
 
     public:
     static priority::node dequeue();
     static std::atomic<uint32_t> s_actives;
     static std::atomic<uint32_t> s_max;
+    static string inspect();
 
   };
 

@@ -73,11 +73,19 @@ arken_scheduled_actives(lua_State *L) {
   return 1;
 }
 
+static int
+arken_scheduled_inspect( lua_State *L ) {
+  lua_pushstring(L, scheduled::inspect());
+  return 1;
+}
+
 static const luaL_reg NaiadClassMethods[] = {
   {"start",   arken_scheduled_start},
   {"max",     arken_scheduled_max},
   {"actives", arken_scheduled_actives},
+  {"inspect", arken_scheduled_inspect},
   {NULL, NULL}
+
 };
 
 void static

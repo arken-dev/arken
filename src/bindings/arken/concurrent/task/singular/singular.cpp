@@ -151,7 +151,6 @@ arken_singular_inspect( lua_State *L ) {
   return 1;
 }
 
-
 static const luaL_reg NaiadClassMethods[] = {
   {"start",   arken_singular_start},
   {"emplace", arken_singular_emplace},

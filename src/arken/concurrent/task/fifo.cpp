@@ -17,6 +17,8 @@ std::atomic<uint32_t> fifo::s_actives{0};
 
 fifo::fifo()
 {
+  m_uuid    = os::uuid();
+  m_inspect = "arken.concurrent.task.fifo";
   fifo::s_actives++;
 }
 
@@ -34,11 +36,18 @@ std::queue<fifo::node> & fifo::fifo_queue()
 void fifo::run()
 {
   while (true) {
+
     fifo::node node = dequeue();
+
     if( !node ) {
       break;
     }
+
     node.run();
+
+    std::unique_lock<std::mutex> lck(fifo::s_mutex);
+    running().erase(node.uuid());
+
   }
 }
 
@@ -66,6 +75,7 @@ fifo::node::node(const node &obj)
   m_microtime = obj.m_microtime;
   m_shared    = obj.m_shared;
   m_finished  = obj.m_finished;
+  m_inspect   = obj.m_inspect;
 }
 
 fifo::node::node(const char * fileName, const char * params, bool purge)
@@ -75,6 +85,10 @@ fifo::node::node(const char * fileName, const char * params, bool purge)
   m_purge     = purge;
   m_microtime = os::microtime();
   m_finished  = std::shared_ptr<std::atomic<bool>>(new std::atomic<bool>(false));
+  m_inspect.
+    append("arken.concurrent.task.fifo: ").
+    append(m_fileName).append("#").
+    append(m_params.escape());
 }
 
 void fifo::node::run()
@@ -145,8 +159,39 @@ fifo::node fifo::dequeue()
 
   fifo::node n = fifo::fifo_queue().front();
   fifo::fifo_queue().pop();
+  running()[n.uuid()] = n.inspect();
+
   return n;
 }
+
+std::unordered_map<string, string> &fifo::running()
+{
+  static std::unordered_map<string, string> s_running;
+  return s_running;
+}
+
+string fifo::inspect()
+{
+  std::unique_lock<std::mutex> lck(fifo::s_mutex);
+
+  string tmp("{");
+
+  tmp.append("\"running\": [");
+  int c = 0;
+  for (std::pair<string, string> element : running()) {
+    if( c > 0 ) {
+      tmp.append(",");
+    }
+    tmp.append("\"").append(element.second).append("\"");
+    c++;
+  }
+  tmp.append("],");
+  tmp.append("\"queue\": ");
+  tmp.append(std::to_string(fifo_queue().size()));
+  tmp.append("}");
+  return tmp;
+}
+
 
 }  // namespace task
 }  // namespace concurrent

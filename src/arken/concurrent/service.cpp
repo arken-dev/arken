@@ -16,6 +16,7 @@ std::mutex service::s_mutex;
 
 service::service( const char * fileName, const char * params, bool purge )
 {
+  m_uuid     = os::uuid();
   m_version  = mvm::version();
   m_fileName = fileName;
   m_params   = params;
@@ -36,6 +37,7 @@ service::service(const service &obj)
   m_purge    = obj.m_purge;
   m_inspect  = obj.m_inspect;
   m_shared   = obj.m_shared;
+  m_uuid     = obj.m_uuid;
 }
 
 service::~service()

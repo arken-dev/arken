@@ -15,11 +15,9 @@ std::mutex singular::s_mutex;
 std::atomic<uint32_t> singular::s_max{mvm::threads()};
 std::atomic<uint32_t> singular::s_actives{0};
 
-static std::mutex s_inspect_mutex;
-static std::map<string, string> s_inspect_map;
-
 singular::singular()
 {
+  m_uuid     = os::uuid();
   m_inspect = "arken.concurrent.task.singular";
   singular::s_actives++;
 }
@@ -51,18 +49,17 @@ std::unordered_map<string, std::atomic<bool>> & singular::runners()
 void singular::run()
 {
   while (true) {
+
     singular::node node = dequeue();
+
     if( !node ) {
       break;
     }
 
-    s_inspect_mutex.lock();
-    s_inspect_map[node.uuid()] = node.inspect();
-    s_inspect_mutex.unlock();
     node.run();
-    s_inspect_mutex.lock();
-    s_inspect_map.erase(node.uuid());
-    s_inspect_mutex.unlock();
+
+    std::unique_lock<std::mutex> lck(singular::s_mutex);
+    running().erase(node.uuid());
   }
 }
 
@@ -129,12 +126,7 @@ singular::node::node(const node &obj)
   m_microtime = obj.m_microtime;
   m_shared    = obj.m_shared;
   m_finished  = obj.m_finished;
-
-  m_inspect.
-    append(m_fileName).append("#").
-    append(m_params.escape()).append("#").
-    append(m_name.escape());
-
+  m_inspect   = obj.m_inspect;
 }
 
 singular::node::node(const char * fileName, const char * params, const char * name, bool purge)
@@ -294,6 +286,8 @@ singular::node singular::dequeue()
     runners()[name] = false;
     singular::node n = map()[name].front();
     map()[name].pop();
+    running()[n.uuid()] = n.inspect();
+
     return n;
   }
 
@@ -311,23 +305,22 @@ uint32_t singular::actives()
 
 string singular::inspect()
 {
+  std::unique_lock<std::mutex> lck(singular::s_mutex);
+
   string tmp("{");
 
   tmp.append("\"running\": [");
-  s_inspect_mutex.lock();
   int c = 0;
-  for (std::pair<string, string> element : s_inspect_map) {
+  for (std::pair<string, string> element : running()) {
     if( c > 0 ) {
       tmp.append(",");
     }
     tmp.append("\"").append(element.second).append("\"");
     c++;
   }
-  s_inspect_mutex.unlock();
   tmp.append("],");
   tmp.append("\"queues\": {");
 
-  singular::s_mutex.lock();
   c = 0;
   for (std::pair<string, std::queue<singular::node>> element : singular::map()) {
     if( c > 0 ) {
@@ -337,10 +330,16 @@ string singular::inspect()
     tmp.append(std::to_string(element.second.size()));
     c++;
   }
-  singular::s_mutex.unlock();
+
   tmp.append("}");
   tmp.append("}");
   return tmp;
+}
+
+std::unordered_map<string, string> &singular::running()
+{
+  static std::unordered_map<string, string> s_running;
+  return s_running;
 }
 
 }  // namespace task

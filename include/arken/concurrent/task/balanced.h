@@ -50,6 +50,7 @@ namespace task {
     static std::queue<balanced::node> &queue();
     static std::vector<string> &vector();
     static std::unordered_map<string, std::queue<balanced::node>> &map();
+    static std::unordered_map<string, string> &running();
     static std::atomic<size_t> &position();
     static std::mutex s_mutex;
     static void push(const balanced::node & node);
@@ -58,6 +59,7 @@ namespace task {
     static balanced::node dequeue();
     static std::atomic<uint32_t> s_actives;
     static std::atomic<uint32_t> s_max;
+    static string inspect();
 
   };
 

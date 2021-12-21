@@ -74,10 +74,17 @@ arken_balanced_actives(lua_State *L) {
   return 1;
 }
 
+static int
+arken_balanced_inspect( lua_State *L ) {
+  lua_pushstring(L, balanced::inspect());
+  return 1;
+}
+
 static const luaL_reg NaiadClassMethods[] = {
   {"start",   arken_balanced_start},
   {"max",     arken_balanced_max},
   {"actives", arken_balanced_actives},
+  {"inspect", arken_balanced_inspect},
   {NULL, NULL}
 };
 

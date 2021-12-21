@@ -375,7 +375,8 @@ lua_State * instance::release()
   return m_data->release();
 }
 
-concurrent::base::base() : m_uuid{""}, m_microtime{0} {}
+concurrent::base::base() : m_uuid{""}, m_microtime{0} {
+}
 
 concurrent::base::~base() = default;
 

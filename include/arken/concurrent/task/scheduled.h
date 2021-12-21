@@ -54,6 +54,7 @@ namespace task {
     static std::vector<string> &vector();
     static std::unordered_map<string, std::queue<scheduled::node>> &map();
     static std::unordered_map<string, std::atomic<uint32_t>> &runners();
+    static std::unordered_map<string, string> &running();
     static std::atomic<size_t> &position();
     static std::mutex s_mutex;
     static void push(const scheduled::node & node);
@@ -62,6 +63,7 @@ namespace task {
     static scheduled::node dequeue();
     static std::atomic<uint32_t> s_actives;
     static std::atomic<uint32_t> s_max;
+    static string inspect();
 
   };
 

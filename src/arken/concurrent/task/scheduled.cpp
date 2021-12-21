@@ -16,6 +16,8 @@ std::atomic<uint32_t> scheduled::s_actives{0};
 
 scheduled::scheduled()
 {
+  m_uuid    = os::uuid();
+  m_inspect = "arken.concurrent.task.scheduled";
   scheduled::s_actives++;
 }
 
@@ -54,11 +56,18 @@ std::unordered_map<string, std::atomic<uint32_t>> & scheduled::runners()
 void scheduled::run()
 {
   while (true) {
+
     scheduled::node node = dequeue();
+
     if( !node ) {
       break;
     }
+
     node.run();
+
+    std::unique_lock<std::mutex> lck(scheduled::s_mutex);
+    running().erase(node.uuid());
+
   }
 }
 
@@ -87,6 +96,7 @@ scheduled::node::node(const node &obj)
   m_microtime = obj.m_microtime;
   m_shared    = obj.m_shared;
   m_finished  = obj.m_finished;
+  m_inspect   = obj.m_inspect;
 }
 
 scheduled::node::node(const char * fileName, const char * params, const char * name, bool purge)
@@ -97,6 +107,10 @@ scheduled::node::node(const char * fileName, const char * params, const char * n
   m_purge     = purge;
   m_microtime = os::microtime();
   m_finished  = std::shared_ptr<std::atomic<bool>>(new std::atomic<bool>(false));
+  m_inspect.
+    append(m_fileName).append("#").
+    append(m_params.escape()).append("#").
+    append(m_name.escape());
 }
 
 scheduled::node::~node()
@@ -242,6 +256,7 @@ scheduled::node scheduled::dequeue()
     scheduled::node n = map[name].front();
     map[name].pop();
 
+    running()[n.uuid()] = n.inspect();
     return n;
   }
 
@@ -251,6 +266,46 @@ string scheduled::node::name()
 {
   return m_name;
 }
+
+std::unordered_map<string, string> &scheduled::running()
+{
+  static std::unordered_map<string, string> s_running;
+  return s_running;
+}
+
+string scheduled::inspect()
+{
+  std::unique_lock<std::mutex> lck(scheduled::s_mutex);
+
+  string tmp("{");
+
+  tmp.append("\"running\": [");
+  int c = 0;
+  for (std::pair<string, string> element : running()) {
+    if( c > 0 ) {
+      tmp.append(",");
+    }
+    tmp.append("\"").append(element.second).append("\"");
+    c++;
+  }
+  tmp.append("],");
+  tmp.append("\"queues\": {");
+
+  c = 0;
+  for (std::pair<string, std::queue<scheduled::node>> element : scheduled::map()) {
+    if( c > 0 ) {
+      tmp.append(",");
+    }
+    tmp.append("\"").append(element.first).append("\": ");
+    tmp.append(std::to_string(element.second.size()));
+    c++;
+  }
+
+  tmp.append("}");
+  tmp.append("}");
+  return tmp;
+}
+
 
 }  // namespace task
 }  // namespace concurrent

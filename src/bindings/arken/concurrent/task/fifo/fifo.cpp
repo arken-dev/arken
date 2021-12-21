@@ -68,10 +68,17 @@ arken_fifo_actives(lua_State *L) {
   return 1;
 }
 
+static int
+arken_fifo_inspect( lua_State *L ) {
+  lua_pushstring(L, fifo::inspect());
+  return 1;
+}
+
 static const luaL_reg NaiadClassMethods[] = {
   {"start",   arken_fifo_start},
   {"max",     arken_fifo_max},
   {"actives", arken_fifo_actives},
+  {"inspect", arken_fifo_inspect},
   {NULL, NULL}
 };
 

@@ -152,12 +152,18 @@ worker worker::start(const char * fileName, const char * params, bool purge)
 
 worker::worker(const char * fileName, const char * params, bool purge)
 {
+  m_uuid     = os::uuid();
   m_fileName = fileName;
   m_params   = params;
   m_purge    = purge;
-  m_inspect  = "arken.concurrent.worker";
   m_total    = std::shared_ptr<std::atomic<int>>(new std::atomic<int>(0));
   m_progress = std::shared_ptr<std::atomic<int>>(new std::atomic<int>(0));
+
+  m_inspect.
+    append("arken.concurrent.worker: ").
+    append(m_fileName).append("#").
+    append(m_params.escape());
+
 }
 
 worker::worker(const worker &obj)
@@ -207,6 +213,7 @@ string worker::node::dequeue()
 
 worker::node::node(worker * ptr, string fileName, uint32_t number)
 {
+  m_uuid     = os::uuid();
   m_worker   = ptr;
   m_fileName = fileName;
   m_number   = number;
