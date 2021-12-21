@@ -43,14 +43,14 @@ namespace task {
 
     static fifo::node start(const char * fileName, const char * params, bool purge = false);
     static std::queue<fifo::node> & fifo_queue();
-    static std::mutex s_mutex;
+    static std::mutex & mutex();
     static void push(const fifo::node & node);
     static std::unordered_map<string, string> &running();
 
     public:
     static fifo::node dequeue();
-    static std::atomic<uint32_t> s_actives;
-    static std::atomic<uint32_t> s_max;
+    static std::atomic<uint32_t> & actives();
+    static std::atomic<uint32_t> & max();
     static string inspect();
 
   };

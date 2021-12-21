@@ -57,14 +57,19 @@ arken_fifo_start(lua_State *L) {
 
 static int
 arken_fifo_max(lua_State *L) {
-  int max = luaL_checkinteger(L, 1);
-  fifo::s_max = max;
-  return 0;
+  if(lua_gettop(L) == 1) { /* número de argumentos */
+    int max = luaL_checkinteger(L, 1);
+    fifo::max() = max;
+    return 0;
+  } else {
+    lua_pushinteger(L, fifo::max());
+    return 1;
+  }
 }
 
 static int
 arken_fifo_actives(lua_State *L) {
-  lua_pushinteger(L, fifo::s_actives);
+  lua_pushinteger(L, fifo::actives());
   return 1;
 }
 

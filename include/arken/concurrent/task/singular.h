@@ -56,14 +56,13 @@ namespace task {
     static std::unordered_map<string, std::atomic<bool>> &runners();
     static std::unordered_map<string, string> &running();
     static std::atomic<size_t> &position();
-    static std::mutex s_mutex;
+    static std::mutex & mutex();
     static void push(const singular::node & node);
 
     public:
     static singular::node dequeue();
-    static std::atomic<uint32_t> s_actives;
-    static std::atomic<uint32_t> s_max;
-    static uint32_t actives();
+    static std::atomic<uint32_t> & actives();
+    static std::atomic<uint32_t> & max();
     static string inspect();
 
   };

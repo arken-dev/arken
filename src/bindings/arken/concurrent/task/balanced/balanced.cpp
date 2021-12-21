@@ -63,14 +63,19 @@ arken_balanced_start(lua_State *L) {
 
 static int
 arken_balanced_max(lua_State *L) {
-  int max = luaL_checkinteger(L, 1);
-  balanced::s_max = max;
-  return 0;
+  if(lua_gettop(L) == 1) { /* número de argumentos */
+    int max = luaL_checkinteger(L, 1);
+    balanced::max() = max;
+    return 0;
+  } else {
+    lua_pushinteger(L, balanced::max());
+    return 1;
+  }
 }
 
 static int
 arken_balanced_actives(lua_State *L) {
-  lua_pushinteger(L, balanced::s_actives);
+  lua_pushinteger(L, balanced::actives());
   return 1;
 }
 

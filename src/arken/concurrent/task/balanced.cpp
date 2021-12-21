@@ -11,15 +11,11 @@ namespace arken {
 namespace concurrent {
 namespace task {
 
-std::mutex balanced::s_mutex;
-std::atomic<uint32_t> balanced::s_max{mvm::threads()};
-std::atomic<uint32_t> balanced::s_actives{0};
-
 balanced::balanced()
 {
   m_uuid    = os::uuid();
   m_inspect = "arken.concurrent.task.balanced";
-  balanced::s_actives++;
+  balanced::actives()++;
 }
 
 balanced::~balanced() = default;
@@ -60,7 +56,7 @@ void balanced::run()
 
     node.run();
 
-    std::unique_lock<std::mutex> lck(balanced::s_mutex);
+    std::unique_lock<std::mutex> lck(balanced::mutex());
     running().erase(node.uuid());
 
   }
@@ -68,11 +64,11 @@ void balanced::run()
 
 balanced::node balanced::start(const char * fileName, const char * params, const char * name, bool purge)
 {
-  std::unique_lock<std::mutex> lck(balanced::s_mutex);
+  std::unique_lock<std::mutex> lck(balanced::mutex());
   balanced::node node = balanced::node(fileName, params, name, purge);
   balanced::push( node );
 
-  if(balanced::s_actives < balanced::s_max) {
+  if(balanced::actives() < balanced::max()) {
     mvm::concurrent( new balanced() );
   }
 
@@ -175,7 +171,7 @@ void balanced::push(const balanced::node & node)
 
 balanced::node balanced::dequeue()
 {
-  std::unique_lock<std::mutex> lck(balanced::s_mutex);
+  std::unique_lock<std::mutex> lck(balanced::mutex());
   string name;
   std::vector<string> &vector = balanced::vector();
   std::unordered_map<string, std::queue<balanced::node>> &map = balanced::map();
@@ -205,7 +201,7 @@ balanced::node balanced::dequeue()
   position()++;
 
   if( name.empty() ) {
-    balanced::s_actives--;
+    balanced::actives()--;
     return {};
   } else {
     balanced::node n = map[name].front();
@@ -229,7 +225,7 @@ std::unordered_map<string, string> &balanced::running()
 
 string balanced::inspect()
 {
-  std::unique_lock<std::mutex> lck(balanced::s_mutex);
+  std::unique_lock<std::mutex> lck(balanced::mutex());
 
   string tmp("{");
 
@@ -260,6 +256,23 @@ string balanced::inspect()
   return tmp;
 }
 
+std::mutex & balanced::mutex()
+{
+  static std::mutex s_mutex;
+  return s_mutex;
+}
+
+std::atomic<uint32_t> & balanced::actives()
+{
+  static std::atomic<uint32_t> s_actives{0};
+  return s_actives;
+}
+
+std::atomic<uint32_t> & balanced::max()
+{
+  static std::atomic<uint32_t> s_max{mvm::threads()};
+  return s_max;
+}
 
 }  // namespace task
 }  // namespace concurrent

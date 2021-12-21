@@ -62,14 +62,19 @@ arken_scheduled_start(lua_State *L) {
 
 static int
 arken_scheduled_max(lua_State *L) {
-  int max = luaL_checkinteger(L, 1);
-  scheduled::s_max = max;
-  return 0;
+  if(lua_gettop(L) == 1) { /* número de argumentos */
+    int max = luaL_checkinteger(L, 1);
+    scheduled::max() = max;
+    return 0;
+  } else {
+    lua_pushinteger(L, scheduled::max());
+    return 1;
+  }
 }
 
 static int
 arken_scheduled_actives(lua_State *L) {
-  lua_pushinteger(L, scheduled::s_actives);
+  lua_pushinteger(L, scheduled::actives());
   return 1;
 }
 

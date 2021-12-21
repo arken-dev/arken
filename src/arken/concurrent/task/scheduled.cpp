@@ -10,15 +10,11 @@ namespace arken {
 namespace concurrent {
 namespace task {
 
-std::mutex scheduled::s_mutex;
-std::atomic<uint32_t> scheduled::s_max{mvm::threads()};
-std::atomic<uint32_t> scheduled::s_actives{0};
-
 scheduled::scheduled()
 {
   m_uuid    = os::uuid();
   m_inspect = "arken.concurrent.task.scheduled";
-  scheduled::s_actives++;
+  scheduled::actives()++;
 }
 
 scheduled::~scheduled() = default;
@@ -65,7 +61,7 @@ void scheduled::run()
 
     node.run();
 
-    std::unique_lock<std::mutex> lck(scheduled::s_mutex);
+    std::unique_lock<std::mutex> lck(scheduled::mutex());
     running().erase(node.uuid());
 
   }
@@ -73,11 +69,11 @@ void scheduled::run()
 
 scheduled::node scheduled::start(const char * fileName, const char * params, const char * name, bool purge)
 {
-  std::unique_lock<std::mutex> lck(scheduled::s_mutex);
+  std::unique_lock<std::mutex> lck(scheduled::mutex());
   scheduled::node node = scheduled::node(fileName, params, name, purge);
   scheduled::push( node );
 
-  if(scheduled::s_actives < scheduled::s_max) {
+  if(scheduled::actives() < scheduled::max()) {
     mvm::concurrent( new scheduled() );
   }
 
@@ -171,7 +167,7 @@ void scheduled::node::run()
   (*m_finished.get()) = true;
   runners()[m_name]--;
 
-  std::unique_lock<std::mutex> lck(scheduled::s_mutex);
+  std::unique_lock<std::mutex> lck(scheduled::mutex());
 
   if( runners()[m_name] == 0 && map()[m_name].size() == 0 ) {
     map().erase(m_name);
@@ -207,12 +203,12 @@ void scheduled::push(const scheduled::node & node)
 scheduled::node scheduled::dequeue()
 {
 
-  std::unique_lock<std::mutex> lck(scheduled::s_mutex);
+  std::unique_lock<std::mutex> lck(scheduled::mutex());
   std::vector<string> &vector = scheduled::vector();
   std::unordered_map<string, std::queue<scheduled::node>> &map = scheduled::map();
 
   if( vector.empty() ) {
-    scheduled::s_actives--;
+    scheduled::actives()--;
     return {};
   }
 
@@ -247,7 +243,7 @@ scheduled::node scheduled::dequeue()
   }
 
   if( map[name].empty() ) {
-    scheduled::s_actives--;
+    scheduled::actives()--;
     return {};
   } else {
     // increase runners
@@ -275,7 +271,7 @@ std::unordered_map<string, string> &scheduled::running()
 
 string scheduled::inspect()
 {
-  std::unique_lock<std::mutex> lck(scheduled::s_mutex);
+  std::unique_lock<std::mutex> lck(scheduled::mutex());
 
   string tmp("{");
 
@@ -306,6 +302,23 @@ string scheduled::inspect()
   return tmp;
 }
 
+std::mutex & scheduled::mutex()
+{
+  static std::mutex s_mutex;
+  return s_mutex;
+}
+
+std::atomic<uint32_t> & scheduled::actives()
+{
+  static std::atomic<uint32_t> s_actives{0};
+  return s_actives;
+}
+
+std::atomic<uint32_t> & scheduled::max()
+{
+  static std::atomic<uint32_t> s_max{mvm::threads()};
+  return s_max;
+}
 
 }  // namespace task
 }  // namespace concurrent

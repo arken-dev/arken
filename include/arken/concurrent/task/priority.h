@@ -48,14 +48,14 @@ namespace task {
 
     static priority::node start(const char * fileName, const char * params, int priority = 0, bool purge = false);
     static std::priority_queue<priority::node, std::vector<priority::node>, priority::node> & priority_queue();
-    static std::mutex s_mutex;
+    static std::mutex & mutex();
     static void push(const priority::node & node);
     static std::unordered_map<string, string> &running();
 
     public:
     static priority::node dequeue();
-    static std::atomic<uint32_t> s_actives;
-    static std::atomic<uint32_t> s_max;
+    static std::atomic<uint32_t> & actives();
+    static std::atomic<uint32_t> & max();
     static string inspect();
 
   };

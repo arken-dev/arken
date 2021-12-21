@@ -10,21 +10,16 @@ namespace arken {
 namespace concurrent {
 namespace task {
 
-
-std::mutex fifo::s_mutex;
-std::atomic<uint32_t> fifo::s_max{mvm::threads()};
-std::atomic<uint32_t> fifo::s_actives{0};
-
 fifo::fifo()
 {
   m_uuid    = os::uuid();
   m_inspect = "arken.concurrent.task.fifo";
-  fifo::s_actives++;
+  fifo::actives()++;
 }
 
 fifo::~fifo()
 {
-  fifo::s_actives--;
+  fifo::actives()--;
 }
 
 std::queue<fifo::node> & fifo::fifo_queue()
@@ -45,7 +40,7 @@ void fifo::run()
 
     node.run();
 
-    std::unique_lock<std::mutex> lck(fifo::s_mutex);
+    std::unique_lock<std::mutex> lck(fifo::mutex());
     running().erase(node.uuid());
 
   }
@@ -53,11 +48,11 @@ void fifo::run()
 
 fifo::node fifo::start(const char * fileName, const char * params, bool purge)
 {
-  std::unique_lock<std::mutex> lck(fifo::s_mutex);
+  std::unique_lock<std::mutex> lck(fifo::mutex());
   fifo::node node = fifo::node(fileName, params, purge);
   fifo::push( node );
 
-  if(fifo::s_actives < fifo::s_max) {
+  if(fifo::actives() < fifo::max()) {
     mvm::concurrent( new arken::concurrent::task::fifo() );
   }
 
@@ -152,7 +147,7 @@ void fifo::push(const fifo::node & node)
 
 fifo::node fifo::dequeue()
 {
-  std::unique_lock<std::mutex> lck(fifo::s_mutex);
+  std::unique_lock<std::mutex> lck(fifo::mutex());
   if (fifo::fifo_queue().empty()) {
     return {};
   }
@@ -172,7 +167,7 @@ std::unordered_map<string, string> &fifo::running()
 
 string fifo::inspect()
 {
-  std::unique_lock<std::mutex> lck(fifo::s_mutex);
+  std::unique_lock<std::mutex> lck(fifo::mutex());
 
   string tmp("{");
 
@@ -192,6 +187,23 @@ string fifo::inspect()
   return tmp;
 }
 
+std::mutex & fifo::mutex()
+{
+  static std::mutex s_mutex;
+  return s_mutex;
+}
+
+std::atomic<uint32_t> & fifo::actives()
+{
+  static std::atomic<uint32_t> s_actives{0};
+  return s_actives;
+}
+
+std::atomic<uint32_t> & fifo::max()
+{
+  static std::atomic<uint32_t> s_max{mvm::threads()};
+  return s_max;
+}
 
 }  // namespace task
 }  // namespace concurrent

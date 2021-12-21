@@ -11,15 +11,11 @@ namespace arken {
 namespace concurrent {
 namespace task {
 
-std::mutex singular::s_mutex;
-std::atomic<uint32_t> singular::s_max{mvm::threads()};
-std::atomic<uint32_t> singular::s_actives{0};
-
 singular::singular()
 {
   m_uuid     = os::uuid();
   m_inspect = "arken.concurrent.task.singular";
-  singular::s_actives++;
+  singular::actives()++;
 }
 
 std::vector<string> & singular::vector()
@@ -58,19 +54,19 @@ void singular::run()
 
     node.run();
 
-    std::unique_lock<std::mutex> lck(singular::s_mutex);
+    std::unique_lock<std::mutex> lck(singular::mutex());
     running().erase(node.uuid());
   }
 }
 
 singular::node singular::start(const char * fileName, const char * params, const char * name, bool purge)
 {
-  std::unique_lock<std::mutex> lck(singular::s_mutex);
+  std::unique_lock<std::mutex> lck(singular::mutex());
 
   singular::node node = singular::node(fileName, params, name, purge);
   singular::push( node );
 
-  if( singular::s_actives < singular::s_max && singular::s_actives < singular::runners().size() ) {
+  if( singular::actives() < singular::max() && singular::actives() < singular::runners().size() ) {
     mvm::concurrent( new singular() );
   }
 
@@ -79,14 +75,14 @@ singular::node singular::start(const char * fileName, const char * params, const
 
 singular::node singular::emplace(const char * fileName, const char * params, const char * name, bool purge)
 {
-  std::unique_lock<std::mutex> lck(singular::s_mutex);
+  std::unique_lock<std::mutex> lck(singular::mutex());
 
   if( singular::map().count(name) == 0 || singular::map()[name].empty() ) {
 
     singular::node node = singular::node(fileName, params, name, purge);
     singular::push( node );
 
-    if( singular::s_actives < singular::s_max ) {
+    if( singular::actives() < singular::max() ) {
       mvm::concurrent( new singular() );
     }
 
@@ -98,14 +94,14 @@ singular::node singular::emplace(const char * fileName, const char * params, con
 
 singular::node singular::place(const char * fileName, const char * params, const char * name, bool purge)
 {
-  std::unique_lock<std::mutex> lck(singular::s_mutex);
+  std::unique_lock<std::mutex> lck(singular::mutex());
 
   if( runners().count(name) == 0 ) {
 
     singular::node node = singular::node(fileName, params, name, purge);
     singular::push( node );
 
-    if( singular::s_actives < singular::s_max ) {
+    if( singular::actives() < singular::max() ) {
       mvm::concurrent( new singular() );
     }
 
@@ -198,7 +194,7 @@ void singular::node::run()
   }
 
 
-  std::unique_lock<std::mutex> lck(singular::s_mutex);
+  std::unique_lock<std::mutex> lck(singular::mutex());
 
   (*m_finished.get()) = true;
 
@@ -235,10 +231,10 @@ void singular::push(const singular::node & node)
 singular::node singular::dequeue()
 {
 
-  std::unique_lock<std::mutex> lck(singular::s_mutex);
+  std::unique_lock<std::mutex> lck(singular::mutex());
 
-  if( s_actives > vector().size() ) {
-    singular::s_actives--;
+  if( actives() > vector().size() ) {
+    singular::actives()--;
     return {};
   }
 
@@ -280,7 +276,7 @@ singular::node singular::dequeue()
   }
 
   if( name.empty() || map()[name].empty() ) {
-    singular::s_actives--;
+    singular::actives()--;
     return {};
   } else {
     runners()[name] = false;
@@ -298,14 +294,9 @@ string singular::node::name()
   return m_name;
 }
 
-uint32_t singular::actives()
-{
-  return s_actives;
-}
-
 string singular::inspect()
 {
-  std::unique_lock<std::mutex> lck(singular::s_mutex);
+  std::unique_lock<std::mutex> lck(singular::mutex());
 
   string tmp("{");
 
@@ -340,6 +331,24 @@ std::unordered_map<string, string> &singular::running()
 {
   static std::unordered_map<string, string> s_running;
   return s_running;
+}
+
+std::mutex & singular::mutex()
+{
+  static std::mutex s_mutex;
+  return s_mutex;
+}
+
+std::atomic<uint32_t> & singular::actives()
+{
+  static std::atomic<uint32_t> s_actives{0};
+  return s_actives;
+}
+
+std::atomic<uint32_t> & singular::max()
+{
+  static std::atomic<uint32_t> s_max{mvm::threads()};
+  return s_max;
 }
 
 }  // namespace task

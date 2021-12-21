@@ -10,20 +10,16 @@ namespace arken {
 namespace concurrent {
 namespace task {
 
-std::mutex priority::s_mutex;
-std::atomic<uint32_t> priority::s_max{mvm::threads()};
-std::atomic<uint32_t> priority::s_actives{0};
-
 priority::priority()
 {
   m_uuid    = os::uuid();
   m_inspect = "arken.concurrent.task.priority";
-  priority::s_actives++;
+  priority::actives()++;
 }
 
 priority::~priority()
 {
-  priority::s_actives--;
+  priority::actives()--;
 }
 
 std::priority_queue<priority::node, std::vector<priority::node>, priority::node> & priority::priority_queue()
@@ -44,7 +40,7 @@ void priority::run()
 
     node.run();
 
-    std::unique_lock<std::mutex> lck(priority::s_mutex);
+    std::unique_lock<std::mutex> lck(priority::mutex());
     running().erase(node.uuid());
 
   }
@@ -52,11 +48,11 @@ void priority::run()
 
 priority::node priority::start(const char * fileName, const char * params, int priority, bool purge)
 {
-  std::unique_lock<std::mutex> lck(priority::s_mutex);
+  std::unique_lock<std::mutex> lck(priority::mutex());
   priority::node node = priority::node(fileName, params, priority, purge);
   priority::push( node );
 
-  if(priority::s_actives < priority::s_max) {
+  if(priority::actives() < priority::max()) {
     mvm::concurrent( new arken::concurrent::task::priority() );
   }
 
@@ -163,7 +159,7 @@ void priority::push(const priority::node & node)
 
 priority::node priority::dequeue()
 {
-  std::unique_lock<std::mutex> lck(priority::s_mutex);
+  std::unique_lock<std::mutex> lck(priority::mutex());
   if (priority::priority_queue().empty()) {
     return priority::node();
   }
@@ -188,7 +184,7 @@ std::unordered_map<string, string> &priority::running()
 
 string priority::inspect()
 {
-  std::unique_lock<std::mutex> lck(priority::s_mutex);
+  std::unique_lock<std::mutex> lck(priority::mutex());
 
   string tmp("{");
 
@@ -206,6 +202,24 @@ string priority::inspect()
   tmp.append(std::to_string(priority_queue().size()));
   tmp.append("}");
   return tmp;
+}
+
+std::mutex & priority::mutex()
+{
+  static std::mutex s_mutex;
+  return s_mutex;
+}
+
+std::atomic<uint32_t> & priority::actives()
+{
+  static std::atomic<uint32_t> s_actives{0};
+  return s_actives;
+}
+
+std::atomic<uint32_t> & priority::max()
+{
+  static std::atomic<uint32_t> s_max{mvm::threads()};
+  return s_max;
 }
 
 }  // namespace task
