@@ -48,6 +48,11 @@ char * utf8::sub(const char * str, int p1, int p2)
   }
 
   int size   = (v2 - v1) + 1;
+
+  if( size < 0 ) {
+    size = 0;
+  }
+
   auto res = new char[size+1];
   int a = 0;
   for(int b=v1; a < size; a++, b++) {
