@@ -7,42 +7,21 @@
 
 namespace arken {
 
-std::unordered_map<std::string, int>          Lock::m_references;
-std::unordered_map<std::string, std::mutex *> Lock::m_containers;
-static std::mutex m;
-
-Lock::Lock(const char * index)
+Lock::Lock(const char * name)
 {
-  m.lock();
-  m_index = index;
-  if ( m_references.count(m_index) == 0 ) {
-    m_references[m_index] = 0;
-    m_containers[m_index] = new std::mutex;
-  }
-  m_references[m_index]++;
-  m.unlock();
+  m_resource = named_ptr<std::mutex>(name);
 }
 
-Lock::~Lock()
-{
-  m.lock();
-  m_references[m_index]--;
-  if( m_references[m_index] == 0 ) {
-    delete m_containers[m_index];
-    m_containers.erase(m_index);
-    m_references.erase(m_index);
-  }
-  m.unlock();
-}
+Lock::~Lock() = default;
 
 void Lock::enable()
 {
-  m_containers[m_index]->lock();
+  m_resource->lock();
 }
 
 void Lock::disable()
 {
-  m_containers[m_index]->unlock();
+  m_resource->unlock();
 }
 
 } // namespace arken

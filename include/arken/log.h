@@ -7,7 +7,7 @@
 #define _ARKEN_LOG_
 
 #include <fstream>
-#include <unordered_map>
+#include <arken/named_ptr.h>
 
 namespace arken
 {
@@ -16,12 +16,11 @@ namespace arken
   {
 
     private:
+    int m_max;
+    int m_count;
     std::string m_fileName;
-
-    static std::unordered_map<std::string, int>           m_references;
-    static std::unordered_map<std::string, int>           m_count;
-    static std::unordered_map<std::string, int>           m_max;
-    static std::unordered_map<std::string, std::string *> m_containers;
+    named_ptr<std::string> m_resource;
+    void _dump();
 
     public:
     Log(const char * fileName, int max = -1);
@@ -35,7 +34,6 @@ namespace arken
     void error(const char * value);
     void fatal(const char * value);
     void dump();
-    void _dump();
 
   };
 

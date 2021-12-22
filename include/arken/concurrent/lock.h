@@ -7,7 +7,7 @@
 #define _ARKEN_LOCK_
 
 #include <mutex>
-#include <unordered_map>
+#include <arken/named_ptr.h>
 
 namespace arken
 {
@@ -16,13 +16,10 @@ namespace arken
   {
 
     private:
-    std::string m_index;
-
-    static std::unordered_map<std::string, int>           m_references;
-    static std::unordered_map<std::string, std::mutex  *> m_containers;
+    named_ptr<std::mutex> m_resource;
 
     public:
-    Lock(const char * index);
+    Lock(const char * name);
     ~Lock();
     void enable();
     void disable();

@@ -4,22 +4,19 @@
 // license that can be found in the LICENSE file.
 
 #include <arken/base>
-#include <arken/log>
+#include <arken/log.h>
 #include <ctime>
 #include <mutex>
 
+std::mutex mtx;
+
 namespace arken {
-
-std::unordered_map<std::string, int>           Log::m_count;
-std::unordered_map<std::string, int>           Log::m_references;
-std::unordered_map<std::string, int>           Log::m_max;
-std::unordered_map<std::string, std::string *> Log::m_containers;
-
-static std::mutex mtx;
 
 Log::Log(const char * fileName, int max)
 {
-  std::unique_lock<std::mutex> lck(mtx);
+
+  m_max   = max;
+  m_count = 0;
 
   if( string::contains(fileName, "/") ) {
     m_fileName = fileName;
@@ -30,49 +27,29 @@ Log::Log(const char * fileName, int max)
     m_fileName.append(".log");
   }
 
-  if ( m_references.count(m_fileName) == 0 ) {
-    m_max[m_fileName]           = max;
-    m_count[m_fileName]         = 1;
-    m_references[m_fileName]    = 0;
-    m_containers[m_fileName]    = new std::string("");
-  }
-
-  m_references[m_fileName]++;
+  string name = os::basename(fileName);
+  m_resource  = named_ptr<std::string>(name);
 }
 
-Log::~Log()
-{
+Log::~Log() {
   std::unique_lock<std::mutex> lck(mtx);
-
-  m_references[m_fileName]--;
-
-  if( m_references[m_fileName] == 0 ) {
-    delete m_containers[m_fileName];
-    m_containers.erase(m_fileName);
-    m_references.erase(m_fileName);
-    m_max.erase(m_fileName);
-    m_count.erase(m_fileName);
-  }
+  this->_dump();
 }
 
 void Log::append(const char * value)
 {
   std::unique_lock<std::mutex> lck(mtx);
 
-  std::string * container = m_containers[m_fileName];
-  container->append(value);
-  container->append("\n");
+  m_resource->append(value);
+  m_resource->append("\n");
 
-  int  max   = m_max[m_fileName];
-  int  count = m_count[m_fileName];
+  m_count++;
 
-  if( max > 0 && count >= max ) {
+  if( m_max > 0 && m_count >= m_max ) {
     this->_dump();
-    count = 0;
+    m_count = 0;
   }
 
-  count++;
-  m_count[m_fileName] = count;
 }
 
 void Log::log(const char * level, const char * value)
@@ -82,7 +59,7 @@ void Log::log(const char * level, const char * value)
   // time
   std::time_t result = std::time(nullptr);
   char * t = std::asctime(std::localtime(&result));
-  t[24] = 32;
+  t[24] = 32; // space
   log.append(t);
   log.append(value);
   this->append(log.c_str());
@@ -126,15 +103,11 @@ void Log::dump()
 
 void Log::_dump()
 {
-  std::string *tmp = m_containers[m_fileName];
-  m_containers[m_fileName]  = new std::string("");
-
-  // write file
   std::ofstream file;
   file.open(m_fileName, std::ofstream::out | std::ofstream::app);
-  file << *tmp;
+  file << m_resource->c_str();
   file.close();
-  delete tmp;
+  m_resource->clear();
 }
 
 } // namespace arken
