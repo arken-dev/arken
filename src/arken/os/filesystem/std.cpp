@@ -89,8 +89,9 @@ string os::home()
 
 string os::hostname()
 {
-  auto hostname = new char[HOST_NAME_MAX+1]();
-  gethostname(hostname, HOST_NAME_MAX+1);
+  #define ARKEN_HOSTNAME_MAX 64
+  auto hostname = new char[ARKEN_HOSTNAME_MAX+1]();
+  gethostname(hostname, ARKEN_HOSTNAME_MAX+1);
   return string(std::move(hostname));
 }
 
