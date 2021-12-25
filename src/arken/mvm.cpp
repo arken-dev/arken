@@ -469,6 +469,7 @@ const char * mvm::cext()
   static std::map<const string, const string> s_cext {
     {"linux",   "so"},
     {"freebsd", "so"},
+    {"netbsd",  "so"},
     {"windows", "dll"},
     {"macos",   "dylib"},
   };
