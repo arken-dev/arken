@@ -121,7 +121,7 @@ void mvm::init(int argc, char ** argv)
 
   if( s_arkenPath.empty() ) {
     std::cerr << "os.executablePath() return empty"     << std::endl;
-    std::cerr << "set ARKEN_PATH env var is a solution" << std::endl;
+    std::cerr << "setenv ARKEN_PATH is a solution" << std::endl;
     exit(1);
   }
 
