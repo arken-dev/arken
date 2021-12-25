@@ -110,8 +110,20 @@ void mvm::init(int argc, char ** argv)
   mvm::env( getenv("ARKEN_ENV") );
 
   //TODO
-  string path = os::executablePath();
-  s_arkenPath = path.prefix("bin").left(-1);
+
+  const char * arkenPath = getenv("ARKEN_PATH");
+  if( arkenPath ) {
+    s_arkenPath = arkenPath;
+  } else {
+    string path = os::executablePath();
+    s_arkenPath = path.prefix("bin").left(-1);
+  }
+
+  if( s_arkenPath.empty() ) {
+    std::cerr << "os.executablePath() return empty"     << std::endl;
+    std::cerr << "set ARKEN_PATH env var is a solution" << std::endl;
+    exit(1);
+  }
 
   s_packagePath.
     append("./?.lua;").
@@ -455,11 +467,13 @@ const char * mvm::env()
 const char * mvm::cext()
 {
   static std::map<const string, const string> s_cext {
-    {"linux", "so"}, {"windows", "dll"}, {"macos", "dylib"},
+    {"linux",   "so"},
+    {"freebsd", "so"},
+    {"windows", "dll"},
+    {"macos",   "dylib"},
   };
   return s_cext[os::name()];
 }
-
 
 void mvm::concurrent(concurrent::base * ptr)
 {

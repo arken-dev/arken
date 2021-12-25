@@ -14,7 +14,9 @@ string os::executablePath()
     ::realpath(temp, exepath);
     return string(std::move(exepath));
   } else {
-    std::cerr << "mount -t procfs proc /proc (is required)" << std::endl;
-    exit(1);
+    std::cerr << "mount -t procfs proc /proc "
+              << "(is required for os.executaPath())"
+              << std::endl;
+    return {};
   }
 }
