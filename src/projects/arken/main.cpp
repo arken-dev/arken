@@ -9,20 +9,7 @@
 #include <arken/log>
 #include <iostream>
 #include <cstdio>
-#define GOOGLE_BREAKPAD_ENABLED 1
-
-
-#ifdef GOOGLE_BREAKPAD_ENABLED
-#include "client/linux/handler/exception_handler.h"
-static bool dumpCallback(const google_breakpad::MinidumpDescriptor& descriptor,
-void* context, bool succeeded) {
-  arken::Log log("dumps");
-  log.info(descriptor.path());
-  log.dump();
-  printf("Dump path: %s\n", descriptor.path());
-  return succeeded;
-}
-#endif
+#include <breakpad.h>
 
 using arken::mvm;
 
@@ -165,16 +152,11 @@ int arkenConsoleLoad(lua_State *L)
   return rv;
 }
 
+
 int main(int argc, char * argv[])
 {
-  #ifdef GOOGLE_BREAKPAD_ENABLED
-    arken::string path = os::pwd();
-    path.append("/logs/dumps");
-    google_breakpad::MinidumpDescriptor descriptor(path.data());
-    google_breakpad::ExceptionHandler eh(descriptor, NULL, dumpCallback, NULL, true, -1);
-    std::cout << "google breakpad enabled..." << std::endl;
-    std::cout << "path descriptor " << path << std::endl;
-  #endif
+
+  BREAKPAD();
 
   mvm::init(argc, argv);
   os::sleep(0.1); // waiting mvm output log

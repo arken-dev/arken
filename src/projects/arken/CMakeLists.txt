@@ -11,17 +11,12 @@
 include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${PROJECT_SOURCE_DIR}/deps/include)
 
-if(GOOGLE_BREAKPAD)
-  MESSAGE("google breakpad link arken-bin")
-  set(GOOGLE_BREAKPAD_ENABLED true)
-  include_directories(/opt/objectdata/google-breakpad/include/breakpad)
-endif()
-
-add_executable( arken-bin main.cpp )
+add_executable( arken-bin main.cpp ${breakpad} )
 set_target_properties(arken-bin PROPERTIES OUTPUT_NAME arken)
 
 target_link_libraries(arken-bin lua arken curl)
+
 if(GOOGLE_BREAKPAD)
-  target_link_libraries(arken-bin /opt/objectdata/google-breakpad/lib/libbreakpad.a )
-  target_link_libraries(arken-bin /opt/objectdata/google-breakpad/lib/libbreakpad_client.a )
+  target_link_libraries(arken-bin breakpad )
+  target_link_libraries(arken-bin breakpad_client )
 endif()
