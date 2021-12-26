@@ -470,6 +470,7 @@ const char * mvm::cext()
     {"linux",   "so"},
     {"freebsd", "so"},
     {"netbsd",  "so"},
+    {"openbsd", "so"},
     {"windows", "dll"},
     {"macos",   "dylib"},
   };
