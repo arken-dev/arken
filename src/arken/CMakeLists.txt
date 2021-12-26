@@ -19,31 +19,6 @@ INCLUDE_DIRECTORIES(
 )
 
 
-if(ARKEN_NOTIFY STREQUAL "libnotify")
-  find_package(PkgConfig REQUIRED)
-  find_package(GTK2 REQUIRED gtk)
-  PKG_SEARCH_MODULE(GDK_PIXBUF ${_pkgconfig_REQUIRED} "gdk-pixbuf-2.0")
-  pkg_check_modules(GLIB REQUIRED glib-2.0)
-  pkg_check_modules(LIB_NOTIFY REQUIRED libnotify)
-  PKG_CHECK_MODULES(GDK_PIXBUF, gio-2.0)
-  include_directories(${GLIB_INCLUDE_DIRS})
-  include_directories(${NOTIFY_INCLUDE_DIRS})
-  find_path(GDK_PIXBUF_INCLUDE_DIRS gdk-pixbuf/gdk-pixbuf.h)
-  include_directories(${GDK_PIXBUF_INCLUDE_DIRS})
-endif()
-
-if(ARKEN_NOTIFY STREQUAL "glib")
-  find_package(PkgConfig REQUIRED)
-  #find_package(GTK2 REQUIRED gtk)
-  #PKG_SEARCH_MODULE(GDK_PIXBUF ${_pkgconfig_REQUIRED} "gdk-pixbuf-2.0")
-  #pkg_check_modules(GLIB REQUIRED glib-2.0)
-  pkg_check_modules(LIB_GIO REQUIRED gio-2.0)
-  #PKG_CHECK_MODULES(GDK_PIXBUF, gio-2.0)
-  include_directories(${GLIB_INCLUDE_DIRS})
-  #find_path(GDK_PIXBUF_INCLUDE_DIRS gdk-pixbuf/gdk-pixbuf.h)
-  #include_directories(${GDK_PIXBUF_INCLUDE_DIRS})
-endif()
-
 include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${PROJECT_SOURCE_DIR}/deps/include)
 include_directories(${PROJECT_SOURCE_DIR}/src/vendors/ap)
@@ -84,10 +59,18 @@ add_library(
   ${utf8}
 )
 
+target_link_libraries(arken pthread)
+target_link_libraries(arken m)
 target_link_libraries(arken zip)
 target_link_libraries(arken curl)
 target_link_libraries(arken lua)
 target_link_libraries(arken json)
+target_link_libraries(arken ${ImageMagick_LIBRARIES})
+target_link_libraries(arken ${ImageMagick_MagickWand_LIBRARY})
+
+#------------------------------------------------------------------------------
+# ARKEN_NOTIFY
+#------------------------------------------------------------------------------
 
 if(ARKEN_NOTIFY STREQUAL "libnotify")
   target_link_libraries(arken notify)
@@ -104,8 +87,6 @@ if(ARKEN_NOTIFY STREQUAL "opengl")
   include_directories(${PROJECT_SOURCE_DIR}/src/arken/notify/opengl)
 endif()
 
-target_link_libraries(arken pthread m)
-
 if(ARKEN_NOTIFY STREQUAL "glib")
   message(STATUS ${GLIB_LIBRARIES})
   target_link_libraries(arken ${GLIB_LIBRARIES})
@@ -116,9 +97,17 @@ if(ARKEN_NOTIFY STREQUAL "opengl")
   target_link_libraries(arken glut GL)
 endif()
 
+#------------------------------------------------------------------------------
+# ARKEN_DIGEST
+#------------------------------------------------------------------------------
+
 if(ARKEN_DIGEST STREQUAL "libssl")
   target_link_libraries(arken ssl)
 endif()
+
+#------------------------------------------------------------------------------
+# ARKEN_OS_UUID
+#------------------------------------------------------------------------------
 
 if(ARKEN_OS_UUID STREQUAL "libuuid")
   target_link_libraries(arken uuid)
@@ -129,10 +118,18 @@ if(ARKEN_OS_UUID STREQUAL "libssl")
   target_link_libraries(arken crypto)
 endif()
 
+#------------------------------------------------------------------------------
+# ARKEN_OS_FILESYSTEM
+#------------------------------------------------------------------------------
+
 if(ARKEN_OS_FILESYSTEM STREQUAL "boost")
   message(STATUS "link libarken with ${Boost_LIBRARIES}")
   target_link_libraries(arken pthread m ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
 endif()
+
+#------------------------------------------------------------------------------
+# ARKEN_NET_HTTPSERVER
+#------------------------------------------------------------------------------
 
 if(ARKEN_NET_HTTPSERVER STREQUAL "qt")
   target_link_libraries(arken Qt5::Core Qt5::Network Qt5::Gui Qt5::Widgets)
@@ -161,7 +158,8 @@ if(ARKEN_NET_HTTPSERVER STREQUAL "libev")
   target_link_libraries(arken ev)
 endif()
 
-target_link_libraries(arken ${ImageMagick_LIBRARIES} ${ImageMagick_MagickWand_LIBRARY})
+#------------------------------------------------------------------------------
+# ARKEN_BARCODE
+#------------------------------------------------------------------------------
 
-#Barcode
 target_link_libraries(arken /opt/objectdata/zxing-cpp/build/core/libZXing.so )

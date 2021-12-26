@@ -62,8 +62,6 @@ set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 
 link_directories( ${PROJECT_SOURCE_DIR}/deps )
 
-set(CMAKE_AUTOMOC ON)
-
 if (WIN32)
 find_package(curl)
 find_package(lua)

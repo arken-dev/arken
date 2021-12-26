@@ -17,6 +17,7 @@ if(ARKEN_NET_HTTPSERVER STREQUAL "")
 endif()
 
 if(ARKEN_NOTIFY STREQUAL "qt")
+  set(CMAKE_AUTOMOC ON)
   find_package(Qt5Core)
   find_package(Qt5Network)
   find_package(Qt5Gui)
