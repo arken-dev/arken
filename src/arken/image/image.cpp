@@ -1,5 +1,6 @@
 #include <arken/image.h>
 
+
 namespace arken {
 
 Image::Image(int width, int height, string color)

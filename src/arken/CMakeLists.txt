@@ -8,16 +8,6 @@
 #
 # ------------------------------------------------------------------------------
 
-FIND_PACKAGE(ImageMagick
-  REQUIRED
-  COMPONENTS MagickWand
-)
-
-INCLUDE_DIRECTORIES(
-  ${ImageMagick_INCLUDE_DIRS}
-  ${ImageMagick_MagickWand_INCLUDE_DIRS}
-)
-
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${PROJECT_SOURCE_DIR}/deps/include)
@@ -41,6 +31,7 @@ set(mongrel2 ${PROJECT_SOURCE_DIR}/src/vendors/mongrel2/http11/http11_parser.c)
 add_library(
   arken SHARED
   ${src}
+  ${arken-image}
   ${base64}
   ${base64-embedded}
   ${compress}
@@ -66,7 +57,14 @@ target_link_libraries(arken curl)
 target_link_libraries(arken lua)
 target_link_libraries(arken json)
 target_link_libraries(arken ${ImageMagick_LIBRARIES})
-target_link_libraries(arken ${ImageMagick_MagickWand_LIBRARY})
+
+#------------------------------------------------------------------------------
+# ARKEN_IMAGE
+#------------------------------------------------------------------------------
+
+if(ARKEN_IMAGE)
+  target_link_libraries(arken ${ImageMagick_MagickWand_LIBRARY})
+endif()
 
 #------------------------------------------------------------------------------
 # ARKEN_NOTIFY
