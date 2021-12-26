@@ -31,6 +31,7 @@ set(mongrel2 ${PROJECT_SOURCE_DIR}/src/vendors/mongrel2/http11/http11_parser.c)
 add_library(
   arken SHARED
   ${src}
+  ${arken-barcode}
   ${arken-image}
   ${base64}
   ${base64-embedded}
@@ -160,4 +161,6 @@ endif()
 # ARKEN_BARCODE
 #------------------------------------------------------------------------------
 
-target_link_libraries(arken /opt/objectdata/zxing-cpp/build/core/libZXing.so )
+if(ARKEN_BARCODE)
+  target_link_libraries( arken ZXing )
+endif()

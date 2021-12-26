@@ -4,7 +4,6 @@ if(ARKEN_IMAGE)
 
   file(GLOB files ${PROJECT_SOURCE_DIR}/src/arken/image/*.cpp)
   set( arken-image ${files} )
-  message(${arken-image})
 
   FIND_PACKAGE(ImageMagick
     REQUIRED
