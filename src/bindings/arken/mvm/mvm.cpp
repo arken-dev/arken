@@ -98,13 +98,6 @@ arken_mvm_env(lua_State *L) {
 }
 
 static int
-arken_mvm_cext(lua_State *L) {
-  const char * cext = mvm::cext();
-  lua_pushstring(L, cext);
-  return 1;
-}
-
-static int
 arken_mvm_threads(lua_State *L) {
   if(lua_gettop(L) == 1) { // number of arguments
     int threads = luaL_checkinteger(L, 1);
@@ -158,7 +151,6 @@ register_arken_mvm( lua_State *L ) {
     {"wait",    arken_mvm_wait},
     {"path",    arken_mvm_path},
     {"env",     arken_mvm_env},
-    {"cext",    arken_mvm_cext},
     {"threads", arken_mvm_threads},
     {"actives", arken_mvm_actives},
     {"inspect", arken_mvm_inspect},

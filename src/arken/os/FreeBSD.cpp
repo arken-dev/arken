@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <limits.h>
 #include <sys/types.h>
+#include <sys/resource.h>
 
 string os::executablePath()
 {
@@ -19,4 +20,28 @@ string os::executablePath()
               << std::endl;
     return {};
   }
+}
+
+size_t os::mem()
+{
+  struct rusage rusage;
+  getrusage( RUSAGE_SELF, &rusage );
+  return (size_t)(rusage.ru_maxrss);
+}
+
+uint64_t os::pid()
+{
+  return getpid();
+}
+
+const char * os::name()
+{
+  static const char * s_name = "freebsd";
+  return s_name;
+}
+
+const char * os::cext()
+{
+  static const char * s_cext = "so";
+  return s_cext;
 }

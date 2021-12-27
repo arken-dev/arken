@@ -51,6 +51,13 @@ static int arken_os_mem( lua_State *L ) {
   return 1;
 }
 
+static int
+arken_os_cext(lua_State *L) {
+  const char * cext = os::cext();
+  lua_pushstring(L, cext);
+  return 1;
+}
+
 static int arken_os_cores( lua_State *L ) {
   lua_pushnumber( L, os::cores() );
   return 1;
@@ -262,6 +269,7 @@ int luaopen_arken_os( lua_State *L ) {
     {"abspath",    arken_os_abspath},
     {"atime",      arken_os_atime},
     {"basename",   arken_os_basename},
+    {"cext",       arken_os_cext},
     {"compare",    arken_os_compare},
     {"copy",       arken_os_copy},
     {"cores",      arken_os_cores},

@@ -16,7 +16,7 @@
 #include <lua/lauxlib.h>
 #include <lua/lualib.h>
 
-#include <postgresql/libpq-fe.h>
+#include <libpq-fe.h>
 
 #include "luasql.h"
 

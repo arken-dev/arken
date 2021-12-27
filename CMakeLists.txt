@@ -17,6 +17,11 @@ project("arken")
 
 LIST(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
+include_directories(${PROJECT_SOURCE_DIR}/include)
+include_directories(${PROJECT_SOURCE_DIR}/deps/include)
+include_directories(${PROJECT_SOURCE_DIR}/src/embedded)
+include_directories(${PROJECT_SOURCE_DIR}/src/vendors)
+
 include(google-breakpad)
 include(arken)
 include(arken-barcode)
@@ -31,11 +36,7 @@ include(arken-regex)
 include(arken-notify)
 include(mysql)
 include(postgres)
-
-include_directories(${PROJECT_SOURCE_DIR}/include)
-include_directories(${PROJECT_SOURCE_DIR}/deps/include)
-include_directories(${PROJECT_SOURCE_DIR}/src/embedded)
-include_directories(${PROJECT_SOURCE_DIR}/src/vendors)
+include(os/${CMAKE_SYSTEM_NAME})
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++17")
 

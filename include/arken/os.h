@@ -42,6 +42,7 @@ class os {
   static bool     mkdir(const char * dirname);
   static bool     mkpath(const char * dirpath);
   static const char * name();
+  static const char * cext();
   static uint64_t pid();
   static string   pwd();
   static bool     rmdir(const char * dirname);

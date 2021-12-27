@@ -43,7 +43,7 @@ add_library(
   ${net}
   ${httpserver}
   ${arken-notify}
-  ${os} ${os-executablePath} ${os-filesystem} ${os-mem} ${os-name} ${os-pid} ${os-uuid} ${os-glob}
+  ${os} ${os-system} ${os-uuid} ${os-glob}
   ${concurrent} ${concurrent-task} ${arken-concurrent-worker}
   ${regex}
   ${time}
@@ -78,7 +78,7 @@ if(ARKEN_NOTIFY STREQUAL "libnotify")
 endif()
 
 if(ARKEN_NOTIFY STREQUAL "qt")
-  target_link_libraries(arken Qt5::Core Qt5::Network Qt5::Gui Qt5::Widgets)
+  target_link_libraries(arken Qt5Core Qt5Network Qt5Gui Qt5Widgets)
   include_directories(${PROJECT_SOURCE_DIR}/src/arken/notify/qt)
 endif()
 

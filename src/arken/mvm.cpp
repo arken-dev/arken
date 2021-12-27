@@ -132,7 +132,7 @@ void mvm::init(int argc, char ** argv)
     append(s_arkenPath).append("/packages/?.lua");
 
   //TODO capitalize windows
-  const char * cext = mvm::cext();
+  const char * cext = os::cext();
   s_cpackagePath.
   append(".").append("/?.").append(cext).
   append(";").append("./clib/?.").append(cext).
@@ -458,23 +458,6 @@ void mvm::env(const char * env)
 const char * mvm::env()
 {
   return s_env;
-}
-
-//-----------------------------------------------------------------------------
-// CEXT
-//-----------------------------------------------------------------------------
-
-const char * mvm::cext()
-{
-  static std::map<const string, const string> s_cext {
-    {"linux",   "so"},
-    {"freebsd", "so"},
-    {"netbsd",  "so"},
-    {"openbsd", "so"},
-    {"windows", "dll"},
-    {"macos",   "dylib"},
-  };
-  return s_cext[os::name()];
 }
 
 void mvm::concurrent(concurrent::base * ptr)

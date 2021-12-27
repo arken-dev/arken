@@ -1,6 +1,7 @@
 #include <arken/base>
 #include <libproc.h>
 #include <unistd.h>
+#include <sys/resource.h>
 
 string os::executablePath()
 {
@@ -13,4 +14,28 @@ string os::executablePath()
   } else {
     return string(std::move(result));
   }
+}
+
+size_t os::mem()
+{
+  struct rusage rusage;
+  getrusage( RUSAGE_SELF, &rusage );
+  return (size_t)(rusage.ru_maxrss);
+}
+
+const char * os::name()
+{
+  static const char * name = "macos";
+  return name;
+}
+
+const char * os::cext()
+{
+  static const char * s_cext = "dylib";
+  return s_cext;
+}
+
+uint64_t os::pid()
+{
+  return getpid();
 }
