@@ -18,4 +18,4 @@ add_library(
 
 set_target_properties(cache PROPERTIES PREFIX "")
 
-target_link_libraries(cache arken lua)
+target_link_libraries(cache arken)

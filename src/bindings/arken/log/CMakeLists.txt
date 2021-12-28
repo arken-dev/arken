@@ -18,4 +18,4 @@ add_library(
 
 set_target_properties(Log PROPERTIES PREFIX "")
 
-target_link_libraries(Log arken lua)
+target_link_libraries(Log arken)

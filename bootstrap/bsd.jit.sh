@@ -9,8 +9,8 @@ tar -xzvf LuaJIT-$LUAJITVERSION.tar.gz
 cp ../bootstrap/Makefile/Makefile.jit LuaJIT-$LUAJITVERSION/src/Makefile
 
 cd LuaJIT-$LUAJITVERSION
-make
-make install PREFIX=$PWD/../luajit
+gmake
+gmake install PREFIX=$PWD/../luajit
 mkdir -p tmp
 cp ../luajit/lib/libluajit-5.1.a tmp
 cd tmp

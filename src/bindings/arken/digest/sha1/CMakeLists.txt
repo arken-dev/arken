@@ -18,4 +18,4 @@ add_library(
 
 set_target_properties(sha1 PROPERTIES PREFIX "")
 
-target_link_libraries(sha1 arken lua)
+target_link_libraries(sha1 arken)

@@ -3,7 +3,7 @@ curl -L -O -C - http://www.lua.org/ftp/lua-5.1.5.tar.gz -o lua-5.1.5.tar.gz
 tar -xzvf lua-5.1.5.tar.gz
 cp ../bootstrap/Makefile/Makefile.lua lua-5.1.5/src/Makefile
 cd lua-5.1.5
-make linux test
+make freebsd test
 cd src
 mkdir tmp
 cp liblua.a tmp

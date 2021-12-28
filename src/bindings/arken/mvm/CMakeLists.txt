@@ -18,4 +18,4 @@ add_library(
 
 set_target_properties(mvm PROPERTIES PREFIX "")
 
-target_link_libraries(mvm arken lua)
+target_link_libraries(mvm arken)

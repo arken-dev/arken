@@ -18,4 +18,4 @@ add_library(
 
 set_target_properties(arken_concurrent_channel PROPERTIES OUTPUT_NAME channel PREFIX "")
 
-target_link_libraries(arken_concurrent_channel arken lua json)
+target_link_libraries(arken_concurrent_channel arken)

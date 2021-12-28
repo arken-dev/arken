@@ -18,4 +18,4 @@ add_library(
 
 set_target_properties(odebug PROPERTIES PREFIX "")
 
-target_link_libraries(odebug arken lua)
+target_link_libraries(odebug arken)

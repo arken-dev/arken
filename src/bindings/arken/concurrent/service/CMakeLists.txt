@@ -18,4 +18,4 @@ add_library(
 
 set_target_properties(arken_concurrent_service PROPERTIES OUTPUT_NAME service PREFIX "")
 
-target_link_libraries(arken_concurrent_service arken lua json)
+target_link_libraries(arken_concurrent_service arken)

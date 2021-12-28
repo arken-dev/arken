@@ -18,4 +18,4 @@ add_library(
 
 set_target_properties(md5 PROPERTIES PREFIX "")
 
-target_link_libraries(md5 arken lua)
+target_link_libraries(md5 arken)

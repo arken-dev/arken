@@ -9,6 +9,5 @@
 # ------------------------------------------------------------------------------
 
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/clib/arken/compress)
-set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/clib/arken/compress)
 
 add_subdirectory(zip)

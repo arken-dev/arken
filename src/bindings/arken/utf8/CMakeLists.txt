@@ -18,4 +18,4 @@ add_library(
 
 set_target_properties(utf8 PROPERTIES PREFIX "")
 
-target_link_libraries(utf8 arken lua)
+target_link_libraries(utf8 arken)

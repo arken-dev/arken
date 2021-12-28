@@ -18,4 +18,4 @@ add_library(
 
 set_target_properties(Image PROPERTIES PREFIX "")
 
-target_link_libraries(Image arken lua)
+target_link_libraries(Image arken)

@@ -24,4 +24,4 @@ add_library(
 
 set_target_properties(sqlite3 PROPERTIES PREFIX "")
 
-target_link_libraries(sqlite3 lua)
+target_link_libraries(sqlite3 arken)

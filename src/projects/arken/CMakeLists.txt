@@ -14,7 +14,7 @@ include_directories(${PROJECT_SOURCE_DIR}/deps/include)
 add_executable( arken-bin main.cpp ${breakpad} )
 set_target_properties(arken-bin PROPERTIES OUTPUT_NAME arken)
 
-target_link_libraries(arken-bin lua arken curl)
+target_link_libraries(arken-bin arken)
 
 if(GOOGLE_BREAKPAD)
   target_link_libraries(arken-bin breakpad )

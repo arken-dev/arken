@@ -36,6 +36,7 @@ include(arken-regex)
 include(arken-notify)
 include(mysql)
 include(postgres)
+include(lua)
 include(os/${CMAKE_SYSTEM_NAME})
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++17")

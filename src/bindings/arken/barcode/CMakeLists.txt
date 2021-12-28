@@ -18,4 +18,4 @@ add_library(
 
 set_target_properties(Barcode PROPERTIES PREFIX "")
 
-target_link_libraries(Barcode arken lua)
+target_link_libraries(Barcode arken)

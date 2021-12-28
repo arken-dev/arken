@@ -18,4 +18,4 @@ add_library(
 
 set_target_properties(zip-binding PROPERTIES PREFIX "" OUTPUT_NAME Zip)
 
-target_link_libraries(zip-binding arken lua)
+target_link_libraries(zip-binding arken)

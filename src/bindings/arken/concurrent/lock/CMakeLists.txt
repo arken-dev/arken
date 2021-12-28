@@ -18,4 +18,4 @@ add_library(
 
 set_target_properties(arken_concurrent_Lock PROPERTIES OUTPUT_NAME Lock PREFIX "")
 
-target_link_libraries(arken_concurrent_Lock arken lua json)
+target_link_libraries(arken_concurrent_Lock arken)

@@ -18,4 +18,4 @@ add_library(
 
 set_target_properties(base PROPERTIES PREFIX "")
 
-target_link_libraries(base arken lua curl)
+target_link_libraries(base arken)

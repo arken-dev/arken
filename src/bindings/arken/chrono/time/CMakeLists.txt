@@ -17,4 +17,4 @@ add_library(
 )
 
 set_target_properties(arken.chrono.Time PROPERTIES LIBRARY_OUTPUT_NAME "Time" PREFIX "")
-target_link_libraries(arken.chrono.Time arken lua)
+target_link_libraries(arken.chrono.Time arken)

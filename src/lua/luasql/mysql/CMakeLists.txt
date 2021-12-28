@@ -22,4 +22,4 @@ add_library(
 
 set_target_properties(mysql PROPERTIES PREFIX "")
 
-target_link_libraries(mysql lua mysqlclient)
+target_link_libraries(mysql arken mysqlclient)

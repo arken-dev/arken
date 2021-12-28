@@ -18,4 +18,4 @@ add_library(
 
 set_target_properties(arken_concurrent_Shared PROPERTIES OUTPUT_NAME Shared PREFIX "")
 
-target_link_libraries(arken_concurrent_Shared arken lua json)
+target_link_libraries(arken_concurrent_Shared arken)

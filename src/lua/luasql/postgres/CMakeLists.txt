@@ -22,4 +22,4 @@ add_library(
 
 set_target_properties(postgres PROPERTIES PREFIX "")
 
-target_link_libraries(postgres lua pq)
+target_link_libraries(postgres arken pq)

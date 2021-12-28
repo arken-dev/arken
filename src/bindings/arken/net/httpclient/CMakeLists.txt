@@ -18,4 +18,4 @@ add_library(
 
 set_target_properties(HttpClient PROPERTIES PREFIX "")
 
-target_link_libraries(HttpClient arken lua)
+target_link_libraries(HttpClient arken)

@@ -55,7 +55,7 @@ target_link_libraries(arken pthread)
 target_link_libraries(arken m)
 target_link_libraries(arken zip)
 target_link_libraries(arken curl)
-target_link_libraries(arken lua)
+target_link_libraries(arken ${LUA_FLAVOR})
 target_link_libraries(arken json)
 target_link_libraries(arken ${ImageMagick_LIBRARIES})
 

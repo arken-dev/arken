@@ -20,4 +20,4 @@ add_library(
 
 set_target_properties(arken_concurrent_task_balanced PROPERTIES OUTPUT_NAME balanced PREFIX "")
 
-target_link_libraries(arken_concurrent_task_balanced arken lua json)
+target_link_libraries(arken_concurrent_task_balanced arken)

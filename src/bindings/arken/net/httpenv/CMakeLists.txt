@@ -16,4 +16,4 @@ add_library(
 
 set_target_properties(HttpEnv PROPERTIES PREFIX "")
 
-target_link_libraries(HttpEnv arken lua)
+target_link_libraries(HttpEnv arken)

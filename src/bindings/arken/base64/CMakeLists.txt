@@ -18,4 +18,4 @@ add_library(
 
 set_target_properties(base64 PROPERTIES PREFIX "")
 
-target_link_libraries(base64 arken lua)
+target_link_libraries(base64 arken)

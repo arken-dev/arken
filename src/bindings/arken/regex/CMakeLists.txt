@@ -18,4 +18,4 @@ add_library(
 
 set_target_properties(regex PROPERTIES PREFIX "")
 
-target_link_libraries(regex arken lua)
+target_link_libraries(regex arken)
