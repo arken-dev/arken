@@ -12,10 +12,10 @@ include_directories(.)
 include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${PROJECT_SOURCE_DIR}/deps/include)
 
-set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/deps)
-
 add_library(
-  json SHARED
-  json.h dtoa_config.h fpconv.h strbuf.h
-  json.c strbuf.c g_fmt.c dtoa.c json_lock.cpp #fpconv.c
+  arken_json SHARED json.cpp
 )
+
+set_target_properties(arken_json PROPERTIES OUTPUT_NAME json PREFIX "")
+
+target_link_libraries(arken_json arken json)

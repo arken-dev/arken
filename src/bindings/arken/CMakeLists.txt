@@ -26,6 +26,7 @@ if(ARKEN_IMAGE)
 add_subdirectory(image)
 endif()
 
+add_subdirectory(json)
 add_subdirectory(log)
 add_subdirectory(mvm)
 add_subdirectory(net)
