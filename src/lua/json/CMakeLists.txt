@@ -23,4 +23,4 @@ add_library(
 
 set_target_properties(json PROPERTIES PREFIX "")
 
-target_link_libraries(json lua)
+target_link_libraries(json)
