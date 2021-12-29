@@ -518,7 +518,7 @@ luaL_reg TimeInstanceMethods[] = {
   {"mday",        arken_TimeInstanceMethodMday},
   {"wday",        arken_TimeInstanceMethodWday},
   {"yday",        arken_TimeInstanceMethodYday},
-  {"dayofWeek",   arken_TimeInstanceMethodDayOfWeek},
+  {"dayOfWeek",   arken_TimeInstanceMethodDayOfWeek},
   {"dayOfYear",   arken_TimeInstanceMethodDayOfYear},
   {"daysInMonth", arken_TimeInstanceMethodDaysInMonth},
   {"time",        arken_TimeInstanceMethodTime},
