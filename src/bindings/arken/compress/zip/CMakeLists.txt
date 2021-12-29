@@ -8,14 +8,9 @@
 #
 # ------------------------------------------------------------------------------
 
-include_directories(.)
-include_directories(${PROJECT_SOURCE_DIR}/include)
-include_directories(${PROJECT_SOURCE_DIR}/deps/include)
-
 add_library(
-  zip-binding SHARED zip.cpp
+  arken.compress.Zip SHARED zip.cpp
 )
 
-set_target_properties(zip-binding PROPERTIES PREFIX "" OUTPUT_NAME Zip)
-
-target_link_libraries(zip-binding arken)
+set_target_properties(arken.compress.Zip PROPERTIES PREFIX "" OUTPUT_NAME Zip)
+target_link_libraries(arken.compress.Zip arken)

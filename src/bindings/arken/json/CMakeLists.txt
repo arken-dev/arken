@@ -8,14 +8,9 @@
 #
 # ------------------------------------------------------------------------------
 
-include_directories(.)
-include_directories(${PROJECT_SOURCE_DIR}/include)
-include_directories(${PROJECT_SOURCE_DIR}/deps/include)
-
 add_library(
-  arken_json SHARED json.cpp
+  arken.json SHARED json.cpp
 )
 
-set_target_properties(arken_json PROPERTIES OUTPUT_NAME json PREFIX "")
-
-target_link_libraries(arken_json arken json)
+set_target_properties(arken.json PROPERTIES PREFIX "" OUTPUT_NAME json)
+target_link_libraries(arken.json arken json)

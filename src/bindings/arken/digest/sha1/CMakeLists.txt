@@ -8,14 +8,9 @@
 #
 # ------------------------------------------------------------------------------
 
-include_directories(.)
-include_directories(${PROJECT_SOURCE_DIR}/include)
-include_directories(${PROJECT_SOURCE_DIR}/deps/include)
-
 add_library(
-  sha1 SHARED sha1.cpp
+  arken.digest.sha1 SHARED sha1.cpp
 )
 
-set_target_properties(sha1 PROPERTIES PREFIX "")
-
-target_link_libraries(sha1 arken)
+set_target_properties(arken.digest.sha1 PROPERTIES PREFIX "" OUTPUT_NAME sha1)
+target_link_libraries(arken.digest.sha1 arken)

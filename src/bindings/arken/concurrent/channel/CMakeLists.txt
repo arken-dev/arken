@@ -8,14 +8,9 @@
 #
 # ------------------------------------------------------------------------------
 
-include_directories(.)
-include_directories(${PROJECT_SOURCE_DIR}/include)
-include_directories(${PROJECT_SOURCE_DIR}/deps/include)
-
 add_library(
-  arken_concurrent_channel SHARED channel.cpp
+  arken.concurrent.channel SHARED channel.cpp
 )
 
-set_target_properties(arken_concurrent_channel PROPERTIES OUTPUT_NAME channel PREFIX "")
-
-target_link_libraries(arken_concurrent_channel arken)
+set_target_properties(arken.concurrent.channel PROPERTIES PREFIX "" OUTPUT_NAME channel)
+target_link_libraries(arken.concurrent.channel arken)

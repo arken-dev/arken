@@ -8,14 +8,9 @@
 #
 # ------------------------------------------------------------------------------
 
-include_directories(.)
-include_directories(${PROJECT_SOURCE_DIR}/include)
-include_directories(${PROJECT_SOURCE_DIR}/deps/include)
-
 add_library(
-  utf8 SHARED utf8.cpp
+  arken.utf8 SHARED utf8.cpp
 )
 
-set_target_properties(utf8 PROPERTIES PREFIX "")
-
-target_link_libraries(utf8 arken)
+set_target_properties(arken.utf8 PROPERTIES PREFIX "" OUTPUT_NAME utf8)
+target_link_libraries(arken.utf8 arken)

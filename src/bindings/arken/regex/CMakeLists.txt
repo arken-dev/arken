@@ -8,14 +8,9 @@
 #
 # ------------------------------------------------------------------------------
 
-include_directories(.)
-include_directories(${PROJECT_SOURCE_DIR}/include)
-include_directories(${PROJECT_SOURCE_DIR}/deps/include)
-
 add_library(
-  regex SHARED regex.cpp
+  arken.regex SHARED regex.cpp
 )
 
-set_target_properties(regex PROPERTIES PREFIX "")
-
-target_link_libraries(regex arken)
+set_target_properties(arken.regex PROPERTIES PREFIX "" OUTPUT_NAME regex)
+target_link_libraries(arken.regex arken)

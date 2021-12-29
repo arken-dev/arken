@@ -8,13 +8,9 @@
 #
 # ------------------------------------------------------------------------------
 
-include_directories(.)
-include_directories(${PROJECT_SOURCE_DIR}/include)
-include_directories(${PROJECT_SOURCE_DIR}/deps/include)
-
 add_library(
   arken.chrono.Date SHARED date.cpp
 )
 
-set_target_properties(arken.chrono.Date PROPERTIES LIBRARY_OUTPUT_NAME "Date" PREFIX "")
+set_target_properties(arken.chrono.Date PROPERTIES PREFIX "" OUTPUT_NAME Date)
 target_link_libraries(arken.chrono.Date arken)

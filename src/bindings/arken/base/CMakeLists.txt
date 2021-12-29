@@ -8,14 +8,9 @@
 #
 # ------------------------------------------------------------------------------
 
-include_directories(.)
-include_directories(${PROJECT_SOURCE_DIR}/include)
-include_directories(${PROJECT_SOURCE_DIR}/deps/include)
-
 add_library(
-  base SHARED base.cpp math.cpp os.cpp string.cpp
+  arken.base SHARED base.cpp math.cpp os.cpp string.cpp
 )
 
-set_target_properties(base PROPERTIES PREFIX "")
-
-target_link_libraries(base arken)
+set_target_properties(arken.base PROPERTIES PREFIX "" OUTPUT_NAME base)
+target_link_libraries(arken.base arken)

@@ -8,14 +8,9 @@
 #
 # ------------------------------------------------------------------------------
 
-include_directories(.)
-include_directories(${PROJECT_SOURCE_DIR}/include)
-include_directories(${PROJECT_SOURCE_DIR}/deps/include)
-
 add_library(
-  md5 SHARED md5.cpp
+  arken.digest.md5 SHARED md5.cpp
 )
 
-set_target_properties(md5 PROPERTIES PREFIX "")
-
-target_link_libraries(md5 arken)
+set_target_properties(arken.digest.md5 PROPERTIES PREFIX "" OUTPUT_NAME md5)
+target_link_libraries(arken.digest.md5 arken)

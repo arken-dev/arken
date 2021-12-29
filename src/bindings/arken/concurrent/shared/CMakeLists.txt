@@ -8,14 +8,9 @@
 #
 # ------------------------------------------------------------------------------
 
-include_directories(.)
-include_directories(${PROJECT_SOURCE_DIR}/include)
-include_directories(${PROJECT_SOURCE_DIR}/deps/include)
-
 add_library(
-  arken_concurrent_Shared SHARED shared.cpp
+  arken.concurrent.Shared SHARED shared.cpp
 )
 
-set_target_properties(arken_concurrent_Shared PROPERTIES OUTPUT_NAME Shared PREFIX "")
-
-target_link_libraries(arken_concurrent_Shared arken)
+set_target_properties(arken.concurrent.Shared PROPERTIES PREFIX "" OUTPUT_NAME Shared)
+target_link_libraries(arken.concurrent.Shared arken)

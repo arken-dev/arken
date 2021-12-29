@@ -8,14 +8,9 @@
 #
 # ------------------------------------------------------------------------------
 
-include_directories(.)
-include_directories(${PROJECT_SOURCE_DIR}/include)
-include_directories(${PROJECT_SOURCE_DIR}/deps/include)
-
 add_library(
-  arken_concurrent_service SHARED service.cpp
+  arken.concurrent.service SHARED service.cpp
 )
 
-set_target_properties(arken_concurrent_service PROPERTIES OUTPUT_NAME service PREFIX "")
-
-target_link_libraries(arken_concurrent_service arken)
+set_target_properties(arken.concurrent.service PROPERTIES PREFIX "" OUTPUT_NAME service)
+target_link_libraries(arken.concurrent.service arken)

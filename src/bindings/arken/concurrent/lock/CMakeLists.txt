@@ -8,14 +8,9 @@
 #
 # ------------------------------------------------------------------------------
 
-include_directories(.)
-include_directories(${PROJECT_SOURCE_DIR}/include)
-include_directories(${PROJECT_SOURCE_DIR}/deps/include)
-
 add_library(
-  arken_concurrent_Lock SHARED lock.cpp
+  arken.concurrent.Lock SHARED lock.cpp
 )
 
-set_target_properties(arken_concurrent_Lock PROPERTIES OUTPUT_NAME Lock PREFIX "")
-
-target_link_libraries(arken_concurrent_Lock arken)
+set_target_properties(arken.concurrent.Lock PROPERTIES PREFIX "" OUTPUT_NAME Lock)
+target_link_libraries(arken.concurrent.Lock arken)

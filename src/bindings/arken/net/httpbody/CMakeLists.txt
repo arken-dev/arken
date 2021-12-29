@@ -8,14 +8,9 @@
 #
 # ------------------------------------------------------------------------------
 
-include_directories(.)
-include_directories(${PROJECT_SOURCE_DIR}/include)
-include_directories(${PROJECT_SOURCE_DIR}/deps/include)
-
 add_library(
-  HttpBody SHARED httpbody.cpp
+  arken.net.HttpBody SHARED httpbody.cpp
 )
 
-set_target_properties(HttpBody PROPERTIES PREFIX "")
-
-target_link_libraries(HttpBody arken)
+set_target_properties(arken.net.HttpBody PROPERTIES PREFIX "" OUTPUT_NAME HttpBody)
+target_link_libraries(arken.net.HttpBody arken)

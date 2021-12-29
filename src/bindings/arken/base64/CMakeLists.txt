@@ -8,14 +8,9 @@
 #
 # ------------------------------------------------------------------------------
 
-include_directories(.)
-include_directories(${PROJECT_SOURCE_DIR}/include)
-include_directories(${PROJECT_SOURCE_DIR}/deps/include)
-
 add_library(
-  base64 SHARED base64.cpp
+  arken.base64 SHARED base64.cpp
 )
 
-set_target_properties(base64 PROPERTIES PREFIX "")
-
-target_link_libraries(base64 arken)
+set_target_properties(arken.base64 PROPERTIES PREFIX "" OUTPUT_NAME base64)
+target_link_libraries(arken.base64 arken)

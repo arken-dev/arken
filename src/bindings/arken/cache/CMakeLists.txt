@@ -8,14 +8,9 @@
 #
 # ------------------------------------------------------------------------------
 
-include_directories(.)
-include_directories(${PROJECT_SOURCE_DIR}/include)
-include_directories(${PROJECT_SOURCE_DIR}/deps/include)
-
 add_library(
-  cache SHARED cache.cpp
+  arken.cache SHARED cache.cpp
 )
 
-set_target_properties(cache PROPERTIES PREFIX "")
-
-target_link_libraries(cache arken)
+set_target_properties(arken.cache PROPERTIES PREFIX "" OUTPUT_NAME cache)
+target_link_libraries(arken.cache arken)

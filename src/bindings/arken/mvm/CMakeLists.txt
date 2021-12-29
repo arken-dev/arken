@@ -8,14 +8,9 @@
 #
 # ------------------------------------------------------------------------------
 
-include_directories(.)
-include_directories(${PROJECT_SOURCE_DIR}/include)
-include_directories(${PROJECT_SOURCE_DIR}/deps/include)
-
 add_library(
-  mvm SHARED mvm.cpp
+  arken.mvm SHARED mvm.cpp
 )
 
-set_target_properties(mvm PROPERTIES PREFIX "")
-
-target_link_libraries(mvm arken)
+set_target_properties(arken.mvm PROPERTIES PREFIX "" OUTPUT_NAME mvm)
+target_link_libraries(arken.mvm arken)

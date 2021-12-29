@@ -8,14 +8,9 @@
 #
 # ------------------------------------------------------------------------------
 
-include_directories(.)
-include_directories(${PROJECT_SOURCE_DIR}/include)
-include_directories(${PROJECT_SOURCE_DIR}/deps/include)
-
 add_library(
-  Log SHARED log.cpp
+  arken.Log SHARED log.cpp
 )
 
-set_target_properties(Log PROPERTIES PREFIX "")
-
-target_link_libraries(Log arken)
+set_target_properties(arken.Log PROPERTIES PREFIX "" OUTPUT_NAME Log)
+target_link_libraries(arken.Log arken)

@@ -8,16 +8,9 @@
 #
 # ------------------------------------------------------------------------------
 
-include_directories(.)
-include_directories(${PROJECT_SOURCE_DIR}/include)
-include_directories(${PROJECT_SOURCE_DIR}/deps/include)
-
-set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/clib/arken/concurrent/task)
-
 add_library(
-  arken_concurrent_task_priority SHARED priority.cpp
+  arken.concurrent.task.priority SHARED priority.cpp
 )
 
-set_target_properties(arken_concurrent_task_priority PROPERTIES OUTPUT_NAME priority PREFIX "")
-
-target_link_libraries(arken_concurrent_task_priority arken)
+set_target_properties(arken.concurrent.task.priority PROPERTIES PREFIX "" OUTPUT_NAME priority)
+target_link_libraries(arken.concurrent.task.priority arken)

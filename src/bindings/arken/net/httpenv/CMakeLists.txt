@@ -8,12 +8,9 @@
 #
 # ------------------------------------------------------------------------------
 
-include_directories(.)
-
 add_library(
-  HttpEnv SHARED httpenv.cpp
+  arken.net.HttpEnv SHARED httpenv.cpp
 )
 
-set_target_properties(HttpEnv PROPERTIES PREFIX "")
-
-target_link_libraries(HttpEnv arken)
+set_target_properties(arken.net.HttpEnv PROPERTIES PREFIX "" OUTPUT_NAME HttpEnv)
+target_link_libraries(arken.net.HttpEnv arken)

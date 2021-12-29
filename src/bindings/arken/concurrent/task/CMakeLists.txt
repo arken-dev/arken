@@ -8,14 +8,9 @@
 #
 # ------------------------------------------------------------------------------
 
-include_directories(.)
-include_directories(${PROJECT_SOURCE_DIR}/include)
-include_directories(${PROJECT_SOURCE_DIR}/deps/include)
-
 add_library(
-  arken_concurrent_task SHARED task.cpp
+  arken.concurrent.task SHARED task.cpp
 )
 
-set_target_properties(arken_concurrent_task PROPERTIES OUTPUT_NAME task PREFIX "")
-
-target_link_libraries(arken_concurrent_task arken)
+set_target_properties(arken.concurrent.task PROPERTIES PREFIX "" OUTPUT_NAME task)
+target_link_libraries(arken.concurrent.task arken)

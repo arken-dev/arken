@@ -8,13 +8,9 @@
 #
 # ------------------------------------------------------------------------------
 
-include_directories(.)
-include_directories(${PROJECT_SOURCE_DIR}/include)
-include_directories(${PROJECT_SOURCE_DIR}/deps/include)
-
 add_library(
-  SMTP SHARED smtp.cpp
+  arken.net.SMTP SHARED smtp.cpp
 )
 
-set_target_properties(SMTP PROPERTIES PREFIX "")
-target_link_libraries(SMTP arken)
+set_target_properties(arken.net.SMTP PROPERTIES PREFIX "" OUTPUT_NAME SMTP)
+target_link_libraries(arken.net.SMTP arken)

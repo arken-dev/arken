@@ -8,16 +8,9 @@
 #
 # ------------------------------------------------------------------------------
 
-include_directories(.)
-include_directories(${PROJECT_SOURCE_DIR}/include)
-include_directories(${PROJECT_SOURCE_DIR}/deps/include)
-
-set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/clib/arken/concurrent/task)
-
 add_library(
-  arken_concurrent_task_singular SHARED singular.cpp
+  arken.concurrent.task.singular SHARED singular.cpp
 )
 
-set_target_properties(arken_concurrent_task_singular PROPERTIES OUTPUT_NAME singular PREFIX "")
-
-target_link_libraries(arken_concurrent_task_singular arken)
+set_target_properties(arken.concurrent.task.singular PROPERTIES PREFIX "" OUTPUT_NAME singular)
+target_link_libraries(arken.concurrent.task.singular arken)

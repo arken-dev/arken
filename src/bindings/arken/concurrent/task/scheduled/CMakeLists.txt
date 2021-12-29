@@ -8,16 +8,9 @@
 #
 # ------------------------------------------------------------------------------
 
-include_directories(.)
-include_directories(${PROJECT_SOURCE_DIR}/include)
-include_directories(${PROJECT_SOURCE_DIR}/deps/include)
-
-set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/clib/arken/concurrent/task)
-
 add_library(
-  arken_concurrent_task_scheduled SHARED scheduled.cpp
+  arken.concurrent.task.scheduled SHARED scheduled.cpp
 )
 
-set_target_properties(arken_concurrent_task_scheduled PROPERTIES OUTPUT_NAME scheduled PREFIX "")
-
-target_link_libraries(arken_concurrent_task_scheduled arken)
+set_target_properties(arken.concurrent.task.scheduled PROPERTIES PREFIX "" OUTPUT_NAME scheduled)
+target_link_libraries(arken.concurrent.task.scheduled arken)

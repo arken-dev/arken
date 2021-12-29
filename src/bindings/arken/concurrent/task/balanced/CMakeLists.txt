@@ -8,16 +8,9 @@
 #
 # ------------------------------------------------------------------------------
 
-include_directories(.)
-include_directories(${PROJECT_SOURCE_DIR}/include)
-include_directories(${PROJECT_SOURCE_DIR}/deps/include)
-
-set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/clib/arken/concurrent/task)
-
 add_library(
-  arken_concurrent_task_balanced SHARED balanced.cpp
+  arken.concurrent.task.balanced SHARED balanced.cpp
 )
 
-set_target_properties(arken_concurrent_task_balanced PROPERTIES OUTPUT_NAME balanced PREFIX "")
-
-target_link_libraries(arken_concurrent_task_balanced arken)
+set_target_properties(arken.concurrent.task.balanced PROPERTIES PREFIX "" OUTPUT_NAME balanced)
+target_link_libraries(arken.concurrent.task.balanced arken)

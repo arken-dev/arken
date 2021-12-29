@@ -8,14 +8,9 @@
 #
 # ------------------------------------------------------------------------------
 
-include_directories(.)
-include_directories(${PROJECT_SOURCE_DIR}/include)
-include_directories(${PROJECT_SOURCE_DIR}/deps/include)
-
 add_library(
-  arken_concurrent_worker SHARED worker.cpp
+  arken.concurrent.worker SHARED worker.cpp
 )
 
-set_target_properties(arken_concurrent_worker PROPERTIES OUTPUT_NAME worker PREFIX "")
-
-target_link_libraries(arken_concurrent_worker arken)
+set_target_properties(arken.concurrent.worker PROPERTIES PREFIX "" OUTPUT_NAME worker)
+target_link_libraries(arken.concurrent.worker arken)

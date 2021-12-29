@@ -8,14 +8,9 @@
 #
 # ------------------------------------------------------------------------------
 
-include_directories(.)
-include_directories(${PROJECT_SOURCE_DIR}/include)
-include_directories(${PROJECT_SOURCE_DIR}/deps/include)
-
 add_library(
-  HttpClient SHARED httpclient.cpp
+  arken.net.HttpClient SHARED httpclient.cpp
 )
 
-set_target_properties(HttpClient PROPERTIES PREFIX "")
-
-target_link_libraries(HttpClient arken)
+set_target_properties(arken.net.HttpClient PROPERTIES PREFIX "" OUTPUT_NAME HttpClient)
+target_link_libraries(arken.net.HttpClient arken)

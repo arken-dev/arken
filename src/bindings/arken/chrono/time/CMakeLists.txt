@@ -8,13 +8,9 @@
 #
 # ------------------------------------------------------------------------------
 
-include_directories(.)
-include_directories(${PROJECT_SOURCE_DIR}/include)
-include_directories(${PROJECT_SOURCE_DIR}/deps/include)
-
 add_library(
   arken.chrono.Time SHARED time.cpp
 )
 
-set_target_properties(arken.chrono.Time PROPERTIES LIBRARY_OUTPUT_NAME "Time" PREFIX "")
+set_target_properties(arken.chrono.Time PROPERTIES PREFIX "" OUTPUT_NAME Time)
 target_link_libraries(arken.chrono.Time arken)

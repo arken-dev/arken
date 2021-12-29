@@ -8,14 +8,9 @@
 #
 # ------------------------------------------------------------------------------
 
-include_directories(.)
-include_directories(${PROJECT_SOURCE_DIR}/include)
-include_directories(${PROJECT_SOURCE_DIR}/deps/include)
-
 add_library(
-  odebug SHARED odebug.cpp
+  arken.odebug SHARED odebug.cpp
 )
 
-set_target_properties(odebug PROPERTIES PREFIX "")
-
-target_link_libraries(odebug arken)
+set_target_properties(arken.odebug PROPERTIES PREFIX "" OUTPUT_NAME odebug)
+target_link_libraries(arken.odebug arken)

@@ -8,14 +8,9 @@
 #
 # ------------------------------------------------------------------------------
 
-include_directories(.)
-include_directories(${PROJECT_SOURCE_DIR}/include)
-include_directories(${PROJECT_SOURCE_DIR}/deps/include)
-
 add_library(
-  arken_notify SHARED notify.cpp
+  arken.notify SHARED notify.cpp
 )
 
-set_target_properties(arken_notify PROPERTIES PREFIX "" OUTPUT_NAME "notify")
-
-target_link_libraries(arken_notify arken)
+set_target_properties(arken.notify PROPERTIES PREFIX "" OUTPUT_NAME notify)
+target_link_libraries(arken.notify arken)

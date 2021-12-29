@@ -8,16 +8,9 @@
 #
 # ------------------------------------------------------------------------------
 
-include_directories(.)
-include_directories(${PROJECT_SOURCE_DIR}/include)
-include_directories(${PROJECT_SOURCE_DIR}/deps/include)
-
-set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/clib/arken/concurrent/task)
-
 add_library(
-  arken_concurrent_task_fifo SHARED fifo.cpp
+  arken.concurrent.task.fifo SHARED fifo.cpp
 )
 
-set_target_properties(arken_concurrent_task_fifo PROPERTIES OUTPUT_NAME fifo PREFIX "")
-
-target_link_libraries(arken_concurrent_task_fifo arken)
+set_target_properties(arken.concurrent.task.fifo PROPERTIES PREFIX "" OUTPUT_NAME fifo)
+target_link_libraries(arken.concurrent.task.fifo arken)

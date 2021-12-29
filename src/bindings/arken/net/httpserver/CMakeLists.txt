@@ -8,14 +8,9 @@
 #
 # ------------------------------------------------------------------------------
 
-include_directories(.)
-include_directories(${PROJECT_SOURCE_DIR}/include)
-include_directories(${PROJECT_SOURCE_DIR}/deps/include)
-
 add_library(
-  HttpServer SHARED httpserver.cpp
+  arken.net.HttpServer SHARED httpserver.cpp
 )
 
-set_target_properties(HttpServer PROPERTIES PREFIX "")
-
-target_link_libraries(HttpServer arken)
+set_target_properties(arken.net.HttpServer PROPERTIES PREFIX "" OUTPUT_NAME HttpServer)
+target_link_libraries(arken.net.HttpServer arken)
