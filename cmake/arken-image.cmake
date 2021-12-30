@@ -1,16 +1,16 @@
-option(ARKEN_IMAGE "enable arken.image" true)
+option(ARKEN_IMAGE "enable arken.Image" false)
 
 if(ARKEN_IMAGE)
 
   file(GLOB files ${PROJECT_SOURCE_DIR}/src/arken/image/*.cpp)
   set( arken-image ${files} )
 
-  FIND_PACKAGE(ImageMagick
+  find_package(ImageMagick
     REQUIRED
     COMPONENTS MagickWand
   )
 
-  INCLUDE_DIRECTORIES(
+  include_directories(
     ${ImageMagick_INCLUDE_DIRS}
     ${ImageMagick_MagickWand_INCLUDE_DIRS}
   )

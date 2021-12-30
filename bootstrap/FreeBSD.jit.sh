@@ -6,16 +6,16 @@ curl -L -O -C - http://luajit.org/download/LuaJIT-$LUAJITVERSION.tar.gz \
 
 tar -xzvf LuaJIT-$LUAJITVERSION.tar.gz
 
-cp ../bootstrap/Makefile/Makefile.jit LuaJIT-$LUAJITVERSION/src/Makefile
+cp ../util/Makefile/Makefile.jit LuaJIT-$LUAJITVERSION/src/Makefile
 
 cd LuaJIT-$LUAJITVERSION
-gmake
-gmake install PREFIX=$PWD/../luajit
+gmake CC=/usr/local/bin/gcc10
+gmake install PREFIX=$PWD/../luajit CC=/usr/local/bin/gcc10
 mkdir -p tmp
 cp ../luajit/lib/libluajit-5.1.a tmp
 cd tmp
 ar -x libluajit-5.1.a
-gcc -fPIC -shared *.o -o libluajit.so
+gcc10 -fPIC -shared *.o -o libluajit.so
 cp libluajit.so ../../../deps/libluajit.so
 cd ..
 mkdir -p ../../deps/include
