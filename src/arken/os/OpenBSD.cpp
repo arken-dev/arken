@@ -2,6 +2,13 @@
 #include <unistd.h>
 #include <arken/base>
 
+string os::hostname()
+{
+  auto hostname = new char[HOST_NAME_MAX+1]();
+  gethostname(hostname, HOST_NAME_MAX+1);
+  return string(std::move(hostname));
+}
+
 string os::executablePath()
 {
   std::cerr << "os.executablePath() not works in OpenBSD" << std::endl;

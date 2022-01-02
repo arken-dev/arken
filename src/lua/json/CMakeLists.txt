@@ -17,5 +17,7 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/deps)
 add_library(
   json SHARED
   json.h dtoa_config.h fpconv.h strbuf.h
-  json.c strbuf.c g_fmt.c dtoa.c json_lock.cpp #fpconv.c
+  json.c strbuf.c g_fmt.c dtoa.c # json_lock.cpp #fpconv.c
 )
+
+target_link_libraries(json ${LUA_FLAVOR})

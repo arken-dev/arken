@@ -21,6 +21,7 @@ include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${PROJECT_SOURCE_DIR}/deps/include)
 include_directories(${PROJECT_SOURCE_DIR}/src/embedded)
 include_directories(${PROJECT_SOURCE_DIR}/src/vendors)
+include_directories(${PROJECT_SOURCE_DIR}/src/lua/json)
 
 include(google-breakpad)
 include(arken)
@@ -37,6 +38,7 @@ include(arken-notify)
 include(mysql)
 include(postgres)
 include(lua)
+
 include(os/${CMAKE_SYSTEM_NAME})
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++17")
@@ -54,11 +56,6 @@ endif (NOT WIN32)
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 
 link_directories( ${PROJECT_SOURCE_DIR}/deps )
-
-if (WIN32)
-find_package(curl)
-find_package(lua)
-endif (WIN32)
 
 add_subdirectory( src/arken )
 add_subdirectory( src/projects )

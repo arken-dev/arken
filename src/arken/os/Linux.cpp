@@ -6,6 +6,13 @@
 #include <sys/types.h>
 #include <sys/resource.h>
 
+string os::hostname()
+{
+  auto hostname = new char[HOST_NAME_MAX+1]();
+  gethostname(hostname, HOST_NAME_MAX+1);
+  return string(std::move(hostname));
+}
+
 string os::executablePath()
 {
   return os::target("/proc/self/exe");

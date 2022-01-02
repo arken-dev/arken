@@ -3,6 +3,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+#include <arken/types.h>
 #include <arken/string.h>
 #include <stdlib.h>
 #include <string.h>
@@ -233,14 +234,6 @@ string os::home()
     path path = std::filesystem::absolute(p);
     return string(path.string());
   }
-}
-
-string os::hostname()
-{
-  #define ARKEN_HOSTNAME_MAX 64
-  auto hostname = new char[ARKEN_HOSTNAME_MAX+1]();
-  gethostname(hostname, ARKEN_HOSTNAME_MAX+1);
-  return string(std::move(hostname));
 }
 
 bool os::isdir(const char * path)
