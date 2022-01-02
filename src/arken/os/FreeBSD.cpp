@@ -5,6 +5,15 @@
 #include <limits.h>
 #include <sys/types.h>
 #include <sys/resource.h>
+#include <sys/syslimits.h>
+
+string os::hostname()
+{
+  #define HOST_NAME_MAX 255
+  auto hostname = new char[HOST_NAME_MAX+1]();
+  gethostname(hostname, HOST_NAME_MAX+1);
+  return string(std::move(hostname));
+}
 
 string os::executablePath()
 {

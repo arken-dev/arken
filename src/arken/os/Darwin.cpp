@@ -3,6 +3,14 @@
 #include <unistd.h>
 #include <sys/resource.h>
 
+string os::hostname()
+{
+  #define ARKEN_HOSTNAME_MAX 64
+  auto hostname = new char[ARKEN_HOSTNAME_MAX+1]();
+  gethostname(hostname, ARKEN_HOSTNAME_MAX+1);
+  return string(std::move(hostname));
+}
+
 string os::executablePath()
 {
   auto result = new char[PROC_PIDPATHINFO_MAXSIZE+1]();
