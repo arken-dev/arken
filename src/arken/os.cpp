@@ -3,7 +3,6 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#include <arken/types.h>
 #include <arken/string.h>
 #include <stdlib.h>
 #include <string.h>
