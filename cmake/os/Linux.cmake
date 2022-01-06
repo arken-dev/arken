@@ -1,3 +1,3 @@
-if( POSTGRES )
+if( LUA_POSTGRES )
   include_directories( /usr/include/postgresql/ )
-endif( POSTGRES )
+endif( LUA_POSTGRES )
