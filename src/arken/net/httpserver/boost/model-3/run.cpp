@@ -12,7 +12,6 @@
 #include "server.hpp"
 
 #include <arken/net/httpserver.h>
-#include <arken/net/config.h>
 #include <arken/mvm.h>
 
 namespace arken {

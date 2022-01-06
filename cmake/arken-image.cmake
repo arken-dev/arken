@@ -3,7 +3,7 @@ option(ARKEN_IMAGE "enable arken.Image" false)
 if(ARKEN_IMAGE)
 
   file(GLOB files ${PROJECT_SOURCE_DIR}/src/arken/image/*.cpp)
-  set( arken-image ${files} )
+  set(arken-image ${files})
 
   find_package(ImageMagick
     REQUIRED
@@ -17,4 +17,4 @@ if(ARKEN_IMAGE)
 
 endif()
 
-message("ARKEN IMAGE.............: ${ARKEN_IMAGE}")
+message("ARKEN_IMAGE.................: ${ARKEN_IMAGE}")

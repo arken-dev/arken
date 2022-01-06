@@ -9,4 +9,4 @@ else()
   include_directories(${PROJECT_SOURCE_DIR}/src/projects/arken/include/empty)
 endif()
 
-message("GOOGLE BREAKPAD.........: ${GOOGLE_BREAKPAD}")
+message("GOOGLE_BREAKPAD.............: ${GOOGLE_BREAKPAD}")

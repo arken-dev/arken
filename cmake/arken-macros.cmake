@@ -1,5 +1,3 @@
-option(ARKEN_DEBUG "debug ARKEN")
-
 MACRO(SUBDIRLIST result curdir)
   FILE(GLOB children RELATIVE ${curdir} ${curdir}/*)
   SET(dirlist "")

@@ -118,15 +118,6 @@ if(ARKEN_OS_UUID STREQUAL "libssl")
 endif()
 
 #------------------------------------------------------------------------------
-# ARKEN_OS_FILESYSTEM
-#------------------------------------------------------------------------------
-
-if(ARKEN_OS_FILESYSTEM STREQUAL "boost")
-  message(STATUS "link libarken with ${Boost_LIBRARIES}")
-  target_link_libraries(arken pthread m ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
-endif()
-
-#------------------------------------------------------------------------------
 # ARKEN_NET_HTTPSERVER
 #------------------------------------------------------------------------------
 
@@ -139,14 +130,7 @@ if(ARKEN_NET_HTTPSERVER STREQUAL "linux/model-1")
   target_link_libraries(arken libserver_base)
 endif()
 
-if(ARKEN_NET_HTTPSERVER STREQUAL "boost/model-2")
-  find_package(Boost COMPONENTS system thread)
-  find_package(Threads REQUIRED)
-  SET(Boost_USE_MULTITHREADED ON)
-  target_link_libraries(arken pthread m ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
-endif()
-
-if(ARKEN_NET_HTTPSERVER STREQUAL "boost/model-3")
+if(ARKEN_NET_HTTPSERVER MATCHES "boost" OR ARKEN_MVM_CONTAINER MATCHES "boost")
   find_package(Boost COMPONENTS system thread)
   find_package(Threads REQUIRED)
   SET(Boost_USE_MULTITHREADED ON)

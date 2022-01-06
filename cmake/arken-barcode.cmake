@@ -14,4 +14,4 @@ if( ARKEN_BARCODE )
 
 endif()
 
-message("ARKEN BARCODE...........: ${ARKEN_BARCODE}")
+message("ARKEN_BARCODE...............: ${ARKEN_BARCODE}")
