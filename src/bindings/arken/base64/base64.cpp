@@ -33,7 +33,7 @@ extern "C" {
       {"decode", arken_base64_decode},
       {NULL, NULL}
     };
-    luaL_newmetatable(L, "base64");
+    luaL_newmetatable(L, "arken.base64");
     luaL_register(L, NULL, Map);
     lua_pushvalue(L, -1);
     lua_setfield(L, -1, "__index");

@@ -184,7 +184,6 @@ arken_string_count( lua_State *L ) {
   return 1;
 }
 
-
 static int
 arken_string_endsWith( lua_State *L ) {
   const char *string = luaL_checkstring(L, 1);
@@ -226,7 +225,8 @@ arken_string_indexOf( lua_State *L ) {
   const char *string = luaL_checkstring(L, 1);
   const char *str    = luaL_checkstring(L, 2);
   int start = 0;
-  if(lua_gettop(L) == 3) { /* número de argumentos */
+
+  if(lua_gettop(L) == 3) { // number of args
     start = lua_tointeger(L, 3) - 1;
   }
 
@@ -276,13 +276,13 @@ arken_string_mid( lua_State *L ) {
   const char *string = luaL_checkstring(L, 1);
   int pos      =  luaL_checkinteger(L, 2);
   int len;
-  if(lua_gettop(L) == 3) { /* número de argumentos */
+  if(lua_gettop(L) == 3) { // number of args
     len =  luaL_checkinteger(L, 3);
   } else {
     len = -1;
   }
   char *result = string::mid(string, pos-1, len);
-  lua_pushstring(L, result);  /* push result */
+  lua_pushstring(L, result);
   delete[] result;
   return 1;
 }
@@ -291,7 +291,7 @@ static int
 arken_string_normalize( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   char * result       = string::normalize(string);
-  lua_pushstring(L, result);  /* push result */
+  lua_pushstring(L, result);
   delete[] result;
   return 1;
 }
@@ -312,11 +312,10 @@ arken_string_prefix( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   const char * pattern = luaL_checkstring(L, 2);;
   char * result = string::prefix(string, pattern);
-  lua_pushstring(L, result);  /* push result */
+  lua_pushstring(L, result);
   delete[] result;
   return 1;
 }
-
 
 static int
 arken_string_padRight( lua_State *L ) {
@@ -334,7 +333,7 @@ arken_string_repeated( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   int    times  =  luaL_checkinteger(L, 2);
   char * result = string::repeated(string, times);
-  lua_pushstring(L, result);  /* push result */
+  lua_pushstring(L, result);
   delete[] result;
   return 1;
 }
@@ -344,7 +343,7 @@ arken_string_right( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   int    len    =  luaL_checkinteger(L, 2);
   char * result = string::right(string, len);
-  lua_pushstring(L, result);  /* push result */
+  lua_pushstring(L, result);
   delete[] result;
   return 1;
 }
@@ -353,7 +352,7 @@ static int
 arken_string_squish( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   char * result = string::squish(string);
-  lua_pushstring(L, result);  /* push result */
+  lua_pushstring(L, result);
   delete[] result;
   return 1;
 }
@@ -363,7 +362,7 @@ arken_string_startsWith( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   const char * ba     = luaL_checkstring(L, 2);
   bool result         = string::startsWith(string, ba);
-  lua_pushboolean(L, result);  /* push result */
+  lua_pushboolean(L, result);
   return 1;
 }
 
@@ -372,7 +371,7 @@ arken_string_suffix( lua_State *L ) {
   const char * string  = luaL_checkstring(L, 1);
   const char * pattern = luaL_checkstring(L, 2);
   char * result  = string::suffix(string, pattern);;
-  lua_pushstring(L, result);  /* push result */
+  lua_pushstring(L, result);
   delete[] result;
   return 1;
 }
@@ -398,7 +397,7 @@ arken_string_replace( lua_State *L ) {
   const char * after  = luaL_checkstring(L, 3);
   int start = 0;
 
-  if(lua_gettop(L) > 3) { /* número de argumentos */
+  if(lua_gettop(L) > 3) {
     start = luaL_checkinteger(L, 4);
     if( start >= 0 ) {
       start = start - 1;
@@ -406,7 +405,7 @@ arken_string_replace( lua_State *L ) {
   }
 
   char * result = string::replace(string, before, after, start);
-  lua_pushstring(L, result);  /* push result */
+  lua_pushstring(L, result);
   delete[] result;
   return 1;
 }
@@ -418,7 +417,7 @@ arken_string_replaceChar( lua_State *L ) {
   const char * after  = luaL_checkstring(L, 3);
   int start = 0;
 
-  if(lua_gettop(L) > 3) { /* número de argumentos */
+  if(lua_gettop(L) > 3) {
     start = luaL_checkinteger(L, 4);
     if( start >= 0 ) {
       start = start - 1;
@@ -426,7 +425,7 @@ arken_string_replaceChar( lua_State *L ) {
   }
 
   char * result = string::replaceChar(string, before[0], after[0], start);
-  lua_pushstring(L, result);  /* push result */
+  lua_pushstring(L, result);
   delete[] result;
   return 1;
 }
@@ -437,7 +436,7 @@ arken_string_remove( lua_State *L ) {
   const char * before = luaL_checkstring(L, 2);
   int start = 0;
 
-  if(lua_gettop(L) > 2) { /* número de argumentos */
+  if(lua_gettop(L) > 2) {
     start = luaL_checkinteger(L, 3);
     if( start >= 0 ) {
       start = start - 1;
@@ -445,7 +444,7 @@ arken_string_remove( lua_State *L ) {
   }
 
   char * result = string::remove(string, before, start);
-  lua_pushstring(L, result);  /* push result */
+  lua_pushstring(L, result);
   delete[] result;
   return 1;
 }
@@ -456,7 +455,7 @@ arken_string_removeChar( lua_State *L ) {
   const char * before = luaL_checkstring(L, 2);
   int start = 0;
 
-  if(lua_gettop(L) > 2) { /* número de argumentos */
+  if(lua_gettop(L) > 2) {
     start = luaL_checkinteger(L, 3);
     if( start >= 0 ) {
       start = start - 1;
@@ -464,7 +463,7 @@ arken_string_removeChar( lua_State *L ) {
   }
 
   char * result = string::removeChar(string, before[0], start);
-  lua_pushstring(L, result);  /* push result */
+  lua_pushstring(L, result);
   delete[] result;
   return 1;
 }
@@ -473,7 +472,7 @@ static int
 arken_string_trim( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   char * result       = string::trim(string);
-  lua_pushstring(L, result);  /* push result */
+  lua_pushstring(L, result);
   delete[] result;
   return 1;
 }
@@ -482,7 +481,7 @@ static int
 arken_string_trimLeft( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   char * result       = string::trimLeft(string);
-  lua_pushstring(L, result);  /* push result */
+  lua_pushstring(L, result);
   delete[] result;
   return 1;
 }
@@ -491,7 +490,7 @@ static int
 arken_string_trimRight( lua_State *L ) {
   const char * str = luaL_checkstring(L, 1);
   char * result    = string::trimRight(str);
-  lua_pushstring(L, result);  /* push result */
+  lua_pushstring(L, result);
   delete[] result;
   return 1;
 }
@@ -503,13 +502,13 @@ arken_string_truncate( lua_State *L ) {
   const char * omission;
   char separator;
 
-  if(lua_gettop(L) >= 3) { /* número de argumentos */
+  if(lua_gettop(L) >= 3) {
     omission = lua_tostring(L, 3);
   } else {
     omission = "...";
   }
 
-  if(lua_gettop(L) == 4) { /* número de argumentos */
+  if(lua_gettop(L) == 4) {
     separator = lua_tostring(L, 4)[0];
   } else {
     separator = ' ';
@@ -541,50 +540,50 @@ arken_string_underscore( lua_State *L ) {
 
 static const luaL_reg
 StringClassMethods[] = {
-  {"new",            arken_string_new},
-  {"append",         arken_string_append},
-  {"blank",          arken_string_blank},
-  {"camelCase",      arken_string_camelCase},
-  {"capitalize",     arken_string_capitalize},
-  {"center",         arken_string_center},
-  {"contains",       arken_string_contains},
-  {"chop",           arken_string_chop},
-  {"count",          arken_string_count},
-  {"endsWith",       arken_string_endsWith},
-  {"escape",         arken_string_escape},
-  {"escapeHtml",     arken_string_escapeHtml},
-  {"hash",           arken_string_hash},
-  {"encode64",       arken_string_encode64},
-  {"equals",         arken_string_equals},
-  {"empty",          arken_string_empty},
-  {"decode64",       arken_string_decode64},
-  {"dasherize",      arken_string_dasherize},
-  {"indexOf",        arken_string_indexOf},
-  {"insert",         arken_string_insert},
-  {"left",           arken_string_left},
-  {"lastIndexOf",    arken_string_lastIndexOf},
-  {"md5",            arken_string_md5},
-  {"mid",            arken_string_mid},
-  {"normalize",      arken_string_normalize},
-  {"padLeft",        arken_string_padLeft},
-  {"padRight",       arken_string_padRight},
-  {"prefix",         arken_string_prefix},
-  {"squish",         arken_string_squish},
-  {"repeated",       arken_string_repeated},
-  {"replace",        arken_string_replace},
-  {"replaceChar",    arken_string_replaceChar},
-  {"remove",         arken_string_remove},
-  {"removeChar",     arken_string_removeChar},
-  {"right",          arken_string_right},
-  {"sha1",           arken_string_sha1},
-  {"startsWith",     arken_string_startsWith},
-  {"split",          arken_string_split},
-  {"suffix",         arken_string_suffix},
-  {"trim",           arken_string_trim},
-  {"trimLeft",       arken_string_trimLeft},
-  {"trimRight",      arken_string_trimRight},
-  {"truncate",       arken_string_truncate},
-  {"underscore",     arken_string_underscore},
+  {"new",         arken_string_new},
+  {"append",      arken_string_append},
+  {"blank",       arken_string_blank},
+  {"camelCase",   arken_string_camelCase},
+  {"capitalize",  arken_string_capitalize},
+  {"center",      arken_string_center},
+  {"contains",    arken_string_contains},
+  {"chop",        arken_string_chop},
+  {"count",       arken_string_count},
+  {"endsWith",    arken_string_endsWith},
+  {"escape",      arken_string_escape},
+  {"escapeHtml",  arken_string_escapeHtml},
+  {"hash",        arken_string_hash},
+  {"encode64",    arken_string_encode64},
+  {"equals",      arken_string_equals},
+  {"empty",       arken_string_empty},
+  {"decode64",    arken_string_decode64},
+  {"dasherize",   arken_string_dasherize},
+  {"indexOf",     arken_string_indexOf},
+  {"insert",      arken_string_insert},
+  {"left",        arken_string_left},
+  {"lastIndexOf", arken_string_lastIndexOf},
+  {"md5",         arken_string_md5},
+  {"mid",         arken_string_mid},
+  {"normalize",   arken_string_normalize},
+  {"padLeft",     arken_string_padLeft},
+  {"padRight",    arken_string_padRight},
+  {"prefix",      arken_string_prefix},
+  {"squish",      arken_string_squish},
+  {"repeated",    arken_string_repeated},
+  {"replace",     arken_string_replace},
+  {"replaceChar", arken_string_replaceChar},
+  {"remove",      arken_string_remove},
+  {"removeChar",  arken_string_removeChar},
+  {"right",       arken_string_right},
+  {"sha1",        arken_string_sha1},
+  {"startsWith",  arken_string_startsWith},
+  {"split",       arken_string_split},
+  {"suffix",      arken_string_suffix},
+  {"trim",        arken_string_trim},
+  {"trimLeft",    arken_string_trimLeft},
+  {"trimRight",   arken_string_trimRight},
+  {"truncate",    arken_string_truncate},
+  {"underscore",  arken_string_underscore},
   // deprecate methods
   {"trimmed",        arken_string_trim},
   {"leftTrimmed",    arken_string_trimLeft},
@@ -651,7 +650,6 @@ arken_StringInstanceMethodCapitalize( lua_State *L ) {
   lua_pushlstring(L, result.data(), result.size());
   return 1;
 }
-
 
 static int
 arken_StringInstanceMethodContains( lua_State *L ) {
@@ -783,7 +781,7 @@ arken_StringInstanceMethodMid( lua_State *L ) {
   string * udata = checkString( L );
   int pos = luaL_checkinteger(L, 2);
   int len = -1;
-  if(lua_gettop(L) == 3) { // number of args
+  if(lua_gettop(L) == 3) {
     len = luaL_checkinteger(L, 3);
   }
   string result    = udata->mid(pos-1, len);
@@ -813,7 +811,7 @@ arken_StringInstanceMethodRemove( lua_State *L ) {
   const char * before = luaL_checkstring(L, 2);
   int start = 0;
 
-  if(lua_gettop(L) > 2) { /* número de argumentos */
+  if(lua_gettop(L) > 2) {
     start = luaL_checkinteger(L, 3);
     if( start >= 0 ) {
       start = start - 1;
@@ -821,7 +819,7 @@ arken_StringInstanceMethodRemove( lua_State *L ) {
   }
 
   string result = udata->remove(before, start);
-  lua_pushlstring(L, result.data(), result.size());  /* push result */
+  lua_pushlstring(L, result.data(), result.size());
   return 1;
 }
 
@@ -831,7 +829,7 @@ arken_StringInstanceMethodRemoveChar( lua_State *L ) {
   const char * before = luaL_checkstring(L, 2);
   int start = 0;
 
-  if(lua_gettop(L) > 2) { /* número de argumentos */
+  if(lua_gettop(L) > 2) {
     start = luaL_checkinteger(L, 3);
     if( start >= 0 ) {
       start = start - 1;
@@ -839,7 +837,7 @@ arken_StringInstanceMethodRemoveChar( lua_State *L ) {
   }
 
   string result = udata->removeChar(before[0], start);
-  lua_pushlstring(L, result.data(), result.size());  /* push result */
+  lua_pushlstring(L, result.data(), result.size());
   return 1;
 }
 
@@ -850,7 +848,7 @@ arken_StringInstanceMethodReplace( lua_State *L ) {
   const char * after  = luaL_checkstring(L, 3);
   int start = 0;
 
-  if(lua_gettop(L) > 3) { /* número de argumentos */
+  if(lua_gettop(L) > 3) {
     start = luaL_checkinteger(L, 4);
     if( start > 0 ) {
       start = start - 1;
@@ -869,7 +867,7 @@ arken_StringInstanceMethodReplaceChar( lua_State *L ) {
   const char * after  = luaL_checkstring(L, 3);
   int start = 0;
 
-  if(lua_gettop(L) > 3) { /* número de argumentos */
+  if(lua_gettop(L) > 3) {
     start = luaL_checkinteger(L, 4);
     if( start > 0 ) {
       start = start - 1;
@@ -880,7 +878,6 @@ arken_StringInstanceMethodReplaceChar( lua_State *L ) {
   lua_pushlstring(L, result.data(), result.size());
   return 1;
 }
-
 
 static int
 arken_StringInstanceMethodRepeated( lua_State *L ) {
@@ -894,7 +891,7 @@ arken_StringInstanceMethodRepeated( lua_State *L ) {
 static int
 arken_StringInstanceMethodReserve( lua_State *L ) {
   string * udata = checkString( L );
-  if(lua_gettop(L) > 1) { // number of arguments
+  if(lua_gettop(L) > 1) {
    int reserve = luaL_checklong(L, 2);
     udata->reserve(reserve);
     return 0;
@@ -1013,13 +1010,13 @@ arken_StringInstanceMethodTruncate( lua_State *L ) {
   const char * omission;
   char separator;
 
-  if(lua_gettop(L) >= 3) { // number of arguments
+  if(lua_gettop(L) >= 3) {
     omission = lua_tostring(L, 3);
   } else {
     omission = "...";
   }
 
-  if(lua_gettop(L) == 4) { /* número de argumentos */
+  if(lua_gettop(L) == 4) {
     separator = lua_tostring(L, 4)[0];
   } else {
     separator = ' ';
@@ -1118,57 +1115,57 @@ arken_StringInstanceMethodDestruct( lua_State *L ) {
 
 static const
 luaL_reg StringInstanceMethods[] = {
-  {"append",         arken_StringInstanceMethodAppend},
-  {"blank",          arken_StringInstanceMethodBlank},
-  {"center",         arken_StringInstanceMethodCenter},
-  {"chop",           arken_StringInstanceMethodChop},
-  {"clear",          arken_StringInstanceMethodClear},
-  {"camelCase",      arken_StringInstanceMethodCamelCase},
-  {"capitalize",     arken_StringInstanceMethodCapitalize},
-  {"contains",       arken_StringInstanceMethodContains},
-  {"count",          arken_StringInstanceMethodCount},
-  {"dasherize",      arken_StringInstanceMethodDasherize},
-  {"empty",          arken_StringInstanceMethodEmpty},
-  {"escape",         arken_StringInstanceMethodEscape},
-  {"decode64",       arken_StringInstanceMethodDecode64},
-  {"encode64",       arken_StringInstanceMethodEncode64},
-  {"escapeHtml",     arken_StringInstanceMethodEscapeHtml},
-  {"hash",           arken_StringInstanceMethodHash},
-  {"indexOf",        arken_StringInstanceMethodIndexOf},
-  {"endsWith",       arken_StringInstanceMethodEndsWith},
-  {"equals",         arken_StringInstanceMethodEquals},
-  {"lastIndexOf",    arken_StringInstanceMethodLastIndexOf},
-  {"left",           arken_StringInstanceMethodLeft},
-  {"mid",            arken_StringInstanceMethodMid},
-  {"insert",         arken_StringInstanceMethodInsert},
-  {"len",            arken_StringInstanceMethodLen},
-  {"md5",            arken_StringInstanceMethodMd5},
-  {"normalize",      arken_StringInstanceMethodNormalize},
-  {"padLeft",        arken_StringInstanceMethodPadLeft},
-  {"padRight",       arken_StringInstanceMethodPadRight},
-  {"prepend",        arken_StringInstanceMethodPrepend},
-  {"prefix",         arken_StringInstanceMethodPrefix},
-  {"repeated",       arken_StringInstanceMethodRepeated},
-  {"remove",         arken_StringInstanceMethodRemove},
-  {"removeChar",     arken_StringInstanceMethodRemoveChar},
-  {"replace",        arken_StringInstanceMethodReplace},
-  {"replaceChar",    arken_StringInstanceMethodReplaceChar},
-  {"reserve",        arken_StringInstanceMethodReserve},
-  {"right",          arken_StringInstanceMethodRight},
-  {"sha1",           arken_StringInstanceMethodSha1},
-  {"size",           arken_StringInstanceMethodSize},
-  {"squish",         arken_StringInstanceMethodSquish},
-  {"suffix",         arken_StringInstanceMethodSuffix},
-  {"split",          arken_StringInstanceMethodSplit},
-  {"trim",           arken_StringInstanceMethodTrim},
-  {"trimLeft",       arken_StringInstanceMethodTrimLeft},
-  {"trimRight",      arken_StringInstanceMethodTrimRight},
-  {"truncate",       arken_StringInstanceMethodTruncate},
-  {"underscore",     arken_StringInstanceMethodUnderscore},
-  {"startsWith",     arken_StringInstanceMethodStartsWith},
-  {"__tostring",     arken_StringInstanceMethodToString},
-  {"__len",          arken_StringInstanceMethodToLen},
-  {"__gc",           arken_StringInstanceMethodDestruct},
+  {"append",      arken_StringInstanceMethodAppend},
+  {"blank",       arken_StringInstanceMethodBlank},
+  {"center",      arken_StringInstanceMethodCenter},
+  {"chop",        arken_StringInstanceMethodChop},
+  {"clear",       arken_StringInstanceMethodClear},
+  {"camelCase",   arken_StringInstanceMethodCamelCase},
+  {"capitalize",  arken_StringInstanceMethodCapitalize},
+  {"contains",    arken_StringInstanceMethodContains},
+  {"count",       arken_StringInstanceMethodCount},
+  {"dasherize",   arken_StringInstanceMethodDasherize},
+  {"empty",       arken_StringInstanceMethodEmpty},
+  {"escape",      arken_StringInstanceMethodEscape},
+  {"decode64",    arken_StringInstanceMethodDecode64},
+  {"encode64",    arken_StringInstanceMethodEncode64},
+  {"escapeHtml",  arken_StringInstanceMethodEscapeHtml},
+  {"hash",        arken_StringInstanceMethodHash},
+  {"indexOf",     arken_StringInstanceMethodIndexOf},
+  {"endsWith",    arken_StringInstanceMethodEndsWith},
+  {"equals",      arken_StringInstanceMethodEquals},
+  {"lastIndexOf", arken_StringInstanceMethodLastIndexOf},
+  {"left",        arken_StringInstanceMethodLeft},
+  {"mid",         arken_StringInstanceMethodMid},
+  {"insert",      arken_StringInstanceMethodInsert},
+  {"len",         arken_StringInstanceMethodLen},
+  {"md5",         arken_StringInstanceMethodMd5},
+  {"normalize",   arken_StringInstanceMethodNormalize},
+  {"padLeft",     arken_StringInstanceMethodPadLeft},
+  {"padRight",    arken_StringInstanceMethodPadRight},
+  {"prepend",     arken_StringInstanceMethodPrepend},
+  {"prefix",      arken_StringInstanceMethodPrefix},
+  {"repeated",    arken_StringInstanceMethodRepeated},
+  {"remove",      arken_StringInstanceMethodRemove},
+  {"removeChar",  arken_StringInstanceMethodRemoveChar},
+  {"replace",     arken_StringInstanceMethodReplace},
+  {"replaceChar", arken_StringInstanceMethodReplaceChar},
+  {"reserve",     arken_StringInstanceMethodReserve},
+  {"right",       arken_StringInstanceMethodRight},
+  {"sha1",        arken_StringInstanceMethodSha1},
+  {"size",        arken_StringInstanceMethodSize},
+  {"squish",      arken_StringInstanceMethodSquish},
+  {"suffix",      arken_StringInstanceMethodSuffix},
+  {"split",       arken_StringInstanceMethodSplit},
+  {"trim",        arken_StringInstanceMethodTrim},
+  {"trimLeft",    arken_StringInstanceMethodTrimLeft},
+  {"trimRight",   arken_StringInstanceMethodTrimRight},
+  {"truncate",    arken_StringInstanceMethodTruncate},
+  {"underscore",  arken_StringInstanceMethodUnderscore},
+  {"startsWith",  arken_StringInstanceMethodStartsWith},
+  {"__tostring",  arken_StringInstanceMethodToString},
+  {"__len",       arken_StringInstanceMethodToLen},
+  {"__gc",        arken_StringInstanceMethodDestruct},
 
   //deprecated methods
   {"simplified",     arken_StringInstanceMethodSquish},
@@ -1264,38 +1261,12 @@ arken_string_list_each( lua_State *L ) {
 }
 
 static int
-arken_string_list_ipairs( lua_State *L ) {
-  int i = lua_upvalueindex(1);
-  luaL_checktype(L, i, LUA_TLIGHTUSERDATA);
-  List * ba  = (List *) lua_touserdata(L, i);
-  const char * result = ba->each();
-  if( result == NULL ) {
-    lua_pushnil(L);
-    return 1;
-  } else {
-    lua_pushinteger(L, ba->cursor());
-    lua_pushstring(L, result);
-    return 2;
-  }
-}
-
-
-static int
 arken_string_ListInstanceMethodEach( lua_State *L ) {
   List * udata  = checkList( L );
   lua_pushlightuserdata(L, udata);
   lua_pushcclosure(L, arken_string_list_each, 1);
   return 1;
 }
-
-static int
-arken_string_ListInstanceMethodIpairs( lua_State *L ) {
-  List * udata  = checkList( L );
-  lua_pushlightuserdata(L, udata);
-  lua_pushcclosure(L, arken_string_list_ipairs, 1);
-  return 1;
-}
-
 
 static int
 arken_string_ListInstanceMethodFirst( lua_State *L ) {
@@ -1322,14 +1293,13 @@ arken_string_ListInstanceMethodReplace( lua_State *L ) {
 
 static int
 arken_string_ListInstanceMethodJoin( lua_State *L ) {
-  List * udata   = checkList( L );
+  List * udata  = checkList( L );
   const char  * separator = luaL_checkstring(L, 2);
   char * result = udata->join(separator);
   lua_pushstring(L, result);
   delete[] result;
   return 1;
 }
-
 
 static int
 arken_string_ListInstanceMethodAppend( lua_State *L ) {
@@ -1352,7 +1322,6 @@ luaL_reg arken_string_ListInstanceMethods[] = {
   {"append",  arken_string_ListInstanceMethodAppend},
   {"at",      arken_string_ListInstanceMethodAt},
   {"each",    arken_string_ListInstanceMethodEach},
-  {"__ipairs", arken_string_ListInstanceMethodIpairs},
   {"first",   arken_string_ListInstanceMethodFirst},
   {"last",    arken_string_ListInstanceMethodLast},
   {"join",    arken_string_ListInstanceMethodJoin},

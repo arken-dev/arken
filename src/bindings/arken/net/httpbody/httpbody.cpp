@@ -15,7 +15,7 @@ using arken::net::HttpBody;
 
 HttpBody *
 checkHttpBody( lua_State *L ) {
-  return *(HttpBody **) luaL_checkudata(L, 1, "HttpBody.metatable");
+  return *(HttpBody **) luaL_checkudata(L, 1, "arken.net.HttpBody.metatable");
 }
 
 /**
@@ -27,7 +27,7 @@ arken_HttpBodyClassMethodLoadFile( lua_State *L ) {
   const char * path = luaL_checkstring(L, 1);
   HttpBody **ptr = (HttpBody **)lua_newuserdata(L, sizeof(HttpBody*));
   *ptr = HttpBody::loadFile(path);
-  luaL_getmetatable(L, "HttpBody.metatable");
+  luaL_getmetatable(L, "arken.net.HttpBody.metatable");
   lua_setmetatable(L, -2);
   return 1;
 }
@@ -38,7 +38,7 @@ arken_HttpBodyClassMethodLoadBuffer( lua_State *L ) {
   const char * buffer = luaL_checklstring(L, 1, &size);
   HttpBody **ptr = (HttpBody **)lua_newuserdata(L, sizeof(HttpBody*));
   *ptr = HttpBody::loadBuffer(buffer, size);
-  luaL_getmetatable(L, "HttpBody.metatable");
+  luaL_getmetatable(L, "arken.net.HttpBody.metatable");
   lua_setmetatable(L, -2);
   return 1;
 }
@@ -52,7 +52,7 @@ static const luaL_reg HttpBodyClassMethods[] = {
 
 void static
 registerHttpBodyClassMethods( lua_State *L ) {
-  luaL_newmetatable(L, "HttpBody");
+  luaL_newmetatable(L, "arken.net.HttpBody");
   luaL_register(L, NULL, HttpBodyClassMethods);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
@@ -84,7 +84,6 @@ arken_HttpBodyInstanceMethodRelease( lua_State *L ) {
   return 0;
 }
 
-
 static int
 arken_HttpBodyInstanceMethodDestruct( lua_State *L ) {
   HttpBody *udata = checkHttpBody( L );
@@ -103,7 +102,7 @@ luaL_reg HttpBodyInstanceMethods[] = {
 
 void static
 registerHttpBodyInstanceMethods( lua_State *L ) {
-  luaL_newmetatable(L, "HttpBody.metatable");
+  luaL_newmetatable(L, "arken.net.HttpBody.metatable");
   luaL_register(L, NULL, HttpBodyInstanceMethods);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");

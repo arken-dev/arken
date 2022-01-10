@@ -8,7 +8,6 @@
 
 using arken::notify;
 
-
 static int arken_notify_send( lua_State *L ) {
   const char * title = luaL_checkstring(L, 1);
   const char * body  = luaL_checkstring(L, 2);
@@ -28,7 +27,7 @@ extern "C" {
       {"send", arken_notify_send},
       {NULL, NULL}
     };
-    luaL_newmetatable(L, "notify");
+    luaL_newmetatable(L, "arken.notify");
     luaL_register(L, NULL, Map);
     lua_pushvalue(L, -1);
     lua_setfield(L, -1, "__index");

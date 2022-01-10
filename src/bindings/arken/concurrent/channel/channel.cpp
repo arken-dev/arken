@@ -130,13 +130,13 @@ arken_concurrent_channel_node_instance_method_shared( lua_State *L ) {
 
 static const
 luaL_reg ChannelInstanceMethods[] = {
-  {"write",     arken_concurrent_channel_instance_method_write},
-  {"read",      arken_concurrent_channel_instance_method_read},
-  {"empty",     arken_concurrent_channel_instance_method_empty},
-  {"finished",  arken_concurrent_channel_instance_method_finished},
-  {"uuid",      arken_concurrent_channel_instance_method_uuid},
-  {"shared",    arken_concurrent_channel_node_instance_method_shared},
-  {"__gc",      arken_concurrent_channel_instance_method_destruct},
+  {"write",    arken_concurrent_channel_instance_method_write},
+  {"read",     arken_concurrent_channel_instance_method_read},
+  {"empty",    arken_concurrent_channel_instance_method_empty},
+  {"finished", arken_concurrent_channel_instance_method_finished},
+  {"uuid",     arken_concurrent_channel_instance_method_uuid},
+  {"shared",   arken_concurrent_channel_node_instance_method_shared},
+  {"__gc",     arken_concurrent_channel_instance_method_destruct},
   {NULL, NULL}
 };
 

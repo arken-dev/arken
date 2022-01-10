@@ -13,7 +13,7 @@
 
 arken::Image *
 checkImage( lua_State *L , int position = 1) {
-  return *(arken::Image **) luaL_checkudata(L, position, "Image.metatable");
+  return *(arken::Image **) luaL_checkudata(L, position, "arken.Image.metatable");
 }
 
 /**
@@ -34,7 +34,7 @@ arken_ImageClassMethodNew( lua_State *L ) {
     const char *path = (char *) lua_tolstring(L, 1, &len);
     *ptr= new arken::Image(path);
   }
-  luaL_getmetatable(L, "Image.metatable");
+  luaL_getmetatable(L, "arken.Image.metatable");
   lua_setmetatable(L, -2);
   return 1;
 }
@@ -46,7 +46,7 @@ static const luaL_reg ImageClassMethods[] = {
 
 void static
 registerImageClassMethods( lua_State *L ) {
-  luaL_newmetatable(L, "Image");
+  luaL_newmetatable(L, "arken.Image");
   luaL_register(L, NULL, ImageClassMethods);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
@@ -125,7 +125,7 @@ luaL_reg ImageInstanceMethods[] = {
 
 void static
 registerImageInstanceMethods( lua_State *L ) {
-  luaL_newmetatable(L, "Image.metatable");
+  luaL_newmetatable(L, "arken.Image.metatable");
   luaL_register(L, NULL, ImageInstanceMethods);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");

@@ -15,7 +15,7 @@ using arken::Log;
 
 Log *
 checkLog( lua_State *L ) {
-  return *(Log **) luaL_checkudata(L, 1, "Log.metatable");
+  return *(Log **) luaL_checkudata(L, 1, "arken.Log.metatable");
 }
 
 /**
@@ -32,7 +32,7 @@ arken_LogClassMethodNew( lua_State *L ) {
 
   Log **ptr = (Log **)lua_newuserdata(L, sizeof(Log*));
   *ptr = new Log(Log(str, max));
-  luaL_getmetatable(L, "Log.metatable");
+  luaL_getmetatable(L, "arken.Log.metatable");
   lua_setmetatable(L, -2);
   return 1;
 }
@@ -44,7 +44,7 @@ static const luaL_reg LogClassMethods[] = {
 
 void static
 registerLogClassMethods( lua_State *L ) {
-  luaL_newmetatable(L, "Log");
+  luaL_newmetatable(L, "arken.Log");
   luaL_register(L, NULL, LogClassMethods);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
@@ -136,21 +136,21 @@ arken_LogInstanceMethodFatal( lua_State *L ) {
 static const
 luaL_reg LogInstanceMethods[] = {
   {"append", arken_LogInstanceMethodAppend},
-  {"dump", arken_LogInstanceMethodDump},
-  {"log", arken_LogInstanceMethodLog},
-  {"trace", arken_LogInstanceMethodTrace},
-  {"debug", arken_LogInstanceMethodDebug},
-  {"info", arken_LogInstanceMethodInfo},
-  {"warn", arken_LogInstanceMethodWarn},
-  {"error", arken_LogInstanceMethodError},
-  {"fatal", arken_LogInstanceMethodFatal},
-  {"__gc", arken_LogInstanceMethodDestruct},
+  {"dump",   arken_LogInstanceMethodDump},
+  {"log",    arken_LogInstanceMethodLog},
+  {"trace",  arken_LogInstanceMethodTrace},
+  {"debug",  arken_LogInstanceMethodDebug},
+  {"info",   arken_LogInstanceMethodInfo},
+  {"warn",   arken_LogInstanceMethodWarn},
+  {"error",  arken_LogInstanceMethodError},
+  {"fatal",  arken_LogInstanceMethodFatal},
+  {"__gc",   arken_LogInstanceMethodDestruct},
   {NULL, NULL}
 };
 
 void static
 registerLogInstanceMethods( lua_State *L ) {
-  luaL_newmetatable(L, "Log.metatable");
+  luaL_newmetatable(L, "arken.Log.metatable");
   luaL_register(L, NULL, LogInstanceMethods);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");

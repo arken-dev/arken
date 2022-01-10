@@ -162,7 +162,6 @@ arken_concurrent_channel_node_instance_method_wait( lua_State *L ) {
   return 0;
 }
 
-
 static const
 luaL_reg NaiadNodeInstanceMethods[] = {
   {"uuid",      arken_concurrent_channel_node_instance_method_uuid},

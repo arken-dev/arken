@@ -205,7 +205,6 @@ arken_concurrent_worker_node_instance_method_master( lua_State *L ) {
   return 1;
 }
 
-
 static const
 luaL_reg WorkerNodeInstanceMethods[] = {
   {"number",  arken_concurrent_worker_node_instance_method_number},

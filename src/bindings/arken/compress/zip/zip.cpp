@@ -47,8 +47,8 @@ arken_compress_zip_new( lua_State *L ) {
 
 
 static const luaL_reg arken_compress_zip_methods[] = {
-  {"extract",    arken_compress_zip_extract},
-  {"new",        arken_compress_zip_new},
+  {"extract", arken_compress_zip_extract},
+  {"new",     arken_compress_zip_new},
   {NULL, NULL}
 };
 

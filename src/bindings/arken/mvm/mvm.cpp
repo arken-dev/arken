@@ -140,25 +140,25 @@ arken_mvm_setlocale(lua_State *L) {
 static void
 register_arken_mvm( lua_State *L ) {
   static const luaL_reg Map[] = {
-    {"gc",      arken_mvm_gc},
-    {"version", arken_mvm_version},
-    {"reload",  arken_mvm_reload},
-    {"clear",   arken_mvm_clear},
-    {"uptime",  arken_mvm_uptime},
-    {"pool",    arken_mvm_pool},
-    {"set",     arken_mvm_set},
-    {"at",      arken_mvm_at},
-    {"wait",    arken_mvm_wait},
-    {"path",    arken_mvm_path},
-    {"env",     arken_mvm_env},
-    {"threads", arken_mvm_threads},
-    {"actives", arken_mvm_actives},
-    {"inspect", arken_mvm_inspect},
-    {"workers", arken_mvm_workers},
+    {"gc",        arken_mvm_gc},
+    {"version",   arken_mvm_version},
+    {"reload",    arken_mvm_reload},
+    {"clear",     arken_mvm_clear},
+    {"uptime",    arken_mvm_uptime},
+    {"pool",      arken_mvm_pool},
+    {"set",       arken_mvm_set},
+    {"at",        arken_mvm_at},
+    {"wait",      arken_mvm_wait},
+    {"path",      arken_mvm_path},
+    {"env",       arken_mvm_env},
+    {"threads",   arken_mvm_threads},
+    {"actives",   arken_mvm_actives},
+    {"inspect",   arken_mvm_inspect},
+    {"workers",   arken_mvm_workers},
     {"setlocale", arken_mvm_setlocale},
     {NULL, NULL}
   };
-  luaL_newmetatable(L, "mvm");
+  luaL_newmetatable(L, "arken.mvm");
   luaL_register(L, NULL, Map);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");

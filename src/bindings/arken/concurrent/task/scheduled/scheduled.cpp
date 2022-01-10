@@ -90,7 +90,6 @@ static const luaL_reg NaiadClassMethods[] = {
   {"actives", arken_scheduled_actives},
   {"inspect", arken_scheduled_inspect},
   {NULL, NULL}
-
 };
 
 void static

@@ -35,7 +35,7 @@ register_arken_digest_md5( lua_State *L ) {
     {"file", arken_digest_md5_file},
     {NULL, NULL}
   };
-  luaL_newmetatable(L, "md5");
+  luaL_newmetatable(L, "arken.digest.md5");
   luaL_register(L, NULL, Map);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");

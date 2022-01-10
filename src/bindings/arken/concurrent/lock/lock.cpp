@@ -15,7 +15,7 @@ using arken::Lock;
 
 Lock *
 checkLock( lua_State *L ) {
-  return *(Lock **) luaL_checkudata(L, 1, "Lock.metatable");
+  return *(Lock **) luaL_checkudata(L, 1, "arken.concurrent.Lock.metatable");
 }
 
 /**
@@ -27,7 +27,7 @@ arken_LockClassMethodNew( lua_State *L ) {
   const char *str = (char *) luaL_checkstring(L, 1);
   Lock **ptr = (Lock **)lua_newuserdata(L, sizeof(Lock*));
   *ptr = new Lock(Lock(str));
-  luaL_getmetatable(L, "Lock.metatable");
+  luaL_getmetatable(L, "arken.concurrent.Lock.metatable");
   lua_setmetatable(L, -2);
   return 1;
 }
@@ -39,7 +39,7 @@ static const luaL_reg LockClassMethods[] = {
 
 void static
 registerLockClassMethods( lua_State *L ) {
-  luaL_newmetatable(L, "Lock");
+  luaL_newmetatable(L, "arken.concurrent.Lock");
   luaL_register(L, NULL, LockClassMethods);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
@@ -80,7 +80,7 @@ luaL_reg LockInstanceMethods[] = {
 
 void static
 registerLockInstanceMethods( lua_State *L ) {
-  luaL_newmetatable(L, "Lock.metatable");
+  luaL_newmetatable(L, "arken.concurrent.Lock.metatable");
   luaL_register(L, NULL, LockInstanceMethods);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
