@@ -110,7 +110,7 @@ luaL_reg HttpServerInstanceMethods[] = {
 
 void static
 registerHttpServerInstanceMethods( lua_State *L ) {
-  luaL_newmetatable(L, "arken.HttpServer.metatable");
+  luaL_newmetatable(L, "arken.net.HttpServer.metatable");
   luaL_register(L, NULL, HttpServerInstanceMethods);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
