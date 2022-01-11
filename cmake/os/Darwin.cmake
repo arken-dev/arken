@@ -5,3 +5,5 @@ include_directories( /opt/local/include/postgresql13 )
 link_directories( /opt/local/lib )
 link_directories( /opt/local/lib/mysql57/mysql )
 link_directories( /opt/local/lib/postgresql13 )
+
+message("Darwin warning: USE LUA_FLAVOR=lua !!!")
