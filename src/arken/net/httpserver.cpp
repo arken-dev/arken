@@ -82,7 +82,7 @@ std::string HttpServer::handler(const char * data, size_t size)
 
   auto ptr = static_cast<HttpEnv **>(lua_newuserdata(L, sizeof(HttpEnv*)));
   *ptr = new HttpEnv(data, size);
-  luaL_getmetatable(L, "HttpEnv.metatable");
+  luaL_getmetatable(L, "arken.net.HttpEnv.metatable");
   lua_setmetatable(L, -2);
 
   /* error */
