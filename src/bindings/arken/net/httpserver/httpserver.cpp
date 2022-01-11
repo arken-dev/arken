@@ -16,7 +16,7 @@ using arken::string;
 
 HttpServer *
 checkHttpServer( lua_State *L ) {
-  return *(HttpServer **) luaL_checkudata(L, 1, "HttpServer.metatable");
+  return *(HttpServer **) luaL_checkudata(L, 1, "arken.net.HttpServer.metatable");
 }
 
 /**
@@ -29,7 +29,7 @@ arken_HttpServerClassMethodNew( lua_State *L ) {
   int port = luaL_checkinteger(L, 2); 
   HttpServer **ptr = (HttpServer **)lua_newuserdata(L, sizeof(HttpServer*));
   *ptr = new HttpServer(address, port);
-  luaL_getmetatable(L, "HttpServer.metatable");
+  luaL_getmetatable(L, "arken.net.HttpServer.metatable");
   lua_setmetatable(L, -2);
   return 1;
 }
@@ -41,7 +41,7 @@ static const luaL_reg HttpServerClassMethods[] = {
 
 void static
 registerHttpServerClassMethods( lua_State *L ) {
-  luaL_newmetatable(L, "HttpServer");
+  luaL_newmetatable(L, "arken.net.HttpServer");
   luaL_register(L, NULL, HttpServerClassMethods);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
@@ -110,7 +110,7 @@ luaL_reg HttpServerInstanceMethods[] = {
 
 void static
 registerHttpServerInstanceMethods( lua_State *L ) {
-  luaL_newmetatable(L, "HttpServer.metatable");
+  luaL_newmetatable(L, "arken.HttpServer.metatable");
   luaL_register(L, NULL, HttpServerInstanceMethods);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");

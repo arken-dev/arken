@@ -15,7 +15,7 @@ using arken::net::SMTP;
 
 SMTP *
 checkSMTP( lua_State *L ) {
-  return *(SMTP **) luaL_checkudata(L, 1, "SMTP.metatable");
+  return *(SMTP **) luaL_checkudata(L, 1, "arken.net.SMTP.metatable");
 }
 
 /**
@@ -27,7 +27,7 @@ arken_SMTPClassMethodNew( lua_State *L ) {
   const char * url = luaL_checkstring(L, 1);
   SMTP **ptr = (SMTP **)lua_newuserdata(L, sizeof(SMTP*));
   *ptr = new SMTP(url);
-  luaL_getmetatable(L, "SMTP.metatable");
+  luaL_getmetatable(L, "arken.net.SMTP.metatable");
   lua_setmetatable(L, -2);
   return 1;
 }
@@ -47,7 +47,7 @@ static const luaL_reg SMTPClassMethods[] = {
 
 void static
 registerSMTPClassMethods( lua_State *L ) {
-  luaL_newmetatable(L, "SMTP");
+  luaL_newmetatable(L, "arken.net.SMTP");
   luaL_register(L, NULL, SMTPClassMethods);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
@@ -109,7 +109,6 @@ arken_SMTPInstanceMethodSetContentType( lua_State *L ) {
   udata->setContentType(contentType);
   return 0;
 }
-
 
 static int
 arken_SMTPInstanceMethodSetTo( lua_State *L ) {
@@ -349,7 +348,7 @@ luaL_reg SMTPInstanceMethods[] = {
 
 void static
 registerSMTPInstanceMethods( lua_State *L ) {
-  luaL_newmetatable(L, "SMTP.metatable");
+  luaL_newmetatable(L, "arken.net.SMTP.metatable");
   luaL_register(L, NULL, SMTPInstanceMethods);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");

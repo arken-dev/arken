@@ -15,7 +15,7 @@ using arken::Barcode;
 
 arken::Barcode *
 checkBarcode( lua_State *L , int position = 1) {
-  return *(arken::Barcode **) luaL_checkudata(L, position, "Barcode.metatable");
+  return *(arken::Barcode **) luaL_checkudata(L, position, "arken.Barcode.metatable");
 }
 
 /**
@@ -29,14 +29,13 @@ arken_BarcodeClassMethodNew( lua_State *L ) {
   int height = luaL_checkinteger(L, 2);
   const char *format = lua_tostring(L, 3);
   if(lua_gettop(L) == 5) { // number of arguments
-    std::cout << "informou o text..." << std::endl;
     const char *text   = lua_tostring(L, 4);
     *ptr = new arken::Barcode(width, height, format, text);
   } else {
     *ptr = new arken::Barcode(width, height, format);
   }
 
-  luaL_getmetatable(L, "Barcode.metatable");
+  luaL_getmetatable(L, "arken.Barcode.metatable");
   lua_setmetatable(L, -2);
   return 1;
 }
@@ -48,7 +47,7 @@ static const luaL_reg BarcodeClassMethods[] = {
 
 void static
 registerBarcodeClassMethods( lua_State *L ) {
-  luaL_newmetatable(L, "Barcode");
+  luaL_newmetatable(L, "arken.Barcode");
   luaL_register(L, NULL, BarcodeClassMethods);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
@@ -65,6 +64,7 @@ arken_BarcodeInstanceMethodSetText( lua_State *L ) {
   barcode->setText(text);
   return 0;
 }
+
 static int
 arken_BarcodeInstanceMethodSave( lua_State *L ) {
   arken::Barcode *barcode = checkBarcode( L );
@@ -83,15 +83,15 @@ arken_BarcodeInstanceMethodDestruct( lua_State *L ) {
 
 static const
 luaL_reg BarcodeInstanceMethods[] = {
-  {"setText",   arken_BarcodeInstanceMethodSetText},
-  {"save",      arken_BarcodeInstanceMethodSave},
-  {"__gc",      arken_BarcodeInstanceMethodDestruct},
+  {"setText", arken_BarcodeInstanceMethodSetText},
+  {"save",    arken_BarcodeInstanceMethodSave},
+  {"__gc",    arken_BarcodeInstanceMethodDestruct},
   {NULL, NULL}
 };
 
 void static
 registerBarcodeInstanceMethods( lua_State *L ) {
-  luaL_newmetatable(L, "Barcode.metatable");
+  luaL_newmetatable(L, "arken.Barcode.metatable");
   luaL_register(L, NULL, BarcodeInstanceMethods);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");

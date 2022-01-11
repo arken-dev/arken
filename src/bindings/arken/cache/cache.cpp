@@ -49,7 +49,7 @@ extern "C" {
       {"remove", arken_cache_remove},
       {NULL, NULL}
     };
-    luaL_newmetatable(L, "cache");
+    luaL_newmetatable(L, "arken.cache");
     luaL_register(L, NULL, Map);
     lua_pushvalue(L, -1);
     lua_setfield(L, -1, "__index");

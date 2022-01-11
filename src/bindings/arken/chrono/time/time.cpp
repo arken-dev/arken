@@ -15,15 +15,9 @@ using arken::string;
  */
 
 Time *
-checkTime( lua_State *L ) {
-  return *(Time **) luaL_checkudata(L, 1, "arken.chrono.Time.metatable");
-}
-
-Time *
-checkTime( lua_State *L , int i) {
+checkTime( lua_State *L , int i = 1) {
   return *(Time **) luaL_checkudata(L, i, "arken.chrono.Time.metatable");
 }
-
 
 /**
  * ClassMethods
@@ -87,7 +81,7 @@ static const luaL_reg TimeClassMethods[] = {
 
 void static
 registerTimeClassMethods( lua_State *L ) {
-  luaL_newmetatable(L, "Time");
+  luaL_newmetatable(L, "arken.chrono.Time");
   luaL_register(L, NULL, TimeClassMethods);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
@@ -487,49 +481,49 @@ arken_TimeInstanceMethodConcat( lua_State *L ) {
 
 static const
 luaL_reg TimeInstanceMethods[] = {
-  {"asctime",     arken_TimeInstanceMethodAsctime},
-  {"strftime",    arken_TimeInstanceMethodStrftime},
-  {"addYears",    arken_TimeInstanceMethodAddYears},
-  {"addMonths",   arken_TimeInstanceMethodAddMonths},
-  {"addDays",     arken_TimeInstanceMethodAddDays},
-  {"addHours",    arken_TimeInstanceMethodAddHours},
-  {"addMinutes",  arken_TimeInstanceMethodAddMinutes},
-  {"addSecs",     arken_TimeInstanceMethodAddSecs},
+  {"asctime",          arken_TimeInstanceMethodAsctime},
+  {"strftime",         arken_TimeInstanceMethodStrftime},
+  {"addYears",         arken_TimeInstanceMethodAddYears},
+  {"addMonths",        arken_TimeInstanceMethodAddMonths},
+  {"addDays",          arken_TimeInstanceMethodAddDays},
+  {"addHours",         arken_TimeInstanceMethodAddHours},
+  {"addMinutes",       arken_TimeInstanceMethodAddMinutes},
+  {"addSecs",          arken_TimeInstanceMethodAddSecs},
   {"beginningOfDay",   arken_TimeInstanceMethodBeginningOfDay},
   {"endOfDay",         arken_TimeInstanceMethodEndOfDay},
   {"beginningOfMonth", arken_TimeInstanceMethodBeginningOfMonth},
   {"endOfMonth",       arken_TimeInstanceMethodEndOfMonth},
-  {"isLeapYear",  arken_TimeInstanceMethodIsLeapYear},
-  {"isSunday",    arken_TimeInstanceMethodIsSunday},
-  {"isMonday",    arken_TimeInstanceMethodIsMonday},
-  {"isTuesday",   arken_TimeInstanceMethodIsTuesday},
-  {"isWednesday", arken_TimeInstanceMethodIsWednesday},
-  {"isThursday",  arken_TimeInstanceMethodIsThursday},
-  {"isFriday",    arken_TimeInstanceMethodIsFriday},
-  {"isSaturday",  arken_TimeInstanceMethodIsSaturday},
-  {"isValid",     arken_TimeInstanceMethodIsValid},
-  {"year",        arken_TimeInstanceMethodYear},
-  {"month",       arken_TimeInstanceMethodMonth},
-  {"mon",         arken_TimeInstanceMethodMon},
-  {"day",         arken_TimeInstanceMethodDay},
-  {"hour",        arken_TimeInstanceMethodHour},
-  {"min",         arken_TimeInstanceMethodMin},
-  {"sec",         arken_TimeInstanceMethodSec},
-  {"mday",        arken_TimeInstanceMethodMday},
-  {"wday",        arken_TimeInstanceMethodWday},
-  {"yday",        arken_TimeInstanceMethodYday},
-  {"dayofWeek",   arken_TimeInstanceMethodDayOfWeek},
-  {"dayOfYear",   arken_TimeInstanceMethodDayOfYear},
-  {"daysInMonth", arken_TimeInstanceMethodDaysInMonth},
-  {"time",        arken_TimeInstanceMethodTime},
-  {"date",        arken_TimeInstanceMethodDate},
-  {"toString",    arken_TimeInstanceMethodToString},
-  {"__tostring",  arken_TimeInstanceMethodToString},
-  {"__gc",        arken_TimeInstanceMethodDestruct},
-  {"__lt",        arken_TimeInstanceMethodLessThan},
-  {"__le",        arken_TimeInstanceMethodLessEqual},
-  {"__eq",        arken_TimeInstanceMethodEqual},
-  {"__concat",    arken_TimeInstanceMethodConcat},
+  {"isLeapYear",       arken_TimeInstanceMethodIsLeapYear},
+  {"isSunday",         arken_TimeInstanceMethodIsSunday},
+  {"isMonday",         arken_TimeInstanceMethodIsMonday},
+  {"isTuesday",        arken_TimeInstanceMethodIsTuesday},
+  {"isWednesday",      arken_TimeInstanceMethodIsWednesday},
+  {"isThursday",       arken_TimeInstanceMethodIsThursday},
+  {"isFriday",         arken_TimeInstanceMethodIsFriday},
+  {"isSaturday",       arken_TimeInstanceMethodIsSaturday},
+  {"isValid",          arken_TimeInstanceMethodIsValid},
+  {"year",             arken_TimeInstanceMethodYear},
+  {"month",            arken_TimeInstanceMethodMonth},
+  {"mon",              arken_TimeInstanceMethodMon},
+  {"day",              arken_TimeInstanceMethodDay},
+  {"hour",             arken_TimeInstanceMethodHour},
+  {"min",              arken_TimeInstanceMethodMin},
+  {"sec",              arken_TimeInstanceMethodSec},
+  {"mday",             arken_TimeInstanceMethodMday},
+  {"wday",             arken_TimeInstanceMethodWday},
+  {"yday",             arken_TimeInstanceMethodYday},
+  {"dayofWeek",        arken_TimeInstanceMethodDayOfWeek},
+  {"dayOfYear",        arken_TimeInstanceMethodDayOfYear},
+  {"daysInMonth",      arken_TimeInstanceMethodDaysInMonth},
+  {"time",             arken_TimeInstanceMethodTime},
+  {"date",             arken_TimeInstanceMethodDate},
+  {"toString",         arken_TimeInstanceMethodToString},
+  {"__tostring",       arken_TimeInstanceMethodToString},
+  {"__gc",             arken_TimeInstanceMethodDestruct},
+  {"__lt",             arken_TimeInstanceMethodLessThan},
+  {"__le",             arken_TimeInstanceMethodLessEqual},
+  {"__eq",             arken_TimeInstanceMethodEqual},
+  {"__concat",         arken_TimeInstanceMethodConcat},
   {NULL, NULL}
 };
 

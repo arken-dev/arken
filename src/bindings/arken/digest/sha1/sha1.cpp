@@ -33,7 +33,7 @@ static void register_arken_digest_sha1( lua_State *L ) {
     {"file", arken_digest_sha1_file},
     {NULL, NULL}
   };
-  luaL_newmetatable(L, "sha1");
+  luaL_newmetatable(L, "arken.digest.sha1");
   luaL_register(L, NULL, Map);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");

@@ -11,7 +11,6 @@
 using service = arken::concurrent::service;
 using Shared = arken::concurrent::Shared;
 
-
 char * json_lock_encode(lua_State *L);
 void   json_lock_decode(lua_State *L, const char * data);
 
@@ -92,7 +91,6 @@ arken_concurrent_service_instance_method_shared( lua_State *L ) {
 
   return 1;
 }
-
 
 static const
 luaL_reg ServiceInstanceMethods[] = {

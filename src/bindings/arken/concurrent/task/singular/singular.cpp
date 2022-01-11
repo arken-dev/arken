@@ -126,7 +126,6 @@ arken_singular_place(lua_State *L) {
   return 1;
 }
 
-
 static int
 arken_singular_max(lua_State *L) {
   if(lua_gettop(L) == 1) { /* número de argumentos */

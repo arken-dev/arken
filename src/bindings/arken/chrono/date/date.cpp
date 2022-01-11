@@ -14,12 +14,7 @@ using arken::string;
  */
 
 Date *
-checkDate( lua_State *L ) {
-  return *(Date **) luaL_checkudata(L, 1, "arken.chrono.Date.metatable");
-}
-
-Date *
-checkDate( lua_State *L, int i ) {
+checkDate( lua_State *L, int i = 1 ) {
   return *(Date **) luaL_checkudata(L, i, "arken.chrono.Date.metatable");
 }
 
@@ -134,7 +129,7 @@ arken_DateInstanceMethodAddYears( lua_State *L ) {
 
 static int
 arken_DateInstanceMethodAddMonths( lua_State *L ) {
-  Date *t   = checkDate( L );
+  Date *t    = checkDate( L );
   int months = luaL_checkinteger(L, 2);
   Date other = t->addMonths(months);
 
@@ -373,40 +368,40 @@ arken_DateInstanceMethodConcat( lua_State *L ) {
 
 static const
 luaL_reg DateInstanceMethods[] = {
-  {"asctime",     arken_DateInstanceMethodAsctime},
-  {"strftime",    arken_DateInstanceMethodStrftime},
-  {"addYears",    arken_DateInstanceMethodAddYears},
-  {"addMonths",   arken_DateInstanceMethodAddMonths},
-  {"addDays",     arken_DateInstanceMethodAddDays},
+  {"asctime",          arken_DateInstanceMethodAsctime},
+  {"strftime",         arken_DateInstanceMethodStrftime},
+  {"addYears",         arken_DateInstanceMethodAddYears},
+  {"addMonths",        arken_DateInstanceMethodAddMonths},
+  {"addDays",          arken_DateInstanceMethodAddDays},
   {"beginningOfMonth", arken_DateInstanceMethodBeginningOfMonth},
   {"endOfMonth",       arken_DateInstanceMethodEndOfMonth},
-  {"isLeapYear",  arken_DateInstanceMethodIsLeapYear},
-  {"isSunday",    arken_DateInstanceMethodIsSunday},
-  {"isMonday",    arken_DateInstanceMethodIsMonday},
-  {"isTuesday",   arken_DateInstanceMethodIsTuesday},
-  {"isWednesday", arken_DateInstanceMethodIsWednesday},
-  {"isThursday",  arken_DateInstanceMethodIsThursday},
-  {"isFriday",    arken_DateInstanceMethodIsFriday},
-  {"isSaturday",  arken_DateInstanceMethodIsSaturday},
-  {"isValid",     arken_DateInstanceMethodIsValid},
-  {"year",        arken_DateInstanceMethodYear},
-  {"month",       arken_DateInstanceMethodMonth},
-  {"mon",         arken_DateInstanceMethodMon},
-  {"day",         arken_DateInstanceMethodDay},
-  {"mday",        arken_DateInstanceMethodMday},
-  {"wday",        arken_DateInstanceMethodWday},
-  {"yday",        arken_DateInstanceMethodYday},
-  {"daysInMonth", arken_DateInstanceMethodDaysInMonth},
-  {"dayOfWeek",   arken_DateInstanceMethodDayOfWeek},
-  {"dayOfYear",   arken_DateInstanceMethodDayOfYear},
-  {"time",        arken_DateInstanceMethodDate},
-  {"toString",    arken_DateInstanceMethodToString},
-  {"__tostring",  arken_DateInstanceMethodToString},
-  {"__gc",        arken_DateInstanceMethodDestruct},
-  {"__lt",        arken_DateInstanceMethodLessThan},
-  {"__le",        arken_DateInstanceMethodLessEqual},
-  {"__eq",        arken_DateInstanceMethodEqual},
-  {"__concat",    arken_DateInstanceMethodConcat},
+  {"isLeapYear",       arken_DateInstanceMethodIsLeapYear},
+  {"isSunday",         arken_DateInstanceMethodIsSunday},
+  {"isMonday",         arken_DateInstanceMethodIsMonday},
+  {"isTuesday",        arken_DateInstanceMethodIsTuesday},
+  {"isWednesday",      arken_DateInstanceMethodIsWednesday},
+  {"isThursday",       arken_DateInstanceMethodIsThursday},
+  {"isFriday",         arken_DateInstanceMethodIsFriday},
+  {"isSaturday",       arken_DateInstanceMethodIsSaturday},
+  {"isValid",          arken_DateInstanceMethodIsValid},
+  {"year",             arken_DateInstanceMethodYear},
+  {"month",            arken_DateInstanceMethodMonth},
+  {"mon",              arken_DateInstanceMethodMon},
+  {"day",              arken_DateInstanceMethodDay},
+  {"mday",             arken_DateInstanceMethodMday},
+  {"wday",             arken_DateInstanceMethodWday},
+  {"yday",             arken_DateInstanceMethodYday},
+  {"daysInMonth",      arken_DateInstanceMethodDaysInMonth},
+  {"dayOfWeek",        arken_DateInstanceMethodDayOfWeek},
+  {"dayOfYear",        arken_DateInstanceMethodDayOfYear},
+  {"time",             arken_DateInstanceMethodDate},
+  {"toString",         arken_DateInstanceMethodToString},
+  {"__tostring",       arken_DateInstanceMethodToString},
+  {"__gc",             arken_DateInstanceMethodDestruct},
+  {"__lt",             arken_DateInstanceMethodLessThan},
+  {"__le",             arken_DateInstanceMethodLessEqual},
+  {"__eq",             arken_DateInstanceMethodEqual},
+  {"__concat",         arken_DateInstanceMethodConcat},
   {NULL, NULL}
 };
 

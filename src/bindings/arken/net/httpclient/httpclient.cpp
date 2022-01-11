@@ -16,7 +16,7 @@ using arken::string;
 
 HttpClient *
 checkHttpClient( lua_State *L ) {
-  return *(HttpClient **) luaL_checkudata(L, 1, "HttpClient.metatable");
+  return *(HttpClient **) luaL_checkudata(L, 1, "arken.net.HttpClient.metatable");
 }
 
 /**
@@ -28,7 +28,7 @@ arken_HttpClientClassMethodNew( lua_State *L ) {
   const char * url = luaL_checkstring(L, 1);
   HttpClient **ptr = (HttpClient **)lua_newuserdata(L, sizeof(HttpClient*));
   *ptr = new HttpClient(url);
-  luaL_getmetatable(L, "HttpClient.metatable");
+  luaL_getmetatable(L, "arken.net.HttpClient.metatable");
   lua_setmetatable(L, -2);
   return 1;
 }
@@ -40,7 +40,7 @@ static const luaL_reg HttpClientClassMethods[] = {
 
 void static
 registerHttpClientClassMethods( lua_State *L ) {
-  luaL_newmetatable(L, "HttpClient");
+  luaL_newmetatable(L, "arken.net.HttpClient");
   luaL_register(L, NULL, HttpClientClassMethods);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
@@ -204,31 +204,31 @@ arken_HttpClientInstanceMethodDestruct( lua_State *L ) {
 
 static const
 luaL_reg HttpClientInstanceMethods[] = {
-  {"appendHeader",  arken_HttpClientInstanceMethodAppendHeader},
-  {"setVerbose",    arken_HttpClientInstanceMethodSetVerbose},
+  {"appendHeader",     arken_HttpClientInstanceMethodAppendHeader},
+  {"setVerbose",       arken_HttpClientInstanceMethodSetVerbose},
   {"setSslVerifyPeer", arken_HttpClientInstanceMethodSetSslVerifyPeer},
   {"setSslVerifyHost", arken_HttpClientInstanceMethodSetSslVerifyHost},
-  {"setSslVersion", arken_HttpClientInstanceMethodSetSslVersion},
-  {"setUseSsl",     arken_HttpClientInstanceMethodSetUseSsl},
-  {"setBody",       arken_HttpClientInstanceMethodSetBody},
-  {"setCert",       arken_HttpClientInstanceMethodSetCert},
-  {"setCertKey",    arken_HttpClientInstanceMethodSetCertKey},
-  {"body",          arken_HttpClientInstanceMethodBody},
-  {"performGet",    arken_HttpClientInstanceMethodPerformGet},
-  {"performPost",   arken_HttpClientInstanceMethodPerformPost},
-  {"performPut",    arken_HttpClientInstanceMethodPerformPut},
-  {"performDelete", arken_HttpClientInstanceMethodPerformDelete},
-  {"status",        arken_HttpClientInstanceMethodStatus},
-  {"data",          arken_HttpClientInstanceMethodData},
-  {"failure",       arken_HttpClientInstanceMethodFailure},
-  {"message",       arken_HttpClientInstanceMethodMessage},
-  {"__gc",          arken_HttpClientInstanceMethodDestruct},
+  {"setSslVersion",    arken_HttpClientInstanceMethodSetSslVersion},
+  {"setUseSsl",        arken_HttpClientInstanceMethodSetUseSsl},
+  {"setBody",          arken_HttpClientInstanceMethodSetBody},
+  {"setCert",          arken_HttpClientInstanceMethodSetCert},
+  {"setCertKey",       arken_HttpClientInstanceMethodSetCertKey},
+  {"body",             arken_HttpClientInstanceMethodBody},
+  {"performGet",       arken_HttpClientInstanceMethodPerformGet},
+  {"performPost",      arken_HttpClientInstanceMethodPerformPost},
+  {"performPut",       arken_HttpClientInstanceMethodPerformPut},
+  {"performDelete",    arken_HttpClientInstanceMethodPerformDelete},
+  {"status",           arken_HttpClientInstanceMethodStatus},
+  {"data",             arken_HttpClientInstanceMethodData},
+  {"failure",          arken_HttpClientInstanceMethodFailure},
+  {"message",          arken_HttpClientInstanceMethodMessage},
+  {"__gc",             arken_HttpClientInstanceMethodDestruct},
   {NULL, NULL}
 };
 
 void static
 registerHttpClientInstanceMethods( lua_State *L ) {
-  luaL_newmetatable(L, "HttpClient.metatable");
+  luaL_newmetatable(L, "arken.net.HttpClient.metatable");
   luaL_register(L, NULL, HttpClientInstanceMethods);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
