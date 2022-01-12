@@ -23,7 +23,7 @@ checkChannel( lua_State *L ) {
 //-----------------------------------------------------------------------------
 
 static int
-arken_channel_start(lua_State *L) {
+arken_concurrent_channel_start(lua_State *L) {
   bool purge = false;
   const char * fileName = luaL_checkstring(L, 1);
   char * params;
@@ -53,21 +53,21 @@ arken_channel_start(lua_State *L) {
   return 1;
 }
 
-static const luaL_reg TaskClassMethods[] = {
-  {"start", arken_channel_start},
+static const luaL_reg arken_concurrent_channel[] = {
+  {"start", arken_concurrent_channel_start},
   {NULL, NULL}
 };
 
 void static
-registerChannelClassMethods( lua_State *L ) {
+register_arken_concurrent_channel( lua_State *L ) {
   luaL_newmetatable(L, "arken.concurrent.channel");
-  luaL_register(L, NULL, TaskClassMethods);
+  luaL_register(L, NULL, arken_concurrent_channel);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
 
 static int
-arken_concurrent_channel_instance_method_write( lua_State *L ) {
+arken_concurrent_channel_write( lua_State *L ) {
   channel * chn = checkChannel( L );
   const char *str = luaL_checkstring(L, 2);
   chn->write(str);
@@ -75,42 +75,42 @@ arken_concurrent_channel_instance_method_write( lua_State *L ) {
 }
 
 static int
-arken_concurrent_channel_instance_method_read( lua_State *L ) {
+arken_concurrent_channel_read( lua_State *L ) {
   channel * chn = checkChannel( L );
   lua_pushstring(L, chn->read().data());
   return 1;
 }
 
 static int
-arken_concurrent_channel_instance_method_empty( lua_State *L ) {
+arken_concurrent_channel_empty( lua_State *L ) {
   channel * chn = checkChannel( L );
   lua_pushboolean(L, chn->empty());
   return 1;
 }
 
 static int
-arken_concurrent_channel_instance_method_finished( lua_State *L ) {
+arken_concurrent_channel_finished( lua_State *L ) {
   channel * chn = checkChannel( L );
   lua_pushboolean(L, chn->finished());
   return 1;
 }
 
 static int
-arken_concurrent_channel_instance_method_destruct( lua_State *L ) {
+arken_concurrent_channel_gc( lua_State *L ) {
   channel * chn = checkChannel( L );
   delete chn;
   return 0;
 }
 
 static int
-arken_concurrent_channel_instance_method_uuid( lua_State *L ) {
+arken_concurrent_channel_uuid( lua_State *L ) {
   channel * chn = checkChannel( L );
   lua_pushstring(L, chn->uuid());
   return 1;
 }
 
 static int
-arken_concurrent_channel_node_instance_method_shared( lua_State *L ) {
+arken_concurrent_channel_shared( lua_State *L ) {
   channel * chn = checkChannel( L );
   int rv;
   lua_getglobal(L, "require");
@@ -129,21 +129,21 @@ arken_concurrent_channel_node_instance_method_shared( lua_State *L ) {
 }
 
 static const
-luaL_reg ChannelInstanceMethods[] = {
-  {"write",    arken_concurrent_channel_instance_method_write},
-  {"read",     arken_concurrent_channel_instance_method_read},
-  {"empty",    arken_concurrent_channel_instance_method_empty},
-  {"finished", arken_concurrent_channel_instance_method_finished},
-  {"uuid",     arken_concurrent_channel_instance_method_uuid},
-  {"shared",   arken_concurrent_channel_node_instance_method_shared},
-  {"__gc",     arken_concurrent_channel_instance_method_destruct},
+luaL_reg arken_concurrent_channel_metatable[] = {
+  {"write",    arken_concurrent_channel_write},
+  {"read",     arken_concurrent_channel_read},
+  {"empty",    arken_concurrent_channel_empty},
+  {"finished", arken_concurrent_channel_finished},
+  {"uuid",     arken_concurrent_channel_uuid},
+  {"shared",   arken_concurrent_channel_shared},
+  {"__gc",     arken_concurrent_channel_gc},
   {NULL, NULL}
 };
 
 void static
-registerChannelInstanceMethods( lua_State *L ) {
-  luaL_newmetatable(L, "arken.concurrent.channel.metatable");
-  luaL_register(L, NULL, ChannelInstanceMethods);
+register_arken_concurrent_channel_metatable( lua_State *L ) {
+  luaL_newmetatable(L,  "arken.concurrent.channel.metatable");
+  luaL_register(L, NULL, arken_concurrent_channel_metatable);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -151,8 +151,8 @@ registerChannelInstanceMethods( lua_State *L ) {
 extern "C" {
   int
   luaopen_arken_concurrent_channel( lua_State *L ) {
-    registerChannelInstanceMethods(L);
-    registerChannelClassMethods(L);
+    register_arken_concurrent_channel_metatable(L);
+    register_arken_concurrent_channel(L);
     return 1;
   }
 }

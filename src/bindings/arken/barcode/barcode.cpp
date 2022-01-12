@@ -23,7 +23,7 @@ checkBarcode( lua_State *L , int position = 1) {
  */
 
 static int
-arken_BarcodeClassMethodNew( lua_State *L ) {
+arken_Barcode_new( lua_State *L ) {
   arken::Barcode **ptr = (arken::Barcode **)lua_newuserdata(L, sizeof(Barcode*));
   int width  = luaL_checkinteger(L, 1);
   int height = luaL_checkinteger(L, 2);
@@ -40,15 +40,15 @@ arken_BarcodeClassMethodNew( lua_State *L ) {
   return 1;
 }
 
-static const luaL_reg BarcodeClassMethods[] = {
-  {"new", arken_BarcodeClassMethodNew},
+static const luaL_reg arken_Barcode[] = {
+  {"new", arken_Barcode_new},
   {NULL, NULL}
 };
 
 void static
-registerBarcodeClassMethods( lua_State *L ) {
+register_arken_Barcode( lua_State *L ) {
   luaL_newmetatable(L, "arken.Barcode");
-  luaL_register(L, NULL, BarcodeClassMethods);
+  luaL_register(L, NULL, arken_Barcode);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -58,7 +58,7 @@ registerBarcodeClassMethods( lua_State *L ) {
  */
 
 static int
-arken_BarcodeInstanceMethodSetText( lua_State *L ) {
+arken_Barcode_setText( lua_State *L ) {
   arken::Barcode *barcode = checkBarcode( L );
   const char * text = lua_tostring(L, 2);
   barcode->setText(text);
@@ -66,7 +66,7 @@ arken_BarcodeInstanceMethodSetText( lua_State *L ) {
 }
 
 static int
-arken_BarcodeInstanceMethodSave( lua_State *L ) {
+arken_Barcode_save( lua_State *L ) {
   arken::Barcode *barcode = checkBarcode( L );
   const char * path = lua_tostring(L, 2);
   barcode->save(path);
@@ -75,24 +75,24 @@ arken_BarcodeInstanceMethodSave( lua_State *L ) {
 }
 
 static int
-arken_BarcodeInstanceMethodDestruct( lua_State *L ) {
+arken_Barcode_gc( lua_State *L ) {
   arken::Barcode *barcode = checkBarcode( L );
   delete barcode;
   return 0;
 }
 
 static const
-luaL_reg BarcodeInstanceMethods[] = {
-  {"setText", arken_BarcodeInstanceMethodSetText},
-  {"save",    arken_BarcodeInstanceMethodSave},
-  {"__gc",    arken_BarcodeInstanceMethodDestruct},
+luaL_reg arken_Barcode_metatable[] = {
+  {"setText", arken_Barcode_setText},
+  {"save",    arken_Barcode_save},
+  {"__gc",    arken_Barcode_gc},
   {NULL, NULL}
 };
 
 void static
-registerBarcodeInstanceMethods( lua_State *L ) {
+register_arken_Barcode_metatable( lua_State *L ) {
   luaL_newmetatable(L, "arken.Barcode.metatable");
-  luaL_register(L, NULL, BarcodeInstanceMethods);
+  luaL_register(L, NULL, arken_Barcode_metatable);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -100,8 +100,8 @@ registerBarcodeInstanceMethods( lua_State *L ) {
 extern "C" {
   int
   luaopen_arken_Barcode( lua_State *L ) {
-    registerBarcodeInstanceMethods(L);
-    registerBarcodeClassMethods(L);
+    register_arken_Barcode_metatable(L);
+    register_arken_Barcode(L);
     return 1;
   }
 }

@@ -13,11 +13,6 @@ using Shared   = arken::concurrent::Shared;
 char * json_lock_encode(lua_State *L);
 void   json_lock_decode(lua_State *L, const char * data);
 
-singular *
-checkNaiad( lua_State *L ) {
-  return *(singular **) luaL_checkudata(L, 1, "arken.concurrent.task.singular.metatable");
-}
-
 singular::node *
 checkNode( lua_State *L ) {
   return *(singular::node **) luaL_checkudata(L, 1, "arken.concurrent.task.singular.node.metatable");
@@ -28,7 +23,7 @@ checkNode( lua_State *L ) {
 //-----------------------------------------------------------------------------
 
 static int
-arken_singular_start(lua_State *L) {
+arken_concurrent_task_singular_start(lua_State *L) {
   bool release  = false;
   char * params = nullptr;
   const char * fileName = luaL_checkstring(L, 1);
@@ -61,7 +56,7 @@ arken_singular_start(lua_State *L) {
 }
 
 static int
-arken_singular_emplace(lua_State *L) {
+arken_concurrent_task_singular_emplace(lua_State *L) {
   bool release  = false;
   char * params = nullptr;
   const char * fileName = luaL_checkstring(L, 1);
@@ -94,7 +89,7 @@ arken_singular_emplace(lua_State *L) {
 }
 
 static int
-arken_singular_place(lua_State *L) {
+arken_concurrent_task_singular_place(lua_State *L) {
   bool release  = false;
   char * params = nullptr;
   const char * fileName = luaL_checkstring(L, 1);
@@ -127,7 +122,7 @@ arken_singular_place(lua_State *L) {
 }
 
 static int
-arken_singular_max(lua_State *L) {
+arken_concurrent_task_singular_max(lua_State *L) {
   if(lua_gettop(L) == 1) { /* número de argumentos */
     int max = luaL_checkinteger(L, 1);
     singular::max() = max;
@@ -139,58 +134,58 @@ arken_singular_max(lua_State *L) {
 }
 
 static int
-arken_singular_actives(lua_State *L) {
+arken_concurrent_task_singular_actives(lua_State *L) {
   lua_pushinteger(L, singular::actives());
   return 1;
 }
 
 static int
-arken_singular_inspect( lua_State *L ) {
+arken_concurrent_task_singular_inspect( lua_State *L ) {
   lua_pushstring(L, singular::inspect());
   return 1;
 }
 
-static const luaL_reg NaiadClassMethods[] = {
-  {"start",   arken_singular_start},
-  {"emplace", arken_singular_emplace},
-  {"place",   arken_singular_place},
-  {"max",     arken_singular_max},
-  {"actives", arken_singular_actives},
-  {"inspect", arken_singular_inspect},
+static const luaL_reg arken_concurrent_task_singular[] = {
+  {"start",   arken_concurrent_task_singular_start},
+  {"emplace", arken_concurrent_task_singular_emplace},
+  {"place",   arken_concurrent_task_singular_place},
+  {"max",     arken_concurrent_task_singular_max},
+  {"actives", arken_concurrent_task_singular_actives},
+  {"inspect", arken_concurrent_task_singular_inspect},
   {NULL, NULL}
 };
 
 void static
-registerNaiadClassMethods( lua_State *L ) {
-  luaL_newmetatable(L, "arken.concurrent.task.singular");
-  luaL_register(L, NULL, NaiadClassMethods);
+register_arken_concurrent_task_singular( lua_State *L ) {
+  luaL_newmetatable(L,  "arken.concurrent.task.singular");
+  luaL_register(L, NULL, arken_concurrent_task_singular);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
 
 static int
-arken_concurrent_channel_node_instance_method_uuid( lua_State *L ) {
+arken_concurrent_task_singular_node_uuid( lua_State *L ) {
   singular::node * node = checkNode( L );
   lua_pushlstring(L, node->uuid(), 36);
   return 1;
 }
 
 static int
-arken_concurrent_channel_node_instance_method_name( lua_State *L ) {
+arken_concurrent_task_singular_node_name( lua_State *L ) {
   singular::node * node = checkNode( L );
   lua_pushstring(L, node->name());
   return 1;
 }
 
 static int
-arken_concurrent_channel_node_instance_method_microtime( lua_State *L ) {
+arken_concurrent_task_singular_node_microtime( lua_State *L ) {
   singular::node * node = checkNode( L );
   lua_pushnumber(L, node->microtime());
   return 1;
 }
 
 static int
-arken_concurrent_channel_node_instance_method_shared( lua_State *L ) {
+arken_concurrent_task_singular_node_shared( lua_State *L ) {
   singular::node * node = checkNode( L );
   int rv;
   lua_getglobal(L, "require");
@@ -209,42 +204,42 @@ arken_concurrent_channel_node_instance_method_shared( lua_State *L ) {
 }
 
 static int
-arken_concurrent_channel_node_instance_method_finished( lua_State *L ) {
+arken_concurrent_task_singular_node_finished( lua_State *L ) {
   singular::node * node = checkNode( L );
   lua_pushboolean(L, node->finished());
   return 1;
 }
 
 static int
-arken_concurrent_channel_node_instance_method_wait( lua_State *L ) {
+arken_concurrent_task_singular_node_wait( lua_State *L ) {
   singular::node * node = checkNode( L );
   node->wait();
   return 0;
 }
 
 static int
-arken_concurrent_channel_node_instance_method_destruct( lua_State *L ) {
+arken_concurrent_task_singular_node_gc( lua_State *L ) {
   singular::node * node = checkNode( L );
   delete node;
   return 0;
 }
 
 static const
-luaL_reg NaiadNodeInstanceMethods[] = {
-  {"uuid",      arken_concurrent_channel_node_instance_method_uuid},
-  {"name",      arken_concurrent_channel_node_instance_method_name},
-  {"microtime", arken_concurrent_channel_node_instance_method_microtime},
-  {"shared",    arken_concurrent_channel_node_instance_method_shared},
-  {"finished",  arken_concurrent_channel_node_instance_method_finished},
-  {"wait",      arken_concurrent_channel_node_instance_method_wait},
-  {"__gc",      arken_concurrent_channel_node_instance_method_destruct},
+luaL_reg arken_concurrent_task_singular_node[] = {
+  {"uuid",      arken_concurrent_task_singular_node_uuid},
+  {"name",      arken_concurrent_task_singular_node_name},
+  {"microtime", arken_concurrent_task_singular_node_microtime},
+  {"shared",    arken_concurrent_task_singular_node_shared},
+  {"finished",  arken_concurrent_task_singular_node_finished},
+  {"wait",      arken_concurrent_task_singular_node_wait},
+  {"__gc",      arken_concurrent_task_singular_node_gc},
   {NULL, NULL}
 };
 
 void static
-registerNodeInstanceMethods( lua_State *L ) {
+register_arken_concurrent_task_singular_node( lua_State *L ) {
   luaL_newmetatable(L, "arken.concurrent.task.singular.node.metatable");
-  luaL_register(L, NULL, NaiadNodeInstanceMethods);
+  luaL_register(L, NULL, arken_concurrent_task_singular_node);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -252,8 +247,8 @@ registerNodeInstanceMethods( lua_State *L ) {
 extern "C" {
   int
   luaopen_arken_concurrent_task_singular( lua_State *L ) {
-    registerNodeInstanceMethods(L);
-    registerNaiadClassMethods(L);
+    register_arken_concurrent_task_singular_node(L);
+    register_arken_concurrent_task_singular(L);
     return 1;
   }
 }

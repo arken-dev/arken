@@ -24,7 +24,7 @@ checkTime( lua_State *L , int i = 1) {
  */
 
 static int
-arken_TimeClassMethodToday( lua_State *L ) {
+arken_chrono_Time_today( lua_State *L ) {
   Time **ptr = (Time **)lua_newuserdata(L, sizeof(Time*));
   *ptr = new Time((Time) Time::today());
   luaL_getmetatable(L, "arken.chrono.Time.metatable");
@@ -33,7 +33,7 @@ arken_TimeClassMethodToday( lua_State *L ) {
 }
 
 static int
-arken_TimeClassMethodNow( lua_State *L ) {
+arken_chrono_Time_now( lua_State *L ) {
   Time **ptr = (Time **)lua_newuserdata(L, sizeof(Time*));
   *ptr = new Time(Time::now());
   luaL_getmetatable(L, "arken.chrono.Time.metatable");
@@ -42,7 +42,7 @@ arken_TimeClassMethodNow( lua_State *L ) {
 }
 
 static int
-arken_TimeClassMethodCurrentDateTime( lua_State *L ) {
+arken_chrono_Time_currentDateTime( lua_State *L ) {
   Time **ptr = (Time **)lua_newuserdata(L, sizeof(Time*));
   *ptr = new Time(Time::currentDateTime());
   luaL_getmetatable(L, "arken.chrono.Time.metatable");
@@ -51,7 +51,7 @@ arken_TimeClassMethodCurrentDateTime( lua_State *L ) {
 }
 
 static int
-arken_TimeClassMethodParse( lua_State *L ) {
+arken_chrono_Time_parse( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   Time time;
   if( lua_gettop(L) == 1 ) { // number of arguments
@@ -71,18 +71,18 @@ arken_TimeClassMethodParse( lua_State *L ) {
   return 1;
 }
 
-static const luaL_reg TimeClassMethods[] = {
-  {"now",             arken_TimeClassMethodNow},
-  {"currentDateTime", arken_TimeClassMethodCurrentDateTime},
-  {"today",           arken_TimeClassMethodToday},
-  {"parse",           arken_TimeClassMethodParse},
+static const luaL_reg arken_chrono_Time[] = {
+  {"now",             arken_chrono_Time_now},
+  {"currentDateTime", arken_chrono_Time_currentDateTime},
+  {"today",           arken_chrono_Time_today},
+  {"parse",           arken_chrono_Time_parse},
   {NULL, NULL}
 };
 
 void static
-registerTimeClassMethods( lua_State *L ) {
-  luaL_newmetatable(L, "arken.chrono.Time");
-  luaL_register(L, NULL, TimeClassMethods);
+register_arken_chrono_Time( lua_State *L ) {
+  luaL_newmetatable(L,  "arken.chrono.Time");
+  luaL_register(L, NULL, arken_chrono_Time);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -92,14 +92,14 @@ registerTimeClassMethods( lua_State *L ) {
  */
 
 static int
-arken_TimeInstanceMethodDestruct( lua_State *L ) {
+arken_chrono_Time_gc( lua_State *L ) {
   Time *udata = checkTime( L );
   delete udata;
   return 0;
 }
 
 static int
-arken_TimeInstanceMethodAsctime( lua_State *L ) {
+arken_chrono_Time_asctime( lua_State *L ) {
   Time * udata  = checkTime( L );
   string result = udata->asctime();
   lua_pushlstring(L, result.data(), result.size());
@@ -107,7 +107,7 @@ arken_TimeInstanceMethodAsctime( lua_State *L ) {
 }
 
 static int
-arken_TimeInstanceMethodStrftime( lua_State *L ) {
+arken_chrono_Time_strftime( lua_State *L ) {
   Time * udata  = checkTime( L );
   const char * format = luaL_checkstring(L, 2);
   string result = udata->strftime(format);
@@ -116,7 +116,7 @@ arken_TimeInstanceMethodStrftime( lua_State *L ) {
 }
 
 static int
-arken_TimeInstanceMethodToString( lua_State *L ) {
+arken_chrono_Time_toString( lua_State *L ) {
   Time * udata  = checkTime( L );
   string result = udata->toString();
   lua_pushlstring(L, result.data(), result.size());
@@ -124,7 +124,7 @@ arken_TimeInstanceMethodToString( lua_State *L ) {
 }
 
 static int
-arken_TimeInstanceMethodAddYears( lua_State *L ) {
+arken_chrono_Time_addYears( lua_State *L ) {
   Time *t   = checkTime( L );
   int years = luaL_checkinteger(L, 2);
   Time other = t->addYears(years);
@@ -138,7 +138,7 @@ arken_TimeInstanceMethodAddYears( lua_State *L ) {
 }
 
 static int
-arken_TimeInstanceMethodAddMonths( lua_State *L ) {
+arken_chrono_Time_addMonths( lua_State *L ) {
   Time *t   = checkTime( L );
   int months = luaL_checkinteger(L, 2);
   Time other = t->addMonths(months);
@@ -152,7 +152,7 @@ arken_TimeInstanceMethodAddMonths( lua_State *L ) {
 }
 
 static int
-arken_TimeInstanceMethodAddDays( lua_State *L ) {
+arken_chrono_Time_addDays( lua_State *L ) {
   Time *t   = checkTime( L );
   int days  = luaL_checkinteger(L, 2);
   Time other = t->addDays(days);
@@ -166,7 +166,7 @@ arken_TimeInstanceMethodAddDays( lua_State *L ) {
 }
 
 static int
-arken_TimeInstanceMethodAddHours( lua_State *L ) {
+arken_chrono_Time_addHours( lua_State *L ) {
   Time *t   = checkTime( L );
   int hours = luaL_checkinteger(L, 2);
   Time other = t->addHours(hours);
@@ -180,7 +180,7 @@ arken_TimeInstanceMethodAddHours( lua_State *L ) {
 }
 
 static int
-arken_TimeInstanceMethodAddMinutes( lua_State *L ) {
+arken_chrono_Time_addMinutes( lua_State *L ) {
   Time *t     = checkTime( L );
   int minutes = luaL_checkinteger(L, 2);
   Time other  = t->addMinutes(minutes);
@@ -195,7 +195,7 @@ arken_TimeInstanceMethodAddMinutes( lua_State *L ) {
 
 
 static int
-arken_TimeInstanceMethodAddSecs( lua_State *L ) {
+arken_chrono_Time_addSecs( lua_State *L ) {
   Time *t   = checkTime( L );
   int secs  = luaL_checkinteger(L, 2);
   Time other = t->addSecs(secs);
@@ -209,7 +209,7 @@ arken_TimeInstanceMethodAddSecs( lua_State *L ) {
 }
 
 static int
-arken_TimeInstanceMethodBeginningOfDay( lua_State *L ) {
+arken_chrono_Time_beginningOfDay( lua_State *L ) {
   Time *t     = checkTime( L );
   Time result = t->beginningOfDay();
 
@@ -222,7 +222,7 @@ arken_TimeInstanceMethodBeginningOfDay( lua_State *L ) {
 }
 
 static int
-arken_TimeInstanceMethodEndOfDay( lua_State *L ) {
+arken_chrono_Time_endOfDay( lua_State *L ) {
   Time *t     = checkTime( L );
   Time result = t->endOfDay();
 
@@ -235,7 +235,7 @@ arken_TimeInstanceMethodEndOfDay( lua_State *L ) {
 }
 
 static int
-arken_TimeInstanceMethodBeginningOfMonth( lua_State *L ) {
+arken_chrono_Time_beginningOfMonth( lua_State *L ) {
   Time *t     = checkTime( L );
   Time result = t->beginningOfMonth();
 
@@ -248,7 +248,7 @@ arken_TimeInstanceMethodBeginningOfMonth( lua_State *L ) {
 }
 
 static int
-arken_TimeInstanceMethodEndOfMonth( lua_State *L ) {
+arken_chrono_Time_endOfMonth( lua_State *L ) {
   Time *t     = checkTime( L );
   Time result = t->endOfMonth();
 
@@ -261,105 +261,105 @@ arken_TimeInstanceMethodEndOfMonth( lua_State *L ) {
 }
 
 static int
-arken_TimeInstanceMethodIsLeapYear( lua_State *L ) {
+arken_chrono_Time_isLeapYear( lua_State *L ) {
   Time *t = checkTime( L );
   lua_pushboolean(L, t->isLeapYear());
   return 1;
 }
 
 static int
-arken_TimeInstanceMethodIsSunday( lua_State *L ) {
+arken_chrono_Time_isSunday( lua_State *L ) {
   Time *t = checkTime( L );
   lua_pushboolean(L, t->isSunday());
   return 1;
 }
 
 static int
-arken_TimeInstanceMethodIsMonday( lua_State *L ) {
+arken_chrono_Time_isMonday( lua_State *L ) {
   Time *t = checkTime( L );
   lua_pushboolean(L, t->isMonday());
   return 1;
 }
 
 static int
-arken_TimeInstanceMethodIsTuesday( lua_State *L ) {
+arken_chrono_Time_isTuesday( lua_State *L ) {
   Time *t = checkTime( L );
   lua_pushboolean(L, t->isTuesday());
   return 1;
 }
 
 static int
-arken_TimeInstanceMethodIsWednesday( lua_State *L ) {
+arken_chrono_Time_isWednesday( lua_State *L ) {
   Time *t = checkTime( L );
   lua_pushboolean(L, t->isWednesday());
   return 1;
 }
 
 static int
-arken_TimeInstanceMethodIsThursday( lua_State *L ) {
+arken_chrono_Time_isThursday( lua_State *L ) {
   Time *t = checkTime( L );
   lua_pushboolean(L, t->isThursday());
   return 1;
 }
 
 static int
-arken_TimeInstanceMethodIsFriday( lua_State *L ) {
+arken_chrono_Time_isFriday( lua_State *L ) {
   Time *t = checkTime( L );
   lua_pushboolean(L, t->isFriday());
   return 1;
 }
 
 static int
-arken_TimeInstanceMethodIsSaturday( lua_State *L ) {
+arken_chrono_Time_isSaturday( lua_State *L ) {
   Time *t = checkTime( L );
   lua_pushboolean(L, t->isSaturday());
   return 1;
 }
 
 static int
-arken_TimeInstanceMethodIsValid( lua_State *L ) {
+arken_chrono_Time_isValid( lua_State *L ) {
   Time *t = checkTime( L );
   lua_pushboolean(L, t->isValid());
   return 1;
 }
 
 static int
-arken_TimeInstanceMethodYear( lua_State *L ) {
+arken_chrono_Time_year( lua_State *L ) {
   Time *t   = checkTime( L );
   lua_pushinteger(L, t->year());
   return 1;
 }
 
 static int
-arken_TimeInstanceMethodMon( lua_State *L ) {
+arken_chrono_Time_mon( lua_State *L ) {
   Time *t   = checkTime( L );
   lua_pushinteger(L, t->mon());
   return 1;
 }
 
 static int
-arken_TimeInstanceMethodMonth( lua_State *L ) {
+arken_chrono_Time_month( lua_State *L ) {
   Time *t   = checkTime( L );
   lua_pushinteger(L, t->month());
   return 1;
 }
 
 static int
-arken_TimeInstanceMethodDay( lua_State *L ) {
+arken_chrono_Time_day( lua_State *L ) {
   Time *t   = checkTime( L );
   lua_pushinteger(L, t->day());
   return 1;
 }
 
 static int
-arken_TimeInstanceMethodHour( lua_State *L ) {
+arken_chrono_Time_hour( lua_State *L ) {
   Time *t   = checkTime( L );
   lua_pushinteger(L, t->hour());
   return 1;
 }
 
 static int
-arken_TimeInstanceMethodMin( lua_State *L ) {
+arken_chrono_Time_min( lua_State *L ) {
   Time *t   = checkTime( L );
   lua_pushinteger(L, t->min());
   return 1;
@@ -367,63 +367,63 @@ arken_TimeInstanceMethodMin( lua_State *L ) {
 
 
 static int
-arken_TimeInstanceMethodSec( lua_State *L ) {
+arken_chrono_Time_sec( lua_State *L ) {
   Time *t   = checkTime( L );
   lua_pushinteger(L, t->sec());
   return 1;
 }
 
 static int
-arken_TimeInstanceMethodMday( lua_State *L ) {
+arken_chrono_Time_mday( lua_State *L ) {
   Time *t   = checkTime( L );
   lua_pushinteger(L, t->mday());
   return 1;
 }
 
 static int
-arken_TimeInstanceMethodWday( lua_State *L ) {
+arken_chrono_Time_wday( lua_State *L ) {
   Time *t   = checkTime( L );
   lua_pushinteger(L, t->wday());
   return 1;
 }
 
 static int
-arken_TimeInstanceMethodDayOfWeek( lua_State *L ) {
+arken_chrono_Time_dayOfWeek( lua_State *L ) {
   Time *t   = checkTime( L );
   lua_pushinteger(L, t->dayOfWeek());
   return 1;
 }
 
 static int
-arken_TimeInstanceMethodYday( lua_State *L ) {
+arken_chrono_Time_yday( lua_State *L ) {
   Time *t   = checkTime( L );
   lua_pushinteger(L, t->yday());
   return 1;
 }
 
 static int
-arken_TimeInstanceMethodDayOfYear( lua_State *L ) {
+arken_chrono_Time_dayOfYear( lua_State *L ) {
   Time *t   = checkTime( L );
   lua_pushinteger(L, t->dayOfYear());
   return 1;
 }
 
 static int
-arken_TimeInstanceMethodDaysInMonth( lua_State *L ) {
+arken_chrono_Time_daysInMonth( lua_State *L ) {
   Time *t = checkTime( L );
   lua_pushinteger(L, t->daysInMonth());
   return 1;
 }
 
 static int
-arken_TimeInstanceMethodTime( lua_State *L ) {
+arken_chrono_Time_time( lua_State *L ) {
   Time *t = checkTime( L );
   lua_pushnumber(L, t->time());
   return 1;
 }
 
 static int
-arken_TimeInstanceMethodDate( lua_State *L ) {
+arken_chrono_Time_date( lua_State *L ) {
   Time *t = checkTime( L );
 
   Date **ptr = (Date **)lua_newuserdata(L, sizeof(Date*));
@@ -435,7 +435,7 @@ arken_TimeInstanceMethodDate( lua_State *L ) {
 }
 
 static int
-arken_TimeInstanceMethodLessEqual( lua_State *L ) {
+arken_chrono_Time_lessEqual( lua_State *L ) {
   Time *t1 = checkTime( L );
   Time *t2 = *(Time **) luaL_checkudata(L, 2, "arken.chrono.Time.metatable");
 
@@ -444,7 +444,7 @@ arken_TimeInstanceMethodLessEqual( lua_State *L ) {
 }
 
 static int
-arken_TimeInstanceMethodLessThan( lua_State *L ) {
+arken_chrono_Time_lessThan( lua_State *L ) {
   Time *dt1 = checkTime( L );
   Time *dt2 = *(Time **) luaL_checkudata(L, 2, "arken.chrono.Time.metatable");
 
@@ -453,7 +453,7 @@ arken_TimeInstanceMethodLessThan( lua_State *L ) {
 }
 
 static int
-arken_TimeInstanceMethodEqual( lua_State *L ) {
+arken_chrono_Time_equal( lua_State *L ) {
   Time *t1 = checkTime( L );
   Time *t2 = *(Time **) luaL_checkudata(L, 2, "arken.chrono.Time.metatable");
   lua_pushboolean(L, (*t1) == (*t2));
@@ -461,7 +461,7 @@ arken_TimeInstanceMethodEqual( lua_State *L ) {
 }
 
 static int
-arken_TimeInstanceMethodConcat( lua_State *L ) {
+arken_chrono_Time_concat( lua_State *L ) {
   Time *dt;
   string concat;
   const char * str;
@@ -480,57 +480,57 @@ arken_TimeInstanceMethodConcat( lua_State *L ) {
 }
 
 static const
-luaL_reg TimeInstanceMethods[] = {
-  {"asctime",          arken_TimeInstanceMethodAsctime},
-  {"strftime",         arken_TimeInstanceMethodStrftime},
-  {"addYears",         arken_TimeInstanceMethodAddYears},
-  {"addMonths",        arken_TimeInstanceMethodAddMonths},
-  {"addDays",          arken_TimeInstanceMethodAddDays},
-  {"addHours",         arken_TimeInstanceMethodAddHours},
-  {"addMinutes",       arken_TimeInstanceMethodAddMinutes},
-  {"addSecs",          arken_TimeInstanceMethodAddSecs},
-  {"beginningOfDay",   arken_TimeInstanceMethodBeginningOfDay},
-  {"endOfDay",         arken_TimeInstanceMethodEndOfDay},
-  {"beginningOfMonth", arken_TimeInstanceMethodBeginningOfMonth},
-  {"endOfMonth",       arken_TimeInstanceMethodEndOfMonth},
-  {"isLeapYear",       arken_TimeInstanceMethodIsLeapYear},
-  {"isSunday",         arken_TimeInstanceMethodIsSunday},
-  {"isMonday",         arken_TimeInstanceMethodIsMonday},
-  {"isTuesday",        arken_TimeInstanceMethodIsTuesday},
-  {"isWednesday",      arken_TimeInstanceMethodIsWednesday},
-  {"isThursday",       arken_TimeInstanceMethodIsThursday},
-  {"isFriday",         arken_TimeInstanceMethodIsFriday},
-  {"isSaturday",       arken_TimeInstanceMethodIsSaturday},
-  {"isValid",          arken_TimeInstanceMethodIsValid},
-  {"year",             arken_TimeInstanceMethodYear},
-  {"month",            arken_TimeInstanceMethodMonth},
-  {"mon",              arken_TimeInstanceMethodMon},
-  {"day",              arken_TimeInstanceMethodDay},
-  {"hour",             arken_TimeInstanceMethodHour},
-  {"min",              arken_TimeInstanceMethodMin},
-  {"sec",              arken_TimeInstanceMethodSec},
-  {"mday",             arken_TimeInstanceMethodMday},
-  {"wday",             arken_TimeInstanceMethodWday},
-  {"yday",             arken_TimeInstanceMethodYday},
-  {"dayofWeek",        arken_TimeInstanceMethodDayOfWeek},
-  {"dayOfYear",        arken_TimeInstanceMethodDayOfYear},
-  {"daysInMonth",      arken_TimeInstanceMethodDaysInMonth},
-  {"time",             arken_TimeInstanceMethodTime},
-  {"date",             arken_TimeInstanceMethodDate},
-  {"toString",         arken_TimeInstanceMethodToString},
-  {"__tostring",       arken_TimeInstanceMethodToString},
-  {"__gc",             arken_TimeInstanceMethodDestruct},
-  {"__lt",             arken_TimeInstanceMethodLessThan},
-  {"__le",             arken_TimeInstanceMethodLessEqual},
-  {"__eq",             arken_TimeInstanceMethodEqual},
-  {"__concat",         arken_TimeInstanceMethodConcat},
+luaL_reg arken_chrono_Time_metatable[] = {
+  {"asctime",          arken_chrono_Time_asctime},
+  {"strftime",         arken_chrono_Time_strftime},
+  {"addYears",         arken_chrono_Time_addYears},
+  {"addMonths",        arken_chrono_Time_addMonths},
+  {"addDays",          arken_chrono_Time_addDays},
+  {"addHours",         arken_chrono_Time_addHours},
+  {"addMinutes",       arken_chrono_Time_addMinutes},
+  {"addSecs",          arken_chrono_Time_addSecs},
+  {"beginningOfDay",   arken_chrono_Time_beginningOfDay},
+  {"endOfDay",         arken_chrono_Time_endOfDay},
+  {"beginningOfMonth", arken_chrono_Time_beginningOfMonth},
+  {"endOfMonth",       arken_chrono_Time_endOfMonth},
+  {"isLeapYear",       arken_chrono_Time_isLeapYear},
+  {"isSunday",         arken_chrono_Time_isSunday},
+  {"isMonday",         arken_chrono_Time_isMonday},
+  {"isTuesday",        arken_chrono_Time_isTuesday},
+  {"isWednesday",      arken_chrono_Time_isWednesday},
+  {"isThursday",       arken_chrono_Time_isThursday},
+  {"isFriday",         arken_chrono_Time_isFriday},
+  {"isSaturday",       arken_chrono_Time_isSaturday},
+  {"isValid",          arken_chrono_Time_isValid},
+  {"year",             arken_chrono_Time_year},
+  {"month",            arken_chrono_Time_month},
+  {"mon",              arken_chrono_Time_mon},
+  {"day",              arken_chrono_Time_day},
+  {"hour",             arken_chrono_Time_hour},
+  {"min",              arken_chrono_Time_min},
+  {"sec",              arken_chrono_Time_sec},
+  {"mday",             arken_chrono_Time_mday},
+  {"wday",             arken_chrono_Time_wday},
+  {"yday",             arken_chrono_Time_yday},
+  {"dayofWeek",        arken_chrono_Time_dayOfWeek},
+  {"dayOfYear",        arken_chrono_Time_dayOfYear},
+  {"daysInMonth",      arken_chrono_Time_daysInMonth},
+  {"time",             arken_chrono_Time_time},
+  {"date",             arken_chrono_Time_date},
+  {"toString",         arken_chrono_Time_toString},
+  {"__tostring",       arken_chrono_Time_toString},
+  {"__gc",             arken_chrono_Time_gc},
+  {"__lt",             arken_chrono_Time_lessThan},
+  {"__le",             arken_chrono_Time_lessEqual},
+  {"__eq",             arken_chrono_Time_equal},
+  {"__concat",         arken_chrono_Time_concat},
   {NULL, NULL}
 };
 
 void static
-registerTimeInstanceMethods( lua_State *L ) {
+register_arken_chrono_Time_metatable( lua_State *L ) {
   luaL_newmetatable(L, "arken.chrono.Time.metatable");
-  luaL_register(L, NULL, TimeInstanceMethods);
+  luaL_register(L, NULL, arken_chrono_Time_metatable);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -538,8 +538,8 @@ registerTimeInstanceMethods( lua_State *L ) {
 extern "C" {
   int
   luaopen_arken_chrono_Time( lua_State *L ) {
-    registerTimeInstanceMethods(L);
-    registerTimeClassMethods(L);
+    register_arken_chrono_Time_metatable(L);
+    register_arken_chrono_Time(L);
     return 1;
   }
 }

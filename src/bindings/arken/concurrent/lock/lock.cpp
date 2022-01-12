@@ -23,7 +23,7 @@ checkLock( lua_State *L ) {
  */
 
 static int
-arken_LockClassMethodNew( lua_State *L ) {
+arken_concurrent_Lock_new( lua_State *L ) {
   const char *str = (char *) luaL_checkstring(L, 1);
   Lock **ptr = (Lock **)lua_newuserdata(L, sizeof(Lock*));
   *ptr = new Lock(Lock(str));
@@ -32,15 +32,15 @@ arken_LockClassMethodNew( lua_State *L ) {
   return 1;
 }
 
-static const luaL_reg LockClassMethods[] = {
-  {"new", arken_LockClassMethodNew},
+static const luaL_reg arken_concurrent_Lock[] = {
+  {"new", arken_concurrent_Lock_new},
   {NULL, NULL}
 };
 
 void static
-registerLockClassMethods( lua_State *L ) {
+register_arken_concurrent_Lock( lua_State *L ) {
   luaL_newmetatable(L, "arken.concurrent.Lock");
-  luaL_register(L, NULL, LockClassMethods);
+  luaL_register(L, NULL, arken_concurrent_Lock);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -50,38 +50,38 @@ registerLockClassMethods( lua_State *L ) {
  */
 
 static int
-arken_LockInstanceMethodDestruct( lua_State *L ) {
+arken_concurrent_Lock_gc( lua_State *L ) {
   Lock *udata = checkLock( L );
   delete udata;
   return 0;
 }
 
 static int
-arken_LockInstanceMethodEnable( lua_State *L ) {
+arken_concurrent_Lock_enable( lua_State *L ) {
   Lock * udata  = checkLock( L );
   udata->enable();
   return 0;
 }
 
 static int
-arken_LockInstanceMethodDisable( lua_State *L ) {
+arken_concurrent_Lock_disable( lua_State *L ) {
   Lock * udata  = checkLock( L );
   udata->disable();
   return 0;
 }
 
 static const
-luaL_reg LockInstanceMethods[] = {
-  {"enable",  arken_LockInstanceMethodEnable},
-  {"disable", arken_LockInstanceMethodDisable},
-  {"__gc", arken_LockInstanceMethodDestruct},
+luaL_reg arken_concurrent_Lock_metatable[] = {
+  {"enable",  arken_concurrent_Lock_enable},
+  {"disable", arken_concurrent_Lock_disable},
+  {"__gc",    arken_concurrent_Lock_gc},
   {NULL, NULL}
 };
 
 void static
-registerLockInstanceMethods( lua_State *L ) {
+register_arken_concurrent_Lock_metatable( lua_State *L ) {
   luaL_newmetatable(L, "arken.concurrent.Lock.metatable");
-  luaL_register(L, NULL, LockInstanceMethods);
+  luaL_register(L, NULL, arken_concurrent_Lock_metatable);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -89,8 +89,8 @@ registerLockInstanceMethods( lua_State *L ) {
 extern "C" {
   int
   luaopen_arken_concurrent_Lock( lua_State *L ) {
-    registerLockInstanceMethods(L);
-    registerLockClassMethods(L);
+    register_arken_concurrent_Lock_metatable(L);
+    register_arken_concurrent_Lock(L);
     return 1;
   }
 }

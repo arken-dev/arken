@@ -13,12 +13,7 @@ using Shared = arken::concurrent::Shared;
 char * json_lock_encode(lua_State *L);
 void   json_lock_decode(lua_State *L, const char * data);
 
-scheduled *
-checkNaiad( lua_State *L ) {
-  return *(scheduled **) luaL_checkudata(L, 1, "arken.concurrent.task.scheduled.metatable");
-}
-
-scheduled::node *
+static scheduled::node *
 checkNode( lua_State *L ) {
   return *(scheduled::node **) luaL_checkudata(L, 1, "arken.concurrent.task.scheduled.node.metatable");
 }
@@ -28,7 +23,7 @@ checkNode( lua_State *L ) {
 //-----------------------------------------------------------------------------
 
 static int
-arken_scheduled_start(lua_State *L) {
+arken_concurrent_task_scheduled_start(lua_State *L) {
   bool release  = false;
   char * params = nullptr;
   const char * fileName = luaL_checkstring(L, 1);
@@ -61,7 +56,7 @@ arken_scheduled_start(lua_State *L) {
 }
 
 static int
-arken_scheduled_max(lua_State *L) {
+arken_concurrent_task_scheduled_max(lua_State *L) {
   if(lua_gettop(L) == 1) { /* número de argumentos */
     int max = luaL_checkinteger(L, 1);
     scheduled::max() = max;
@@ -73,56 +68,56 @@ arken_scheduled_max(lua_State *L) {
 }
 
 static int
-arken_scheduled_actives(lua_State *L) {
+arken_concurrent_task_scheduled_actives(lua_State *L) {
   lua_pushinteger(L, scheduled::actives());
   return 1;
 }
 
 static int
-arken_scheduled_inspect( lua_State *L ) {
+arken_concurrent_task_scheduled_inspect( lua_State *L ) {
   lua_pushstring(L, scheduled::inspect());
   return 1;
 }
 
-static const luaL_reg NaiadClassMethods[] = {
-  {"start",   arken_scheduled_start},
-  {"max",     arken_scheduled_max},
-  {"actives", arken_scheduled_actives},
-  {"inspect", arken_scheduled_inspect},
+static const luaL_reg arken_concurrent_task_scheduled[] = {
+  {"start",   arken_concurrent_task_scheduled_start},
+  {"max",     arken_concurrent_task_scheduled_max},
+  {"actives", arken_concurrent_task_scheduled_actives},
+  {"inspect", arken_concurrent_task_scheduled_inspect},
   {NULL, NULL}
 };
 
 void static
-registerNaiadClassMethods( lua_State *L ) {
+register_arken_concurrent_task_scheduled( lua_State *L ) {
   luaL_newmetatable(L, "arken.concurrent.task.scheduled");
-  luaL_register(L, NULL, NaiadClassMethods);
+  luaL_register(L, NULL, arken_concurrent_task_scheduled);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
 
 static int
-arken_concurrent_channel_node_instance_method_uuid( lua_State *L ) {
+arken_concurrent_task_scheduled_node_uuid( lua_State *L ) {
   scheduled::node * node = checkNode( L );
   lua_pushlstring(L, node->uuid(), 36);
   return 1;
 }
 
 static int
-arken_concurrent_channel_node_instance_method_name( lua_State *L ) {
+arken_concurrent_task_scheduled_node_name( lua_State *L ) {
   scheduled::node * node = checkNode( L );
   lua_pushstring(L, node->name());
   return 1;
 }
 
 static int
-arken_concurrent_channel_node_instance_method_microtime( lua_State *L ) {
+arken_concurrent_task_scheduled_node_microtime( lua_State *L ) {
   scheduled::node * node = checkNode( L );
   lua_pushnumber(L, node->microtime());
   return 1;
 }
 
 static int
-arken_concurrent_channel_node_instance_method_shared( lua_State *L ) {
+arken_concurrent_task_scheduled_node_shared( lua_State *L ) {
   scheduled::node * node = checkNode( L );
   int rv;
   lua_getglobal(L, "require");
@@ -141,42 +136,42 @@ arken_concurrent_channel_node_instance_method_shared( lua_State *L ) {
 }
 
 static int
-arken_concurrent_channel_node_instance_method_finished( lua_State *L ) {
+arken_concurrent_task_scheduled_node_finished( lua_State *L ) {
   scheduled::node * node = checkNode( L );
   lua_pushboolean(L, node->finished());
   return 1;
 }
 
 static int
-arken_concurrent_channel_node_instance_method_wait( lua_State *L ) {
+arken_concurrent_task_scheduled_node_wait( lua_State *L ) {
   scheduled::node * node = checkNode( L );
   node->wait();
   return 0;
 }
 
 static int
-arken_concurrent_channel_node_instance_method_destruct( lua_State *L ) {
+arken_concurrent_task_scheduled_node_gc( lua_State *L ) {
   scheduled::node * node = checkNode( L );
   delete node;
   return 0;
 }
 
 static const
-luaL_reg NaiadNodeInstanceMethods[] = {
-  {"uuid",      arken_concurrent_channel_node_instance_method_uuid},
-  {"name",      arken_concurrent_channel_node_instance_method_name},
-  {"microtime", arken_concurrent_channel_node_instance_method_microtime},
-  {"shared",    arken_concurrent_channel_node_instance_method_shared},
-  {"finished",  arken_concurrent_channel_node_instance_method_finished},
-  {"wait",      arken_concurrent_channel_node_instance_method_wait},
-  {"__gc",      arken_concurrent_channel_node_instance_method_destruct},
+luaL_reg arken_concurrent_task_scheduled_node_metatable[] = {
+  {"uuid",      arken_concurrent_task_scheduled_node_uuid},
+  {"name",      arken_concurrent_task_scheduled_node_name},
+  {"microtime", arken_concurrent_task_scheduled_node_microtime},
+  {"shared",    arken_concurrent_task_scheduled_node_shared},
+  {"finished",  arken_concurrent_task_scheduled_node_finished},
+  {"wait",      arken_concurrent_task_scheduled_node_wait},
+  {"__gc",      arken_concurrent_task_scheduled_node_gc},
   {NULL, NULL}
 };
 
 void static
-registerNodeInstanceMethods( lua_State *L ) {
+register_arken_concurrent_task_scheduled_node_metatable( lua_State *L ) {
   luaL_newmetatable(L, "arken.concurrent.task.scheduled.node.metatable");
-  luaL_register(L, NULL, NaiadNodeInstanceMethods);
+  luaL_register(L, NULL, arken_concurrent_task_scheduled_node_metatable);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -184,8 +179,8 @@ registerNodeInstanceMethods( lua_State *L ) {
 extern "C" {
   int
   luaopen_arken_concurrent_task_scheduled( lua_State *L ) {
-    registerNodeInstanceMethods(L);
-    registerNaiadClassMethods(L);
+    register_arken_concurrent_task_scheduled_node_metatable(L);
+    register_arken_concurrent_task_scheduled(L);
     return 1;
   }
 }
