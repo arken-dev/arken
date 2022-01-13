@@ -5,13 +5,12 @@
 
 #include <lua/lua.hpp>
 #include <arken/base>
+#include <arken/json.h>
 #include <arken/concurrent/task/singular.h>
 
 using singular = arken::concurrent::task::singular;
 using Shared   = arken::concurrent::Shared;
-
-char * json_lock_encode(lua_State *L);
-void   json_lock_decode(lua_State *L, const char * data);
+using json     = arken::json;
 
 singular::node *
 checkNode( lua_State *L ) {
@@ -41,7 +40,7 @@ arken_concurrent_task_singular_start(lua_State *L) {
     params = new char[3]{'{','}','\0'};
   } else {
     lua_settop(L, 2);
-    params = json_lock_encode(L);
+    params = json::encode(L);
   }
 
   singular::node node = singular::start( fileName, params, name, release );
@@ -74,7 +73,7 @@ arken_concurrent_task_singular_emplace(lua_State *L) {
     params = new char[3]{'{','}','\0'};
   } else {
     lua_settop(L, 2);
-    params = json_lock_encode(L);
+    params = json::encode(L);
   }
 
   singular::node node = singular::emplace( fileName, params, name, release );
@@ -107,7 +106,7 @@ arken_concurrent_task_singular_place(lua_State *L) {
     params = new char[3]{'{','}','\0'};
   } else {
     lua_settop(L, 2);
-    params = json_lock_encode(L);
+    params = json::encode(L);
   }
 
   singular::node node = singular::place( fileName, params, name, release );

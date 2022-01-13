@@ -2,9 +2,9 @@
 #include <arken/os.h>
 #include <cstdio>
 #include <lua/lua.hpp>
-#include <lua/json/lock.h>
 #include <arken/mvm>
 #include <arken/string.h>
+#include <arken/json.h>
 
 namespace arken {
 namespace concurrent {
@@ -148,7 +148,7 @@ void scheduled::node::run()
   luaL_getmetatable(L, "arken.concurrent.task.scheduled.node.metatable");
   lua_setmetatable(L, -2);
 
-  json_lock_decode(L, m_params);
+  json::decode(L, m_params);
 
   rv = lua_pcall(L, 2, 0, 0); // alterar para envio de 1
   if (rv) {

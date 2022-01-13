@@ -6,12 +6,11 @@
 #include <lua/lua.hpp>
 #include <arken/base>
 #include <arken/concurrent/worker.h>
+#include <arken/json.h>
 
 using worker = arken::concurrent::worker;
 using Shared = arken::concurrent::Shared;
-
-char * json_lock_encode(lua_State *L);
-void   json_lock_decode(lua_State *L, const char * data);
+using json   = arken::json;
 
 worker *
 checkWorker( lua_State *L ) {
@@ -41,7 +40,7 @@ arken_worker_start(lua_State *L) {
       release = lua_toboolean(L, 3);
       lua_settop(L, 2);
     }
-    params = json_lock_encode(L);
+    params = json::encode(L);
   }
 
   worker wrk = worker::start( fileName, params, release );
@@ -80,7 +79,7 @@ registerWorkerClassMethods( lua_State *L ) {
 static int
 arken_concurrent_worker_enqueue( lua_State *L ) {
   worker * pointer = checkWorker( L );
-  char * data = json_lock_encode(L);
+  char * data = json::encode(L);
   pointer->enqueue(data);
   delete[] data;
   return 0;

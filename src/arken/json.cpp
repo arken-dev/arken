@@ -1,6 +1,12 @@
+// Copyright 2016 The Arken Platform Authors.
+// All rights reserved.
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE file.
+
 #include <mutex>
 #include <arken/string.h>
 #include <arken/os.h>
+#include <arken/json.h>
 
 extern "C" {
 #include <json.h>
@@ -8,7 +14,9 @@ extern "C" {
 
 static std::mutex mtx;
 
-char * json_lock_encode(lua_State *l)
+namespace arken {
+
+char * json::encode(lua_State *l)
 {
 
   std::unique_lock<std::mutex> lck(mtx);
@@ -42,7 +50,7 @@ char * json_lock_encode(lua_State *l)
   return result;
 }
 
-void json_lock_decode(lua_State *l, const char * data)
+void json::decode(lua_State *l, const char * data)
 {
 
   std::unique_lock<std::mutex> lck(mtx);
@@ -80,3 +88,5 @@ void json_lock_decode(lua_State *l, const char * data)
 
   strbuf_free(json.tmp);
 }
+
+} // namespace

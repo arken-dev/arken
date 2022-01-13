@@ -6,12 +6,11 @@
 #include <lua/lua.hpp>
 #include <arken/base>
 #include <arken/concurrent/task.h>
+#include <arken/json.h>
 
-using task = arken::concurrent::task;
+using task   = arken::concurrent::task;
 using Shared = arken::concurrent::Shared;
-
-char * json_lock_encode(lua_State *L);
-void   json_lock_decode(lua_State *L, const char * data);
+using json   = arken::json;
 
 task *
 checkTask( lua_State *L ) {
@@ -34,7 +33,7 @@ arken_concurrent_task_start(lua_State *L) {
       release = lua_toboolean(L, 3);
       lua_settop(L, 2);
     }
-    params = json_lock_encode(L);
+    params = json::encode(L);
   }
   task tsk = task::start( fileName, params, release );
 

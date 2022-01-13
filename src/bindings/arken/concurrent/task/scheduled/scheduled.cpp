@@ -6,12 +6,11 @@
 #include <lua/lua.hpp>
 #include <arken/base>
 #include <arken/concurrent/task/scheduled.h>
+#include <arken/json.h>
 
 using scheduled = arken::concurrent::task::scheduled;
-using Shared = arken::concurrent::Shared;
-
-char * json_lock_encode(lua_State *L);
-void   json_lock_decode(lua_State *L, const char * data);
+using Shared    = arken::concurrent::Shared;
+using json      = arken::json;
 
 static scheduled::node *
 checkNode( lua_State *L ) {
@@ -41,7 +40,7 @@ arken_concurrent_task_scheduled_start(lua_State *L) {
     params = new char[3]{'{','}','\0'};
   } else {
     lua_settop(L, 2);
-    params = json_lock_encode(L);
+    params = json::encode(L);
   }
 
   scheduled::node node = scheduled::start( fileName, params, name, release );

@@ -6,12 +6,11 @@
 #include <lua/lua.hpp>
 #include <arken/base>
 #include <arken/concurrent/task/balanced.h>
+#include <arken/json.h>
 
 using balanced = arken::concurrent::task::balanced;
-using Shared = arken::concurrent::Shared;
-
-char * json_lock_encode(lua_State *L);
-void   json_lock_decode(lua_State *L, const char * data);
+using Shared   = arken::concurrent::Shared;
+using json     = arken::json;
 
 balanced *
 checkTask( lua_State *L ) {
@@ -47,7 +46,7 @@ arken_concurrent_task_balanced_start(lua_State *L) {
     params = new char[3]{'{','}','\0'};
   } else {
     lua_settop(L, 2);
-    params = json_lock_encode(L);
+    params = json::encode(L);
   }
 
   balanced::node node = balanced::start( fileName, params, name, release );

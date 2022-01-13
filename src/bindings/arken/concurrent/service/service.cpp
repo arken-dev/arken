@@ -7,12 +7,11 @@
 #include <arken/base>
 #include <arken/mvm>
 #include <arken/concurrent/service.h>
+#include <arken/json.h>
 
 using service = arken::concurrent::service;
-using Shared = arken::concurrent::Shared;
-
-char * json_lock_encode(lua_State *L);
-void   json_lock_decode(lua_State *L, const char * data);
+using Shared  = arken::concurrent::Shared;
+using json    = arken::json;
 
 service *
 checkService ( lua_State *L ) {
@@ -36,7 +35,7 @@ arken_concurrent_service_start(lua_State *L) {
       purge = lua_toboolean(L, 3);
       lua_settop(L, 2);
     }
-    params = json_lock_encode(L);
+    params = json::encode(L);
   }
 
   service srv = service::start( fileName, params, purge );
