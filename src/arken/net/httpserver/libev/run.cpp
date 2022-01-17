@@ -212,9 +212,11 @@ static void
 signal_handler(int signo)
 {
   switch (signo) {
+    case SIGINT:
+      std::cout << std::endl;
     case SIGTERM:
       if( fd > 0 ) {
-        std::cout << "close socket" << std::endl;
+        std::cout << "arken.net.HttpServer (libev) close socket" << std::endl;
         close(fd);
         exit(0);
       }
@@ -232,9 +234,11 @@ signal_handler(int signo)
 void HttpServer::run()
 {
   std::cout << "start arken.net.HttpServer (libev) " << m_address <<
-     ":" << m_port << " (" << m_threads << ") threads..." << std::endl;
+    ":" << m_port << " (" << m_threads << ") threads..." << std::endl;
 
   signal(SIGTERM, signal_handler);
+  signal(SIGINT,  signal_handler);
+
   start_server(m_address, m_port, m_threads);
 
 }
