@@ -584,13 +584,6 @@ arken_string[] = {
   {"trimRight",   arken_string_trimRight},
   {"truncate",    arken_string_truncate},
   {"underscore",  arken_string_underscore},
-  // deprecate methods
-  {"trimmed",        arken_string_trim},
-  {"leftTrimmed",    arken_string_trimLeft},
-  {"rightTrimmed",   arken_string_trimRight},
-  {"simplified",     arken_string_squish},
-  {"leftJustified",  arken_string_padLeft},
-  {"rightJustified", arken_string_padRight},
   {NULL, NULL}
 };
 
