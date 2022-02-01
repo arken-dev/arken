@@ -5,6 +5,7 @@
 
 #include <arken/base>
 #include <arken/cache>
+#include <arken/json>
 
 namespace arken {
 

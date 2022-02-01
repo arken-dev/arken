@@ -18,8 +18,8 @@ ar -x libluajit-5.1.a
 gcc -fPIC -shared *.o -o libluajit.so
 cp libluajit.so ../../../deps/libluajit.dll
 cd ..
-mkdir -p ../../deps/include
-cp -pr ../luajit/include/luajit-2.0/ ../../deps/include/lua
+#mkdir -p ../../deps/include
+#cp -pr ../luajit/include/luajit-2.0/ ../../deps/include/lua
 cd ..
 rm -Rf tmp.tar.gz
 rm -Rf luajit

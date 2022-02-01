@@ -1,20 +1,22 @@
 #include <lua/lua.hpp>
 #include <lua/json/lock.h>
 #include <arken/base>
+#include <arken/json.h>
+
+using arken::json;
 
 static int
-json_decode_data(lua_State *L) {
+arken_json_decode(lua_State *L) {
   const char * data = luaL_checkstring(L, 1);
-  json_lock_decode(L, data);
+  json::decode(L, data);
   return 1;
 }
 
 static int
-json_decode_file(lua_State *L) {
-
+arken_json_file(lua_State *L) {
   const char * fileName = luaL_checkstring(L, 1);
   if( os::exists(fileName) ) {
-    json_lock_decode(L, os::read(fileName));
+    json::decode(L, os::read(fileName));
     return 1;
   } else {
     lua_pushstring(L, string("file ").append(fileName).append(" not exists"));
@@ -24,8 +26,8 @@ json_decode_file(lua_State *L) {
 }
 
 static int
-json_encode_data(lua_State *L) {
-  char * data = json_lock_encode(L);
+arken_json_encode(lua_State *L) {
+  char * data = json::encode(L);
   lua_pushstring(L, data);
   delete[] data;
   return 1;
@@ -34,9 +36,9 @@ json_encode_data(lua_State *L) {
 extern "C" {
   int luaopen_arken_json( lua_State *L ) {
     static const luaL_reg Map[] = {
-      {"decode", json_decode_data},
-      {"encode", json_encode_data},
-      {"file",   json_decode_file},
+      {"decode", arken_json_decode},
+      {"encode", arken_json_encode},
+      {"file",   arken_json_file},
       {NULL, NULL}
     };
     luaL_newmetatable(L, "arken.json");

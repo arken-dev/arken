@@ -23,7 +23,7 @@ checkLog( lua_State *L ) {
  */
 
 static int
-arken_LogClassMethodNew( lua_State *L ) {
+arken_Log_new( lua_State *L ) {
   const char *str = (char *) luaL_checkstring(L, 1);
   int max = -1;
   if(lua_gettop(L) == 2) { // number of arguments
@@ -37,15 +37,15 @@ arken_LogClassMethodNew( lua_State *L ) {
   return 1;
 }
 
-static const luaL_reg LogClassMethods[] = {
-  {"new", arken_LogClassMethodNew},
+static const luaL_reg arken_Log[] = {
+  {"new", arken_Log_new},
   {NULL, NULL}
 };
 
 void static
-registerLogClassMethods( lua_State *L ) {
+register_arken_Log( lua_State *L ) {
   luaL_newmetatable(L, "arken.Log");
-  luaL_register(L, NULL, LogClassMethods);
+  luaL_register(L, NULL, arken_Log);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -55,14 +55,14 @@ registerLogClassMethods( lua_State *L ) {
  */
 
 static int
-arken_LogInstanceMethodDestruct( lua_State *L ) {
+arken_Log_gc( lua_State *L ) {
   Log *udata = checkLog( L );
   delete udata;
   return 0;
 }
 
 static int
-arken_LogInstanceMethodAppend( lua_State *L ) {
+arken_Log_append( lua_State *L ) {
   Log * udata  = checkLog( L );
   const char * append = lua_tostring(L, 2);
   udata->append(append);
@@ -70,14 +70,14 @@ arken_LogInstanceMethodAppend( lua_State *L ) {
 }
 
 static int
-arken_LogInstanceMethodDump( lua_State *L ) {
+arken_Log_dump( lua_State *L ) {
   Log *udata  = checkLog( L );
   udata->dump();
   return 0;
 }
 
 static int
-arken_LogInstanceMethodLog( lua_State *L ) {
+arken_Log_log( lua_State *L ) {
   Log * udata  = checkLog( L );
   const char * level  = lua_tostring(L, 2);
   const char * append = lua_tostring(L, 3);
@@ -86,7 +86,7 @@ arken_LogInstanceMethodLog( lua_State *L ) {
 }
 
 static int
-arken_LogInstanceMethodTrace( lua_State *L ) {
+arken_Log_trace( lua_State *L ) {
   Log * udata  = checkLog( L );
   const char * append = lua_tostring(L, 2);
   udata->trace(append);
@@ -94,7 +94,7 @@ arken_LogInstanceMethodTrace( lua_State *L ) {
 }
 
 static int
-arken_LogInstanceMethodDebug( lua_State *L ) {
+arken_Log_debug( lua_State *L ) {
   Log * udata  = checkLog( L );
   const char * append = lua_tostring(L, 2);
   udata->debug(append);
@@ -102,7 +102,7 @@ arken_LogInstanceMethodDebug( lua_State *L ) {
 }
 
 static int
-arken_LogInstanceMethodInfo( lua_State *L ) {
+arken_Log_info( lua_State *L ) {
   Log * udata  = checkLog( L );
   const char * append = lua_tostring(L, 2);
   udata->info(append);
@@ -110,7 +110,7 @@ arken_LogInstanceMethodInfo( lua_State *L ) {
 }
 
 static int
-arken_LogInstanceMethodWarn( lua_State *L ) {
+arken_Log_warn( lua_State *L ) {
   Log * udata  = checkLog( L );
   const char * append = lua_tostring(L, 2);
   udata->warn(append);
@@ -118,7 +118,7 @@ arken_LogInstanceMethodWarn( lua_State *L ) {
 }
 
 static int
-arken_LogInstanceMethodError( lua_State *L ) {
+arken_Log_error( lua_State *L ) {
   Log * udata  = checkLog( L );
   const char * append = lua_tostring(L, 2);
   udata->error(append);
@@ -126,7 +126,7 @@ arken_LogInstanceMethodError( lua_State *L ) {
 }
 
 static int
-arken_LogInstanceMethodFatal( lua_State *L ) {
+arken_Log_fatal( lua_State *L ) {
   Log * udata  = checkLog( L );
   const char * append = lua_tostring(L, 2);
   udata->fatal(append);
@@ -134,24 +134,24 @@ arken_LogInstanceMethodFatal( lua_State *L ) {
 }
 
 static const
-luaL_reg LogInstanceMethods[] = {
-  {"append", arken_LogInstanceMethodAppend},
-  {"dump",   arken_LogInstanceMethodDump},
-  {"log",    arken_LogInstanceMethodLog},
-  {"trace",  arken_LogInstanceMethodTrace},
-  {"debug",  arken_LogInstanceMethodDebug},
-  {"info",   arken_LogInstanceMethodInfo},
-  {"warn",   arken_LogInstanceMethodWarn},
-  {"error",  arken_LogInstanceMethodError},
-  {"fatal",  arken_LogInstanceMethodFatal},
-  {"__gc",   arken_LogInstanceMethodDestruct},
+luaL_reg arken_Log_metatable[] = {
+  {"append", arken_Log_append},
+  {"dump",   arken_Log_dump},
+  {"log",    arken_Log_log},
+  {"trace",  arken_Log_trace},
+  {"debug",  arken_Log_debug},
+  {"info",   arken_Log_info},
+  {"warn",   arken_Log_warn},
+  {"error",  arken_Log_error},
+  {"fatal",  arken_Log_fatal},
+  {"__gc",   arken_Log_gc},
   {NULL, NULL}
 };
 
 void static
-registerLogInstanceMethods( lua_State *L ) {
+register_arken_Log_metatable( lua_State *L ) {
   luaL_newmetatable(L, "arken.Log.metatable");
-  luaL_register(L, NULL, LogInstanceMethods);
+  luaL_register(L, NULL, arken_Log_metatable);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -159,8 +159,8 @@ registerLogInstanceMethods( lua_State *L ) {
 extern "C" {
   int
   luaopen_arken_Log( lua_State *L ) {
-    registerLogInstanceMethods(L);
-    registerLogClassMethods(L);
+    register_arken_Log_metatable(L);
+    register_arken_Log(L);
     return 1;
   }
 }

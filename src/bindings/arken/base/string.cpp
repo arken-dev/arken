@@ -539,7 +539,7 @@ arken_string_underscore( lua_State *L ) {
 }
 
 static const luaL_reg
-StringClassMethods[] = {
+arken_string[] = {
   {"new",         arken_string_new},
   {"append",      arken_string_append},
   {"blank",       arken_string_blank},
@@ -584,19 +584,12 @@ StringClassMethods[] = {
   {"trimRight",   arken_string_trimRight},
   {"truncate",    arken_string_truncate},
   {"underscore",  arken_string_underscore},
-  // deprecate methods
-  {"trimmed",        arken_string_trim},
-  {"leftTrimmed",    arken_string_trimLeft},
-  {"rightTrimmed",   arken_string_trimRight},
-  {"simplified",     arken_string_squish},
-  {"leftJustified",  arken_string_padLeft},
-  {"rightJustified", arken_string_padRight},
   {NULL, NULL}
 };
 
 void static
-registerStringClassMethods( lua_State *L ) {
-  luaL_register(L, "string", StringClassMethods);
+register_arken_string( lua_State *L ) {
+  luaL_register(L, "string", arken_string);
 }
 
 //-----------------------------------------------------------------------------
@@ -604,7 +597,7 @@ registerStringClassMethods( lua_State *L ) {
 //-----------------------------------------------------------------------------
 
 static int
-arken_StringInstanceMethodCenter( lua_State *L ) {
+arken_string_metatable_center( lua_State *L ) {
   string * udata  = checkString( L );
   int size        = luaL_checkinteger(L, 2);
   const char *pad = luaL_checkstring(L, 3);
@@ -614,14 +607,14 @@ arken_StringInstanceMethodCenter( lua_State *L ) {
 }
 
 static int
-arken_StringInstanceMethodClear( lua_State *L ) {
+arken_string_metatable_clear( lua_State *L ) {
   string * udata = checkString( L );
   udata->clear();
   return 0;
 }
 
 static int
-arken_StringInstanceMethodBlank( lua_State *L ) {
+arken_string_metatable_blank( lua_State *L ) {
   string * udata = checkString( L );
   bool result = udata->blank();
   lua_pushboolean(L, result);
@@ -629,7 +622,7 @@ arken_StringInstanceMethodBlank( lua_State *L ) {
 }
 
 static int
-arken_StringInstanceMethodCamelCase( lua_State *L ) {
+arken_string_metatable_camelCase( lua_State *L ) {
   string * udata = checkString( L );
   bool     flag  = false;
 
@@ -643,16 +636,15 @@ arken_StringInstanceMethodCamelCase( lua_State *L ) {
 }
 
 static int
-arken_StringInstanceMethodCapitalize( lua_State *L ) {
+arken_string_metatable_capitalize( lua_State *L ) {
   string * udata = checkString( L );
-
-  string result = udata->capitalize();
+  string result  = udata->capitalize();
   lua_pushlstring(L, result.data(), result.size());
   return 1;
 }
 
 static int
-arken_StringInstanceMethodContains( lua_State *L ) {
+arken_string_metatable_contains( lua_State *L ) {
   string * udata  = checkString( L );
   const char *pad = luaL_checkstring(L, 2);
   lua_pushboolean(L, udata->contains(pad));
@@ -660,7 +652,7 @@ arken_StringInstanceMethodContains( lua_State *L ) {
 }
 
 static int
-arken_StringInstanceMethodCount( lua_State *L ) {
+arken_string_metatable_count( lua_State *L ) {
   string * udata  = checkString( L );
   const char *pad = luaL_checkstring(L, 2);
   lua_pushinteger(L, udata->count(pad));
@@ -668,7 +660,7 @@ arken_StringInstanceMethodCount( lua_State *L ) {
 }
 
 static int
-arken_StringInstanceMethodChop( lua_State *L ) {
+arken_string_metatable_chop( lua_State *L ) {
   string * udata = checkString( L );
   string result = udata->chop();
   lua_pushlstring(L, result.data(), result.size());
@@ -676,7 +668,7 @@ arken_StringInstanceMethodChop( lua_State *L ) {
 }
 
 static int
-arken_StringInstanceMethodDasherize( lua_State *L ) {
+arken_string_metatable_dasherize( lua_State *L ) {
   string * udata = checkString( L );
   string result  = udata->dasherize();
   lua_pushlstring(L, result.data(), result.size());
@@ -684,14 +676,14 @@ arken_StringInstanceMethodDasherize( lua_State *L ) {
 }
 
 static int
-arken_StringInstanceMethodEmpty( lua_State *L ) {
+arken_string_metatable_empty( lua_State *L ) {
   string * udata = checkString( L );
   lua_pushboolean(L, udata->empty());
   return 1;
 }
 
 static int
-arken_StringInstanceMethodEscape( lua_State *L ) {
+arken_string_metatable_escape( lua_State *L ) {
   string * udata = checkString( L );
   string result  = udata->escape();
   lua_pushlstring(L, result.data(), result.size());
@@ -699,7 +691,7 @@ arken_StringInstanceMethodEscape( lua_State *L ) {
 }
 
 static int
-arken_StringInstanceMethodEscapeHtml( lua_State *L ) {
+arken_string_metatable_escapeHtml( lua_State *L ) {
   string * udata = checkString( L );
   string result  = udata->escapeHtml();
   lua_pushlstring(L, result.data(), result.size());
@@ -707,7 +699,7 @@ arken_StringInstanceMethodEscapeHtml( lua_State *L ) {
 }
 
 static int
-arken_StringInstanceMethodHash( lua_State *L ) {
+arken_string_metatable_hash( lua_State *L ) {
   string * udata  = checkString( L );
   size_t   result = udata->hash();
   lua_pushnumber(L, result);
@@ -715,7 +707,7 @@ arken_StringInstanceMethodHash( lua_State *L ) {
 }
 
 static int
-arken_StringInstanceMethodIndexOf( lua_State *L ) {
+arken_string_metatable_indexOf( lua_State *L ) {
   string * udata  = checkString( L );
   const char *pad = luaL_checkstring(L, 2);
   int start = 0;
@@ -731,7 +723,7 @@ arken_StringInstanceMethodIndexOf( lua_State *L ) {
 }
 
 static int
-arken_StringInstanceMethodInsert( lua_State *L ) {
+arken_string_metatable_insert( lua_State *L ) {
   string * udata = checkString( L );
   int len        = luaL_checkinteger(L, 2);
   const char *ba = luaL_checkstring(L, 3);
@@ -741,7 +733,7 @@ arken_StringInstanceMethodInsert( lua_State *L ) {
 }
 
 static int
-arken_StringInstanceMethodEndsWith( lua_State *L ) {
+arken_string_metatable_endsWith( lua_State *L ) {
   string * udata  = checkString( L );
   const char * ba = luaL_checkstring(L, 2);
   lua_pushboolean(L, udata->endsWith(ba));
@@ -749,7 +741,7 @@ arken_StringInstanceMethodEndsWith( lua_State *L ) {
 }
 
 static int
-arken_StringInstanceMethodLastIndexOf( lua_State *L ) {
+arken_string_metatable_lastIndexOf( lua_State *L ) {
   string * udata   = checkString( L );
   const char * str = luaL_checkstring(L, 2);
   int  result      = udata->lastIndexOf(str);
@@ -758,7 +750,7 @@ arken_StringInstanceMethodLastIndexOf( lua_State *L ) {
 }
 
 static int
-arken_StringInstanceMethodLeft( lua_State *L ) {
+arken_string_metatable_left( lua_State *L ) {
   string * udata = checkString( L );
   int len        = luaL_checkinteger(L, 2);
   string result  = udata->left(len);
@@ -767,7 +759,7 @@ arken_StringInstanceMethodLeft( lua_State *L ) {
 }
 
 static int
-arken_StringInstanceMethodPadLeft( lua_State *L ) {
+arken_string_metatable_padLeft( lua_State *L ) {
   string * udata   = checkString( L );
   size_t size      = luaL_checkinteger(L, 2);
   const char * pad = luaL_checkstring(L, 3);
@@ -777,7 +769,7 @@ arken_StringInstanceMethodPadLeft( lua_State *L ) {
 }
 
 static int
-arken_StringInstanceMethodMid( lua_State *L ) {
+arken_string_metatable_mid( lua_State *L ) {
   string * udata = checkString( L );
   int pos = luaL_checkinteger(L, 2);
   int len = -1;
@@ -790,7 +782,7 @@ arken_StringInstanceMethodMid( lua_State *L ) {
 }
 
 static int
-arken_StringInstanceMethodMd5( lua_State *L ) {
+arken_string_metatable_md5( lua_State *L ) {
   string * udata = checkString( L );
   string result  = udata->md5();
   lua_pushlstring(L, result.data(), result.size());
@@ -798,7 +790,7 @@ arken_StringInstanceMethodMd5( lua_State *L ) {
 }
 
 static int
-arken_StringInstanceMethodNormalize( lua_State *L ) {
+arken_string_metatable_normalize( lua_State *L ) {
   string * udata = checkString( L );
   string result  = udata->normalize();
   lua_pushlstring(L, result.data(), result.size());
@@ -806,7 +798,7 @@ arken_StringInstanceMethodNormalize( lua_State *L ) {
 }
 
 static int
-arken_StringInstanceMethodRemove( lua_State *L ) {
+arken_string_metatable_remove( lua_State *L ) {
   string * udata = checkString( L );
   const char * before = luaL_checkstring(L, 2);
   int start = 0;
@@ -824,7 +816,7 @@ arken_StringInstanceMethodRemove( lua_State *L ) {
 }
 
 static int
-arken_StringInstanceMethodRemoveChar( lua_State *L ) {
+arken_string_metatable_removeChar( lua_State *L ) {
   string * udata = checkString( L );
   const char * before = luaL_checkstring(L, 2);
   int start = 0;
@@ -842,7 +834,7 @@ arken_StringInstanceMethodRemoveChar( lua_State *L ) {
 }
 
 static int
-arken_StringInstanceMethodReplace( lua_State *L ) {
+arken_string_metatable_replace( lua_State *L ) {
   string * udata = checkString( L );
   const char * before = luaL_checkstring(L, 2);
   const char * after  = luaL_checkstring(L, 3);
@@ -861,7 +853,7 @@ arken_StringInstanceMethodReplace( lua_State *L ) {
 }
 
 static int
-arken_StringInstanceMethodReplaceChar( lua_State *L ) {
+arken_string_metatable_replaceChar( lua_State *L ) {
   string * udata = checkString( L );
   const char * before = luaL_checkstring(L, 2);
   const char * after  = luaL_checkstring(L, 3);
@@ -880,7 +872,7 @@ arken_StringInstanceMethodReplaceChar( lua_State *L ) {
 }
 
 static int
-arken_StringInstanceMethodRepeated( lua_State *L ) {
+arken_string_metatable_repeated( lua_State *L ) {
   string * udata = checkString( L );
   int times      = luaL_checkinteger(L, 2);
   string result  = udata->repeated(times);
@@ -889,7 +881,7 @@ arken_StringInstanceMethodRepeated( lua_State *L ) {
 }
 
 static int
-arken_StringInstanceMethodReserve( lua_State *L ) {
+arken_string_metatable_reserve( lua_State *L ) {
   string * udata = checkString( L );
   if(lua_gettop(L) > 1) {
    int reserve = luaL_checklong(L, 2);
@@ -902,7 +894,7 @@ arken_StringInstanceMethodReserve( lua_State *L ) {
 }
 
 static int
-arken_StringInstanceMethodRight( lua_State *L ) {
+arken_string_metatable_right( lua_State *L ) {
   string * udata = checkString( L );
   int len        = luaL_checkinteger(L, 2);
   string result  = udata->right(len) ;
@@ -911,7 +903,7 @@ arken_StringInstanceMethodRight( lua_State *L ) {
 }
 
 static int
-arken_StringInstanceMethodPadRight( lua_State *L ) {
+arken_string_metatable_padRight( lua_State *L ) {
   string * udata   = checkString( L );
   size_t size      = luaL_checkinteger(L, 2);
   const char * pad = luaL_checkstring(L, 3);
@@ -921,7 +913,7 @@ arken_StringInstanceMethodPadRight( lua_State *L ) {
 }
 
 static int
-arken_StringInstanceMethodEncode64( lua_State *L ) {
+arken_string_metatable_encode64( lua_State *L ) {
   string * udata = checkString( L );
   string result  = udata->encode64();
   lua_pushlstring(L, result.data(), result.size());
@@ -929,7 +921,7 @@ arken_StringInstanceMethodEncode64( lua_State *L ) {
 }
 
 static int
-arken_StringInstanceMethodDecode64( lua_State *L ) {
+arken_string_metatable_decode64( lua_State *L ) {
   string * udata = checkString( L );
   string result  = udata->decode64();
   lua_pushlstring(L, result.data(), result.size());
@@ -937,7 +929,7 @@ arken_StringInstanceMethodDecode64( lua_State *L ) {
 }
 
 static int
-arken_StringInstanceMethodPrefix( lua_State *L ) {
+arken_string_metatable_prefix( lua_State *L ) {
   string * udata = checkString( L );
   string result;
   const char * pattern = luaL_checkstring(L, 2);
@@ -947,7 +939,7 @@ arken_StringInstanceMethodPrefix( lua_State *L ) {
 }
 
 static int
-arken_StringInstanceMethodSha1( lua_State *L ) {
+arken_string_metatable_sha1( lua_State *L ) {
   string * udata = checkString( L );
   string result  = udata->sha1();
   lua_pushlstring(L, result.data(), result.size());
@@ -955,7 +947,7 @@ arken_StringInstanceMethodSha1( lua_State *L ) {
 }
 
 static int
-arken_StringInstanceMethodSquish( lua_State *L ) {
+arken_string_metatable_squish( lua_State *L ) {
   string *  udata = checkString( L );
   string result = udata->squish();
   lua_pushlstring(L, result.data(), result.size());
@@ -963,7 +955,7 @@ arken_StringInstanceMethodSquish( lua_State *L ) {
 }
 
 static int
-arken_StringInstanceMethodSuffix( lua_State *L ) {
+arken_string_metatable_suffix( lua_State *L ) {
   string * udata = checkString( L );
   const char * chr = luaL_checkstring(L, 2);
   string result = udata->suffix(chr);
@@ -972,7 +964,7 @@ arken_StringInstanceMethodSuffix( lua_State *L ) {
 }
 
 static int
-arken_StringInstanceMethodTrimLeft( lua_State *L ) {
+arken_string_metatable_trimLeft( lua_State *L ) {
   string *  udata = checkString( L );
   string result   = udata->trimLeft();
   lua_pushlstring(L, result.data(), result.size());
@@ -980,7 +972,7 @@ arken_StringInstanceMethodTrimLeft( lua_State *L ) {
 }
 
 static int
-arken_StringInstanceMethodTrim( lua_State *L ) {
+arken_string_metatable_trim( lua_State *L ) {
   string *  udata = checkString( L );
   string result   = udata->trim();
   lua_pushlstring(L, result.data(), result.size());
@@ -988,7 +980,7 @@ arken_StringInstanceMethodTrim( lua_State *L ) {
 }
 
 static int
-arken_StringInstanceMethodStartsWith( lua_State *L ) {
+arken_string_metatable_startsWith( lua_State *L ) {
   string * udata   = checkString( L );
   const char * str = luaL_checkstring(L, 2);
   lua_pushboolean(L, udata->startsWith(str));
@@ -996,7 +988,7 @@ arken_StringInstanceMethodStartsWith( lua_State *L ) {
 }
 
 static int
-arken_StringInstanceMethodTrimRight( lua_State *L ) {
+arken_string_metatable_trimRight( lua_State *L ) {
   string *  udata = checkString( L );
   string result   = udata->trimRight();
   lua_pushlstring(L, result.data(), result.size());
@@ -1004,7 +996,7 @@ arken_StringInstanceMethodTrimRight( lua_State *L ) {
 }
 
 static int
-arken_StringInstanceMethodTruncate( lua_State *L ) {
+arken_string_metatable_truncate( lua_State *L ) {
   string *  udata = checkString( L );
   int pos = luaL_checkinteger(L, 2);
   const char * omission;
@@ -1028,7 +1020,7 @@ arken_StringInstanceMethodTruncate( lua_State *L ) {
 }
 
 static int
-arken_StringInstanceMethodUnderscore( lua_State *L ) {
+arken_string_metatable_underscore( lua_State *L ) {
   string *  udata = checkString( L );
   string result   = udata->underscore();
   lua_pushlstring(L, result.data(), result.size());
@@ -1036,7 +1028,7 @@ arken_StringInstanceMethodUnderscore( lua_State *L ) {
 }
 
 static int
-arken_StringInstanceMethodAppend( lua_State *L ) {
+arken_string_metatable_append( lua_State *L ) {
   string * udata   = checkString( L );
   const char * str = luaL_checkstring(L, 2);
   udata->append(str);
@@ -1045,7 +1037,7 @@ arken_StringInstanceMethodAppend( lua_State *L ) {
 }
 
 static int
-arken_StringInstanceMethodPrepend( lua_State *L ) {
+arken_string_metatable_prepend( lua_State *L ) {
   string * udata   = checkString( L );
   const char * str = luaL_checkstring(L, 2);
   udata->prepend(str);
@@ -1054,7 +1046,7 @@ arken_StringInstanceMethodPrepend( lua_State *L ) {
 }
 
 static int
-arken_StringInstanceMethodSplit( lua_State *L ) {
+arken_string_metatable_split( lua_State *L ) {
   string * udata = checkString( L );
   const char  * pattern = luaL_checkstring(L, 2);
   List list  = udata->split(pattern);
@@ -1066,14 +1058,14 @@ arken_StringInstanceMethodSplit( lua_State *L ) {
 }
 
 static int
-arken_StringInstanceMethodToString( lua_State *L ) {
+arken_string_metatable_toString( lua_State *L ) {
   string * udata = checkString( L );
   lua_pushlstring(L, udata->data(), udata->size());
   return 1;
 }
 
 static int
-arken_StringInstanceMethodEquals( lua_State *L ) {
+arken_string_metatable_equals( lua_State *L ) {
   string * udata = checkString( L );
   if( lua_isuserdata(L, 2) ) {
     string * odata = checkString( L, 2 );
@@ -1086,102 +1078,102 @@ arken_StringInstanceMethodEquals( lua_State *L ) {
 }
 
 static int
-arken_StringInstanceMethodToLen( lua_State *L ) {
+arken_string_metatable_toLen( lua_State *L ) {
   string * udata = checkString( L );
   lua_pushinteger(L, udata->len());
   return 1;
 }
 
 static int
-arken_StringInstanceMethodSize( lua_State *L ) {
+arken_string_metatable_size( lua_State *L ) {
   string * udata = checkString( L );
   lua_pushinteger(L, udata->size());
   return 1;
 }
 
 static int
-arken_StringInstanceMethodLen( lua_State *L ) {
+arken_string_metatable_len( lua_State *L ) {
   string * udata = checkString( L );
   lua_pushinteger(L, udata->len());
   return 1;
 }
 
 static int
-arken_StringInstanceMethodDestruct( lua_State *L ) {
+arken_string_metatable_destruct( lua_State *L ) {
   string * udata = checkString( L );
   delete udata;
   return 0;
 }
 
 static const
-luaL_reg StringInstanceMethods[] = {
-  {"append",      arken_StringInstanceMethodAppend},
-  {"blank",       arken_StringInstanceMethodBlank},
-  {"center",      arken_StringInstanceMethodCenter},
-  {"chop",        arken_StringInstanceMethodChop},
-  {"clear",       arken_StringInstanceMethodClear},
-  {"camelCase",   arken_StringInstanceMethodCamelCase},
-  {"capitalize",  arken_StringInstanceMethodCapitalize},
-  {"contains",    arken_StringInstanceMethodContains},
-  {"count",       arken_StringInstanceMethodCount},
-  {"dasherize",   arken_StringInstanceMethodDasherize},
-  {"empty",       arken_StringInstanceMethodEmpty},
-  {"escape",      arken_StringInstanceMethodEscape},
-  {"decode64",    arken_StringInstanceMethodDecode64},
-  {"encode64",    arken_StringInstanceMethodEncode64},
-  {"escapeHtml",  arken_StringInstanceMethodEscapeHtml},
-  {"hash",        arken_StringInstanceMethodHash},
-  {"indexOf",     arken_StringInstanceMethodIndexOf},
-  {"endsWith",    arken_StringInstanceMethodEndsWith},
-  {"equals",      arken_StringInstanceMethodEquals},
-  {"lastIndexOf", arken_StringInstanceMethodLastIndexOf},
-  {"left",        arken_StringInstanceMethodLeft},
-  {"mid",         arken_StringInstanceMethodMid},
-  {"insert",      arken_StringInstanceMethodInsert},
-  {"len",         arken_StringInstanceMethodLen},
-  {"md5",         arken_StringInstanceMethodMd5},
-  {"normalize",   arken_StringInstanceMethodNormalize},
-  {"padLeft",     arken_StringInstanceMethodPadLeft},
-  {"padRight",    arken_StringInstanceMethodPadRight},
-  {"prepend",     arken_StringInstanceMethodPrepend},
-  {"prefix",      arken_StringInstanceMethodPrefix},
-  {"repeated",    arken_StringInstanceMethodRepeated},
-  {"remove",      arken_StringInstanceMethodRemove},
-  {"removeChar",  arken_StringInstanceMethodRemoveChar},
-  {"replace",     arken_StringInstanceMethodReplace},
-  {"replaceChar", arken_StringInstanceMethodReplaceChar},
-  {"reserve",     arken_StringInstanceMethodReserve},
-  {"right",       arken_StringInstanceMethodRight},
-  {"sha1",        arken_StringInstanceMethodSha1},
-  {"size",        arken_StringInstanceMethodSize},
-  {"squish",      arken_StringInstanceMethodSquish},
-  {"suffix",      arken_StringInstanceMethodSuffix},
-  {"split",       arken_StringInstanceMethodSplit},
-  {"trim",        arken_StringInstanceMethodTrim},
-  {"trimLeft",    arken_StringInstanceMethodTrimLeft},
-  {"trimRight",   arken_StringInstanceMethodTrimRight},
-  {"truncate",    arken_StringInstanceMethodTruncate},
-  {"underscore",  arken_StringInstanceMethodUnderscore},
-  {"startsWith",  arken_StringInstanceMethodStartsWith},
-  {"__tostring",  arken_StringInstanceMethodToString},
-  {"__len",       arken_StringInstanceMethodToLen},
-  {"__gc",        arken_StringInstanceMethodDestruct},
+luaL_reg arken_string_metatable[] = {
+  {"append",      arken_string_metatable_append},
+  {"blank",       arken_string_metatable_blank},
+  {"center",      arken_string_metatable_center},
+  {"chop",        arken_string_metatable_chop},
+  {"clear",       arken_string_metatable_clear},
+  {"camelCase",   arken_string_metatable_camelCase},
+  {"capitalize",  arken_string_metatable_capitalize},
+  {"contains",    arken_string_metatable_contains},
+  {"count",       arken_string_metatable_count},
+  {"dasherize",   arken_string_metatable_dasherize},
+  {"empty",       arken_string_metatable_empty},
+  {"escape",      arken_string_metatable_escape},
+  {"decode64",    arken_string_metatable_decode64},
+  {"encode64",    arken_string_metatable_encode64},
+  {"escapeHtml",  arken_string_metatable_escapeHtml},
+  {"hash",        arken_string_metatable_hash},
+  {"indexOf",     arken_string_metatable_indexOf},
+  {"endsWith",    arken_string_metatable_endsWith},
+  {"equals",      arken_string_metatable_equals},
+  {"lastIndexOf", arken_string_metatable_lastIndexOf},
+  {"left",        arken_string_metatable_left},
+  {"mid",         arken_string_metatable_mid},
+  {"insert",      arken_string_metatable_insert},
+  {"len",         arken_string_metatable_len},
+  {"md5",         arken_string_metatable_md5},
+  {"normalize",   arken_string_metatable_normalize},
+  {"padLeft",     arken_string_metatable_padLeft},
+  {"padRight",    arken_string_metatable_padRight},
+  {"prepend",     arken_string_metatable_prepend},
+  {"prefix",      arken_string_metatable_prefix},
+  {"repeated",    arken_string_metatable_repeated},
+  {"remove",      arken_string_metatable_remove},
+  {"removeChar",  arken_string_metatable_removeChar},
+  {"replace",     arken_string_metatable_replace},
+  {"replaceChar", arken_string_metatable_replaceChar},
+  {"reserve",     arken_string_metatable_reserve},
+  {"right",       arken_string_metatable_right},
+  {"sha1",        arken_string_metatable_sha1},
+  {"size",        arken_string_metatable_size},
+  {"squish",      arken_string_metatable_squish},
+  {"suffix",      arken_string_metatable_suffix},
+  {"split",       arken_string_metatable_split},
+  {"trim",        arken_string_metatable_trim},
+  {"trimLeft",    arken_string_metatable_trimLeft},
+  {"trimRight",   arken_string_metatable_trimRight},
+  {"truncate",    arken_string_metatable_truncate},
+  {"underscore",  arken_string_metatable_underscore},
+  {"startsWith",  arken_string_metatable_startsWith},
+  {"__tostring",  arken_string_metatable_toString},
+  {"__len",       arken_string_metatable_toLen},
+  {"__gc",        arken_string_metatable_destruct},
 
   //deprecated methods
-  {"simplified",     arken_StringInstanceMethodSquish},
-  {"trimmed",        arken_StringInstanceMethodTrim},
-  {"leftTrimmed",    arken_StringInstanceMethodTrimLeft},
-  {"rightTrimmed",   arken_StringInstanceMethodTrimRight},
-  {"leftJustified",  arken_StringInstanceMethodPadLeft},
-  {"rightJustified", arken_StringInstanceMethodPadRight},
+  {"simplified",     arken_string_metatable_squish},
+  {"trimmed",        arken_string_metatable_trim},
+  {"leftTrimmed",    arken_string_metatable_trimLeft},
+  {"rightTrimmed",   arken_string_metatable_trimRight},
+  {"leftJustified",  arken_string_metatable_padLeft},
+  {"rightJustified", arken_string_metatable_padRight},
 
   {NULL, NULL}
 };
 
 void static
-registerStringInstanceMethods( lua_State *L ) {
+register_arken_string_metatable( lua_State *L ) {
   luaL_newmetatable(L, "arken.string.metatable");
-  luaL_register(L, NULL, StringInstanceMethods);
+  luaL_register(L, NULL, arken_string_metatable);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -1200,7 +1192,7 @@ checkList( lua_State *L ) {
  */
 
 static int
-arken_string_ListClassMethodNew( lua_State *L ) {
+arken_string_List_new( lua_State *L ) {
   List **ptr = (List **)lua_newuserdata(L, sizeof(List*));
   *ptr = new List();
   luaL_getmetatable(L, "arken.string.List.metatable");
@@ -1208,15 +1200,15 @@ arken_string_ListClassMethodNew( lua_State *L ) {
   return 1;
 }
 
-static const luaL_reg arken_string_ListClassMethods[] = {
-  {"new", arken_string_ListClassMethodNew},
+static const luaL_reg arken_string_List[] = {
+  {"new", arken_string_List_new},
   {NULL, NULL}
 };
 
 void static
-registerStringListClassMethods( lua_State *L ) {
+register_arken_string_List( lua_State *L ) {
   luaL_newmetatable(L, "arken.string.List");
-  luaL_register(L, NULL, arken_string_ListClassMethods);
+  luaL_register(L, NULL, arken_string_List);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -1226,14 +1218,14 @@ registerStringListClassMethods( lua_State *L ) {
  */
 
 static int
-arken_string_ListInstanceMethodDestruct( lua_State *L ) {
+arken_string_List_gc( lua_State *L ) {
   List *udata = checkList( L );
   delete udata;
   return 0;
 }
 
 static int
-arken_string_ListInstanceMethodAt( lua_State *L ) {
+arken_string_List_at( lua_State *L ) {
   List * udata  = checkList( L );
   int pos = luaL_checkint(L, 2);
   int len;
@@ -1247,7 +1239,7 @@ arken_string_ListInstanceMethodAt( lua_State *L ) {
 }
 
 static int
-arken_string_list_each( lua_State *L ) {
+arken_string_List_closure( lua_State *L ) {
   int i = lua_upvalueindex(1);
   luaL_checktype(L, i, LUA_TLIGHTUSERDATA);
   List * ba  = (List *) lua_touserdata(L, i);
@@ -1261,29 +1253,29 @@ arken_string_list_each( lua_State *L ) {
 }
 
 static int
-arken_string_ListInstanceMethodEach( lua_State *L ) {
+arken_string_List_each( lua_State *L ) {
   List * udata  = checkList( L );
   lua_pushlightuserdata(L, udata);
-  lua_pushcclosure(L, arken_string_list_each, 1);
+  lua_pushcclosure(L, arken_string_List_closure, 1);
   return 1;
 }
 
 static int
-arken_string_ListInstanceMethodFirst( lua_State *L ) {
+arken_string_List_first( lua_State *L ) {
   List * udata  = checkList( L );
   lua_pushstring(L, udata->first());
   return 1;
 }
 
 static int
-arken_string_ListInstanceMethodLast( lua_State *L ) {
+arken_string_List_last( lua_State *L ) {
   List * udata  = checkList( L );
   lua_pushstring(L, udata->last());
   return 1;
 }
 
 static int
-arken_string_ListInstanceMethodReplace( lua_State *L ) {
+arken_string_List_replace( lua_State *L ) {
   List * udata  = checkList( L );
   int pos = luaL_checkint(L, 2);
   const char * value = luaL_checkstring(L, 3);
@@ -1292,7 +1284,7 @@ arken_string_ListInstanceMethodReplace( lua_State *L ) {
 }
 
 static int
-arken_string_ListInstanceMethodJoin( lua_State *L ) {
+arken_string_List_join( lua_State *L ) {
   List * udata  = checkList( L );
   const char  * separator = luaL_checkstring(L, 2);
   char * result = udata->join(separator);
@@ -1302,7 +1294,7 @@ arken_string_ListInstanceMethodJoin( lua_State *L ) {
 }
 
 static int
-arken_string_ListInstanceMethodAppend( lua_State *L ) {
+arken_string_List_append( lua_State *L ) {
   List * udata  = checkList( L );
   const char * value = luaL_checkstring(L, 2);
   udata->append(value);
@@ -1311,30 +1303,30 @@ arken_string_ListInstanceMethodAppend( lua_State *L ) {
 }
 
 static int
-arken_string_ListInstanceMethodSize( lua_State *L ) {
+arken_string_List_size( lua_State *L ) {
   List * udata  = checkList( L );
   lua_pushinteger(L, udata->size());
   return 1;
 }
 
 static const
-luaL_reg arken_string_ListInstanceMethods[] = {
-  {"append",  arken_string_ListInstanceMethodAppend},
-  {"at",      arken_string_ListInstanceMethodAt},
-  {"each",    arken_string_ListInstanceMethodEach},
-  {"first",   arken_string_ListInstanceMethodFirst},
-  {"last",    arken_string_ListInstanceMethodLast},
-  {"join",    arken_string_ListInstanceMethodJoin},
-  {"size",    arken_string_ListInstanceMethodSize},
-  {"replace", arken_string_ListInstanceMethodReplace},
-  {"__gc",    arken_string_ListInstanceMethodDestruct},
+luaL_reg arken_string_list_metatable[] = {
+  {"append",  arken_string_List_append},
+  {"at",      arken_string_List_at},
+  {"each",    arken_string_List_each},
+  {"first",   arken_string_List_first},
+  {"last",    arken_string_List_last},
+  {"join",    arken_string_List_join},
+  {"size",    arken_string_List_size},
+  {"replace", arken_string_List_replace},
+  {"__gc",    arken_string_List_gc},
   {NULL, NULL}
 };
 
 void static
-registerStringListInstanceMethods( lua_State *L ) {
+register_arken_string_list_metatable( lua_State *L ) {
   luaL_newmetatable(L, "arken.string.List.metatable");
-  luaL_register(L, NULL, arken_string_ListInstanceMethods);
+  luaL_register(L, NULL, arken_string_list_metatable);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -1344,9 +1336,9 @@ registerStringListInstanceMethods( lua_State *L ) {
 //-----------------------------------------------------------------------------
 
 int luaopen_arken_string( lua_State *L ) {
-  registerStringClassMethods(L);
-  registerStringInstanceMethods(L);
-  registerStringListClassMethods(L);
-  registerStringListInstanceMethods(L);
+  register_arken_string(L);
+  register_arken_string_metatable(L);
+  register_arken_string_List(L);
+  register_arken_string_list_metatable(L);
   return 1;
 }

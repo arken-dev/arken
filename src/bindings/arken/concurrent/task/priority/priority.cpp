@@ -6,17 +6,11 @@
 #include <lua/lua.hpp>
 #include <arken/base>
 #include <arken/concurrent/task/priority.h>
+#include <arken/json.h>
 
 using priority  = arken::concurrent::task::priority;
-using Shared = arken::concurrent::Shared;
-
-char * json_lock_encode(lua_State *L);
-void   json_lock_decode(lua_State *L, const char * data);
-
-priority *
-checkNaiad( lua_State *L ) {
-  return *(priority **) luaL_checkudata(L, 1, "arken.concurrent.task.priority.metatable");
-}
+using Shared    = arken::concurrent::Shared;
+using json      = arken::json;
 
 priority::node *
 checkNode( lua_State *L ) {
@@ -28,7 +22,7 @@ checkNode( lua_State *L ) {
 //-----------------------------------------------------------------------------
 
 static int
-arken_priority_start(lua_State *L) {
+arken_concurrent_task_priority_start(lua_State *L) {
   bool release  = false;
   int  priority = 0;
   char * params = nullptr;
@@ -46,7 +40,7 @@ arken_priority_start(lua_State *L) {
     params = new char[3]{'{','}','\0'};
   } else {
     lua_settop(L, 2);
-    params = json_lock_encode(L);
+    params = json::encode(L);
   }
 
   priority::node node = priority::start( fileName, params, priority, release );
@@ -61,7 +55,7 @@ arken_priority_start(lua_State *L) {
 }
 
 static int
-arken_priority_max(lua_State *L) {
+arken_concurrent_task_priority_max(lua_State *L) {
   if(lua_gettop(L) == 1) { /* número de argumentos */
     int max = luaL_checkinteger(L, 1);
     priority::max() = max;
@@ -73,56 +67,56 @@ arken_priority_max(lua_State *L) {
 }
 
 static int
-arken_priority_actives(lua_State *L) {
+arken_concurrent_task_priority_actives(lua_State *L) {
   lua_pushinteger(L, priority::actives());
   return 1;
 }
 
 static int
-arken_priority_inspect( lua_State *L ) {
+arken_concurrent_task_priority_inspect( lua_State *L ) {
   lua_pushstring(L, priority::inspect());
   return 1;
 }
 
-static const luaL_reg NaiadClassMethods[] = {
-  {"start",   arken_priority_start},
-  {"max",     arken_priority_max},
-  {"actives", arken_priority_actives},
-  {"inspect", arken_priority_inspect},
+static const luaL_reg arken_concurrent_task_priority[] = {
+  {"start",   arken_concurrent_task_priority_start},
+  {"max",     arken_concurrent_task_priority_max},
+  {"actives", arken_concurrent_task_priority_actives},
+  {"inspect", arken_concurrent_task_priority_inspect},
   {NULL, NULL}
 };
 
 void static
-registerNaiadClassMethods( lua_State *L ) {
+register_arken_concurrent_task_priority( lua_State *L ) {
   luaL_newmetatable(L, "arken.concurrent.task.priority");
-  luaL_register(L, NULL, NaiadClassMethods);
+  luaL_register(L, NULL, arken_concurrent_task_priority);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
 
 static int
-arken_concurrent_channel_node_instance_method_uuid( lua_State *L ) {
+arken_concurrent_task_priority_node_uuid( lua_State *L ) {
   priority::node * node = checkNode( L );
   lua_pushlstring(L, node->uuid(), 36);
   return 1;
 }
 
 static int
-arken_concurrent_channel_node_instance_method_priority( lua_State *L ) {
+arken_concurrent_task_priority_node_priority( lua_State *L ) {
   priority::node * node = checkNode( L );
   lua_pushinteger(L, node->priority());
   return 1;
 }
 
 static int
-arken_concurrent_channel_node_instance_method_microtime( lua_State *L ) {
+arken_concurrent_task_priority_node_microtime( lua_State *L ) {
   priority::node * node = checkNode( L );
   lua_pushnumber(L, node->microtime());
   return 1;
 }
 
 static int
-arken_concurrent_channel_node_instance_method_shared( lua_State *L ) {
+arken_concurrent_task_priority_node_shared( lua_State *L ) {
   priority::node * node = checkNode( L );
   int rv;
   lua_getglobal(L, "require");
@@ -141,42 +135,42 @@ arken_concurrent_channel_node_instance_method_shared( lua_State *L ) {
 }
 
 static int
-arken_concurrent_channel_node_instance_method_finished( lua_State *L ) {
+arken_concurrent_task_priority_node_finished( lua_State *L ) {
   priority::node * node = checkNode( L );
   lua_pushboolean(L, node->finished());
   return 1;
 }
 
 static int
-arken_concurrent_channel_node_instance_method_wait( lua_State *L ) {
+arken_concurrent_task_priority_node_wait( lua_State *L ) {
   priority::node * node = checkNode( L );
   node->wait();
   return 0;
 }
 
 static int
-arken_concurrent_channel_node_instance_method_destruct( lua_State *L ) {
+arken_concurrent_task_priority_node_gc( lua_State *L ) {
   priority::node * node = checkNode( L );
   delete node;
   return 0;
 }
 
 static const
-luaL_reg NaiadNodeInstanceMethods[] = {
-  {"uuid",      arken_concurrent_channel_node_instance_method_uuid},
-  {"priority",  arken_concurrent_channel_node_instance_method_priority},
-  {"microtime", arken_concurrent_channel_node_instance_method_microtime},
-  {"shared",    arken_concurrent_channel_node_instance_method_shared},
-  {"finished",  arken_concurrent_channel_node_instance_method_finished},
-  {"wait",      arken_concurrent_channel_node_instance_method_wait},
-  {"__gc",      arken_concurrent_channel_node_instance_method_destruct},
+luaL_reg arken_concurrent_task_priority_node_metatable[] = {
+  {"uuid",      arken_concurrent_task_priority_node_uuid},
+  {"priority",  arken_concurrent_task_priority_node_priority},
+  {"microtime", arken_concurrent_task_priority_node_microtime},
+  {"shared",    arken_concurrent_task_priority_node_shared},
+  {"finished",  arken_concurrent_task_priority_node_finished},
+  {"wait",      arken_concurrent_task_priority_node_wait},
+  {"__gc",      arken_concurrent_task_priority_node_gc},
   {NULL, NULL}
 };
 
 void static
-registerNodeInstanceMethods( lua_State *L ) {
+register_arken_concurrent_task_priority_node_metatable( lua_State *L ) {
   luaL_newmetatable(L, "arken.concurrent.task.priority.node.metatable");
-  luaL_register(L, NULL, NaiadNodeInstanceMethods);
+  luaL_register(L, NULL, arken_concurrent_task_priority_node_metatable);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -184,8 +178,8 @@ registerNodeInstanceMethods( lua_State *L ) {
 extern "C" {
   int
   luaopen_arken_concurrent_task_priority( lua_State *L ) {
-    registerNodeInstanceMethods(L);
-    registerNaiadClassMethods(L);
+    register_arken_concurrent_task_priority_node_metatable(L);
+    register_arken_concurrent_task_priority(L);
     return 1;
   }
 }

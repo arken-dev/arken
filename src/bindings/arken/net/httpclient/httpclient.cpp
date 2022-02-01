@@ -24,7 +24,7 @@ checkHttpClient( lua_State *L ) {
  */
 
 static int
-arken_HttpClientClassMethodNew( lua_State *L ) {
+arken_net_HttpClient_new( lua_State *L ) {
   const char * url = luaL_checkstring(L, 1);
   HttpClient **ptr = (HttpClient **)lua_newuserdata(L, sizeof(HttpClient*));
   *ptr = new HttpClient(url);
@@ -33,15 +33,15 @@ arken_HttpClientClassMethodNew( lua_State *L ) {
   return 1;
 }
 
-static const luaL_reg HttpClientClassMethods[] = {
-  {"new", arken_HttpClientClassMethodNew},
+static const luaL_reg arken_net_HttpClient[] = {
+  {"new", arken_net_HttpClient_new},
   {NULL, NULL}
 };
 
 void static
-registerHttpClientClassMethods( lua_State *L ) {
+register_arken_net_HttpClient( lua_State *L ) {
   luaL_newmetatable(L, "arken.net.HttpClient");
-  luaL_register(L, NULL, HttpClientClassMethods);
+  luaL_register(L, NULL, arken_net_HttpClient);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -51,7 +51,7 @@ registerHttpClientClassMethods( lua_State *L ) {
  */
 
 static int
-arken_HttpClientInstanceMethodAppendHeader( lua_State *L ) {
+arken_net_HttpClient_appendHeader( lua_State *L ) {
   HttpClient * udata  = checkHttpClient( L );
   const char * header = luaL_checkstring(L, 2);
   udata->appendHeader(header);
@@ -59,7 +59,7 @@ arken_HttpClientInstanceMethodAppendHeader( lua_State *L ) {
 }
 
 static int
-arken_HttpClientInstanceMethodSetVerbose( lua_State *L ) {
+arken_net_HttpClient_setVerbose( lua_State *L ) {
   HttpClient *udata  = checkHttpClient( L );
   bool verbose = lua_toboolean(L, 2);
   udata->setVerbose(verbose);
@@ -67,7 +67,7 @@ arken_HttpClientInstanceMethodSetVerbose( lua_State *L ) {
 }
 
 static int
-arken_HttpClientInstanceMethodSetSslVerifyPeer( lua_State *L ) {
+arken_net_HttpClient_setSslVerifyPeer( lua_State *L ) {
   HttpClient *udata  = checkHttpClient( L );
   bool sslVerifyPeer = lua_toboolean(L, 2);
   udata->setSslVerifyPeer(sslVerifyPeer);
@@ -75,7 +75,7 @@ arken_HttpClientInstanceMethodSetSslVerifyPeer( lua_State *L ) {
 }
 
 static int
-arken_HttpClientInstanceMethodSetSslVerifyHost( lua_State *L ) {
+arken_net_HttpClient_setSslVerifyHost( lua_State *L ) {
   HttpClient *udata  = checkHttpClient( L );
   long sslVerifyHost = (long) luaL_checkint(L, 2);
   udata->setSslVerifyHost(sslVerifyHost);
@@ -83,7 +83,7 @@ arken_HttpClientInstanceMethodSetSslVerifyHost( lua_State *L ) {
 }
 
 static int
-arken_HttpClientInstanceMethodSetSslVersion( lua_State *L ) {
+arken_net_HttpClient_setSslVersion( lua_State *L ) {
   HttpClient *udata  = checkHttpClient( L );
   long sslVersion = (long) luaL_checkint(L, 2);
   udata->setSslVersion(sslVersion);
@@ -91,7 +91,7 @@ arken_HttpClientInstanceMethodSetSslVersion( lua_State *L ) {
 }
 
 static int
-arken_HttpClientInstanceMethodSetUseSsl( lua_State *L ) {
+arken_net_HttpClient_setUseSsl( lua_State *L ) {
   HttpClient *udata  = checkHttpClient( L );
   long useSsl = (long) luaL_checkint(L, 2);
   udata->setUseSsl(useSsl);
@@ -99,7 +99,7 @@ arken_HttpClientInstanceMethodSetUseSsl( lua_State *L ) {
 }
 
 static int
-arken_HttpClientInstanceMethodSetBody( lua_State *L ) {
+arken_net_HttpClient_setBody( lua_State *L ) {
   size_t len;
   HttpClient * udata = checkHttpClient( L );
   const char * body  = luaL_checklstring(L, 2, &len);
@@ -108,7 +108,7 @@ arken_HttpClientInstanceMethodSetBody( lua_State *L ) {
 }
 
 static int
-arken_HttpClientInstanceMethodSetCert( lua_State *L ) {
+arken_net_HttpClient_setCert( lua_State *L ) {
   size_t len;
   HttpClient * udata = checkHttpClient( L );
   const char * cert  = luaL_checklstring(L, 2, &len);
@@ -117,7 +117,7 @@ arken_HttpClientInstanceMethodSetCert( lua_State *L ) {
 }
 
 static int
-arken_HttpClientInstanceMethodSetCertKey( lua_State *L ) {
+arken_net_HttpClient_setCertKey( lua_State *L ) {
   size_t len;
   HttpClient * udata = checkHttpClient( L );
   const char * key = luaL_checklstring(L, 2, &len);
@@ -126,7 +126,7 @@ arken_HttpClientInstanceMethodSetCertKey( lua_State *L ) {
 }
 
 static int
-arken_HttpClientInstanceMethodBody( lua_State *L ) {
+arken_net_HttpClient_body( lua_State *L ) {
   HttpClient * udata = checkHttpClient( L );
   string body = udata->body();
   lua_pushlstring(L, body.data(), body.size());
@@ -134,7 +134,7 @@ arken_HttpClientInstanceMethodBody( lua_State *L ) {
 }
 
 static int
-arken_HttpClientInstanceMethodPerformGet( lua_State *L ) {
+arken_net_HttpClient_performGet( lua_State *L ) {
   HttpClient * udata = checkHttpClient( L );
   string result = udata->performGet();
   lua_pushlstring(L, result.data(), result.size());
@@ -142,7 +142,7 @@ arken_HttpClientInstanceMethodPerformGet( lua_State *L ) {
 }
 
 static int
-arken_HttpClientInstanceMethodPerformPost( lua_State *L ) {
+arken_net_HttpClient_performPost( lua_State *L ) {
   HttpClient *udata = checkHttpClient( L );
   string result = udata->performPost();
   lua_pushlstring(L, result.data(), result.size());
@@ -150,7 +150,7 @@ arken_HttpClientInstanceMethodPerformPost( lua_State *L ) {
 }
 
 static int
-arken_HttpClientInstanceMethodPerformPut( lua_State *L ) {
+arken_net_HttpClient_performPut( lua_State *L ) {
   HttpClient *udata = checkHttpClient( L );
   string result = udata->performPut();
   lua_pushlstring(L, result.data(), result.size());
@@ -158,7 +158,7 @@ arken_HttpClientInstanceMethodPerformPut( lua_State *L ) {
 }
 
 static int
-arken_HttpClientInstanceMethodPerformDelete( lua_State *L ) {
+arken_net_HttpClient_performDelete( lua_State *L ) {
   HttpClient *udata = checkHttpClient( L );
   string result = udata->performDelete();
   lua_pushlstring(L, result.data(), result.size());
@@ -166,7 +166,7 @@ arken_HttpClientInstanceMethodPerformDelete( lua_State *L ) {
 }
 
 static int
-arken_HttpClientInstanceMethodData( lua_State *L ) {
+arken_net_HttpClient_data( lua_State *L ) {
   HttpClient * udata = checkHttpClient( L );
   string data = udata->data();
   lua_pushlstring(L, data.data(), data.size());
@@ -174,7 +174,7 @@ arken_HttpClientInstanceMethodData( lua_State *L ) {
 }
 
 static int
-arken_HttpClientInstanceMethodMessage( lua_State *L ) {
+arken_net_HttpClient_message( lua_State *L ) {
   HttpClient * udata   = checkHttpClient( L );
   string message = udata->message();
   lua_pushlstring(L, message.data(), message.size());
@@ -182,54 +182,54 @@ arken_HttpClientInstanceMethodMessage( lua_State *L ) {
 }
 
 static int
-arken_HttpClientInstanceMethodStatus( lua_State *L ) {
+arken_net_HttpClient_status( lua_State *L ) {
   HttpClient *udata = checkHttpClient( L );
   lua_pushinteger(L, udata->status());
   return 1;
 }
 
 static int
-arken_HttpClientInstanceMethodFailure( lua_State *L ) {
+arken_net_HttpClient_failure( lua_State *L ) {
   HttpClient *udata = checkHttpClient( L );
   lua_pushboolean(L, udata->failure());
   return 1;
 }
 
 static int
-arken_HttpClientInstanceMethodDestruct( lua_State *L ) {
+arken_net_HttpClient_gc( lua_State *L ) {
   HttpClient *udata = checkHttpClient( L );
   delete udata;
   return 0;
 }
 
 static const
-luaL_reg HttpClientInstanceMethods[] = {
-  {"appendHeader",     arken_HttpClientInstanceMethodAppendHeader},
-  {"setVerbose",       arken_HttpClientInstanceMethodSetVerbose},
-  {"setSslVerifyPeer", arken_HttpClientInstanceMethodSetSslVerifyPeer},
-  {"setSslVerifyHost", arken_HttpClientInstanceMethodSetSslVerifyHost},
-  {"setSslVersion",    arken_HttpClientInstanceMethodSetSslVersion},
-  {"setUseSsl",        arken_HttpClientInstanceMethodSetUseSsl},
-  {"setBody",          arken_HttpClientInstanceMethodSetBody},
-  {"setCert",          arken_HttpClientInstanceMethodSetCert},
-  {"setCertKey",       arken_HttpClientInstanceMethodSetCertKey},
-  {"body",             arken_HttpClientInstanceMethodBody},
-  {"performGet",       arken_HttpClientInstanceMethodPerformGet},
-  {"performPost",      arken_HttpClientInstanceMethodPerformPost},
-  {"performPut",       arken_HttpClientInstanceMethodPerformPut},
-  {"performDelete",    arken_HttpClientInstanceMethodPerformDelete},
-  {"status",           arken_HttpClientInstanceMethodStatus},
-  {"data",             arken_HttpClientInstanceMethodData},
-  {"failure",          arken_HttpClientInstanceMethodFailure},
-  {"message",          arken_HttpClientInstanceMethodMessage},
-  {"__gc",             arken_HttpClientInstanceMethodDestruct},
+luaL_reg arken_net_HttpClient_metatable[] = {
+  {"appendHeader",     arken_net_HttpClient_appendHeader},
+  {"setVerbose",       arken_net_HttpClient_setVerbose},
+  {"setSslVerifyPeer", arken_net_HttpClient_setSslVerifyPeer},
+  {"setSslVerifyHost", arken_net_HttpClient_setSslVerifyHost},
+  {"setSslVersion",    arken_net_HttpClient_setSslVersion},
+  {"setUseSsl",        arken_net_HttpClient_setUseSsl},
+  {"setBody",          arken_net_HttpClient_setBody},
+  {"setCert",          arken_net_HttpClient_setCert},
+  {"setCertKey",       arken_net_HttpClient_setCertKey},
+  {"body",             arken_net_HttpClient_body},
+  {"performGet",       arken_net_HttpClient_performGet},
+  {"performPost",      arken_net_HttpClient_performPost},
+  {"performPut",       arken_net_HttpClient_performPut},
+  {"performDelete",    arken_net_HttpClient_performDelete},
+  {"status",           arken_net_HttpClient_status},
+  {"data",             arken_net_HttpClient_data},
+  {"failure",          arken_net_HttpClient_failure},
+  {"message",          arken_net_HttpClient_message},
+  {"__gc",             arken_net_HttpClient_gc},
   {NULL, NULL}
 };
 
 void static
-registerHttpClientInstanceMethods( lua_State *L ) {
-  luaL_newmetatable(L, "arken.net.HttpClient.metatable");
-  luaL_register(L, NULL, HttpClientInstanceMethods);
+register_arken_net_HttpClient_metatable( lua_State *L ) {
+  luaL_newmetatable(L,  "arken.net.HttpClient.metatable");
+  luaL_register(L, NULL, arken_net_HttpClient_metatable);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -237,8 +237,8 @@ registerHttpClientInstanceMethods( lua_State *L ) {
 extern "C" {
   int
   luaopen_arken_net_HttpClient( lua_State *L ) {
-    registerHttpClientInstanceMethods(L);
-    registerHttpClientClassMethods(L);
+    register_arken_net_HttpClient_metatable(L);
+    register_arken_net_HttpClient(L);
     return 1;
   }
 }

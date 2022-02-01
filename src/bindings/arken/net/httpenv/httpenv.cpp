@@ -23,7 +23,7 @@ checkHttpEnv( lua_State *L ) {
  */
 
 static int
-arken_HttpEnvClassMethodNew( lua_State *L ) {
+arken_net_HttpEnv_new( lua_State *L ) {
   size_t len;
   const char *data  = luaL_checklstring(L, 1, &len);
   HttpEnv **ptr = (HttpEnv **)lua_newuserdata(L, sizeof(HttpEnv*));
@@ -33,15 +33,15 @@ arken_HttpEnvClassMethodNew( lua_State *L ) {
   return 1;
 }
 
-static const luaL_reg HttpEnvClassMethods[] = {
-  {"new", arken_HttpEnvClassMethodNew},
+static const luaL_reg arken_net_HttpEnv[] = {
+  {"new", arken_net_HttpEnv_new},
   {NULL, NULL}
 };
 
 void static
-registerHttpEnvClassMethods( lua_State *L ) {
-  luaL_newmetatable(L, "arken.net.HttpEnv");
-  luaL_register(L, NULL, HttpEnvClassMethods);
+register_arken_net_HttpEnv( lua_State *L ) {
+  luaL_newmetatable(L,  "arken.net.HttpEnv");
+  luaL_register(L, NULL, arken_net_HttpEnv);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -51,14 +51,14 @@ registerHttpEnvClassMethods( lua_State *L ) {
  */
 
 static int
-arken_HttpEnvInstanceMethodData( lua_State *L ) {
+arken_net_HttpEnv_data( lua_State *L ) {
   HttpEnv *udata = checkHttpEnv( L );
   lua_pushlstring(L, udata->data(), udata->len());
   return 1;
 }
 
 static int
-arken_HttpEnvInstanceMethodField( lua_State *L ) {
+arken_net_HttpEnv_field( lua_State *L ) {
   HttpEnv *udata = checkHttpEnv( L );
   const char  *field = luaL_checkstring(L, 2);
   lua_pushstring(L, udata->field(field));
@@ -66,7 +66,7 @@ arken_HttpEnvInstanceMethodField( lua_State *L ) {
 }
 
 static int
-arken_HttpEnvInstanceMethodSetField( lua_State *L ) {
+arken_net_HttpEnv_setField( lua_State *L ) {
   HttpEnv *udata = checkHttpEnv( L );
   const char * field = luaL_checkstring(L, 2);
   const char * value = luaL_checkstring(L, 3);
@@ -75,7 +75,7 @@ arken_HttpEnvInstanceMethodSetField( lua_State *L ) {
 }
 
 static int
-arken_HttpEnvInstanceMethodSetFragment( lua_State *L ) {
+arken_net_HttpEnv_setFragment( lua_State *L ) {
   HttpEnv *udata = checkHttpEnv( L );
   size_t len;
   const char * at = luaL_checklstring(L, 2, &len);
@@ -84,7 +84,7 @@ arken_HttpEnvInstanceMethodSetFragment( lua_State *L ) {
 }
 
 static int
-arken_HttpEnvInstanceMethodSetQueryString( lua_State *L ) {
+arken_net_HttpEnv_setQueryString( lua_State *L ) {
   HttpEnv *udata = checkHttpEnv( L );
   size_t len;
   const char * value = luaL_checklstring(L, 2, &len);
@@ -93,7 +93,7 @@ arken_HttpEnvInstanceMethodSetQueryString( lua_State *L ) {
 }
 
 static int
-arken_HttpEnvInstanceMethodSetRequestPath( lua_State *L ) {
+arken_net_HttpEnv_setRequestPath( lua_State *L ) {
   HttpEnv *udata = checkHttpEnv( L );
   size_t len;
   const char * value = luaL_checklstring(L, 2, &len);
@@ -102,7 +102,7 @@ arken_HttpEnvInstanceMethodSetRequestPath( lua_State *L ) {
 }
 
 static int
-arken_HttpEnvInstanceMethodSetRequestMethod( lua_State *L ) {
+arken_net_HttpEnv_setRequestMethod( lua_State *L ) {
   HttpEnv *udata = checkHttpEnv( L );
   size_t len;
   const char * at = luaL_checklstring(L, 2, &len);
@@ -111,7 +111,7 @@ arken_HttpEnvInstanceMethodSetRequestMethod( lua_State *L ) {
 }
 
 static int
-arken_HttpEnvInstanceMethodSetRequestUri( lua_State *L ) {
+arken_net_HttpEnv_setRequestUri( lua_State *L ) {
   HttpEnv *udata = checkHttpEnv( L );
   size_t len;
   const char * at = luaL_checklstring(L, 2, &len);
@@ -120,7 +120,7 @@ arken_HttpEnvInstanceMethodSetRequestUri( lua_State *L ) {
 }
 
 static int
-arken_HttpEnvInstanceMethodSetHttpVersion( lua_State *L ) {
+arken_net_HttpEnv_setHttpVersion( lua_State *L ) {
   HttpEnv *udata = checkHttpEnv( L );
   size_t len;
   const char * at = luaL_checklstring(L, 2, &len);
@@ -129,7 +129,7 @@ arken_HttpEnvInstanceMethodSetHttpVersion( lua_State *L ) {
 }
 
 static int
-arken_HttpEnvInstanceMethodSetHeaderDone( lua_State *L ) {
+arken_net_HttpEnv_setHeaderDone( lua_State *L ) {
   HttpEnv *udata = checkHttpEnv( L );
   size_t length;
   const char * raw = luaL_checklstring(L, 2, &length);
@@ -143,28 +143,28 @@ arken_HttpEnvInstanceMethodSetHeaderDone( lua_State *L ) {
 }
 
 static int
-arken_HttpEnvInstanceMethodFragment( lua_State *L ) {
+arken_net_HttpEnv_fragment( lua_State *L ) {
   HttpEnv *udata = checkHttpEnv( L );
   lua_pushstring(L, udata->fragment());
   return 1;
 }
 
 static int
-arken_HttpEnvInstanceMethodHttpVersion( lua_State *L ) {
+arken_net_HttpEnv_httpVersion( lua_State *L ) {
   HttpEnv *udata = checkHttpEnv( L );
   lua_pushstring(L, udata->httpVersion());
   return 1;
 }
 
 static int
-arken_HttpEnvInstanceMethodRequestUri( lua_State *L ) {
+arken_net_HttpEnv_requestUri( lua_State *L ) {
   HttpEnv *udata = checkHttpEnv( L );
   lua_pushstring(L, udata->requestUri());
   return 1;
 }
 
 static int
-arken_HttpEnvInstanceMethodRequestPath( lua_State *L ) {
+arken_net_HttpEnv_requestPath( lua_State *L ) {
   HttpEnv *udata = checkHttpEnv( L );
   string data = udata->requestPath();
   lua_pushlstring(L, data, data.size());
@@ -172,21 +172,21 @@ arken_HttpEnvInstanceMethodRequestPath( lua_State *L ) {
 }
 
 static int
-arken_HttpEnvInstanceMethodRequestMethod( lua_State *L ) {
+arken_net_HttpEnv_requestMethod( lua_State *L ) {
   HttpEnv *udata = checkHttpEnv( L );
   lua_pushstring(L, udata->requestMethod());
   return 1;
 }
 
 static int
-arken_HttpEnvInstanceMethodQueryString( lua_State *L ) {
+arken_net_HttpEnv_queryString( lua_State *L ) {
   HttpEnv *udata = checkHttpEnv( L );
   lua_pushstring(L, udata->queryString());
   return 1;
 }
 
 static int
-arken_HttpEnvInstanceMethodHeaderDone( lua_State *L ) {
+arken_net_HttpEnv_headerDone( lua_State *L ) {
   HttpEnv *udata = checkHttpEnv( L );
   string  header = udata->headerDone();
   if( header.size() == 0 ) {
@@ -198,39 +198,39 @@ arken_HttpEnvInstanceMethodHeaderDone( lua_State *L ) {
 }
 
 static int
-arken_HttpEnvInstanceMethodDestruct( lua_State *L ) {
+arken_net_HttpEnv_gc( lua_State *L ) {
   HttpEnv *udata = checkHttpEnv( L );
   delete udata;
   return 0;
 }
 
 static const
-luaL_reg HttpEnvInstanceMethods[] = {
-  {"data",             arken_HttpEnvInstanceMethodData},
-  {"field",            arken_HttpEnvInstanceMethodField},
-  {"setField",         arken_HttpEnvInstanceMethodSetField},
-  {"setFragment",      arken_HttpEnvInstanceMethodSetFragment},
-  {"setHeaderDone",    arken_HttpEnvInstanceMethodSetHeaderDone},
-  {"setQueryString",   arken_HttpEnvInstanceMethodSetQueryString},
-  {"setRequestPath",   arken_HttpEnvInstanceMethodSetRequestPath},
-  {"setRequestMethod", arken_HttpEnvInstanceMethodSetRequestMethod},
-  {"setRequestUri",    arken_HttpEnvInstanceMethodSetRequestUri},
-  {"setHttpVersion",   arken_HttpEnvInstanceMethodSetHttpVersion},
-  {"fragment",         arken_HttpEnvInstanceMethodFragment},
-  {"headerDone",       arken_HttpEnvInstanceMethodHeaderDone},
-  {"httpVersion",      arken_HttpEnvInstanceMethodHttpVersion},
-  {"requestUri",       arken_HttpEnvInstanceMethodRequestUri},
-  {"requestMethod",    arken_HttpEnvInstanceMethodRequestMethod},
-  {"requestPath",      arken_HttpEnvInstanceMethodRequestPath},
-  {"queryString",      arken_HttpEnvInstanceMethodQueryString},
-  {"__gc",             arken_HttpEnvInstanceMethodDestruct},
+luaL_reg arken_net_HttpEnv_metatable[] = {
+  {"data",             arken_net_HttpEnv_data},
+  {"field",            arken_net_HttpEnv_field},
+  {"setField",         arken_net_HttpEnv_setField},
+  {"setFragment",      arken_net_HttpEnv_setFragment},
+  {"setHeaderDone",    arken_net_HttpEnv_setHeaderDone},
+  {"setQueryString",   arken_net_HttpEnv_setQueryString},
+  {"setRequestPath",   arken_net_HttpEnv_setRequestPath},
+  {"setRequestMethod", arken_net_HttpEnv_setRequestMethod},
+  {"setRequestUri",    arken_net_HttpEnv_setRequestUri},
+  {"setHttpVersion",   arken_net_HttpEnv_setHttpVersion},
+  {"fragment",         arken_net_HttpEnv_fragment},
+  {"headerDone",       arken_net_HttpEnv_headerDone},
+  {"httpVersion",      arken_net_HttpEnv_httpVersion},
+  {"requestUri",       arken_net_HttpEnv_requestUri},
+  {"requestMethod",    arken_net_HttpEnv_requestMethod},
+  {"requestPath",      arken_net_HttpEnv_requestPath},
+  {"queryString",      arken_net_HttpEnv_queryString},
+  {"__gc",             arken_net_HttpEnv_gc},
   {NULL, NULL}
 };
 
 void static
-registerHttpEnvInstanceMethods( lua_State *L ) {
-  luaL_newmetatable(L, "arken.net.HttpEnv.metatable");
-  luaL_register(L, NULL, HttpEnvInstanceMethods);
+register_arken_net_HttpEnv_metatable( lua_State *L ) {
+  luaL_newmetatable(L,  "arken.net.HttpEnv.metatable");
+  luaL_register(L, NULL, arken_net_HttpEnv_metatable);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -238,8 +238,8 @@ registerHttpEnvInstanceMethods( lua_State *L ) {
 extern "C" {
   int
   luaopen_arken_net_HttpEnv( lua_State *L ) {
-    registerHttpEnvInstanceMethods(L);
-    registerHttpEnvClassMethods(L);
+    register_arken_net_HttpEnv_metatable(L);
+    register_arken_net_HttpEnv(L);
     return 1;
   }
 

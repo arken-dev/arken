@@ -23,7 +23,7 @@ checkSMTP( lua_State *L ) {
  */
 
 static int
-arken_SMTPClassMethodNew( lua_State *L ) {
+arken_net_SMTP_new( lua_State *L ) {
   const char * url = luaL_checkstring(L, 1);
   SMTP **ptr = (SMTP **)lua_newuserdata(L, sizeof(SMTP*));
   *ptr = new SMTP(url);
@@ -33,22 +33,22 @@ arken_SMTPClassMethodNew( lua_State *L ) {
 }
 
 static int
-arken_SMTPClassMethodRfc2822Date( lua_State *L ) {
+arken_net_SMTP_rfc2822Date( lua_State *L ) {
   string result = SMTP::rfc2822Date();
   lua_pushstring(L, result);
   return 1;
 }
 
-static const luaL_reg SMTPClassMethods[] = {
-  {"new",         arken_SMTPClassMethodNew},
-  {"rfc2822Date", arken_SMTPClassMethodRfc2822Date},
+static const luaL_reg arken_net_SMTP[] = {
+  {"new",         arken_net_SMTP_new},
+  {"rfc2822Date", arken_net_SMTP_rfc2822Date},
   {NULL, NULL}
 };
 
 void static
-registerSMTPClassMethods( lua_State *L ) {
-  luaL_newmetatable(L, "arken.net.SMTP");
-  luaL_register(L, NULL, SMTPClassMethods);
+register_arken_net_SMTP( lua_State *L ) {
+  luaL_newmetatable(L,  "arken.net.SMTP");
+  luaL_register(L, NULL, arken_net_SMTP);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -58,7 +58,7 @@ registerSMTPClassMethods( lua_State *L ) {
  */
 
 static int
-arken_SMTPInstanceMethodSetVerbose( lua_State *L ) {
+arken_net_SMTP_setVerbose( lua_State *L ) {
   SMTP *udata  = checkSMTP( L );
   bool verbose = lua_toboolean(L, 2);
   udata->setVerbose(verbose);
@@ -66,7 +66,7 @@ arken_SMTPInstanceMethodSetVerbose( lua_State *L ) {
 }
 
 static int
-arken_SMTPInstanceMethodSetSsl( lua_State *L ) {
+arken_net_SMTP_setSsl( lua_State *L ) {
   SMTP *udata  = checkSMTP( L );
   bool ssl = lua_toboolean(L, 2);
   udata->setSsl(ssl);
@@ -74,7 +74,7 @@ arken_SMTPInstanceMethodSetSsl( lua_State *L ) {
 }
 
 static int
-arken_SMTPInstanceMethodSetFrom( lua_State *L ) {
+arken_net_SMTP_setFrom( lua_State *L ) {
   SMTP * udata = checkSMTP( L );
   const char * mail = luaL_checkstring(L, 2);
   if(lua_gettop(L) == 3) { /* número de argumentos */
@@ -87,7 +87,7 @@ arken_SMTPInstanceMethodSetFrom( lua_State *L ) {
 }
 
 static int
-arken_SMTPInstanceMethodSetUsername( lua_State *L ) {
+arken_net_SMTP_setUsername( lua_State *L ) {
   SMTP * udata = checkSMTP( L );
   const char * username = luaL_checkstring(L, 2);
   udata->setUsername(username);
@@ -95,7 +95,7 @@ arken_SMTPInstanceMethodSetUsername( lua_State *L ) {
 }
 
 static int
-arken_SMTPInstanceMethodSetPassword( lua_State *L ) {
+arken_net_SMTP_setPassword( lua_State *L ) {
   SMTP * udata = checkSMTP( L );
   const char * password = luaL_checkstring(L, 2);
   udata->setPassword(password);
@@ -103,7 +103,7 @@ arken_SMTPInstanceMethodSetPassword( lua_State *L ) {
 }
 
 static int
-arken_SMTPInstanceMethodSetContentType( lua_State *L ) {
+arken_net_SMTP_setContentType( lua_State *L ) {
   SMTP * udata = checkSMTP( L );
   const char * contentType = luaL_checkstring(L, 2);
   udata->setContentType(contentType);
@@ -111,7 +111,7 @@ arken_SMTPInstanceMethodSetContentType( lua_State *L ) {
 }
 
 static int
-arken_SMTPInstanceMethodSetTo( lua_State *L ) {
+arken_net_SMTP_setTo( lua_State *L ) {
   SMTP * udata = checkSMTP( L );
   const char * mail = luaL_checkstring(L, 2);
   if(lua_gettop(L) == 3) { /* número de argumentos */
@@ -124,7 +124,7 @@ arken_SMTPInstanceMethodSetTo( lua_State *L ) {
 }
 
 static int
-arken_SMTPInstanceMethodSetReplyTo( lua_State *L ) {
+arken_net_SMTP_setReplyTo( lua_State *L ) {
   SMTP * udata = checkSMTP( L );
   const char * mail = luaL_checkstring(L, 2);
   udata->setReplyTo(mail);
@@ -132,7 +132,7 @@ arken_SMTPInstanceMethodSetReplyTo( lua_State *L ) {
 }
 
 static int
-arken_SMTPInstanceMethodSetCopy( lua_State *L ) {
+arken_net_SMTP_setCopy( lua_State *L ) {
   SMTP * udata = checkSMTP( L );
   const char * mail = luaL_checkstring(L, 2);
   if(lua_gettop(L) == 3) { /* número de argumentos */
@@ -145,7 +145,7 @@ arken_SMTPInstanceMethodSetCopy( lua_State *L ) {
 }
 
 static int
-arken_SMTPInstanceMethodSetPort( lua_State *L ) {
+arken_net_SMTP_setPort( lua_State *L ) {
   SMTP * udata = checkSMTP( L );
   int port = luaL_checkinteger(L, 2);
   udata->setPort(port);
@@ -153,7 +153,7 @@ arken_SMTPInstanceMethodSetPort( lua_State *L ) {
 }
 
 static int
-arken_SMTPInstanceMethodSetSubject( lua_State *L ) {
+arken_net_SMTP_setSubject( lua_State *L ) {
   SMTP * udata = checkSMTP( L );
   const char * subject = luaL_checkstring(L, 2);
   udata->setSubject(subject);
@@ -161,7 +161,7 @@ arken_SMTPInstanceMethodSetSubject( lua_State *L ) {
 }
 
 static int
-arken_SMTPInstanceMethodSetDomain( lua_State *L ) {
+arken_net_SMTP_setDomain( lua_State *L ) {
   SMTP * udata = checkSMTP( L );
   const char * domain = luaL_checkstring(L, 2);
   udata->setDomain(domain);
@@ -169,7 +169,7 @@ arken_SMTPInstanceMethodSetDomain( lua_State *L ) {
 }
 
 static int
-arken_SMTPInstanceMethodSetBody( lua_State *L ) {
+arken_net_SMTP_setBody( lua_State *L ) {
   SMTP * udata = checkSMTP( L );
   const char * body  = luaL_checkstring(L, 2);
   udata->setBody(body);
@@ -177,7 +177,7 @@ arken_SMTPInstanceMethodSetBody( lua_State *L ) {
 }
 
 static int
-arken_SMTPInstanceMethodPerform( lua_State *L ) {
+arken_net_SMTP_perform( lua_State *L ) {
   SMTP * udata = checkSMTP( L );
   bool result = udata->perform();
   lua_pushboolean(L, result);
@@ -185,7 +185,7 @@ arken_SMTPInstanceMethodPerform( lua_State *L ) {
 }
 
 static int
-arken_SMTPInstanceMethodMessage( lua_State *L ) {
+arken_net_SMTP_message( lua_State *L ) {
   SMTP * udata   = checkSMTP( L );
   const char * message = udata->message();
   lua_pushstring(L, message);
@@ -193,7 +193,7 @@ arken_SMTPInstanceMethodMessage( lua_State *L ) {
 }
 
 static int
-arken_SMTPInstanceMethodRaw( lua_State *L ) {
+arken_net_SMTP_raw( lua_State *L ) {
   SMTP * udata   = checkSMTP( L );
   string raw = udata->raw();
   lua_pushlstring(L, raw.data(), raw.size());
@@ -201,7 +201,7 @@ arken_SMTPInstanceMethodRaw( lua_State *L ) {
 }
 
 static int
-arken_SMTPInstanceMethodFrom( lua_State *L ) {
+arken_net_SMTP_from( lua_State *L ) {
   SMTP * udata   = checkSMTP( L );
   const char * from = udata->from();
   lua_pushstring(L, from);
@@ -209,7 +209,7 @@ arken_SMTPInstanceMethodFrom( lua_State *L ) {
 }
 
 static int
-arken_SMTPInstanceMethodTo( lua_State *L ) {
+arken_net_SMTP_to( lua_State *L ) {
   SMTP * udata   = checkSMTP( L );
   const char * to = udata->to();
   lua_pushstring(L, to);
@@ -217,7 +217,7 @@ arken_SMTPInstanceMethodTo( lua_State *L ) {
 }
 
 static int
-arken_SMTPInstanceMethodCopy( lua_State *L ) {
+arken_net_SMTP_copy( lua_State *L ) {
   SMTP * udata   = checkSMTP( L );
   const char * copy = udata->copy();
   lua_pushstring(L, copy);
@@ -225,7 +225,7 @@ arken_SMTPInstanceMethodCopy( lua_State *L ) {
 }
 
 static int
-arken_SMTPInstanceMethodReplyTo( lua_State *L ) {
+arken_net_SMTP_replyTo( lua_State *L ) {
   SMTP * udata   = checkSMTP( L );
   const char * replayTo = udata->replyTo();
   lua_pushstring(L, replayTo);
@@ -233,7 +233,7 @@ arken_SMTPInstanceMethodReplyTo( lua_State *L ) {
 }
 
 static int
-arken_SMTPInstanceMethodSubject( lua_State *L ) {
+arken_net_SMTP_subject( lua_State *L ) {
   SMTP * udata   = checkSMTP( L );
   const char * subject = udata->subject();
   lua_pushstring(L, subject);
@@ -241,7 +241,7 @@ arken_SMTPInstanceMethodSubject( lua_State *L ) {
 }
 
 static int
-arken_SMTPInstanceMethodDomain( lua_State *L ) {
+arken_net_SMTP_domain( lua_State *L ) {
   SMTP * udata   = checkSMTP( L );
   const char * domain = udata->domain();
   lua_pushstring(L, domain);
@@ -249,7 +249,7 @@ arken_SMTPInstanceMethodDomain( lua_State *L ) {
 }
 
 static int
-arken_SMTPInstanceMethodBody( lua_State *L ) {
+arken_net_SMTP_body( lua_State *L ) {
   SMTP * udata   = checkSMTP( L );
   const char * body = udata->body();
   lua_pushstring(L, body);
@@ -257,7 +257,7 @@ arken_SMTPInstanceMethodBody( lua_State *L ) {
 }
 
 static int
-arken_SMTPInstanceMethodUsername( lua_State *L ) {
+arken_net_SMTP_username( lua_State *L ) {
   SMTP * udata   = checkSMTP( L );
   const char * username = udata->username();
   lua_pushstring(L, username);
@@ -265,7 +265,7 @@ arken_SMTPInstanceMethodUsername( lua_State *L ) {
 }
 
 static int
-arken_SMTPInstanceMethodPassword( lua_State *L ) {
+arken_net_SMTP_password( lua_State *L ) {
   SMTP * udata   = checkSMTP( L );
   const char * password = udata->password();
   lua_pushstring(L, password);
@@ -273,7 +273,7 @@ arken_SMTPInstanceMethodPassword( lua_State *L ) {
 }
 
 static int
-arken_SMTPInstanceMethodContentType( lua_State *L ) {
+arken_net_SMTP_contentType( lua_State *L ) {
   SMTP * udata   = checkSMTP( L );
   const char * contentType = udata->contentType();
   lua_pushstring(L, contentType);
@@ -281,7 +281,7 @@ arken_SMTPInstanceMethodContentType( lua_State *L ) {
 }
 
 static int
-arken_SMTPInstanceMethodPort( lua_State *L ) {
+arken_net_SMTP_port( lua_State *L ) {
   SMTP * udata   = checkSMTP( L );
   int port = udata->port();
   lua_pushinteger(L, port);
@@ -289,7 +289,7 @@ arken_SMTPInstanceMethodPort( lua_State *L ) {
 }
 
 static int
-arken_SMTPInstanceMethodSsl( lua_State *L ) {
+arken_net_SMTP_ssl( lua_State *L ) {
   SMTP * udata   = checkSMTP( L );
   bool ssl = udata->ssl();
   lua_pushboolean(L, ssl);
@@ -297,7 +297,7 @@ arken_SMTPInstanceMethodSsl( lua_State *L ) {
 }
 
 static int
-arken_SMTPInstanceMethodVerbose( lua_State *L ) {
+arken_net_SMTP_verbose( lua_State *L ) {
   SMTP * udata   = checkSMTP( L );
   bool verbose = udata->verbose();
   lua_pushboolean(L, verbose);
@@ -305,51 +305,51 @@ arken_SMTPInstanceMethodVerbose( lua_State *L ) {
 }
 
 static int
-arken_SMTPInstanceMethodDestruct( lua_State *L ) {
+arken_net_SMTP_gc( lua_State *L ) {
   SMTP *udata = checkSMTP( L );
   delete udata;
   return 0;
 }
 
 static const
-luaL_reg SMTPInstanceMethods[] = {
-  {"setVerbose",     arken_SMTPInstanceMethodSetVerbose},
-  {"setSsl",         arken_SMTPInstanceMethodSetSsl},
-  {"setBody",        arken_SMTPInstanceMethodSetBody},
-  {"setSubject",     arken_SMTPInstanceMethodSetSubject},
-  {"setDomain",      arken_SMTPInstanceMethodSetDomain},
-  {"setFrom",        arken_SMTPInstanceMethodSetFrom},
-  {"setTo",          arken_SMTPInstanceMethodSetTo},
-  {"setCopy",        arken_SMTPInstanceMethodSetCopy},
-  {"setPort",        arken_SMTPInstanceMethodSetPort},
-  {"setUsername",    arken_SMTPInstanceMethodSetUsername},
-  {"setPassword",    arken_SMTPInstanceMethodSetPassword},
-  {"setContentType", arken_SMTPInstanceMethodSetContentType},
-  {"setReplyTo",     arken_SMTPInstanceMethodSetReplyTo},
-  {"perform",        arken_SMTPInstanceMethodPerform},
-  {"message",        arken_SMTPInstanceMethodMessage},
-  {"raw",            arken_SMTPInstanceMethodRaw},
-  {"from",           arken_SMTPInstanceMethodFrom},
-  {"to",             arken_SMTPInstanceMethodTo},
-  {"copy",           arken_SMTPInstanceMethodCopy},
-  {"replayTo",       arken_SMTPInstanceMethodReplyTo},
-  {"subject",        arken_SMTPInstanceMethodSubject},
-  {"domain",         arken_SMTPInstanceMethodDomain},
-  {"body",           arken_SMTPInstanceMethodBody},
-  {"username",       arken_SMTPInstanceMethodUsername},
-  {"password",       arken_SMTPInstanceMethodPassword},
-  {"contentType",    arken_SMTPInstanceMethodContentType},
-  {"port",           arken_SMTPInstanceMethodPort},
-  {"ssl",            arken_SMTPInstanceMethodSsl},
-  {"verbose",        arken_SMTPInstanceMethodVerbose},
-  {"__gc",           arken_SMTPInstanceMethodDestruct},
+luaL_reg arken_net_SMTP_metatable[] = {
+  {"setVerbose",     arken_net_SMTP_setVerbose},
+  {"setSsl",         arken_net_SMTP_setSsl},
+  {"setBody",        arken_net_SMTP_setBody},
+  {"setSubject",     arken_net_SMTP_setSubject},
+  {"setDomain",      arken_net_SMTP_setDomain},
+  {"setFrom",        arken_net_SMTP_setFrom},
+  {"setTo",          arken_net_SMTP_setTo},
+  {"setCopy",        arken_net_SMTP_setCopy},
+  {"setPort",        arken_net_SMTP_setPort},
+  {"setUsername",    arken_net_SMTP_setUsername},
+  {"setPassword",    arken_net_SMTP_setPassword},
+  {"setContentType", arken_net_SMTP_setContentType},
+  {"setReplyTo",     arken_net_SMTP_setReplyTo},
+  {"perform",        arken_net_SMTP_perform},
+  {"message",        arken_net_SMTP_message},
+  {"raw",            arken_net_SMTP_raw},
+  {"from",           arken_net_SMTP_from},
+  {"to",             arken_net_SMTP_to},
+  {"copy",           arken_net_SMTP_copy},
+  {"replayTo",       arken_net_SMTP_replyTo},
+  {"subject",        arken_net_SMTP_subject},
+  {"domain",         arken_net_SMTP_domain},
+  {"body",           arken_net_SMTP_body},
+  {"username",       arken_net_SMTP_username},
+  {"password",       arken_net_SMTP_password},
+  {"contentType",    arken_net_SMTP_contentType},
+  {"port",           arken_net_SMTP_port},
+  {"ssl",            arken_net_SMTP_ssl},
+  {"verbose",        arken_net_SMTP_verbose},
+  {"__gc",           arken_net_SMTP_gc},
   {NULL, NULL}
 };
 
 void static
-registerSMTPInstanceMethods( lua_State *L ) {
-  luaL_newmetatable(L, "arken.net.SMTP.metatable");
-  luaL_register(L, NULL, SMTPInstanceMethods);
+register_arken_net_SMTP_metatable( lua_State *L ) {
+  luaL_newmetatable(L,  "arken.net.SMTP.metatable");
+  luaL_register(L, NULL, arken_net_SMTP_metatable);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -357,8 +357,8 @@ registerSMTPInstanceMethods( lua_State *L ) {
 extern "C" {
   int
   luaopen_arken_net_SMTP( lua_State *L ) {
-    registerSMTPInstanceMethods(L);
-    registerSMTPClassMethods(L);
+    register_arken_net_SMTP_metatable(L);
+    register_arken_net_SMTP(L);
     return 1;
   }
 }

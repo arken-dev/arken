@@ -4,11 +4,11 @@
 // license that can be found in the LICENSE file.
 
 #include <lua/lua.hpp>
-#include <lua/json/lock.h>
 #include <arken/base>
 #include <arken/mvm>
 #include <arken/concurrent/worker.h>
 #include <vector>
+#include <arken/json.h>
 
 namespace arken {
 namespace concurrent {
@@ -91,7 +91,7 @@ void worker::run()
   luaL_getmetatable(L, "arken.concurrent.worker.metatable");
   lua_setmetatable(L, -2);
 
-  json_lock_decode(L, m_params);
+  json::decode(L, m_params);
 
   if( lua_pcall(L, 2, 0, 0) != 0 ) {
     fprintf(stderr, "start => %s\n", lua_tostring(L, -1));
@@ -133,7 +133,7 @@ void worker::run()
     luaL_getmetatable(L, "arken.concurrent.worker.metatable");
     lua_setmetatable(L, -2);
 
-    json_lock_decode(L, m_params);
+    json::decode(L, m_params);
 
     if( lua_pcall(L, 2, 0, 0) != 0 ) {
       fprintf(stderr, "stop => %s\n", lua_tostring(L, -1));
@@ -293,7 +293,7 @@ void worker::node::run()
     *ptr = this;
     luaL_getmetatable(L, "arken.concurrent.worker.node.metatable");
     lua_setmetatable(L, -2);
-    json_lock_decode(L, value.data());
+    json::decode(L, value.data());
 
     if( lua_pcall(L, 2, 0, 0) != 0 ) {
       fprintf(stderr, "run => %s: %s\n", m_fileName.data(), lua_tostring(L, 2));

@@ -5,11 +5,10 @@
 
 #include <lua/lua.hpp>
 #include <arken/cache>
-
-char * json_lock_encode(lua_State *L);
-void   json_lock_decode(lua_State *L, const char * data);
+#include <arken/json.h>
 
 using arken::cache;
+using arken::json;
 
 static int arken_cache_value( lua_State *L ) {
   const char * key   = luaL_checkstring(L, 1);
@@ -17,7 +16,7 @@ static int arken_cache_value( lua_State *L ) {
   if( value == 0 ) {
     lua_pushnil(L);
   } else {
-    json_lock_decode(L, value);
+    json::decode(L, value);
   }
   return 1;
 }
@@ -29,7 +28,7 @@ static int arken_cache_insert( lua_State *L ) {
     expires = lua_tointeger(L, 3);
     lua_remove(L, 3);
   }
-  char * value = json_lock_encode(L);
+  char * value = json::encode(L);
   cache::insert(key, value, expires);
   delete[] value;
   return 1;

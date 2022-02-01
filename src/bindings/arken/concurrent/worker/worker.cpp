@@ -6,12 +6,11 @@
 #include <lua/lua.hpp>
 #include <arken/base>
 #include <arken/concurrent/worker.h>
+#include <arken/json.h>
 
 using worker = arken::concurrent::worker;
 using Shared = arken::concurrent::Shared;
-
-char * json_lock_encode(lua_State *L);
-void   json_lock_decode(lua_State *L, const char * data);
+using json   = arken::json;
 
 worker *
 checkWorker( lua_State *L ) {
@@ -41,7 +40,7 @@ arken_worker_start(lua_State *L) {
       release = lua_toboolean(L, 3);
       lua_settop(L, 2);
     }
-    params = json_lock_encode(L);
+    params = json::encode(L);
   }
 
   worker wrk = worker::start( fileName, params, release );
@@ -78,16 +77,16 @@ registerWorkerClassMethods( lua_State *L ) {
 }
 
 static int
-arken_concurrent_worker_instance_method_enqueue( lua_State *L ) {
+arken_concurrent_worker_enqueue( lua_State *L ) {
   worker * pointer = checkWorker( L );
-  char * data = json_lock_encode(L);
+  char * data = json::encode(L);
   pointer->enqueue(data);
   delete[] data;
   return 0;
 }
 
 static int
-arken_concurrent_worker_instance_method_uuid( lua_State *L ) {
+arken_concurrent_worker_uuid( lua_State *L ) {
   worker * pointer = checkWorker( L );
   lua_pushstring(L, pointer->uuid());
 
@@ -95,7 +94,7 @@ arken_concurrent_worker_instance_method_uuid( lua_State *L ) {
 }
 
 static int
-arken_concurrent_worker_instance_method_progress( lua_State *L ) {
+arken_concurrent_worker_progress( lua_State *L ) {
   worker * pointer = checkWorker( L );
   lua_pushnumber(L, pointer->progress());
 
@@ -103,7 +102,7 @@ arken_concurrent_worker_instance_method_progress( lua_State *L ) {
 }
 
 static int
-arken_concurrent_worker_instance_method_finished( lua_State *L ) {
+arken_concurrent_worker_finished( lua_State *L ) {
   worker * pointer = checkWorker( L );
   lua_pushboolean(L, pointer->finished());
 
@@ -112,7 +111,7 @@ arken_concurrent_worker_instance_method_finished( lua_State *L ) {
 
 
 static int
-arken_concurrent_worker_instance_method_shared( lua_State *L ) {
+arken_concurrent_worker_shared( lua_State *L ) {
   worker * pointer = checkWorker( L );
   int rv;
   lua_getglobal(L, "require");
@@ -136,19 +135,19 @@ arken_concurrent_worker_instance_method_shared( lua_State *L ) {
 //-----------------------------------------------------------------------------
 
 static const
-luaL_reg WorkerInstanceMethods[] = {
-  {"enqueue",  arken_concurrent_worker_instance_method_enqueue},
-  {"uuid",     arken_concurrent_worker_instance_method_uuid},
-  {"shared",   arken_concurrent_worker_instance_method_shared},
-  {"progress", arken_concurrent_worker_instance_method_progress},
-  {"finished", arken_concurrent_worker_instance_method_finished},
+luaL_reg arken_concurrent_worker_metatable[] = {
+  {"enqueue",  arken_concurrent_worker_enqueue},
+  {"uuid",     arken_concurrent_worker_uuid},
+  {"shared",   arken_concurrent_worker_shared},
+  {"progress", arken_concurrent_worker_progress},
+  {"finished", arken_concurrent_worker_finished},
   {NULL, NULL}
 };
 
 void static
 registerWorkerInstanceMethods( lua_State *L ) {
-  luaL_newmetatable(L, "arken.concurrent.worker.metatable");
-  luaL_register(L, NULL, WorkerInstanceMethods);
+  luaL_newmetatable(L,  "arken.concurrent.worker.metatable");
+  luaL_register(L, NULL, arken_concurrent_worker_metatable);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -158,7 +157,7 @@ registerWorkerInstanceMethods( lua_State *L ) {
 //-----------------------------------------------------------------------------
 
 static int
-arken_concurrent_worker_node_instance_method_number( lua_State *L ) {
+arken_concurrent_worker_node_number( lua_State *L ) {
   worker::node * pointer = checkWorkerNode( L );
   lua_pushinteger(L, pointer->number());
 
@@ -166,7 +165,7 @@ arken_concurrent_worker_node_instance_method_number( lua_State *L ) {
 }
 
 static int
-arken_concurrent_worker_node_instance_method_uuid( lua_State *L ) {
+arken_concurrent_worker_node_uuid( lua_State *L ) {
   worker::node * pointer = checkWorkerNode( L );
   lua_pushstring(L, pointer->uuid());
 
@@ -174,7 +173,7 @@ arken_concurrent_worker_node_instance_method_uuid( lua_State *L ) {
 }
 
 static int
-arken_concurrent_worker_node_instance_method_shared( lua_State *L ) {
+arken_concurrent_worker_node_shared( lua_State *L ) {
   worker::node * node = checkWorkerNode( L );
   int rv;
   lua_getglobal(L, "require");
@@ -193,7 +192,7 @@ arken_concurrent_worker_node_instance_method_shared( lua_State *L ) {
 }
 
 static int
-arken_concurrent_worker_node_instance_method_master( lua_State *L ) {
+arken_concurrent_worker_node_master( lua_State *L ) {
   worker::node * node = checkWorkerNode( L );
 
   worker **ptr = (worker **)lua_newuserdata(L, sizeof(worker*));
@@ -206,18 +205,18 @@ arken_concurrent_worker_node_instance_method_master( lua_State *L ) {
 }
 
 static const
-luaL_reg WorkerNodeInstanceMethods[] = {
-  {"number",  arken_concurrent_worker_node_instance_method_number},
-  {"uuid",    arken_concurrent_worker_node_instance_method_uuid},
-  {"shared",  arken_concurrent_worker_node_instance_method_shared},
-  {"master",  arken_concurrent_worker_node_instance_method_master},
+luaL_reg arken_concurrent_worker_node_metatable[] = {
+  {"number",  arken_concurrent_worker_node_number},
+  {"uuid",    arken_concurrent_worker_node_uuid},
+  {"shared",  arken_concurrent_worker_node_shared},
+  {"master",  arken_concurrent_worker_node_master},
   {NULL, NULL}
 };
 
 void static
 registerWorkerNodeInstanceMethods( lua_State *L ) {
-  luaL_newmetatable(L, "arken.concurrent.worker.node.metatable");
-  luaL_register(L, NULL, WorkerNodeInstanceMethods);
+  luaL_newmetatable(L,  "arken.concurrent.worker.node.metatable");
+  luaL_register(L, NULL, arken_concurrent_worker_node_metatable);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }

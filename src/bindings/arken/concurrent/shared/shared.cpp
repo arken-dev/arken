@@ -24,7 +24,7 @@ checkShared( lua_State *L ) {
  */
 
 static int
-arken_concurrent_shared_instance_setNumber( lua_State *L ) {
+arken_concurrent_Shared_setNumber( lua_State *L ) {
   Shared * shr = checkShared( L );
   const char  * key  = luaL_checkstring(L, 2);
   double value = luaL_checknumber(L, 3);
@@ -33,7 +33,7 @@ arken_concurrent_shared_instance_setNumber( lua_State *L ) {
 }
 
 static int
-arken_concurrent_shared_instance_getNumber( lua_State *L ) {
+arken_concurrent_Shared_getNumber( lua_State *L ) {
   Shared * shr = checkShared( L );
   const char  * key  = luaL_checkstring(L, 2);
   lua_pushnumber(L, shr->getNumber(key));
@@ -41,7 +41,7 @@ arken_concurrent_shared_instance_getNumber( lua_State *L ) {
 }
 
 static int
-arken_concurrent_shared_instance_increment( lua_State *L ) {
+arken_concurrent_Shared_increment( lua_State *L ) {
   Shared * shr = checkShared( L );
   const char  * key  = luaL_checkstring(L, 2);
   double value = luaL_checknumber(L, 3);
@@ -50,7 +50,7 @@ arken_concurrent_shared_instance_increment( lua_State *L ) {
 }
 
 static int
-arken_concurrent_shared_instance_setString( lua_State *L ) {
+arken_concurrent_Shared_setString( lua_State *L ) {
   Shared * shr = checkShared( L );
   const char  * key  = luaL_checkstring(L, 2);
   size_t len;
@@ -60,7 +60,7 @@ arken_concurrent_shared_instance_setString( lua_State *L ) {
 }
 
 static int
-arken_concurrent_shared_instance_getString( lua_State *L ) {
+arken_concurrent_Shared_getString( lua_State *L ) {
   Shared * shr = checkShared( L );
   const char * key  = luaL_checkstring(L, 2);
   string str = shr->getString(key);
@@ -69,7 +69,7 @@ arken_concurrent_shared_instance_getString( lua_State *L ) {
 }
 
 static int
-arken_concurrent_shared_instance_append( lua_State *L ) {
+arken_concurrent_Shared_append( lua_State *L ) {
   Shared * shr = checkShared( L );
   const char * key  = luaL_checkstring(L, 2);
   size_t len;
@@ -80,7 +80,7 @@ arken_concurrent_shared_instance_append( lua_State *L ) {
 }
 
 static int
-arken_concurrent_shared_instance_setBool( lua_State *L ) {
+arken_concurrent_Shared_setBool( lua_State *L ) {
   Shared * shr = checkShared( L );
   const char  * key  = luaL_checkstring(L, 2);
   bool value = lua_toboolean(L, 3);
@@ -89,7 +89,7 @@ arken_concurrent_shared_instance_setBool( lua_State *L ) {
 }
 
 static int
-arken_concurrent_shared_instance_getBool( lua_State *L ) {
+arken_concurrent_Shared_getBool( lua_State *L ) {
   Shared * shr = checkShared( L );
   const char * key  = luaL_checkstring(L, 2);
   bool value = shr->getBool(key);
@@ -98,7 +98,7 @@ arken_concurrent_shared_instance_getBool( lua_State *L ) {
 }
 
 static int
-arken_concurrent_shared_instance_toggle( lua_State *L ) {
+arken_concurrent_Shared_toggle( lua_State *L ) {
   Shared * shr = checkShared( L );
   const char * key  = luaL_checkstring(L, 2);
   bool value = shr->toggle(key);
@@ -107,31 +107,31 @@ arken_concurrent_shared_instance_toggle( lua_State *L ) {
 }
 
 static int
-arken_concurrent_shared_instance_destruct( lua_State *L ) {
+arken_concurrent_Shared_gc( lua_State *L ) {
   Shared * shr = checkShared( L );
   delete shr;
   return 0;
 }
 
 static const
-luaL_reg SharedInstanceMethods[] = {
-  {"setNumber", arken_concurrent_shared_instance_setNumber},
-  {"getNumber", arken_concurrent_shared_instance_getNumber},
-  {"increment", arken_concurrent_shared_instance_increment},
-  {"setString", arken_concurrent_shared_instance_setString},
-  {"getString", arken_concurrent_shared_instance_getString},
-  {"append",    arken_concurrent_shared_instance_append},
-  {"setBool",   arken_concurrent_shared_instance_setBool},
-  {"getBool",   arken_concurrent_shared_instance_getBool},
-  {"toggle",    arken_concurrent_shared_instance_toggle},
-  {"__gc",      arken_concurrent_shared_instance_destruct},
+luaL_reg arken_concurrent_Shared_metatable[] = {
+  {"setNumber", arken_concurrent_Shared_setNumber},
+  {"getNumber", arken_concurrent_Shared_getNumber},
+  {"increment", arken_concurrent_Shared_increment},
+  {"setString", arken_concurrent_Shared_setString},
+  {"getString", arken_concurrent_Shared_getString},
+  {"append",    arken_concurrent_Shared_append},
+  {"setBool",   arken_concurrent_Shared_setBool},
+  {"getBool",   arken_concurrent_Shared_getBool},
+  {"toggle",    arken_concurrent_Shared_toggle},
+  {"__gc",      arken_concurrent_Shared_gc},
   {NULL, NULL}
 };
 
 void static
-registerSharedInstanceMethods( lua_State *L ) {
-  luaL_newmetatable(L, "arken.concurrent.Shared.metatable");
-  luaL_register(L, NULL, SharedInstanceMethods);
+register_arken_concurrent_Shared_metatable( lua_State *L ) {
+  luaL_newmetatable(L,  "arken.concurrent.Shared.metatable");
+  luaL_register(L, NULL, arken_concurrent_Shared_metatable);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -139,7 +139,7 @@ registerSharedInstanceMethods( lua_State *L ) {
 extern "C" {
   int
   luaopen_arken_concurrent_Shared( lua_State *L ) {
-    registerSharedInstanceMethods(L);
+    register_arken_concurrent_Shared_metatable(L);
     return 1;
   }
 }

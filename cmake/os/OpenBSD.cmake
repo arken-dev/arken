@@ -1,9 +1,9 @@
 include_directories( /usr/local/include )
 link_directories( /usr/local/lib )
 
-if( POSTGRES )
+if( LUA_POSTGRES )
   include_directories( /usr/local/include/postgresql )
-endif( POSTGRES )
+endif()
 
 if(ARKEN_NOTIFY STREQUAL "opengl")
   include_directories( /usr/X11R6/include )

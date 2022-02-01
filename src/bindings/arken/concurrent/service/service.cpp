@@ -7,12 +7,11 @@
 #include <arken/base>
 #include <arken/mvm>
 #include <arken/concurrent/service.h>
+#include <arken/json.h>
 
 using service = arken::concurrent::service;
-using Shared = arken::concurrent::Shared;
-
-char * json_lock_encode(lua_State *L);
-void   json_lock_decode(lua_State *L, const char * data);
+using Shared  = arken::concurrent::Shared;
+using json    = arken::json;
 
 service *
 checkService ( lua_State *L ) {
@@ -24,7 +23,7 @@ checkService ( lua_State *L ) {
 //-----------------------------------------------------------------------------
 
 static int
-arken_service_start(lua_State *L) {
+arken_concurrent_service_start(lua_State *L) {
   bool purge = false;
   const char * fileName = luaL_checkstring(L, 1);
   char * params;
@@ -36,7 +35,7 @@ arken_service_start(lua_State *L) {
       purge = lua_toboolean(L, 3);
       lua_settop(L, 2);
     }
-    params = json_lock_encode(L);
+    params = json::encode(L);
   }
 
   service srv = service::start( fileName, params, purge );
@@ -52,21 +51,21 @@ arken_service_start(lua_State *L) {
   return 1;
 }
 
-static const luaL_reg TaskClassMethods[] = {
-  {"start", arken_service_start},
+static const luaL_reg arken_concurrent_service[] = {
+  {"start", arken_concurrent_service_start},
   {NULL, NULL}
 };
 
 void static
-registerServiceClassMethods( lua_State *L ) {
+register_arken_concurrent_service( lua_State *L ) {
   luaL_newmetatable(L, "arken.concurrent.service");
-  luaL_register(L, NULL, TaskClassMethods);
+  luaL_register(L, NULL, arken_concurrent_service);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
 
 static int
-arken_concurrent_service_instance_method_loop( lua_State *L ) {
+arken_concurrent_service_loop( lua_State *L ) {
   service * srv = checkService( L );
   int secs = luaL_checkint(L, 2);
   lua_pushboolean(L, srv->loop( secs ));
@@ -74,7 +73,7 @@ arken_concurrent_service_instance_method_loop( lua_State *L ) {
 }
 
 static int
-arken_concurrent_service_instance_method_shared( lua_State *L ) {
+arken_concurrent_service_shared( lua_State *L ) {
   service * pointer = checkService( L );
   int rv;
   lua_getglobal(L, "require");
@@ -93,16 +92,16 @@ arken_concurrent_service_instance_method_shared( lua_State *L ) {
 }
 
 static const
-luaL_reg ServiceInstanceMethods[] = {
-  {"shared",   arken_concurrent_service_instance_method_shared},
-  {"loop",     arken_concurrent_service_instance_method_loop},
+luaL_reg arken_concurrent_service_metatable[] = {
+  {"shared",   arken_concurrent_service_shared},
+  {"loop",     arken_concurrent_service_loop},
   {NULL, NULL}
 };
 
 void static
-registerServiceInstanceMethods( lua_State *L ) {
+register_arken_concurrent_service_metatable( lua_State *L ) {
   luaL_newmetatable(L, "arken.concurrent.service.metatable");
-  luaL_register(L, NULL, ServiceInstanceMethods);
+  luaL_register(L, NULL, arken_concurrent_service_metatable);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -110,8 +109,8 @@ registerServiceInstanceMethods( lua_State *L ) {
 extern "C" {
   int
   luaopen_arken_concurrent_service( lua_State *L ) {
-    registerServiceInstanceMethods(L);
-    registerServiceClassMethods(L);
+    register_arken_concurrent_service_metatable(L);
+    register_arken_concurrent_service(L);
     return 1;
   }
 }

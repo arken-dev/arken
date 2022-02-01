@@ -24,7 +24,7 @@ checkHttpServer( lua_State *L ) {
  */
 
 static int
-arken_HttpServerClassMethodNew( lua_State *L ) {
+arken_net_HttpServer_new( lua_State *L ) {
   const char * address = luaL_checkstring(L, 1);
   int port = luaL_checkinteger(L, 2); 
   HttpServer **ptr = (HttpServer **)lua_newuserdata(L, sizeof(HttpServer*));
@@ -34,15 +34,15 @@ arken_HttpServerClassMethodNew( lua_State *L ) {
   return 1;
 }
 
-static const luaL_reg HttpServerClassMethods[] = {
-  {"new", arken_HttpServerClassMethodNew},
+static const luaL_reg arken_net_HttpServer[] = {
+  {"new", arken_net_HttpServer_new},
   {NULL, NULL}
 };
 
 void static
-registerHttpServerClassMethods( lua_State *L ) {
-  luaL_newmetatable(L, "arken.net.HttpServer");
-  luaL_register(L, NULL, HttpServerClassMethods);
+register_arken_net_HttpServer( lua_State *L ) {
+  luaL_newmetatable(L,  "arken.net.HttpServer");
+  luaL_register(L, NULL, arken_net_HttpServer);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -52,14 +52,14 @@ registerHttpServerClassMethods( lua_State *L ) {
  */
 
 static int
-arken_HttpServerInstanceMethodStart( lua_State *L ) {
+arken_net_HttpServer_start( lua_State *L ) {
   HttpServer * udata = checkHttpServer( L );
   udata->start();
   return 0;
 }
 
 static int
-arken_HttpServerInstanceMethodSetThreads( lua_State *L ) {
+arken_net_HttpServer_setThreads( lua_State *L ) {
   HttpServer * udata  = checkHttpServer( L );
   int threads = luaL_checkint(L, 2);
   udata->setThreads(threads);
@@ -67,7 +67,7 @@ arken_HttpServerInstanceMethodSetThreads( lua_State *L ) {
 }
 
 static int
-arken_HttpServerInstanceMethodSetPid( lua_State *L ) {
+arken_net_HttpServer_setPid( lua_State *L ) {
   HttpServer * udata  = checkHttpServer( L );
   const char * pid = luaL_checkstring(L, 2);
   udata->setPid(pid);
@@ -75,7 +75,7 @@ arken_HttpServerInstanceMethodSetPid( lua_State *L ) {
 }
 
 static int
-arken_HttpServerInstanceMethodSetDispatcher( lua_State *L ) {
+arken_net_HttpServer_setDispatcher( lua_State *L ) {
   HttpServer * udata  = checkHttpServer( L );
   const char * dispatcher = luaL_checkstring(L, 2);
   udata->setDispatcher(dispatcher);
@@ -83,7 +83,7 @@ arken_HttpServerInstanceMethodSetDispatcher( lua_State *L ) {
 }
 
 static int
-arken_HttpServerInstanceMethodAddService( lua_State *L ) {
+arken_net_HttpServer_addService( lua_State *L ) {
   HttpServer * udata  = checkHttpServer( L );
   const char * service = luaL_checkstring(L, 2);
   udata->addService(service);
@@ -91,27 +91,27 @@ arken_HttpServerInstanceMethodAddService( lua_State *L ) {
 }
 
 static int
-arken_HttpServerInstanceMethodDestruct( lua_State *L ) {
+arken_net_HttpServer_gc( lua_State *L ) {
   HttpServer *udata = checkHttpServer( L );
   delete udata;
   return 0;
 }
 
 static const
-luaL_reg HttpServerInstanceMethods[] = {
-  {"start",         arken_HttpServerInstanceMethodStart},
-  {"setThreads",    arken_HttpServerInstanceMethodSetThreads},
-  {"setPid",        arken_HttpServerInstanceMethodSetPid},
-  {"setDispatcher", arken_HttpServerInstanceMethodSetDispatcher},
-  {"addService",    arken_HttpServerInstanceMethodAddService},
-  {"__gc",          arken_HttpServerInstanceMethodDestruct},
+luaL_reg arken_net_HttpServer_metatable[] = {
+  {"start",         arken_net_HttpServer_start},
+  {"setThreads",    arken_net_HttpServer_setThreads},
+  {"setPid",        arken_net_HttpServer_setPid},
+  {"setDispatcher", arken_net_HttpServer_setDispatcher},
+  {"addService",    arken_net_HttpServer_addService},
+  {"__gc",          arken_net_HttpServer_gc},
   {NULL, NULL}
 };
 
 void static
-registerHttpServerInstanceMethods( lua_State *L ) {
-  luaL_newmetatable(L, "arken.net.HttpServer.metatable");
-  luaL_register(L, NULL, HttpServerInstanceMethods);
+register_arken_net_HttpServer_metatable( lua_State *L ) {
+  luaL_newmetatable(L,  "arken.net.HttpServer.metatable");
+  luaL_register(L, NULL, arken_net_HttpServer_metatable);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -119,8 +119,8 @@ registerHttpServerInstanceMethods( lua_State *L ) {
 extern "C" {
   int
   luaopen_arken_net_HttpServer( lua_State *L ) {
-    registerHttpServerInstanceMethods(L);
-    registerHttpServerClassMethods(L);
+    register_arken_net_HttpServer_metatable(L);
+    register_arken_net_HttpServer(L);
     return 1;
   }
 }

@@ -4,7 +4,7 @@
 // license that can be found in the LICENSE file.
 
 #include <lua/lua.hpp>
-#include <lua/json/lock.h>
+#include <arken/json.h>
 #include <arken/concurrent/channel.h>
 #include <memory>
 
@@ -52,7 +52,7 @@ void channel::run()
   luaL_getmetatable(L, "arken.concurrent.channel.metatable");
   lua_setmetatable(L, -2);
 
-  json_lock_decode(L, m_params);
+  json::decode(L, m_params);
 
   rv = lua_pcall(L, 2, 0, 0); // alterar para envio de 1
   if (rv) {

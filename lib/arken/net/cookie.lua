@@ -13,7 +13,7 @@ M.parse = function(buffer)
   if index == nil and len > 0 then
     local equal    = buffer:find("=")
     local key      = buffer:sub(0, equal-1)
-    local value    = (buffer:sub(equal+1, buffer:len())):trimmed()
+    local value    = (buffer:sub(equal+1, buffer:len())):trim()
     result[key] = value
     return result
   end
@@ -21,7 +21,7 @@ M.parse = function(buffer)
     local fragment = buffer:sub(0, index)
     local equal    = fragment:find("=")
     local key      = fragment:sub(0, equal-1)
-    local value    = (fragment:sub(equal+1, index-1)):trimmed()
+    local value    = (fragment:sub(equal+1, index-1)):trim()
     result[key] = value
     --
     buffer = buffer:sub(index+2, -1)
@@ -30,7 +30,7 @@ M.parse = function(buffer)
       fragment = buffer:sub(0, index)
       equal    = fragment:find("=")
       key      = fragment:sub(0, equal-1)
-      value    = (fragment:sub(equal+1, -1)):trimmed()
+      value    = (fragment:sub(equal+1, -1)):trim()
       result[key] = value
     end
   end

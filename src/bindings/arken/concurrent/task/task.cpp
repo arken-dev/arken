@@ -6,12 +6,11 @@
 #include <lua/lua.hpp>
 #include <arken/base>
 #include <arken/concurrent/task.h>
+#include <arken/json.h>
 
-using task = arken::concurrent::task;
+using task   = arken::concurrent::task;
 using Shared = arken::concurrent::Shared;
-
-char * json_lock_encode(lua_State *L);
-void   json_lock_decode(lua_State *L, const char * data);
+using json   = arken::json;
 
 task *
 checkTask( lua_State *L ) {
@@ -23,7 +22,7 @@ checkTask( lua_State *L ) {
 //-----------------------------------------------------------------------------
 
 static int
-arken_task_start(lua_State *L) {
+arken_concurrent_task_start(lua_State *L) {
   bool release = false;
   const char * fileName = luaL_checkstring(L, 1);
   char * params;
@@ -34,7 +33,7 @@ arken_task_start(lua_State *L) {
       release = lua_toboolean(L, 3);
       lua_settop(L, 2);
     }
-    params = json_lock_encode(L);
+    params = json::encode(L);
   }
   task tsk = task::start( fileName, params, release );
 
@@ -49,28 +48,28 @@ arken_task_start(lua_State *L) {
   return 1;
 }
 
-static const luaL_reg TaskClassMethods[] = {
-  {"start", arken_task_start},
+static const luaL_reg arken_concurrent_task[] = {
+  {"start", arken_concurrent_task_start},
   {NULL, NULL}
 };
 
 void static
-registerTaskClassMethods( lua_State *L ) {
+register_arken_concurrent_task( lua_State *L ) {
   luaL_newmetatable(L, "arken.concurrent.task");
-  luaL_register(L, NULL, TaskClassMethods);
+  luaL_register(L, NULL, arken_concurrent_task);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
 
 static int
-arken_concurrent_task_instance_method_uuid( lua_State *L ) {
+arken_concurrent_task_uuid( lua_State *L ) {
   task * pointer = checkTask( L );
   lua_pushstring(L, pointer->uuid());
   return 1;
 }
 
 static int
-arken_concurrent_task_instance_method_finished( lua_State *L ) {
+arken_concurrent_task_finished( lua_State *L ) {
   task * pointer = checkTask( L );
   lua_pushboolean(L, pointer->finished());
 
@@ -78,7 +77,7 @@ arken_concurrent_task_instance_method_finished( lua_State *L ) {
 }
 
 static int
-arken_concurrent_task_instance_method_shared( lua_State *L ) {
+arken_concurrent_task_shared( lua_State *L ) {
   task * pointer = checkTask( L );
   int rv;
   lua_getglobal(L, "require");
@@ -101,17 +100,17 @@ arken_concurrent_task_instance_method_shared( lua_State *L ) {
 //-----------------------------------------------------------------------------
 
 static const
-luaL_reg TaskInstanceMethods[] = {
-  {"uuid",     arken_concurrent_task_instance_method_uuid},
-  {"shared",   arken_concurrent_task_instance_method_shared},
-  {"finished", arken_concurrent_task_instance_method_finished},
+luaL_reg arken_concurrent_task_metatable[] = {
+  {"uuid",     arken_concurrent_task_uuid},
+  {"shared",   arken_concurrent_task_shared},
+  {"finished", arken_concurrent_task_finished},
   {NULL, NULL}
 };
 
 void static
-registerTaskInstanceMethods( lua_State *L ) {
+register_arken_concurrent_task_metatable( lua_State *L ) {
   luaL_newmetatable(L, "arken.concurrent.task.metatable");
-  luaL_register(L, NULL, TaskInstanceMethods);
+  luaL_register(L, NULL, arken_concurrent_task_metatable);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -119,8 +118,8 @@ registerTaskInstanceMethods( lua_State *L ) {
 extern "C" {
   int
   luaopen_arken_concurrent_task( lua_State *L ) {
-    registerTaskInstanceMethods(L);
-    registerTaskClassMethods(L);
+    register_arken_concurrent_task_metatable(L);
+    register_arken_concurrent_task(L);
     return 1;
   }
 }

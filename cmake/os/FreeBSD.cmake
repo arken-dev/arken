@@ -1,7 +1,7 @@
 include_directories( /usr/local/include )
 link_directories( /usr/local/lib )
 
-if( MYSQL )
+if( LUA_MYSQL )
   link_directories( /usr/local/lib/mysql )
 endif()
 
