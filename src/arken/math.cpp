@@ -166,11 +166,11 @@ double math::fmod(double number, double denom)
 double math::round(double number, int precision)
 {
   double dprecision = std::pow(10, precision);
-  return std::floor((number + (0.5/(dprecision))) * (dprecision)) / dprecision;
+  return std::round(number * dprecision) / dprecision;
 }
 
 double math::truncate(double number, int precision)
 {
   double dprecision = std::pow(10, precision);
-  return std::floor(number * (dprecision)) / dprecision;
+  return std::floor(number * dprecision) / dprecision;
 }
