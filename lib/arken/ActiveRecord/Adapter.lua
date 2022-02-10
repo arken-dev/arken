@@ -176,7 +176,7 @@ function ActiveRecord_Adapter:where(values, flag)
     if where ~= '' then
       where = ' WHERE ' .. where
       for index, value in pairs(values) do
-        where = string.replace(where, '$' .. index, format[type(value)](value))
+        where = string.gsub(where, "%$([%w_]+)", { [index] = format[type(value)](value) })
       end
       result = where
     end
