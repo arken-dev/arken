@@ -7,6 +7,7 @@ set_property(
   "boost/model-3"
   "linux/model-1"
   "libev"
+  "libevent"
 )
 
 if(ARKEN_NOTIFY STREQUAL "qt")

@@ -141,6 +141,10 @@ if(ARKEN_NET_HTTPSERVER STREQUAL "libev")
   target_link_libraries(arken ev)
 endif()
 
+if(ARKEN_NET_HTTPSERVER STREQUAL "libevent")
+  target_link_libraries(arken event event_pthreads)
+endif()
+
 #------------------------------------------------------------------------------
 # ARKEN_BARCODE
 #------------------------------------------------------------------------------
