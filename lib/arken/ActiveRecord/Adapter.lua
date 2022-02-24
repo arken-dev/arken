@@ -21,7 +21,8 @@ ActiveRecord_Adapter.reserved = {
   binding   = true,
   order     = true,
   limit     = true,
-  offset    = true
+  offset    = true,
+  lock      = true
 }
 
 ActiveRecord_Adapter.errors  = Array.new()
@@ -155,6 +156,7 @@ function ActiveRecord_Adapter:where(values, flag)
   local order  = values.order
   local limit  = values.limit
   local offset = values.offset
+  local lock   = values.lock
 
 --[[
   values.join    = nil
@@ -216,6 +218,9 @@ function ActiveRecord_Adapter:where(values, flag)
   end
   if offset then
     result = result .. ' OFFSET ' .. offset
+  end
+  if lock then
+    result = result .. ' FOR UPDATE '
   end
 
   --if #result == 0 then
