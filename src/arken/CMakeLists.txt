@@ -32,6 +32,7 @@ add_library(
   arken SHARED
   ${src}
   ${arken-barcode}
+  ${arken-doc-pdf}
   ${arken-image}
   ${base64}
   ${base64-embedded}
@@ -58,6 +59,14 @@ target_link_libraries(arken curl)
 target_link_libraries(arken json)
 target_link_libraries(arken ${LUA_FLAVOR})
 target_link_libraries(arken ${ImageMagick_LIBRARIES})
+
+#------------------------------------------------------------------------------
+# ARKEN_DOC_PDF
+#------------------------------------------------------------------------------
+
+if(ARKEN_DOC_PDF)
+  target_link_libraries(arken hpdf)
+endif()
 
 #------------------------------------------------------------------------------
 # ARKEN_IMAGE

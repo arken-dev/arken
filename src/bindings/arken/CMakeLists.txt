@@ -22,6 +22,10 @@ add_subdirectory(chrono)
 add_subdirectory(compress)
 add_subdirectory(digest)
 
+if(ARKEN_DOC_PDF)
+add_subdirectory(doc/pdf)
+endif()
+
 if(ARKEN_IMAGE)
 add_subdirectory(image)
 endif()
