@@ -36,7 +36,16 @@ namespace doc {
     free(m_page);
   }
 
-  void Pdf::text(double width, double height, string text)
+  void Pdf::write(double width, double height, string text)
+  {
+    HPDF_Page * page = (HPDF_Page *) m_page;
+
+    HPDF_Page_BeginText(*page);
+    HPDF_Page_TextOut(*page, width, height, text.data());
+    HPDF_Page_EndText(*page);
+  }
+
+  void Pdf::writeText(double width, double height, string text)
   {
     HPDF_Page * page = (HPDF_Page *) m_page;
 
@@ -49,6 +58,19 @@ namespace doc {
   {
     HPDF_Doc  * pdf = (HPDF_Doc  *) m_resource;
     HPDF_SaveToFile(*pdf, fileName.data());
+  }
+
+  float Pdf::width()
+  {
+    HPDF_Page * page = (HPDF_Page *) m_page;
+    return HPDF_Page_GetWidth(*page);
+  }
+
+
+  float Pdf::height()
+  {
+    HPDF_Page * page = (HPDF_Page *) m_page;
+    return HPDF_Page_GetHeight(*page);
   }
 
 } // namespace doc

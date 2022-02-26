@@ -21,8 +21,11 @@ namespace doc {
     public:
     Pdf();
     ~Pdf();
-    void text(double width, double heiht, string text);
-    void save(string fileName);
+    void  write(double width, double heiht, string text);
+    void  writeText(double width, double heiht, string text);
+    float width();
+    float height();
+    void  save(string fileName);
   };
 
 } // namespace doc
