@@ -24,6 +24,7 @@ namespace doc {
     void  write(double width, double heiht, string text);
     void  writeText(double width, double heiht, string text);
     void  writeRectangle(float x, float y, float width, float height, float border = 1);
+    void  setFont(string name, int size);
     float width();
     float height();
     void  save(string fileName);

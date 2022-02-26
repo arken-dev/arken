@@ -62,6 +62,15 @@ namespace doc {
     HPDF_Page_Stroke(*page);
   }
 
+  void Pdf::setFont(string name, int size)
+  {
+    HPDF_Doc  * pdf  = (HPDF_Doc  *) m_resource;
+    HPDF_Page * page = (HPDF_Page *) m_page;
+
+    HPDF_Font font = HPDF_GetFont(*pdf, name, NULL);
+    HPDF_Page_SetFontAndSize(*page, font, size);
+  }
+
   void Pdf::save(string fileName)
   {
     HPDF_Doc  * pdf = (HPDF_Doc  *) m_resource;
