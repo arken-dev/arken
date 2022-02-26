@@ -13,7 +13,7 @@ using arken::doc::Pdf;
  * checkPdf
  */
 
-arken::doc::Pdf *
+Pdf *
 checkPdf( lua_State *L , int position = 1) {
   return *(arken::doc::Pdf **) luaL_checkudata(L, position, "arken.doc.Pdf.metatable");
 }
@@ -72,6 +72,32 @@ arken_doc_Pdf_writeText( lua_State *L ) {
 }
 
 static int
+arken_doc_Pdf_writeRectangle( lua_State *L ) {
+  Pdf *ptr= checkPdf( L );
+  float x = luaL_checknumber(L, 2);
+  float y = luaL_checknumber(L, 3);
+  float width  = luaL_checknumber(L, 4);
+  float height = luaL_checknumber(L, 5);
+  float border = 1;
+
+  if(lua_gettop(L) == 6) { // number of arguments
+    border = luaL_checknumber(L, 6);
+  }
+
+  ptr->writeRectangle(x, y, width, height, border);
+  return 0;
+}
+
+static int
+arken_doc_Pdf_setFont( lua_State *L ) {
+  Pdf *ptr= checkPdf( L );
+  const char * name = lua_tostring(L, 2);
+  int size = luaL_checkinteger(L, 3);
+  ptr->setFont(name, size);
+  return 0;
+}
+
+static int
 arken_doc_Pdf_width( lua_State *L ) {
   Pdf *ptr   = checkPdf( L );
   lua_pushnumber(L, ptr->width());
@@ -103,12 +129,14 @@ arken_doc_Pdf_gc( lua_State *L ) {
 
 static const
 luaL_reg arken_doc_Pdf_metatable[] = {
-  {"write",     arken_doc_Pdf_write},
-  {"writeText", arken_doc_Pdf_writeText},
-  {"width",     arken_doc_Pdf_width},
-  {"height",    arken_doc_Pdf_height},
-  {"save",      arken_doc_Pdf_save},
-  {"__gc",      arken_doc_Pdf_gc},
+  {"write",          arken_doc_Pdf_write},
+  {"writeText",      arken_doc_Pdf_writeText},
+  {"writeRectangle", arken_doc_Pdf_writeRectangle},
+  {"width",          arken_doc_Pdf_width},
+  {"height",         arken_doc_Pdf_height},
+  {"setFont",        arken_doc_Pdf_setFont},
+  {"save",           arken_doc_Pdf_save},
+  {"__gc",           arken_doc_Pdf_gc},
   {NULL, NULL}
 };
 
