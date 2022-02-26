@@ -54,6 +54,14 @@ namespace doc {
     HPDF_Page_EndText(*page);
   }
 
+  void Pdf::writeRectangle(float x, float y, float width, float height, float line_width)
+  {
+    HPDF_Page * page = (HPDF_Page *) m_page;
+    HPDF_Page_SetLineWidth(*page, line_width);
+    HPDF_Page_Rectangle(*page, x, y, width, height);
+    HPDF_Page_Stroke(*page);
+  }
+
   void Pdf::save(string fileName)
   {
     HPDF_Doc  * pdf = (HPDF_Doc  *) m_resource;
