@@ -23,7 +23,7 @@ namespace doc {
     ~Pdf();
     void  write(double width, double heiht, string text);
     void  writeText(double width, double heiht, string text);
-    void  writeRectangle(float x, float y, float width, float height, float line_width = 1);
+    void  writeRectangle(float x, float y, float width, float height, float border = 1);
     float width();
     float height();
     void  save(string fileName);
