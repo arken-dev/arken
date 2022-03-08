@@ -534,9 +534,9 @@ end
 -- LOAD
 -------------------------------------------------------------------------------
 
-function ActiveRecord_Adapter:sql(name, params)
-  local table   = self.record_class.tableName
-  local query   = (ActiveRecord.query_prefix or '') .. 'query/' .. table
+function ActiveRecord_Adapter:sql(name, params, flag)
+  local table = self.record_class.tableName
+  local query = (ActiveRecord.query_prefix or '') .. 'query/' .. table
     query  = query .. '/' .. name .. '.sql'
   local values  = self.record_class.where(params)
   if values == nil then
@@ -547,7 +547,12 @@ function ActiveRecord_Adapter:sql(name, params)
     error(query .. ' file not exists')
   end
   local sql     = os.read(query)
-  local where   = self.record_class.adapter():where(values)
+  local where   = nil
+  if flag then
+    where = self.record_class.adapter():where(params)
+  else
+    where = self.record_class.adapter():where(values)
+  end
 
   if binding then
     for index, value in pairs(binding) do

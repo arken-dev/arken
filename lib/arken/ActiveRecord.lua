@@ -250,6 +250,71 @@ ActiveRecord.inherit = function(class)
     return class.adapter():query(sql)
   end
 
+  ------------------------------------------------------------------------------
+  -- ActiveRecord#queryEach
+  ------------------------------------------------------------------------------
+  function class.queryEach(name, params)
+
+    local table    = class.adapter().tableName
+    local key      = class.adapter().primaryKey
+    local id       = params.key -- TODO refatorar variavel local id
+    local where    = params.where
+    local reverse  = params.reverse or false
+    local limit    = params.limit
+    local operator = ">"
+    local count    = 0
+
+    params.key     = nil
+    params.reverse = nil
+    params.order   = table .. "."  .. key
+
+    if reverse then
+      params.order = params.order .. " DESC"
+      operator = "<"
+    else
+      params.order = params.order .. " ASC"
+    end
+
+    params.limit = 1
+
+    local params   = class.adapter().record_class.where(params)
+
+    return function()
+      local major  = nil
+
+      if id then
+        major = string.format("%s.%s %s %s", table, key, operator, id)
+      end
+
+      local _where = nil
+      if empty(where) then
+        _where = major
+      else
+        _where = major .. ' AND (' .. where .. ')'
+      end
+
+      params.where = _where
+
+      count = count + 1
+      if limit and count > limit then
+        return nil
+      end
+
+      local sql    = class.adapter():sql(name, params, true)
+      local record = class.adapter():query(sql)
+
+      collectgarbage("collect")
+
+      if record:at(1) then
+        id = record:at(1)[key]
+        return record:at(1)
+      else
+        return nil
+      end
+
+    end
+  end
+
   -------------------------------------------------------------------------------
   -- ActiveRecord#create
   -------------------------------------------------------------------------------
