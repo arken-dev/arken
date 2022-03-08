@@ -280,6 +280,7 @@ ActiveRecord.inherit = function(class)
     local params   = class.adapter().record_class.where(params)
 
     return function()
+
       local major  = nil
 
       if id then
@@ -287,15 +288,26 @@ ActiveRecord.inherit = function(class)
       end
 
       local _where = nil
-      if empty(where) then
+      if empty(params.where) then
         _where = major
       else
-        _where = major .. ' AND (' .. where .. ')'
+        if empty(major) then
+          _where = params.where
+        else
+          _where = (major or '') .. ' AND (' .. params.where .. ')'
+        end
       end
 
-      params.where = _where
+      if not empty(major) then
+        local where = major
+        if not empty(params.where) then
+          where = where .. ' AND (' .. params.where .. ')'
+        end
+        params.where = where
+      end
 
       count = count + 1
+
       if limit and count > limit then
         return nil
       end
