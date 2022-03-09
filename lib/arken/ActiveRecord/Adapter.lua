@@ -183,6 +183,7 @@ function ActiveRecord_Adapter:where(values, flag)
       result = where
     end
   else
+    -- TODO refactory with create whereByParams
     for index, value in pairs(values) do
       if not ActiveRecord_Adapter.reserved[index] then
         if #col > 0 then
@@ -228,6 +229,19 @@ function ActiveRecord_Adapter:where(values, flag)
   --end
 
   return result
+end
+
+function ActiveRecord_Adapter:createWhereByParams(values)
+  local col = ""
+  for index, value in pairs(values) do
+    if not ActiveRecord_Adapter.reserved[index] then
+      if #col > 0 then
+        col = col .. ' AND '
+      end
+      col = col .. index .. self.finders[type(value)](value)
+    end
+  end
+  return col
 end
 
 --------------------------------------------------------------------------------
