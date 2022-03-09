@@ -98,6 +98,7 @@ ActiveRecord.inherit = function(class)
   -----------------------------------------------------------------------------
 
   class.exists = function(params)
+    params.limit = 1
     return class.adapter():find(params) ~= nil
   end
 
@@ -115,6 +116,88 @@ ActiveRecord.inherit = function(class)
 
   class.list = function(params)
     return class.adapter():all(params or {})
+  end
+
+  -----------------------------------------------------------------------------
+  -- ActiveRecord#listEach
+  -----------------------------------------------------------------------------
+
+  class.listEach = function(params)
+
+    local table    = class.adapter().tableName
+    local key      = class.adapter().primaryKey
+    local id       = params.key -- TODO refatorar variavel local id
+    local where    = params.where
+    local reverse  = params.reverse or false
+    local limit    = params.limit
+    local operator = ">"
+    local count    = 0
+
+    params.key     = nil
+    params.reverse = nil
+    params.order   = table .. "."  .. key
+
+    if empty(where) then
+      where = class.adapter():createWhereByParams(params)
+    end
+    --error(params.where)
+
+    if reverse then
+      params.order = params.order .. " DESC"
+      operator = "<"
+    else
+      params.order = params.order .. " ASC"
+    end
+
+    params.limit = 1
+
+    --local params   = class.adapter():where(params)
+    --error(JSON.encode(params))
+
+    return function()
+
+      local major  = nil
+
+      if id then
+        major = string.format("%s.%s %s %s", table, key, operator, id)
+      end
+
+      local _where = nil
+      if empty(where) then
+        _where = major
+      else
+        if empty(major) then
+          _where = params.where
+        else
+          _where = (major or '') .. ' AND (' .. where .. ')'
+        end
+      end
+
+      if not empty(major) then
+        local w = major
+        if not empty(where) then
+           w =  w .. ' AND (' .. where .. ')'
+        end
+        params.where = w
+      end
+
+      count = count + 1
+
+      if limit and count > limit then
+        return nil
+      end
+      --error(JSON.encode(params))
+      local record = class.adapter():all(params or {})
+      collectgarbage("collect")
+
+      if record:at(1) then
+        id = record:at(1)[key]
+        return record:at(1)
+      else
+        return nil
+      end
+
+    end
   end
 
   -----------------------------------------------------------------------------
@@ -248,6 +331,83 @@ ActiveRecord.inherit = function(class)
   function class.query(name, params)
     local sql = class.adapter():sql(name, params)
     return class.adapter():query(sql)
+  end
+
+  ------------------------------------------------------------------------------
+  -- ActiveRecord#queryEach
+  ------------------------------------------------------------------------------
+  function class.queryEach(name, params)
+
+    local table    = class.adapter().tableName
+    local key      = class.adapter().primaryKey
+    local id       = params.key -- TODO refatorar variavel local id
+    local where    = params.where
+    local reverse  = params.reverse or false
+    local limit    = params.limit
+    local operator = ">"
+    local count    = 0
+
+    params.key     = nil
+    params.reverse = nil
+    params.order   = table .. "."  .. key
+
+    if reverse then
+      params.order = params.order .. " DESC"
+      operator = "<"
+    else
+      params.order = params.order .. " ASC"
+    end
+
+    params.limit = 1
+
+    local params   = class.adapter().record_class.where(params)
+
+    return function()
+
+      local major  = nil
+
+      if id then
+        major = string.format("%s.%s %s %s", table, key, operator, id)
+      end
+
+      local _where = nil
+      if empty(params.where) then
+        _where = major
+      else
+        if empty(major) then
+          _where = params.where
+        else
+          _where = (major or '') .. ' AND (' .. params.where .. ')'
+        end
+      end
+
+      if not empty(major) then
+        local w = major
+        if not empty(params.where) then
+          w = w .. ' AND (' .. params.where .. ')'
+        end
+        params.where = w
+      end
+
+      count = count + 1
+
+      if limit and count > limit then
+        return nil
+      end
+
+      local sql    = class.adapter():sql(name, params, true)
+      local record = class.adapter():query(sql)
+
+      collectgarbage("collect")
+
+      if record:at(1) then
+        id = record:at(1)[key]
+        return record:at(1)
+      else
+        return nil
+      end
+
+    end
   end
 
   -------------------------------------------------------------------------------

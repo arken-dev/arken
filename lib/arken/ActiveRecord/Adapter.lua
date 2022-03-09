@@ -183,6 +183,7 @@ function ActiveRecord_Adapter:where(values, flag)
       result = where
     end
   else
+    -- TODO refactory with create whereByParams
     for index, value in pairs(values) do
       if not ActiveRecord_Adapter.reserved[index] then
         if #col > 0 then
@@ -228,6 +229,19 @@ function ActiveRecord_Adapter:where(values, flag)
   --end
 
   return result
+end
+
+function ActiveRecord_Adapter:createWhereByParams(values)
+  local col = ""
+  for index, value in pairs(values) do
+    if not ActiveRecord_Adapter.reserved[index] then
+      if #col > 0 then
+        col = col .. ' AND '
+      end
+      col = col .. index .. self.finders[type(value)](value)
+    end
+  end
+  return col
 end
 
 --------------------------------------------------------------------------------
@@ -534,9 +548,9 @@ end
 -- LOAD
 -------------------------------------------------------------------------------
 
-function ActiveRecord_Adapter:sql(name, params)
-  local table   = self.record_class.tableName
-  local query   = (ActiveRecord.query_prefix or '') .. 'query/' .. table
+function ActiveRecord_Adapter:sql(name, params, flag)
+  local table = self.record_class.tableName
+  local query = (ActiveRecord.query_prefix or '') .. 'query/' .. table
     query  = query .. '/' .. name .. '.sql'
   local values  = self.record_class.where(params)
   if values == nil then
@@ -547,7 +561,12 @@ function ActiveRecord_Adapter:sql(name, params)
     error(query .. ' file not exists')
   end
   local sql     = os.read(query)
-  local where   = self.record_class.adapter():where(values)
+  local where   = nil
+  if flag then
+    where = self.record_class.adapter():where(params)
+  else
+    where = self.record_class.adapter():where(values)
+  end
 
   if binding then
     for index, value in pairs(binding) do
