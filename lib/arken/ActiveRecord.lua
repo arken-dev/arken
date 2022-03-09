@@ -98,6 +98,7 @@ ActiveRecord.inherit = function(class)
   -----------------------------------------------------------------------------
 
   class.exists = function(params)
+    params.limit = 1
     return class.adapter():find(params) ~= nil
   end
 
