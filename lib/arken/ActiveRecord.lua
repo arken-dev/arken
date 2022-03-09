@@ -341,7 +341,6 @@ ActiveRecord.inherit = function(class)
     local table    = class.adapter().tableName
     local key      = class.adapter().primaryKey
     local id       = params.key -- TODO refatorar variavel local id
-    local where    = params.where
     local reverse  = params.reverse or false
     local limit    = params.limit
     local operator = ">"
@@ -361,6 +360,7 @@ ActiveRecord.inherit = function(class)
     params.limit = 1
 
     local params   = class.adapter().record_class.where(params)
+    local where    = params.where
 
     return function()
 
