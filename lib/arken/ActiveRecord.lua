@@ -381,11 +381,11 @@ ActiveRecord.inherit = function(class)
       end
 
       if not empty(major) then
-        local where = major
-        if not empty(params.where) then
-          where = where .. ' AND (' .. params.where .. ')'
+        local w = major
+        if not empty(where) then
+          w = w .. ' AND (' .. where .. ')'
         end
-        params.where = where
+        params.where = w
       end
 
       count = count + 1
