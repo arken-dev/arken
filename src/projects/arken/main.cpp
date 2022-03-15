@@ -74,7 +74,7 @@ bool arkenConsoleDecrementLevel(arken::string &row)
   return false;
 }
 
-void executeRoutine(lua_State *L)
+int executeRoutine(lua_State *L)
 {
   lua_settop(L, 0);
   int rv;
@@ -91,8 +91,9 @@ void executeRoutine(lua_State *L)
 
   if( lua_pcall(L, 1, 0, 0) != 0 ) {
     fprintf(stderr, "%s\n", lua_tostring(L, -1));
+    return 1;
   } else {
-    //return 0;
+    return 0;
   }
 }
 
@@ -176,7 +177,7 @@ int main(int argc, char * argv[])
     return arkenFileLoad(L, argv[1]);
   } else {
     if (arken::string::contains(argv[1], ":")) {
-      executeRoutine(L);
+      return executeRoutine(L);
     } else {
       fprintf(stderr, "No such file or directory %s\n", argv[1]);
       return 1;
