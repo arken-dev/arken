@@ -537,9 +537,13 @@ end
 
 function ActiveRecord_Adapter:validateUnique(record, params)
   local value = record[params.column]
+  local where = string.format("%s = '%s'", params.column, value)
+  if not empty(record[self.primaryKey]) then
+    where = string.format("%s AND %s != %s", where, self.primaryKey, record[self.primaryKey])
+  end
   if value ~= nil and value ~= '' then
-    local result = self:all{ [params.column] = value }
-    if empty(record[self.primaryKey]) and #result > 0 then
+    -- TODO create exists method in Adapter
+    if self:find{ where = where } ~= nil then
       record.errors[params.column] = params.message
     end
   end
