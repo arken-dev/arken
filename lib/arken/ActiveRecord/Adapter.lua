@@ -8,6 +8,7 @@ local Class     = require('arken.oop.Class')
 local toboolean = require('arken.toboolean')
 local Date      = require('arken.chrono.Date')
 local Time      = require('arken.chrono.Time')
+local empty     = require('arken.empty')
 
 local ActiveRecord_Adapter = Class.new("ActiveRecord.Adapter")
 
@@ -538,7 +539,7 @@ function ActiveRecord_Adapter:validateUnique(record, params)
   local value = record[params.column]
   if value ~= nil and value ~= '' then
     local result = self:all{ [params.column] = value }
-    if record[self.primaryKey] == nil and #result > 0 then
+    if empty(record[self.primaryKey]) and #result > 0 then
       record.errors[params.column] = params.message
     end
   end
