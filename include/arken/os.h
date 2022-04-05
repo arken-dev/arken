@@ -48,6 +48,7 @@ class os {
   static bool     rmdir(const char * dirname);
   static bool     rmpath(const char * dirpath);
   static void     sleep(double secs);
+  static long     size(const char * path);
   static string   target(const char * path);
   static string   tmp();
   static bool     touch(const char * path);

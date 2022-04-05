@@ -225,6 +225,12 @@ static int arken_os_sleep( lua_State *L ) {
   return 0;
 }
 
+static int arken_os_size( lua_State *L ) {
+  const char * path = luaL_checkstring(L, 1);
+  lua_pushnumber( L, os::size(path) );
+  return 1;
+}
+
 static int arken_os_target( lua_State *L ) {
   const char * path = luaL_checkstring(L, 1);
   string result = os::target(path);
@@ -299,6 +305,7 @@ int luaopen_arken_os( lua_State *L ) {
     {"tmp",            arken_os_tmp},
     {"touch",          arken_os_touch},
     {"sleep",          arken_os_sleep},
+    {"size",           arken_os_size},
     {"uuid",           arken_os_uuid},
     {"root",           arken_os_root},
     {NULL, NULL}
