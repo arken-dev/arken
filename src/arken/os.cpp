@@ -60,6 +60,28 @@ void os::sleep(double msecs)
   std::this_thread::sleep_for(std::chrono::milliseconds(value));
 }
 
+long os::size(const char * path)
+{
+  // opening the file in read mode
+  FILE* fp = fopen(path, "r");
+
+  // checking if the file exist or not
+  if (fp == nullptr) {
+    printf("File Not Found!\n");
+    return -1;
+  }
+
+  fseek(fp, 0L, SEEK_END);
+
+  // calculating the size of the file
+  long res = ftell(fp);
+
+  // closing the file
+  fclose(fp);
+
+  return res;
+}
+
 unsigned int os::cores()
 {
   return std::thread::hardware_concurrency();
