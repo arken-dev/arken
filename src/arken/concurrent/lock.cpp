@@ -25,5 +25,10 @@ void Lock::disable()
   m_resource->m_mutex.unlock();
 }
 
+Shared Lock::shared()
+{
+  return m_resource->m_shared;
+}
+
 } // namespace concurrent
 } // namespace arken
