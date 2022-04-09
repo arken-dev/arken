@@ -15,11 +15,17 @@ namespace arken
   class Log
   {
 
+    class resource {
+      friend Log;
+      std::string m_data;
+      std::mutex  m_mutex;
+    };
+
     private:
     int m_max;
     int m_count;
     std::string m_fileName;
-    named_ptr<std::string> m_resource;
+    named_ptr<Log::resource> m_resource;
     void _dump();
 
     public:
