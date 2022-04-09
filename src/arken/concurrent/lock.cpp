@@ -6,22 +6,24 @@
 #include <arken/concurrent/lock.h>
 
 namespace arken {
+namespace concurrent {
 
 Lock::Lock(const char * name)
 {
-  m_resource = named_ptr<std::mutex>(name);
+  m_resource = named_ptr<Lock::resource>(name);
 }
 
 Lock::~Lock() = default;
 
 void Lock::enable()
 {
-  m_resource->lock();
+  m_resource->m_mutex.lock();
 }
 
 void Lock::disable()
 {
-  m_resource->unlock();
+  m_resource->m_mutex.unlock();
 }
 
+} // namespace concurrent
 } // namespace arken
