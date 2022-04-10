@@ -7,7 +7,8 @@
 #include <arken/base>
 #include <arken/concurrent/lock.h>
 
-using arken::Lock;
+using arken::concurrent::Lock;
+using arken::concurrent::Shared;
 
 /**
  * checkLock
@@ -70,10 +71,30 @@ arken_concurrent_Lock_disable( lua_State *L ) {
   return 0;
 }
 
+static int
+arken_concurrent_Lock_shared( lua_State *L ) {
+  Lock * udata  = checkLock( L );
+  int rv;
+  lua_getglobal(L, "require");
+  lua_pushstring(L, "arken.concurrent.Shared");
+  rv = lua_pcall(L, 1, 0, 0);
+  if (rv) {
+    fprintf(stderr, "%s\n", lua_tostring(L, -1));
+  }
+
+  Shared **ptr = (Shared **)lua_newuserdata(L, sizeof(Shared*));
+  *ptr = new Shared(udata->shared());
+  luaL_getmetatable(L, "arken.concurrent.Shared.metatable");
+  lua_setmetatable(L, -2);
+
+  return 1;
+}
+
 static const
 luaL_reg arken_concurrent_Lock_metatable[] = {
   {"enable",  arken_concurrent_Lock_enable},
   {"disable", arken_concurrent_Lock_disable},
+  {"shared",  arken_concurrent_Lock_shared},
   {"__gc",    arken_concurrent_Lock_gc},
   {NULL, NULL}
 };

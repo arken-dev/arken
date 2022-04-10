@@ -8,8 +8,6 @@
 #include <ctime>
 #include <mutex>
 
-std::mutex mtx;
-
 namespace arken {
 
 Log::Log(const char * fileName, int max)
@@ -28,20 +26,20 @@ Log::Log(const char * fileName, int max)
   }
 
   string name = os::basename(fileName);
-  m_resource  = named_ptr<std::string>(name);
+  m_resource  = named_ptr<Log::resource>(name);
 }
 
 Log::~Log() {
-  std::unique_lock<std::mutex> lck(mtx);
+  std::unique_lock<std::mutex> lck(m_resource->m_mutex);
   this->_dump();
 }
 
 void Log::append(const char * value)
 {
-  std::unique_lock<std::mutex> lck(mtx);
+  std::unique_lock<std::mutex> lck(m_resource->m_mutex);
 
-  m_resource->append(value);
-  m_resource->append("\n");
+  m_resource->m_data.append(value);
+  m_resource->m_data.append("\n");
 
   m_count++;
 
@@ -97,7 +95,7 @@ void Log::fatal(const char * value)
 
 void Log::dump()
 {
-  std::unique_lock<std::mutex> lck(mtx);
+  std::unique_lock<std::mutex> lck(m_resource->m_mutex);
   this->_dump();
 }
 
@@ -105,9 +103,9 @@ void Log::_dump()
 {
   std::ofstream file;
   file.open(m_fileName, std::ofstream::out | std::ofstream::app);
-  file << m_resource->c_str();
+  file << m_resource->m_data;
   file.close();
-  m_resource->clear();
+  m_resource->m_data.clear();
 }
 
 } // namespace arken
