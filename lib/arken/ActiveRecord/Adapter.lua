@@ -478,7 +478,7 @@ end
 
 function ActiveRecord_Adapter:populate(record, params)
   for column, properties in pairs(self:columns()) do
-    if params[column] then
+    if params[column] ~= nil then
       record[column] = self:parserValue(properties.format, params[column])
     end
   end
