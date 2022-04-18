@@ -19,6 +19,36 @@ checkShared( lua_State *L ) {
   return *(Shared **) luaL_checkudata(L, 1, "arken.concurrent.Shared.metatable");
 }
 
+//-----------------------------------------------------------------------------
+// Class Methods
+//-----------------------------------------------------------------------------
+
+static int
+arken_concurrent_Shared_global(lua_State *L) {
+  Shared instance = Shared::global();
+
+  Shared **ptr = (Shared **)lua_newuserdata(L, sizeof(Shared*));
+  *ptr = new Shared(instance);
+
+  luaL_getmetatable(L, "arken.concurrent.Shared.metatable");
+  lua_setmetatable(L, -2);
+
+  return 1;
+}
+
+static const luaL_reg arken_concurrent_Shared[] = {
+  {"global", arken_concurrent_Shared_global},
+  {NULL, NULL}
+};
+
+void static
+register_arken_concurrent_Shared( lua_State *L ) {
+  luaL_newmetatable(L, "arken.concurrent.Shared");
+  luaL_register(L, NULL, arken_concurrent_Shared);
+  lua_pushvalue(L, -1);
+  lua_setfield(L, -1, "__index");
+}
+
 /**
  * InstanceMethods
  */
@@ -140,6 +170,7 @@ extern "C" {
   int
   luaopen_arken_concurrent_Shared( lua_State *L ) {
     register_arken_concurrent_Shared_metatable(L);
+    register_arken_concurrent_Shared(L);
     return 1;
   }
 }

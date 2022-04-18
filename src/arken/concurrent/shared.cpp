@@ -11,7 +11,7 @@ Shared::Shared()
   m_mutex     = std::shared_ptr<std::mutex>(new std::mutex);
 };
 
-Shared::Shared( const Shared & obj)
+Shared::Shared(const Shared & obj)
 {
   m_mapString = obj.m_mapString;
   m_mapNumber = obj.m_mapNumber;
@@ -110,6 +110,12 @@ bool Shared::toggle(string key)
     (*m_mapBool)[key] = result;
   }
   return result;
+}
+
+Shared & Shared::global()
+{
+  static Shared instance;
+  return instance;
 }
 
 } // namespace concurrent
