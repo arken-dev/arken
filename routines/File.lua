@@ -3,7 +3,7 @@ local File   = Class.new("routines.File")
 local buffer = ""
 
 _G.print = function(message)
-  buffer = buffer .. message .. '\n'
+  buffer = buffer .. tostring(message) .. '\n'
 end
 
 File.help = {}

@@ -44,6 +44,7 @@ class Shared
 
   Shared();
   Shared(const Shared & obj);
+  static Shared & global();
 
 };
 
