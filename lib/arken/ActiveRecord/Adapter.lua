@@ -295,7 +295,7 @@ end
 --------------------------------------------------------------------------------
 
 function ActiveRecord_Adapter:find(params)
-  if params[self.primaryKey] then
+  if params[self.primaryKey] and not params.lock then
     local key = self.tableName .. '_' .. tostring(params[self.primaryKey])
     if ActiveRecord_Adapter.cache[key] then
       return ActiveRecord_Adapter.cache[key]
