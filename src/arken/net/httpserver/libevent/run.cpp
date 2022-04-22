@@ -32,6 +32,8 @@
 #include <arken/mvm.h>
 #include <arken/base>
 
+#define ARKEN_NET_HTTPSERVER_LIBEVENT_PERSIST 0
+#define ARKEN_NET_HTTPSERVER_LIBEVENT_DEBUG   0
 
 using HttpServer = arken::net::HttpServer;
 
@@ -97,25 +99,21 @@ static int create_serverfd(char const *addr, uint16_t port)
 void read_cb(int fd, short events, void *arg)
 {
   char buf[MAX_MESSAGE_LEN+1] = {0};
-  ssize_t ret = recv(fd, buf, MAX_MESSAGE_LEN, MSG_DONTWAIT);
-  std::string data;
-  if( ret < MAX_MESSAGE_LEN ) {
-    buf[ret] = '\0';
-    data = HttpServer::handler(buf, sizeof(buf));
-  } else {
-    std::string tmp;
+  ssize_t ret;
+  std::string tmp;
+
+  do {
+    ret = recv(fd, buf, MAX_MESSAGE_LEN, MSG_DONTWAIT);
+    if( ret < 0 ) {
+      break;
+    }
     tmp.append(buf, ret);
-    do {
-      ret = recv(fd, buf, MAX_MESSAGE_LEN, MSG_DONTWAIT);
-      tmp.append(buf, ret);
-    } while(ret == MAX_MESSAGE_LEN);
-    data = HttpServer::handler(tmp.c_str(), tmp.size());
-  }
+  } while(ret == MAX_MESSAGE_LEN);
 
   if (ret > 0) {
+    std::string data = HttpServer::handler(tmp.c_str(), tmp.size());
     const char * result = data.c_str();
     ssize_t      size   = (ssize_t) data.size();
-    //ssize_t write(int fildes, const void *buf, size_t nbyte);
     ssize_t bytes = write(fd, result, size);
     while( bytes < size ) {
       if (bytes == -1) {
@@ -124,9 +122,14 @@ void read_cb(int fd, short events, void *arg)
       }
       bytes += write(fd, result+bytes, size-bytes);
     }
+    #if ARKEN_NET_HTTPSERVER_LIBEVENT_PERSIST == 0
     // not works without close socket and read_cb without EV_PERSIST :(
+    #if ARKEN_NET_HTTPSERVER_LIBEVENT_DEBUG
+      std::cout << "close client" << std::endl;
+    #endif
     --client_number;
     close(fd);
+    #endif
   } else if ((ret < 0) && (errno == EAGAIN || errno == EWOULDBLOCK)) {
     return;
   } else {
@@ -151,12 +154,22 @@ accept_cb(int fd, short event, void *arg)
   if (sockfd > 0) {
     if (++client_number > MAX_CLIENTS) {
       std::cout << "max clients" << std::endl;
-      close(fd);
+      close(fd); // or close sockfd ???
     } else {
       struct event_base* base = (event_base*)arg;
       struct event *ev = event_new(NULL, -1, 0, NULL, NULL);
       // not works without close socket and read_cb without EV_PERSIST :(
-      event_assign(ev, base, sockfd, EV_READ /*| EV_PERSIST*/, read_cb, (void*)ev);
+      #if ARKEN_NET_HTTPSERVER_LIBEVENT_PERSIST == 0
+      #if ARKEN_NET_HTTPSERVER_LIBEVENT_DEBUG
+        std::cout << "accept EV_READ" << std::endl;
+      #endif
+      event_assign(ev, base, sockfd, EV_READ, read_cb, (void*)ev);
+      #else
+      #if ARKEN_NET_HTTPSERVER_LIBEVENT_DEBUG
+        std::cout << "accept EV_READ | EV_PERSIST" << std::endl;
+      #endif
+      event_assign(ev, base, sockfd, EV_READ | EV_PERSIST, read_cb, (void*)ev);
+      #endif
       event_add(ev, NULL);
     }
   } else if ((sockfd < 0) && (errno == EAGAIN || errno == EWOULDBLOCK)) {

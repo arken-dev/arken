@@ -92,35 +92,32 @@ static void
 read_cb(struct ev_loop *loop, struct ev_io *watcher, int revents)
 {
   char buf[MAX_MESSAGE_LEN+1] = {0};
-  ssize_t ret = recv(watcher->fd, buf, MAX_MESSAGE_LEN, MSG_DONTWAIT);
-  std::string data;
-  if( ret < MAX_MESSAGE_LEN ) {
-    buf[ret] = '\0';
-    data = HttpServer::handler(buf, sizeof(buf));
-  } else {
-    std::string tmp;
+  ssize_t ret;
+  std::string tmp;
+
+  do {
+    ret = recv(watcher->fd, buf, MAX_MESSAGE_LEN, MSG_DONTWAIT);
+    if( ret < 0 ) {
+      break;
+    }
     tmp.append(buf, ret);
-    do {
-      ret = recv(watcher->fd, buf, MAX_MESSAGE_LEN, MSG_DONTWAIT);
-      tmp.append(buf, ret);
-    } while(ret == MAX_MESSAGE_LEN);
-    data = HttpServer::handler(tmp.c_str(), tmp.size());
-  }
+  } while(ret == MAX_MESSAGE_LEN);
+
 
   if (ret > 0) {
+    std::string data = HttpServer::handler(tmp.c_str(), tmp.size());
     const char * result = data.c_str();
     ssize_t      size   = (ssize_t) data.size();
     //ssize_t write(int fildes, const void *buf, size_t nbyte);
     ssize_t bytes = write(watcher->fd, result, size);
     while( bytes < size ) {
-      /*
       if (bytes == -1) {
         puts("write error");
         break;
       }
-      */
       bytes += write(watcher->fd, result+bytes, size-bytes);
     }
+
   } else if ((ret < 0) && (errno == EAGAIN || errno == EWOULDBLOCK)) {
     return;
   } else {
