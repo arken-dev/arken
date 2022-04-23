@@ -6,6 +6,8 @@
 #ifndef _ARKEN_DOC_PDF_
 #define _ARKEN_DOC_PDF_
 
+#include <memory>
+#include <hpdf.h>
 #include <arken/string.h>
 
 namespace arken {
@@ -15,8 +17,8 @@ namespace doc {
   {
     using string = arken::string;
 
-    void * m_resource = nullptr;
-    void * m_page     = nullptr;
+    std::unique_ptr<HPDF_Doc>  m_doc{nullptr};
+    std::unique_ptr<HPDF_Page> m_page{nullptr};
 
     public:
     Pdf();

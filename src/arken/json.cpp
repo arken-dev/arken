@@ -40,8 +40,10 @@ char * json::encode(lua_State *l)
 
   json = strbuf_string(encode_buf, &len);
 
-  result = (char *) malloc((strlen(json) + 1) * sizeof(char));
-  strcpy(result, json);
+  size_t size = strlen(json);
+  result = new char[size+1];
+
+  strncpy(result, json, size);
   result[len] = '\0';
 
   if (!cfg->encode_keep_buffer)
@@ -89,4 +91,4 @@ void json::decode(lua_State *l, const char * data)
   strbuf_free(json.tmp);
 }
 
-} // namespace
+} // namespace arken

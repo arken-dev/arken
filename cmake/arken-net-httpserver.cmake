@@ -2,10 +2,6 @@ set(ARKEN_NET_HTTPSERVER libev CACHE STRING "httpserver backend")
 
 set_property(
   CACHE ARKEN_NET_HTTPSERVER PROPERTY STRINGS
-  "qt/model-1"
-  "boost/model-2"
-  "boost/model-3"
-  "linux/model-1"
   "libev"
   "libevent"
 )

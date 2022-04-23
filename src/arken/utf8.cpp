@@ -23,9 +23,14 @@ char * utf8::sub(const char * str, int p1, int p2)
   int j  = 0;
   int v1 = 0;
   int v2 = 0;
+  int len = utf8::len(str);
 
   if( p2 < 0 ) {
-    p2 = utf8::len(str) - 1;
+    p2 = len - 1;
+  }
+
+  if( p2 > len ) {
+    p2 = len -1;
   }
 
   while( str[i] ) {
