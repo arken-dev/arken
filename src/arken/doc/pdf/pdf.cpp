@@ -15,79 +15,64 @@ namespace doc {
 
   Pdf::Pdf()
   {
-    HPDF_Doc  * pdf  = new HPDF_Doc;
-    HPDF_Page * page = new HPDF_Page;
+    auto * pdf  = new HPDF_Doc;
+    auto * page = new HPDF_Page;
 
-    *pdf  = HPDF_New(error_handler, NULL);
+    *pdf  = HPDF_New(error_handler, nullptr);
     *page = HPDF_AddPage(*pdf);
 
     // FONT DEFAULT
-    HPDF_Font def_font = HPDF_GetFont (*pdf, "Helvetica", NULL);
-    HPDF_Page_SetFontAndSize (*page, def_font, 10);
+    HPDF_Font def_font = HPDF_GetFont(*pdf, "Helvetica", nullptr);
+    HPDF_Page_SetFontAndSize(*page, def_font, 10);
 
-    m_resource  = (void*) pdf;
-    m_page      = (void*) page;
+    m_doc  = std::unique_ptr<HPDF_Doc>(pdf);
+    m_page = std::unique_ptr<HPDF_Page>(page);
 
   }
 
-  Pdf::~Pdf()
-  {
-    free(m_resource);
-    free(m_page);
-  }
+  Pdf::~Pdf() = default;
 
   void Pdf::write(double width, double height, string text)
   {
-    HPDF_Page * page = (HPDF_Page *) m_page;
-
-    HPDF_Page_BeginText(*page);
-    HPDF_Page_TextOut(*page, width, height, text.data());
-    HPDF_Page_EndText(*page);
+    HPDF_Page_BeginText(*m_page);
+    HPDF_Page_TextOut(*m_page, width, height, text.data());
+    HPDF_Page_EndText(*m_page);
   }
 
   void Pdf::writeText(double width, double height, string text)
   {
-    HPDF_Page * page = (HPDF_Page *) m_page;
-
-    HPDF_Page_BeginText(*page);
-    HPDF_Page_TextOut(*page, width, height, text.data());
-    HPDF_Page_EndText(*page);
+    HPDF_Page_BeginText(*m_page);
+    HPDF_Page_TextOut(*m_page, width, height, text.data());
+    HPDF_Page_EndText(*m_page);
   }
 
   void Pdf::writeRectangle(float x, float y, float width, float height, float border)
   {
-    HPDF_Page * page = (HPDF_Page *) m_page;
-    HPDF_Page_SetLineWidth(*page, border);
-    HPDF_Page_Rectangle(*page, x, y, width, height);
-    HPDF_Page_Stroke(*page);
+    HPDF_Page_SetLineWidth(*m_page, border);
+    HPDF_Page_Rectangle(*m_page, x, y, width, height);
+    HPDF_Page_Stroke(*m_page);
   }
 
   void Pdf::setFont(string name, int size)
   {
-    HPDF_Doc  * pdf  = (HPDF_Doc  *) m_resource;
-    HPDF_Page * page = (HPDF_Page *) m_page;
-
-    HPDF_Font font = HPDF_GetFont(*pdf, name, NULL);
-    HPDF_Page_SetFontAndSize(*page, font, size);
+    HPDF_Font font = HPDF_GetFont(*m_doc, name, nullptr);
+    HPDF_Page_SetFontAndSize(*m_page, font, size);
   }
 
   void Pdf::save(string fileName)
   {
-    HPDF_Doc  * pdf = (HPDF_Doc  *) m_resource;
-    HPDF_SaveToFile(*pdf, fileName.data());
+    HPDF_SaveToFile(*m_doc, fileName.data());
   }
 
   float Pdf::width()
   {
-    HPDF_Page * page = (HPDF_Page *) m_page;
-    return HPDF_Page_GetWidth(*page);
+    return HPDF_Page_GetWidth(*m_page);
   }
 
 
   float Pdf::height()
   {
-    HPDF_Page * page = (HPDF_Page *) m_page;
-    return HPDF_Page_GetHeight(*page);
+    return HPDF_Page_GetHeight(*m_page);
   }
 
 } // namespace doc
