@@ -74,7 +74,7 @@ static int create_serverfd(char const *addr, uint16_t port)
   //server.sin_addr.s_addr = inet_addr(addr);
   inet_pton(AF_INET, addr, &server.sin_addr);
 
-  if (bind(fd, (struct sockaddr *)&server, sizeof(server)) < 0) {
+  if (bind(fd, (struct sockaddr *)&server, sizeof(server)) < 0) {//NOLINT
     std::cerr << "bind err\n";
     throw;
   }
@@ -113,7 +113,7 @@ void read_cb(int fd, short events, void *arg)
   if (ret > 0) {
     std::string data = HttpServer::handler(tmp.c_str(), tmp.size());
     const char * result = data.c_str();
-    ssize_t      size   = (ssize_t) data.size();
+    auto size  = static_cast<ssize_t>(data.size());
     ssize_t bytes = write(fd, result, size);
     while( bytes < size ) {
       if (bytes == -1) {
@@ -150,14 +150,14 @@ accept_cb(int fd, short event, void *arg)
   //evutil_socket_t sockfd;
   //struct sockaddr_in client;
   //socklen_t len = sizeof(client);
-  sockfd = accept(fd, NULL, NULL);//(struct sockaddr*)&client, &len);
+  sockfd = accept(fd, nullptr, nullptr);//(struct sockaddr*)&client, &len);
   if (sockfd > 0) {
     if (++client_number > MAX_CLIENTS) {
       std::cout << "max clients" << std::endl;
       close(fd); // or close sockfd ???
     } else {
-      struct event_base* base = (event_base*)arg;
-      struct event *ev = event_new(NULL, -1, 0, NULL, NULL);
+      auto base = static_cast<event_base*>(arg);
+      struct event *ev = event_new(nullptr, -1, 0, nullptr, nullptr);
       // not works without close socket and read_cb without EV_PERSIST :(
       #if ARKEN_NET_HTTPSERVER_LIBEVENT_PERSIST == 0
       #if ARKEN_NET_HTTPSERVER_LIBEVENT_DEBUG
@@ -170,7 +170,7 @@ accept_cb(int fd, short event, void *arg)
       #endif
       event_assign(ev, base, sockfd, EV_READ | EV_PERSIST, read_cb, (void*)ev);
       #endif
-      event_add(ev, NULL);
+      event_add(ev, nullptr);
     }
   } else if ((sockfd < 0) && (errno == EAGAIN || errno == EWOULDBLOCK)) {
     return;
@@ -199,7 +199,7 @@ working( int fd )
   listener_event = event_new(base, fd, EV_READ | EV_PERSIST, accept_cb, (void *)base);
 
   /* check it? */
-  event_add(listener_event, NULL);
+  event_add(listener_event, nullptr);
 
   event_base_dispatch(base);
 }
@@ -271,5 +271,4 @@ void HttpServer::run()
   signal(SIGINT,  signal_handler);
 
   start_server(m_address, m_port, m_threads);
-
 }

@@ -40,9 +40,6 @@ using HttpServer = arken::net::HttpServer;
 /* message length limitation */
 #define MAX_MESSAGE_LEN (4096)
 
-#define err_message(msg) \
-    do {perror(msg); exit(EXIT_FAILURE);} while(0)
-
 /* record the number of clients */
 static int client_number;
 
@@ -68,7 +65,7 @@ create_serverfd(char const *addr, uint16_t port)
   server.sin_port = htons(port);
   inet_pton(AF_INET, addr, &server.sin_addr);
 
-  if (bind(fd, (struct sockaddr *)&server, sizeof(server)) < 0) {
+  if (bind(fd, (struct sockaddr *)&server, sizeof(server)) < 0) {//NOLINT
     std::cerr << "bind err\n";
     throw;
   }
@@ -107,7 +104,7 @@ read_cb(struct ev_loop *loop, struct ev_io *watcher, int revents)
   if (ret > 0) {
     std::string data = HttpServer::handler(tmp.c_str(), tmp.size());
     const char * result = data.c_str();
-    ssize_t      size   = (ssize_t) data.size();
+    auto size = static_cast<ssize_t>(data.size());
     //ssize_t write(int fildes, const void *buf, size_t nbyte);
     ssize_t bytes = write(watcher->fd, result, size);
     while( bytes < size ) {
@@ -124,7 +121,7 @@ read_cb(struct ev_loop *loop, struct ev_io *watcher, int revents)
     --client_number;
     ev_io_stop(loop, watcher);
     close(watcher->fd);
-    free(watcher);
+    free(watcher);//NOLINT
   }
 }
 
@@ -135,17 +132,13 @@ read_cb(struct ev_loop *loop, struct ev_io *watcher, int revents)
 static void
 accept_cb(struct ev_loop *loop, struct ev_io *watcher, int revents)
 {
-  int connfd;
-  ev_io *client;
-
-  connfd = accept(watcher->fd, NULL, NULL);
+  int connfd = accept(watcher->fd, nullptr, nullptr);
   if (connfd > 0) {
     if (++client_number > MAX_CLIENTS) {
       close(watcher->fd);
     } else {
-      // cast ...
-      client = (ev_io *) calloc(1, sizeof(*client));
-      ev_io_init(client, read_cb, connfd, EV_READ);
+      ev_io *client = (ev_io *) calloc(1, sizeof(*client));//NOLINT
+      ev_io_init(client, read_cb, connfd, EV_READ);//NOLINT ev_io_init is macro
       ev_io_start(loop, client);
     }
   } else if ((connfd < 0) && (errno == EAGAIN || errno == EWOULDBLOCK)) {
@@ -166,15 +159,15 @@ working(int fd)
 {
   //struct ev_loop *loop = EV_DEFAULT; //ev_default_loop(EVFLAG_NOENV);
   struct ev_loop * loop = ev_loop_new(EVFLAG_NOENV);//EVBACKEND_EPOLL | EVFLAG_NOENV);
-  ev_io *watcher = (ev_io *) calloc(1, sizeof(*watcher));
-  assert("can not alloc memory\n");//, loop && watcher));
+  ev_io *watcher = (ev_io *) calloc(1, sizeof(*watcher));//NOLINT
+  //assert("can not alloc memory\n");//, loop && watcher));
 
-  ev_io_init(watcher, accept_cb, fd, EV_READ);
+  ev_io_init(watcher, accept_cb, fd, EV_READ);//NOLINT ev_io_init is a macro
   ev_io_start(loop, watcher);
   ev_run(loop, 0);
 
   ev_loop_destroy(loop);
-  free(watcher);
+  free(watcher);//NOLINT
 }
 
 //-----------------------------------------------------------------------------
@@ -237,5 +230,4 @@ void HttpServer::run()
   signal(SIGINT,  signal_handler);
 
   start_server(m_address, m_port, m_threads);
-
 }
