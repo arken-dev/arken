@@ -314,7 +314,7 @@ function ActiveRecord_Adapter:find(params)
   end
 
   local sql = self:select(params, true)
-  return self:fetch(sql)
+  return self:fetch(sql, params.lock)
 end
 
 --------------------------------------------------------------------------------
@@ -379,14 +379,14 @@ end
 -- FETCH
 --------------------------------------------------------------------------------
 
-function ActiveRecord_Adapter:fetch(sql)
+function ActiveRecord_Adapter:fetch(sql, lock)
   local cursor = self:execute(sql)
   local result = cursor:fetch({}, 'a')
   cursor:close()
   if result == nil then
     return nil
   else
-    return self:parser_fetch(result)
+    return self:parser_fetch(result, lock)
   end
 end
 
@@ -394,24 +394,25 @@ end
 -- PARSER FETCH
 -------------------------------------------------------------------------------
 
-function ActiveRecord_Adapter:parser_fetch(res)
+function ActiveRecord_Adapter:parser_fetch(res, lock)
   local key  = self.tableName .. '_' .. tostring(res[self.primaryKey])
 
-  if ActiveRecord_Adapter.cache[key] then
+  if ActiveRecord_Adapter.cache[key] and not lock then
     return ActiveRecord_Adapter.cache[key]
   else
-    local neat = {}
+    local neat  = ActiveRecord_Adapter.neat[key]  or {}
+    local cache = ActiveRecord_Adapter.cache[key] or res or {}
 
     res.newRecord = false
     for column, properties in pairs(self:columns()) do
-      res[column]  = self:parserValue(properties.format, res[column])
-      neat[column] = res[column]
+      cache[column] = self:parserValue(properties.format, res[column])
+      neat[column]  = cache[column]
     end
 
     ActiveRecord_Adapter.neat[key]  = neat
-    ActiveRecord_Adapter.cache[key] = res
+    ActiveRecord_Adapter.cache[key] = cache
 
-    return self.record_class.new(res)
+    return self.record_class.new(cache)
   end
 end
 
