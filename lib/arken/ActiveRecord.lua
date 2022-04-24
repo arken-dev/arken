@@ -334,6 +334,13 @@ ActiveRecord.inherit = function(class)
   end
 
   ------------------------------------------------------------------------------
+  -- ActiveRecord#execute
+  ------------------------------------------------------------------------------
+  function class.execute(sql)
+    return class.adapter():query(sql)
+  end
+
+  ------------------------------------------------------------------------------
   -- ActiveRecord#queryEach
   ------------------------------------------------------------------------------
   function class.queryEach(name, params)
