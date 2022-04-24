@@ -65,7 +65,7 @@ create_serverfd(char const *addr, uint16_t port)
   server.sin_port = htons(port);
   inet_pton(AF_INET, addr, &server.sin_addr);
 
-  if (bind(fd, (struct sockaddr *)&server, sizeof(server)) < 0) {//NOLINT
+  if (bind(fd, (struct sockaddr *)&server, sizeof(server)) < 0) { //NOLINT
     std::cerr << "bind err\n";
     throw;
   }
@@ -121,7 +121,7 @@ read_cb(struct ev_loop *loop, struct ev_io *watcher, int revents)
     --client_number;
     ev_io_stop(loop, watcher);
     close(watcher->fd);
-    free(watcher);//NOLINT
+    free(watcher); //NOLINT
   }
 }
 
@@ -137,8 +137,8 @@ accept_cb(struct ev_loop *loop, struct ev_io *watcher, int revents)
     if (++client_number > MAX_CLIENTS) {
       close(watcher->fd);
     } else {
-      ev_io *client = (ev_io *) calloc(1, sizeof(*client));//NOLINT
-      ev_io_init(client, read_cb, connfd, EV_READ);//NOLINT ev_io_init is macro
+      ev_io *client = (ev_io *) calloc(1, sizeof(*client)); //NOLINT
+      ev_io_init(client, read_cb, connfd, EV_READ); //NOLINT ev_io_init is macro
       ev_io_start(loop, client);
     }
   } else if ((connfd < 0) && (errno == EAGAIN || errno == EWOULDBLOCK)) {
@@ -159,15 +159,15 @@ working(int fd)
 {
   //struct ev_loop *loop = EV_DEFAULT; //ev_default_loop(EVFLAG_NOENV);
   struct ev_loop * loop = ev_loop_new(EVFLAG_NOENV);//EVBACKEND_EPOLL | EVFLAG_NOENV);
-  ev_io *watcher = (ev_io *) calloc(1, sizeof(*watcher));//NOLINT
+  ev_io *watcher = (ev_io *) calloc(1, sizeof(*watcher)); //NOLINT
   //assert("can not alloc memory\n");//, loop && watcher));
 
-  ev_io_init(watcher, accept_cb, fd, EV_READ);//NOLINT ev_io_init is a macro
+  ev_io_init(watcher, accept_cb, fd, EV_READ); //NOLINT ev_io_init is a macro
   ev_io_start(loop, watcher);
   ev_run(loop, 0);
 
   ev_loop_destroy(loop);
-  free(watcher);//NOLINT
+  free(watcher); //NOLINT
 }
 
 //-----------------------------------------------------------------------------
