@@ -74,7 +74,7 @@ static int create_serverfd(char const *addr, uint16_t port)
   //server.sin_addr.s_addr = inet_addr(addr);
   inet_pton(AF_INET, addr, &server.sin_addr);
 
-  if (bind(fd, (struct sockaddr *)&server, sizeof(server)) < 0) {//NOLINT
+  if (bind(fd, (struct sockaddr *)&server, sizeof(server)) < 0) { //NOLINT
     std::cerr << "bind err\n";
     throw;
   }
