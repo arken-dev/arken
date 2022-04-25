@@ -1,12 +1,11 @@
 option( CLANG_TIDY "enable clang-tidy support" false )
 
-set(CLANG_TIDY_VERSION clang-tidy CACHE STRING "clang-tidy version")
+set(CLANG_TIDY_EXECUTABLE clang-tidy CACHE STRING "clang-tidy executable")
 
-set_property(
-  CACHE CLANG_TIDY_VERSION PROPERTY STRINGS
-  "clang-tidy"
-  "clang-tidy-6.0"
-)
+#set_property(
+#  CACHE CLANG_TIDY_EXECUTABLE PROPERTY STRINGS
+#  "clang-tidy"
+#)
 
 message("CLANG_TIDY..................: ${CLANG_TIDY}")
 
@@ -302,7 +301,7 @@ list(APPEND CLANG_TIDY_CHECKS modernize-use-using)
 # readability-static-definition-in-anonymous-namespace
 # readability-uniqueptr-delete-release
 list(JOIN CLANG_TIDY_CHECKS "," CLANG_TIDY_CHECKS)
-set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_VERSION};-checks=${CLANG_TIDY_CHECKS}")
+set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_EXECUTABLE};-checks=${CLANG_TIDY_CHECKS}")
 message("CLANG_TIDY_CHECKS...........: ${CLANG_TIDY_CHECKS}")
-message("CLANG_VERSION...............: ${CLANG_TIDY_VERSION}")
+message("CLANG_TIDY_EXECUTABLE.......: ${CLANG_TIDY_EXECUTABLE}")
 endif()
