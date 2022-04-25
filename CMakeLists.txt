@@ -23,6 +23,7 @@ include_directories(${PROJECT_SOURCE_DIR}/src/embedded)
 include_directories(${PROJECT_SOURCE_DIR}/src/vendors)
 include_directories(${PROJECT_SOURCE_DIR}/src/lua/json)
 
+include(clang-tidy)
 include(arken-barcode)
 include(arken-base64)
 include(arken-concurrent-worker)
