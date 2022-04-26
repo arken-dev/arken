@@ -3,6 +3,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+
 #include <lua/lua.hpp>
 #include <arken/base>
 #include <iostream>
@@ -13,7 +14,7 @@ using List = arken::string::List;
 
 string *
 checkString ( lua_State *L, int index = 1 ) {
-  return *(string **) luaL_checkudata(L, index, "arken.string.metatable");
+  return *static_cast<string **>(luaL_checkudata(L, index, "arken.string.metatable"));
 }
 
 //-----------------------------------------------------------------------------
@@ -30,7 +31,7 @@ arken_string_new( lua_State *L ) {
     const char *s = luaL_checklstring(L, 1, &len);
     str = new string(s, len);
   }
-  string **ptr = (string **)lua_newuserdata(L, sizeof(string*));
+  auto ptr = static_cast<string **>(lua_newuserdata(L, sizeof(string*)));
   *ptr = str;
   luaL_getmetatable(L, "arken.string.metatable");
   lua_setmetatable(L, -2);
@@ -382,7 +383,7 @@ arken_string_split( lua_State *L ) {
   const char  * string  = luaL_checklstring(L, 1, &len);
   const char  * pattern = luaL_checkstring(L, 2);
   List list = string::split(string, len, pattern);
-  List **ptr  = (List **)lua_newuserdata(L, sizeof(List*));
+  auto ptr  = static_cast<List **>(lua_newuserdata(L, sizeof(List*)));
   *ptr = new List(std::move(list));
   luaL_getmetatable(L, "arken.string.List.metatable");
   lua_setmetatable(L, -2);
@@ -584,7 +585,7 @@ arken_string[] = {
   {"trimRight",   arken_string_trimRight},
   {"truncate",    arken_string_truncate},
   {"underscore",  arken_string_underscore},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
@@ -1050,7 +1051,7 @@ arken_string_metatable_split( lua_State *L ) {
   string * udata = checkString( L );
   const char  * pattern = luaL_checkstring(L, 2);
   List list  = udata->split(pattern);
-  List **ptr = (List **)lua_newuserdata(L, sizeof(List*));
+  auto ptr = static_cast<List **>(lua_newuserdata(L, sizeof(List*)));
   *ptr = new List(std::move(list));
   luaL_getmetatable(L, "arken.string.List.metatable");
   lua_setmetatable(L, -2);
@@ -1158,22 +1159,13 @@ luaL_reg arken_string_metatable[] = {
   {"__tostring",  arken_string_metatable_toString},
   {"__len",       arken_string_metatable_toLen},
   {"__gc",        arken_string_metatable_destruct},
-
-  //deprecated methods
-  {"simplified",     arken_string_metatable_squish},
-  {"trimmed",        arken_string_metatable_trim},
-  {"leftTrimmed",    arken_string_metatable_trimLeft},
-  {"rightTrimmed",   arken_string_metatable_trimRight},
-  {"leftJustified",  arken_string_metatable_padLeft},
-  {"rightJustified", arken_string_metatable_padRight},
-
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_string_metatable( lua_State *L ) {
   luaL_newmetatable(L, "arken.string.metatable");
-  luaL_register(L, NULL, arken_string_metatable);
+  luaL_register(L, nullptr, arken_string_metatable);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -1184,7 +1176,7 @@ register_arken_string_metatable( lua_State *L ) {
 
 List *
 checkList( lua_State *L ) {
-  return *(List **) luaL_checkudata(L, 1, "arken.string.List.metatable");
+  return *static_cast<List **>(luaL_checkudata(L, 1, "arken.string.List.metatable"));
 }
 
 /**
@@ -1193,7 +1185,7 @@ checkList( lua_State *L ) {
 
 static int
 arken_string_List_new( lua_State *L ) {
-  List **ptr = (List **)lua_newuserdata(L, sizeof(List*));
+  auto ptr = static_cast<List **>(lua_newuserdata(L, sizeof(List*)));
   *ptr = new List();
   luaL_getmetatable(L, "arken.string.List.metatable");
   lua_setmetatable(L, -2);
@@ -1202,13 +1194,13 @@ arken_string_List_new( lua_State *L ) {
 
 static const luaL_reg arken_string_List[] = {
   {"new", arken_string_List_new},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_string_List( lua_State *L ) {
   luaL_newmetatable(L, "arken.string.List");
-  luaL_register(L, NULL, arken_string_List);
+  luaL_register(L, nullptr, arken_string_List);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -1230,7 +1222,7 @@ arken_string_List_at( lua_State *L ) {
   int pos = luaL_checkint(L, 2);
   int len;
   const char * str = udata->at(pos-1, &len);
-  if( str == 0 ) {
+  if( str == nullptr ) {
     lua_pushnil(L);
   } else {
     lua_pushlstring(L, str, len);
@@ -1242,9 +1234,9 @@ static int
 arken_string_List_closure( lua_State *L ) {
   int i = lua_upvalueindex(1);
   luaL_checktype(L, i, LUA_TLIGHTUSERDATA);
-  List * ba  = (List *) lua_touserdata(L, i);
+  auto ba  = static_cast<List *>(lua_touserdata(L, i));
   const char * result = ba->each();
-  if( result == NULL ) {
+  if( result == nullptr ) {
     lua_pushnil(L);
   } else {
     lua_pushstring(L, result);
@@ -1320,13 +1312,13 @@ luaL_reg arken_string_list_metatable[] = {
   {"size",    arken_string_List_size},
   {"replace", arken_string_List_replace},
   {"__gc",    arken_string_List_gc},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_string_list_metatable( lua_State *L ) {
   luaL_newmetatable(L, "arken.string.List.metatable");
-  luaL_register(L, NULL, arken_string_list_metatable);
+  luaL_register(L, nullptr, arken_string_list_metatable);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
