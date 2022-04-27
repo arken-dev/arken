@@ -78,13 +78,13 @@ static const luaL_reg arken_concurrent_task_fifo[] = {
   {"max",     arken_concurrent_task_fifo_max},
   {"actives", arken_concurrent_task_fifo_actives},
   {"inspect", arken_concurrent_task_fifo_inspect},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_concurrent_task_fifo( lua_State *L ) {
   luaL_newmetatable(L, "arken.concurrent.task.fifo");
-  luaL_register(L, NULL, arken_concurrent_task_fifo);
+  luaL_register(L, nullptr, arken_concurrent_task_fifo);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -151,13 +151,13 @@ luaL_reg arken_concurrent_task_fifo_node_metatable[] = {
   {"finished",  arken_concurrent_task_fifo_node_finished},
   {"wait",      arken_concurrent_task_fifo_node_wait},
   {"__gc",      arken_concurrent_task_fifo_node_gc},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_concurrent_task_fifo_node_metatable( lua_State *L ) {
   luaL_newmetatable(L, "arken.concurrent.task.fifo.node.metatable");
-  luaL_register(L, NULL, arken_concurrent_task_fifo_node_metatable);
+  luaL_register(L, nullptr, arken_concurrent_task_fifo_node_metatable);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }

@@ -42,13 +42,13 @@ arken_Barcode_new( lua_State *L ) {
 
 static const luaL_reg arken_Barcode[] = {
   {"new", arken_Barcode_new},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_Barcode( lua_State *L ) {
   luaL_newmetatable(L, "arken.Barcode");
-  luaL_register(L, NULL, arken_Barcode);
+  luaL_register(L, nullptr, arken_Barcode);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -86,13 +86,13 @@ luaL_reg arken_Barcode_metatable[] = {
   {"setText", arken_Barcode_setText},
   {"save",    arken_Barcode_save},
   {"__gc",    arken_Barcode_gc},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_Barcode_metatable( lua_State *L ) {
   luaL_newmetatable(L, "arken.Barcode.metatable");
-  luaL_register(L, NULL, arken_Barcode_metatable);
+  luaL_register(L, nullptr, arken_Barcode_metatable);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }

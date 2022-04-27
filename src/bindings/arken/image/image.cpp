@@ -41,13 +41,13 @@ arken_Image_new( lua_State *L ) {
 
 static const luaL_reg arken_Image[] = {
   {"new", arken_Image_new},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_Image( lua_State *L ) {
   luaL_newmetatable(L, "arken.Image");
-  luaL_register(L, NULL, arken_Image);
+  luaL_register(L, nullptr, arken_Image);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -120,13 +120,13 @@ luaL_reg arken_Image_metatable[] = {
   {"height",    arken_Image_height},
   {"composite", arken_Image_composite},
   {"__gc",      arken_Image_gc},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_Image_metatable( lua_State *L ) {
   luaL_newmetatable(L, "arken.Image.metatable");
-  luaL_register(L, NULL, arken_Image_metatable);
+  luaL_register(L, nullptr, arken_Image_metatable);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }

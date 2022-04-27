@@ -156,10 +156,10 @@ register_arken_mvm( lua_State *L ) {
     {"inspect",   arken_mvm_inspect},
     {"workers",   arken_mvm_workers},
     {"setlocale", arken_mvm_setlocale},
-    {NULL, NULL}
+    {nullptr, nullptr}
   };
   luaL_newmetatable(L, "arken.mvm");
-  luaL_register(L, NULL, Map);
+  luaL_register(L, nullptr, Map);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }

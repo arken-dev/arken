@@ -83,13 +83,13 @@ static const luaL_reg arken_concurrent_task_priority[] = {
   {"max",     arken_concurrent_task_priority_max},
   {"actives", arken_concurrent_task_priority_actives},
   {"inspect", arken_concurrent_task_priority_inspect},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_concurrent_task_priority( lua_State *L ) {
   luaL_newmetatable(L, "arken.concurrent.task.priority");
-  luaL_register(L, NULL, arken_concurrent_task_priority);
+  luaL_register(L, nullptr, arken_concurrent_task_priority);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -164,13 +164,13 @@ luaL_reg arken_concurrent_task_priority_node_metatable[] = {
   {"finished",  arken_concurrent_task_priority_node_finished},
   {"wait",      arken_concurrent_task_priority_node_wait},
   {"__gc",      arken_concurrent_task_priority_node_gc},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_concurrent_task_priority_node_metatable( lua_State *L ) {
   luaL_newmetatable(L, "arken.concurrent.task.priority.node.metatable");
-  luaL_register(L, NULL, arken_concurrent_task_priority_node_metatable);
+  luaL_register(L, nullptr, arken_concurrent_task_priority_node_metatable);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }

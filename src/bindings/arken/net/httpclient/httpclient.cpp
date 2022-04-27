@@ -35,13 +35,13 @@ arken_net_HttpClient_new( lua_State *L ) {
 
 static const luaL_reg arken_net_HttpClient[] = {
   {"new", arken_net_HttpClient_new},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_net_HttpClient( lua_State *L ) {
   luaL_newmetatable(L, "arken.net.HttpClient");
-  luaL_register(L, NULL, arken_net_HttpClient);
+  luaL_register(L, nullptr, arken_net_HttpClient);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -223,13 +223,13 @@ luaL_reg arken_net_HttpClient_metatable[] = {
   {"failure",          arken_net_HttpClient_failure},
   {"message",          arken_net_HttpClient_message},
   {"__gc",             arken_net_HttpClient_gc},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_net_HttpClient_metatable( lua_State *L ) {
   luaL_newmetatable(L,  "arken.net.HttpClient.metatable");
-  luaL_register(L, NULL, arken_net_HttpClient_metatable);
+  luaL_register(L, nullptr, arken_net_HttpClient_metatable);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }

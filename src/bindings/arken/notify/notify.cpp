@@ -25,10 +25,10 @@ extern "C" {
   int luaopen_arken_notify( lua_State *L ) {
     static const luaL_reg Map[] = {
       {"send", arken_notify_send},
-      {NULL, NULL}
+      {nullptr, nullptr}
     };
     luaL_newmetatable(L, "arken.notify");
-    luaL_register(L, NULL, Map);
+    luaL_register(L, nullptr, Map);
     lua_pushvalue(L, -1);
     lua_setfield(L, -1, "__index");
     return 1;

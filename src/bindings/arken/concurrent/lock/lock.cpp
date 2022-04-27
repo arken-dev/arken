@@ -35,13 +35,13 @@ arken_concurrent_Lock_new( lua_State *L ) {
 
 static const luaL_reg arken_concurrent_Lock[] = {
   {"new", arken_concurrent_Lock_new},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_concurrent_Lock( lua_State *L ) {
   luaL_newmetatable(L, "arken.concurrent.Lock");
-  luaL_register(L, NULL, arken_concurrent_Lock);
+  luaL_register(L, nullptr, arken_concurrent_Lock);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -96,13 +96,13 @@ luaL_reg arken_concurrent_Lock_metatable[] = {
   {"disable", arken_concurrent_Lock_disable},
   {"shared",  arken_concurrent_Lock_shared},
   {"__gc",    arken_concurrent_Lock_gc},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_concurrent_Lock_metatable( lua_State *L ) {
   luaL_newmetatable(L, "arken.concurrent.Lock.metatable");
-  luaL_register(L, NULL, arken_concurrent_Lock_metatable);
+  luaL_register(L, nullptr, arken_concurrent_Lock_metatable);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }

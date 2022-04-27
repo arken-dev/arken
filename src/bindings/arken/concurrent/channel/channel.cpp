@@ -54,13 +54,13 @@ arken_concurrent_channel_start(lua_State *L) {
 
 static const luaL_reg arken_concurrent_channel[] = {
   {"start", arken_concurrent_channel_start},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_concurrent_channel( lua_State *L ) {
   luaL_newmetatable(L, "arken.concurrent.channel");
-  luaL_register(L, NULL, arken_concurrent_channel);
+  luaL_register(L, nullptr, arken_concurrent_channel);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -136,13 +136,13 @@ luaL_reg arken_concurrent_channel_metatable[] = {
   {"uuid",     arken_concurrent_channel_uuid},
   {"shared",   arken_concurrent_channel_shared},
   {"__gc",     arken_concurrent_channel_gc},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_concurrent_channel_metatable( lua_State *L ) {
   luaL_newmetatable(L,  "arken.concurrent.channel.metatable");
-  luaL_register(L, NULL, arken_concurrent_channel_metatable);
+  luaL_register(L, nullptr, arken_concurrent_channel_metatable);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }

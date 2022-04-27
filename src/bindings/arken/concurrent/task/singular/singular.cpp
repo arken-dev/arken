@@ -151,13 +151,13 @@ static const luaL_reg arken_concurrent_task_singular[] = {
   {"max",     arken_concurrent_task_singular_max},
   {"actives", arken_concurrent_task_singular_actives},
   {"inspect", arken_concurrent_task_singular_inspect},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_concurrent_task_singular( lua_State *L ) {
   luaL_newmetatable(L,  "arken.concurrent.task.singular");
-  luaL_register(L, NULL, arken_concurrent_task_singular);
+  luaL_register(L, nullptr, arken_concurrent_task_singular);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -232,13 +232,13 @@ luaL_reg arken_concurrent_task_singular_node[] = {
   {"finished",  arken_concurrent_task_singular_node_finished},
   {"wait",      arken_concurrent_task_singular_node_wait},
   {"__gc",      arken_concurrent_task_singular_node_gc},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_concurrent_task_singular_node( lua_State *L ) {
   luaL_newmetatable(L, "arken.concurrent.task.singular.node.metatable");
-  luaL_register(L, NULL, arken_concurrent_task_singular_node);
+  luaL_register(L, nullptr, arken_concurrent_task_singular_node);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }

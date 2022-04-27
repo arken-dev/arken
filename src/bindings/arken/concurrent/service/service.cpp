@@ -53,13 +53,13 @@ arken_concurrent_service_start(lua_State *L) {
 
 static const luaL_reg arken_concurrent_service[] = {
   {"start", arken_concurrent_service_start},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_concurrent_service( lua_State *L ) {
   luaL_newmetatable(L, "arken.concurrent.service");
-  luaL_register(L, NULL, arken_concurrent_service);
+  luaL_register(L, nullptr, arken_concurrent_service);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -95,13 +95,13 @@ static const
 luaL_reg arken_concurrent_service_metatable[] = {
   {"shared",   arken_concurrent_service_shared},
   {"loop",     arken_concurrent_service_loop},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_concurrent_service_metatable( lua_State *L ) {
   luaL_newmetatable(L, "arken.concurrent.service.metatable");
-  luaL_register(L, NULL, arken_concurrent_service_metatable);
+  luaL_register(L, nullptr, arken_concurrent_service_metatable);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }

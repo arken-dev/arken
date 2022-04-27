@@ -35,13 +35,13 @@ arken_net_HttpEnv_new( lua_State *L ) {
 
 static const luaL_reg arken_net_HttpEnv[] = {
   {"new", arken_net_HttpEnv_new},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_net_HttpEnv( lua_State *L ) {
   luaL_newmetatable(L,  "arken.net.HttpEnv");
-  luaL_register(L, NULL, arken_net_HttpEnv);
+  luaL_register(L, nullptr, arken_net_HttpEnv);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -224,13 +224,13 @@ luaL_reg arken_net_HttpEnv_metatable[] = {
   {"requestPath",      arken_net_HttpEnv_requestPath},
   {"queryString",      arken_net_HttpEnv_queryString},
   {"__gc",             arken_net_HttpEnv_gc},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_net_HttpEnv_metatable( lua_State *L ) {
   luaL_newmetatable(L,  "arken.net.HttpEnv.metatable");
-  luaL_register(L, NULL, arken_net_HttpEnv_metatable);
+  luaL_register(L, nullptr, arken_net_HttpEnv_metatable);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }

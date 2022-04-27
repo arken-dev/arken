@@ -83,13 +83,13 @@ static const luaL_reg arken_concurrent_task_scheduled[] = {
   {"max",     arken_concurrent_task_scheduled_max},
   {"actives", arken_concurrent_task_scheduled_actives},
   {"inspect", arken_concurrent_task_scheduled_inspect},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_concurrent_task_scheduled( lua_State *L ) {
   luaL_newmetatable(L, "arken.concurrent.task.scheduled");
-  luaL_register(L, NULL, arken_concurrent_task_scheduled);
+  luaL_register(L, nullptr, arken_concurrent_task_scheduled);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -164,13 +164,13 @@ luaL_reg arken_concurrent_task_scheduled_node_metatable[] = {
   {"finished",  arken_concurrent_task_scheduled_node_finished},
   {"wait",      arken_concurrent_task_scheduled_node_wait},
   {"__gc",      arken_concurrent_task_scheduled_node_gc},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_concurrent_task_scheduled_node_metatable( lua_State *L ) {
   luaL_newmetatable(L, "arken.concurrent.task.scheduled.node.metatable");
-  luaL_register(L, NULL, arken_concurrent_task_scheduled_node_metatable);
+  luaL_register(L, nullptr, arken_concurrent_task_scheduled_node_metatable);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }

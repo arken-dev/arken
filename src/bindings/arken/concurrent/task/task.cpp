@@ -50,13 +50,13 @@ arken_concurrent_task_start(lua_State *L) {
 
 static const luaL_reg arken_concurrent_task[] = {
   {"start", arken_concurrent_task_start},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_concurrent_task( lua_State *L ) {
   luaL_newmetatable(L, "arken.concurrent.task");
-  luaL_register(L, NULL, arken_concurrent_task);
+  luaL_register(L, nullptr, arken_concurrent_task);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -104,13 +104,13 @@ luaL_reg arken_concurrent_task_metatable[] = {
   {"uuid",     arken_concurrent_task_uuid},
   {"shared",   arken_concurrent_task_shared},
   {"finished", arken_concurrent_task_finished},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_concurrent_task_metatable( lua_State *L ) {
   luaL_newmetatable(L, "arken.concurrent.task.metatable");
-  luaL_register(L, NULL, arken_concurrent_task_metatable);
+  luaL_register(L, nullptr, arken_concurrent_task_metatable);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }

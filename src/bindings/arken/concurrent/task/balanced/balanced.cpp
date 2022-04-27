@@ -89,13 +89,13 @@ static const luaL_reg arken_concurrent_task_balanced[] = {
   {"max",     arken_concurrent_task_balanced_max},
   {"actives", arken_concurrent_task_balanced_actives},
   {"inspect", arken_concurrent_task_balanced_inspect},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_concurrent_task_balanced( lua_State *L ) {
   luaL_newmetatable(L, "arken.concurrent.task.balanced");
-  luaL_register(L, NULL, arken_concurrent_task_balanced);
+  luaL_register(L, nullptr, arken_concurrent_task_balanced);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -170,13 +170,13 @@ luaL_reg arken_concurrent_task_balanced_node_metatable[] = {
   {"finished",  arken_concurrent_task_balanced_node_finished},
   {"wait",      arken_concurrent_task_balanced_node_wait},
   {"__gc",      arken_concurrent_task_balanced_node_gc},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_concurrent_task_balanced_node_metatable( lua_State *L ) {
   luaL_newmetatable(L, "arken.concurrent.task.balanced.node.metatable");
-  luaL_register(L, NULL, arken_concurrent_task_balanced_node_metatable);
+  luaL_register(L, nullptr, arken_concurrent_task_balanced_node_metatable);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }

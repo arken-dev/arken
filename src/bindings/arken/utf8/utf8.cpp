@@ -110,10 +110,10 @@ register_arken_utf8( lua_State *L ) {
     {"encode",   arken_utf8_encode},
     {"sanitize", arken_utf8_sanitize},
     {"asc",      arken_utf8_asc},
-    {NULL, NULL}
+    {nullptr, nullptr}
   };
   luaL_newmetatable(L, "arken.utf8");
-  luaL_register(L, NULL, Map);
+  luaL_register(L, nullptr, Map);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }

@@ -65,13 +65,13 @@ arken_worker_max(lua_State *L) {
 static const luaL_reg TaskClassMethods[] = {
   {"start", arken_worker_start},
   {"max",   arken_worker_max},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 registerWorkerClassMethods( lua_State *L ) {
   luaL_newmetatable(L, "arken.concurrent.worker");
-  luaL_register(L, NULL, TaskClassMethods);
+  luaL_register(L, nullptr, TaskClassMethods);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -141,13 +141,13 @@ luaL_reg arken_concurrent_worker_metatable[] = {
   {"shared",   arken_concurrent_worker_shared},
   {"progress", arken_concurrent_worker_progress},
   {"finished", arken_concurrent_worker_finished},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 registerWorkerInstanceMethods( lua_State *L ) {
   luaL_newmetatable(L,  "arken.concurrent.worker.metatable");
-  luaL_register(L, NULL, arken_concurrent_worker_metatable);
+  luaL_register(L, nullptr, arken_concurrent_worker_metatable);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -210,13 +210,13 @@ luaL_reg arken_concurrent_worker_node_metatable[] = {
   {"uuid",    arken_concurrent_worker_node_uuid},
   {"shared",  arken_concurrent_worker_node_shared},
   {"master",  arken_concurrent_worker_node_master},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 registerWorkerNodeInstanceMethods( lua_State *L ) {
   luaL_newmetatable(L,  "arken.concurrent.worker.node.metatable");
-  luaL_register(L, NULL, arken_concurrent_worker_node_metatable);
+  luaL_register(L, nullptr, arken_concurrent_worker_node_metatable);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }

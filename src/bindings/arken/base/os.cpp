@@ -308,7 +308,7 @@ int luaopen_arken_os( lua_State *L ) {
     {"size",           arken_os_size},
     {"uuid",           arken_os_uuid},
     {"root",           arken_os_root},
-    {NULL, NULL}
+    {nullptr, nullptr}
   };
   luaL_register(L, "os", Map);
   return 1;

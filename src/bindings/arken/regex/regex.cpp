@@ -83,10 +83,10 @@ register_arken_regex( lua_State *L ) {
     {"replace", arken_regex_replace},
     {"split",   arken_regex_split},
     {"scan",    arken_regex_scan},
-    {NULL, NULL}
+    {nullptr, nullptr}
   };
   luaL_newmetatable(L, "arken.regex");
-  luaL_register(L, NULL, Map);
+  luaL_register(L, nullptr, Map);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }

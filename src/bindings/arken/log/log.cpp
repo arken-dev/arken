@@ -39,13 +39,13 @@ arken_Log_new( lua_State *L ) {
 
 static const luaL_reg arken_Log[] = {
   {"new", arken_Log_new},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_Log( lua_State *L ) {
   luaL_newmetatable(L, "arken.Log");
-  luaL_register(L, NULL, arken_Log);
+  luaL_register(L, nullptr, arken_Log);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -145,13 +145,13 @@ luaL_reg arken_Log_metatable[] = {
   {"error",  arken_Log_error},
   {"fatal",  arken_Log_fatal},
   {"__gc",   arken_Log_gc},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_Log_metatable( lua_State *L ) {
   luaL_newmetatable(L, "arken.Log.metatable");
-  luaL_register(L, NULL, arken_Log_metatable);
+  luaL_register(L, nullptr, arken_Log_metatable);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }

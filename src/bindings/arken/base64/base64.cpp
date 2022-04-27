@@ -31,10 +31,10 @@ extern "C" {
     static const luaL_reg Map[] = {
       {"encode", arken_base64_encode},
       {"decode", arken_base64_decode},
-      {NULL, NULL}
+      {nullptr, nullptr}
     };
     luaL_newmetatable(L, "arken.base64");
-    luaL_register(L, NULL, Map);
+    luaL_register(L, nullptr, Map);
     lua_pushvalue(L, -1);
     lua_setfield(L, -1, "__index");
     return 1;

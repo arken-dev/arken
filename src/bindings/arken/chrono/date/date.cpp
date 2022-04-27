@@ -65,13 +65,13 @@ static const luaL_reg arken_chrono_Date[] = {
   {"today",       arken_chrono_Date_today},
   {"currentDate", arken_chrono_Date_currentDate},
   {"parse",       arken_chrono_Date_parse},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_chrono_Date( lua_State *L ) {
   luaL_newmetatable(L,  "arken.chrono.Date");
-  luaL_register(L, NULL, arken_chrono_Date);
+  luaL_register(L, nullptr, arken_chrono_Date);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -401,13 +401,13 @@ luaL_reg arken_chrono_Date_metatable[] = {
   {"__le",             arken_chrono_Date_lessEqual},
   {"__eq",             arken_chrono_Date_equal},
   {"__concat",         arken_chrono_Date_concat},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_chrono_Date_metatable( lua_State *L ) {
   luaL_newmetatable(L, "arken.chrono.Date.metatable");
-  luaL_register(L, NULL, arken_chrono_Date_metatable);
+  luaL_register(L, nullptr, arken_chrono_Date_metatable);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
