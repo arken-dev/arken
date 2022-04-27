@@ -15,7 +15,7 @@ using arken::doc::Pdf;
 
 Pdf *
 checkPdf( lua_State *L , int position = 1) {
-  return *(arken::doc::Pdf **) luaL_checkudata(L, position, "arken.doc.Pdf.metatable");
+  return *static_cast<arken::doc::Pdf **>(luaL_checkudata(L, position, "arken.doc.Pdf.metatable"));
 }
 
 /**
@@ -24,7 +24,7 @@ checkPdf( lua_State *L , int position = 1) {
 
 static int
 arken_doc_Pdf_new( lua_State *L ) {
-  Pdf **ptr  = (Pdf **)lua_newuserdata(L, sizeof(Pdf *));
+  auto ptr  = static_cast<Pdf **>(lua_newuserdata(L, sizeof(Pdf *)));
   *ptr = new Pdf();
 
   luaL_getmetatable(L, "arken.doc.Pdf.metatable");
@@ -34,13 +34,13 @@ arken_doc_Pdf_new( lua_State *L ) {
 
 static const luaL_reg arken_doc_Pdf[] = {
   {"new", arken_doc_Pdf_new},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_doc_Pdf( lua_State *L ) {
   luaL_newmetatable(L, "arken.doc.Pdf");
-  luaL_register(L, NULL, arken_doc_Pdf);
+  luaL_register(L, nullptr, arken_doc_Pdf);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -137,13 +137,13 @@ luaL_reg arken_doc_Pdf_metatable[] = {
   {"setFont",        arken_doc_Pdf_setFont},
   {"save",           arken_doc_Pdf_save},
   {"__gc",           arken_doc_Pdf_gc},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_doc_Pdf_metatable( lua_State *L ) {
   luaL_newmetatable(L, "arken.doc.Pdf.metatable");
-  luaL_register(L, NULL, arken_doc_Pdf_metatable);
+  luaL_register(L, nullptr, arken_doc_Pdf_metatable);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
