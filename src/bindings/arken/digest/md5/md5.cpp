@@ -33,10 +33,10 @@ register_arken_digest_md5( lua_State *L ) {
   static const luaL_reg Map[] = {
     {"hash", arken_digest_md5_hash},
     {"file", arken_digest_md5_file},
-    {NULL, NULL}
+    {nullptr, nullptr}
   };
   luaL_newmetatable(L, "arken.digest.md5");
-  luaL_register(L, NULL, Map);
+  luaL_register(L, nullptr, Map);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
