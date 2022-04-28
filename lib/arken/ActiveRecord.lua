@@ -254,10 +254,10 @@ ActiveRecord.inherit = function(class)
   class.loadConfig = function(params)
     if config == nil then
       local template = require 'arken.template'
-      local fileName = "config/active_record.json"
+      local fileName = params.config or "config/active_record.json"
 
       if not os.exists(fileName) then
-        error("file " .. config .. " not exists")
+        error("file " .. fileName .. " not exists")
       end
 
       local raw  = template.execute(fileName, params)
