@@ -85,7 +85,7 @@ arken_net_HttpClient_setSslVerifyHost( lua_State *L ) {
 static int
 arken_net_HttpClient_setSslVersion( lua_State *L ) {
   HttpClient *udata  = checkHttpClient( L );
-  long sslVersion = (long) luaL_checkint(L, 2);
+  auto sslVersion = (long) luaL_checkint(L, 2);
   udata->setSslVersion(sslVersion);
   return 0;
 }

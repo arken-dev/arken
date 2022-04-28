@@ -118,7 +118,7 @@ arken_chrono_Date_addYears( lua_State *L ) {
   int years = luaL_checkinteger(L, 2);
   Date other = t->addYears(years);
 
-  Date **ptr = static_cast<Date **>(lua_newuserdata(L, sizeof(Date*)));
+  auto ptr = static_cast<Date **>(lua_newuserdata(L, sizeof(Date*)));
   *ptr= new Date(other);
   luaL_getmetatable(L, "arken.chrono.Date.metatable");
   lua_setmetatable(L, -2);
