@@ -214,15 +214,15 @@ function ActiveRecord_PostgresAdapter.stringParserDefault(value)
 end
 
 function ActiveRecord_PostgresAdapter.timeParserDefault(value)
-  return value:replace("::time without time zone", ""):replace("'", "")
+  return value:sub(2, value:lastIndexOf("::")-2)
 end
 
 function ActiveRecord_PostgresAdapter.datetimeParserDefault(value)
-  return value:replace("::timestamp without time zone", ""):replace("'", "")
+  return value:sub(2, value:lastIndexOf("::")-2)
 end
 
 function ActiveRecord_PostgresAdapter.dateParserDefault(value)
-  return value:replace("::date", ""):replace("'", "")
+  return value:sub(2, value:lastIndexOf("::")-2)
 end
 
 function ActiveRecord_PostgresAdapter.numberParserDefault(value)
