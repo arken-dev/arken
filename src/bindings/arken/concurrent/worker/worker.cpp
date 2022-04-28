@@ -50,7 +50,7 @@ arken_worker_start(lua_State *L) {
   luaL_getmetatable(L, "arken.concurrent.worker.metatable");
   lua_setmetatable(L, -2);
 
-  delete params;
+  delete[] params;
 
   return 1;
 }

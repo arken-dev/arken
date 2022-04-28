@@ -49,7 +49,7 @@ arken_concurrent_task_scheduled_start(lua_State *L) {
   luaL_getmetatable(L, "arken.concurrent.task.scheduled.node.metatable");
   lua_setmetatable(L, -2);
 
-  delete params;
+  delete[] params;
 
   return 1;
 }
