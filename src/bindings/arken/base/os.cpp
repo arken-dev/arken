@@ -99,7 +99,7 @@ static int arken_os_glob( lua_State *L ) {
   List list(0);
   list = os::glob( path );
 
-  List **ptr = (List **)lua_newuserdata(L, sizeof(List*));
+  List **ptr = static_cast<List **>(lua_newuserdata(L, sizeof(List*)));
   *ptr = new List(std::move(list));
   luaL_getmetatable(L, "arken.string.List.metatable");
   lua_setmetatable(L, -2);
@@ -123,7 +123,7 @@ static int arken_os_find( lua_State *L ) {
     list = os::find( path, lua_tostring(L, 2), lua_toboolean(L, 3) );
   }
 
-  List **ptr = (List **)lua_newuserdata(L, sizeof(List*));
+  List **ptr = static_cast<List **>(lua_newuserdata(L, sizeof(List*)));
   *ptr = new List(std::move(list));
   luaL_getmetatable(L, "arken.string.List.metatable");
   lua_setmetatable(L, -2);

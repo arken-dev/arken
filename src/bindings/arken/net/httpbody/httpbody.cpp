@@ -15,7 +15,7 @@ using arken::net::HttpBody;
 
 HttpBody *
 checkHttpBody( lua_State *L ) {
-  return *(HttpBody **) luaL_checkudata(L, 1, "arken.net.HttpBody.metatable");
+  return *static_cast<HttpBody **>(luaL_checkudata(L, 1, "arken.net.HttpBody.metatable"));
 }
 
 /**
@@ -25,7 +25,7 @@ checkHttpBody( lua_State *L ) {
 static int
 arken_net_HttpBody_loadFile( lua_State *L ) {
   const char * path = luaL_checkstring(L, 1);
-  HttpBody **ptr = (HttpBody **)lua_newuserdata(L, sizeof(HttpBody*));
+  HttpBody **ptr = static_cast<HttpBody **>(lua_newuserdata(L, sizeof(HttpBody*)));
   *ptr = HttpBody::loadFile(path);
   luaL_getmetatable(L, "arken.net.HttpBody.metatable");
   lua_setmetatable(L, -2);
@@ -36,7 +36,7 @@ static int
 arken_net_HttpBody_loadBuffer( lua_State *L ) {
   size_t size;
   const char * buffer = luaL_checklstring(L, 1, &size);
-  HttpBody **ptr = (HttpBody **)lua_newuserdata(L, sizeof(HttpBody*));
+  HttpBody **ptr = static_cast<HttpBody **>(lua_newuserdata(L, sizeof(HttpBody*)));
   *ptr = HttpBody::loadBuffer(buffer, size);
   luaL_getmetatable(L, "arken.net.HttpBody.metatable");
   lua_setmetatable(L, -2);

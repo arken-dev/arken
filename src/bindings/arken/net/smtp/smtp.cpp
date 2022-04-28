@@ -15,7 +15,7 @@ using arken::net::SMTP;
 
 SMTP *
 checkSMTP( lua_State *L ) {
-  return *(SMTP **) luaL_checkudata(L, 1, "arken.net.SMTP.metatable");
+  return *static_cast<SMTP **>(luaL_checkudata(L, 1, "arken.net.SMTP.metatable"));
 }
 
 /**
@@ -25,7 +25,7 @@ checkSMTP( lua_State *L ) {
 static int
 arken_net_SMTP_new( lua_State *L ) {
   const char * url = luaL_checkstring(L, 1);
-  SMTP **ptr = (SMTP **)lua_newuserdata(L, sizeof(SMTP*));
+  SMTP **ptr = static_cast<SMTP **>(lua_newuserdata(L, sizeof(SMTP*)));
   *ptr = new SMTP(url);
   luaL_getmetatable(L, "arken.net.SMTP.metatable");
   lua_setmetatable(L, -2);

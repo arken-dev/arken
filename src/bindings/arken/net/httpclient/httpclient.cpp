@@ -16,7 +16,7 @@ using arken::string;
 
 HttpClient *
 checkHttpClient( lua_State *L ) {
-  return *(HttpClient **) luaL_checkudata(L, 1, "arken.net.HttpClient.metatable");
+  return *static_cast<HttpClient **>(luaL_checkudata(L, 1, "arken.net.HttpClient.metatable"));
 }
 
 /**
@@ -26,7 +26,7 @@ checkHttpClient( lua_State *L ) {
 static int
 arken_net_HttpClient_new( lua_State *L ) {
   const char * url = luaL_checkstring(L, 1);
-  HttpClient **ptr = (HttpClient **)lua_newuserdata(L, sizeof(HttpClient*));
+  HttpClient **ptr = static_cast<HttpClient **>(lua_newuserdata(L, sizeof(HttpClient*)));
   *ptr = new HttpClient(url);
   luaL_getmetatable(L, "arken.net.HttpClient.metatable");
   lua_setmetatable(L, -2);

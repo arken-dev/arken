@@ -14,7 +14,7 @@ using json      = arken::json;
 
 static scheduled::node *
 checkNode( lua_State *L ) {
-  return *(scheduled::node **) luaL_checkudata(L, 1, "arken.concurrent.task.scheduled.node.metatable");
+  return *static_cast<scheduled::node **>(luaL_checkudata(L, 1, "arken.concurrent.task.scheduled.node.metatable"));
 }
 
 //-----------------------------------------------------------------------------
@@ -44,7 +44,7 @@ arken_concurrent_task_scheduled_start(lua_State *L) {
   }
 
   scheduled::node node = scheduled::start( fileName, params, name, release );
-  scheduled::node **ptr = (scheduled::node **)lua_newuserdata(L, sizeof(scheduled::node*));
+  scheduled::node **ptr = static_cast<scheduled::node **>(lua_newuserdata(L, sizeof(scheduled::node*)));
   *ptr = new scheduled::node(node);
   luaL_getmetatable(L, "arken.concurrent.task.scheduled.node.metatable");
   lua_setmetatable(L, -2);
@@ -126,7 +126,7 @@ arken_concurrent_task_scheduled_node_shared( lua_State *L ) {
     fprintf(stderr, "%s\n", lua_tostring(L, -1));
   }
 
-  Shared **ptr = (Shared **)lua_newuserdata(L, sizeof(Shared*));
+  Shared **ptr = static_cast<Shared **>(lua_newuserdata(L, sizeof(Shared*)));
   *ptr = new Shared(node->shared());
   luaL_getmetatable(L, "arken.concurrent.Shared.metatable");
   lua_setmetatable(L, -2);

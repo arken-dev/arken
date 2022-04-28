@@ -15,7 +15,7 @@ using arken::Log;
 
 Log *
 checkLog( lua_State *L ) {
-  return *(Log **) luaL_checkudata(L, 1, "arken.Log.metatable");
+  return *static_cast<Log **>(luaL_checkudata(L, 1, "arken.Log.metatable"));
 }
 
 /**
@@ -24,13 +24,13 @@ checkLog( lua_State *L ) {
 
 static int
 arken_Log_new( lua_State *L ) {
-  const char *str = (char *) luaL_checkstring(L, 1);
+  const char *str = luaL_checkstring(L, 1);
   int max = -1;
   if(lua_gettop(L) == 2) { // number of arguments
     max = luaL_checkinteger(L, 2);
   }
 
-  Log **ptr = (Log **)lua_newuserdata(L, sizeof(Log*));
+  Log **ptr = static_cast<Log **>(lua_newuserdata(L, sizeof(Log*)));
   *ptr = new Log(Log(str, max));
   luaL_getmetatable(L, "arken.Log.metatable");
   lua_setmetatable(L, -2);

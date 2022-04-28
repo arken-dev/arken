@@ -14,7 +14,7 @@ using json    = arken::json;
 
 channel *
 checkChannel( lua_State *L ) {
-  return *(channel **) luaL_checkudata(L, 1, "arken.concurrent.channel.metatable");
+  return *static_cast<channel **>(luaL_checkudata(L, 1, "arken.concurrent.channel.metatable"));
 }
 
 //-----------------------------------------------------------------------------
@@ -41,7 +41,7 @@ arken_concurrent_channel_start(lua_State *L) {
   purge = false;
 
   channel * chn = channel::start( fileName, params, purge );
-  channel **ptr = (channel **)lua_newuserdata(L, sizeof(channel*));
+  channel **ptr = static_cast<channel **>(lua_newuserdata(L, sizeof(channel*)));
   *ptr = chn;
 
   luaL_getmetatable(L, "arken.concurrent.channel.metatable");
@@ -119,7 +119,7 @@ arken_concurrent_channel_shared( lua_State *L ) {
     fprintf(stderr, "%s\n", lua_tostring(L, -1));
   }
 
-  Shared **ptr = (Shared **)lua_newuserdata(L, sizeof(Shared*));
+  Shared **ptr = static_cast<Shared **>(lua_newuserdata(L, sizeof(Shared*)));
   *ptr = new Shared(chn->shared());
   luaL_getmetatable(L, "arken.concurrent.Shared.metatable");
   lua_setmetatable(L, -2);

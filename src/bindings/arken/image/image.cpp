@@ -13,7 +13,7 @@
 
 arken::Image *
 checkImage( lua_State *L , int position = 1) {
-  return *(arken::Image **) luaL_checkudata(L, position, "arken.Image.metatable");
+  return *static_cast<arken::Image **>(luaL_checkudata(L, position, "arken.Image.metatable"));
 }
 
 /**
@@ -31,7 +31,7 @@ arken_Image_new( lua_State *L ) {
    *ptr = new arken::Image(width, height, color);
   } else {
     size_t len;
-    const char *path = (char *) lua_tolstring(L, 1, &len);
+    const char *path = lua_tolstring(L, 1, &len);
     *ptr= new arken::Image(path);
   }
   luaL_getmetatable(L, "arken.Image.metatable");

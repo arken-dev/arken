@@ -14,7 +14,7 @@ using json     = arken::json;
 
 singular::node *
 checkNode( lua_State *L ) {
-  return *(singular::node **) luaL_checkudata(L, 1, "arken.concurrent.task.singular.node.metatable");
+  return *static_cast<singular::node **>(luaL_checkudata(L, 1, "arken.concurrent.task.singular.node.metatable"));
 }
 
 //-----------------------------------------------------------------------------
@@ -44,7 +44,7 @@ arken_concurrent_task_singular_start(lua_State *L) {
   }
 
   singular::node node = singular::start( fileName, params, name, release );
-  singular::node **ptr = (singular::node **)lua_newuserdata(L, sizeof(singular::node*));
+  singular::node **ptr = static_cast<singular::node **>(lua_newuserdata(L, sizeof(singular::node*)));
   *ptr = new singular::node(node);
   luaL_getmetatable(L, "arken.concurrent.task.singular.node.metatable");
   lua_setmetatable(L, -2);
@@ -77,7 +77,7 @@ arken_concurrent_task_singular_emplace(lua_State *L) {
   }
 
   singular::node node = singular::emplace( fileName, params, name, release );
-  singular::node **ptr = (singular::node **)lua_newuserdata(L, sizeof(singular::node*));
+  singular::node **ptr = static_cast<singular::node **>(lua_newuserdata(L, sizeof(singular::node*)));
   *ptr = new singular::node(node);
   luaL_getmetatable(L, "arken.concurrent.task.singular.node.metatable");
   lua_setmetatable(L, -2);
@@ -110,7 +110,7 @@ arken_concurrent_task_singular_place(lua_State *L) {
   }
 
   singular::node node = singular::place( fileName, params, name, release );
-  singular::node **ptr = (singular::node **)lua_newuserdata(L, sizeof(singular::node*));
+  singular::node **ptr = static_cast<singular::node **>(lua_newuserdata(L, sizeof(singular::node*)));
   *ptr = new singular::node(node);
   luaL_getmetatable(L, "arken.concurrent.task.singular.node.metatable");
   lua_setmetatable(L, -2);
@@ -194,7 +194,7 @@ arken_concurrent_task_singular_node_shared( lua_State *L ) {
     fprintf(stderr, "%s\n", lua_tostring(L, -1));
   }
 
-  Shared **ptr = (Shared **)lua_newuserdata(L, sizeof(Shared*));
+  Shared **ptr = static_cast<Shared **>(lua_newuserdata(L, sizeof(Shared*)));
   *ptr = new Shared(node->shared());
   luaL_getmetatable(L, "arken.concurrent.Shared.metatable");
   lua_setmetatable(L, -2);

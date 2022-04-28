@@ -14,7 +14,7 @@ using json   = arken::json;
 
 task *
 checkTask( lua_State *L ) {
-  return *(task **) luaL_checkudata(L, 1, "arken.concurrent.task.metatable");
+  return *static_cast<task **>(luaL_checkudata(L, 1, "arken.concurrent.task.metatable"));
 }
 
 //-----------------------------------------------------------------------------
@@ -37,7 +37,7 @@ arken_concurrent_task_start(lua_State *L) {
   }
   task tsk = task::start( fileName, params, release );
 
-  task **ptr = (task **)lua_newuserdata(L, sizeof(task*));
+  task **ptr = static_cast<task **>(lua_newuserdata(L, sizeof(task*)));
   *ptr = new task(tsk);
 
   luaL_getmetatable(L, "arken.concurrent.task.metatable");
@@ -87,7 +87,7 @@ arken_concurrent_task_shared( lua_State *L ) {
     fprintf(stderr, "%s\n", lua_tostring(L, -1));
   }
 
-  Shared **ptr = (Shared **)lua_newuserdata(L, sizeof(Shared*));
+  Shared **ptr = static_cast<Shared **>(lua_newuserdata(L, sizeof(Shared*)));
   *ptr = new Shared(pointer->shared());
   luaL_getmetatable(L, "arken.concurrent.Shared.metatable");
   lua_setmetatable(L, -2);

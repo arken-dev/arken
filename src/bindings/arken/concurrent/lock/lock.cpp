@@ -16,7 +16,7 @@ using arken::concurrent::Shared;
 
 Lock *
 checkLock( lua_State *L ) {
-  return *(Lock **) luaL_checkudata(L, 1, "arken.concurrent.Lock.metatable");
+  return *static_cast<Lock **>(luaL_checkudata(L, 1, "arken.concurrent.Lock.metatable"));
 }
 
 /**
@@ -25,8 +25,8 @@ checkLock( lua_State *L ) {
 
 static int
 arken_concurrent_Lock_new( lua_State *L ) {
-  const char *str = (char *) luaL_checkstring(L, 1);
-  Lock **ptr = (Lock **)lua_newuserdata(L, sizeof(Lock*));
+  const char *str = luaL_checkstring(L, 1);
+  Lock **ptr = static_cast<Lock **>(lua_newuserdata(L, sizeof(Lock*)));
   *ptr = new Lock(Lock(str));
   luaL_getmetatable(L, "arken.concurrent.Lock.metatable");
   lua_setmetatable(L, -2);
@@ -82,7 +82,7 @@ arken_concurrent_Lock_shared( lua_State *L ) {
     fprintf(stderr, "%s\n", lua_tostring(L, -1));
   }
 
-  Shared **ptr = (Shared **)lua_newuserdata(L, sizeof(Shared*));
+  Shared **ptr = static_cast<Shared **>(lua_newuserdata(L, sizeof(Shared*)));
   *ptr = new Shared(udata->shared());
   luaL_getmetatable(L, "arken.concurrent.Shared.metatable");
   lua_setmetatable(L, -2);

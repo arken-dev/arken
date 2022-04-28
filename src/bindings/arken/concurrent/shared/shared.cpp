@@ -16,7 +16,7 @@ using string = arken::string;
 
 Shared *
 checkShared( lua_State *L ) {
-  return *(Shared **) luaL_checkudata(L, 1, "arken.concurrent.Shared.metatable");
+  return *static_cast<Shared **>(luaL_checkudata(L, 1, "arken.concurrent.Shared.metatable"));
 }
 
 //-----------------------------------------------------------------------------
@@ -27,7 +27,7 @@ static int
 arken_concurrent_Shared_global(lua_State *L) {
   Shared instance = Shared::global();
 
-  Shared **ptr = (Shared **)lua_newuserdata(L, sizeof(Shared*));
+  Shared **ptr = static_cast<Shared **>(lua_newuserdata(L, sizeof(Shared*)));
   *ptr = new Shared(instance);
 
   luaL_getmetatable(L, "arken.concurrent.Shared.metatable");
