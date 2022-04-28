@@ -39,7 +39,7 @@ arken_concurrent_task_fifo_start(lua_State *L) {
   }
 
   fifo::node node = fifo::start( fileName, params, purge );
-  fifo::node **ptr = static_cast<fifo::node **>(lua_newuserdata(L, sizeof(fifo::node*)));
+  auto ptr = static_cast<fifo::node **>(lua_newuserdata(L, sizeof(fifo::node*)));
   *ptr = new fifo::node(node);
   luaL_getmetatable(L, "arken.concurrent.task.fifo.node.metatable");
   lua_setmetatable(L, -2);
@@ -114,7 +114,7 @@ arken_concurrent_task_fifo_node_shared( lua_State *L ) {
     fprintf(stderr, "%s\n", lua_tostring(L, -1));
   }
 
-  Shared **ptr = static_cast<Shared **>(lua_newuserdata(L, sizeof(Shared*)));
+  auto ptr = static_cast<Shared **>(lua_newuserdata(L, sizeof(Shared*)));
   *ptr = new Shared(node->shared());
   luaL_getmetatable(L, "arken.concurrent.Shared.metatable");
   lua_setmetatable(L, -2);

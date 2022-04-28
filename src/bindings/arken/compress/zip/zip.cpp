@@ -37,7 +37,7 @@ arken_compress_Zip_extract( lua_State *L ) {
 static int
 arken_compress_Zip_new( lua_State *L ) {
   const char * filename = luaL_checkstring(L, 1);
-  Zip **ptr = static_cast<Zip **>(lua_newuserdata(L, sizeof(Zip*)));
+  auto ptr = static_cast<Zip **>(lua_newuserdata(L, sizeof(Zip*)));
   *ptr = new Zip(filename);
   luaL_getmetatable(L, "arken.compress.Zip.metatable");
   lua_setmetatable(L, -2);

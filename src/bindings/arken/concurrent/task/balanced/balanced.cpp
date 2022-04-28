@@ -50,7 +50,7 @@ arken_concurrent_task_balanced_start(lua_State *L) {
   }
 
   balanced::node node = balanced::start( fileName, params, name, release );
-  balanced::node **ptr = static_cast<balanced::node **>(lua_newuserdata(L, sizeof(balanced::node*)));
+  auto ptr = static_cast<balanced::node **>(lua_newuserdata(L, sizeof(balanced::node*)));
   *ptr = new balanced::node(node);
   luaL_getmetatable(L, "arken.concurrent.task.balanced.node.metatable");
   lua_setmetatable(L, -2);
@@ -132,7 +132,7 @@ arken_concurrent_task_balanced_node_shared( lua_State *L ) {
     fprintf(stderr, "%s\n", lua_tostring(L, -1));
   }
 
-  Shared **ptr = static_cast<Shared **>(lua_newuserdata(L, sizeof(Shared*)));
+  auto ptr = static_cast<Shared **>(lua_newuserdata(L, sizeof(Shared*)));
   *ptr = new Shared(node->shared());
   luaL_getmetatable(L, "arken.concurrent.Shared.metatable");
   lua_setmetatable(L, -2);

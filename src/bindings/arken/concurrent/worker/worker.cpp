@@ -44,7 +44,7 @@ arken_worker_start(lua_State *L) {
   }
 
   worker wrk = worker::start( fileName, params, release );
-  worker **ptr = static_cast<worker **>(lua_newuserdata(L, sizeof(worker*)));
+  auto ptr = static_cast<worker **>(lua_newuserdata(L, sizeof(worker*)));
   *ptr = new worker(wrk);
 
   luaL_getmetatable(L, "arken.concurrent.worker.metatable");
@@ -121,7 +121,7 @@ arken_concurrent_worker_shared( lua_State *L ) {
     fprintf(stderr, "%s\n", lua_tostring(L, -1));
   }
 
-  Shared **ptr = static_cast<Shared **>(lua_newuserdata(L, sizeof(Shared*)));
+  auto ptr = static_cast<Shared **>(lua_newuserdata(L, sizeof(Shared*)));
   *ptr = new Shared(pointer->shared());
   luaL_getmetatable(L, "arken.concurrent.Shared.metatable");
   lua_setmetatable(L, -2);
@@ -183,7 +183,7 @@ arken_concurrent_worker_node_shared( lua_State *L ) {
     fprintf(stderr, "%s\n", lua_tostring(L, -1));
   }
 
-  Shared **ptr = static_cast<Shared **>(lua_newuserdata(L, sizeof(Shared*)));
+  auto ptr = static_cast<Shared **>(lua_newuserdata(L, sizeof(Shared*)));
   *ptr = new Shared(node->shared());
   luaL_getmetatable(L, "arken.concurrent.Shared.metatable");
   lua_setmetatable(L, -2);
@@ -195,7 +195,7 @@ static int
 arken_concurrent_worker_node_master( lua_State *L ) {
   worker::node * node = checkWorkerNode( L );
 
-  worker **ptr = static_cast<worker **>(lua_newuserdata(L, sizeof(worker*)));
+  auto ptr = static_cast<worker **>(lua_newuserdata(L, sizeof(worker*)));
   *ptr = new worker(node->master());
 
   luaL_getmetatable(L, "arken.concurrent.worker.metatable");

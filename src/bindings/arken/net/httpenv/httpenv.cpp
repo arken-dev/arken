@@ -26,7 +26,7 @@ static int
 arken_net_HttpEnv_new( lua_State *L ) {
   size_t len;
   const char *data  = luaL_checklstring(L, 1, &len);
-  HttpEnv **ptr = static_cast<HttpEnv **>(lua_newuserdata(L, sizeof(HttpEnv*)));
+  auto ptr = static_cast<HttpEnv **>(lua_newuserdata(L, sizeof(HttpEnv*)));
   *ptr= new HttpEnv(data, len);
   luaL_getmetatable(L, "arken.net.HttpEnv.metatable");
   lua_setmetatable(L, -2);

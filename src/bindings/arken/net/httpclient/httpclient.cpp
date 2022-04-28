@@ -26,7 +26,7 @@ checkHttpClient( lua_State *L ) {
 static int
 arken_net_HttpClient_new( lua_State *L ) {
   const char * url = luaL_checkstring(L, 1);
-  HttpClient **ptr = static_cast<HttpClient **>(lua_newuserdata(L, sizeof(HttpClient*)));
+  auto ptr = static_cast<HttpClient **>(lua_newuserdata(L, sizeof(HttpClient*)));
   *ptr = new HttpClient(url);
   luaL_getmetatable(L, "arken.net.HttpClient.metatable");
   lua_setmetatable(L, -2);
@@ -77,7 +77,7 @@ arken_net_HttpClient_setSslVerifyPeer( lua_State *L ) {
 static int
 arken_net_HttpClient_setSslVerifyHost( lua_State *L ) {
   HttpClient *udata  = checkHttpClient( L );
-  long sslVerifyHost = (long) luaL_checkint(L, 2);
+  auto sslVerifyHost = (long) luaL_checkint(L, 2);
   udata->setSslVerifyHost(sslVerifyHost);
   return 0;
 }
@@ -93,7 +93,7 @@ arken_net_HttpClient_setSslVersion( lua_State *L ) {
 static int
 arken_net_HttpClient_setUseSsl( lua_State *L ) {
   HttpClient *udata  = checkHttpClient( L );
-  long useSsl = (long) luaL_checkint(L, 2);
+  auto useSsl = (long) luaL_checkint(L, 2);
   udata->setUseSsl(useSsl);
   return 0;
 }

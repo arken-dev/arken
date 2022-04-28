@@ -30,7 +30,7 @@ arken_Log_new( lua_State *L ) {
     max = luaL_checkinteger(L, 2);
   }
 
-  Log **ptr = static_cast<Log **>(lua_newuserdata(L, sizeof(Log*)));
+  auto ptr = static_cast<Log **>(lua_newuserdata(L, sizeof(Log*)));
   *ptr = new Log(Log(str, max));
   luaL_getmetatable(L, "arken.Log.metatable");
   lua_setmetatable(L, -2);

@@ -25,7 +25,7 @@ checkTime( lua_State *L , int i = 1) {
 
 static int
 arken_chrono_Time_today( lua_State *L ) {
-  Time **ptr = static_cast<Time **>(lua_newuserdata(L, sizeof(Time*)));
+  auto ptr = static_cast<Time **>(lua_newuserdata(L, sizeof(Time*)));
   *ptr = new Time((Time) Time::today());
   luaL_getmetatable(L, "arken.chrono.Time.metatable");
   lua_setmetatable(L, -2);
@@ -34,7 +34,7 @@ arken_chrono_Time_today( lua_State *L ) {
 
 static int
 arken_chrono_Time_now( lua_State *L ) {
-  Time **ptr = static_cast<Time **>(lua_newuserdata(L, sizeof(Time*)));
+  auto ptr = static_cast<Time **>(lua_newuserdata(L, sizeof(Time*)));
   *ptr = new Time(Time::now());
   luaL_getmetatable(L, "arken.chrono.Time.metatable");
   lua_setmetatable(L, -2);
@@ -43,7 +43,7 @@ arken_chrono_Time_now( lua_State *L ) {
 
 static int
 arken_chrono_Time_currentDateTime( lua_State *L ) {
-  Time **ptr = static_cast<Time **>(lua_newuserdata(L, sizeof(Time*)));
+  auto ptr = static_cast<Time **>(lua_newuserdata(L, sizeof(Time*)));
   *ptr = new Time(Time::currentDateTime());
   luaL_getmetatable(L, "arken.chrono.Time.metatable");
   lua_setmetatable(L, -2);
@@ -61,7 +61,7 @@ arken_chrono_Time_parse( lua_State *L ) {
     time = Time::parse(string, format);
   }
   if( time.isValid() ) {
-    Time **ptr = static_cast<Time **>(lua_newuserdata(L, sizeof(Time*)));
+    auto ptr = static_cast<Time **>(lua_newuserdata(L, sizeof(Time*)));
     *ptr = new Time(time);
     luaL_getmetatable(L, "arken.chrono.Time.metatable");
     lua_setmetatable(L, -2);
@@ -129,7 +129,7 @@ arken_chrono_Time_addYears( lua_State *L ) {
   int years = luaL_checkinteger(L, 2);
   Time other = t->addYears(years);
 
-  Time **ptr = static_cast<Time **>(lua_newuserdata(L, sizeof(Time*)));
+  auto ptr = static_cast<Time **>(lua_newuserdata(L, sizeof(Time*)));
   *ptr= new Time(other);
   luaL_getmetatable(L, "arken.chrono.Time.metatable");
   lua_setmetatable(L, -2);
@@ -143,7 +143,7 @@ arken_chrono_Time_addMonths( lua_State *L ) {
   int months = luaL_checkinteger(L, 2);
   Time other = t->addMonths(months);
 
-  Time **ptr = static_cast<Time **>(lua_newuserdata(L, sizeof(Time*)));
+  auto ptr = static_cast<Time **>(lua_newuserdata(L, sizeof(Time*)));
   *ptr= new Time(other);
   luaL_getmetatable(L, "arken.chrono.Time.metatable");
   lua_setmetatable(L, -2);
@@ -157,7 +157,7 @@ arken_chrono_Time_addDays( lua_State *L ) {
   int days  = luaL_checkinteger(L, 2);
   Time other = t->addDays(days);
 
-  Time **ptr = static_cast<Time **>(lua_newuserdata(L, sizeof(Time*)));
+  auto ptr = static_cast<Time **>(lua_newuserdata(L, sizeof(Time*)));
   *ptr= new Time(other);
   luaL_getmetatable(L, "arken.chrono.Time.metatable");
   lua_setmetatable(L, -2);
@@ -171,7 +171,7 @@ arken_chrono_Time_addHours( lua_State *L ) {
   int hours = luaL_checkinteger(L, 2);
   Time other = t->addHours(hours);
 
-  Time **ptr = static_cast<Time **>(lua_newuserdata(L, sizeof(Time*)));
+  auto ptr = static_cast<Time **>(lua_newuserdata(L, sizeof(Time*)));
   *ptr= new Time(other);
   luaL_getmetatable(L, "arken.chrono.Time.metatable");
   lua_setmetatable(L, -2);
@@ -185,7 +185,7 @@ arken_chrono_Time_addMinutes( lua_State *L ) {
   int minutes = luaL_checkinteger(L, 2);
   Time other  = t->addMinutes(minutes);
 
-  Time **ptr = static_cast<Time **>(lua_newuserdata(L, sizeof(Time*)));
+  auto ptr = static_cast<Time **>(lua_newuserdata(L, sizeof(Time*)));
   *ptr= new Time(other);
   luaL_getmetatable(L, "arken.chrono.Time.metatable");
   lua_setmetatable(L, -2);
@@ -200,7 +200,7 @@ arken_chrono_Time_addSecs( lua_State *L ) {
   int secs  = luaL_checkinteger(L, 2);
   Time other = t->addSecs(secs);
 
-  Time **ptr = static_cast<Time **>(lua_newuserdata(L, sizeof(Time*)));
+  auto ptr = static_cast<Time **>(lua_newuserdata(L, sizeof(Time*)));
   *ptr= new Time(other);
   luaL_getmetatable(L, "arken.chrono.Time.metatable");
   lua_setmetatable(L, -2);
@@ -213,7 +213,7 @@ arken_chrono_Time_beginningOfDay( lua_State *L ) {
   Time *t     = checkTime( L );
   Time result = t->beginningOfDay();
 
-  Time **ptr = static_cast<Time **>(lua_newuserdata(L, sizeof(Time*)));
+  auto ptr = static_cast<Time **>(lua_newuserdata(L, sizeof(Time*)));
   *ptr= new Time(result);
   luaL_getmetatable(L, "arken.chrono.Time.metatable");
   lua_setmetatable(L, -2);
@@ -226,7 +226,7 @@ arken_chrono_Time_endOfDay( lua_State *L ) {
   Time *t     = checkTime( L );
   Time result = t->endOfDay();
 
-  Time **ptr = static_cast<Time **>(lua_newuserdata(L, sizeof(Time*)));
+  auto ptr = static_cast<Time **>(lua_newuserdata(L, sizeof(Time*)));
   *ptr= new Time(result);
   luaL_getmetatable(L, "arken.chrono.Time.metatable");
   lua_setmetatable(L, -2);
@@ -239,7 +239,7 @@ arken_chrono_Time_beginningOfMonth( lua_State *L ) {
   Time *t     = checkTime( L );
   Time result = t->beginningOfMonth();
 
-  Time **ptr = static_cast<Time **>(lua_newuserdata(L, sizeof(Time*)));
+  auto ptr = static_cast<Time **>(lua_newuserdata(L, sizeof(Time*)));
   *ptr= new Time(result);
   luaL_getmetatable(L, "arken.chrono.Time.metatable");
   lua_setmetatable(L, -2);
@@ -252,7 +252,7 @@ arken_chrono_Time_endOfMonth( lua_State *L ) {
   Time *t     = checkTime( L );
   Time result = t->endOfMonth();
 
-  Time **ptr = static_cast<Time **>(lua_newuserdata(L, sizeof(Time*)));
+  auto ptr = static_cast<Time **>(lua_newuserdata(L, sizeof(Time*)));
   *ptr= new Time(result);
   luaL_getmetatable(L, "arken.chrono.Time.metatable");
   lua_setmetatable(L, -2);
@@ -426,7 +426,7 @@ static int
 arken_chrono_Time_date( lua_State *L ) {
   Time *t = checkTime( L );
 
-  Date **ptr = static_cast<Date **>(lua_newuserdata(L, sizeof(Date*)));
+  auto ptr = static_cast<Date **>(lua_newuserdata(L, sizeof(Date*)));
 
   *ptr= new Date(t->date());
 

@@ -100,8 +100,8 @@ arken_Image_composite( lua_State *L ) {
   if(lua_gettop(L) == 4) { // number of arguments
     arken::Image *img1 = checkImage( L, 1 );
     arken::Image *img2 = checkImage( L, 2 );
-    size_t x = (size_t) luaL_checkinteger(L, 3);
-    size_t y = (size_t) luaL_checkinteger(L, 4);
+    auto x = static_cast<size_t>(luaL_checkinteger(L, 3));
+    auto y = static_cast<size_t>(luaL_checkinteger(L, 4));
     img1->composite(img2, x, y);
   } else {
     arken::Image *img1 = checkImage( L, 1 );

@@ -40,7 +40,7 @@ arken_concurrent_service_start(lua_State *L) {
 
   service srv = service::start( fileName, params, purge );
 
-  service **ptr = static_cast<service **>(lua_newuserdata(L, sizeof(service*)));
+  auto ptr = static_cast<service **>(lua_newuserdata(L, sizeof(service*)));
   *ptr = new service(srv);
 
   luaL_getmetatable(L, "arken.concurrent.service.metatable");
@@ -83,7 +83,7 @@ arken_concurrent_service_shared( lua_State *L ) {
     fprintf(stderr, "%s\n", lua_tostring(L, -1));
   }
 
-  Shared **ptr = static_cast<Shared **>(lua_newuserdata(L, sizeof(Shared*)));
+  auto ptr = static_cast<Shared **>(lua_newuserdata(L, sizeof(Shared*)));
   *ptr = new Shared(pointer->shared());
   luaL_getmetatable(L, "arken.concurrent.Shared.metatable");
   lua_setmetatable(L, -2);

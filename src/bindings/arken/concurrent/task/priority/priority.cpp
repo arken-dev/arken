@@ -44,7 +44,7 @@ arken_concurrent_task_priority_start(lua_State *L) {
   }
 
   priority::node node = priority::start( fileName, params, priority, release );
-  priority::node **ptr = static_cast<priority::node **>(lua_newuserdata(L, sizeof(priority::node*)));
+  auto ptr = static_cast<priority::node **>(lua_newuserdata(L, sizeof(priority::node*)));
   *ptr = new priority::node(node);
   luaL_getmetatable(L, "arken.concurrent.task.priority.node.metatable");
   lua_setmetatable(L, -2);
@@ -126,7 +126,7 @@ arken_concurrent_task_priority_node_shared( lua_State *L ) {
     fprintf(stderr, "%s\n", lua_tostring(L, -1));
   }
 
-  Shared **ptr = static_cast<Shared **>(lua_newuserdata(L, sizeof(Shared*)));
+  auto ptr = static_cast<Shared **>(lua_newuserdata(L, sizeof(Shared*)));
   *ptr = new Shared(node->shared());
   luaL_getmetatable(L, "arken.concurrent.Shared.metatable");
   lua_setmetatable(L, -2);

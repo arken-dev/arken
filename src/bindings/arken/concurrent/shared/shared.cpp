@@ -27,7 +27,7 @@ static int
 arken_concurrent_Shared_global(lua_State *L) {
   Shared instance = Shared::global();
 
-  Shared **ptr = static_cast<Shared **>(lua_newuserdata(L, sizeof(Shared*)));
+  auto ptr = static_cast<Shared **>(lua_newuserdata(L, sizeof(Shared*)));
   *ptr = new Shared(instance);
 
   luaL_getmetatable(L, "arken.concurrent.Shared.metatable");

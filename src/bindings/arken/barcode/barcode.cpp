@@ -24,7 +24,7 @@ checkBarcode( lua_State *L , int position = 1) {
 
 static int
 arken_Barcode_new( lua_State *L ) {
-  arken::Barcode **ptr = static_cast<arken::Barcode **>(lua_newuserdata(L, sizeof(Barcode*)));
+  auto ptr = static_cast<arken::Barcode **>(lua_newuserdata(L, sizeof(Barcode*)));
   int width  = luaL_checkinteger(L, 1);
   int height = luaL_checkinteger(L, 2);
   const char *format = lua_tostring(L, 3);
