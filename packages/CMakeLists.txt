@@ -1,4 +1,19 @@
-set(CMAKE_CXX_CLANG_TIDY "")
+option( PACKAGES_ENABLE_WALL "enable warning all compiler" false )
+option( PACKAGES_ENABLE_TIDY "enable clang-tidy" false )
+
+if ( NOT PACKAGES_ENABLE_TIDY )
+  set(CMAKE_CXX_CLANG_TIDY "")
+endif()
+
+if ( NOT PACKAGES_ENABLE_WALL )
+  set(CMAKE_CXX_FLAGS "-std=c++17")
+  if ( NOT ARKEN_DEBUG )
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -finline-functions")
+  else()
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g")
+  endif()
+endif()
+
 SUBDIRLIST(SUBDIRS "${CMAKE_CURRENT_SOURCE_DIR}")
 FOREACH(subdir ${SUBDIRS})
   message("PACKAGE: " ${subdir})
