@@ -210,7 +210,7 @@ function ActiveRecord_PostgresAdapter:parserDefault(format, value)
 end
 
 function ActiveRecord_PostgresAdapter.stringParserDefault(value)
-  return value:prefix("::"):mid(2, -2)
+  return value:sub(2, value:lastIndexOf("::")-2)
 end
 
 function ActiveRecord_PostgresAdapter.timeParserDefault(value)
