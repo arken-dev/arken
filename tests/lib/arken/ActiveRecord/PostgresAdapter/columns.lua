@@ -7,14 +7,15 @@ Person.tableName = string.format("person_%s", "columns") --os.uuid():replace('-'
 
 test.beforeAll = function()
   ActiveRecord.reset()
-  ActiveRecord.config = "config/active_record_postgres.json"
+  ActiveRecord.loadConfig{ config = "config/active_record_postgres.json" }
   local sql = [[
   CREATE TABLE IF NOT EXISTS %s (
     id SERIAL PRIMARY KEY NOT NULL, name VARCHAR(250), observation TEXT,
     created_at timestamp, updated_at timestamp, total REAL, cancel boolean,
     cancel_default_true boolean default true, cancel_default_false boolean default false, birthday date,
     date_meeting timestamp, last_access timestamp, last_hour time, sub_total float, frete float DEFAULT 0,
-    observation_with_default VARCHAR(250) default 'hello !!!', total_with_default REAL DEFAULT 135.35,
+    observation_with_default TEXT default 'hello !!!', total_with_default REAL DEFAULT 135.35,
+    description_with_default VARCHAR(250) default 'hello !!!',
     timestamp_with_default timestamp default '2015-03-11 13:35:10',
     datetime_with_default timestamp default '2016-05-29 14:50:30',
     date_with_default date default '2015-03-15', time_with_default time default '14:50:30',
@@ -22,7 +23,7 @@ test.beforeAll = function()
     total_smallint smallint
   )]]
   --print(string.format(sql, Person.tableName))
-  Person.adapter(true):execute(string.format(sql, Person.tableName))
+  Person.execute(string.format(sql, Person.tableName))
 end
 
 test.before = function()
@@ -89,10 +90,16 @@ test.should_text_with_default = function()
   assert(columns.observation_with_default.default == "hello !!!", tostring(columns.observation_with_default.default))
 end
 
+test.should_varchar_with_default = function()
+  local columns = Person.columns()
+  assert(columns.description_with_default.format == 'string', columns.description_with_default.format)
+  assert(columns.description_with_default.default == "hello !!!", columns.description_with_default.default)
+end
+
 test.should_save_text_with_default = function()
   local value = Person.new{ name = 'John' }
   value:save()
-  assert( value.observation_with_default == 'hello !!!' )
+  assert( value.observation_with_default == 'hello !!!', value.observation_with_default)
 end
 
 test.should_number_with_default = function()
@@ -165,6 +172,12 @@ test.should_smallint_with_default_nil = function()
   local columns = Person.columns()
   assert(columns.total_smallint.format == 'number', columns.total_smallint.format)
   assert(columns.total_smallint.default == nil, tostring(columns.total_smallint.default))
+end
+
+test.should_return_primary_key_flag = function()
+  local columns = Person.columns()
+  assert(columns.id.primaryKey == true, 'primary key not found')
+  assert(columns.name.primaryKey == false, 'name is not primary key')
 end
 
 test.should_return_primary_key_flag = function()

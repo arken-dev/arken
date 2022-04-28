@@ -14,12 +14,12 @@ using json   = arken::json;
 
 worker *
 checkWorker( lua_State *L ) {
-  return *(worker **) luaL_checkudata(L, 1, "arken.concurrent.worker.metatable");
+  return *static_cast<worker **>(luaL_checkudata(L, 1, "arken.concurrent.worker.metatable"));
 }
 
 worker::node *
 checkWorkerNode( lua_State *L ) {
-  return *(worker::node **) luaL_checkudata(L, 1, "arken.concurrent.worker.node.metatable");
+  return *static_cast<worker::node **>(luaL_checkudata(L, 1, "arken.concurrent.worker.node.metatable"));
 }
 
 
@@ -44,7 +44,7 @@ arken_worker_start(lua_State *L) {
   }
 
   worker wrk = worker::start( fileName, params, release );
-  worker **ptr = (worker **)lua_newuserdata(L, sizeof(worker*));
+  auto ptr = static_cast<worker **>(lua_newuserdata(L, sizeof(worker*)));
   *ptr = new worker(wrk);
 
   luaL_getmetatable(L, "arken.concurrent.worker.metatable");
@@ -65,13 +65,13 @@ arken_worker_max(lua_State *L) {
 static const luaL_reg TaskClassMethods[] = {
   {"start", arken_worker_start},
   {"max",   arken_worker_max},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 registerWorkerClassMethods( lua_State *L ) {
   luaL_newmetatable(L, "arken.concurrent.worker");
-  luaL_register(L, NULL, TaskClassMethods);
+  luaL_register(L, nullptr, TaskClassMethods);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -121,7 +121,7 @@ arken_concurrent_worker_shared( lua_State *L ) {
     fprintf(stderr, "%s\n", lua_tostring(L, -1));
   }
 
-  Shared **ptr = (Shared **)lua_newuserdata(L, sizeof(Shared*));
+  auto ptr = static_cast<Shared **>(lua_newuserdata(L, sizeof(Shared*)));
   *ptr = new Shared(pointer->shared());
   luaL_getmetatable(L, "arken.concurrent.Shared.metatable");
   lua_setmetatable(L, -2);
@@ -141,13 +141,13 @@ luaL_reg arken_concurrent_worker_metatable[] = {
   {"shared",   arken_concurrent_worker_shared},
   {"progress", arken_concurrent_worker_progress},
   {"finished", arken_concurrent_worker_finished},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 registerWorkerInstanceMethods( lua_State *L ) {
   luaL_newmetatable(L,  "arken.concurrent.worker.metatable");
-  luaL_register(L, NULL, arken_concurrent_worker_metatable);
+  luaL_register(L, nullptr, arken_concurrent_worker_metatable);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -183,7 +183,7 @@ arken_concurrent_worker_node_shared( lua_State *L ) {
     fprintf(stderr, "%s\n", lua_tostring(L, -1));
   }
 
-  Shared **ptr = (Shared **)lua_newuserdata(L, sizeof(Shared*));
+  auto ptr = static_cast<Shared **>(lua_newuserdata(L, sizeof(Shared*)));
   *ptr = new Shared(node->shared());
   luaL_getmetatable(L, "arken.concurrent.Shared.metatable");
   lua_setmetatable(L, -2);
@@ -195,7 +195,7 @@ static int
 arken_concurrent_worker_node_master( lua_State *L ) {
   worker::node * node = checkWorkerNode( L );
 
-  worker **ptr = (worker **)lua_newuserdata(L, sizeof(worker*));
+  auto ptr = static_cast<worker **>(lua_newuserdata(L, sizeof(worker*)));
   *ptr = new worker(node->master());
 
   luaL_getmetatable(L, "arken.concurrent.worker.metatable");
@@ -210,13 +210,13 @@ luaL_reg arken_concurrent_worker_node_metatable[] = {
   {"uuid",    arken_concurrent_worker_node_uuid},
   {"shared",  arken_concurrent_worker_node_shared},
   {"master",  arken_concurrent_worker_node_master},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 registerWorkerNodeInstanceMethods( lua_State *L ) {
   luaL_newmetatable(L,  "arken.concurrent.worker.node.metatable");
-  luaL_register(L, NULL, arken_concurrent_worker_node_metatable);
+  luaL_register(L, nullptr, arken_concurrent_worker_node_metatable);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }

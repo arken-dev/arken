@@ -15,7 +15,7 @@ using arken::net::HttpEnv;
 
 HttpEnv *
 checkHttpEnv( lua_State *L ) {
-  return *(HttpEnv **) luaL_checkudata(L, 1, "arken.net.HttpEnv.metatable");
+  return *static_cast<HttpEnv **>(luaL_checkudata(L, 1, "arken.net.HttpEnv.metatable"));
 }
 
 /**
@@ -26,7 +26,7 @@ static int
 arken_net_HttpEnv_new( lua_State *L ) {
   size_t len;
   const char *data  = luaL_checklstring(L, 1, &len);
-  HttpEnv **ptr = (HttpEnv **)lua_newuserdata(L, sizeof(HttpEnv*));
+  auto ptr = static_cast<HttpEnv **>(lua_newuserdata(L, sizeof(HttpEnv*)));
   *ptr= new HttpEnv(data, len);
   luaL_getmetatable(L, "arken.net.HttpEnv.metatable");
   lua_setmetatable(L, -2);
@@ -35,13 +35,13 @@ arken_net_HttpEnv_new( lua_State *L ) {
 
 static const luaL_reg arken_net_HttpEnv[] = {
   {"new", arken_net_HttpEnv_new},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_net_HttpEnv( lua_State *L ) {
   luaL_newmetatable(L,  "arken.net.HttpEnv");
-  luaL_register(L, NULL, arken_net_HttpEnv);
+  luaL_register(L, nullptr, arken_net_HttpEnv);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -133,12 +133,7 @@ arken_net_HttpEnv_setHeaderDone( lua_State *L ) {
   HttpEnv *udata = checkHttpEnv( L );
   size_t length;
   const char * raw = luaL_checklstring(L, 2, &length);
-  char * tmp = new char[length+1];
-  for(size_t i=0; i < length; i++) {
-    tmp[i] = raw[i];
-  }
-  tmp[length] = '\0';
-  udata->setHeaderDone(tmp, length);
+  udata->setHeaderDone(raw, length);
   return 1;
 }
 
@@ -224,13 +219,13 @@ luaL_reg arken_net_HttpEnv_metatable[] = {
   {"requestPath",      arken_net_HttpEnv_requestPath},
   {"queryString",      arken_net_HttpEnv_queryString},
   {"__gc",             arken_net_HttpEnv_gc},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_net_HttpEnv_metatable( lua_State *L ) {
   luaL_newmetatable(L,  "arken.net.HttpEnv.metatable");
-  luaL_register(L, NULL, arken_net_HttpEnv_metatable);
+  luaL_register(L, nullptr, arken_net_HttpEnv_metatable);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }

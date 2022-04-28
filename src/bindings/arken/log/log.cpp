@@ -15,7 +15,7 @@ using arken::Log;
 
 Log *
 checkLog( lua_State *L ) {
-  return *(Log **) luaL_checkudata(L, 1, "arken.Log.metatable");
+  return *static_cast<Log **>(luaL_checkudata(L, 1, "arken.Log.metatable"));
 }
 
 /**
@@ -24,13 +24,13 @@ checkLog( lua_State *L ) {
 
 static int
 arken_Log_new( lua_State *L ) {
-  const char *str = (char *) luaL_checkstring(L, 1);
+  const char *str = luaL_checkstring(L, 1);
   int max = -1;
   if(lua_gettop(L) == 2) { // number of arguments
     max = luaL_checkinteger(L, 2);
   }
 
-  Log **ptr = (Log **)lua_newuserdata(L, sizeof(Log*));
+  auto ptr = static_cast<Log **>(lua_newuserdata(L, sizeof(Log*)));
   *ptr = new Log(Log(str, max));
   luaL_getmetatable(L, "arken.Log.metatable");
   lua_setmetatable(L, -2);
@@ -39,13 +39,13 @@ arken_Log_new( lua_State *L ) {
 
 static const luaL_reg arken_Log[] = {
   {"new", arken_Log_new},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_Log( lua_State *L ) {
   luaL_newmetatable(L, "arken.Log");
-  luaL_register(L, NULL, arken_Log);
+  luaL_register(L, nullptr, arken_Log);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -145,13 +145,13 @@ luaL_reg arken_Log_metatable[] = {
   {"error",  arken_Log_error},
   {"fatal",  arken_Log_fatal},
   {"__gc",   arken_Log_gc},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_Log_metatable( lua_State *L ) {
   luaL_newmetatable(L, "arken.Log.metatable");
-  luaL_register(L, NULL, arken_Log_metatable);
+  luaL_register(L, nullptr, arken_Log_metatable);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }

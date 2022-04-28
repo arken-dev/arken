@@ -15,7 +15,7 @@ using arken::compress::Zip;
 
 Zip *
 checkZip( lua_State *L ) {
-  return *(Zip **) luaL_checkudata(L, 1, "arken.compress.Zip.metatable");
+  return *static_cast<Zip **>(luaL_checkudata(L, 1, "arken.compress.Zip.metatable"));
 }
 
 
@@ -26,7 +26,7 @@ checkZip( lua_State *L ) {
 static int
 arken_compress_Zip_extract( lua_State *L ) {
   const char * filename = luaL_checkstring(L, 1);
-  const char * output   = 0;
+  const char * output   = nullptr;
   if(lua_gettop(L) == 2) { // number of arguments
     output = luaL_checkstring(L, 2);
   }
@@ -37,7 +37,7 @@ arken_compress_Zip_extract( lua_State *L ) {
 static int
 arken_compress_Zip_new( lua_State *L ) {
   const char * filename = luaL_checkstring(L, 1);
-  Zip **ptr = (Zip **)lua_newuserdata(L, sizeof(Zip*));
+  auto ptr = static_cast<Zip **>(lua_newuserdata(L, sizeof(Zip*)));
   *ptr = new Zip(filename);
   luaL_getmetatable(L, "arken.compress.Zip.metatable");
   lua_setmetatable(L, -2);
@@ -49,13 +49,13 @@ arken_compress_Zip_new( lua_State *L ) {
 static const luaL_reg arken_compress_Zip[] = {
   {"extract", arken_compress_Zip_extract},
   {"new",     arken_compress_Zip_new},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_compress_Zip( lua_State *L ) {
   luaL_newmetatable(L, "arken.compress.Zip");
-  luaL_register(L, NULL, arken_compress_Zip);
+  luaL_register(L, nullptr, arken_compress_Zip);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -102,13 +102,13 @@ luaL_reg arken_compress_Zip_metatable[] = {
   {"addBuffer", arken_compress_Zip_addBuffer},
   {"save",      arken_compress_Zip_save},
   {"__gc",      arken_compress_Zip_gc},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_compress_Zip_metatable( lua_State *L ) {
   luaL_newmetatable(L, "arken.compress.Zip.metatable");
-  luaL_register(L, NULL, arken_compress_Zip_metatable);
+  luaL_register(L, nullptr, arken_compress_Zip_metatable);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }

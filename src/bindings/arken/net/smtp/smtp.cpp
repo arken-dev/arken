@@ -15,7 +15,7 @@ using arken::net::SMTP;
 
 SMTP *
 checkSMTP( lua_State *L ) {
-  return *(SMTP **) luaL_checkudata(L, 1, "arken.net.SMTP.metatable");
+  return *static_cast<SMTP **>(luaL_checkudata(L, 1, "arken.net.SMTP.metatable"));
 }
 
 /**
@@ -25,7 +25,7 @@ checkSMTP( lua_State *L ) {
 static int
 arken_net_SMTP_new( lua_State *L ) {
   const char * url = luaL_checkstring(L, 1);
-  SMTP **ptr = (SMTP **)lua_newuserdata(L, sizeof(SMTP*));
+  auto ptr = static_cast<SMTP **>(lua_newuserdata(L, sizeof(SMTP*)));
   *ptr = new SMTP(url);
   luaL_getmetatable(L, "arken.net.SMTP.metatable");
   lua_setmetatable(L, -2);
@@ -42,13 +42,13 @@ arken_net_SMTP_rfc2822Date( lua_State *L ) {
 static const luaL_reg arken_net_SMTP[] = {
   {"new",         arken_net_SMTP_new},
   {"rfc2822Date", arken_net_SMTP_rfc2822Date},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_net_SMTP( lua_State *L ) {
   luaL_newmetatable(L,  "arken.net.SMTP");
-  luaL_register(L, NULL, arken_net_SMTP);
+  luaL_register(L, nullptr, arken_net_SMTP);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -343,13 +343,13 @@ luaL_reg arken_net_SMTP_metatable[] = {
   {"ssl",            arken_net_SMTP_ssl},
   {"verbose",        arken_net_SMTP_verbose},
   {"__gc",           arken_net_SMTP_gc},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_net_SMTP_metatable( lua_State *L ) {
   luaL_newmetatable(L,  "arken.net.SMTP.metatable");
-  luaL_register(L, NULL, arken_net_SMTP_metatable);
+  luaL_register(L, nullptr, arken_net_SMTP_metatable);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }

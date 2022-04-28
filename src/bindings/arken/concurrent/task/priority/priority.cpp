@@ -14,7 +14,7 @@ using json      = arken::json;
 
 priority::node *
 checkNode( lua_State *L ) {
-  return *(priority::node **) luaL_checkudata(L, 1, "arken.concurrent.task.priority.node.metatable");
+  return *static_cast<priority::node **>(luaL_checkudata(L, 1, "arken.concurrent.task.priority.node.metatable"));
 }
 
 //-----------------------------------------------------------------------------
@@ -44,7 +44,7 @@ arken_concurrent_task_priority_start(lua_State *L) {
   }
 
   priority::node node = priority::start( fileName, params, priority, release );
-  priority::node **ptr = (priority::node **)lua_newuserdata(L, sizeof(priority::node*));
+  auto ptr = static_cast<priority::node **>(lua_newuserdata(L, sizeof(priority::node*)));
   *ptr = new priority::node(node);
   luaL_getmetatable(L, "arken.concurrent.task.priority.node.metatable");
   lua_setmetatable(L, -2);
@@ -83,13 +83,13 @@ static const luaL_reg arken_concurrent_task_priority[] = {
   {"max",     arken_concurrent_task_priority_max},
   {"actives", arken_concurrent_task_priority_actives},
   {"inspect", arken_concurrent_task_priority_inspect},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_concurrent_task_priority( lua_State *L ) {
   luaL_newmetatable(L, "arken.concurrent.task.priority");
-  luaL_register(L, NULL, arken_concurrent_task_priority);
+  luaL_register(L, nullptr, arken_concurrent_task_priority);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -126,7 +126,7 @@ arken_concurrent_task_priority_node_shared( lua_State *L ) {
     fprintf(stderr, "%s\n", lua_tostring(L, -1));
   }
 
-  Shared **ptr = (Shared **)lua_newuserdata(L, sizeof(Shared*));
+  auto ptr = static_cast<Shared **>(lua_newuserdata(L, sizeof(Shared*)));
   *ptr = new Shared(node->shared());
   luaL_getmetatable(L, "arken.concurrent.Shared.metatable");
   lua_setmetatable(L, -2);
@@ -164,13 +164,13 @@ luaL_reg arken_concurrent_task_priority_node_metatable[] = {
   {"finished",  arken_concurrent_task_priority_node_finished},
   {"wait",      arken_concurrent_task_priority_node_wait},
   {"__gc",      arken_concurrent_task_priority_node_gc},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_concurrent_task_priority_node_metatable( lua_State *L ) {
   luaL_newmetatable(L, "arken.concurrent.task.priority.node.metatable");
-  luaL_register(L, NULL, arken_concurrent_task_priority_node_metatable);
+  luaL_register(L, nullptr, arken_concurrent_task_priority_node_metatable);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }

@@ -14,7 +14,7 @@ using json     = arken::json;
 
 singular::node *
 checkNode( lua_State *L ) {
-  return *(singular::node **) luaL_checkudata(L, 1, "arken.concurrent.task.singular.node.metatable");
+  return *static_cast<singular::node **>(luaL_checkudata(L, 1, "arken.concurrent.task.singular.node.metatable"));
 }
 
 //-----------------------------------------------------------------------------
@@ -44,7 +44,7 @@ arken_concurrent_task_singular_start(lua_State *L) {
   }
 
   singular::node node = singular::start( fileName, params, name, release );
-  singular::node **ptr = (singular::node **)lua_newuserdata(L, sizeof(singular::node*));
+  auto ptr = static_cast<singular::node **>(lua_newuserdata(L, sizeof(singular::node*)));
   *ptr = new singular::node(node);
   luaL_getmetatable(L, "arken.concurrent.task.singular.node.metatable");
   lua_setmetatable(L, -2);
@@ -77,7 +77,7 @@ arken_concurrent_task_singular_emplace(lua_State *L) {
   }
 
   singular::node node = singular::emplace( fileName, params, name, release );
-  singular::node **ptr = (singular::node **)lua_newuserdata(L, sizeof(singular::node*));
+  auto ptr = static_cast<singular::node **>(lua_newuserdata(L, sizeof(singular::node*)));
   *ptr = new singular::node(node);
   luaL_getmetatable(L, "arken.concurrent.task.singular.node.metatable");
   lua_setmetatable(L, -2);
@@ -110,7 +110,7 @@ arken_concurrent_task_singular_place(lua_State *L) {
   }
 
   singular::node node = singular::place( fileName, params, name, release );
-  singular::node **ptr = (singular::node **)lua_newuserdata(L, sizeof(singular::node*));
+  auto ptr = static_cast<singular::node **>(lua_newuserdata(L, sizeof(singular::node*)));
   *ptr = new singular::node(node);
   luaL_getmetatable(L, "arken.concurrent.task.singular.node.metatable");
   lua_setmetatable(L, -2);
@@ -151,13 +151,13 @@ static const luaL_reg arken_concurrent_task_singular[] = {
   {"max",     arken_concurrent_task_singular_max},
   {"actives", arken_concurrent_task_singular_actives},
   {"inspect", arken_concurrent_task_singular_inspect},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_concurrent_task_singular( lua_State *L ) {
   luaL_newmetatable(L,  "arken.concurrent.task.singular");
-  luaL_register(L, NULL, arken_concurrent_task_singular);
+  luaL_register(L, nullptr, arken_concurrent_task_singular);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -194,7 +194,7 @@ arken_concurrent_task_singular_node_shared( lua_State *L ) {
     fprintf(stderr, "%s\n", lua_tostring(L, -1));
   }
 
-  Shared **ptr = (Shared **)lua_newuserdata(L, sizeof(Shared*));
+  auto ptr = static_cast<Shared **>(lua_newuserdata(L, sizeof(Shared*)));
   *ptr = new Shared(node->shared());
   luaL_getmetatable(L, "arken.concurrent.Shared.metatable");
   lua_setmetatable(L, -2);
@@ -232,13 +232,13 @@ luaL_reg arken_concurrent_task_singular_node[] = {
   {"finished",  arken_concurrent_task_singular_node_finished},
   {"wait",      arken_concurrent_task_singular_node_wait},
   {"__gc",      arken_concurrent_task_singular_node_gc},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_concurrent_task_singular_node( lua_State *L ) {
   luaL_newmetatable(L, "arken.concurrent.task.singular.node.metatable");
-  luaL_register(L, NULL, arken_concurrent_task_singular_node);
+  luaL_register(L, nullptr, arken_concurrent_task_singular_node);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }

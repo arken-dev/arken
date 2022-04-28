@@ -13,7 +13,7 @@ using arken::json;
 static int arken_cache_value( lua_State *L ) {
   const char * key   = luaL_checkstring(L, 1);
   const char * value = cache::value(key);
-  if( value == 0 ) {
+  if( value == nullptr ) {
     lua_pushnil(L);
   } else {
     json::decode(L, value);
@@ -46,10 +46,10 @@ extern "C" {
       {"value",  arken_cache_value},
       {"insert", arken_cache_insert},
       {"remove", arken_cache_remove},
-      {NULL, NULL}
+      {nullptr, nullptr}
     };
     luaL_newmetatable(L, "arken.cache");
-    luaL_register(L, NULL, Map);
+    luaL_register(L, nullptr, Map);
     lua_pushvalue(L, -1);
     lua_setfield(L, -1, "__index");
     return 1;

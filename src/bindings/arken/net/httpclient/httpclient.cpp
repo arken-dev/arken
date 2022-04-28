@@ -16,7 +16,7 @@ using arken::string;
 
 HttpClient *
 checkHttpClient( lua_State *L ) {
-  return *(HttpClient **) luaL_checkudata(L, 1, "arken.net.HttpClient.metatable");
+  return *static_cast<HttpClient **>(luaL_checkudata(L, 1, "arken.net.HttpClient.metatable"));
 }
 
 /**
@@ -26,7 +26,7 @@ checkHttpClient( lua_State *L ) {
 static int
 arken_net_HttpClient_new( lua_State *L ) {
   const char * url = luaL_checkstring(L, 1);
-  HttpClient **ptr = (HttpClient **)lua_newuserdata(L, sizeof(HttpClient*));
+  auto ptr = static_cast<HttpClient **>(lua_newuserdata(L, sizeof(HttpClient*)));
   *ptr = new HttpClient(url);
   luaL_getmetatable(L, "arken.net.HttpClient.metatable");
   lua_setmetatable(L, -2);
@@ -35,13 +35,13 @@ arken_net_HttpClient_new( lua_State *L ) {
 
 static const luaL_reg arken_net_HttpClient[] = {
   {"new", arken_net_HttpClient_new},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_net_HttpClient( lua_State *L ) {
   luaL_newmetatable(L, "arken.net.HttpClient");
-  luaL_register(L, NULL, arken_net_HttpClient);
+  luaL_register(L, nullptr, arken_net_HttpClient);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -77,7 +77,7 @@ arken_net_HttpClient_setSslVerifyPeer( lua_State *L ) {
 static int
 arken_net_HttpClient_setSslVerifyHost( lua_State *L ) {
   HttpClient *udata  = checkHttpClient( L );
-  long sslVerifyHost = (long) luaL_checkint(L, 2);
+  auto sslVerifyHost = (long) luaL_checkint(L, 2);
   udata->setSslVerifyHost(sslVerifyHost);
   return 0;
 }
@@ -85,7 +85,7 @@ arken_net_HttpClient_setSslVerifyHost( lua_State *L ) {
 static int
 arken_net_HttpClient_setSslVersion( lua_State *L ) {
   HttpClient *udata  = checkHttpClient( L );
-  long sslVersion = (long) luaL_checkint(L, 2);
+  auto sslVersion = (long) luaL_checkint(L, 2);
   udata->setSslVersion(sslVersion);
   return 0;
 }
@@ -93,7 +93,7 @@ arken_net_HttpClient_setSslVersion( lua_State *L ) {
 static int
 arken_net_HttpClient_setUseSsl( lua_State *L ) {
   HttpClient *udata  = checkHttpClient( L );
-  long useSsl = (long) luaL_checkint(L, 2);
+  auto useSsl = (long) luaL_checkint(L, 2);
   udata->setUseSsl(useSsl);
   return 0;
 }
@@ -223,13 +223,13 @@ luaL_reg arken_net_HttpClient_metatable[] = {
   {"failure",          arken_net_HttpClient_failure},
   {"message",          arken_net_HttpClient_message},
   {"__gc",             arken_net_HttpClient_gc},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_net_HttpClient_metatable( lua_State *L ) {
   luaL_newmetatable(L,  "arken.net.HttpClient.metatable");
-  luaL_register(L, NULL, arken_net_HttpClient_metatable);
+  luaL_register(L, nullptr, arken_net_HttpClient_metatable);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }

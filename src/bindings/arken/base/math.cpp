@@ -29,7 +29,7 @@ static int arken_math_format( lua_State *L ) {
   int decimal;
   const char * dpoint;
   const char * spoint;
-  char * result = 0;
+  char * result = nullptr;
 
   if( params == 1 ) {
     result = math::format(number);
@@ -63,7 +63,7 @@ int luaopen_arken_math( lua_State *L ) {
     {"round",    arken_math_round},
     {"truncate", arken_math_truncate},
     {"format",   arken_math_format},
-    {NULL, NULL}
+    {nullptr, nullptr}
   };
   luaL_register(L, "math", Map);
   return 1;

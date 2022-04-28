@@ -16,7 +16,7 @@ using arken::string;
 
 HttpServer *
 checkHttpServer( lua_State *L ) {
-  return *(HttpServer **) luaL_checkudata(L, 1, "arken.net.HttpServer.metatable");
+  return *static_cast<HttpServer **>(luaL_checkudata(L, 1, "arken.net.HttpServer.metatable"));
 }
 
 /**
@@ -27,7 +27,7 @@ static int
 arken_net_HttpServer_new( lua_State *L ) {
   const char * address = luaL_checkstring(L, 1);
   int port = luaL_checkinteger(L, 2); 
-  HttpServer **ptr = (HttpServer **)lua_newuserdata(L, sizeof(HttpServer*));
+  auto ptr = static_cast<HttpServer **>(lua_newuserdata(L, sizeof(HttpServer*)));
   *ptr = new HttpServer(address, port);
   luaL_getmetatable(L, "arken.net.HttpServer.metatable");
   lua_setmetatable(L, -2);
@@ -36,13 +36,13 @@ arken_net_HttpServer_new( lua_State *L ) {
 
 static const luaL_reg arken_net_HttpServer[] = {
   {"new", arken_net_HttpServer_new},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_net_HttpServer( lua_State *L ) {
   luaL_newmetatable(L,  "arken.net.HttpServer");
-  luaL_register(L, NULL, arken_net_HttpServer);
+  luaL_register(L, nullptr, arken_net_HttpServer);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -105,13 +105,13 @@ luaL_reg arken_net_HttpServer_metatable[] = {
   {"setDispatcher", arken_net_HttpServer_setDispatcher},
   {"addService",    arken_net_HttpServer_addService},
   {"__gc",          arken_net_HttpServer_gc},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_net_HttpServer_metatable( lua_State *L ) {
   luaL_newmetatable(L,  "arken.net.HttpServer.metatable");
-  luaL_register(L, NULL, arken_net_HttpServer_metatable);
+  luaL_register(L, nullptr, arken_net_HttpServer_metatable);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }

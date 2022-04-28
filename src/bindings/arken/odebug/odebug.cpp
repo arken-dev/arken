@@ -22,10 +22,10 @@ void static
 register_arken_odebug( lua_State *L ) {
   static const luaL_reg Map[] = {
     {"info", arken_odebug_info},
-    {NULL, NULL}
+    {nullptr, nullptr}
   };
   luaL_newmetatable(L, "odebug");
-  luaL_register(L, NULL, Map);
+  luaL_register(L, nullptr, Map);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }

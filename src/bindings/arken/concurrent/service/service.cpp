@@ -15,7 +15,7 @@ using json    = arken::json;
 
 service *
 checkService ( lua_State *L ) {
-  return *(service **) luaL_checkudata(L, 1, "arken.concurrent.service.metatable");
+  return *static_cast<service **>(luaL_checkudata(L, 1, "arken.concurrent.service.metatable"));
 }
 
 //-----------------------------------------------------------------------------
@@ -40,7 +40,7 @@ arken_concurrent_service_start(lua_State *L) {
 
   service srv = service::start( fileName, params, purge );
 
-  service **ptr = (service **)lua_newuserdata(L, sizeof(service*));
+  auto ptr = static_cast<service **>(lua_newuserdata(L, sizeof(service*)));
   *ptr = new service(srv);
 
   luaL_getmetatable(L, "arken.concurrent.service.metatable");
@@ -53,13 +53,13 @@ arken_concurrent_service_start(lua_State *L) {
 
 static const luaL_reg arken_concurrent_service[] = {
   {"start", arken_concurrent_service_start},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_concurrent_service( lua_State *L ) {
   luaL_newmetatable(L, "arken.concurrent.service");
-  luaL_register(L, NULL, arken_concurrent_service);
+  luaL_register(L, nullptr, arken_concurrent_service);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -83,7 +83,7 @@ arken_concurrent_service_shared( lua_State *L ) {
     fprintf(stderr, "%s\n", lua_tostring(L, -1));
   }
 
-  Shared **ptr = (Shared **)lua_newuserdata(L, sizeof(Shared*));
+  auto ptr = static_cast<Shared **>(lua_newuserdata(L, sizeof(Shared*)));
   *ptr = new Shared(pointer->shared());
   luaL_getmetatable(L, "arken.concurrent.Shared.metatable");
   lua_setmetatable(L, -2);
@@ -95,13 +95,13 @@ static const
 luaL_reg arken_concurrent_service_metatable[] = {
   {"shared",   arken_concurrent_service_shared},
   {"loop",     arken_concurrent_service_loop},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_concurrent_service_metatable( lua_State *L ) {
   luaL_newmetatable(L, "arken.concurrent.service.metatable");
-  luaL_register(L, NULL, arken_concurrent_service_metatable);
+  luaL_register(L, nullptr, arken_concurrent_service_metatable);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }

@@ -13,7 +13,7 @@
 
 arken::Image *
 checkImage( lua_State *L , int position = 1) {
-  return *(arken::Image **) luaL_checkudata(L, position, "arken.Image.metatable");
+  return *static_cast<arken::Image **>(luaL_checkudata(L, position, "arken.Image.metatable"));
 }
 
 /**
@@ -31,7 +31,7 @@ arken_Image_new( lua_State *L ) {
    *ptr = new arken::Image(width, height, color);
   } else {
     size_t len;
-    const char *path = (char *) lua_tolstring(L, 1, &len);
+    const char *path = lua_tolstring(L, 1, &len);
     *ptr= new arken::Image(path);
   }
   luaL_getmetatable(L, "arken.Image.metatable");
@@ -41,13 +41,13 @@ arken_Image_new( lua_State *L ) {
 
 static const luaL_reg arken_Image[] = {
   {"new", arken_Image_new},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_Image( lua_State *L ) {
   luaL_newmetatable(L, "arken.Image");
-  luaL_register(L, NULL, arken_Image);
+  luaL_register(L, nullptr, arken_Image);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -100,8 +100,8 @@ arken_Image_composite( lua_State *L ) {
   if(lua_gettop(L) == 4) { // number of arguments
     arken::Image *img1 = checkImage( L, 1 );
     arken::Image *img2 = checkImage( L, 2 );
-    size_t x = (size_t) luaL_checkinteger(L, 3);
-    size_t y = (size_t) luaL_checkinteger(L, 4);
+    auto x = static_cast<size_t>(luaL_checkinteger(L, 3));
+    auto y = static_cast<size_t>(luaL_checkinteger(L, 4));
     img1->composite(img2, x, y);
   } else {
     arken::Image *img1 = checkImage( L, 1 );
@@ -120,13 +120,13 @@ luaL_reg arken_Image_metatable[] = {
   {"height",    arken_Image_height},
   {"composite", arken_Image_composite},
   {"__gc",      arken_Image_gc},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_Image_metatable( lua_State *L ) {
   luaL_newmetatable(L, "arken.Image.metatable");
-  luaL_register(L, NULL, arken_Image_metatable);
+  luaL_register(L, nullptr, arken_Image_metatable);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }

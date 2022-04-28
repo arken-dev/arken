@@ -15,7 +15,7 @@ using arken::Barcode;
 
 arken::Barcode *
 checkBarcode( lua_State *L , int position = 1) {
-  return *(arken::Barcode **) luaL_checkudata(L, position, "arken.Barcode.metatable");
+  return *static_cast<arken::Barcode **>(luaL_checkudata(L, position, "arken.Barcode.metatable"));
 }
 
 /**
@@ -24,7 +24,7 @@ checkBarcode( lua_State *L , int position = 1) {
 
 static int
 arken_Barcode_new( lua_State *L ) {
-  arken::Barcode **ptr = (arken::Barcode **)lua_newuserdata(L, sizeof(Barcode*));
+  auto ptr = static_cast<arken::Barcode **>(lua_newuserdata(L, sizeof(Barcode*)));
   int width  = luaL_checkinteger(L, 1);
   int height = luaL_checkinteger(L, 2);
   const char *format = lua_tostring(L, 3);
@@ -42,13 +42,13 @@ arken_Barcode_new( lua_State *L ) {
 
 static const luaL_reg arken_Barcode[] = {
   {"new", arken_Barcode_new},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_Barcode( lua_State *L ) {
   luaL_newmetatable(L, "arken.Barcode");
-  luaL_register(L, NULL, arken_Barcode);
+  luaL_register(L, nullptr, arken_Barcode);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -86,13 +86,13 @@ luaL_reg arken_Barcode_metatable[] = {
   {"setText", arken_Barcode_setText},
   {"save",    arken_Barcode_save},
   {"__gc",    arken_Barcode_gc},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_Barcode_metatable( lua_State *L ) {
   luaL_newmetatable(L, "arken.Barcode.metatable");
-  luaL_register(L, NULL, arken_Barcode_metatable);
+  luaL_register(L, nullptr, arken_Barcode_metatable);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }

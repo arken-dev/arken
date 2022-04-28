@@ -39,10 +39,10 @@ extern "C" {
       {"decode", arken_json_decode},
       {"encode", arken_json_encode},
       {"file",   arken_json_file},
-      {NULL, NULL}
+      {nullptr, nullptr}
     };
     luaL_newmetatable(L, "arken.json");
-    luaL_register(L, NULL, Map);
+    luaL_register(L, nullptr, Map);
     lua_pushvalue(L, -1);
     lua_setfield(L, -1, "__index");
     return 1;

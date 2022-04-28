@@ -16,7 +16,7 @@ using string = arken::string;
 
 Shared *
 checkShared( lua_State *L ) {
-  return *(Shared **) luaL_checkudata(L, 1, "arken.concurrent.Shared.metatable");
+  return *static_cast<Shared **>(luaL_checkudata(L, 1, "arken.concurrent.Shared.metatable"));
 }
 
 //-----------------------------------------------------------------------------
@@ -27,7 +27,7 @@ static int
 arken_concurrent_Shared_global(lua_State *L) {
   Shared instance = Shared::global();
 
-  Shared **ptr = (Shared **)lua_newuserdata(L, sizeof(Shared*));
+  auto ptr = static_cast<Shared **>(lua_newuserdata(L, sizeof(Shared*)));
   *ptr = new Shared(instance);
 
   luaL_getmetatable(L, "arken.concurrent.Shared.metatable");
@@ -38,13 +38,13 @@ arken_concurrent_Shared_global(lua_State *L) {
 
 static const luaL_reg arken_concurrent_Shared[] = {
   {"global", arken_concurrent_Shared_global},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_concurrent_Shared( lua_State *L ) {
   luaL_newmetatable(L, "arken.concurrent.Shared");
-  luaL_register(L, NULL, arken_concurrent_Shared);
+  luaL_register(L, nullptr, arken_concurrent_Shared);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -155,13 +155,13 @@ luaL_reg arken_concurrent_Shared_metatable[] = {
   {"getBool",   arken_concurrent_Shared_getBool},
   {"toggle",    arken_concurrent_Shared_toggle},
   {"__gc",      arken_concurrent_Shared_gc},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_concurrent_Shared_metatable( lua_State *L ) {
   luaL_newmetatable(L,  "arken.concurrent.Shared.metatable");
-  luaL_register(L, NULL, arken_concurrent_Shared_metatable);
+  luaL_register(L, nullptr, arken_concurrent_Shared_metatable);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }

@@ -14,7 +14,7 @@ using json   = arken::json;
 
 fifo::node *
 checkNode( lua_State *L ) {
-  return *(fifo::node **) luaL_checkudata(L, 1, "arken.concurrent.task.fifo.node.metatable");
+  return *static_cast<fifo::node **>(luaL_checkudata(L, 1, "arken.concurrent.task.fifo.node.metatable"));
 }
 
 //-----------------------------------------------------------------------------
@@ -39,7 +39,7 @@ arken_concurrent_task_fifo_start(lua_State *L) {
   }
 
   fifo::node node = fifo::start( fileName, params, purge );
-  fifo::node **ptr = (fifo::node **)lua_newuserdata(L, sizeof(fifo::node*));
+  auto ptr = static_cast<fifo::node **>(lua_newuserdata(L, sizeof(fifo::node*)));
   *ptr = new fifo::node(node);
   luaL_getmetatable(L, "arken.concurrent.task.fifo.node.metatable");
   lua_setmetatable(L, -2);
@@ -78,13 +78,13 @@ static const luaL_reg arken_concurrent_task_fifo[] = {
   {"max",     arken_concurrent_task_fifo_max},
   {"actives", arken_concurrent_task_fifo_actives},
   {"inspect", arken_concurrent_task_fifo_inspect},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_concurrent_task_fifo( lua_State *L ) {
   luaL_newmetatable(L, "arken.concurrent.task.fifo");
-  luaL_register(L, NULL, arken_concurrent_task_fifo);
+  luaL_register(L, nullptr, arken_concurrent_task_fifo);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -114,7 +114,7 @@ arken_concurrent_task_fifo_node_shared( lua_State *L ) {
     fprintf(stderr, "%s\n", lua_tostring(L, -1));
   }
 
-  Shared **ptr = (Shared **)lua_newuserdata(L, sizeof(Shared*));
+  auto ptr = static_cast<Shared **>(lua_newuserdata(L, sizeof(Shared*)));
   *ptr = new Shared(node->shared());
   luaL_getmetatable(L, "arken.concurrent.Shared.metatable");
   lua_setmetatable(L, -2);
@@ -151,13 +151,13 @@ luaL_reg arken_concurrent_task_fifo_node_metatable[] = {
   {"finished",  arken_concurrent_task_fifo_node_finished},
   {"wait",      arken_concurrent_task_fifo_node_wait},
   {"__gc",      arken_concurrent_task_fifo_node_gc},
-  {NULL, NULL}
+  {nullptr, nullptr}
 };
 
 void static
 register_arken_concurrent_task_fifo_node_metatable( lua_State *L ) {
   luaL_newmetatable(L, "arken.concurrent.task.fifo.node.metatable");
-  luaL_register(L, NULL, arken_concurrent_task_fifo_node_metatable);
+  luaL_register(L, nullptr, arken_concurrent_task_fifo_node_metatable);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
