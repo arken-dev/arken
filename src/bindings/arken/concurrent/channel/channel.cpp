@@ -37,9 +37,6 @@ arken_concurrent_channel_start(lua_State *L) {
     params = json::encode(L);
   }
 
-  // TODO remove after tests
-  purge = false;
-
   channel * chn = channel::start( fileName, params, purge );
   auto ptr = static_cast<channel **>(lua_newuserdata(L, sizeof(channel*)));
   *ptr = chn;
@@ -47,7 +44,7 @@ arken_concurrent_channel_start(lua_State *L) {
   luaL_getmetatable(L, "arken.concurrent.channel.metatable");
   lua_setmetatable(L, -2);
 
-  delete params;
+  delete[] params;
 
   return 1;
 }

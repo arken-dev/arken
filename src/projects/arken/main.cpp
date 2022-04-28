@@ -140,9 +140,13 @@ int arkenConsoleLoad(lua_State *L)
 
     if (level == 0) {
       rv  = luaL_loadstring(L, buffer);
-      rv  = lua_pcall(L, 0, 0, 0);
       if (rv) {
         fprintf(stderr, "%s\n", lua_tostring(L, -1));
+      } else {
+        rv  = lua_pcall(L, 0, 0, 0);
+        if (rv) {
+          fprintf(stderr, "%s\n", lua_tostring(L, -1));
+        }
       }
     }
     if (level < 0) {

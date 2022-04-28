@@ -49,7 +49,7 @@ arken_concurrent_task_singular_start(lua_State *L) {
   luaL_getmetatable(L, "arken.concurrent.task.singular.node.metatable");
   lua_setmetatable(L, -2);
 
-  delete params;
+  delete[] params;
 
   return 1;
 }
@@ -82,7 +82,7 @@ arken_concurrent_task_singular_emplace(lua_State *L) {
   luaL_getmetatable(L, "arken.concurrent.task.singular.node.metatable");
   lua_setmetatable(L, -2);
 
-  delete params;
+  delete[] params;
 
   return 1;
 }
@@ -115,7 +115,7 @@ arken_concurrent_task_singular_place(lua_State *L) {
   luaL_getmetatable(L, "arken.concurrent.task.singular.node.metatable");
   lua_setmetatable(L, -2);
 
-  delete params;
+  delete[] params;
 
   return 1;
 }
