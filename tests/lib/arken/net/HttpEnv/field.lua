@@ -1,9 +1,9 @@
 local HttpEnv = require "arken.net.HttpEnv"
-
+local mvm  = require "arken.mvm"
 local test = {}
 
 test['should return User-Agent field'] = function()
-  local header = os.read(ARKEN_PATH .. '/tests/arken/net/HttpEnv/example-1.txt')
+  local header = os.read(mvm.path() .. '/tests/arken/net/HttpEnv/example-1.txt')
   local parser = HttpEnv.new(header)
   assert(parser:field("User-Agent") == "Mozilla/5.0 (X11; Linux x86_64; rv:38.0)")
 end
