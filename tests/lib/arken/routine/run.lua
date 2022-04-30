@@ -1,15 +1,15 @@
-local rhea = require 'rhea'
+local routine = require 'routine'
 local json = require 'arken.json'
 local test = {}
-local MyRheaTask = require('util.rhea.MyRheaTask')
+local MyRoutineTask = require('util.routine.MyRoutineTask')
 
 test.beforeAll = function()
   package.path = package.path .. ';' .. ARKEN_PATH .. '/util/?.lua'
-  rhea.path = package.path
+  routine.path = package.path
 end
 
 test.afterAll = function()
-  package.path = package.path:mid(1, rhea.path:lastIndexOf(';')-1)
+  package.path = package.path:mid(1, routine.path:lastIndexOf(';')-1)
 end
 
 -------------------------------------------------------------------------------
@@ -21,55 +21,54 @@ function output(value)
   result = value
 end
 
-rhea.output = output
+routine.output = output
 
 -------------------------------------------------------------------------------
 -- MODULE TEST
 
 test.should_return_string_help = function()
-  rhea.run({})
+  routine.run({})
   assert( result == 'prepare # prepare database for development\n', result )
 end
 
 test.should_execute_task = function()
   local params = {}
-  params[0] = 'my_rhea_task:prepare'
-  assert( MyRheaTask.flag == false )
-  rhea.run(params)
-  assert( MyRheaTask.flag == true )
+  params[0] = 'my_routine_task:prepare'
+  assert( MyRoutineTask.flag == false )
+  routine.run(params)
+  assert( MyRoutineTask.flag == true )
 end
 
 test.should_execute_help_undocumentad = function()
   local params = {}
-  params[0] = 'my_rhea_task:other'
+  params[0] = 'my_routine_task:other'
   params[1] = '--help'
-  rhea.run(params)
+  routine.run(params)
   assert( result == 'other: undocumented', result )
 end
 
 test.should_execute_help_action = function()
   local params = {}
-  params[0] = 'my_rhea_task:prepare'
+  params[0] = 'my_routine_task:prepare'
   params[1] = '--help'
-  rhea.run(params)
+  routine.run(params)
   assert( result == 'prepare # prepare database for development', result )
 end
 
 test.should_execute_help_module = function()
   local params = {}
-  params[0] = 'my_rhea_task'
+  params[0] = 'my_routine_task'
   params[1] = '--help'
-  rhea.run(params)
+  routine.run(params)
   assert( result == 'prepare # prepare database for development\n', result )
 end
 
 test.should_error_if_module_not_load = function()
   local params = {}
-  params[0] = 'my_rhea_task'
+  params[0] = 'my_routine_task'
   params[1] = '--help'
-  rhea.run(params)
+  routine.run(params)
   assert( result == 'prepare # prepare database for development\n', result )
 end
-
 
 return test

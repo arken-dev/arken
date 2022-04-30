@@ -16,18 +16,18 @@ rhea.output = output
 -------------------------------------------------------------------------------
 -- MODULE TEST
 
-local MyRheaTask = {}
-MyRheaTask.help  = {}
+local MyRoutineTask = {}
+MyRoutineTask.help  = {}
 
-MyRheaTask.help.prepapre = [[
+MyRoutineTask.help.prepapre = [[
   prepare database for development
 ]]
 
-MyRheaTask.prepare = function()
+MyRoutineTask.prepare = function()
 end
 
 test.should_return_string_help = function()
-  rhea.help(MyRheaTask)
+  rhea.help(MyRoutineTask)
   assert( result == 'prepapre # prepare database for development\n', result )
 end
 

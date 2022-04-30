@@ -4,11 +4,11 @@
 -- license that can be found in the LICENSE file.
 local Array = require('arken.Array')
 
-local rhea = {}
+local routine = {}
 
-rhea.output = print
+routine.output = print
 
-rhea.parseArg = function(index, args)
+routine.parseArg = function(index, args)
   index = index + 1
   local result = Array.new()
   while (index <= #args) do
@@ -30,14 +30,14 @@ rhea.parseArg = function(index, args)
   return result
 end
 
-rhea.parseArgs = function(args)
+routine.parseArgs = function(args)
   local params = {}
   local key = ""
 
   for index, value in ipairs(args) do
     if value:startsWith("--") then
       key = value:mid(3, -1)
-      params[key] = rhea.parseArg(index, args)
+      params[key] = routine.parseArg(index, args)
     else
       table.insert(params, value)
     end
@@ -46,7 +46,7 @@ rhea.parseArgs = function(args)
   return params
 end
 
-rhea.parseName = function(arg)
+routine.parseName = function(arg)
   local lastIndexMethod = arg:lastIndexOf(":")
   local lastIndexName   = arg:lastIndexOf(".")
   if lastIndexName < 0 then
@@ -63,7 +63,7 @@ rhea.parseName = function(arg)
   return (space .. name:camelCase()), method
 end
 
-rhea.help = function(module)
+routine.help = function(module)
   local help = ""
   local size = 0
 
@@ -82,11 +82,11 @@ rhea.help = function(module)
       help = help .. k .. space .. ' # ' .. v:trim():replace('\n', margem) .. '\n'
     end
 
-    rhea.output(help)
+    routine.output(help)
   end
 end
 
-rhea.run = function(args)
+routine.run = function(args)
   local path = {}
 
   if args[0] == nil then
@@ -104,24 +104,24 @@ rhea.run = function(args)
       local list = os.find(str, "\\.lua$", false)
       for i = 1, list:size() do
         local module = dofile(list:at(i))
-        rhea.output(module.className:underscore())
-        rhea.help(module)
+        routine.output(module.className:underscore())
+        routine.help(module)
       end
     end
   else
-    local name, action = rhea.parseName(arg[0])
+    local name, action = routine.parseName(arg[0])
     local module = require('routines.' .. name)
 
     if action == 'help' then
-      rhea.output(module.className:underscore())
-      rhea.help(module)
+      routine.output(module.className:underscore())
+      routine.help(module)
       os.exit()
     end
 
     -------------------------------------------------------------------------------
     -- EXECUTE
     -------------------------------------------------------------------------------
-    local params = rhea.parseArgs(args)
+    local params = routine.parseArgs(args)
 
     if module[action] then
       local object = module.new{ __params = params, params = function(self) return self.__params end }
@@ -129,19 +129,19 @@ rhea.run = function(args)
         if object.help[action] then
           local help   = object.help[action]
           local margem = '\n' .. string.rep(' ', #action + 1)
-          rhea.output(action .. ' # ' .. help:trim():replace('\n', margem))
+          routine.output(action .. ' # ' .. help:trim():replace('\n', margem))
         else
-          rhea.output(action .. ": undocumented")
+          routine.output(action .. ": undocumented")
         end
       else
         object:execute(action, params)
       end
     else
       if params.help then
-        rhea.help(module)
+        routine.help(module)
       end
     end
   end
 end
 
-return rhea
+return routine
