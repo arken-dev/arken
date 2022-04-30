@@ -397,27 +397,27 @@ end
 
 test['format 11.000 to 11,00'] = function()
   local value = math.format(11.000, 2, ',', '.')
-  assert( value == '11,00' )
+  assert( value == '11,00', value )
 end
 
 test['format 7.5 to 7,5'] = function()
   local value = math.format(7.5, 2, ',', '.')
-  assert( value == '7,50' )
+  assert( value == '7,50', value )
 end
 
 test['format 82.5 to 82,50'] = function()
   local value = math.format(82.5, 2, ',', '.')
-  assert( value == '82,50' )
+  assert( value == '82,50', value )
 end
 
 test['format 100 to 100,00'] = function()
   local value = math.format(100.0, 2, ',', '.')
-  assert( value == '100,00' )
+  assert( value == '100,00', value )
 end
 
 test['format 15.5 to 15,5'] = function()
   local value = math.format(15.5, 2, ',', '.')
-  assert( value == '15,50' )
+  assert( value == '15,50', value )
 end
 
 test['format 170.5 to 175,5'] = function()
@@ -447,17 +447,17 @@ end
 
 test['format 5.000 to 5,00'] = function()
   local value = math.format(5.000, 2, ',', '.')
-  assert( value == '5,00' )
+  assert( value == '5,00', value )
 end
 
 test['format 30 to 30,00'] = function()
   local value = math.format(30, 2, ',', '.')
-  assert( value == '30,00' )
+  assert( value == '30,00', value )
 end
 
 test['format 150 to 150,00'] = function()
   local value = math.format(150, 2, ',', '.')
-  assert( value == '150,00' )
+  assert( value == '150,00', value )
 end
 
 test['format 64.516129032258 to 64.52'] = function()
@@ -467,22 +467,22 @@ end
 
 test['format 39.56 to 39,56'] = function()
   local value = math.format(39.56, 2, ',', '.')
-  assert( value == '39,56' )
+  assert( value == '39,56', value )
 end
 
 test['format 197.8 to 197,80'] = function()
   local value = math.format(197.8, 2, ',', '.')
-  assert( value == '197,80' )
+  assert( value == '197,80', value )
 end
 
 test['format 9.56 to 9,56'] = function()
   local value = math.format(9.56, 2, ',', '.')
-  assert( value == '9,56' )
+  assert( value == '9,56', value )
 end
 
 test['format 47.8 to 47,80'] = function()
   local value = math.format(47.8, 2, ',', '.')
-  assert( value == '47,80' )
+  assert( value == '47,80', value )
 end
 
 test['format 31.866666666667 to 32,87'] = function()
@@ -492,57 +492,57 @@ end
 
 test['format 7.000 to 7,00'] = function()
   local value = math.format(7.000, 2, ',', '.')
-  assert( value == '7,00' )
+  assert( value == '7,00', value )
 end
 
 test['format 0.94 to 0,94'] = function()
   local value = math.format(0.94, 2, ',', '.')
-  assert( value == '0,94' )
+  assert( value == '0,94', value )
 end
 
 test['format 6.58 to 6,58'] = function()
   local value = math.format(6.58, 2, ',', '.')
-  assert( value == '6,58' )
+  assert( value == '6,58', value )
 end
 
 test['format 2.7522168311862 to 2,75'] = function()
   local value = math.format(2.7522168311862, 2, ',', '.')
-  assert( value == '2,75' )
+  assert( value == '2,75', value )
 end
 
 test['format 1.98 to 1,98'] = function()
   local value = math.format(1.98, 2, ',', '.')
-  assert( value == '1,98' )
+  assert( value == '1,98', value )
 end
 
 test['format 110.63829787234 to 110,64'] = function()
   local value = math.format(110.63829787234, 2, ',', '.')
-  assert( value == '110,64' )
+  assert( value == '110,64', value )
 end
 
 test['format 3.1908001295756 to 3,19'] = function()
   local value = math.format(3.1908001295756, 2, ',', '.')
-  assert( value == '3,19' )
+  assert( value == '3,19', value )
 end
 
 test['format 96.446700507614 to 96,45'] = function()
   local value = math.format(96.446700507614, 2, ',', '.')
-  assert( value == '96,45' )
+  assert( value == '96,45', value )
 end
 
 test['format 34.486417657046 to 34,49'] = function()
   local value = math.format(34.486417657046, 2, ',', '.')
-  assert( value == '34,49' )
+  assert( value == '34,49', value )
 end
 
 test['format -7.91 to -7,91'] = function()
   local value = math.format(-7.91, 2, ',', '.')
-  assert( value == '-7,91' )
+  assert( value == '-7,91', value )
 end
 
 test['format -102.83 to -102,83'] = function()
   local value = math.format(-102.83, 2, ',', '.')
-  assert( value == '-102,83' )
+  assert( value == '-102,83', value )
 end
 
 test['format -79.1 to -79,10'] = function()
@@ -558,7 +558,7 @@ end
 
 test['format 12.693654499151 to 12.69'] = function()
   local value = math.format(12.693654499151, 2, ',', '.')
-  assert( value == '12,69' )
+  assert( value == '12,69', value )
 end
 
 test['format nan to ???'] = function()
@@ -568,12 +568,12 @@ end
 
 test['format 106.66666666667 to 106,67'] = function()
   local value = math.format(106.66666666667, 2, ',', '.')
-  assert( value == '106,67' )
+  assert( value == '106,67', value )
 end
 
 test['format -0.003 to 0,00'] = function()
   local value = math.format(tonumber('-0.003'), 2, ',', '.')
-  assert( value == '0,00' )
+  assert( value == '-0,00', value )
 end
 
 test['format -0.003 to -0,003'] = function()
