@@ -1,4 +1,4 @@
-local Date = require('arken.time.Date')
+local Date = require('arken.chrono.Date')
 local test = {}
 
 test.should_parse_date_only = function()
