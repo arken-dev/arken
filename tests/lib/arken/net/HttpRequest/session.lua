@@ -1,6 +1,7 @@
 local HttpEnv = require "arken.net.HttpEnv"
 local HttpRequest = require "arken.net.HttpRequest"
 local json = require "arken.json"
+local mvm  = require "arken.mvm"
 
 cache   = {}
 cache.value = function()
@@ -17,7 +18,7 @@ end
 test.should_return_table_data = function()
   local env = {}
   env.field = function()
-    return os.read(ARKEN_PATH .. "/tests/lib/arken/net/cookie/1-example.cookie")
+    return os.read(mvm.path() .. "/tests/lib/arken/net/cookie/1-example.cookie")
   end
   local request = HttpRequest.new{ _env = env }
   local session = request:session()
