@@ -3,6 +3,12 @@ local json   = require('arken.json')
 local Class  = require('arken.oop.Class')
 local PersonPostgres = Class.new("PersonPostgres", "ActiveRecord")
 local ActiveRecord = require('arken.ActiveRecord')
+local config  = "config/active_record_postgres.json"
+
+if not os.exists( config ) then
+  test.config_not_exists = config
+  return test
+end
 
 test.beforeAll = function()
   ActiveRecord.reset()

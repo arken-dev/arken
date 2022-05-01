@@ -1,10 +1,16 @@
-local test = {}
-local json  = require('arken.json')
+local test   = {}
+local json   = require('arken.json')
 local Class  = require('arken.oop.Class')
 local Person = Class.new("Person", "ActiveRecord")
-Person.tableName = string.format("person_%s", os.uuid():replace('-', '_'))
+local config = "config/active_record_postgres.json"
+
+if not os.exists( config ) then
+  test.config_not_exists = config
+  return test
+end
 
 test.beforeAll = function()
+  Person.tableName = string.format("person_%s", os.uuid():replace('-', '_'))
   ActiveRecord.reset()
   ActiveRecord.config = "config/active_record_postgres.json"
   local sql = [[
