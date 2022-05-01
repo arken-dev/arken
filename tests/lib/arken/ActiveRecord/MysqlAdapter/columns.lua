@@ -3,9 +3,16 @@ local json   = require('arken.json')
 local Class  = require('arken.oop.Class')
 local Adapter = require('arken.ActiveRecord.MysqlAdapter')
 local Person = Class.new("Person", "ActiveRecord")
-Person.tableName = string.format("person_%s", "columns") --os.uuid():replace('-', '_'))
+local config = "config/active_record_mysql.json"
+
+if not os.exists( config ) then
+  test.config_not_exists = config
+  return test
+end
+
 
 test.beforeAll = function()
+  Person.tableName = string.format("person_%s", "columns") --os.uuid():replace('-', '_'))
   ActiveRecord.reset()
   ActiveRecord.config = "config/active_record_mysql.json"
   local sql = [[
