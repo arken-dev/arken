@@ -54,7 +54,7 @@ end
 
 dispatcher.dispatchLocal = function(fileName)
   local list     = require 'arken.net.mime-type'
-  local suffix   = fileName:suffix()
+  local suffix   = fileName:suffix('.')
   local mimetype = tostring(list[suffix])
   local header   = "Content-type: " .. mimetype
   local file     = io.open(fileName, "rb")
