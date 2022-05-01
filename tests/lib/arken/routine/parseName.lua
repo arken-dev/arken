@@ -1,4 +1,4 @@
-local routine = require 'routine'
+local routine = require 'arken.routine'
 local test = {}
 
 test['parse simple name'] = function()

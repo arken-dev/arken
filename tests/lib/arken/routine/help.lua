@@ -1,4 +1,4 @@
-local rhea = require 'rhea'
+local routine = require 'arken.routine'
 local json = require 'arken.json'
 local test = {}
 
@@ -11,7 +11,7 @@ function output(value)
   result = value
 end
 
-rhea.output = output
+routine.output = output
 
 -------------------------------------------------------------------------------
 -- MODULE TEST
@@ -27,7 +27,7 @@ MyRoutineTask.prepare = function()
 end
 
 test.should_return_string_help = function()
-  rhea.help(MyRoutineTask)
+  routine.help(MyRoutineTask)
   assert( result == 'prepapre # prepare database for development\n', result )
 end
 
