@@ -3,7 +3,7 @@ local mvm  = require "arken.mvm"
 local test = {}
 
 test['should return /pedido/varejo'] = function()
-  local header = os.read(mvm.path() .. '/tests/arken/net/HttpEnv/example-1.txt')
+  local header = os.read(mvm.path() .. '/tests/lib/arken/net/HttpEnv/example-1.txt')
   local parser = HttpEnv.new(header)
   assert(parser:requestUri() == '/pedido/varejo?id=1234&descricao=teste')
 end

@@ -39,7 +39,7 @@ test.should_return_table_from_params_by_post = function()
 end
 
 test.should_return_table_from_params_by_multipart = function()
-  local header = os.read(mvm.path() .. '/tests/arken/net/HttpEnv/example-2.txt')
+  local header = os.read(mvm.path() .. '/tests/lib/arken/net/HttpEnv/example-2.txt')
   local env = HttpEnv.new(header)
   local request = HttpRequest.new{ _env = env }
   local params = request:params(true)

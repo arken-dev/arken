@@ -15,7 +15,7 @@ test.should_insert_cookie_session = function()
   _G.cache = {}
   _G.cache.insert = function()
   end
-  local header = os.read(mvm.path() .. '/tests/arken/net/HttpEnv/example-2.txt')
+  local header = os.read(mvm.path() .. '/tests/lib/arken/net/HttpEnv/example-2.txt')
   local env = HttpEnv.new(header)
   local request = HttpRequest.new{ _env = env }
   request:session()
