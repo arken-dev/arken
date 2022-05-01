@@ -3,7 +3,7 @@ local mvm  = require "arken.mvm"
 local test = {}
 
 test['first example'] = function()
-  local header = os.read(mvm.path() .. '/tests/arken/net/HttpEnv/example-1.txt')
+  local header = os.read(mvm.path() .. '/tests/lib/arken/net/HttpEnv/example-1.txt')
   local parser = HttpEnv.new(header)
   assert(parser:headerDone() == nil)
 end
