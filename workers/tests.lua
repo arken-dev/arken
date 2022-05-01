@@ -72,7 +72,7 @@ end
 
 function M:stop()
   local shared = self:shared()
-  local result = "%i tests, %i pendings, %i failures"
+  local result = "%i tests, %i failures, %i pendings"
   print('\n' .. shared:getString('message'))
   print(string.format(result, shared:getNumber('tests'), shared:getNumber('failure'), shared:getNumber('pending')))
   print(string.format("Finished in %.2f seconds", os.microtime() - start))
