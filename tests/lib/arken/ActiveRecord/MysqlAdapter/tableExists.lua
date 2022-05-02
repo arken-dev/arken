@@ -4,6 +4,13 @@ local Class  = require('arken.oop.Class')
 local PersonMysql = Class.new("PersonMysql", "ActiveRecord")
 local ActiveRecord = require('arken.ActiveRecord')
 
+local config = "config/active_record_mysql.json"
+
+if not os.exists( config ) then
+  test.config_not_exists = config
+  return test
+end
+
 test.beforeAll = function()
   ActiveRecord.reset()
   ActiveRecord.config = "config/active_record_mysql.json"

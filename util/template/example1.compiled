@@ -1,6 +1,7 @@
 return function(self, helper)
   local __buffer = ''
    __buffer = __buffer .. [[
-print("hello...")]]
+print("hello...")
+]]
   return __buffer
 end

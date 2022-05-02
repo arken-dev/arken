@@ -13,6 +13,7 @@ else
   ]] .. tostring('is false' ) .. [[
 ]]
 end 
- __buffer = __buffer .. [[]]
+ __buffer = __buffer .. [[
+]]
   return __buffer
 end
