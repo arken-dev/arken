@@ -5,6 +5,13 @@ local Person = Class.new("Person", "ActiveRecord")
 local Adapter = require('arken.ActiveRecord.Adapter')
 Person.tableName = string.format('person_%s', os.uuid():replace('-', '_'))
 
+local config  = "config/active_record_sqlite.json"
+
+if not os.exists(config) then
+  test.config_not_exists = config
+  return test
+end
+
 test.beforeAll = function()
   ActiveRecord.reset()
   ActiveRecord.config = "config/active_record_sqlite.json"
