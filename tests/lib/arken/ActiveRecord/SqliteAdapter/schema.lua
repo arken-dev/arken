@@ -5,6 +5,13 @@ local Adapter = require('arken.ActiveRecord.SqliteAdapter')
 local SqliteTypes = Class.new("SqliteTypes", "ActiveRecord")
 SqliteTypes.tableName = 'adapter_types'
 
+local config = "config/active_record_sqlite.json"
+
+if not os.exists( config ) then
+  test.config_not_exists = config
+  return test
+end
+
 test.beforeAll = function()
   ActiveRecord.reset()
   ActiveRecord.config = "config/active_record_sqlite.json"
