@@ -1,6 +1,13 @@
 local ActiveRecord = require 'arken.ActiveRecord'
 local test = {}
 
+local config = "config/active_record_sqlite.json"
+
+if not os.exists( config ) then
+  test.config_not_exists = config
+  return test
+end
+
 test.should_error_if_file_not_exists = function()
   ActiveRecord.reset()
   ActiveRecord.config = "config/file_not_exists.json"
