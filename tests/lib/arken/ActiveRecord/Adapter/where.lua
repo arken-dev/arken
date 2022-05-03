@@ -1,5 +1,5 @@
 local Adapter   = require('arken.ActiveRecord.Adapter')
-local QDateTime = require('QDateTime')
+local Time = require('arken.chrono.Time')
 
 local test = {}
 
@@ -61,7 +61,7 @@ end
 
 test.should_return_where_and_userdata = function()
   local adapter = Adapter.new()
-  local data    = QDateTime.currentDateTime()
+  local data    = Time.currentDateTime()
   local where   = adapter:where{ where = 'data = $data', data = data }
   assert( where == string.format(" WHERE data = '%s'", data), where )
 end
@@ -119,9 +119,8 @@ test.should_return_where_with_NOT_NULL = function()
 end
 
 test.should_return_where_with_userdata = function()
-  local QDateTime = require('QDateTime')
   local adapter   = Adapter.new()
-  local date      = QDateTime.currentDateTime()
+  local date      = Time.currentDateTime()
   local where     = adapter:where{ date = date }
   local result    = string.format(" WHERE date = '%s'", date:__tostring())
   assert( where == result, where )
