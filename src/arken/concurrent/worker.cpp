@@ -15,8 +15,7 @@ namespace concurrent {
 
 std::atomic<uint32_t> worker::s_max{0};
 
-worker::~worker()
-{ }
+worker::~worker() = default;
 
 void worker::run()
 {
@@ -296,7 +295,7 @@ void worker::node::run()
     json::decode(L, value.data());
 
     if( lua_pcall(L, 2, 0, 0) != 0 ) {
-      fprintf(stderr, "run => %s: %s\n", m_fileName.data(), lua_tostring(L, 2));
+      fprintf(stderr, "run => %s: %s\n", m_fileName.data(), lua_tostring(L, -1));
     }
 
     this->m_worker->increment();

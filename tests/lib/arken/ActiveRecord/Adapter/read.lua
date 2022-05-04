@@ -3,6 +3,13 @@ local json     = require('arken.jsonp')
 local Class    = require('arken.oop.Class')
 local Employee = Class.new("EmployeeMaster", "ActiveRecord")
 
+local config  = "config/active_record_sqlite.json"
+
+if not os.exists(config) then
+  test.config_not_exists = config
+  return test
+end
+
 test.beforeAll = function()
   ActiveRecord.reset()
   ActiveRecord.config = "config/active_record_sqlite.json"
