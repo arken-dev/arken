@@ -3,6 +3,13 @@ local Class  = require('arken.oop.Class')
 local Departament = Class.new("Departament", "ActiveRecord")
 local Employee    = Class.new("Employee", "ActiveRecord")
 
+local config = "config/active_record_sqlite.json"
+
+if not os.exists( config ) then
+  test.config_not_exists = config
+  return test
+end
+
 Employee.belongsTo {
   name   = 'departament',
   record = 'Departament',

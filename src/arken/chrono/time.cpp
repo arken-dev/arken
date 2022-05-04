@@ -226,10 +226,7 @@ int Time::sec()
 
 string Time::toString()
 {
-  string format("%Y-%m-%d %H:%M:%S");
-  auto result = new char[100]();
-  std::strftime(result, 100, format, &m_calendar);
-  return string(std::move(result));
+  return strftime("%Y-%m-%d %H:%M:%S");
 }
 
 Date Time::date()

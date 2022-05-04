@@ -4,6 +4,13 @@ local ActiveRecord = require('arken.ActiveRecord')
 local Employee = Class.new("Employee", "ActiveRecord")
 local Task     = Class.new("Task", "ActiveRecord")
 
+local config = "config/active_record_sqlite.json"
+
+if not os.exists( config ) then
+  test.config_not_exists = config
+  return test
+end
+
 Employee.hasMany {
   name   = 'tasks',
   record = 'Task',
