@@ -3,6 +3,9 @@ local test = {}
 
 test.should_return_url_default_action_index = function()
   local c = Controller.new{ controllerName = 'index' }
+  Controller.prefix = '/app'
+  assert( c:url({}) == '/app/index/index', c:url({}) )
+  Controller.prefix = ''
   assert( c:url({}) == '/index/index', c:url({}) )
 end
 
