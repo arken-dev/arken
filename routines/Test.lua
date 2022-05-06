@@ -47,7 +47,7 @@ local run = function(file)
       if result.status ~= 'ok' then
         buffer = buffer .. '<b>' .. description .. '</b>' .. '\n'
         if result.msg and tostring(result.msg):len() > 0  then
-          buffer = buffer .. tostring(result.msg:escapeHtml()) .. '\n\n'
+          buffer = buffer .. tostring(result.msg) .. '\n\n'
         end
       end
 
@@ -103,7 +103,7 @@ function Test:notify()
       if ctime < tmp then
         ctime = tmp
         local status, body = run(file)
-        notify.send(file, body, status)
+        notify.send(file, body:escapeHtml(), status)
         print('\n' .. body .. '\n')
       end
     end
