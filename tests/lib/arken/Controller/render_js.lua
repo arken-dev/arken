@@ -8,19 +8,19 @@ end
 test.should_return_controllerName_and_default_name = function()
   local c = Controller.new{ controllerName = 'order', actionName = 'index' }
   local status, headers, body = c:render{ output = 'js' }
-  assert( body == [[var controller_name = "order"; var index_name = "index";]], body )
+  assert( body == "var controller_name = \"order\"; var index_name = \"index\";\n", body )
 end
 
 test.should_return_controllerName_and_name_view = function()
   local c = Controller.new{ controllerName = 'order', actionName = 'index' }
   local status, headers, body = c:render{ output = 'js', view = 'save' }
-  assert( body == [[var save = true;]], body )
+  assert( body == "var save = true;\n", body )
 end
 
 test.should_return_template = function()
   local c = Controller.new{ controllerName = 'order', actionName = 'index' }
   local status, headers, body = c:render{ output = 'js', template = 'mycustom/path' }
-  assert( body == [[var customPath = true;]], body )
+  assert( body == "var customPath = true;\n", body )
 end
 
 test.should_return_status_200 = function()
@@ -39,7 +39,7 @@ test.should_return_js_view_with_layout = function()
   local c = Controller.new{ controllerName = 'order', actionName = 'index' }
   c.layout = 'test'
   local status, headers, body = c:render{ output = 'js' }
-  assert( body == [[var layout = true; var controller_name = "order"; var index_name = "index";]], body )
+  assert( body == "var layout = true; var controller_name = \"order\"; var index_name = \"index\";\n", body )
 end
 
 test.should_return_debug_template_if_is_a_error = function()
