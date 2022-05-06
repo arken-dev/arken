@@ -87,25 +87,8 @@ function FormHelper:textField(field, options)
   local value   = options.value or self:buildValue(field)
   local options = options or {}
   local style   = options.style or "width:250px"
-  local html    = [[<input type="text" id="%s" name="%s" value=%q ]]
+  local html    = [[<input type="text" id=%q name=%q value=%q]]
   local html    = string.format(html, self:buildId(field), self:buildName(field), value)
---[[
-  if options.onblur then
-    html = html .. string.format(" onblur=%q", options.onblur)
-  end
-
-  if options.onfocus then
-    html = html .. string.format(" onfocus=%q", options.onfocus)
-  end
-
-  if options.onkeypress then
-    html = html .. string.format(" onkeypress=%q", options.onkeypress)
-  end
-
-  if options.onkeyup then
-    html = html .. string.format(" onkeyup=%q", options.onkeyup)
-  end
-]]
   local html = html .. self:htmlOptions(options)
   return (html .. ' />')
 end
