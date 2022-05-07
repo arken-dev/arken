@@ -10,7 +10,7 @@ local json       = require "arken.json"
 
 local Controller = Class.new("Controller", "arken.net.HttpRequest")
 
-Controller.prefix        = "/app"
+Controller.prefix        = "/"
 Controller.prefixHelpers = "app.helpers"
 Controller.prefixViews   = "app/views"
 
