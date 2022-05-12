@@ -94,6 +94,12 @@ bool Zip::extract(const char * archive, const char * output)
     int fd;
     unsigned long sum;
 
+    if( output ) {
+      if( !os::exists(output) ) {
+        os::mkdir(output);
+      }
+    }
+
     if ((za = zip_open(archive, 0, &err)) == nullptr) {
         zip_error_to_str(buf, sizeof(buf), err, errno);
         fprintf(stderr, "can't open zip archive `%s': %s/n",
@@ -110,14 +116,23 @@ bool Zip::extract(const char * archive, const char * output)
                 }
                 safe_create_dir(sb.name);
             } else {
-                printf("extract %s (%lu)\n", sb.name, sb.size);
+
+                string tmp_name;
+                if( output ) {
+                  tmp_name.append(output);
+                  tmp_name.append("/");
+                }
+
+                tmp_name.append(sb.name);
+
+                printf("extract %s (%lu)\n", tmp_name.data(), sb.size);
                 zf = zip_fopen_index(za, i, 0);
                 if (!zf) {
                     fprintf(stderr, "boese, boese/n");
                     return false;
                 }
 
-                fd = open(sb.name, O_RDWR | O_TRUNC | O_CREAT , 0644);
+                fd = open(tmp_name.data(), O_RDWR | O_TRUNC | O_CREAT , 0644);
                 if (fd < 0) {
                     fprintf(stderr, "boese, boese/n");
                     return false;
