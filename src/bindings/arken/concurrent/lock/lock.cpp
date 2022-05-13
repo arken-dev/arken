@@ -26,8 +26,13 @@ checkLock( lua_State *L ) {
 static int
 arken_concurrent_Lock_new( lua_State *L ) {
   const char *str = luaL_checkstring(L, 1);
+  bool reentrant = false;
+  if( lua_gettop(L) == 2 ) { /* número de argumentos */
+    reentrant = lua_toboolean(L, 2);
+  }
+
   auto ptr = static_cast<Lock **>(lua_newuserdata(L, sizeof(Lock*)));
-  *ptr = new Lock(Lock(str));
+  *ptr = new Lock(Lock(str, reentrant));
   luaL_getmetatable(L, "arken.concurrent.Lock.metatable");
   lua_setmetatable(L, -2);
   return 1;
@@ -60,16 +65,50 @@ arken_concurrent_Lock_gc( lua_State *L ) {
 static int
 arken_concurrent_Lock_enable( lua_State *L ) {
   Lock * udata  = checkLock( L );
-  udata->enable();
+
+  try {
+    udata->enable();
+  } catch (const char* msg) {
+    lua_pushstring(L, msg);
+    lua_error(L);
+  }
+
   return 0;
 }
 
 static int
 arken_concurrent_Lock_disable( lua_State *L ) {
   Lock * udata  = checkLock( L );
-  udata->disable();
+
+  try {
+    udata->disable();
+  } catch (const char* msg) {
+    lua_pushstring(L, msg);
+    lua_error(L);
+  }
+
   return 0;
 }
+
+static int
+arken_concurrent_Lock_call( lua_State *L ) {
+  Lock * udata  = checkLock( L );
+  try {
+    udata->call( L );
+  } catch (const char* msg) {
+    lua_pushstring(L, msg);
+    lua_error(L);
+  }
+
+  return 0;
+}
+
+static int
+arken_concurrent_Lock_pcall( lua_State *L ) {
+  Lock * udata  = checkLock( L );
+  return udata->pcall( L );
+}
+
 
 static int
 arken_concurrent_Lock_shared( lua_State *L ) {
@@ -94,6 +133,8 @@ static const
 luaL_reg arken_concurrent_Lock_metatable[] = {
   {"enable",  arken_concurrent_Lock_enable},
   {"disable", arken_concurrent_Lock_disable},
+  {"call",    arken_concurrent_Lock_call},
+  {"pcall",   arken_concurrent_Lock_pcall},
   {"shared",  arken_concurrent_Lock_shared},
   {"__gc",    arken_concurrent_Lock_gc},
   {nullptr, nullptr}
