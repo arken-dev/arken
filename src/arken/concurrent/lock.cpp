@@ -8,21 +8,49 @@
 namespace arken {
 namespace concurrent {
 
-Lock::Lock(const char * name)
+Lock::Lock(const char * name, bool reentrant)
 {
-  m_resource = named_ptr<Lock::resource>(name);
+  m_resource  = named_ptr<Lock::resource>(name);
+  m_reentrant = reentrant;
+  m_count     = 0;
+}
+
+Lock::Lock(const Lock &obj)
+{
+  m_resource  = obj.m_resource;
+  m_reentrant = obj.m_reentrant;
+  m_count     = 0;
 }
 
 Lock::~Lock() = default;
 
 void Lock::enable()
 {
-  m_resource->m_mutex.lock();
+
+  m_count++;
+
+  if( ! m_reentrant && m_count > 1 ) {
+    m_count--;
+    disable();
+    throw "Lock is enable, try enabling reentrant option";
+  }
+
+  if( m_count == 1 ) {
+    m_resource->m_mutex.lock();
+  }
 }
 
 void Lock::disable()
 {
-  m_resource->m_mutex.unlock();
+  m_count--;
+
+  if ( m_count < 0 ) {
+    throw "Lock is not enable";
+  }
+
+  if( m_count == 0 ) {
+    m_resource->m_mutex.unlock();
+  }
 }
 
 Shared Lock::shared()

@@ -25,10 +25,13 @@ namespace concurrent {
     };
 
     private:
+    bool m_reentrant;
+    int m_count;
     named_ptr<Lock::resource> m_resource;
 
     public:
-    Lock(const char * name);
+    Lock(const char * name, bool reentrant = false);
+    Lock(const Lock &obj);
     ~Lock();
     void enable();
     void disable();
