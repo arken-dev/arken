@@ -91,6 +91,26 @@ arken_concurrent_Lock_disable( lua_State *L ) {
 }
 
 static int
+arken_concurrent_Lock_call( lua_State *L ) {
+  Lock * udata  = checkLock( L );
+  try {
+    udata->call( L );
+  } catch (const char* msg) {
+    lua_pushstring(L, msg);
+    lua_error(L);
+  }
+
+  return 0;
+}
+
+static int
+arken_concurrent_Lock_pcall( lua_State *L ) {
+  Lock * udata  = checkLock( L );
+  return udata->pcall( L );
+}
+
+
+static int
 arken_concurrent_Lock_shared( lua_State *L ) {
   Lock * udata  = checkLock( L );
   int rv;
@@ -113,6 +133,8 @@ static const
 luaL_reg arken_concurrent_Lock_metatable[] = {
   {"enable",  arken_concurrent_Lock_enable},
   {"disable", arken_concurrent_Lock_disable},
+  {"call",    arken_concurrent_Lock_call},
+  {"pcall",   arken_concurrent_Lock_pcall},
   {"shared",  arken_concurrent_Lock_shared},
   {"__gc",    arken_concurrent_Lock_gc},
   {nullptr, nullptr}

@@ -26,7 +26,6 @@ Lock::~Lock() = default;
 
 void Lock::enable()
 {
-
   m_count++;
 
   if( ! m_reentrant && m_count > 1 ) {
@@ -42,6 +41,7 @@ void Lock::enable()
 
 void Lock::disable()
 {
+
   m_count--;
 
   if ( m_count < 0 ) {
@@ -52,6 +52,43 @@ void Lock::disable()
     m_resource->m_mutex.unlock();
   }
 }
+
+void Lock::call(lua_State *L)
+{
+  enable();
+
+  int rv = lua_pcall(L, 0, 0, 0);
+  if (rv) {
+    throw lua_tostring(L, -1);
+  }
+
+  disable();
+}
+
+int Lock::pcall(lua_State *L)
+{
+  enable();
+
+  // remove first element is a userdata this instance
+  lua_remove(L, 1);
+
+  int rv = lua_pcall(L, lua_gettop(L)-1, LUA_MULTRET, 0);
+
+  if (rv) {
+    const char * message = lua_tostring(L, -1);
+    lua_remove(L, 1);
+    lua_pushboolean(L, false);
+    lua_pushstring(L, message);
+  } else {
+    lua_pushboolean(L, true);
+    lua_insert(L, 1);
+  }
+
+  disable();
+
+  return lua_gettop(L);
+}
+
 
 Shared Lock::shared()
 {
