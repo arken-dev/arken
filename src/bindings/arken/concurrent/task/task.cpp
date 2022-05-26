@@ -77,6 +77,13 @@ arken_concurrent_task_finished( lua_State *L ) {
 }
 
 static int
+arken_concurrent_task_gc( lua_State *L ) {
+  task * ptr = checkTask( L );
+  delete ptr;
+  return 0;
+}
+
+static int
 arken_concurrent_task_shared( lua_State *L ) {
   task * pointer = checkTask( L );
   int rv;
@@ -104,6 +111,7 @@ luaL_reg arken_concurrent_task_metatable[] = {
   {"uuid",     arken_concurrent_task_uuid},
   {"shared",   arken_concurrent_task_shared},
   {"finished", arken_concurrent_task_finished},
+  {"__gc",     arken_concurrent_task_gc},
   {nullptr, nullptr}
 };
 

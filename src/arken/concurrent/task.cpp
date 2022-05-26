@@ -99,6 +99,7 @@ task::task(const task &obj)
   m_inspect  = obj.m_inspect;
   m_finished = obj.m_finished;
   m_shared   = obj.m_shared;
+  m_purge    = obj.m_purge;
 }
 
 } // namespace concurrent
