@@ -123,6 +123,7 @@ singular::node::node(const node &obj)
   m_shared    = obj.m_shared;
   m_finished  = obj.m_finished;
   m_inspect   = obj.m_inspect;
+  m_purge     = obj.m_purge;
 }
 
 singular::node::node(const char * fileName, const char * params, const char * name, bool purge)
@@ -138,7 +139,6 @@ singular::node::node(const char * fileName, const char * params, const char * na
     append(m_fileName).append("#").
     append(m_params.escape()).append("#").
     append(m_name.escape());
-
 }
 
 void singular::node::run()

@@ -1,6 +1,7 @@
  1) return function(self, helper)
  2)   local __buffer = ''
  3)    __buffer = __buffer .. [[
- 4) print("hello...")]]
- 5)   return __buffer
- 6) end
+ 4) print("hello...")
+ 5) ]]
+ 6)   return __buffer
+ 7) end
