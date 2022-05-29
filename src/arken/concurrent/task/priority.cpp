@@ -72,6 +72,7 @@ priority::node::node(const node &obj)
   m_shared    = obj.m_shared;
   m_finished  = obj.m_finished;
   m_inspect   = obj.m_inspect;
+  m_purge     = obj.m_purge;
 }
 
 priority::node::node(const char * fileName, const char * params, int priority, bool purge)

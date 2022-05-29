@@ -93,6 +93,7 @@ scheduled::node::node(const node &obj)
   m_shared    = obj.m_shared;
   m_finished  = obj.m_finished;
   m_inspect   = obj.m_inspect;
+  m_purge     = obj.m_purge;
 }
 
 scheduled::node::node(const char * fileName, const char * params, const char * name, bool purge)
