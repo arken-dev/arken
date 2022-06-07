@@ -54,7 +54,7 @@ namespace task {
     static std::vector<string> &vector();
     static std::unordered_map<string, std::queue<singular::node>> &map();
     static std::unordered_map<string, std::atomic<bool>> &runners();
-    static std::unordered_map<string, string> &running();
+    static std::unordered_map<string, singular::node> &running();
     static std::atomic<size_t> &position();
     static std::mutex & mutex();
     static void push(const singular::node & node);

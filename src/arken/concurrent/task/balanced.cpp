@@ -13,8 +13,9 @@ namespace task {
 
 balanced::balanced()
 {
-  m_uuid    = os::uuid();
-  m_inspect = "arken.concurrent.task.balanced";
+  m_inspect   = "arken.concurrent.task.balanced";
+  m_uuid      = os::uuid();
+  m_microtime = os::microtime();
   balanced::actives()++;
 }
 
@@ -54,6 +55,7 @@ void balanced::run()
       break;
     }
 
+    swap(this, &node);
     node.run();
 
     std::unique_lock<std::mutex> lck(balanced::mutex());

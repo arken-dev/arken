@@ -12,8 +12,9 @@ namespace task {
 
 fifo::fifo()
 {
-  m_uuid    = os::uuid();
-  m_inspect = "arken.concurrent.task.fifo";
+  m_inspect   = "arken.concurrent.task.fifo";
+  m_uuid      = os::uuid();
+  m_microtime = os::microtime();
   fifo::actives()++;
 }
 
@@ -37,7 +38,7 @@ void fifo::run()
     if( !node ) {
       break;
     }
-
+    swap(this, &node);
     node.run();
 
     std::unique_lock<std::mutex> lck(fifo::mutex());

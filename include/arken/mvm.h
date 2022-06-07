@@ -27,7 +27,6 @@ namespace arken
 namespace concurrent
 {
   class base {
-
     using Shared = arken::concurrent::Shared;
     using string = arken::string;
 
@@ -42,7 +41,7 @@ namespace concurrent
     Shared m_shared;
 
     public:
-    virtual void run() = 0;
+    virtual void run() /*= 0*/;
     base();
     virtual ~base();
     bool   finished();
@@ -55,6 +54,7 @@ namespace concurrent
     double microtime();
     void wait();
     operator bool() const;
+    static void swap(concurrent::base * source, concurrent::base * destination);
   };
 
 } // namespace concurrent
@@ -96,8 +96,8 @@ class mvm {
     std::condition_variable        m_condition;
     std::atomic<uint32_t>          m_max;
     std::atomic<uint32_t>          m_actives;
-    std::unordered_map<string, string> m_running;
     std::unordered_map<string, string> m_waiting;
+    std::unordered_map<std::thread::id, concurrent::base *> m_running;
 
     core(uint32_t max);
     ~core();
@@ -112,8 +112,8 @@ class mvm {
     static std::condition_variable  & condition();
     static std::atomic<uint32_t>    & max();
     static std::atomic<uint32_t>    & actives();
-    static std::unordered_map<string, string> & running();
     static std::unordered_map<string, string> & waiting();
+    static std::unordered_map<std::thread::id, concurrent::base *> & running();
 
   };
 
@@ -181,6 +181,7 @@ class mvm {
   static size_t workers();
   static char * setlocale(string locale, string category);
   static char * setlocale(string locale);
+  static arken::concurrent::base current();
 
 };
 

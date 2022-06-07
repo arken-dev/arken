@@ -12,8 +12,9 @@ namespace task {
 
 priority::priority()
 {
-  m_uuid    = os::uuid();
-  m_inspect = "arken.concurrent.task.priority";
+  m_inspect   = "arken.concurrent.task.priority";
+  m_uuid      = os::uuid();
+  m_microtime = os::microtime();
   priority::actives()++;
 }
 
@@ -38,6 +39,7 @@ void priority::run()
       break;
     }
 
+    swap(this, &node);
     node.run();
 
     std::unique_lock<std::mutex> lck(priority::mutex());
