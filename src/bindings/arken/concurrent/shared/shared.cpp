@@ -54,6 +54,20 @@ register_arken_concurrent_Shared( lua_State *L ) {
  */
 
 static int
+arken_concurrent_Shared_info( lua_State *L ) {
+  Shared * shr = checkShared( L );
+
+  if(lua_gettop(L) == 1) { /* número de argumentos */
+    lua_pushstring(L, shr->info());
+    return 1;
+  } else {
+    const char * info = luaL_checkstring(L, 2);
+    shr->info(info);
+    return 0;
+  }
+}
+
+static int
 arken_concurrent_Shared_setNumber( lua_State *L ) {
   Shared * shr = checkShared( L );
   const char  * key  = luaL_checkstring(L, 2);
@@ -145,6 +159,7 @@ arken_concurrent_Shared_gc( lua_State *L ) {
 
 static const
 luaL_reg arken_concurrent_Shared_metatable[] = {
+  {"info",      arken_concurrent_Shared_info},
   {"setNumber", arken_concurrent_Shared_setNumber},
   {"getNumber", arken_concurrent_Shared_getNumber},
   {"increment", arken_concurrent_Shared_increment},

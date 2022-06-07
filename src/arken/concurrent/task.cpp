@@ -80,9 +80,11 @@ task task::start(const char * fileName, const char * params, bool purge)
 
 task::task(const char * fileName, const char * params, bool purge)
 {
-  m_fileName = fileName;
-  m_params   = params;
-  m_purge    = purge;
+  m_fileName  = fileName;
+  m_params    = params;
+  m_purge     = purge;
+  m_microtime = os::microtime();
+  m_uuid      = os::uuid();
 
   m_inspect.
     append("arken.concurrent.task: ").
@@ -93,13 +95,15 @@ task::task(const char * fileName, const char * params, bool purge)
 
 task::task(const task &obj)
 {
-  m_fileName = obj.m_fileName;
-  m_params   = obj.m_params;
-  m_purge    = obj.m_purge;
-  m_inspect  = obj.m_inspect;
-  m_finished = obj.m_finished;
-  m_shared   = obj.m_shared;
-  m_purge    = obj.m_purge;
+  m_fileName  = obj.m_fileName;
+  m_params    = obj.m_params;
+  m_purge     = obj.m_purge;
+  m_inspect   = obj.m_inspect;
+  m_finished  = obj.m_finished;
+  m_shared    = obj.m_shared;
+  m_purge     = obj.m_purge;
+  m_uuid      = obj.m_uuid;
+  m_microtime = obj.m_microtime;
 }
 
 } // namespace concurrent

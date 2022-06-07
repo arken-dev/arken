@@ -20,12 +20,16 @@ class Shared
 
   private:
 
+  std::shared_ptr<string> m_info;
   std::shared_ptr<std::unordered_map<string, string>> m_mapString;
   std::shared_ptr<std::unordered_map<string, double>> m_mapNumber;
   std::shared_ptr<std::unordered_map<string, bool>>   m_mapBool;
   std::shared_ptr<std::mutex> m_mutex;
 
   public:
+
+  void info(string info);
+  string info();
 
   // NUMBER
   double getNumber(string key);

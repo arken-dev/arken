@@ -12,8 +12,9 @@ namespace task {
 
 scheduled::scheduled()
 {
-  m_uuid    = os::uuid();
-  m_inspect = "arken.concurrent.task.scheduled";
+  m_inspect   = "arken.concurrent.task.scheduled";
+  m_uuid      = os::uuid();
+  m_microtime = os::microtime();
   scheduled::actives()++;
 }
 
@@ -59,6 +60,7 @@ void scheduled::run()
       break;
     }
 
+    swap(this, &node);
     node.run();
 
     std::unique_lock<std::mutex> lck(scheduled::mutex());

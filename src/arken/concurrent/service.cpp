@@ -17,11 +17,12 @@ std::mutex service::s_mutex;
 
 service::service( const char * fileName, const char * params, bool purge )
 {
-  m_uuid     = os::uuid();
-  m_version  = mvm::version();
-  m_fileName = fileName;
-  m_params   = params;
-  m_purge    = purge;
+  m_uuid      = os::uuid();
+  m_microtime = os::microtime();
+  m_version   = mvm::version();
+  m_fileName  = fileName;
+  m_params    = params;
+  m_purge     = purge;
   m_inspect.
     append("arken.concurrent.service: ").
     append(m_fileName).append("#").
@@ -32,13 +33,14 @@ service::service( const char * fileName, const char * params, bool purge )
 
 service::service(const service &obj)
 {
-  m_version  = mvm::version();
-  m_fileName = obj.m_fileName;
-  m_params   = obj.m_params;
-  m_purge    = obj.m_purge;
-  m_inspect  = obj.m_inspect;
-  m_shared   = obj.m_shared;
-  m_uuid     = obj.m_uuid;
+  m_version   = mvm::version();
+  m_fileName  = obj.m_fileName;
+  m_params    = obj.m_params;
+  m_purge     = obj.m_purge;
+  m_inspect   = obj.m_inspect;
+  m_shared    = obj.m_shared;
+  m_uuid      = obj.m_uuid;
+  m_microtime = obj.m_microtime;
 }
 
 service::~service()

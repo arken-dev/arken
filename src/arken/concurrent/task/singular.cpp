@@ -13,8 +13,9 @@ namespace task {
 
 singular::singular()
 {
-  m_uuid     = os::uuid();
-  m_inspect = "arken.concurrent.task.singular";
+  m_inspect   = "arken.concurrent.task.singular";
+  m_uuid      = os::uuid();
+  m_microtime = os::microtime();
   singular::actives()++;
 }
 
@@ -52,6 +53,7 @@ void singular::run()
       break;
     }
 
+    swap(this, &node);
     node.run();
 
     std::unique_lock<std::mutex> lck(singular::mutex());
@@ -282,7 +284,7 @@ singular::node singular::dequeue()
     runners()[name] = false;
     singular::node n = map()[name].front();
     map()[name].pop();
-    running()[n.uuid()] = n.inspect();
+    running()[n.uuid()] = n;
 
     return n;
   }
@@ -302,11 +304,11 @@ string singular::inspect()
 
   tmp.append("\"running\": [");
   int c = 0;
-  for (std::pair<string, string> element : running()) {
+  for (std::pair<string, singular::node> element : running()) {
     if( c > 0 ) {
       tmp.append(",");
     }
-    tmp.append("\"").append(element.second).append("\"");
+    tmp.append("\"").append(element.second.inspect()).append("\"");
     c++;
   }
   tmp.append("],");
@@ -327,9 +329,9 @@ string singular::inspect()
   return tmp;
 }
 
-std::unordered_map<string, string> &singular::running()
+std::unordered_map<string, singular::node> &singular::running()
 {
-  static std::unordered_map<string, string> s_running;
+  static std::unordered_map<string, singular::node> s_running;
   return s_running;
 }
 

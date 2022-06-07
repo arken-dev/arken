@@ -5,8 +5,33 @@
 
 #include <lua/lua.hpp>
 #include <arken/mvm>
+#include <arken/concurrent/shared.h>
 
 using arken::mvm;
+using arken::concurrent::base;
+using Shared = arken::concurrent::Shared;
+
+
+base *
+checkTask( lua_State *L ) {
+  return *static_cast<base **>(luaL_checkudata(L, 1, "arken.concurrent.base.metatable"));
+}
+
+static int
+arken_mvm_current(lua_State *L) {
+  base current = mvm::current();
+
+  if( current ) {
+    auto ptr = static_cast<base **>(lua_newuserdata(L, sizeof(base *)));
+    *ptr = new base(current);
+    luaL_getmetatable(L, "arken.concurrent.base.metatable");
+    lua_setmetatable(L, -2);
+  } else {
+    lua_pushnil(L);
+  }
+
+  return 1;
+}
 
 static int
 arken_mvm_gc(lua_State *L) {
@@ -137,9 +162,74 @@ arken_mvm_setlocale(lua_State *L) {
   return 1;
 }
 
+//-----------------------------------------------------------------------------
+// ARKEN_CONCURRENT_BASE_METATABLE
+//-----------------------------------------------------------------------------
+
+static int
+arken_concurrent_base_uuid( lua_State *L ) {
+  base * pointer = checkTask( L );
+  lua_pushstring(L, pointer->uuid());
+  return 1;
+}
+
+static int
+arken_concurrent_base_finished( lua_State *L ) {
+  base * pointer = checkTask( L );
+  lua_pushboolean(L, pointer->finished());
+
+  return 1;
+}
+
+static int
+arken_concurrent_base_gc( lua_State *L ) {
+  base * ptr = checkTask( L );
+  delete ptr;
+  return 0;
+}
+
+static int
+arken_concurrent_base_shared( lua_State *L ) {
+  base * pointer = checkTask( L );
+  int rv;
+  lua_getglobal(L, "require");
+  lua_pushstring(L, "arken.concurrent.Shared");
+  rv = lua_pcall(L, 1, 0, 0);
+  if (rv) {
+    fprintf(stderr, "%s\n", lua_tostring(L, -1));
+  }
+
+  auto ptr = static_cast<Shared **>(lua_newuserdata(L, sizeof(Shared*)));
+  *ptr = new Shared(pointer->shared());
+  luaL_getmetatable(L, "arken.concurrent.Shared.metatable");
+  lua_setmetatable(L, -2);
+
+  return 1;
+}
+
+
+static const
+luaL_reg arken_concurrent_base_metatable[] = {
+  {"uuid",     arken_concurrent_base_uuid},
+  {"shared",   arken_concurrent_base_shared},
+  {"finished", arken_concurrent_base_finished},
+  {"__gc",     arken_concurrent_base_gc},
+  {nullptr, nullptr}
+};
+
+void static
+register_arken_concurrent_base_metatable( lua_State *L ) {
+  luaL_newmetatable(L, "arken.concurrent.base.metatable");
+  luaL_register(L, nullptr, arken_concurrent_base_metatable);
+  lua_pushvalue(L, -1);
+  lua_setfield(L, -1, "__index");
+}
+
+
 static void
 register_arken_mvm( lua_State *L ) {
   static const luaL_reg Map[] = {
+    {"current",   arken_mvm_current},
     {"gc",        arken_mvm_gc},
     {"version",   arken_mvm_version},
     {"reload",    arken_mvm_reload},
@@ -166,6 +256,7 @@ register_arken_mvm( lua_State *L ) {
 
 extern "C" {
   int luaopen_arken_mvm( lua_State *L ) {
+    register_arken_concurrent_base_metatable(L);
     register_arken_mvm(L);
     return 1;
   }

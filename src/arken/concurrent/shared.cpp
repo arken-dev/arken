@@ -5,6 +5,7 @@ namespace concurrent {
 
 Shared::Shared()
 {
+  m_info      = std::shared_ptr<string>(new string);
   m_mapString = std::shared_ptr<std::unordered_map<string, string>>(new std::unordered_map<string, string>);
   m_mapNumber = std::shared_ptr<std::unordered_map<string, double>>(new std::unordered_map<string, double>);
   m_mapBool   = std::shared_ptr<std::unordered_map<string, bool>>(new std::unordered_map<string, bool>);
@@ -13,10 +14,23 @@ Shared::Shared()
 
 Shared::Shared(const Shared & obj)
 {
+  m_info      = obj.m_info;
   m_mapString = obj.m_mapString;
   m_mapNumber = obj.m_mapNumber;
   m_mapBool   = obj.m_mapBool;
   m_mutex     = obj.m_mutex;
+}
+
+void Shared::info(string info)
+{
+  std::unique_lock<std::mutex> lck(*m_mutex);
+  *m_info = info;
+}
+
+string Shared::info()
+{
+  std::unique_lock<std::mutex> lck(*m_mutex);
+  return *m_info;
 }
 
 // NUMBER
