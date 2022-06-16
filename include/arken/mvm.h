@@ -89,6 +89,7 @@ class mvm {
     lua_State * state();
     lua_State * release();
     uint32_t    version();
+    Shared      shared();
   };
 
   class core

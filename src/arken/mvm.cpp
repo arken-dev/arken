@@ -371,6 +371,11 @@ uint32_t mvm::data::version()
   return m_version;
 }
 
+arken::concurrent::Shared mvm::data::shared()
+{
+  return m_shared;
+}
+
 arken::instance::instance(mvm::data * data)
 {
   m_data = data;

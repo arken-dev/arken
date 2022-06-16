@@ -195,6 +195,59 @@ register_arken_mvm( lua_State *L ) {
 }
 
 //-----------------------------------------------------------------------------
+// ARKEN_CONCURRENT_DATA_METATABLE
+//-----------------------------------------------------------------------------
+
+static int
+arken_mvm_data_version( lua_State *L ) {
+  mvm::data * data = checkData( L );
+  lua_pushinteger(L, data->version());
+  return 1;
+}
+
+static int
+arken_mvm_data_gc( lua_State *L ) {
+  mvm::data * data = checkData( L );
+  delete data;
+  return 0;
+}
+
+static int
+arken_mvm_data_shared( lua_State *L ) {
+  mvm::data * data = checkData( L );
+  int rv;
+  lua_getglobal(L, "require");
+  lua_pushstring(L, "arken.concurrent.Shared");
+  rv = lua_pcall(L, 1, 0, 0);
+  if (rv) {
+    fprintf(stderr, "%s\n", lua_tostring(L, -1));
+  }
+
+  auto ptr = static_cast<Shared **>(lua_newuserdata(L, sizeof(Shared*)));
+  *ptr = new Shared(data->shared());
+  luaL_getmetatable(L, "arken.concurrent.Shared.metatable");
+  lua_setmetatable(L, -2);
+
+  return 1;
+}
+
+static const
+luaL_reg arken_mvm_data_metatable[] = {
+  {"version",  arken_mvm_data_version},
+  {"shared",   arken_mvm_data_shared},
+  {"__gc",     arken_mvm_data_gc},
+  {nullptr, nullptr}
+};
+
+void static
+register_arken_mvm_data_metatable( lua_State *L ) {
+  luaL_newmetatable(L, "arken.mvm.data.metatable");
+  luaL_register(L, nullptr, arken_mvm_data_metatable);
+  lua_pushvalue(L, -1);
+  lua_setfield(L, -1, "__index");
+}
+
+//-----------------------------------------------------------------------------
 // ARKEN_CONCURRENT_BASE_METATABLE
 //-----------------------------------------------------------------------------
 
@@ -257,10 +310,14 @@ register_arken_concurrent_base_metatable( lua_State *L ) {
   lua_setfield(L, -1, "__index");
 }
 
+//-----------------------------------------------------------------------------
+// REGISTER
+//-----------------------------------------------------------------------------
+
 extern "C" {
   int luaopen_arken_mvm( lua_State *L ) {
     register_arken_concurrent_base_metatable(L);
-    //register_arken_mvm_data_metatable(L);
+    register_arken_mvm_data_metatable(L);
     register_arken_mvm(L);
     return 1;
   }
