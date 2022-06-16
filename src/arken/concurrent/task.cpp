@@ -18,6 +18,8 @@ task::~task()
 void task::run()
 {
   arken::instance instance = mvm::instance( m_purge );
+  instance.swap(m_shared);
+
   lua_State * L = instance.state();
   lua_settop(L, 0);
 

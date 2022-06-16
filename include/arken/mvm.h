@@ -86,7 +86,6 @@ class mvm {
     data(uint32_t version = s_version);
     data(data & obj);
     ~data();
-    void swap(arken::concurrent::Shared shared);
     lua_State * state();
     lua_State * release();
     uint32_t    version();
@@ -201,7 +200,7 @@ class instance {
   ~instance();
   lua_State * state();
   lua_State * release();
-
+  void swap(arken::concurrent::Shared shared);
 };
 
 } // namespace arken

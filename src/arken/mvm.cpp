@@ -355,11 +355,6 @@ mvm::data::~data()
   }
 }
 
-void mvm::data::swap(arken::concurrent::Shared shared)
-{
-  this->m_shared = shared;
-}
-
 lua_State * mvm::data::state()
 {
   return m_State;
@@ -411,6 +406,11 @@ lua_State * instance::state()
 lua_State * instance::release()
 {
   return m_data->release();
+}
+
+void instance::swap(arken::concurrent::Shared shared)
+{
+  this->m_data->m_shared = shared;
 }
 
 concurrent::base::base() : m_uuid{""}, m_microtime{0}
