@@ -355,6 +355,11 @@ mvm::data::~data()
   }
 }
 
+void mvm::data::swap(arken::concurrent::Shared shared)
+{
+  this->m_shared = shared;
+}
+
 lua_State * mvm::data::state()
 {
   return m_State;
