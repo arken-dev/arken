@@ -147,6 +147,8 @@ void singular::node::run()
 {
   int rv;
   arken::instance i = mvm::instance(m_purge);
+  i.swap(m_shared);
+
   lua_State * L = i.state();
   lua_settop(L, 0);
 

@@ -43,10 +43,7 @@ service::service(const service &obj)
   m_microtime = obj.m_microtime;
 }
 
-service::~service()
-{
-
-}
+service::~service() = default;
 
 service service::start(const char * fileName, const char * params, bool purge)
 {
@@ -57,15 +54,11 @@ service service::start(const char * fileName, const char * params, bool purge)
 
 void service::run()
 {
-
-  // if m_purge is true, create a new arken::instance
-  // because it will be destroyed in the end
-  arken::instance i = mvm::instance( m_purge );
-  lua_State * L = i.state();
-  lua_settop(L, 0);
-
   int rv;
+  arken::instance i = mvm::instance( m_purge );
+  i.swap(m_shared);
 
+  lua_State * L = i.state();
   lua_settop(L, 0);
 
   lua_getglobal(L, "require");
