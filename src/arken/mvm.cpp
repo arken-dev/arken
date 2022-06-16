@@ -29,7 +29,8 @@ string mvm::s_env          = "development";
 
 static std::mutex mtx;
 static std::unordered_map <std::string, int> s_config;
-static std::unordered_map <std::thread::id, mvm::data *> s_mvm;
+static std::unordered_map <std::thread::id, mvm::data *> s_mvm_map;
+static std::mutex s_mvm_mutex;
 
 
 void mvm::set(std::string key, int value)
@@ -367,19 +368,24 @@ uint32_t mvm::data::version()
 
 arken::instance::instance(mvm::data * data)
 {
-  s_mvm[std::this_thread::get_id()] = data;
   m_data = data;
+
+  std::unique_lock<std::mutex> lck(s_mvm_mutex);
+  s_mvm_map[std::this_thread::get_id()] = data;
 }
 
 arken::instance::~instance()
 {
-  s_mvm.erase(std::this_thread::get_id());
 
   if( m_data->m_release ) {
     delete m_data;
   } else {
     mvm::push(m_data);
   }
+
+  // erase map mvm
+  std::unique_lock<std::mutex> lck(s_mvm_mutex);
+  s_mvm_map.erase(std::this_thread::get_id());
 }
 
 lua_State * instance::state()
