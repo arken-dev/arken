@@ -347,14 +347,14 @@ mvm::data::data(mvm::data & obj)
 {
   m_version = obj.m_version;
   m_gc      = obj.m_gc;
-  m_State   = obj.m_State;
   m_shared  = obj.m_shared;
   m_release = obj.m_release;
+  m_State   = nullptr;
 }
 
 mvm::data::~data()
 {
-  if( m_release == false ) {
+  if( m_release == false && m_State ) {
     lua_close(m_State);
   }
 }

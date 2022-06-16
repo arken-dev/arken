@@ -19,7 +19,7 @@ checkTask( lua_State *L ) {
 
 mvm::data *
 checkData( lua_State *L ) {
-  return *static_cast<mvm::data **>(luaL_checkudata(L, 1, "arken.concurrent.data.metatable"));
+  return *static_cast<mvm::data **>(luaL_checkudata(L, 1, "arken.mvm.data.metatable"));
 }
 
 //-----------------------------------------------------------------------------
