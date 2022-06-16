@@ -397,7 +397,6 @@ arken::instance::~instance()
     mvm::push(m_data);
   }
 
-  // erase map mvm
   std::unique_lock<std::mutex> lck(s_mvm_mutex);
   s_mvm_map.erase(std::this_thread::get_id());
 }
