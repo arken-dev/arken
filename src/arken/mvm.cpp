@@ -343,6 +343,11 @@ mvm::data::data(uint32_t version)
 
 }
 
+mvm::data::data(mvm::data & obj)
+{
+
+}
+
 mvm::data::~data()
 {
   if( m_release == false ) {
@@ -562,15 +567,10 @@ char * mvm::setlocale(string locale, string category)
   return std::setlocale(value, locale);
 }
 
-concurrent::base mvm::current()
+mvm::data mvm::current()
 {
-  std::unique_lock<std::mutex> lck(core::mutex());
-
-  if( core::running().count(std::this_thread::get_id()) ) {
-    return concurrent::base(*core::running()[std::this_thread::get_id()]);
-  } else {
-    return {};
-  }
+  std::unique_lock<std::mutex> lck(s_mvm_mutex);
+  return mvm::data(*s_mvm_map.at(std::this_thread::get_id()));
 }
 
 char * mvm::setlocale(string locale)

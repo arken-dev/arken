@@ -9,7 +9,7 @@
 
 using arken::mvm;
 using arken::concurrent::base;
-using Shared = arken::concurrent::Shared;
+using arken::concurrent::Shared;
 
 
 base *
@@ -17,18 +17,22 @@ checkTask( lua_State *L ) {
   return *static_cast<base **>(luaL_checkudata(L, 1, "arken.concurrent.base.metatable"));
 }
 
+mvm::data *
+checkData( lua_State *L ) {
+  return *static_cast<mvm::data **>(luaL_checkudata(L, 1, "arken.concurrent.data.metatable"));
+}
+
+//-----------------------------------------------------------------------------
+// ARKEN_MVM
+//-----------------------------------------------------------------------------
+
 static int
 arken_mvm_current(lua_State *L) {
-  base current = mvm::current();
-
-  if( current ) {
-    auto ptr = static_cast<base **>(lua_newuserdata(L, sizeof(base *)));
-    *ptr = new base(current);
-    luaL_getmetatable(L, "arken.concurrent.base.metatable");
-    lua_setmetatable(L, -2);
-  } else {
-    lua_pushnil(L);
-  }
+  mvm::data current = mvm::current();
+  auto ptr = static_cast<mvm::data **>(lua_newuserdata(L, sizeof(mvm::data *)));
+  *ptr = new mvm::data(current);
+  luaL_getmetatable(L, "arken.mvm.data.metatable");
+  lua_setmetatable(L, -2);
 
   return 1;
 }
@@ -162,6 +166,34 @@ arken_mvm_setlocale(lua_State *L) {
   return 1;
 }
 
+static void
+register_arken_mvm( lua_State *L ) {
+  static const luaL_reg Map[] = {
+    {"current",   arken_mvm_current},
+    {"gc",        arken_mvm_gc},
+    {"version",   arken_mvm_version},
+    {"reload",    arken_mvm_reload},
+    {"clear",     arken_mvm_clear},
+    {"uptime",    arken_mvm_uptime},
+    {"pool",      arken_mvm_pool},
+    {"set",       arken_mvm_set},
+    {"at",        arken_mvm_at},
+    {"wait",      arken_mvm_wait},
+    {"path",      arken_mvm_path},
+    {"env",       arken_mvm_env},
+    {"threads",   arken_mvm_threads},
+    {"actives",   arken_mvm_actives},
+    {"inspect",   arken_mvm_inspect},
+    {"workers",   arken_mvm_workers},
+    {"setlocale", arken_mvm_setlocale},
+    {nullptr, nullptr}
+  };
+  luaL_newmetatable(L, "arken.mvm");
+  luaL_register(L, nullptr, Map);
+  lua_pushvalue(L, -1);
+  lua_setfield(L, -1, "__index");
+}
+
 //-----------------------------------------------------------------------------
 // ARKEN_CONCURRENT_BASE_METATABLE
 //-----------------------------------------------------------------------------
@@ -225,38 +257,10 @@ register_arken_concurrent_base_metatable( lua_State *L ) {
   lua_setfield(L, -1, "__index");
 }
 
-
-static void
-register_arken_mvm( lua_State *L ) {
-  static const luaL_reg Map[] = {
-    {"current",   arken_mvm_current},
-    {"gc",        arken_mvm_gc},
-    {"version",   arken_mvm_version},
-    {"reload",    arken_mvm_reload},
-    {"clear",     arken_mvm_clear},
-    {"uptime",    arken_mvm_uptime},
-    {"pool",      arken_mvm_pool},
-    {"set",       arken_mvm_set},
-    {"at",        arken_mvm_at},
-    {"wait",      arken_mvm_wait},
-    {"path",      arken_mvm_path},
-    {"env",       arken_mvm_env},
-    {"threads",   arken_mvm_threads},
-    {"actives",   arken_mvm_actives},
-    {"inspect",   arken_mvm_inspect},
-    {"workers",   arken_mvm_workers},
-    {"setlocale", arken_mvm_setlocale},
-    {nullptr, nullptr}
-  };
-  luaL_newmetatable(L, "arken.mvm");
-  luaL_register(L, nullptr, Map);
-  lua_pushvalue(L, -1);
-  lua_setfield(L, -1, "__index");
-}
-
 extern "C" {
   int luaopen_arken_mvm( lua_State *L ) {
     register_arken_concurrent_base_metatable(L);
+    //register_arken_mvm_data_metatable(L);
     register_arken_mvm(L);
     return 1;
   }

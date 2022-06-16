@@ -69,6 +69,8 @@ class mvm {
 
   class data {
 
+    using Shared = arken::concurrent::Shared;
+
     friend class mvm;
     friend class instance;
 
@@ -77,9 +79,12 @@ class mvm {
     uint32_t    m_version;
     uint32_t    m_gc;
     bool        m_release = false;
+    Shared      m_shared;
+
 
     public:
     data(uint32_t version = s_version);
+    data(data & obj);
     ~data();
     lua_State * state();
     lua_State * release();
@@ -181,7 +186,7 @@ class mvm {
   static size_t workers();
   static char * setlocale(string locale, string category);
   static char * setlocale(string locale);
-  static arken::concurrent::base current();
+  static arken::mvm::data current();
 
 };
 
