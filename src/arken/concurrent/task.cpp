@@ -17,8 +17,8 @@ task::~task()
 
 void task::run()
 {
-  arken::instance i = mvm::instance( m_purge );
-  lua_State * L = i.state();
+  arken::instance instance = mvm::instance( m_purge );
+  lua_State * L = instance.state();
   lua_settop(L, 0);
 
   int rv;
@@ -63,7 +63,7 @@ void task::run()
 
   // GC
   if( m_purge ) {
-    i.release();
+    instance.release();
     lua_close(L);
   } else {
     lua_gc(L, LUA_GCCOLLECT, 0);
