@@ -21,6 +21,7 @@ class Shared
   {
     friend class Shared;
     /**
+     * 0 = undefined
      * 1 = bool
      * 2 = double
      * 3 = string
@@ -43,6 +44,9 @@ class Shared
 
   void info(string info);
   string info();
+
+  // flag
+  short flag(string key);
 
   // NUMBER
   double getNumber(string key);

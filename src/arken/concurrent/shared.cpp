@@ -142,5 +142,15 @@ void Shared::put(string key, bool value)
   this->setBool(key, value);
 }
 
+short Shared::flag(string key)
+{
+  std::unique_lock<std::mutex> lck(*m_mutex);
+  if( m_map->count(key) ) {
+    return m_map->at(key).m_flag;
+  } else {
+    return 0;
+  }
+}
+
 } // namespace concurrent
 } // namespace arken
