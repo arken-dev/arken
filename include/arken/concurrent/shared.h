@@ -16,14 +16,27 @@ namespace concurrent {
 
 class Shared
 {
+
+  class data
+  {
+    friend class Shared;
+    /**
+     * 1 = bool
+     * 2 = double
+     * 3 = string
+     */
+    short  m_flag;
+    bool   m_bool;
+    double m_number;
+    string m_string;
+  };
+
   using string = arken::string;
 
   private:
 
   std::shared_ptr<string> m_info;
-  std::shared_ptr<std::unordered_map<string, string>> m_mapString;
-  std::shared_ptr<std::unordered_map<string, double>> m_mapNumber;
-  std::shared_ptr<std::unordered_map<string, bool>>   m_mapBool;
+  std::shared_ptr<std::unordered_map<string, data>> m_map;
   std::shared_ptr<std::mutex> m_mutex;
 
   public:

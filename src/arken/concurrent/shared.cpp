@@ -5,20 +5,16 @@ namespace concurrent {
 
 Shared::Shared()
 {
-  m_info      = std::shared_ptr<string>(new string);
-  m_mapString = std::shared_ptr<std::unordered_map<string, string>>(new std::unordered_map<string, string>);
-  m_mapNumber = std::shared_ptr<std::unordered_map<string, double>>(new std::unordered_map<string, double>);
-  m_mapBool   = std::shared_ptr<std::unordered_map<string, bool>>(new std::unordered_map<string, bool>);
-  m_mutex     = std::shared_ptr<std::mutex>(new std::mutex);
+  m_info  = std::shared_ptr<string>(new string);
+  m_map   = std::shared_ptr<std::unordered_map<string, data>>(new std::unordered_map<string, data>);
+  m_mutex = std::shared_ptr<std::mutex>(new std::mutex);
 };
 
 Shared::Shared(const Shared & obj)
 {
-  m_info      = obj.m_info;
-  m_mapString = obj.m_mapString;
-  m_mapNumber = obj.m_mapNumber;
-  m_mapBool   = obj.m_mapBool;
-  m_mutex     = obj.m_mutex;
+  m_info  = obj.m_info;
+  m_map   = obj.m_map;
+  m_mutex = obj.m_mutex;
 }
 
 void Shared::info(string info)
@@ -37,8 +33,8 @@ string Shared::info()
 double Shared::getNumber(string key)
 {
   std::unique_lock<std::mutex> lck(*m_mutex);
-  if( m_mapNumber->count(key) ) {
-    return m_mapNumber->at(key);
+  if( m_map->count(key) ) {
+    return m_map->at(key).m_number;
   } else {
     return 0;
   }
@@ -47,18 +43,18 @@ double Shared::getNumber(string key)
 void Shared::setNumber(string key, double value)
 {
   std::unique_lock<std::mutex> lck(*m_mutex);
-  (*m_mapNumber)[key] = value;
+  (*m_map)[key].m_number = value;
 }
 
 double Shared::increment(string key, double value)
 {
   std::unique_lock<std::mutex> lck(*m_mutex);
 
-  if( m_mapNumber->count(key) ) {
-    value += m_mapNumber->at(key);
-    (*m_mapNumber)[key] = value;
+  if( m_map->count(key) ) {
+    value += m_map->at(key).m_number;
+    (*m_map)[key].m_number = value;
   } else {
-    (*m_mapNumber)[key] = value;
+    (*m_map)[key].m_number = value;
   }
 
   return value;
@@ -68,8 +64,8 @@ double Shared::increment(string key, double value)
 string Shared::getString(string key)
 {
   std::unique_lock<std::mutex> lck(*m_mutex);
-  if( m_mapString->count(key) ) {
-    return m_mapString->at(key);
+  if( m_map->count(key) ) {
+    return m_map->at(key).m_string;
   } else {
     return {};
   }
@@ -78,18 +74,18 @@ string Shared::getString(string key)
 void Shared::setString(string key, string value)
 {
   std::unique_lock<std::mutex> lck(*m_mutex);
-  (*m_mapString)[key] = value;
+  (*m_map)[key].m_string = value;
 }
 
 string Shared::append(string key, string value)
 {
   std::unique_lock<std::mutex> lck(*m_mutex);
-  if( m_mapString->count(key) ) {
-    string v = std::move(m_mapString->at(key));
+  if( m_map->count(key) ) {
+    string v = std::move(m_map->at(key).m_string);
     v.append(value);
-    (*m_mapString)[key] = std::move(v);
+    (*m_map)[key].m_string = std::move(v);
   } else {
-    (*m_mapString)[key] = value;
+    (*m_map)[key].m_string = value;
   }
 
   return value;
@@ -99,8 +95,8 @@ string Shared::append(string key, string value)
 bool Shared::getBool(string key)
 {
   std::unique_lock<std::mutex> lck(*m_mutex);
-  if( m_mapBool->count(key) ) {
-    return m_mapBool->at(key);
+  if( m_map->count(key) ) {
+    return m_map->at(key).m_bool;
   } else {
     return false;
   }
@@ -111,17 +107,16 @@ bool Shared::getBool(string key)
 void Shared::setBool(string key, bool value)
 {
   std::unique_lock<std::mutex> lck(*m_mutex);
-  (*m_mapBool)[key] = value;
-
+  (*m_map)[key].m_bool = value;
 }
 
 bool Shared::toggle(string key)
 {
   std::unique_lock<std::mutex> lck(*m_mutex);
   bool result = false;
-  if( m_mapBool->count(key) ) {
-    result = ! m_mapBool->at(key);
-    (*m_mapBool)[key] = result;
+  if( m_map->count(key) ) {
+    result = ! m_map->at(key).m_bool;
+    (*m_map)[key].m_bool = result;
   }
   return result;
 }
