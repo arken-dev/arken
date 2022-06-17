@@ -30,6 +30,12 @@ class Shared
     bool   m_bool;
     double m_number;
     string m_string;
+
+    public:
+    short  flag();
+    bool   getBool();
+    double getNumber();
+    string getString();
   };
 
   using string = arken::string;
@@ -47,6 +53,7 @@ class Shared
 
   // flag
   short flag(string key);
+  data get(string key);
 
   // NUMBER
   double getNumber(string key);

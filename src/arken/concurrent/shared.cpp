@@ -155,5 +155,35 @@ short Shared::flag(string key)
   }
 }
 
+Shared::data Shared::get(string key)
+{
+  std::unique_lock<std::mutex> lck(*m_mutex);
+  if( m_map->count(key) ) {
+    return m_map->at(key);
+  } else {
+    return {};
+  }
+}
+
+short Shared::data::flag()
+{
+  return m_flag;
+}
+
+bool Shared::data::getBool()
+{
+  return m_bool;
+}
+
+double Shared::data::getNumber()
+{
+  return m_number;
+}
+
+string Shared::data::getString()
+{
+  return m_string;
+}
+
 } // namespace concurrent
 } // namespace arken
