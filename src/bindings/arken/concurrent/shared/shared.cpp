@@ -90,24 +90,24 @@ arken_concurrent_Shared_put( lua_State *L ) {
 static int
 arken_concurrent_Shared_get( lua_State *L ) {
   Shared * shr = checkShared( L );
-  const char  * key  = luaL_checkstring(L, 2);
+  const char * key = luaL_checkstring(L, 2);
 
-  short flag = shr->flag(key);
+  Shared::data data = shr->get(key);
 
-  if( flag == 0 ) {
+  if( data.flag() == 0 ) {
     lua_pushnil(L);
   }
 
-  if( flag == 1 ) {
-    lua_pushboolean(L, shr->getBool(key));
+  if( data.flag() == 1 ) {
+    lua_pushboolean(L, data.getBool());
   }
 
-  if( flag == 2 ) {
-    lua_pushnumber(L, shr->getNumber(key));
+  if( data.flag() == 2 ) {
+    lua_pushnumber(L, data.getNumber());
   }
 
-  if( flag == 3 ) {
-    string str = shr->getString(key);
+  if( data.flag() == 3 ) {
+    string str = data.getString();
     lua_pushlstring(L, str.data(), str.size());
   }
 

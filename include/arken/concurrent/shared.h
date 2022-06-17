@@ -17,6 +17,8 @@ namespace concurrent {
 class Shared
 {
 
+  public:
+
   class data
   {
     friend class Shared;
