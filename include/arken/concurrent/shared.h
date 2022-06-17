@@ -46,6 +46,11 @@ class Shared
   void setBool(string key, bool value);
   bool toggle(string key);
 
+  // PUT METHODS
+  void put(string key, string value);
+  void put(string key, double value);
+  void put(string key, bool   value);
+
   Shared();
   Shared(const Shared & obj);
   static Shared & global();

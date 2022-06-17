@@ -132,5 +132,20 @@ Shared & Shared::global()
   return instance;
 }
 
+void Shared::put(string key, string value)
+{
+  this->setString(key, value);
+}
+
+void Shared::put(string key, double value)
+{
+  this->setNumber(key, value);
+}
+
+void Shared::put(string key, bool value)
+{
+  this->setBool(key, value);
+}
+
 } // namespace concurrent
 } // namespace arken
