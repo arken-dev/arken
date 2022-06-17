@@ -1,0 +1,5 @@
+local mvm = require('arken.mvm')
+local instance = mvm.current()
+print(instance)
+instance:shared():setString('hello', 'world!')
+print(mvm.current():shared():getString('hello'))
