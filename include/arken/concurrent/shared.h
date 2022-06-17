@@ -23,7 +23,7 @@ class Shared
     /**
      * 0 = undefined
      * 1 = bool
-     * 2 = double
+     * 2 = number
      * 3 = string
      */
     short  m_flag;

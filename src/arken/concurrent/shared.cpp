@@ -44,6 +44,7 @@ void Shared::setNumber(string key, double value)
 {
   std::unique_lock<std::mutex> lck(*m_mutex);
   (*m_map)[key].m_number = value;
+  (*m_map)[key].m_flag   = 2;
 }
 
 double Shared::increment(string key, double value)
@@ -75,6 +76,7 @@ void Shared::setString(string key, string value)
 {
   std::unique_lock<std::mutex> lck(*m_mutex);
   (*m_map)[key].m_string = value;
+  (*m_map)[key].m_flag   = 3;
 }
 
 string Shared::append(string key, string value)
@@ -108,6 +110,7 @@ void Shared::setBool(string key, bool value)
 {
   std::unique_lock<std::mutex> lck(*m_mutex);
   (*m_map)[key].m_bool = value;
+  (*m_map)[key].m_flag = 1;
 }
 
 bool Shared::toggle(string key)
