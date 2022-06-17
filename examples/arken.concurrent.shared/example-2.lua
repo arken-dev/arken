@@ -4,4 +4,4 @@ local tsk  = task.start(os.pwd() .. '/examples/arken.concurrent.shared/example-2
 
 mvm.wait()
 
-print("resultado => " .. tsk:shared():getString('hello'))
+print("result => " .. tsk:shared():getString('hello'))
