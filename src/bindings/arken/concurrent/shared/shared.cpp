@@ -74,17 +74,19 @@ arken_concurrent_Shared_put( lua_State *L ) {
 
   if( lua_isboolean(L, 3) ) {
     shr->setBool(key, lua_toboolean(L, 3));
+    return 0;
   }
 
   if( lua_isnumber(L, 3) ) {
     shr->setNumber(key, lua_tonumber(L, 3));
+    return 0;
   }
 
   if( lua_isstring(L, 3) ) {
     shr->setString(key, lua_tostring(L, 3));
+    return 0;
   }
 
-  return 0;
 }
 
 static int
