@@ -93,6 +93,20 @@ string Shared::append(string key, string value)
   return value;
 }
 
+string Shared::prepend(string key, string value)
+{
+  std::unique_lock<std::mutex> lck(*m_mutex);
+  if( m_map->count(key) ) {
+    string v = std::move(m_map->at(key).m_string);
+    v.prepend(value);
+    (*m_map)[key].m_string = std::move(v);
+  } else {
+    (*m_map)[key].m_string = value;
+  }
+
+  return value;
+}
+
 // BOOL
 bool Shared::getBool(string key)
 {

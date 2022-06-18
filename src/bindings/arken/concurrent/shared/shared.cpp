@@ -174,6 +174,17 @@ arken_concurrent_Shared_append( lua_State *L ) {
 }
 
 static int
+arken_concurrent_Shared_prepend( lua_State *L ) {
+  Shared * shr = checkShared( L );
+  const char * key  = luaL_checkstring(L, 2);
+  size_t len;
+  string value = luaL_checklstring(L, 3, &len);
+  string str = shr->prepend(key, string(value, len));
+  lua_pushlstring(L, str.data(), str.size());
+  return 1;
+}
+
+static int
 arken_concurrent_Shared_setBool( lua_State *L ) {
   Shared * shr = checkShared( L );
   const char  * key  = luaL_checkstring(L, 2);
@@ -218,6 +229,7 @@ luaL_reg arken_concurrent_Shared_metatable[] = {
   {"setString", arken_concurrent_Shared_setString},
   {"getString", arken_concurrent_Shared_getString},
   {"append",    arken_concurrent_Shared_append},
+  {"prepend",   arken_concurrent_Shared_prepend},
   {"setBool",   arken_concurrent_Shared_setBool},
   {"getBool",   arken_concurrent_Shared_getBool},
   {"toggle",    arken_concurrent_Shared_toggle},

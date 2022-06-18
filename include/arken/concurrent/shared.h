@@ -66,6 +66,7 @@ class Shared
   string getString(string key);
   void   setString(string key, string value);
   string append(string key, string value);
+  string prepend(string key, string value);
 
   // BOOL
   bool getBool(string key);
