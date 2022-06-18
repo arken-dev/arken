@@ -84,9 +84,9 @@ arken_concurrent_Shared_put( lua_State *L ) {
 
   if( lua_isstring(L, 3) ) {
     shr->setString(key, lua_tostring(L, 3));
-    return 0;
   }
 
+  return 0;
 }
 
 static int
