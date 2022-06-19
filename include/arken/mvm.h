@@ -85,7 +85,6 @@ class mvm {
 
     public:
     data(uint32_t version = s_version);
-    data(data & obj);
     ~data();
     lua_State * state();
     void        release();

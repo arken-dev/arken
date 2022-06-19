@@ -344,15 +344,6 @@ mvm::data::data(uint32_t version)
 
 }
 
-mvm::data::data(mvm::data & obj)
-{
-  m_version = obj.m_version;
-  m_gc      = obj.m_gc;
-  m_shared  = obj.m_shared;
-  m_release = obj.m_release;
-  m_State   = nullptr;
-}
-
 mvm::data::~data()
 {
   lua_close(m_State);
