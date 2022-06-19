@@ -228,6 +228,13 @@ arken_mvm_data_version( lua_State *L ) {
 }
 
 static int
+arken_mvm_data_release( lua_State *L ) {
+  mvm::data * data = checkData( L );
+  data->release();
+  return 0;
+}
+
+static int
 arken_mvm_data_gc( lua_State *L ) {
   mvm::data * data = checkData( L );
   delete data;
@@ -255,6 +262,7 @@ arken_mvm_data_shared( lua_State *L ) {
 
 static const
 luaL_reg arken_mvm_data_metatable[] = {
+  {"release",  arken_mvm_data_release},
   {"version",  arken_mvm_data_version},
   {"shared",   arken_mvm_data_shared},
   {"__gc",     arken_mvm_data_gc},

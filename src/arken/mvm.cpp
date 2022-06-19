@@ -355,7 +355,7 @@ mvm::data::data(mvm::data & obj)
 
 mvm::data::~data()
 {
-  if( m_release == false && m_State ) {
+  if( m_State ) {
     lua_close(m_State);
   }
 }

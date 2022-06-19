@@ -66,7 +66,6 @@ void task::run()
   // GC
   if( m_purge ) {
     i.release();
-    lua_close(L);
   } else {
     lua_gc(L, LUA_GCCOLLECT, 0);
   }
