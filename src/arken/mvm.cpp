@@ -405,69 +405,6 @@ void instance::swap(arken::concurrent::Shared shared)
   this->m_data->m_shared = shared;
 }
 
-concurrent::base::base() : m_uuid{""}, m_microtime{0}
-{ }
-
-void concurrent::base::run()
-{ }
-
-concurrent::base::~base() = default;
-
-bool concurrent::base::finished()
-{
-  return (*m_finished.get());
-}
-
-bool concurrent::base::purge()
-{
-  return m_purge;
-}
-
-concurrent::base::operator bool() const {
-  return m_microtime > 0;
-}
-
-void concurrent::base::wait()
-{
-  while ((*m_finished.get()) == false) {
-    os::sleep(0.05);
-  }
-}
-
-double concurrent::base::microtime()
-{
-  return m_microtime;
-}
-
-
-arken::concurrent::Shared concurrent::base::shared()
-{
-  return m_shared;
-}
-
-bool concurrent::base::release()
-{
-  return true;
-}
-
-string concurrent::base::uuid()
-{
-  return m_uuid;
-}
-
-void concurrent::base::finished(bool flag)
-{
-  (*m_finished.get()) = flag;
-}
-
-string concurrent::base::inspect()
-{
-  string tmp = m_inspect;
-  if( !m_shared.info().empty() ) {
-    tmp.append("#info:").append(m_shared.info());
-  }
-  return tmp;
-}
 
 //-----------------------------------------------------------------------------
 // ENV
