@@ -75,7 +75,7 @@ void task::run()
 task task::start(const char * fileName, const char * params, bool purge)
 {
   auto ptr = new task(fileName, params, purge);
-  mvm::concurrent(ptr);
+  core::start(ptr);
   return task(*ptr);
 }
 

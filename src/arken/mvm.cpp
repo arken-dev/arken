@@ -278,12 +278,12 @@ uint32_t mvm::clear()
 
 uint32_t mvm::threads()
 {
-  return mvm::core::max();
+  return arken::concurrent::core::max();
 }
 
 void mvm::threads(uint32_t threads)
 {
-  mvm::core::max() = threads;
+  arken::concurrent::core::max() = threads;
 }
 
 double mvm::uptime()
@@ -422,25 +422,27 @@ const char * mvm::env()
   return s_env;
 }
 
-void mvm::concurrent(concurrent::base * ptr)
+/*
+void arken::concurrent(concurrent::base * ptr)
 {
-  mvm::core::start(ptr);
+  arken::concurrent::core::start(ptr);
 }
+*/
 
 uint32_t mvm::actives()
 {
-  return mvm::core::actives();
+  return arken::concurrent::core::actives();
 }
 
 string mvm::inspect()
 {
-  std::unique_lock<std::mutex> lck(mvm::core::mutex());
+  std::unique_lock<std::mutex> lck(arken::concurrent::core::mutex());
 
   int count = 0;
   string tmp("{");
   tmp.append("\"running\": [");
 
-  for (std::pair<std::thread::id, concurrent::base *> element : mvm::core::running()) {
+  for (std::pair<std::thread::id, concurrent::base *> element : concurrent::core::running()) {
     if( count > 0 ) {
       tmp.append(",");
     }
@@ -452,7 +454,7 @@ string mvm::inspect()
 
   count = 0;
   tmp.append("\"wait\": [");
-  for (std::pair<string, string> element : mvm::core::waiting()) {
+  for (std::pair<string, string> element : arken::concurrent::core::waiting()) {
     if( count > 0 ) {
       tmp.append(",");
     }
@@ -466,7 +468,7 @@ string mvm::inspect()
 
 size_t mvm::workers()
 {
-  return mvm::core::workers().size();
+  return arken::concurrent::core::workers().size();
 }
 
 void mvm::wait()
@@ -474,8 +476,8 @@ void mvm::wait()
 
   while( true ) {
     {
-      std::unique_lock<std::mutex> lck(mvm::core::mutex());
-      if (mvm::core::actives() == 0 && mvm::core::queue().empty()) {
+      std::unique_lock<std::mutex> lck(arken::concurrent::core::mutex());
+      if (arken::concurrent::core::actives() == 0 && arken::concurrent::core::queue().empty()) {
         break;
       }
     }
@@ -521,121 +523,6 @@ Shared & mvm::shared()
 char * mvm::setlocale(string locale)
 {
   return std::setlocale(LC_ALL, locale);
-}
-
-//-----------------------------------------------------------------------------
-// MVM::CORE
-//-----------------------------------------------------------------------------
-
-mvm::core::core(uint32_t max)
-{
-  m_max = max;
-}
-
-mvm::core::~core()
-{
-  for( size_t i=0; i< workers().size(); i++ ) {
-    workers().at(i).detach();
-  }
-}
-
-mvm::core & mvm::core::instance()
-{
-  static mvm::core core(os::cores());
-  return core;
-}
-
-std::queue<concurrent::base *> & mvm::core::queue()
-{
-  return instance().m_queue;
-}
-
-std::mutex& mvm::core::mutex()
-{
-  return instance().m_mutex;
-}
-
-std::vector<std::thread>& mvm::core::workers()
-{
-  return instance().m_workers;
-}
-
-std::condition_variable  & mvm::core::condition()
-{
-  return instance().m_condition;
-}
-
-std::atomic<uint32_t>  & mvm::core::actives()
-{
-  return instance().m_actives;
-}
-
-std::atomic<uint32_t>  & mvm::core::max()
-{
-  return instance().m_max;
-}
-
-std::unordered_map<string, string> & mvm::core::waiting()
-{
-  return instance().m_waiting;
-}
-
-std::unordered_map<std::thread::id, concurrent::base *> & mvm::core::running()
-{
-  return instance().m_running;
-}
-
-void mvm::core::working()
-{
-
-  while( true ) {
-    concurrent::base * ptr = get();
-
-    ptr->run();
-    ptr->finished(true);
-
-    std::unique_lock<std::mutex> lck(mutex());
-    actives()--;
-    running().erase(std::this_thread::get_id());
-
-    if( ptr->release() ) {
-      delete ptr;
-    }
-  } // while
-
-} // mvm::core::working
-
-
-void mvm::core::start(concurrent::base * ptr)
-{
-  std::unique_lock<std::mutex> lck(mutex());
-
-  if( workers().size() < max() && (workers().size() - actives()) == 0 ) {
-    workers().push_back(std::thread(working));
-  }
-
-  queue().push(ptr);
-  condition().notify_one();
-  actives()++;
-  waiting()[ptr->uuid()] = ptr->inspect();
-}
-
-concurrent::base * mvm::core::get()
-{
-  std::unique_lock<std::mutex> lck(mutex());
-  condition().wait(lck, []{ return ! queue().empty(); });
-  concurrent::base * ptr = queue().front();
-  queue().pop();
-  waiting().erase(ptr->uuid());
-  running()[std::this_thread::get_id()] = ptr;
-
-  return ptr;
-}
-
-void concurrent::base::swap(concurrent::base * destination, concurrent::base * source)
-{
-  std::unique_lock<std::mutex> lck(mvm::core::mutex());
-  destination->m_shared = source->m_shared;
 }
 
 } // namespace arken

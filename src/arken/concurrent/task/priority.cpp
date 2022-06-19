@@ -55,7 +55,7 @@ priority::node priority::start(const char * fileName, const char * params, int p
   priority::push( node );
 
   if(priority::actives() < priority::max()) {
-    mvm::concurrent( new arken::concurrent::task::priority() );
+    core::start(new arken::concurrent::task::priority());
   }
 
   return node;

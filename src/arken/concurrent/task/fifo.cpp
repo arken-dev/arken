@@ -54,7 +54,7 @@ fifo::node fifo::start(const char * fileName, const char * params, bool purge)
   fifo::push( node );
 
   if(fifo::actives() < fifo::max()) {
-    mvm::concurrent( new arken::concurrent::task::fifo() );
+    core::start(new arken::concurrent::task::fifo());
   }
 
   return node;

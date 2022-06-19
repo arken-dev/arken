@@ -157,7 +157,7 @@ channel * channel::client()
 channel * channel::start(const char * fileName, const char * params, bool purge)
 {
   auto c = new channel(fileName, params, purge);
-  mvm::concurrent(c);
+  core::start(c);
 
   return c->client();
 }

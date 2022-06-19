@@ -69,7 +69,7 @@ singular::node singular::start(const char * fileName, const char * params, const
   singular::push( node );
 
   if( singular::actives() < singular::max() && singular::actives() < singular::runners().size() ) {
-    mvm::concurrent( new singular() );
+    core::start(new singular());
   }
 
   return node;
@@ -85,7 +85,7 @@ singular::node singular::emplace(const char * fileName, const char * params, con
     singular::push( node );
 
     if( singular::actives() < singular::max() ) {
-      mvm::concurrent( new singular() );
+      core::start(new singular());
     }
 
     return node;
@@ -104,7 +104,7 @@ singular::node singular::place(const char * fileName, const char * params, const
     singular::push( node );
 
     if( singular::actives() < singular::max() ) {
-      mvm::concurrent( new singular() );
+      core::start(new singular());
     }
 
     return node;

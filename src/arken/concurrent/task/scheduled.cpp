@@ -76,7 +76,7 @@ scheduled::node scheduled::start(const char * fileName, const char * params, con
   scheduled::push( node );
 
   if(scheduled::actives() < scheduled::max()) {
-    mvm::concurrent( new scheduled() );
+    core::start(new scheduled());
   }
 
   return node;

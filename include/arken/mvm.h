@@ -9,6 +9,7 @@
 #include <lua/lua.hpp>
 #include <arken/string.h>
 #include <arken/concurrent/base.h>
+#include <arken/concurrent/core.h>
 #include <arken/concurrent/shared.h>
 #include <arken/os.h>
 #include <thread>
@@ -57,37 +58,6 @@ class mvm {
     void        release();
     uint32_t    version();
     Shared      shared();
-  };
-
-  class core
-  {
-    using string = arken::string;
-
-    std::vector<std::thread>       m_workers;
-    std::queue<concurrent::base *> m_queue;
-    std::mutex                     m_mutex;
-    std::condition_variable        m_condition;
-    std::atomic<uint32_t>          m_max;
-    std::atomic<uint32_t>          m_actives;
-    std::unordered_map<string, string> m_waiting;
-    std::unordered_map<std::thread::id, concurrent::base *> m_running;
-
-    core(uint32_t max);
-    ~core();
-    static core & instance();
-    static void working();
-    public:
-    static void start(concurrent::base * pointer);
-    static concurrent::base * get();
-    static std::queue<concurrent::base *> & queue();
-    static std::mutex               & mutex();
-    static std::vector<std::thread> & workers();
-    static std::condition_variable  & condition();
-    static std::atomic<uint32_t>    & max();
-    static std::atomic<uint32_t>    & actives();
-    static std::unordered_map<string, string> & waiting();
-    static std::unordered_map<std::thread::id, concurrent::base *> & running();
-
   };
 
   class container {
@@ -145,7 +115,6 @@ class mvm {
   static double uptime();
   static arken::instance instance(bool create = false);
   static const char * path();
-  static void concurrent(concurrent::base * pointer);
   static void wait();
   static void env(const char * value);
   static const char * env();

@@ -145,7 +145,7 @@ void worker::run()
 worker worker::start(const char * fileName, const char * params, bool purge)
 {
   auto ptr = new worker(fileName, params, purge);
-  mvm::concurrent(ptr);
+  arken::concurrent::core::start(ptr);
   return worker(*ptr);
 }
 

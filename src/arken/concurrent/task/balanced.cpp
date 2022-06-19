@@ -71,7 +71,7 @@ balanced::node balanced::start(const char * fileName, const char * params, const
   balanced::push( node );
 
   if(balanced::actives() < balanced::max()) {
-    mvm::concurrent( new balanced() );
+    core::start(new balanced());
   }
 
   return node;

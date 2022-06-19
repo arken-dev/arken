@@ -4,6 +4,7 @@
 // license that can be found in the LICENSE file.
 
 #include <arken/concurrent/base.h>
+#include <arken/concurrent/core.h>
 
 namespace arken {
 namespace concurrent {
@@ -69,6 +70,13 @@ string base::inspect()
     tmp.append("#info:").append(m_shared.info());
   }
   return tmp;
+}
+
+// TODO arken::concurrent::base#swap => arken::concurrent::core#swap ???
+void concurrent::base::swap(concurrent::base * destination, concurrent::base * source)
+{
+  std::unique_lock<std::mutex> lck(core::mutex());
+  destination->m_shared = source->m_shared;
 }
 
 } // namespace concurrent

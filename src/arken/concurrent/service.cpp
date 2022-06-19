@@ -48,7 +48,7 @@ service::~service() = default;
 service service::start(const char * fileName, const char * params, bool purge)
 {
   auto ptr = new service(fileName, params, purge);
-  mvm::concurrent( ptr );
+  core::start(ptr);
   return service(*ptr);
 }
 
@@ -111,7 +111,7 @@ void service::run()
 
   os::sleep(1);
   if (os::exists(m_fileName)) {
-    mvm::concurrent( new service(*this) );
+    core::start(new service(*this));
   } else {
     std::cout << "erase service " << m_fileName << std::endl;
     s_references.erase(m_fileName);
