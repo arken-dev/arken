@@ -83,13 +83,12 @@ class mvm {
     bool        m_release = false;
     Shared      m_shared;
 
-
     public:
     data(uint32_t version = s_version);
     data(data & obj);
     ~data();
     lua_State * state();
-    lua_State * release();
+    void        release();
     uint32_t    version();
     Shared      shared();
   };
@@ -203,7 +202,7 @@ class instance {
   instance(mvm::data * data);
   ~instance();
   lua_State * state();
-  lua_State * release();
+  void release();
   void swap(arken::concurrent::Shared shared);
 };
 

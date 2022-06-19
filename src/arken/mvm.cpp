@@ -363,10 +363,9 @@ lua_State * mvm::data::state()
   return m_State;
 }
 
-lua_State * mvm::data::release()
+void mvm::data::release()
 {
   m_release = true;
-  return m_State;
 }
 
 uint32_t mvm::data::version()
@@ -405,9 +404,9 @@ lua_State * instance::state()
   return m_data->state();
 }
 
-lua_State * instance::release()
+void instance::release()
 {
-  return m_data->release();
+  m_data->release();
 }
 
 void instance::swap(arken::concurrent::Shared shared)
