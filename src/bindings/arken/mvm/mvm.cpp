@@ -28,9 +28,9 @@ checkData( lua_State *L ) {
 
 static int
 arken_mvm_current(lua_State *L) {
-  mvm::data current = mvm::current();
   auto ptr = static_cast<mvm::data **>(lua_newuserdata(L, sizeof(mvm::data *)));
-  *ptr = new mvm::data(current);
+  *ptr = mvm::current();
+
   luaL_getmetatable(L, "arken.mvm.data.metatable");
   lua_setmetatable(L, -2);
 
@@ -236,8 +236,9 @@ arken_mvm_data_release( lua_State *L ) {
 
 static int
 arken_mvm_data_gc( lua_State *L ) {
-  mvm::data * data = checkData( L );
-  delete data;
+  // mvm::current not collected
+  // mvm::data * data = checkData( L );
+  // delete data;
   return 0;
 }
 

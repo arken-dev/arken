@@ -355,9 +355,7 @@ mvm::data::data(mvm::data & obj)
 
 mvm::data::~data()
 {
-  if( m_State ) {
-    lua_close(m_State);
-  }
+  lua_close(m_State);
 }
 
 lua_State * mvm::data::state()
@@ -581,10 +579,10 @@ char * mvm::setlocale(string locale, string category)
   return std::setlocale(value, locale);
 }
 
-mvm::data mvm::current()
+mvm::data * mvm::current()
 {
   std::unique_lock<std::mutex> lck(s_mvm_mutex);
-  return mvm::data(*s_mvm_map.at(std::this_thread::get_id()));
+  return s_mvm_map.at(std::this_thread::get_id());
 }
 
 Shared & mvm::shared()
