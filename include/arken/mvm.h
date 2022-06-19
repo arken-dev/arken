@@ -63,6 +63,8 @@ class instance;
 
 class mvm {
   using string = arken::string;
+  using Shared = arken::concurrent::Shared;
+
   friend class instance;
 
   public:
@@ -188,6 +190,8 @@ class mvm {
   static char * setlocale(string locale, string category);
   static char * setlocale(string locale);
   static arken::mvm::data current();
+  static Shared & shared();
+
 
 };
 

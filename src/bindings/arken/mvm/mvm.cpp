@@ -166,6 +166,27 @@ arken_mvm_setlocale(lua_State *L) {
   return 1;
 }
 
+static int
+arken_mvm_shared(lua_State *L) {
+  Shared shared = mvm::shared();
+
+  int rv;
+  lua_getglobal(L, "require");
+  lua_pushstring(L, "arken.concurrent.Shared");
+  rv = lua_pcall(L, 1, 0, 0);
+  if (rv) {
+    fprintf(stderr, "%s\n", lua_tostring(L, -1));
+  }
+
+  auto ptr = static_cast<Shared **>(lua_newuserdata(L, sizeof(Shared*)));
+  *ptr = new Shared(shared);
+
+  luaL_getmetatable(L, "arken.concurrent.Shared.metatable");
+  lua_setmetatable(L, -2);
+
+  return 1;
+}
+
 static void
 register_arken_mvm( lua_State *L ) {
   static const luaL_reg Map[] = {
@@ -186,6 +207,7 @@ register_arken_mvm( lua_State *L ) {
     {"inspect",   arken_mvm_inspect},
     {"workers",   arken_mvm_workers},
     {"setlocale", arken_mvm_setlocale},
+    {"shared",    arken_mvm_shared},
     {nullptr, nullptr}
   };
   luaL_newmetatable(L, "arken.mvm");

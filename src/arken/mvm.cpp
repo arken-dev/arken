@@ -11,6 +11,7 @@
 namespace arken {
 
 using arken::string;
+using Shared = arken::concurrent::Shared;
 
 int     mvm::s_argc{0};
 char ** mvm::s_argv{nullptr};
@@ -584,6 +585,12 @@ mvm::data mvm::current()
 {
   std::unique_lock<std::mutex> lck(s_mvm_mutex);
   return mvm::data(*s_mvm_map.at(std::this_thread::get_id()));
+}
+
+Shared & mvm::shared()
+{
+  static Shared instance;
+  return instance;
 }
 
 char * mvm::setlocale(string locale)
