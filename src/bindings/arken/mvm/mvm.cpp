@@ -4,7 +4,7 @@
 // license that can be found in the LICENSE file.
 
 #include <lua/lua.hpp>
-#include <arken/mvm>
+#include <arken/mvm.h>
 #include <arken/concurrent/shared.h>
 
 using arken::mvm;

@@ -130,9 +130,8 @@ class mvm {
 };
 
 class instance {
-
-
   mvm::data * m_data;
+
   public:
   instance(mvm::data * data);
   ~instance();

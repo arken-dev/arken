@@ -10,7 +10,7 @@
 #include <cstring>
 #include <iostream>
 #include <arken/base>
-#include <arken/mvm>
+#include <arken/mvm.h>
 #include <arken/concurrent/shared.h>
 
 namespace arken {

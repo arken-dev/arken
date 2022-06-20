@@ -4,7 +4,6 @@
 // license that can be found in the LICENSE file.
 
 #include <lua/lua.hpp>
-#include <arken/mvm>
 #include <arken/os.h>
 #include <arken/json.h>
 #include <arken/concurrent/task.h>

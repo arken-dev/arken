@@ -2,7 +2,7 @@
 #include <arken/os.h>
 #include <cstdio>
 #include <lua/lua.hpp>
-#include <arken/mvm>
+#include <arken/mvm.h>
 #include <arken/json.h>
 
 

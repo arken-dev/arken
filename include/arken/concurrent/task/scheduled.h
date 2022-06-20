@@ -12,7 +12,7 @@
 #include <mutex>
 #include <atomic>
 #include <memory>
-#include <arken/mvm>
+#include <arken/mvm.h>
 #include <arken/string.h>
 #include <arken/concurrent/shared.h>
 

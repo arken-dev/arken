@@ -5,7 +5,7 @@
 
 #include <lua/lua.hpp>
 #include <arken/base>
-#include <arken/mvm>
+#include <arken/mvm.h>
 #include <arken/log>
 #include <iostream>
 #include <cstdio>

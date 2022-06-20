@@ -7,7 +7,7 @@
 #define _ARKEN_CONCURRENT_WORKER_
 
 #include <arken/base>
-#include <arken/mvm>
+#include <arken/mvm.h>
 #include <arken/concurrent/shared.h>
 #include <mutex>
 #include <queue>

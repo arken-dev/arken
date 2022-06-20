@@ -5,7 +5,6 @@
 
 #include <lua/lua.hpp>
 #include <arken/base>
-#include <arken/mvm>
 #include <arken/concurrent/service.h>
 #include <arken/json.h>
 

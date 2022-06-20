@@ -12,7 +12,7 @@
 #include <vector>
 #include <memory>
 #include <unordered_map>
-#include <arken/mvm>
+#include <arken/mvm.h>
 #include <arken/string.h>
 #include <arken/concurrent/shared.h>
 

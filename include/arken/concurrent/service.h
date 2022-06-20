@@ -10,7 +10,7 @@
 #include <vector>
 #include <unordered_map>
 #include <arken/base>
-#include <arken/mvm>
+#include <arken/mvm.h>
 
 namespace arken {
 namespace concurrent {
