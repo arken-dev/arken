@@ -23,17 +23,12 @@
 #include <iostream>
 #include <atomic>
 
-namespace arken
-{
+namespace arken {
 
-
-class instance;
 
 class mvm {
   using string = arken::string;
   using Shared = arken::concurrent::Shared;
-
-  friend class instance;
 
   public:
 
@@ -42,7 +37,6 @@ class mvm {
     using Shared = arken::concurrent::Shared;
 
     friend class mvm;
-    friend class instance;
 
     private:
     lua_State * m_State;
@@ -58,6 +52,17 @@ class mvm {
     void        release();
     uint32_t    version();
     Shared      shared();
+  };
+
+  class instance {
+    mvm::data * m_data;
+
+    public:
+    instance(mvm::data * data);
+    ~instance();
+    lua_State * state();
+    void release();
+    void swap(arken::concurrent::Shared shared);
   };
 
   class container {
@@ -113,7 +118,7 @@ class mvm {
   static void push(mvm::data *);
   static void back(mvm::data *);
   static double uptime();
-  static arken::instance instance(bool create = false);
+  static mvm::instance getInstance(bool create = false);
   static const char * path();
   static void wait();
   static void env(const char * value);
@@ -129,16 +134,6 @@ class mvm {
 
 };
 
-class instance {
-  mvm::data * m_data;
-
-  public:
-  instance(mvm::data * data);
-  ~instance();
-  lua_State * state();
-  void release();
-  void swap(arken::concurrent::Shared shared);
-};
 
 } // namespace arken
 #endif // _ARKEN_MVM_

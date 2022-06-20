@@ -80,7 +80,7 @@ void mvm::config()
 
   const char * fileName = "config/mvm.lua";
   if( os::exists(fileName) ) {
-    arken::instance i = mvm::instance();
+    mvm::instance i = mvm::getInstance();
     lua_State * L = i.state();
     lua_settop(L, 0);
     lua_getglobal(L, "dofile");
@@ -151,11 +151,11 @@ void mvm::init(int argc, char ** argv)
 
 }
 
-instance mvm::instance(bool create)
+mvm::instance mvm::getInstance(bool create)
 {
 
   if( create ) {
-    return arken::instance( new mvm::data() );
+    return mvm::instance( new mvm::data() );
   }
 
   mvm::data * data = mvm::pop();
@@ -165,7 +165,7 @@ instance mvm::instance(bool create)
     data = new mvm::data();
   }
 
-  return arken::instance(data);
+  return mvm::instance(data);
 }
 
 void mvm::push(mvm::data * data)
@@ -369,7 +369,7 @@ arken::concurrent::Shared mvm::data::shared()
   return m_shared;
 }
 
-arken::instance::instance(mvm::data * data)
+mvm::instance::instance(mvm::data * data)
 {
   m_data = data;
 
@@ -377,7 +377,7 @@ arken::instance::instance(mvm::data * data)
   s_mvm_map[std::this_thread::get_id()] = data;
 }
 
-arken::instance::~instance()
+mvm::instance::~instance()
 {
 
   if( m_data->m_release ) {
@@ -390,17 +390,17 @@ arken::instance::~instance()
   s_mvm_map.erase(std::this_thread::get_id());
 }
 
-lua_State * instance::state()
+lua_State * mvm::instance::state()
 {
   return m_data->state();
 }
 
-void instance::release()
+void mvm::instance::release()
 {
   m_data->release();
 }
 
-void instance::swap(arken::concurrent::Shared shared)
+void mvm::instance::swap(arken::concurrent::Shared shared)
 {
   this->m_data->m_shared = shared;
 }

@@ -170,8 +170,8 @@ int main(int argc, char * argv[])
   arken::string  arkenPath;
   arken::string  task;
   arken::string  arg1;
-  arken::instance i = mvm::instance();
-  lua_State  * L = i.state();
+  mvm::instance i = mvm::getInstance();
+  lua_State * L = i.state();
 
   if ( argc == 1 ) {
     return arkenConsoleLoad(L);

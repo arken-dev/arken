@@ -20,7 +20,7 @@ worker::~worker() = default;
 void worker::run()
 {
   int rv;
-  arken::instance i = mvm::instance();
+  mvm::instance i = mvm::getInstance();
   lua_State * L = i.state();
   lua_settop(L, 0);
 
@@ -225,7 +225,7 @@ void worker::node::run()
 {
 
   int rv;
-  arken::instance i = mvm::instance();
+  mvm::instance i = mvm::getInstance();
   lua_State * L = i.state();
   lua_settop(L, 0);
 

@@ -118,7 +118,7 @@ scheduled::node::~node()
 void scheduled::node::run()
 {
   int rv;
-  arken::instance i = mvm::instance(m_purge);
+  mvm::instance i = mvm::getInstance(m_purge);
   i.swap(m_shared);
 
   lua_State * L = i.state();
