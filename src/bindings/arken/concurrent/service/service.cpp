@@ -76,7 +76,7 @@ arken_concurrent_service_shared( lua_State *L ) {
   service * pointer = checkService( L );
   int rv;
   lua_getglobal(L, "require");
-  lua_pushstring(L, "arken.concurrent.Shared");
+  lua_pushstring(L, "arken.Shared");
   rv = lua_pcall(L, 1, 0, 0);
   if (rv) {
     fprintf(stderr, "%s\n", lua_tostring(L, -1));
@@ -84,7 +84,7 @@ arken_concurrent_service_shared( lua_State *L ) {
 
   auto ptr = static_cast<Shared **>(lua_newuserdata(L, sizeof(Shared*)));
   *ptr = new Shared(pointer->shared());
-  luaL_getmetatable(L, "arken.concurrent.Shared.metatable");
+  luaL_getmetatable(L, "arken.Shared.metatable");
   lua_setmetatable(L, -2);
 
   return 1;
