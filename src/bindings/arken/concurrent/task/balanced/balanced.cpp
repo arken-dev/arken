@@ -9,7 +9,7 @@
 #include <arken/json.h>
 
 using balanced = arken::concurrent::task::balanced;
-using Shared   = arken::concurrent::Shared;
+using Shared   = arken::Shared;
 using json     = arken::json;
 
 balanced *

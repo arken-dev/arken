@@ -8,7 +8,7 @@
 #include <arken/concurrent/lock.h>
 
 using arken::concurrent::Lock;
-using arken::concurrent::Shared;
+using arken::Shared;
 
 /**
  * checkLock

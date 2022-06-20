@@ -9,7 +9,7 @@
 #include <arken/json.h>
 
 using worker = arken::concurrent::worker;
-using Shared = arken::concurrent::Shared;
+using Shared = arken::Shared;
 using json   = arken::json;
 
 worker *

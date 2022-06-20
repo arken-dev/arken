@@ -15,7 +15,7 @@
 #include <map>
 #include <arken/mvm.h>
 #include <arken/string.h>
-#include <arken/concurrent/shared.h>
+#include <arken/shared.h>
 
 namespace arken {
 namespace concurrent {

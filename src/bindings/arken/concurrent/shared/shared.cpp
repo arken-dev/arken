@@ -5,9 +5,9 @@
 
 #include <lua/lua.hpp>
 #include <arken/base>
-#include <arken/concurrent/shared.h>
+#include <arken/shared.h>
 
-using Shared = arken::concurrent::Shared;
+using Shared = arken::Shared;
 using string = arken::string;
 
 /**

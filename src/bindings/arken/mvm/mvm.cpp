@@ -5,11 +5,11 @@
 
 #include <lua/lua.hpp>
 #include <arken/mvm.h>
-#include <arken/concurrent/shared.h>
+#include <arken/shared.h>
 
 using arken::mvm;
+using arken::Shared;
 using arken::concurrent::base;
-using arken::concurrent::Shared;
 
 
 base *

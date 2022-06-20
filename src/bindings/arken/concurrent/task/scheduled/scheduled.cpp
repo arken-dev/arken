@@ -9,7 +9,7 @@
 #include <arken/json.h>
 
 using scheduled = arken::concurrent::task::scheduled;
-using Shared    = arken::concurrent::Shared;
+using Shared    = arken::Shared;
 using json      = arken::json;
 
 static scheduled::node *

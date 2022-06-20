@@ -11,7 +11,7 @@
 namespace arken {
 
 using arken::string;
-using Shared = arken::concurrent::Shared;
+using Shared = arken::Shared;
 
 int     mvm::s_argc{0};
 char ** mvm::s_argv{nullptr};
@@ -364,7 +364,7 @@ uint32_t mvm::data::version()
   return m_version;
 }
 
-arken::concurrent::Shared mvm::data::shared()
+arken::Shared mvm::data::shared()
 {
   return m_shared;
 }
@@ -400,7 +400,7 @@ void instance::release()
   m_data->release();
 }
 
-void instance::swap(arken::concurrent::Shared shared)
+void instance::swap(arken::Shared shared)
 {
   this->m_data->m_shared = shared;
 }

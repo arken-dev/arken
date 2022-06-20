@@ -9,7 +9,7 @@
 #include <arken/json.h>
 
 using fifo   = arken::concurrent::task::fifo;
-using Shared = arken::concurrent::Shared;
+using Shared = arken::Shared;
 using json   = arken::json;
 
 fifo::node *

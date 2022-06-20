@@ -8,9 +8,9 @@
 
 #include <lua/lua.hpp>
 #include <arken/string.h>
+#include <arken/shared.h>
 #include <arken/concurrent/base.h>
 #include <arken/concurrent/core.h>
-#include <arken/concurrent/shared.h>
 #include <arken/os.h>
 #include <thread>
 #include <mutex>
@@ -31,7 +31,7 @@ class instance;
 
 class mvm {
   using string = arken::string;
-  using Shared = arken::concurrent::Shared;
+  using Shared = arken::Shared;
 
   friend class instance;
 
@@ -39,7 +39,7 @@ class mvm {
 
   class data {
 
-    using Shared = arken::concurrent::Shared;
+    using Shared = arken::Shared;
 
     friend class mvm;
     friend class instance;
@@ -126,7 +126,6 @@ class mvm {
   static arken::mvm::data * current();
   static Shared & shared();
 
-
 };
 
 class instance {
@@ -137,7 +136,7 @@ class instance {
   ~instance();
   lua_State * state();
   void release();
-  void swap(arken::concurrent::Shared shared);
+  void swap(arken::Shared shared);
 };
 
 } // namespace arken
