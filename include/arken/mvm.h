@@ -79,7 +79,6 @@ class mvm {
     static void push(mvm::data *);
   };
 
-
   static std::atomic<double>   s_uptime;
   static std::atomic<uint32_t> s_gc;
   static std::atomic<uint32_t> s_version;
@@ -95,10 +94,6 @@ class mvm {
 
   private:
   static mvm::data * pop();
-
-
-  mvm() {};
-  ~mvm() {};
 
   public:
   static void args(int argc, char ** argv);
@@ -131,9 +126,7 @@ class mvm {
   static arken::mvm::data * current();
   static Shared & shared();
 
-
 };
-
 
 } // namespace arken
 #endif // _ARKEN_MVM_
