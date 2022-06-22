@@ -128,6 +128,7 @@ class mvm {
     void        release();
     uint32_t    version();
     Shared      shared();
+    string      inspect();
   };
 
   //---------------------------------------------------------------------------

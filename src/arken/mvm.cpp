@@ -323,13 +323,13 @@ uint32_t mvm::actives()
 
 string mvm::inspect()
 {
-  std::unique_lock<std::mutex> lck(arken::concurrent::core::mutex());
+  std::unique_lock<std::mutex> lck(s_mvm_mutex);
 
   int count = 0;
   string tmp("{");
   tmp.append("\"running\": [");
 
-  for (std::pair<std::thread::id, concurrent::base *> element : concurrent::core::running()) {
+  for (std::pair<std::thread::id, mvm::data *> element : s_mvm_map) {
     if( count > 0 ) {
       tmp.append(",");
     }
@@ -337,17 +337,6 @@ string mvm::inspect()
     count++;
   }
 
-  tmp.append("],");
-
-  count = 0;
-  tmp.append("\"wait\": [");
-  for (std::pair<string, string> element : arken::concurrent::core::waiting()) {
-    if( count > 0 ) {
-      tmp.append(",");
-    }
-    tmp.append("\"").append(element.second).append("\"");
-    count++;
-  }
   tmp.append("]}");
 
   return tmp;
@@ -487,6 +476,16 @@ uint32_t mvm::data::version()
 arken::mvm::Shared mvm::data::shared()
 {
   return m_shared;
+}
+
+string mvm::data::inspect()
+{
+  string tmp(m_shared.name());
+  if(! m_shared.info().empty()) {
+    tmp.append("#info: ").append(m_shared.info());
+  }
+
+  return tmp;
 }
 
 //-----------------------------------------------------------------------------
