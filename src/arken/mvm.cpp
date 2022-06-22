@@ -5,13 +5,14 @@
 
 #include <arken/base>
 #include <arken/mvm.h>
+#include <arken/concurrent/base.h>
+#include <arken/concurrent/core.h>
 #include <map>
 #include <clocale>
 
 namespace arken {
 
 using arken::string;
-using Shared = arken::Shared;
 
 int     mvm::s_argc{0};
 char ** mvm::s_argv{nullptr};
@@ -364,7 +365,7 @@ uint32_t mvm::data::version()
   return m_version;
 }
 
-arken::Shared mvm::data::shared()
+arken::mvm::Shared mvm::data::shared()
 {
   return m_shared;
 }
@@ -400,7 +401,7 @@ void mvm::instance::release()
   m_data->release();
 }
 
-void mvm::instance::swap(arken::Shared shared)
+void mvm::instance::swap(arken::mvm::Shared shared)
 {
   this->m_data->m_shared = shared;
 }
@@ -513,7 +514,7 @@ mvm::data * mvm::current()
   return s_mvm_map.at(std::this_thread::get_id());
 }
 
-Shared & mvm::shared()
+arken::mvm::Shared & mvm::shared()
 {
   static Shared instance;
   return instance;
@@ -663,7 +664,7 @@ bool mvm::Shared::toggle(string key)
   return result;
 }
 
-Shared & mvm::Shared::global()
+arken::mvm::Shared & mvm::Shared::global()
 {
   static Shared instance;
   return instance;

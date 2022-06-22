@@ -11,6 +11,7 @@
 #include <unordered_map>
 #include <arken/base>
 #include <arken/mvm.h>
+#include <arken/concurrent/base.h>
 
 namespace arken {
 namespace concurrent {

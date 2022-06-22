@@ -9,7 +9,7 @@
 #include <arken/json.h>
 
 using priority  = arken::concurrent::task::priority;
-using Shared    = arken::Shared;
+using Shared    = arken::mvm::Shared;
 using json      = arken::json;
 
 priority::node *

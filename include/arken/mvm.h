@@ -8,8 +8,6 @@
 
 #include <lua/lua.hpp>
 #include <arken/string.h>
-#include <arken/concurrent/base.h>
-#include <arken/concurrent/core.h>
 #include <arken/os.h>
 #include <thread>
 #include <mutex>
@@ -109,8 +107,6 @@ class mvm {
 
   class data {
 
-    using Shared = arken::Shared;
-
     friend class mvm;
 
     private:
@@ -141,7 +137,7 @@ class mvm {
     ~instance();
     lua_State * state();
     void release();
-    void swap(arken::concurrent::Shared shared);
+    void swap(Shared shared);
   };
 
   //---------------------------------------------------------------------------

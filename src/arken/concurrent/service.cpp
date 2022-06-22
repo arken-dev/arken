@@ -1,6 +1,7 @@
 #include <lua/lua.hpp>
 #include <lua/json/lock.h>
 #include <arken/concurrent/service.h>
+#include <arken/concurrent/core.h>
 #include <arken/os.h>
 #include <arken/string.h>
 #include <arken/json.h>

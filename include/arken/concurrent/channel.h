@@ -8,7 +8,7 @@
 
 #include <arken/base>
 #include <arken/mvm.h>
-#include <arken/shared.h>
+#include <arken/concurrent/base.h>
 #include <memory>
 #include <queue>
 
@@ -17,8 +17,8 @@ namespace concurrent {
 
   class channel : public base {
 
-    using Shared = arken::Shared;
     using string = arken::string;
+    using Shared = arken::mvm::Shared;
 
     private:
 

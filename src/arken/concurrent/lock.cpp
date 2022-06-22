@@ -90,7 +90,7 @@ int Lock::pcall(lua_State *L)
 }
 
 
-Shared Lock::shared()
+arken::mvm::Shared Lock::shared()
 {
   return m_resource->m_shared;
 }

@@ -4,6 +4,7 @@
 #include <lua/lua.hpp>
 #include <arken/mvm.h>
 #include <arken/json.h>
+#include <arken/concurrent/core.h>
 
 
 namespace arken {

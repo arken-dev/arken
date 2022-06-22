@@ -9,13 +9,13 @@
 #include <atomic>
 #include <memory>
 #include <arken/base>
-#include <arken/shared.h>
+#include <arken/mvm.h>
 
 namespace arken {
 namespace concurrent {
 
 class base {
-  using Shared = arken::Shared;
+  using Shared = arken::mvm::Shared;
   using string = arken::string;
 
   protected:

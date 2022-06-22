@@ -9,7 +9,7 @@
 #include <arken/json.h>
 
 using service = arken::concurrent::service;
-using Shared  = arken::Shared;
+using Shared  = arken::mvm::Shared;
 using json    = arken::json;
 
 service *

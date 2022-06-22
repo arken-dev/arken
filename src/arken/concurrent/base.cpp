@@ -43,7 +43,7 @@ double base::microtime()
   return m_microtime;
 }
 
-arken::Shared base::shared()
+arken::mvm::Shared base::shared()
 {
   return m_shared;
 }

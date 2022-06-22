@@ -6,6 +6,7 @@
 #include <arken/string.h>
 #include <algorithm>
 #include <arken/json.h>
+#include <arken/concurrent/core.h>
 
 namespace arken {
 namespace concurrent {

@@ -6,6 +6,7 @@
 #include <lua/lua.hpp>
 #include <arken/json.h>
 #include <arken/concurrent/channel.h>
+#include <arken/concurrent/core.h>
 #include <memory>
 
 namespace arken {

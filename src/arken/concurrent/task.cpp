@@ -7,6 +7,7 @@
 #include <arken/os.h>
 #include <arken/json.h>
 #include <arken/concurrent/task.h>
+#include <arken/concurrent/core.h>
 
 namespace arken {
 namespace concurrent {

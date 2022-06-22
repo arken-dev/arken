@@ -7,12 +7,12 @@
 #define _ARKEN_CONCURRENT_WORKER_
 
 #include <arken/base>
-#include <arken/mvm.h>
-#include <arken/shared.h>
 #include <mutex>
 #include <queue>
 #include <unordered_map>
 #include <string>
+#include <arken/concurrent/base.h>
+#include <arken/concurrent/core.h>
 
 namespace arken {
 namespace concurrent {

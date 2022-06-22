@@ -9,7 +9,7 @@
 #include <arken/json.h>
 
 using task   = arken::concurrent::task;
-using Shared = arken::Shared;
+using Shared = arken::mvm::Shared;
 using json   = arken::json;
 
 task *

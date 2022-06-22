@@ -9,7 +9,7 @@
 #include <arken/concurrent/task/singular.h>
 
 using singular = arken::concurrent::task::singular;
-using Shared   = arken::Shared;
+using Shared   = arken::mvm::Shared;
 using json     = arken::json;
 
 singular::node *

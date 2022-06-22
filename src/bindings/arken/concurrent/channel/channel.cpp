@@ -9,7 +9,7 @@
 #include <arken/json.h>
 
 using channel = arken::concurrent::channel;
-using Shared  = arken::Shared;
+using Shared  = arken::mvm::Shared;
 using json    = arken::json;
 
 channel *

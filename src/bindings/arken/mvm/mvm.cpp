@@ -5,17 +5,17 @@
 
 #include <lua/lua.hpp>
 #include <arken/mvm.h>
-#include <arken/shared.h>
 
+using Shared = arken::mvm::Shared;
 using arken::mvm;
-using arken::Shared;
-using arken::concurrent::base;
+//using arken::concurrent::base;
 
-
+/*
 base *
 checkTask( lua_State *L ) {
   return *static_cast<base **>(luaL_checkudata(L, 1, "arken.concurrent.base.metatable"));
 }
+*/
 
 mvm::data *
 checkData( lua_State *L ) {
@@ -281,7 +281,7 @@ register_arken_mvm_data_metatable( lua_State *L ) {
 //-----------------------------------------------------------------------------
 // ARKEN_CONCURRENT_BASE_METATABLE
 //-----------------------------------------------------------------------------
-
+/*
 static int
 arken_concurrent_base_uuid( lua_State *L ) {
   base * pointer = checkTask( L );
@@ -340,6 +340,7 @@ register_arken_concurrent_base_metatable( lua_State *L ) {
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
+*/
 
 //-----------------------------------------------------------------------------
 // REGISTER
@@ -347,7 +348,7 @@ register_arken_concurrent_base_metatable( lua_State *L ) {
 
 extern "C" {
   int luaopen_arken_mvm( lua_State *L ) {
-    register_arken_concurrent_base_metatable(L);
+    //register_arken_concurrent_base_metatable(L);
     register_arken_mvm_data_metatable(L);
     register_arken_mvm(L);
     return 1;
