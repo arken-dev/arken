@@ -61,12 +61,18 @@ class mvm {
 
     private:
 
+    std::shared_ptr<string> m_name;
     std::shared_ptr<string> m_info;
     std::shared_ptr<std::unordered_map<string, data>> m_map;
     std::shared_ptr<std::mutex> m_mutex;
 
     public:
 
+    // name
+    void name(string name);
+    string name();
+
+    // info
     void info(string info);
     string info();
 

@@ -535,6 +535,7 @@ void mvm::instance::swap(arken::mvm::Shared shared)
 
 mvm::Shared::Shared()
 {
+  m_name  = std::shared_ptr<string>(new string);
   m_info  = std::shared_ptr<string>(new string);
   m_map   = std::shared_ptr<std::unordered_map<string, data>>(new std::unordered_map<string, data>);
   m_mutex = std::shared_ptr<std::mutex>(new std::mutex);
@@ -542,9 +543,22 @@ mvm::Shared::Shared()
 
 mvm::Shared::Shared(const Shared & obj)
 {
+  m_name  = obj.m_name;
   m_info  = obj.m_info;
   m_map   = obj.m_map;
   m_mutex = obj.m_mutex;
+}
+
+void mvm::Shared::name(string name)
+{
+  std::unique_lock<std::mutex> lck(*m_mutex);
+  *m_name = name;
+}
+
+string mvm::Shared::name()
+{
+  std::unique_lock<std::mutex> lck(*m_mutex);
+  return *m_name;
 }
 
 void mvm::Shared::info(string info)
