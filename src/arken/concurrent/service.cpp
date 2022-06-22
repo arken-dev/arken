@@ -35,7 +35,6 @@ service::service(const service &obj)
   m_fileName  = obj.m_fileName;
   m_params    = obj.m_params;
   m_purge     = obj.m_purge;
-  m_inspect   = obj.m_inspect;
   m_shared    = obj.m_shared;
   m_uuid      = obj.m_uuid;
   m_microtime = obj.m_microtime;

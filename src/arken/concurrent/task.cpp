@@ -95,7 +95,6 @@ task::task(const task &obj)
   m_fileName  = obj.m_fileName;
   m_params    = obj.m_params;
   m_purge     = obj.m_purge;
-  m_inspect   = obj.m_inspect;
   m_finished  = obj.m_finished;
   m_shared    = obj.m_shared;
   m_purge     = obj.m_purge;

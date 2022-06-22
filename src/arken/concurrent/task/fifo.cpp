@@ -72,7 +72,6 @@ fifo::node::node(const node &obj)
   m_microtime = obj.m_microtime;
   m_shared    = obj.m_shared;
   m_finished  = obj.m_finished;
-  m_inspect   = obj.m_inspect;
 }
 
 fifo::node::node(const char * fileName, const char * params, bool purge)
@@ -82,10 +81,7 @@ fifo::node::node(const char * fileName, const char * params, bool purge)
   m_purge     = purge;
   m_microtime = os::microtime();
   m_finished  = std::shared_ptr<std::atomic<bool>>(new std::atomic<bool>(false));
-  m_inspect.
-    append("arken.concurrent.task.fifo: ").
-    append(m_fileName).append("#").
-    append(m_params.escape());
+  m_shared.name("arken.concurrent.task.fifo");
 }
 
 void fifo::node::run()

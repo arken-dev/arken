@@ -22,7 +22,6 @@ class base {
   string m_uuid{os::uuid()};
   string m_params;
   string m_fileName;
-  string m_inspect;
   double m_microtime{os::microtime()};
   bool m_purge{false};
   std::shared_ptr<std::atomic<bool>> m_finished{new std::atomic<bool>(false)};

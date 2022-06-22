@@ -75,7 +75,6 @@ priority::node::node(const node &obj)
   m_microtime = obj.m_microtime;
   m_shared    = obj.m_shared;
   m_finished  = obj.m_finished;
-  m_inspect   = obj.m_inspect;
   m_purge     = obj.m_purge;
 }
 
@@ -88,10 +87,7 @@ priority::node::node(const char * fileName, const char * params, int priority, b
   m_purge     = purge;
   m_microtime = os::microtime();
   m_finished  = std::shared_ptr<std::atomic<bool>>(new std::atomic<bool>(false));
-  m_inspect.
-    append("arken.concurrent.task.fifo: ").
-    append(m_fileName).append("#").
-    append(m_params.escape());
+  m_shared.name("arken.concurrent.task.fifo");
 }
 
 bool priority::node::operator()(const priority::node &n1, const priority::node &n2)

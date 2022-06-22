@@ -158,11 +158,7 @@ worker::worker(const char * fileName, const char * params, bool purge)
   m_total    = std::shared_ptr<std::atomic<int>>(new std::atomic<int>(0));
   m_progress = std::shared_ptr<std::atomic<int>>(new std::atomic<int>(0));
 
-  m_inspect.
-    append("arken.concurrent.worker: ").
-    append(m_fileName).append("#").
-    append(m_params.escape());
-
+  m_shared.name("arken.concurrent.worker");
 }
 
 worker::worker(const worker &obj)
@@ -171,7 +167,6 @@ worker::worker(const worker &obj)
   m_fileName = obj.m_fileName;
   m_params   = obj.m_params;
   m_purge    = obj.m_purge;
-  m_inspect  = obj.m_inspect;
   m_finished = obj.m_finished;
   m_progress = obj.m_progress;
   m_total    = obj.m_total;
@@ -217,8 +212,8 @@ worker::node::node(worker * ptr, string fileName, uint32_t number)
   m_fileName = fileName;
   m_number   = number;
   m_shared   = m_worker->m_shared;
-  m_inspect  = "arken.concurrent.worker.node#";
-  m_inspect.append(std::to_string(m_number));
+  m_shared.name("arken.concurrent.worker.node#");
+  m_shared.name().append(std::to_string(m_number));
 }
 
 void worker::node::run()

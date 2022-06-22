@@ -126,7 +126,6 @@ singular::node::node(const node &obj)
   m_microtime = obj.m_microtime;
   m_shared    = obj.m_shared;
   m_finished  = obj.m_finished;
-  m_inspect   = obj.m_inspect;
   m_purge     = obj.m_purge;
 }
 
@@ -139,10 +138,8 @@ singular::node::node(const char * fileName, const char * params, const char * na
   m_uuid      = os::uuid();
   m_microtime = os::microtime();
   m_finished  = std::shared_ptr<std::atomic<bool>>(new std::atomic<bool>(false));
-  m_inspect.
-    append(m_fileName).append("#").
-    append(m_params.escape()).append("#").
-    append(m_name.escape());
+  m_shared.name("arken.concurrent.task.singular#");
+  m_shared.name().append(m_name.escape());
 }
 
 void singular::node::run()
