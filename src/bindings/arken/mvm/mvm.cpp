@@ -24,7 +24,7 @@ checkTask( lua_State *L ) {
 
 Shared *
 checkShared( lua_State *L ) {
-  return *static_cast<Shared **>(luaL_checkudata(L, 1, "arken.Shared.metatable"));
+  return *static_cast<Shared **>(luaL_checkudata(L, 1, "arken.mvm.Shared.metatable"));
 }
 
 
@@ -181,18 +181,10 @@ static int
 arken_mvm_shared(lua_State *L) {
   Shared shared = mvm::shared();
 
-  int rv;
-  lua_getglobal(L, "require");
-  lua_pushstring(L, "arken.Shared");
-  rv = lua_pcall(L, 1, 0, 0);
-  if (rv) {
-    fprintf(stderr, "%s\n", lua_tostring(L, -1));
-  }
-
   auto ptr = static_cast<Shared **>(lua_newuserdata(L, sizeof(Shared*)));
   *ptr = new Shared(shared);
 
-  luaL_getmetatable(L, "arken.Shared.metatable");
+  luaL_getmetatable(L, "arken.mvm.Shared.metatable");
   lua_setmetatable(L, -2);
 
   return 1;
@@ -256,17 +248,10 @@ arken_mvm_data_gc( lua_State *L ) {
 static int
 arken_mvm_data_shared( lua_State *L ) {
   mvm::data * data = checkData( L );
-  int rv;
-  lua_getglobal(L, "require");
-  lua_pushstring(L, "arken.Shared");
-  rv = lua_pcall(L, 1, 0, 0);
-  if (rv) {
-    fprintf(stderr, "%s\n", lua_tostring(L, -1));
-  }
 
   auto ptr = static_cast<Shared **>(lua_newuserdata(L, sizeof(Shared*)));
   *ptr = new Shared(data->shared());
-  luaL_getmetatable(L, "arken.Shared.metatable");
+  luaL_getmetatable(L, "arken.mvm.Shared.metatable");
   lua_setmetatable(L, -2);
 
   return 1;
