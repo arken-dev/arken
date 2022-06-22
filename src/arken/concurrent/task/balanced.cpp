@@ -102,7 +102,7 @@ balanced::node::node(const char * fileName, const char * params, const char * na
   m_microtime = os::microtime();
   m_finished  = std::shared_ptr<std::atomic<bool>>(new std::atomic<bool>(false));
   m_shared.name("arken.concurrentask.task.balanced#");
-  m_shared.name().append(m_params.name());
+  m_shared.name().append(m_name);
 }
 
 void balanced::node::run()
