@@ -12,10 +12,11 @@ namespace task {
 
 fifo::fifo()
 {
-  m_inspect   = "arken.concurrent.task.fifo";
   m_uuid      = os::uuid();
   m_microtime = os::microtime();
   fifo::actives()++;
+
+  m_shared.name("arken.concurrent.task.fifo");
 }
 
 fifo::~fifo()

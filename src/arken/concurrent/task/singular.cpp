@@ -14,10 +14,11 @@ namespace task {
 
 singular::singular()
 {
-  m_inspect   = "arken.concurrent.task.singular";
   m_uuid      = os::uuid();
   m_microtime = os::microtime();
   singular::actives()++;
+
+  m_shared.name("arken.concurrent.task.singular");
 }
 
 std::vector<string> & singular::vector()

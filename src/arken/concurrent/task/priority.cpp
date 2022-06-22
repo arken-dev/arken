@@ -13,10 +13,11 @@ namespace task {
 
 priority::priority()
 {
-  m_inspect   = "arken.concurrent.task.priority";
   m_uuid      = os::uuid();
   m_microtime = os::microtime();
   priority::actives()++;
+
+  m_shared.name("arken.concurrent.task.priority");
 }
 
 priority::~priority()

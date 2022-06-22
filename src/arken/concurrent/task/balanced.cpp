@@ -12,10 +12,11 @@ namespace task {
 
 balanced::balanced()
 {
-  m_inspect   = "arken.concurrent.task.balanced";
   m_uuid      = os::uuid();
   m_microtime = os::microtime();
   balanced::actives()++;
+
+  m_shared.name("arken.concurrent.task.balanced");
 }
 
 balanced::~balanced() = default;

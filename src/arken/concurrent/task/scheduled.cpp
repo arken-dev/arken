@@ -13,10 +13,11 @@ namespace task {
 
 scheduled::scheduled()
 {
-  m_inspect   = "arken.concurrent.task.scheduled";
   m_uuid      = os::uuid();
   m_microtime = os::microtime();
   scheduled::actives()++;
+
+  m_shared.name("arken.concurrent.task.scheduled");
 }
 
 scheduled::~scheduled() = default;
