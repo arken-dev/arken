@@ -116,7 +116,7 @@ arken_concurrent_task_fifo_node_shared( lua_State *L ) {
 
   auto ptr = static_cast<Shared **>(lua_newuserdata(L, sizeof(Shared*)));
   *ptr = new Shared(node->shared());
-  luaL_getmetatable(L, "arken.Shared.metatable");
+  luaL_getmetatable(L, "arken.mvm.Shared.metatable");
   lua_setmetatable(L, -2);
 
   return 1;

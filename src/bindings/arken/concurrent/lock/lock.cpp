@@ -123,7 +123,7 @@ arken_concurrent_Lock_shared( lua_State *L ) {
 
   auto ptr = static_cast<Shared **>(lua_newuserdata(L, sizeof(Shared*)));
   *ptr = new Shared(udata->shared());
-  luaL_getmetatable(L, "arken.Shared.metatable");
+  luaL_getmetatable(L, "arken.mvm.Shared.metatable");
   lua_setmetatable(L, -2);
 
   return 1;
