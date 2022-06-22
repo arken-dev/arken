@@ -1,7 +1,6 @@
-#include <arken/concurrent/shared.h>
+#include <arken/shared.h>
 
 namespace arken {
-namespace concurrent {
 
 Shared::Shared()
 {
@@ -199,5 +198,4 @@ string Shared::data::getString()
   return m_string;
 }
 
-} // namespace concurrent
 } // namespace arken

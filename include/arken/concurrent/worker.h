@@ -8,7 +8,7 @@
 
 #include <arken/base>
 #include <arken/mvm.h>
-#include <arken/concurrent/shared.h>
+#include <arken/shared.h>
 #include <mutex>
 #include <queue>
 #include <unordered_map>

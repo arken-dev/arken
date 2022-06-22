@@ -3,8 +3,8 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#ifndef _ARKEN_CONCURRENT_SHARED_
-#define _ARKEN_CONCURRENT_SHARED_
+#ifndef _ARKEN_SHARED_
+#define _ARKEN_SHARED_
 
 #include <mutex>
 #include <memory>
@@ -12,7 +12,6 @@
 #include <arken/string.h>
 
 namespace arken {
-namespace concurrent {
 
 class Shared
 {
@@ -84,7 +83,6 @@ class Shared
 
 };
 
-} // namespace concurrent
 } // namespace arken
 
 #endif

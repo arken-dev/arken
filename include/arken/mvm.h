@@ -8,9 +8,9 @@
 
 #include <lua/lua.hpp>
 #include <arken/string.h>
+#include <arken/shared.h>
 #include <arken/concurrent/base.h>
 #include <arken/concurrent/core.h>
-#include <arken/concurrent/shared.h>
 #include <arken/os.h>
 #include <thread>
 #include <mutex>
@@ -27,13 +27,13 @@ namespace arken {
 
 class mvm {
   using string = arken::string;
-  using Shared = arken::concurrent::Shared;
+  using Shared = arken::Shared;
 
   public:
 
   class data {
 
-    using Shared = arken::concurrent::Shared;
+    using Shared = arken::Shared;
 
     friend class mvm;
 

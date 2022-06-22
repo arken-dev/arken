@@ -11,7 +11,7 @@
 #include <iostream>
 #include <arken/base>
 #include <arken/mvm.h>
-#include <arken/concurrent/shared.h>
+#include <arken/shared.h>
 
 namespace arken {
 namespace concurrent {

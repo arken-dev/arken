@@ -9,8 +9,8 @@
 # ------------------------------------------------------------------------------
 
 add_library(
-  arken.concurrent.Shared SHARED shared.cpp
+  arken.Shared SHARED shared.cpp
 )
 
-set_target_properties(arken.concurrent.Shared PROPERTIES PREFIX "" OUTPUT_NAME Shared)
-target_link_libraries(arken.concurrent.Shared arken)
+set_target_properties(arken.Shared PROPERTIES PREFIX "" OUTPUT_NAME Shared)
+target_link_libraries(arken.Shared arken)

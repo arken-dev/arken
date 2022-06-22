@@ -9,7 +9,7 @@
 #include <arken/json.h>
 
 using channel = arken::concurrent::channel;
-using Shared  = arken::concurrent::Shared;
+using Shared  = arken::Shared;
 using json    = arken::json;
 
 channel *
@@ -110,7 +110,7 @@ arken_concurrent_channel_shared( lua_State *L ) {
   channel * chn = checkChannel( L );
   int rv;
   lua_getglobal(L, "require");
-  lua_pushstring(L, "arken.concurrent.Shared");
+  lua_pushstring(L, "arken.Shared");
   rv = lua_pcall(L, 1, 0, 0);
   if (rv) {
     fprintf(stderr, "%s\n", lua_tostring(L, -1));
@@ -118,7 +118,7 @@ arken_concurrent_channel_shared( lua_State *L ) {
 
   auto ptr = static_cast<Shared **>(lua_newuserdata(L, sizeof(Shared*)));
   *ptr = new Shared(chn->shared());
-  luaL_getmetatable(L, "arken.concurrent.Shared.metatable");
+  luaL_getmetatable(L, "arken.Shared.metatable");
   lua_setmetatable(L, -2);
 
   return 1;
