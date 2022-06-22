@@ -115,7 +115,7 @@ arken_concurrent_worker_shared( lua_State *L ) {
   worker * pointer = checkWorker( L );
   int rv;
   lua_getglobal(L, "require");
-  lua_pushstring(L, "arken.Shared");
+  lua_pushstring(L, "arken.mvm");
   rv = lua_pcall(L, 1, 0, 0);
   if (rv) {
     fprintf(stderr, "%s\n", lua_tostring(L, -1));
@@ -177,7 +177,7 @@ arken_concurrent_worker_node_shared( lua_State *L ) {
   worker::node * node = checkWorkerNode( L );
   int rv;
   lua_getglobal(L, "require");
-  lua_pushstring(L, "arken.Shared");
+  lua_pushstring(L, "arken.mvm");
   rv = lua_pcall(L, 1, 0, 0);
   if (rv) {
     fprintf(stderr, "%s\n", lua_tostring(L, -1));

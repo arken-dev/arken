@@ -120,7 +120,7 @@ arken_concurrent_task_priority_node_shared( lua_State *L ) {
   priority::node * node = checkNode( L );
   int rv;
   lua_getglobal(L, "require");
-  lua_pushstring(L, "arken.Shared");
+  lua_pushstring(L, "arken.mvm");
   rv = lua_pcall(L, 1, 0, 0);
   if (rv) {
     fprintf(stderr, "%s\n", lua_tostring(L, -1));
