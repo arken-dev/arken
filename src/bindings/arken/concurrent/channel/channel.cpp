@@ -106,6 +106,13 @@ arken_concurrent_channel_uuid( lua_State *L ) {
 }
 
 static int
+arken_concurrent_channel_wait( lua_State *L ) {
+  channel * chn = checkChannel( L );
+  chn->wait();
+  return 0;
+}
+
+static int
 arken_concurrent_channel_shared( lua_State *L ) {
   channel * chn = checkChannel( L );
   int rv;
@@ -132,6 +139,7 @@ luaL_reg arken_concurrent_channel_metatable[] = {
   {"finished", arken_concurrent_channel_finished},
   {"uuid",     arken_concurrent_channel_uuid},
   {"shared",   arken_concurrent_channel_shared},
+  {"wait",     arken_concurrent_channel_wait},
   {"__gc",     arken_concurrent_channel_gc},
   {nullptr, nullptr}
 };
