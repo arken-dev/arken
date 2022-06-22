@@ -279,7 +279,7 @@ uint32_t mvm::clear()
 
 uint32_t mvm::threads()
 {
-  return return arken::concurrent::core::max(); //TODO
+  return arken::concurrent::core::max(); //TODO
 }
 
 void mvm::threads(uint32_t threads)
