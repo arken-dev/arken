@@ -42,5 +42,4 @@ if(NOT ARKEN_NOTIFY STREQUAL "")
 endif()
 
 add_subdirectory(regex)
-add_subdirectory(shared)
 add_subdirectory(utf8)
