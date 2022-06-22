@@ -24,6 +24,7 @@
 namespace arken {
 
 class mvm {
+
   using string = arken::string;
 
   public:
