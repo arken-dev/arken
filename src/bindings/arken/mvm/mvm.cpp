@@ -355,7 +355,7 @@ arken_mvm_Shared_name( lua_State *L ) {
     return 1;
   } else {
     const char * name = luaL_checkstring(L, 2);
-    shr->info(name);
+    shr->name(name);
     return 0;
   }
 }
