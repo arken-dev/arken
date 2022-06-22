@@ -347,6 +347,20 @@ register_arken_concurrent_base_metatable( lua_State *L ) {
  */
 
 static int
+arken_mvm_Shared_name( lua_State *L ) {
+  Shared * shr = checkShared( L );
+
+  if(lua_gettop(L) == 1) { /* número de argumentos */
+    lua_pushstring(L, shr->name());
+    return 1;
+  } else {
+    const char * name = luaL_checkstring(L, 2);
+    shr->info(name);
+    return 0;
+  }
+}
+
+static int
 arken_mvm_Shared_info( lua_State *L ) {
   Shared * shr = checkShared( L );
 
@@ -513,6 +527,7 @@ arken_mvm_Shared_gc( lua_State *L ) {
 
 static const
 luaL_reg arken_mvm_Shared_metatable[] = {
+  {"name",      arken_mvm_Shared_name},
   {"info",      arken_mvm_Shared_info},
   {"put",       arken_mvm_Shared_put},
   {"get",       arken_mvm_Shared_get},
