@@ -97,12 +97,6 @@ channel::channel(
   m_uuid            = uuid;
   m_finished        = finished;
   m_shared          = shared;
-
-  m_inspect.
-    append("arken.concurrent.channel: ").
-    append(m_fileName).append("#").
-    append(m_params.escape());
-
 }
 
 channel::channel(const char * fileName, const char * params, bool purge)
@@ -120,10 +114,7 @@ channel::channel(const char * fileName, const char * params, bool purge)
   m_params    = params;
   m_purge     = purge;
 
-  m_inspect.
-    append("arken.concurrent.channel: ").
-    append(m_fileName).append("#").
-    append(m_params.escape());
+  m_shared.name("arken.concurrent.channel");
 
   m_client = new channel(
     m_write, m_read, m_write_mtx, m_read_mtx, m_write_condition,
@@ -143,11 +134,6 @@ channel::channel(const channel &obj) {
   m_uuid            = obj.m_uuid;
   m_finished        = obj.m_finished;
   m_shared          = obj.m_shared;
-
-  m_inspect.
-    append("arken.concurrent.channel: ").
-    append(m_fileName).append("#").
-    append(m_params.escape());
 }
 
 channel * channel::client()

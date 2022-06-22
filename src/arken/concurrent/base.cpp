@@ -65,10 +65,17 @@ void base::finished(bool flag)
 
 string base::inspect()
 {
-  string tmp = m_inspect;
+  string tmp(m_shared.name());
+    tmp.
+    append(m_shared.name()).
+    append(m_fileName).
+    append("#").
+    append(m_params.escape());
+
   if( !m_shared.info().empty() ) {
     tmp.append("#info:").append(m_shared.info());
   }
+
   return tmp;
 }
 

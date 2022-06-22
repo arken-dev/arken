@@ -86,13 +86,8 @@ task::task(const char * fileName, const char * params, bool purge)
   m_purge     = purge;
   m_microtime = os::microtime();
   m_uuid      = os::uuid();
+
   m_shared.name("arken.concurrent.task");
-
-  m_inspect.
-    append("arken.concurrent.task: ").
-    append(m_fileName).append("#").
-    append(m_params.escape());
-
 }
 
 task::task(const task &obj)
