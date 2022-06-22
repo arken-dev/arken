@@ -292,123 +292,10 @@ double mvm::uptime()
   return os::microtime() - mvm::s_uptime;
 }
 
-const char *  mvm::path()
+const char * mvm::path()
 {
   return s_arkenPath;
 }
-
-mvm::data::data(uint32_t version)
-{
-
-  int rv;
-  m_version = version;
-  m_gc      = s_gc;
-  m_State   = luaL_newstate();
-
-  luaL_openlibs(m_State);
-
-  lua_getglobal(m_State, "package");
-  lua_pushstring(m_State, s_packagePath);
-  lua_setfield(m_State, -2, "path");
-  lua_pushstring(m_State, s_cpackagePath);
-  lua_setfield(m_State, -2, "cpath");
-
-  lua_pop(m_State, 1);
-
-  int top, i;
-
-  lua_settop(m_State, 0);
-  lua_newtable(m_State);
-  top = lua_gettop(m_State);
-  for(i=1; i < s_argc; i++) {
-    lua_pushinteger(m_State, i-1);
-    lua_pushstring(m_State, s_argv[i]);
-    lua_settable(m_State, top);
-  }
-  lua_setglobal(m_State, "arg");
-
-  //---------------------------------------------
-  rv = luaL_loadfile(m_State, s_profilePath);
-  if (rv) {
-    fprintf(stderr, "%s\n", lua_tostring(m_State, -1));
-  }
-
-  rv = lua_pcall(m_State, 0, 0, 0);
-  if (rv) {
-    fprintf(stderr, "%s\n", lua_tostring(m_State, -1));
-  }
-
-  int log = mvm::at("pool.log");
-  if( log ) {
-    mvm::log("mvm create");
-  }
-
-}
-
-mvm::data::~data()
-{
-  lua_close(m_State);
-}
-
-lua_State * mvm::data::state()
-{
-  return m_State;
-}
-
-void mvm::data::release()
-{
-  m_release = true;
-}
-
-uint32_t mvm::data::version()
-{
-  return m_version;
-}
-
-arken::mvm::Shared mvm::data::shared()
-{
-  return m_shared;
-}
-
-mvm::instance::instance(mvm::data * data)
-{
-  m_data = data;
-
-  std::unique_lock<std::mutex> lck(s_mvm_mutex);
-  s_mvm_map[std::this_thread::get_id()] = data;
-}
-
-mvm::instance::~instance()
-{
-
-  if( m_data->m_release ) {
-    delete m_data;
-  } else {
-    mvm::push(m_data);
-  }
-
-  std::unique_lock<std::mutex> lck(s_mvm_mutex);
-  s_mvm_map.erase(std::this_thread::get_id());
-}
-
-lua_State * mvm::instance::state()
-{
-  return m_data->state();
-}
-
-void mvm::instance::release()
-{
-  m_data->release();
-}
-
-void mvm::instance::swap(arken::mvm::Shared shared)
-{
-  this->m_data->m_shared = shared;
-}
-
-//-----------------------------------------------------------------------------
-// ENV
-//-----------------------------------------------------------------------------
 
 void mvm::env(const char * env)
 {
@@ -523,6 +410,123 @@ arken::mvm::Shared & mvm::shared()
 char * mvm::setlocale(string locale)
 {
   return std::setlocale(LC_ALL, locale);
+}
+
+//-----------------------------------------------------------------------------
+// DATA
+//-----------------------------------------------------------------------------
+
+mvm::data::data(uint32_t version)
+{
+
+  int rv;
+  m_version = version;
+  m_gc      = s_gc;
+  m_State   = luaL_newstate();
+
+  luaL_openlibs(m_State);
+
+  lua_getglobal(m_State, "package");
+  lua_pushstring(m_State, s_packagePath);
+  lua_setfield(m_State, -2, "path");
+  lua_pushstring(m_State, s_cpackagePath);
+  lua_setfield(m_State, -2, "cpath");
+
+  lua_pop(m_State, 1);
+
+  int top, i;
+
+  lua_settop(m_State, 0);
+  lua_newtable(m_State);
+  top = lua_gettop(m_State);
+  for(i=1; i < s_argc; i++) {
+    lua_pushinteger(m_State, i-1);
+    lua_pushstring(m_State, s_argv[i]);
+    lua_settable(m_State, top);
+  }
+  lua_setglobal(m_State, "arg");
+
+  //---------------------------------------------
+  rv = luaL_loadfile(m_State, s_profilePath);
+  if (rv) {
+    fprintf(stderr, "%s\n", lua_tostring(m_State, -1));
+  }
+
+  rv = lua_pcall(m_State, 0, 0, 0);
+  if (rv) {
+    fprintf(stderr, "%s\n", lua_tostring(m_State, -1));
+  }
+
+  int log = mvm::at("pool.log");
+  if( log ) {
+    mvm::log("mvm create");
+  }
+
+}
+
+mvm::data::~data()
+{
+  lua_close(m_State);
+}
+
+lua_State * mvm::data::state()
+{
+  return m_State;
+}
+
+void mvm::data::release()
+{
+  m_release = true;
+}
+
+uint32_t mvm::data::version()
+{
+  return m_version;
+}
+
+arken::mvm::Shared mvm::data::shared()
+{
+  return m_shared;
+}
+
+//-----------------------------------------------------------------------------
+// INSTANCE
+//-----------------------------------------------------------------------------
+
+mvm::instance::instance(mvm::data * data)
+{
+  m_data = data;
+
+  std::unique_lock<std::mutex> lck(s_mvm_mutex);
+  s_mvm_map[std::this_thread::get_id()] = data;
+}
+
+mvm::instance::~instance()
+{
+
+  if( m_data->m_release ) {
+    delete m_data;
+  } else {
+    mvm::push(m_data);
+  }
+
+  std::unique_lock<std::mutex> lck(s_mvm_mutex);
+  s_mvm_map.erase(std::this_thread::get_id());
+}
+
+lua_State * mvm::instance::state()
+{
+  return m_data->state();
+}
+
+void mvm::instance::release()
+{
+  m_data->release();
+}
+
+void mvm::instance::swap(arken::mvm::Shared shared)
+{
+  this->m_data->m_shared = shared;
 }
 
 //-----------------------------------------------------------------------------

@@ -58,8 +58,6 @@ class mvm {
       string getString();
     };
 
-    using string = arken::string;
-
     private:
 
     std::shared_ptr<string> m_info;
