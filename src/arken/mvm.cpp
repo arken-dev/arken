@@ -5,8 +5,8 @@
 
 #include <arken/base>
 #include <arken/mvm.h>
-#include <arken/concurrent/base.h>
-#include <arken/concurrent/core.h>
+#include <arken/concurrent/base.h> //TODO
+#include <arken/concurrent/core.h> //TODO
 #include <map>
 #include <clocale>
 
@@ -279,12 +279,12 @@ uint32_t mvm::clear()
 
 uint32_t mvm::threads()
 {
-  return arken::concurrent::core::max();
+  return return arken::concurrent::core::max(); //TODO
 }
 
 void mvm::threads(uint32_t threads)
 {
-  arken::concurrent::core::max() = threads;
+  arken::concurrent::core::max() = threads; //TODO
 }
 
 double mvm::uptime()
@@ -318,7 +318,7 @@ void arken::concurrent(concurrent::base * ptr)
 
 uint32_t mvm::actives()
 {
-  return arken::concurrent::core::actives();
+  return arken::concurrent::core::actives(); //TODO
 }
 
 string mvm::inspect()
@@ -344,12 +344,13 @@ string mvm::inspect()
 
 size_t mvm::workers()
 {
-  return arken::concurrent::core::workers().size();
+  return arken::concurrent::core::workers().size(); //TODO
 }
 
 void mvm::wait()
 {
 
+  //TODO
   while( true ) {
     {
       std::unique_lock<std::mutex> lck(arken::concurrent::core::mutex());
@@ -357,7 +358,6 @@ void mvm::wait()
         break;
       }
     }
-    // TODO improved whithout sleep
     os::sleep(0.05);
   }
 
