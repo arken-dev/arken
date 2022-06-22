@@ -25,7 +25,6 @@
 
 namespace arken {
 
-
 class mvm {
   using string = arken::string;
   using Shared = arken::concurrent::Shared;
@@ -123,7 +122,7 @@ class mvm {
   static size_t workers();
   static char * setlocale(string locale, string category);
   static char * setlocale(string locale);
-  static arken::mvm::data * current();
+  static mvm::data * current();
   static Shared & shared();
 
 };
