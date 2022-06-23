@@ -55,6 +55,8 @@ class os {
   static string   uuid();
   static string   read(const char * path);
   static string   root();
+  static string   md5(const char * path);
+  static string   sha1(const char * path);
 };
 
 } // namespace arken

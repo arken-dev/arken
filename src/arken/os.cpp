@@ -13,6 +13,8 @@
 #include <iostream>
 #include <fstream>
 #include <arken/net/HttpClient>
+#include <arken/digest/md5.h>
+#include <arken/digest/sha1.h>
 #include <apple/glob.h>
 #include <regex>
 #include <filesystem>
@@ -330,6 +332,16 @@ string os::root()
 {
   path root = std::filesystem::current_path().root_directory();
   return string(root.string());
+}
+
+string os::md5(const char * path)
+{
+  return arken::digest::md5::file(path);
+}
+
+string os::sha1(const char * path)
+{
+  return arken::digest::sha1::file(path);
 }
 
 } // namespace arken

@@ -269,6 +269,20 @@ static int arken_os_root( lua_State *L ) {
   return 1;
 }
 
+static int arken_os_md5( lua_State *L ) {
+  const char * path = luaL_checkstring(L, 1);
+  string result = os::md5(path);
+  lua_pushlstring( L, result.data(), result.size() );
+  return 1;
+}
+
+static int arken_os_sha1( lua_State *L ) {
+  const char * path = luaL_checkstring(L, 1);
+  string result = os::sha1(path);
+  lua_pushlstring( L, result.data(), result.size() );
+  return 1;
+}
+
 int luaopen_arken_os( lua_State *L ) {
   static const luaL_reg Map[] = {
     {"abspath",        arken_os_abspath},
@@ -308,6 +322,8 @@ int luaopen_arken_os( lua_State *L ) {
     {"size",           arken_os_size},
     {"uuid",           arken_os_uuid},
     {"root",           arken_os_root},
+    {"md5",            arken_os_md5},
+    {"sha1",           arken_os_sha1},
     {nullptr, nullptr}
   };
   luaL_register(L, "os", Map);
