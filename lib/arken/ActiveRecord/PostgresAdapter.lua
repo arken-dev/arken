@@ -77,7 +77,7 @@ function ActiveRecord_PostgresAdapter:insert(record)
   end
   sql = sql .. '(' .. col .. ') VALUES (' .. val .. ')'
 
-  if self.primaryKey then
+  if not empty(self.primaryKey) then
     sql = sql .. ' RETURNING ' .. self.primaryKey
   end
 
