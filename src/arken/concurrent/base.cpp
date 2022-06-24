@@ -79,11 +79,10 @@ string base::inspect()
   return tmp;
 }
 
-// TODO arken::concurrent::base#swap => arken::concurrent::core#swap ???
-void concurrent::base::swap(concurrent::base * destination, concurrent::base * source)
+void concurrent::base::swap(Shared shared)
 {
   std::unique_lock<std::mutex> lck(core::mutex());
-  destination->m_shared = source->m_shared;
+  m_shared = shared;
 }
 
 } // namespace concurrent

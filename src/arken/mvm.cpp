@@ -525,6 +525,7 @@ void mvm::instance::release()
 
 void mvm::instance::swap(arken::mvm::Shared shared)
 {
+  std::unique_lock<std::mutex> lck(s_mvm_mutex);
   this->m_data->m_shared = shared;
 }
 
@@ -542,6 +543,7 @@ mvm::Shared::Shared()
 
 mvm::Shared::Shared(const Shared & obj)
 {
+  std::unique_lock<std::mutex> lck(*m_mutex);
   m_name  = obj.m_name;
   m_info  = obj.m_info;
   m_map   = obj.m_map;
@@ -593,7 +595,6 @@ void mvm::Shared::setNumber(string key, double value)
 double mvm::Shared::increment(string key, double value)
 {
   std::unique_lock<std::mutex> lck(*m_mutex);
-
   if( m_map->count(key) ) {
     value += m_map->at(key).m_number;
     (*m_map)[key].m_number = value;

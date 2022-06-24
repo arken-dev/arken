@@ -41,7 +41,7 @@ void priority::run()
       break;
     }
 
-    swap(this, &node);
+    this->swap(node.shared());
     node.run();
 
     std::unique_lock<std::mutex> lck(priority::mutex());
@@ -102,10 +102,10 @@ bool priority::node::operator()(const priority::node &n1, const priority::node &
 void priority::node::run()
 {
   int rv;
-  mvm::instance i = mvm::getInstance(m_purge);
-  i.swap(m_shared);
+  mvm::instance instance = mvm::getInstance(m_purge);
+  instance.swap(m_shared);
 
-  lua_State * L = i.state();
+  lua_State * L = instance.state();
   lua_settop(L, 0);
 
   lua_getglobal(L,  "require");
@@ -146,7 +146,7 @@ void priority::node::run()
 
   // GC
   if( m_purge ) {
-    i.release();
+    instance.release();
   } else {
     lua_gc(L, LUA_GCCOLLECT, 0);
   }

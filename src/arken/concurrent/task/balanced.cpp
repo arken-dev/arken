@@ -55,7 +55,7 @@ void balanced::run()
       break;
     }
 
-    swap(this, &node);
+    this->swap(node.shared());
     node.run();
 
     std::unique_lock<std::mutex> lck(balanced::mutex());
@@ -108,10 +108,10 @@ balanced::node::node(const char * fileName, const char * params, const char * na
 void balanced::node::run()
 {
   int rv;
-  mvm::instance i = mvm::getInstance(m_purge);
-  i.swap(m_shared);
+  mvm::instance instance = mvm::getInstance(m_purge);
+  instance.swap(m_shared);
 
-  lua_State * L = i.state();
+  lua_State * L = instance.state();
   lua_settop(L, 0);
 
   lua_getglobal(L,  "require");
@@ -152,7 +152,7 @@ void balanced::node::run()
 
   // GC
   if( m_purge ) {
-    i.release();
+    instance.release();
   } else {
     lua_gc(L, LUA_GCCOLLECT, 0);
   }

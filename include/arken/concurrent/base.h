@@ -41,7 +41,7 @@ class base {
   double microtime();
   void wait();
   operator bool() const;
-  static void swap(concurrent::base * source, concurrent::base * destination);
+  void swap(Shared shared);
 };
 
 } // namespace concurrent
