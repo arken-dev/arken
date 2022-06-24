@@ -22,11 +22,8 @@ void task::run()
   instance.swap(m_shared);
 
   lua_State * L = instance.state();
-  lua_settop(L, 0);
-
 
   lua_settop(L, 0);
-
   lua_getglobal(L, "require");
   lua_pushstring(L, "arken.concurrent.task");
   rv = lua_pcall(L, 1, 0, 0);

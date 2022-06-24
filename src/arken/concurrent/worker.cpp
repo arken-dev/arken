@@ -20,10 +20,11 @@ worker::~worker() = default;
 void worker::run()
 {
   int rv;
-  mvm::instance i = mvm::getInstance();
-  lua_State * L = i.state();
-  lua_settop(L, 0);
+  mvm::instance instance = mvm::getInstance();
+  instance.swap(m_shared);
 
+  lua_State * L = instance.state();
+  lua_settop(L, 0);
   lua_getglobal(L, "require");
   lua_pushstring(L, "arken.concurrent.worker");
   rv = lua_pcall(L, 1, 0, 0);
@@ -220,10 +221,11 @@ void worker::node::run()
 {
 
   int rv;
-  mvm::instance i = mvm::getInstance();
-  lua_State * L = i.state();
-  lua_settop(L, 0);
+  mvm::instance instance = mvm::getInstance();
+  instance.swap(m_shared);
 
+  lua_State * L = instance.state();
+  lua_settop(L, 0);
   lua_getglobal(L, "require");
   lua_pushstring(L, "arken.concurrent.worker");
   rv = lua_pcall(L, 1, 0, 0);
