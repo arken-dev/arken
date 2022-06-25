@@ -51,7 +51,7 @@ namespace concurrent {
       Shared shared
     );
 
-    channel(const char * fileName, const char * params, bool purge = false);
+    channel(const char * fileName, const char * params, bool release = false);
     channel(const channel &obj);
     ~channel();
 
@@ -60,7 +60,7 @@ namespace concurrent {
     string read();
     channel * client();
 
-    static channel * start(const char * fileName, const char * params, bool purge = false);
+    static channel * start(const char * fileName, const char * params, bool release = false);
 
   };
 

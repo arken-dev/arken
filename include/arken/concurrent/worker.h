@@ -31,11 +31,11 @@ namespace concurrent {
     void run();
 
     public:
-    worker(const char * fileName, const char * params, bool purge);
+    worker(const char * fileName, const char * params, bool release);
     worker(const worker &obj);
     ~worker();
 
-    static worker start(const char * fileName, const char * params, bool purge = false);
+    static worker start(const char * fileName, const char * params, bool release = false);
     void perform(unsigned int cores);
     void enqueue(string && node);
     static std::atomic<uint32_t> s_max;
@@ -58,7 +58,6 @@ namespace concurrent {
       public:
       void run() override;
       uint32_t number();
-      bool release() override;
       worker master();
 
     };

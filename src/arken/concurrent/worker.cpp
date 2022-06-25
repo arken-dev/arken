@@ -143,19 +143,19 @@ void worker::run()
 
 } // worker::run
 
-worker worker::start(const char * fileName, const char * params, bool purge)
+worker worker::start(const char * fileName, const char * params, bool release)
 {
-  auto ptr = new worker(fileName, params, purge);
+  auto ptr = new worker(fileName, params, release);
   arken::concurrent::core::start(ptr);
   return worker(*ptr);
 }
 
-worker::worker(const char * fileName, const char * params, bool purge)
+worker::worker(const char * fileName, const char * params, bool release)
 {
   m_uuid     = os::uuid();
   m_fileName = fileName;
   m_params   = params;
-  m_purge    = purge;
+  m_release    = release;
   m_total    = std::shared_ptr<std::atomic<int>>(new std::atomic<int>(0));
   m_progress = std::shared_ptr<std::atomic<int>>(new std::atomic<int>(0));
 
@@ -167,7 +167,7 @@ worker::worker(const worker &obj)
   m_uuid     = obj.m_uuid;
   m_fileName = obj.m_fileName;
   m_params   = obj.m_params;
-  m_purge    = obj.m_purge;
+  m_release  = obj.m_release;
   m_finished = obj.m_finished;
   m_progress = obj.m_progress;
   m_total    = obj.m_total;
@@ -317,11 +317,6 @@ void worker::node::run()
     lua_settop(L, -2);
   }
 
-}
-
-bool worker::node::release()
-{
-  return false;
 }
 
 uint32_t worker::node::number()

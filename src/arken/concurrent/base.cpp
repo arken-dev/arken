@@ -22,9 +22,9 @@ bool base::finished()
   return (*m_finished.get());
 }
 
-bool base::purge()
+bool base::release()
 {
-  return m_purge;
+  return m_release;
 }
 
 base::operator bool() const {
@@ -46,11 +46,6 @@ double base::microtime()
 arken::mvm::Shared base::shared()
 {
   return m_shared;
-}
-
-bool base::release()
-{
-  return true;
 }
 
 string base::uuid()

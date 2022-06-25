@@ -21,9 +21,9 @@ namespace concurrent {
     public:
     void run();
 
-    task(const char * fileName, const char * params, bool purge);
+    task(const char * fileName, const char * params, bool release);
     task(const task &obj);
-    static task start(const char * fileName, const char * params, bool purge = false);
+    static task start(const char * fileName, const char * params, bool release = false);
     ~task();
 
   };

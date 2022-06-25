@@ -48,10 +48,10 @@ void fifo::run()
   }
 }
 
-fifo::node fifo::start(const char * fileName, const char * params, bool purge)
+fifo::node fifo::start(const char * fileName, const char * params, bool release)
 {
   std::unique_lock<std::mutex> lck(fifo::mutex());
-  fifo::node node = fifo::node(fileName, params, purge);
+  fifo::node node = fifo::node(fileName, params, release);
   fifo::push( node );
 
   if(fifo::actives() < fifo::max()) {
@@ -74,11 +74,11 @@ fifo::node::node(const node &obj)
   m_finished  = obj.m_finished;
 }
 
-fifo::node::node(const char * fileName, const char * params, bool purge)
+fifo::node::node(const char * fileName, const char * params, bool release)
 {
   m_fileName  = fileName;
   m_params    = params;
-  m_purge     = purge;
+  m_release     = release;
   m_microtime = os::microtime();
   m_finished  = std::shared_ptr<std::atomic<bool>>(new std::atomic<bool>(false));
   m_shared.name("arken.concurrent.task.fifo");
@@ -87,7 +87,7 @@ fifo::node::node(const char * fileName, const char * params, bool purge)
 void fifo::node::run()
 {
   int rv;
-  mvm::instance instance = mvm::getInstance(m_purge);
+  mvm::instance instance = mvm::getInstance(m_release);
   instance.swap(m_shared);
 
   lua_State * L = instance.state();
@@ -130,7 +130,7 @@ void fifo::node::run()
   }
 
   // GC
-  if( m_purge ) {
+  if( m_release ) {
     instance.release();
   } else {
     lua_gc(L, LUA_GCCOLLECT, 0);

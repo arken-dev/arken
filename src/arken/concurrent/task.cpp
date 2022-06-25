@@ -18,7 +18,7 @@ task::~task()
 void task::run()
 {
   int rv;
-  mvm::instance instance = mvm::getInstance( m_purge );
+  mvm::instance instance = mvm::getInstance( m_release );
   instance.swap(m_shared);
 
   lua_State * L = instance.state();
@@ -61,7 +61,7 @@ void task::run()
   }
 
   // GC
-  if( m_purge ) {
+  if( m_release ) {
     instance.release();
   } else {
     lua_gc(L, LUA_GCCOLLECT, 0);
@@ -69,18 +69,18 @@ void task::run()
 
 } // task::run
 
-task task::start(const char * fileName, const char * params, bool purge)
+task task::start(const char * fileName, const char * params, bool release)
 {
-  auto ptr = new task(fileName, params, purge);
+  auto ptr = new task(fileName, params, release);
   core::start(ptr);
   return task(*ptr);
 }
 
-task::task(const char * fileName, const char * params, bool purge)
+task::task(const char * fileName, const char * params, bool release)
 {
   m_fileName  = fileName;
   m_params    = params;
-  m_purge     = purge;
+  m_release     = release;
   m_microtime = os::microtime();
   m_uuid      = os::uuid();
 
@@ -91,10 +91,9 @@ task::task(const task &obj)
 {
   m_fileName  = obj.m_fileName;
   m_params    = obj.m_params;
-  m_purge     = obj.m_purge;
+  m_release   = obj.m_release;
   m_finished  = obj.m_finished;
   m_shared    = obj.m_shared;
-  m_purge     = obj.m_purge;
   m_uuid      = obj.m_uuid;
   m_microtime = obj.m_microtime;
 }

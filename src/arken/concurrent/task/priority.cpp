@@ -50,10 +50,10 @@ void priority::run()
   }
 }
 
-priority::node priority::start(const char * fileName, const char * params, int priority, bool purge)
+priority::node priority::start(const char * fileName, const char * params, int priority, bool release)
 {
   std::unique_lock<std::mutex> lck(priority::mutex());
-  priority::node node = priority::node(fileName, params, priority, purge);
+  priority::node node = priority::node(fileName, params, priority, release);
   priority::push( node );
 
   if(priority::actives() < priority::max()) {
@@ -75,16 +75,16 @@ priority::node::node(const node &obj)
   m_microtime = obj.m_microtime;
   m_shared    = obj.m_shared;
   m_finished  = obj.m_finished;
-  m_purge     = obj.m_purge;
+  m_release     = obj.m_release;
 }
 
-priority::node::node(const char * fileName, const char * params, int priority, bool purge)
+priority::node::node(const char * fileName, const char * params, int priority, bool release)
 {
   m_uuid      = os::uuid();
   m_fileName  = fileName;
   m_params    = params;
   m_priority  = priority;
-  m_purge     = purge;
+  m_release     = release;
   m_microtime = os::microtime();
   m_finished  = std::shared_ptr<std::atomic<bool>>(new std::atomic<bool>(false));
   m_shared.name("arken.concurrent.task.fifo");
@@ -102,7 +102,7 @@ bool priority::node::operator()(const priority::node &n1, const priority::node &
 void priority::node::run()
 {
   int rv;
-  mvm::instance instance = mvm::getInstance(m_purge);
+  mvm::instance instance = mvm::getInstance(m_release);
   instance.swap(m_shared);
 
   lua_State * L = instance.state();
@@ -145,7 +145,7 @@ void priority::node::run()
   }
 
   // GC
-  if( m_purge ) {
+  if( m_release ) {
     instance.release();
   } else {
     lua_gc(L, LUA_GCCOLLECT, 0);

@@ -23,7 +23,7 @@ class base {
   string m_params;
   string m_fileName;
   double m_microtime{os::microtime()};
-  bool m_purge{false};
+  bool m_release{false};
   std::shared_ptr<std::atomic<bool>> m_finished{new std::atomic<bool>(false)};
   Shared m_shared;
 
@@ -31,12 +31,11 @@ class base {
   virtual void run() /*= 0*/;
   base();
   virtual ~base();
-  bool   finished();
-  virtual bool release();
+  bool finished();
+  bool release();
   void   finished(bool flag);
   string inspect();
   string uuid();
-  bool purge();
   Shared shared();
   double microtime();
   void wait();

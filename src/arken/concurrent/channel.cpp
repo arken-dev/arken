@@ -15,7 +15,7 @@ namespace concurrent {
 void channel::run()
 {
   int rv;
-  mvm::instance instance = mvm::getInstance( m_purge );
+  mvm::instance instance = mvm::getInstance( m_release );
   instance.swap(m_shared);
 
   lua_State * L = instance.state();
@@ -64,7 +64,7 @@ void channel::run()
   (*m_finished.get()) = true;
 
   // GC
-  if( m_purge ) {
+  if( m_release ) {
     instance.release();
   } else {
     lua_gc(L, LUA_GCCOLLECT, 0);
@@ -96,7 +96,7 @@ channel::channel(
   m_shared          = shared;
 }
 
-channel::channel(const char * fileName, const char * params, bool purge)
+channel::channel(const char * fileName, const char * params, bool release)
 {
   m_read            = std::shared_ptr<std::queue<string>>(new std::queue<string>);
   m_write           = std::shared_ptr<std::queue<string>>(new std::queue<string>);
@@ -109,7 +109,7 @@ channel::channel(const char * fileName, const char * params, bool purge)
   m_microtime = os::microtime();
   m_fileName  = fileName;
   m_params    = params;
-  m_purge     = purge;
+  m_release     = release;
 
   m_shared.name("arken.concurrent.channel");
 
@@ -138,9 +138,9 @@ channel * channel::client()
   return m_client;
 }
 
-channel * channel::start(const char * fileName, const char * params, bool purge)
+channel * channel::start(const char * fileName, const char * params, bool release)
 {
-  auto c = new channel(fileName, params, purge);
+  auto c = new channel(fileName, params, release);
   core::start(c);
 
   return c->client();

@@ -16,14 +16,14 @@ std::unordered_map<string, bool> service::s_references;
 std::vector<string> service::s_dirName;
 std::mutex service::s_mutex;
 
-service::service( const char * fileName, const char * params, bool purge )
+service::service( const char * fileName, const char * params, bool release )
 {
   m_uuid      = os::uuid();
   m_microtime = os::microtime();
   m_version   = mvm::version();
   m_fileName  = fileName;
   m_params    = params;
-  m_purge     = purge;
+  m_release     = release;
 
   string tmp("arken.concurrent.service#");
   tmp.append(m_fileName);
@@ -37,7 +37,7 @@ service::service(const service &obj)
   m_version   = mvm::version();
   m_fileName  = obj.m_fileName;
   m_params    = obj.m_params;
-  m_purge     = obj.m_purge;
+  m_release     = obj.m_release;
   m_shared    = obj.m_shared;
   m_uuid      = obj.m_uuid;
   m_microtime = obj.m_microtime;
@@ -45,9 +45,9 @@ service::service(const service &obj)
 
 service::~service() = default;
 
-service service::start(const char * fileName, const char * params, bool purge)
+service service::start(const char * fileName, const char * params, bool release)
 {
-  auto ptr = new service(fileName, params, purge);
+  auto ptr = new service(fileName, params, release);
   core::start(ptr);
   return service(*ptr);
 }
@@ -55,7 +55,7 @@ service service::start(const char * fileName, const char * params, bool purge)
 void service::run()
 {
   int rv;
-  mvm::instance instance = mvm::getInstance( m_purge );
+  mvm::instance instance = mvm::getInstance( m_release );
   instance.swap(m_shared);
 
   lua_State * L = instance.state();
@@ -97,9 +97,8 @@ void service::run()
   }
 
   // GC
-  if( m_purge ) {
+  if( m_release ) {
     instance.release();
-    lua_close(L);
   } else {
     lua_gc(L, LUA_GCCOLLECT, 0);
   }

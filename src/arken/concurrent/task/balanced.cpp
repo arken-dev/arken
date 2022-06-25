@@ -64,10 +64,10 @@ void balanced::run()
   }
 }
 
-balanced::node balanced::start(const char * fileName, const char * params, const char * name, bool purge)
+balanced::node balanced::start(const char * fileName, const char * params, const char * name, bool release)
 {
   std::unique_lock<std::mutex> lck(balanced::mutex());
-  balanced::node node = balanced::node(fileName, params, name, purge);
+  balanced::node node = balanced::node(fileName, params, name, release);
   balanced::push( node );
 
   if(balanced::actives() < balanced::max()) {
@@ -89,16 +89,16 @@ balanced::node::node(const node &obj)
   m_microtime = obj.m_microtime;
   m_shared    = obj.m_shared;
   m_finished  = obj.m_finished;
-  m_purge     = obj.m_purge;
+  m_release     = obj.m_release;
 }
 
-balanced::node::node(const char * fileName, const char * params, const char * name, bool purge)
+balanced::node::node(const char * fileName, const char * params, const char * name, bool release)
 {
   m_uuid      = os::uuid();
   m_fileName  = fileName;
   m_params    = params;
   m_name      = name;
-  m_purge     = purge;
+  m_release     = release;
   m_microtime = os::microtime();
   m_finished  = std::shared_ptr<std::atomic<bool>>(new std::atomic<bool>(false));
   m_shared.name("arken.concurrentask.task.balanced#");
@@ -108,7 +108,7 @@ balanced::node::node(const char * fileName, const char * params, const char * na
 void balanced::node::run()
 {
   int rv;
-  mvm::instance instance = mvm::getInstance(m_purge);
+  mvm::instance instance = mvm::getInstance(m_release);
   instance.swap(m_shared);
 
   lua_State * L = instance.state();
@@ -151,7 +151,7 @@ void balanced::node::run()
   }
 
   // GC
-  if( m_purge ) {
+  if( m_release ) {
     instance.release();
   } else {
     lua_gc(L, LUA_GCCOLLECT, 0);
