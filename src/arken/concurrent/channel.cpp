@@ -6,6 +6,7 @@
 #include <lua/lua.hpp>
 #include <arken/json.h>
 #include <arken/concurrent/channel.h>
+#include <arken/concurrent/core.h>
 #include <memory>
 
 namespace arken {
@@ -13,14 +14,11 @@ namespace concurrent {
 
 void channel::run()
 {
-  // if m_purge is true, create a new arken::instance
-  // because it will be destroyed in the end
-  arken::instance i = mvm::instance( m_purge );
-  lua_State * L = i.state();
-  lua_settop(L, 0);
-
   int rv;
+  mvm::instance instance = mvm::getInstance( m_release );
+  instance.swap(m_shared);
 
+  lua_State * L = instance.state();
   lua_settop(L, 0);
 
   lua_getglobal(L, "require");
@@ -66,9 +64,8 @@ void channel::run()
   (*m_finished.get()) = true;
 
   // GC
-  if( m_purge ) {
-    i.release();
-    lua_close(L);
+  if( m_release ) {
+    instance.release();
   } else {
     lua_gc(L, LUA_GCCOLLECT, 0);
   }
@@ -97,15 +94,9 @@ channel::channel(
   m_uuid            = uuid;
   m_finished        = finished;
   m_shared          = shared;
-
-  m_inspect.
-    append("arken.concurrent.channel: ").
-    append(m_fileName).append("#").
-    append(m_params.escape());
-
 }
 
-channel::channel(const char * fileName, const char * params, bool purge)
+channel::channel(const char * fileName, const char * params, bool release)
 {
   m_read            = std::shared_ptr<std::queue<string>>(new std::queue<string>);
   m_write           = std::shared_ptr<std::queue<string>>(new std::queue<string>);
@@ -118,12 +109,9 @@ channel::channel(const char * fileName, const char * params, bool purge)
   m_microtime = os::microtime();
   m_fileName  = fileName;
   m_params    = params;
-  m_purge     = purge;
+  m_release     = release;
 
-  m_inspect.
-    append("arken.concurrent.channel: ").
-    append(m_fileName).append("#").
-    append(m_params.escape());
+  m_shared.name("arken.concurrent.channel");
 
   m_client = new channel(
     m_write, m_read, m_write_mtx, m_read_mtx, m_write_condition,
@@ -143,11 +131,6 @@ channel::channel(const channel &obj) {
   m_uuid            = obj.m_uuid;
   m_finished        = obj.m_finished;
   m_shared          = obj.m_shared;
-
-  m_inspect.
-    append("arken.concurrent.channel: ").
-    append(m_fileName).append("#").
-    append(m_params.escape());
 }
 
 channel * channel::client()
@@ -155,10 +138,10 @@ channel * channel::client()
   return m_client;
 }
 
-channel * channel::start(const char * fileName, const char * params, bool purge)
+channel * channel::start(const char * fileName, const char * params, bool release)
 {
-  auto c = new channel(fileName, params, purge);
-  mvm::concurrent(c);
+  auto c = new channel(fileName, params, release);
+  core::start(c);
 
   return c->client();
 }

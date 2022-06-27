@@ -77,7 +77,7 @@ function ActiveRecord_PostgresAdapter:insert(record)
   end
   sql = sql .. '(' .. col .. ') VALUES (' .. val .. ')'
 
-  if self.primaryKey then
+  if not empty(self.primaryKey) then
     sql = sql .. ' RETURNING ' .. self.primaryKey
   end
 
@@ -169,7 +169,7 @@ end
 
 function ActiveRecord_PostgresAdapter:columns()
   if self.instanceColumns == nil then
-    sql = [[
+    local sql = [[
       SELECT a.attname, format_type(a.atttypid, a.atttypmod), d.adsrc, a.attnotnull, i.indisprimary
         FROM pg_attribute a
         LEFT JOIN pg_attrdef d ON a.attrelid = d.adrelid AND a.attnum = d.adnum

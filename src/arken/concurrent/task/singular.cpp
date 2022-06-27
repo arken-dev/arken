@@ -2,10 +2,11 @@
 #include <arken/os.h>
 #include <cstdio>
 #include <lua/lua.hpp>
-#include <arken/mvm>
+#include <arken/mvm.h>
 #include <arken/string.h>
 #include <algorithm>
 #include <arken/json.h>
+#include <arken/concurrent/core.h>
 
 namespace arken {
 namespace concurrent {
@@ -13,10 +14,11 @@ namespace task {
 
 singular::singular()
 {
-  m_inspect   = "arken.concurrent.task.singular";
   m_uuid      = os::uuid();
   m_microtime = os::microtime();
   singular::actives()++;
+
+  m_shared.name("arken.concurrent.task.singular");
 }
 
 std::vector<string> & singular::vector()
@@ -53,7 +55,7 @@ void singular::run()
       break;
     }
 
-    swap(this, &node);
+    this->swap(node.shared());
     node.run();
 
     std::unique_lock<std::mutex> lck(singular::mutex());
@@ -61,31 +63,31 @@ void singular::run()
   }
 }
 
-singular::node singular::start(const char * fileName, const char * params, const char * name, bool purge)
+singular::node singular::start(const char * fileName, const char * params, const char * name, bool release)
 {
   std::unique_lock<std::mutex> lck(singular::mutex());
 
-  singular::node node = singular::node(fileName, params, name, purge);
+  singular::node node = singular::node(fileName, params, name, release);
   singular::push( node );
 
   if( singular::actives() < singular::max() && singular::actives() < singular::runners().size() ) {
-    mvm::concurrent( new singular() );
+    core::start(new singular());
   }
 
   return node;
 }
 
-singular::node singular::emplace(const char * fileName, const char * params, const char * name, bool purge)
+singular::node singular::emplace(const char * fileName, const char * params, const char * name, bool release)
 {
   std::unique_lock<std::mutex> lck(singular::mutex());
 
   if( singular::map().count(name) == 0 || singular::map()[name].empty() ) {
 
-    singular::node node = singular::node(fileName, params, name, purge);
+    singular::node node = singular::node(fileName, params, name, release);
     singular::push( node );
 
     if( singular::actives() < singular::max() ) {
-      mvm::concurrent( new singular() );
+      core::start(new singular());
     }
 
     return node;
@@ -94,17 +96,17 @@ singular::node singular::emplace(const char * fileName, const char * params, con
   return {};
 }
 
-singular::node singular::place(const char * fileName, const char * params, const char * name, bool purge)
+singular::node singular::place(const char * fileName, const char * params, const char * name, bool release)
 {
   std::unique_lock<std::mutex> lck(singular::mutex());
 
   if( runners().count(name) == 0 ) {
 
-    singular::node node = singular::node(fileName, params, name, purge);
+    singular::node node = singular::node(fileName, params, name, release);
     singular::push( node );
 
     if( singular::actives() < singular::max() ) {
-      mvm::concurrent( new singular() );
+      core::start(new singular());
     }
 
     return node;
@@ -124,30 +126,29 @@ singular::node::node(const node &obj)
   m_microtime = obj.m_microtime;
   m_shared    = obj.m_shared;
   m_finished  = obj.m_finished;
-  m_inspect   = obj.m_inspect;
-  m_purge     = obj.m_purge;
+  m_release     = obj.m_release;
 }
 
-singular::node::node(const char * fileName, const char * params, const char * name, bool purge)
+singular::node::node(const char * fileName, const char * params, const char * name, bool release)
 {
   m_fileName  = fileName;
   m_params    = params;
   m_name      = name;
-  m_purge     = purge;
+  m_release     = release;
   m_uuid      = os::uuid();
   m_microtime = os::microtime();
   m_finished  = std::shared_ptr<std::atomic<bool>>(new std::atomic<bool>(false));
-  m_inspect.
-    append(m_fileName).append("#").
-    append(m_params.escape()).append("#").
-    append(m_name.escape());
+  m_shared.name("arken.concurrent.task.singular#");
+  m_shared.name().append(m_name.escape());
 }
 
 void singular::node::run()
 {
   int rv;
-  arken::instance i = mvm::instance(m_purge);
-  lua_State * L = i.state();
+  mvm::instance instance = mvm::getInstance(m_release);
+  instance.swap(m_shared);
+
+  lua_State * L = instance.state();
   lua_settop(L, 0);
 
   lua_getglobal(L,  "require");
@@ -188,9 +189,8 @@ void singular::node::run()
 
 
   // GC
-  if( m_purge ) {
-    i.release();
-    lua_close(L);
+  if( m_release ) {
+    instance.release();
   } else {
     lua_gc(L, LUA_GCCOLLECT, 0);
   }

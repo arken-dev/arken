@@ -12,9 +12,9 @@
 #include <mutex>
 #include <atomic>
 #include <memory>
-#include <arken/mvm>
+#include <arken/mvm.h>
 #include <arken/string.h>
-#include <arken/concurrent/shared.h>
+#include <arken/concurrent/base.h>
 
 namespace arken {
 namespace concurrent {
@@ -36,7 +36,7 @@ namespace task {
 
       friend class balanced;
       string m_name;
-      node(const char * fileName, const char * params, const char * name, bool purge = false);
+      node(const char * fileName, const char * params, const char * name, bool release = false);
 
       public:
       node();
@@ -46,7 +46,7 @@ namespace task {
     };
 
     static balanced::node start(const char * fileName, const char * params,
-      const char * name = "default", bool purge = false);
+      const char * name = "default", bool release = false);
     static std::queue<balanced::node> &queue();
     static std::vector<string> &vector();
     static std::unordered_map<string, std::queue<balanced::node>> &map();

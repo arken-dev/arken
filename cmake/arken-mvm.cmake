@@ -9,6 +9,6 @@ set_property(
   queue vector
 )
 
-set( mvm-container ${PROJECT_SOURCE_DIR}/src/arken/mvm/containers/${ARKEN_MVM_CONTAINER}.cpp )
+set( mvm-container ${PROJECT_SOURCE_DIR}/src/arken/mvm/container/${ARKEN_MVM_CONTAINER}.cpp )
 
 message("ARKEN_MVM_CONTAINER.........: ${ARKEN_MVM_CONTAINER} (deque-stack|deque-queue and others)")

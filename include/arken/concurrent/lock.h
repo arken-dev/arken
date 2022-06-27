@@ -9,7 +9,7 @@
 #include <mutex>
 #include <lua/lua.hpp>
 #include <arken/named_ptr.h>
-#include <arken/concurrent/shared.h>
+#include <arken/mvm.h>
 
 namespace arken {
 namespace concurrent {
@@ -17,7 +17,7 @@ namespace concurrent {
   class Lock
   {
 
-    using Shared = arken::concurrent::Shared;
+    using Shared = arken::mvm::Shared;
 
     class resource {
       friend Lock;

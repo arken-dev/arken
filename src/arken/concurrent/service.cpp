@@ -1,6 +1,7 @@
 #include <lua/lua.hpp>
 #include <lua/json/lock.h>
 #include <arken/concurrent/service.h>
+#include <arken/concurrent/core.h>
 #include <arken/os.h>
 #include <arken/string.h>
 #include <arken/json.h>
@@ -15,18 +16,18 @@ std::unordered_map<string, bool> service::s_references;
 std::vector<string> service::s_dirName;
 std::mutex service::s_mutex;
 
-service::service( const char * fileName, const char * params, bool purge )
+service::service( const char * fileName, const char * params, bool release )
 {
   m_uuid      = os::uuid();
   m_microtime = os::microtime();
   m_version   = mvm::version();
   m_fileName  = fileName;
   m_params    = params;
-  m_purge     = purge;
-  m_inspect.
-    append("arken.concurrent.service: ").
-    append(m_fileName).append("#").
-    append(m_params.escape());
+  m_release     = release;
+
+  string tmp("arken.concurrent.service#");
+  tmp.append(m_fileName);
+  m_shared.name(tmp);
 
   s_references[fileName] = true;
 }
@@ -36,36 +37,28 @@ service::service(const service &obj)
   m_version   = mvm::version();
   m_fileName  = obj.m_fileName;
   m_params    = obj.m_params;
-  m_purge     = obj.m_purge;
-  m_inspect   = obj.m_inspect;
+  m_release     = obj.m_release;
   m_shared    = obj.m_shared;
   m_uuid      = obj.m_uuid;
   m_microtime = obj.m_microtime;
 }
 
-service::~service()
-{
+service::~service() = default;
 
-}
-
-service service::start(const char * fileName, const char * params, bool purge)
+service service::start(const char * fileName, const char * params, bool release)
 {
-  auto ptr = new service(fileName, params, purge);
-  mvm::concurrent( ptr );
+  auto ptr = new service(fileName, params, release);
+  core::start(ptr);
   return service(*ptr);
 }
 
 void service::run()
 {
-
-  // if m_purge is true, create a new arken::instance
-  // because it will be destroyed in the end
-  arken::instance i = mvm::instance( m_purge );
-  lua_State * L = i.state();
-  lua_settop(L, 0);
-
   int rv;
+  mvm::instance instance = mvm::getInstance( m_release );
+  instance.swap(m_shared);
 
+  lua_State * L = instance.state();
   lua_settop(L, 0);
 
   lua_getglobal(L, "require");
@@ -104,9 +97,8 @@ void service::run()
   }
 
   // GC
-  if( m_purge ) {
-    i.release();
-    lua_close(L);
+  if( m_release ) {
+    instance.release();
   } else {
     lua_gc(L, LUA_GCCOLLECT, 0);
   }
@@ -118,7 +110,7 @@ void service::run()
 
   os::sleep(1);
   if (os::exists(m_fileName)) {
-    mvm::concurrent( new service(*this) );
+    core::start(new service(*this));
   } else {
     std::cout << "erase service " << m_fileName << std::endl;
     s_references.erase(m_fileName);

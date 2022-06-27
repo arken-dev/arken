@@ -10,7 +10,8 @@
 #include <vector>
 #include <unordered_map>
 #include <arken/base>
-#include <arken/mvm>
+#include <arken/mvm.h>
+#include <arken/concurrent/base.h>
 
 namespace arken {
 namespace concurrent {
@@ -33,10 +34,10 @@ namespace concurrent {
     void run();
 
     public:
-    service( const char * fileName, const char * params, bool purge = false);
+    service( const char * fileName, const char * params, bool release = false);
     service(const service &obj);
     ~service();
-    static service start(const char * fileName, const char * params, bool purge = false);
+    static service start(const char * fileName, const char * params, bool release = false);
     static void load(const char * dirName);
     static void run(const char * dirName);
     static void reload();

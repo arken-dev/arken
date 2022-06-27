@@ -20,6 +20,7 @@ char * md5::hash(const char * string, int length)
   for(int i = 0; i < 16; i++)
     sprintf(&result[i*2], "%02x", (unsigned int)digest[i]);
 
+  result[32] = '\0';
   return result;
 }
 

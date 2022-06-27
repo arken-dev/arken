@@ -9,7 +9,7 @@
 #include <arken/json.h>
 
 using channel = arken::concurrent::channel;
-using Shared  = arken::concurrent::Shared;
+using Shared  = arken::mvm::Shared;
 using json    = arken::json;
 
 channel *
@@ -106,11 +106,18 @@ arken_concurrent_channel_uuid( lua_State *L ) {
 }
 
 static int
+arken_concurrent_channel_wait( lua_State *L ) {
+  channel * chn = checkChannel( L );
+  chn->wait();
+  return 0;
+}
+
+static int
 arken_concurrent_channel_shared( lua_State *L ) {
   channel * chn = checkChannel( L );
   int rv;
   lua_getglobal(L, "require");
-  lua_pushstring(L, "arken.concurrent.Shared");
+  lua_pushstring(L, "arken.mvm");
   rv = lua_pcall(L, 1, 0, 0);
   if (rv) {
     fprintf(stderr, "%s\n", lua_tostring(L, -1));
@@ -118,7 +125,7 @@ arken_concurrent_channel_shared( lua_State *L ) {
 
   auto ptr = static_cast<Shared **>(lua_newuserdata(L, sizeof(Shared*)));
   *ptr = new Shared(chn->shared());
-  luaL_getmetatable(L, "arken.concurrent.Shared.metatable");
+  luaL_getmetatable(L, "arken.mvm.Shared.metatable");
   lua_setmetatable(L, -2);
 
   return 1;
@@ -132,6 +139,7 @@ luaL_reg arken_concurrent_channel_metatable[] = {
   {"finished", arken_concurrent_channel_finished},
   {"uuid",     arken_concurrent_channel_uuid},
   {"shared",   arken_concurrent_channel_shared},
+  {"wait",     arken_concurrent_channel_wait},
   {"__gc",     arken_concurrent_channel_gc},
   {nullptr, nullptr}
 };

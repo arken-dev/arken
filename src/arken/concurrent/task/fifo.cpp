@@ -2,9 +2,9 @@
 #include <arken/os.h>
 #include <cstdio>
 #include <lua/lua.hpp>
-#include <arken/mvm>
+#include <arken/mvm.h>
 #include <arken/json.h>
-
+#include <arken/concurrent/core.h>
 
 namespace arken {
 namespace concurrent {
@@ -12,10 +12,11 @@ namespace task {
 
 fifo::fifo()
 {
-  m_inspect   = "arken.concurrent.task.fifo";
   m_uuid      = os::uuid();
   m_microtime = os::microtime();
   fifo::actives()++;
+
+  m_shared.name("arken.concurrent.task.fifo");
 }
 
 fifo::~fifo()
@@ -38,7 +39,7 @@ void fifo::run()
     if( !node ) {
       break;
     }
-    swap(this, &node);
+    this->swap(node.shared());
     node.run();
 
     std::unique_lock<std::mutex> lck(fifo::mutex());
@@ -47,14 +48,14 @@ void fifo::run()
   }
 }
 
-fifo::node fifo::start(const char * fileName, const char * params, bool purge)
+fifo::node fifo::start(const char * fileName, const char * params, bool release)
 {
   std::unique_lock<std::mutex> lck(fifo::mutex());
-  fifo::node node = fifo::node(fileName, params, purge);
+  fifo::node node = fifo::node(fileName, params, release);
   fifo::push( node );
 
   if(fifo::actives() < fifo::max()) {
-    mvm::concurrent( new arken::concurrent::task::fifo() );
+    core::start(new arken::concurrent::task::fifo());
   }
 
   return node;
@@ -71,27 +72,25 @@ fifo::node::node(const node &obj)
   m_microtime = obj.m_microtime;
   m_shared    = obj.m_shared;
   m_finished  = obj.m_finished;
-  m_inspect   = obj.m_inspect;
 }
 
-fifo::node::node(const char * fileName, const char * params, bool purge)
+fifo::node::node(const char * fileName, const char * params, bool release)
 {
   m_fileName  = fileName;
   m_params    = params;
-  m_purge     = purge;
+  m_release     = release;
   m_microtime = os::microtime();
   m_finished  = std::shared_ptr<std::atomic<bool>>(new std::atomic<bool>(false));
-  m_inspect.
-    append("arken.concurrent.task.fifo: ").
-    append(m_fileName).append("#").
-    append(m_params.escape());
+  m_shared.name("arken.concurrent.task.fifo");
 }
 
 void fifo::node::run()
 {
   int rv;
-  arken::instance i = mvm::instance(m_purge);
-  lua_State * L = i.state();
+  mvm::instance instance = mvm::getInstance(m_release);
+  instance.swap(m_shared);
+
+  lua_State * L = instance.state();
   lua_settop(L, 0);
 
   lua_getglobal(L,  "require");
@@ -131,9 +130,8 @@ void fifo::node::run()
   }
 
   // GC
-  if( m_purge ) {
-    i.release();
-    lua_close(L);
+  if( m_release ) {
+    instance.release();
   } else {
     lua_gc(L, LUA_GCCOLLECT, 0);
   }

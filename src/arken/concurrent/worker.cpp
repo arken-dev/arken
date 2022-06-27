@@ -5,7 +5,7 @@
 
 #include <lua/lua.hpp>
 #include <arken/base>
-#include <arken/mvm>
+#include <arken/mvm.h>
 #include <arken/concurrent/worker.h>
 #include <vector>
 #include <arken/json.h>
@@ -20,10 +20,11 @@ worker::~worker() = default;
 void worker::run()
 {
   int rv;
-  arken::instance i = mvm::instance();
-  lua_State * L = i.state();
-  lua_settop(L, 0);
+  mvm::instance instance = mvm::getInstance();
+  instance.swap(m_shared);
 
+  lua_State * L = instance.state();
+  lua_settop(L, 0);
   lua_getglobal(L, "require");
   lua_pushstring(L, "arken.concurrent.worker");
   rv = lua_pcall(L, 1, 0, 0);
@@ -142,27 +143,23 @@ void worker::run()
 
 } // worker::run
 
-worker worker::start(const char * fileName, const char * params, bool purge)
+worker worker::start(const char * fileName, const char * params, bool release)
 {
-  auto ptr = new worker(fileName, params, purge);
-  mvm::concurrent(ptr);
+  auto ptr = new worker(fileName, params, release);
+  arken::concurrent::core::start(ptr);
   return worker(*ptr);
 }
 
-worker::worker(const char * fileName, const char * params, bool purge)
+worker::worker(const char * fileName, const char * params, bool release)
 {
   m_uuid     = os::uuid();
   m_fileName = fileName;
   m_params   = params;
-  m_purge    = purge;
+  m_release    = release;
   m_total    = std::shared_ptr<std::atomic<int>>(new std::atomic<int>(0));
   m_progress = std::shared_ptr<std::atomic<int>>(new std::atomic<int>(0));
 
-  m_inspect.
-    append("arken.concurrent.worker: ").
-    append(m_fileName).append("#").
-    append(m_params.escape());
-
+  m_shared.name("arken.concurrent.worker");
 }
 
 worker::worker(const worker &obj)
@@ -170,8 +167,7 @@ worker::worker(const worker &obj)
   m_uuid     = obj.m_uuid;
   m_fileName = obj.m_fileName;
   m_params   = obj.m_params;
-  m_purge    = obj.m_purge;
-  m_inspect  = obj.m_inspect;
+  m_release  = obj.m_release;
   m_finished = obj.m_finished;
   m_progress = obj.m_progress;
   m_total    = obj.m_total;
@@ -217,18 +213,19 @@ worker::node::node(worker * ptr, string fileName, uint32_t number)
   m_fileName = fileName;
   m_number   = number;
   m_shared   = m_worker->m_shared;
-  m_inspect  = "arken.concurrent.worker.node#";
-  m_inspect.append(std::to_string(m_number));
+  m_shared.name("arken.concurrent.worker.node#");
+  m_shared.name().append(std::to_string(m_number));
 }
 
 void worker::node::run()
 {
 
   int rv;
-  arken::instance i = mvm::instance();
-  lua_State * L = i.state();
-  lua_settop(L, 0);
+  mvm::instance instance = mvm::getInstance();
+  instance.swap(m_shared);
 
+  lua_State * L = instance.state();
+  lua_settop(L, 0);
   lua_getglobal(L, "require");
   lua_pushstring(L, "arken.concurrent.worker");
   rv = lua_pcall(L, 1, 0, 0);
@@ -320,11 +317,6 @@ void worker::node::run()
     lua_settop(L, -2);
   }
 
-}
-
-bool worker::node::release()
-{
-  return false;
 }
 
 uint32_t worker::node::number()

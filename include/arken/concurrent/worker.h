@@ -7,12 +7,12 @@
 #define _ARKEN_CONCURRENT_WORKER_
 
 #include <arken/base>
-#include <arken/mvm>
-#include <arken/concurrent/shared.h>
 #include <mutex>
 #include <queue>
 #include <unordered_map>
 #include <string>
+#include <arken/concurrent/base.h>
+#include <arken/concurrent/core.h>
 
 namespace arken {
 namespace concurrent {
@@ -31,11 +31,11 @@ namespace concurrent {
     void run();
 
     public:
-    worker(const char * fileName, const char * params, bool purge);
+    worker(const char * fileName, const char * params, bool release);
     worker(const worker &obj);
     ~worker();
 
-    static worker start(const char * fileName, const char * params, bool purge = false);
+    static worker start(const char * fileName, const char * params, bool release = false);
     void perform(unsigned int cores);
     void enqueue(string && node);
     static std::atomic<uint32_t> s_max;
@@ -58,7 +58,6 @@ namespace concurrent {
       public:
       void run() override;
       uint32_t number();
-      bool release() override;
       worker master();
 
     };

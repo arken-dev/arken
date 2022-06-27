@@ -8,7 +8,6 @@
 
 #include <lua/lua.hpp>
 #include <arken/string.h>
-#include <arken/concurrent/shared.h>
 #include <arken/os.h>
 #include <thread>
 #include <mutex>
@@ -20,102 +19,136 @@
 #include <cstring>
 #include <iostream>
 #include <atomic>
+#include <memory>
 
-namespace arken
-{
-
-namespace concurrent
-{
-  class base {
-    using Shared = arken::concurrent::Shared;
-    using string = arken::string;
-
-    protected:
-    string m_uuid{os::uuid()};
-    string m_params;
-    string m_fileName;
-    string m_inspect;
-    double m_microtime{os::microtime()};
-    bool m_purge{false};
-    std::shared_ptr<std::atomic<bool>> m_finished{new std::atomic<bool>(false)};
-    Shared m_shared;
-
-    public:
-    virtual void run() /*= 0*/;
-    base();
-    virtual ~base();
-    bool   finished();
-    virtual bool release();
-    void   finished(bool flag);
-    string inspect();
-    string uuid();
-    bool purge();
-    Shared shared();
-    double microtime();
-    void wait();
-    operator bool() const;
-    static void swap(concurrent::base * source, concurrent::base * destination);
-  };
-
-} // namespace concurrent
-
-class instance;
+namespace arken {
 
 class mvm {
+
   using string = arken::string;
-  friend class instance;
 
   public:
+
+  //---------------------------------------------------------------------------
+  // SHARED
+  //---------------------------------------------------------------------------
+
+  class Shared
+  {
+
+    public:
+
+    class data
+    {
+      friend class Shared;
+      /**
+       * 0 = undefined
+       * 1 = bool
+       * 2 = number
+       * 3 = string
+       */
+      short  m_flag;
+      bool   m_bool;
+      double m_number;
+      string m_string;
+
+      public:
+      short  flag();
+      bool   getBool();
+      double getNumber();
+      string getString();
+    };
+
+    private:
+
+    std::shared_ptr<string> m_name;
+    std::shared_ptr<string> m_info;
+    std::shared_ptr<std::unordered_map<string, data>> m_map;
+    std::shared_ptr<std::mutex> m_mutex;
+
+    public:
+
+    // name
+    void name(string name);
+    string name();
+
+    // info
+    void info(string info);
+    string info();
+
+    // flag
+    short flag(string key);
+    data get(string key);
+
+    // NUMBER
+    double getNumber(string key);
+    void   setNumber(string key, double value);
+    double increment(string key, double value);
+
+    // STRING
+    string getString(string key);
+    void   setString(string key, string value);
+    string append(string key, string value);
+    string prepend(string key, string value);
+
+    // BOOL
+    bool getBool(string key);
+    void setBool(string key, bool value);
+    bool toggle(string key);
+
+    // PUT METHODS
+    void put(string key, string value);
+    void put(string key, double value);
+    void put(string key, bool   value);
+
+    Shared();
+    Shared(const Shared & obj);
+    static Shared & global();
+  };
+
+  //---------------------------------------------------------------------------
+  // DATA
+  //---------------------------------------------------------------------------
 
   class data {
 
     friend class mvm;
-    friend class instance;
 
     private:
     lua_State * m_State;
     uint32_t    m_version;
     uint32_t    m_gc;
     bool        m_release = false;
+    Shared      m_shared;
 
     public:
     data(uint32_t version = s_version);
     ~data();
     lua_State * state();
-    lua_State * release();
+    void        release();
     uint32_t    version();
+    Shared      shared();
+    string      inspect();
   };
 
-  class core
-  {
-    using string = arken::string;
+  //---------------------------------------------------------------------------
+  // INSTANCE
+  //---------------------------------------------------------------------------
 
-    std::vector<std::thread>       m_workers;
-    std::queue<concurrent::base *> m_queue;
-    std::mutex                     m_mutex;
-    std::condition_variable        m_condition;
-    std::atomic<uint32_t>          m_max;
-    std::atomic<uint32_t>          m_actives;
-    std::unordered_map<string, string> m_waiting;
-    std::unordered_map<std::thread::id, concurrent::base *> m_running;
+  class instance {
+    mvm::data * m_data;
 
-    core(uint32_t max);
-    ~core();
-    static core & instance();
-    static void working();
     public:
-    static void start(concurrent::base * pointer);
-    static concurrent::base * get();
-    static std::queue<concurrent::base *> & queue();
-    static std::mutex               & mutex();
-    static std::vector<std::thread> & workers();
-    static std::condition_variable  & condition();
-    static std::atomic<uint32_t>    & max();
-    static std::atomic<uint32_t>    & actives();
-    static std::unordered_map<string, string> & waiting();
-    static std::unordered_map<std::thread::id, concurrent::base *> & running();
-
+    instance(mvm::data * data);
+    ~instance();
+    lua_State * state();
+    void release();
+    void swap(Shared shared);
   };
+
+  //---------------------------------------------------------------------------
+  // CONTAINER
+  //---------------------------------------------------------------------------
 
   class container {
 
@@ -131,6 +164,9 @@ class mvm {
     static void push(mvm::data *);
   };
 
+  //---------------------------------------------------------------------------
+  // MVM - attributes and methods
+  //---------------------------------------------------------------------------
 
   static std::atomic<double>   s_uptime;
   static std::atomic<uint32_t> s_gc;
@@ -147,10 +183,6 @@ class mvm {
 
   private:
   static mvm::data * pop();
-
-
-  mvm() {};
-  ~mvm() {};
 
   public:
   static void args(int argc, char ** argv);
@@ -170,9 +202,8 @@ class mvm {
   static void push(mvm::data *);
   static void back(mvm::data *);
   static double uptime();
-  static arken::instance instance(bool create = false);
+  static mvm::instance getInstance(bool create = false);
   static const char * path();
-  static void concurrent(concurrent::base * pointer);
   static void wait();
   static void env(const char * value);
   static const char * env();
@@ -181,19 +212,8 @@ class mvm {
   static size_t workers();
   static char * setlocale(string locale, string category);
   static char * setlocale(string locale);
-  static arken::concurrent::base current();
-
-};
-
-class instance {
-
-
-  mvm::data * m_data;
-  public:
-  instance(mvm::data * data);
-  ~instance();
-  lua_State * state();
-  lua_State * release();
+  static mvm::data * current();
+  static Shared & shared();
 
 };
 

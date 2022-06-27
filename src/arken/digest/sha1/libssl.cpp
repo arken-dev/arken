@@ -19,6 +19,7 @@ char * sha1::hash(const char * data, int length)
   for(int i = 0; i < 20; i++)
     sprintf(&result[i*2], "%02x", (unsigned int)hash[i]);
 
+  result[40] = '\0';
   return result;
 }
 

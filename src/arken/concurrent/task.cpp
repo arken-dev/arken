@@ -4,10 +4,10 @@
 // license that can be found in the LICENSE file.
 
 #include <lua/lua.hpp>
-#include <arken/mvm>
 #include <arken/os.h>
 #include <arken/json.h>
 #include <arken/concurrent/task.h>
+#include <arken/concurrent/core.h>
 
 namespace arken {
 namespace concurrent {
@@ -17,14 +17,13 @@ task::~task()
 
 void task::run()
 {
-  arken::instance i = mvm::instance( m_purge );
-  lua_State * L = i.state();
-  lua_settop(L, 0);
-
   int rv;
+  mvm::instance instance = mvm::getInstance( m_release );
+  instance.swap(m_shared);
+
+  lua_State * L = instance.state();
 
   lua_settop(L, 0);
-
   lua_getglobal(L, "require");
   lua_pushstring(L, "arken.concurrent.task");
   rv = lua_pcall(L, 1, 0, 0);
@@ -62,46 +61,39 @@ void task::run()
   }
 
   // GC
-  if( m_purge ) {
-    i.release();
-    lua_close(L);
+  if( m_release ) {
+    instance.release();
   } else {
     lua_gc(L, LUA_GCCOLLECT, 0);
   }
 
 } // task::run
 
-task task::start(const char * fileName, const char * params, bool purge)
+task task::start(const char * fileName, const char * params, bool release)
 {
-  auto ptr = new task(fileName, params, purge);
-  mvm::concurrent(ptr);
+  auto ptr = new task(fileName, params, release);
+  core::start(ptr);
   return task(*ptr);
 }
 
-task::task(const char * fileName, const char * params, bool purge)
+task::task(const char * fileName, const char * params, bool release)
 {
   m_fileName  = fileName;
   m_params    = params;
-  m_purge     = purge;
+  m_release     = release;
   m_microtime = os::microtime();
   m_uuid      = os::uuid();
 
-  m_inspect.
-    append("arken.concurrent.task: ").
-    append(m_fileName).append("#").
-    append(m_params.escape());
-
+  m_shared.name("arken.concurrent.task");
 }
 
 task::task(const task &obj)
 {
   m_fileName  = obj.m_fileName;
   m_params    = obj.m_params;
-  m_purge     = obj.m_purge;
-  m_inspect   = obj.m_inspect;
+  m_release   = obj.m_release;
   m_finished  = obj.m_finished;
   m_shared    = obj.m_shared;
-  m_purge     = obj.m_purge;
   m_uuid      = obj.m_uuid;
   m_microtime = obj.m_microtime;
 }

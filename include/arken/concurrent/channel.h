@@ -7,8 +7,8 @@
 #define _ARKEN_CONCURRENT_CHANNEL_
 
 #include <arken/base>
-#include <arken/mvm>
-#include <arken/concurrent/shared.h>
+#include <arken/mvm.h>
+#include <arken/concurrent/base.h>
 #include <memory>
 #include <queue>
 
@@ -17,8 +17,8 @@ namespace concurrent {
 
   class channel : public base {
 
-    using Shared = arken::concurrent::Shared;
     using string = arken::string;
+    using Shared = arken::mvm::Shared;
 
     private:
 
@@ -51,7 +51,7 @@ namespace concurrent {
       Shared shared
     );
 
-    channel(const char * fileName, const char * params, bool purge = false);
+    channel(const char * fileName, const char * params, bool release = false);
     channel(const channel &obj);
     ~channel();
 
@@ -60,7 +60,7 @@ namespace concurrent {
     string read();
     channel * client();
 
-    static channel * start(const char * fileName, const char * params, bool purge = false);
+    static channel * start(const char * fileName, const char * params, bool release = false);
 
   };
 

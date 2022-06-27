@@ -2,8 +2,9 @@
 #include <arken/os.h>
 #include <cstdio>
 #include <lua/lua.hpp>
-#include <arken/mvm>
+#include <arken/mvm.h>
 #include <arken/json.h>
+#include <arken/concurrent/core.h>
 
 
 namespace arken {
@@ -12,10 +13,11 @@ namespace task {
 
 priority::priority()
 {
-  m_inspect   = "arken.concurrent.task.priority";
   m_uuid      = os::uuid();
   m_microtime = os::microtime();
   priority::actives()++;
+
+  m_shared.name("arken.concurrent.task.priority");
 }
 
 priority::~priority()
@@ -39,7 +41,7 @@ void priority::run()
       break;
     }
 
-    swap(this, &node);
+    this->swap(node.shared());
     node.run();
 
     std::unique_lock<std::mutex> lck(priority::mutex());
@@ -48,14 +50,14 @@ void priority::run()
   }
 }
 
-priority::node priority::start(const char * fileName, const char * params, int priority, bool purge)
+priority::node priority::start(const char * fileName, const char * params, int priority, bool release)
 {
   std::unique_lock<std::mutex> lck(priority::mutex());
-  priority::node node = priority::node(fileName, params, priority, purge);
+  priority::node node = priority::node(fileName, params, priority, release);
   priority::push( node );
 
   if(priority::actives() < priority::max()) {
-    mvm::concurrent( new arken::concurrent::task::priority() );
+    core::start(new arken::concurrent::task::priority());
   }
 
   return node;
@@ -73,23 +75,19 @@ priority::node::node(const node &obj)
   m_microtime = obj.m_microtime;
   m_shared    = obj.m_shared;
   m_finished  = obj.m_finished;
-  m_inspect   = obj.m_inspect;
-  m_purge     = obj.m_purge;
+  m_release     = obj.m_release;
 }
 
-priority::node::node(const char * fileName, const char * params, int priority, bool purge)
+priority::node::node(const char * fileName, const char * params, int priority, bool release)
 {
   m_uuid      = os::uuid();
   m_fileName  = fileName;
   m_params    = params;
   m_priority  = priority;
-  m_purge     = purge;
+  m_release     = release;
   m_microtime = os::microtime();
   m_finished  = std::shared_ptr<std::atomic<bool>>(new std::atomic<bool>(false));
-  m_inspect.
-    append("arken.concurrent.task.fifo: ").
-    append(m_fileName).append("#").
-    append(m_params.escape());
+  m_shared.name("arken.concurrent.task.fifo");
 }
 
 bool priority::node::operator()(const priority::node &n1, const priority::node &n2)
@@ -104,8 +102,10 @@ bool priority::node::operator()(const priority::node &n1, const priority::node &
 void priority::node::run()
 {
   int rv;
-  arken::instance i = mvm::instance(m_purge);
-  lua_State * L = i.state();
+  mvm::instance instance = mvm::getInstance(m_release);
+  instance.swap(m_shared);
+
+  lua_State * L = instance.state();
   lua_settop(L, 0);
 
   lua_getglobal(L,  "require");
@@ -145,9 +145,8 @@ void priority::node::run()
   }
 
   // GC
-  if( m_purge ) {
-    i.release();
-    lua_close(L);
+  if( m_release ) {
+    instance.release();
   } else {
     lua_gc(L, LUA_GCCOLLECT, 0);
   }

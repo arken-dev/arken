@@ -9,7 +9,7 @@
 #include <arken/json.h>
 
 using fifo   = arken::concurrent::task::fifo;
-using Shared = arken::concurrent::Shared;
+using Shared = arken::mvm::Shared;
 using json   = arken::json;
 
 fifo::node *
@@ -108,7 +108,7 @@ arken_concurrent_task_fifo_node_shared( lua_State *L ) {
   fifo::node * node = checkNode( L );
   int rv;
   lua_getglobal(L, "require");
-  lua_pushstring(L, "arken.concurrent.Shared");
+  lua_pushstring(L, "arken.mvm");
   rv = lua_pcall(L, 1, 0, 0);
   if (rv) {
     fprintf(stderr, "%s\n", lua_tostring(L, -1));
@@ -116,7 +116,7 @@ arken_concurrent_task_fifo_node_shared( lua_State *L ) {
 
   auto ptr = static_cast<Shared **>(lua_newuserdata(L, sizeof(Shared*)));
   *ptr = new Shared(node->shared());
-  luaL_getmetatable(L, "arken.concurrent.Shared.metatable");
+  luaL_getmetatable(L, "arken.mvm.Shared.metatable");
   lua_setmetatable(L, -2);
 
   return 1;

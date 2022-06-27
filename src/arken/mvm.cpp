@@ -4,7 +4,9 @@
 // license that can be found in the LICENSE file.
 
 #include <arken/base>
-#include <arken/mvm>
+#include <arken/mvm.h>
+#include <arken/concurrent/base.h> //TODO
+#include <arken/concurrent/core.h> //TODO
 #include <map>
 #include <clocale>
 
@@ -29,6 +31,9 @@ string mvm::s_env          = "development";
 
 static std::mutex mtx;
 static std::unordered_map <std::string, int> s_config;
+static std::unordered_map <std::thread::id, mvm::data *> s_mvm_map;
+static std::mutex s_mvm_mutex;
+
 
 void mvm::set(std::string key, int value)
 {
@@ -76,7 +81,7 @@ void mvm::config()
 
   const char * fileName = "config/mvm.lua";
   if( os::exists(fileName) ) {
-    arken::instance i = mvm::instance();
+    mvm::instance i = mvm::getInstance();
     lua_State * L = i.state();
     lua_settop(L, 0);
     lua_getglobal(L, "dofile");
@@ -147,11 +152,11 @@ void mvm::init(int argc, char ** argv)
 
 }
 
-instance mvm::instance(bool create)
+mvm::instance mvm::getInstance(bool create)
 {
 
   if( create ) {
-    return arken::instance( new mvm::data() );
+    return mvm::instance( new mvm::data() );
   }
 
   mvm::data * data = mvm::pop();
@@ -161,7 +166,7 @@ instance mvm::instance(bool create)
     data = new mvm::data();
   }
 
-  return arken::instance(data);
+  return mvm::instance(data);
 }
 
 void mvm::push(mvm::data * data)
@@ -274,12 +279,12 @@ uint32_t mvm::clear()
 
 uint32_t mvm::threads()
 {
-  return mvm::core::max();
+  return arken::concurrent::core::max(); //TODO
 }
 
 void mvm::threads(uint32_t threads)
 {
-  mvm::core::max() = threads;
+  arken::concurrent::core::max() = threads; //TODO
 }
 
 double mvm::uptime()
@@ -287,10 +292,118 @@ double mvm::uptime()
   return os::microtime() - mvm::s_uptime;
 }
 
-const char *  mvm::path()
+const char * mvm::path()
 {
   return s_arkenPath;
 }
+
+void mvm::env(const char * env)
+{
+  if( env != nullptr ) {
+    s_env = env;
+  }
+}
+
+const char * mvm::env()
+{
+  return s_env;
+}
+
+/*
+void arken::concurrent(concurrent::base * ptr)
+{
+  arken::concurrent::core::start(ptr);
+}
+*/
+
+uint32_t mvm::actives()
+{
+  return arken::concurrent::core::actives(); //TODO
+}
+
+string mvm::inspect()
+{
+  std::unique_lock<std::mutex> lck(s_mvm_mutex);
+
+  int count = 0;
+  string tmp("{");
+  tmp.append("\"running\": [");
+
+  for (std::pair<std::thread::id, mvm::data *> element : s_mvm_map) {
+    if( count > 0 ) {
+      tmp.append(",");
+    }
+    tmp.append("\"").append(element.second->inspect()).append("\"");
+    count++;
+  }
+
+  tmp.append("]}");
+
+  return tmp;
+}
+
+size_t mvm::workers()
+{
+  return arken::concurrent::core::workers().size(); //TODO
+}
+
+void mvm::wait()
+{
+
+  //TODO
+  while( true ) {
+    {
+      std::unique_lock<std::mutex> lck(arken::concurrent::core::mutex());
+      if (arken::concurrent::core::actives() == 0 && arken::concurrent::core::queue().empty()) {
+        break;
+      }
+    }
+    os::sleep(0.05);
+  }
+
+}
+
+char * mvm::setlocale(string locale, string category)
+{
+  int value;
+  if( category.equals("all") ) {
+    value = LC_ALL;
+  } else if ( category.equals("collate") ) {
+    value = LC_COLLATE;
+  } else if ( category.equals("ctype") ) {
+    value = LC_CTYPE;
+  } else if ( category.equals("monetary") ) {
+    value = LC_MONETARY;
+  } else if ( category.equals("numeric") ) {
+    value = LC_NUMERIC;
+  } else if ( category.equals("time") ) {
+    value = LC_TIME;
+  } else {
+    value = LC_ALL;
+  }
+  return std::setlocale(value, locale);
+}
+
+mvm::data * mvm::current()
+{
+  std::unique_lock<std::mutex> lck(s_mvm_mutex);
+  return s_mvm_map.at(std::this_thread::get_id());
+}
+
+arken::mvm::Shared & mvm::shared()
+{
+  static Shared instance;
+  return instance;
+}
+
+char * mvm::setlocale(string locale)
+{
+  return std::setlocale(LC_ALL, locale);
+}
+
+//-----------------------------------------------------------------------------
+// DATA
+//-----------------------------------------------------------------------------
 
 mvm::data::data(uint32_t version)
 {
@@ -342,9 +455,7 @@ mvm::data::data(uint32_t version)
 
 mvm::data::~data()
 {
-  if( m_release == false ) {
-    lua_close(m_State);
-  }
+  lua_close(m_State);
 }
 
 lua_State * mvm::data::state()
@@ -352,10 +463,9 @@ lua_State * mvm::data::state()
   return m_State;
 }
 
-lua_State * mvm::data::release()
+void mvm::data::release()
 {
   m_release = true;
-  return m_State;
 }
 
 uint32_t mvm::data::version()
@@ -363,323 +473,274 @@ uint32_t mvm::data::version()
   return m_version;
 }
 
-arken::instance::instance(mvm::data * data)
+arken::mvm::Shared mvm::data::shared()
 {
-  m_data = data;
+  return m_shared;
 }
 
-arken::instance::~instance()
+string mvm::data::inspect()
 {
+  string tmp(m_shared.name());
+  if(! m_shared.info().empty()) {
+    tmp.append("#info: ").append(m_shared.info());
+  }
+
+  return tmp;
+}
+
+//-----------------------------------------------------------------------------
+// INSTANCE
+//-----------------------------------------------------------------------------
+
+mvm::instance::instance(mvm::data * data)
+{
+  m_data = data;
+
+  std::unique_lock<std::mutex> lck(s_mvm_mutex);
+  s_mvm_map[std::this_thread::get_id()] = data;
+}
+
+mvm::instance::~instance()
+{
+
   if( m_data->m_release ) {
     delete m_data;
   } else {
     mvm::push(m_data);
   }
+
+  std::unique_lock<std::mutex> lck(s_mvm_mutex);
+  s_mvm_map.erase(std::this_thread::get_id());
 }
 
-lua_State * instance::state()
+lua_State * mvm::instance::state()
 {
   return m_data->state();
 }
 
-lua_State * instance::release()
+void mvm::instance::release()
 {
-  return m_data->release();
+  m_data->release();
 }
 
-concurrent::base::base() : m_uuid{""}, m_microtime{0}
-{ }
-
-void concurrent::base::run()
-{ }
-
-concurrent::base::~base() = default;
-
-bool concurrent::base::finished()
+void mvm::instance::swap(arken::mvm::Shared shared)
 {
-  return (*m_finished.get());
-}
-
-bool concurrent::base::purge()
-{
-  return m_purge;
-}
-
-concurrent::base::operator bool() const {
-  return m_microtime > 0;
-}
-
-void concurrent::base::wait()
-{
-  while ((*m_finished.get()) == false) {
-    os::sleep(0.05);
-  }
-}
-
-double concurrent::base::microtime()
-{
-  return m_microtime;
-}
-
-
-arken::concurrent::Shared concurrent::base::shared()
-{
-  return m_shared;
-}
-
-bool concurrent::base::release()
-{
-  return true;
-}
-
-string concurrent::base::uuid()
-{
-  return m_uuid;
-}
-
-void concurrent::base::finished(bool flag)
-{
-  (*m_finished.get()) = flag;
-}
-
-string concurrent::base::inspect()
-{
-  string tmp = m_inspect;
-  if( !m_shared.info().empty() ) {
-    tmp.append("#info:").append(m_shared.info());
-  }
-  return tmp;
+  //std::unique_lock<std::mutex> lck(s_mvm_mutex); // TODO
+  this->m_data->m_shared = shared;
 }
 
 //-----------------------------------------------------------------------------
-// ENV
+// SHARED
 //-----------------------------------------------------------------------------
 
-void mvm::env(const char * env)
+mvm::Shared::Shared()
 {
-  if( env != nullptr ) {
-    s_env = env;
-  }
+  m_name  = std::shared_ptr<string>(new string);
+  m_info  = std::shared_ptr<string>(new string);
+  m_map   = std::shared_ptr<std::unordered_map<string, data>>(new std::unordered_map<string, data>);
+  m_mutex = std::shared_ptr<std::mutex>(new std::mutex);
+};
+
+mvm::Shared::Shared(const Shared & obj)
+{
+  //std::unique_lock<std::mutex> lck(*m_mutex); // TODO
+  m_name  = obj.m_name;
+  m_info  = obj.m_info;
+  m_map   = obj.m_map;
+  m_mutex = obj.m_mutex;
 }
 
-const char * mvm::env()
+void mvm::Shared::name(string name)
 {
-  return s_env;
+  std::unique_lock<std::mutex> lck(*m_mutex);
+  *m_name = name;
 }
 
-void mvm::concurrent(concurrent::base * ptr)
+string mvm::Shared::name()
 {
-  mvm::core::start(ptr);
+  std::unique_lock<std::mutex> lck(*m_mutex);
+  return *m_name;
 }
 
-uint32_t mvm::actives()
+void mvm::Shared::info(string info)
 {
-  return mvm::core::actives();
+  std::unique_lock<std::mutex> lck(*m_mutex);
+  *m_info = info;
 }
 
-string mvm::inspect()
+string mvm::Shared::info()
 {
-  std::unique_lock<std::mutex> lck(mvm::core::mutex());
-
-  int count = 0;
-  string tmp("{");
-  tmp.append("\"running\": [");
-
-  for (std::pair<std::thread::id, concurrent::base *> element : mvm::core::running()) {
-    if( count > 0 ) {
-      tmp.append(",");
-    }
-    tmp.append("\"").append(element.second->inspect()).append("\"");
-    count++;
-  }
-
-  tmp.append("],");
-
-  count = 0;
-  tmp.append("\"wait\": [");
-  for (std::pair<string, string> element : mvm::core::waiting()) {
-    if( count > 0 ) {
-      tmp.append(",");
-    }
-    tmp.append("\"").append(element.second).append("\"");
-    count++;
-  }
-  tmp.append("]}");
-
-  return tmp;
+  std::unique_lock<std::mutex> lck(*m_mutex);
+  return *m_info;
 }
 
-size_t mvm::workers()
+// NUMBER
+double mvm::Shared::getNumber(string key)
 {
-  return mvm::core::workers().size();
-}
-
-void mvm::wait()
-{
-
-  while( true ) {
-    {
-      std::unique_lock<std::mutex> lck(mvm::core::mutex());
-      if (mvm::core::actives() == 0 && mvm::core::queue().empty()) {
-        break;
-      }
-    }
-    // TODO improved whithout sleep
-    os::sleep(0.05);
-  }
-
-}
-
-char * mvm::setlocale(string locale, string category)
-{
-  int value;
-  if( category.equals("all") ) {
-    value = LC_ALL;
-  } else if ( category.equals("collate") ) {
-    value = LC_COLLATE;
-  } else if ( category.equals("ctype") ) {
-    value = LC_CTYPE;
-  } else if ( category.equals("monetary") ) {
-    value = LC_MONETARY;
-  } else if ( category.equals("numeric") ) {
-    value = LC_NUMERIC;
-  } else if ( category.equals("time") ) {
-    value = LC_TIME;
+  std::unique_lock<std::mutex> lck(*m_mutex);
+  if( m_map->count(key) ) {
+    return m_map->at(key).m_number;
   } else {
-    value = LC_ALL;
+    return 0;
   }
-  return std::setlocale(value, locale);
 }
 
-concurrent::base mvm::current()
+void mvm::Shared::setNumber(string key, double value)
 {
-  std::unique_lock<std::mutex> lck(core::mutex());
+  std::unique_lock<std::mutex> lck(*m_mutex);
+  (*m_map)[key].m_number = value;
+  (*m_map)[key].m_flag   = 2;
+}
 
-  if( core::running().count(std::this_thread::get_id()) ) {
-    return concurrent::base(*core::running()[std::this_thread::get_id()]);
+double mvm::Shared::increment(string key, double value)
+{
+  std::unique_lock<std::mutex> lck(*m_mutex);
+  if( m_map->count(key) ) {
+    value += m_map->at(key).m_number;
+    (*m_map)[key].m_number = value;
+  } else {
+    (*m_map)[key].m_number = value;
+  }
+
+  return value;
+}
+
+// STRING
+string mvm::Shared::getString(string key)
+{
+  std::unique_lock<std::mutex> lck(*m_mutex);
+  if( m_map->count(key) ) {
+    return m_map->at(key).m_string;
   } else {
     return {};
   }
 }
 
-char * mvm::setlocale(string locale)
+void mvm::Shared::setString(string key, string value)
 {
-  return std::setlocale(LC_ALL, locale);
+  std::unique_lock<std::mutex> lck(*m_mutex);
+  (*m_map)[key].m_string = value;
+  (*m_map)[key].m_flag   = 3;
 }
 
-//-----------------------------------------------------------------------------
-// MVM::CORE
-//-----------------------------------------------------------------------------
-
-mvm::core::core(uint32_t max)
+string mvm::Shared::append(string key, string value)
 {
-  m_max = max;
+  std::unique_lock<std::mutex> lck(*m_mutex);
+  if( m_map->count(key) ) {
+    string v = std::move(m_map->at(key).m_string);
+    v.append(value);
+    (*m_map)[key].m_string = std::move(v);
+  } else {
+    (*m_map)[key].m_string = value;
+  }
+
+  return value;
 }
 
-mvm::core::~core()
+string mvm::Shared::prepend(string key, string value)
 {
-  for( size_t i=0; i< workers().size(); i++ ) {
-    workers().at(i).detach();
+  std::unique_lock<std::mutex> lck(*m_mutex);
+  if( m_map->count(key) ) {
+    string v = std::move(m_map->at(key).m_string);
+    v.prepend(value);
+    (*m_map)[key].m_string = std::move(v);
+  } else {
+    (*m_map)[key].m_string = value;
+  }
+
+  return value;
+}
+
+// BOOL
+bool mvm::Shared::getBool(string key)
+{
+  std::unique_lock<std::mutex> lck(*m_mutex);
+  if( m_map->count(key) ) {
+    return m_map->at(key).m_bool;
+  } else {
+    return false;
+  }
+
+  return true;
+}
+
+void mvm::Shared::setBool(string key, bool value)
+{
+  std::unique_lock<std::mutex> lck(*m_mutex);
+  (*m_map)[key].m_bool = value;
+  (*m_map)[key].m_flag = 1;
+}
+
+bool mvm::Shared::toggle(string key)
+{
+  std::unique_lock<std::mutex> lck(*m_mutex);
+  bool result = false;
+  if( m_map->count(key) ) {
+    result = ! m_map->at(key).m_bool;
+    (*m_map)[key].m_bool = result;
+  }
+  return result;
+}
+
+arken::mvm::Shared & mvm::Shared::global()
+{
+  static Shared instance;
+  return instance;
+}
+
+void mvm::Shared::put(string key, string value)
+{
+  this->setString(key, value);
+}
+
+void mvm::Shared::put(string key, double value)
+{
+  this->setNumber(key, value);
+}
+
+void mvm::Shared::put(string key, bool value)
+{
+  this->setBool(key, value);
+}
+
+short mvm::Shared::flag(string key)
+{
+  std::unique_lock<std::mutex> lck(*m_mutex);
+  if( m_map->count(key) ) {
+    return m_map->at(key).m_flag;
+  } else {
+    return 0;
   }
 }
 
-mvm::core & mvm::core::instance()
+mvm::Shared::data mvm::Shared::get(string key)
 {
-  static mvm::core core(os::cores());
-  return core;
-}
-
-std::queue<concurrent::base *> & mvm::core::queue()
-{
-  return instance().m_queue;
-}
-
-std::mutex& mvm::core::mutex()
-{
-  return instance().m_mutex;
-}
-
-std::vector<std::thread>& mvm::core::workers()
-{
-  return instance().m_workers;
-}
-
-std::condition_variable  & mvm::core::condition()
-{
-  return instance().m_condition;
-}
-
-std::atomic<uint32_t>  & mvm::core::actives()
-{
-  return instance().m_actives;
-}
-
-std::atomic<uint32_t>  & mvm::core::max()
-{
-  return instance().m_max;
-}
-
-std::unordered_map<string, string> & mvm::core::waiting()
-{
-  return instance().m_waiting;
-}
-
-std::unordered_map<std::thread::id, concurrent::base *> & mvm::core::running()
-{
-  return instance().m_running;
-}
-
-void mvm::core::working()
-{
-
-  while( true ) {
-    concurrent::base * ptr = get();
-
-    ptr->run();
-    ptr->finished(true);
-
-    std::unique_lock<std::mutex> lck(mutex());
-    actives()--;
-    running().erase(std::this_thread::get_id());
-
-    if( ptr->release() ) {
-      delete ptr;
-    }
-  } // while
-
-} // mvm::core::working
-
-
-void mvm::core::start(concurrent::base * ptr)
-{
-  std::unique_lock<std::mutex> lck(mutex());
-
-  if( workers().size() < max() && (workers().size() - actives()) == 0 ) {
-    workers().push_back(std::thread(working));
+  std::unique_lock<std::mutex> lck(*m_mutex);
+  if( m_map->count(key) ) {
+    return m_map->at(key);
+  } else {
+    return {};
   }
-
-  queue().push(ptr);
-  condition().notify_one();
-  actives()++;
-  waiting()[ptr->uuid()] = ptr->inspect();
 }
 
-concurrent::base * mvm::core::get()
+short mvm::Shared::data::flag()
 {
-  std::unique_lock<std::mutex> lck(mutex());
-  condition().wait(lck, []{ return ! queue().empty(); });
-  concurrent::base * ptr = queue().front();
-  queue().pop();
-  waiting().erase(ptr->uuid());
-  running()[std::this_thread::get_id()] = ptr;
-
-  return ptr;
+  return m_flag;
 }
 
-void concurrent::base::swap(concurrent::base * destination, concurrent::base * source)
+bool mvm::Shared::data::getBool()
 {
-  std::unique_lock<std::mutex> lck(mvm::core::mutex());
-  destination->m_shared = source->m_shared;
+  return m_bool;
+}
+
+double mvm::Shared::data::getNumber()
+{
+  return m_number;
+}
+
+string mvm::Shared::data::getString()
+{
+  return m_string;
 }
 
 } // namespace arken

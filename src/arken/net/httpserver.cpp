@@ -67,7 +67,7 @@ std::string HttpServer::handler(const char * data, size_t size)
   std::string buffer;
 
   // arken instance
-  arken::instance i = mvm::instance();
+  mvm::instance i = mvm::getInstance();
   lua_State * L = i.state();
 
   // Process Request

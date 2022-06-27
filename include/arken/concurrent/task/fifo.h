@@ -12,9 +12,9 @@
 #include <vector>
 #include <memory>
 #include <unordered_map>
-#include <arken/mvm>
+#include <arken/mvm.h>
 #include <arken/string.h>
-#include <arken/concurrent/shared.h>
+#include <arken/concurrent/base.h>
 
 namespace arken {
 namespace concurrent {
@@ -33,7 +33,7 @@ namespace task {
     class node : public base {
       friend class fifo;
 
-      node(const char * fileName, const char * params, bool purge = false);
+      node(const char * fileName, const char * params, bool release = false);
 
       public:
       node();
@@ -41,7 +41,7 @@ namespace task {
       void run();
     };
 
-    static fifo::node start(const char * fileName, const char * params, bool purge = false);
+    static fifo::node start(const char * fileName, const char * params, bool release = false);
     static std::queue<fifo::node> & fifo_queue();
     static std::mutex & mutex();
     static void push(const fifo::node & node);
