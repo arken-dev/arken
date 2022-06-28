@@ -200,7 +200,7 @@ std::atomic<uint32_t> & fifo::actives()
 
 std::atomic<uint32_t> & fifo::max()
 {
-  static std::atomic<uint32_t> s_max{mvm::threads()};
+  static std::atomic<uint32_t> s_max{core::max().load()};
   return s_max;
 }
 

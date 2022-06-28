@@ -271,7 +271,7 @@ std::atomic<uint32_t> & balanced::actives()
 
 std::atomic<uint32_t> & balanced::max()
 {
-  static std::atomic<uint32_t> s_max{mvm::threads()};
+  static std::atomic<uint32_t> s_max{core::max().load()};
   return s_max;
 }
 

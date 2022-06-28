@@ -349,7 +349,7 @@ std::atomic<uint32_t> & singular::actives()
 
 std::atomic<uint32_t> & singular::max()
 {
-  static std::atomic<uint32_t> s_max{mvm::threads()};
+  static std::atomic<uint32_t> s_max{core::max().load()};
   return s_max;
 }
 
