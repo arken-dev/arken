@@ -302,8 +302,7 @@ string mvm::inspect()
   std::unique_lock<std::mutex> lck(s_mvm_mutex);
 
   int count = 0;
-  string tmp("{");
-  tmp.append("\"running\": [");
+  string tmp("[");
 
   for (std::pair<std::thread::id, mvm::data *> element : s_mvm_map) {
     if( count > 0 ) {
@@ -313,7 +312,7 @@ string mvm::inspect()
     count++;
   }
 
-  tmp.append("]}");
+  tmp.append("]");
 
   return tmp;
 }
