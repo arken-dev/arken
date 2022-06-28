@@ -5,8 +5,6 @@
 
 #include <arken/base>
 #include <arken/mvm.h>
-#include <arken/concurrent/base.h> //TODO
-#include <arken/concurrent/core.h> //TODO
 #include <map>
 #include <clocale>
 
@@ -277,16 +275,6 @@ uint32_t mvm::clear()
   return result;
 }
 
-uint32_t mvm::threads()
-{
-  return arken::concurrent::core::max(); //TODO
-}
-
-void mvm::threads(uint32_t threads)
-{
-  arken::concurrent::core::max() = threads; //TODO
-}
-
 double mvm::uptime()
 {
   return os::microtime() - mvm::s_uptime;
@@ -309,25 +297,12 @@ const char * mvm::env()
   return s_env;
 }
 
-/*
-void arken::concurrent(concurrent::base * ptr)
-{
-  arken::concurrent::core::start(ptr);
-}
-*/
-
-uint32_t mvm::actives()
-{
-  return arken::concurrent::core::actives(); //TODO
-}
-
 string mvm::inspect()
 {
   std::unique_lock<std::mutex> lck(s_mvm_mutex);
 
   int count = 0;
-  string tmp("{");
-  tmp.append("\"running\": [");
+  string tmp("[");
 
   for (std::pair<std::thread::id, mvm::data *> element : s_mvm_map) {
     if( count > 0 ) {
@@ -337,24 +312,18 @@ string mvm::inspect()
     count++;
   }
 
-  tmp.append("]}");
+  tmp.append("]");
 
   return tmp;
 }
 
-size_t mvm::workers()
-{
-  return arken::concurrent::core::workers().size(); //TODO
-}
-
 void mvm::wait()
 {
-
-  //TODO
+  os::sleep(0.10);
   while( true ) {
     {
-      std::unique_lock<std::mutex> lck(arken::concurrent::core::mutex());
-      if (arken::concurrent::core::actives() == 0 && arken::concurrent::core::queue().empty()) {
+      std::unique_lock<std::mutex> lck(s_mvm_mutex);
+      if (s_mvm_map.size() == 1 || s_mvm_map.size() == 0) {
         break;
       }
     }

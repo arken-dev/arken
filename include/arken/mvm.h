@@ -197,8 +197,6 @@ class mvm {
   static uint32_t pool();
   static uint32_t gc();
   static uint32_t clear();
-  static uint32_t threads();
-  static void threads(uint32_t threads);
   static void push(mvm::data *);
   static void back(mvm::data *);
   static double uptime();
@@ -207,9 +205,7 @@ class mvm {
   static void wait();
   static void env(const char * value);
   static const char * env();
-  static uint32_t actives();
   static string inspect();
-  static size_t workers();
   static char * setlocale(string locale, string category);
   static char * setlocale(string locale);
   static mvm::data * current();
