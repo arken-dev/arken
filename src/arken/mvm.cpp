@@ -3,14 +3,15 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#include <arken/base>
-#include <arken/mvm.h>
 #include <map>
 #include <clocale>
+#include <arken/mvm.h>
 
 namespace arken {
 
-using arken::string;
+//-----------------------------------------------------------------------------
+// MVM - ATTRIBUTES
+//-----------------------------------------------------------------------------
 
 int     mvm::s_argc{0};
 char ** mvm::s_argv{nullptr};
@@ -32,6 +33,9 @@ static std::unordered_map <std::string, int> s_config;
 static std::unordered_map <std::thread::id, mvm::data *> s_mvm_map;
 static std::mutex s_mvm_mutex;
 
+//-----------------------------------------------------------------------------
+// MVM - METHODS
+//-----------------------------------------------------------------------------
 
 void mvm::set(std::string key, int value)
 {
@@ -371,7 +375,7 @@ char * mvm::setlocale(string locale)
 }
 
 //-----------------------------------------------------------------------------
-// DATA
+// MVM - DATA
 //-----------------------------------------------------------------------------
 
 mvm::data::data(uint32_t version)
@@ -458,7 +462,7 @@ string mvm::data::inspect()
 }
 
 //-----------------------------------------------------------------------------
-// INSTANCE
+// MVM - INSTANCE
 //-----------------------------------------------------------------------------
 
 mvm::instance::instance(mvm::data * data)
@@ -499,7 +503,7 @@ void mvm::instance::swap(arken::mvm::Shared shared)
 }
 
 //-----------------------------------------------------------------------------
-// SHARED
+// MVM - SHARED
 //-----------------------------------------------------------------------------
 
 mvm::Shared::Shared()
