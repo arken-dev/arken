@@ -10,8 +10,8 @@ void worker::perform(unsigned int cores)
 
   for(unsigned int i=0; i < cores; i++) {
     worker::node *n = new worker::node(this, m_fileName, i);
-    list.push_back(n);
-    arken::concurrent::core::start(n);
+    list.push_back(new worker::node(*n));
+    core::start(n);
   }
 
   while( true ) {

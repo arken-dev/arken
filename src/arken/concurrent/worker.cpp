@@ -217,6 +217,20 @@ worker::node::node(worker * ptr, string fileName, uint32_t number)
   m_shared.name().append(std::to_string(m_number));
 }
 
+worker::node::node(const worker::node &obj)
+{
+  m_number    = obj.m_number;
+  m_fileName  = obj.m_fileName;
+  m_worker    = obj.m_worker;
+  m_params    = obj.m_params;
+  m_release   = obj.m_release;
+  m_finished  = obj.m_finished;
+  m_shared    = obj.m_shared;
+  m_uuid      = obj.m_uuid;
+  m_microtime = obj.m_microtime;
+}
+
+
 void worker::node::run()
 {
 
