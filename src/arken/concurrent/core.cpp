@@ -65,7 +65,7 @@ void core::working()
 {
 
   while( true ) {
-    concurrent::base * ptr = get();
+    std::unique_ptr<concurrent::base>ptr{get()};
 
     ptr->run();
     ptr->finished(true);
@@ -73,10 +73,6 @@ void core::working()
     std::unique_lock<std::mutex> lck(mutex());
     actives()--;
     running().erase(std::this_thread::get_id());
-
-    if( ptr->release() ) {
-      delete ptr;
-    }
   } // while
 
 } // core::working

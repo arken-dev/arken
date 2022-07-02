@@ -7,8 +7,7 @@
 #define _ARKEN_MVM_
 
 #include <lua/lua.hpp>
-#include <arken/string.h>
-#include <arken/os.h>
+#include <arken/base>
 #include <thread>
 #include <mutex>
 #include <vector>
@@ -24,8 +23,6 @@
 namespace arken {
 
 class mvm {
-
-  using string = arken::string;
 
   public:
 
