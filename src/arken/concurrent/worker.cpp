@@ -155,7 +155,7 @@ worker::worker(const char * fileName, const char * params, bool release)
   m_uuid     = os::uuid();
   m_fileName = fileName;
   m_params   = params;
-  m_release    = release;
+  m_release  = release;
   m_total    = std::shared_ptr<std::atomic<int>>(new std::atomic<int>(0));
   m_progress = std::shared_ptr<std::atomic<int>>(new std::atomic<int>(0));
 
@@ -216,6 +216,20 @@ worker::node::node(worker * ptr, string fileName, uint32_t number)
   m_shared.name("arken.concurrent.worker.node#");
   m_shared.name().append(std::to_string(m_number));
 }
+
+worker::node::node(const worker::node &obj)
+{
+  m_number    = obj.m_number;
+  m_fileName  = obj.m_fileName;
+  m_worker    = obj.m_worker;
+  m_params    = obj.m_params;
+  m_release   = obj.m_release;
+  m_finished  = obj.m_finished;
+  m_shared    = obj.m_shared;
+  m_uuid      = obj.m_uuid;
+  m_microtime = obj.m_microtime;
+}
+
 
 void worker::node::run()
 {

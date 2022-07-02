@@ -109,7 +109,7 @@ channel::channel(const char * fileName, const char * params, bool release)
   m_microtime = os::microtime();
   m_fileName  = fileName;
   m_params    = params;
-  m_release     = release;
+  m_release   = release;
 
   m_shared.name("arken.concurrent.channel");
 

@@ -54,6 +54,7 @@ namespace concurrent {
 
       string dequeue();
       node(worker * ptr, string fileName, uint32_t number);
+      node(const node &obj);
 
       public:
       void run() override;
