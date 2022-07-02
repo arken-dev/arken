@@ -75,7 +75,7 @@ priority::node::node(const node &obj)
   m_microtime = obj.m_microtime;
   m_shared    = obj.m_shared;
   m_finished  = obj.m_finished;
-  m_release     = obj.m_release;
+  m_release   = obj.m_release;
 }
 
 priority::node::node(const char * fileName, const char * params, int priority, bool release)
@@ -84,7 +84,7 @@ priority::node::node(const char * fileName, const char * params, int priority, b
   m_fileName  = fileName;
   m_params    = params;
   m_priority  = priority;
-  m_release     = release;
+  m_release   = release;
   m_microtime = os::microtime();
   m_finished  = std::shared_ptr<std::atomic<bool>>(new std::atomic<bool>(false));
   m_shared.name("arken.concurrent.task.fifo");

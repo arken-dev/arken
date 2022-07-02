@@ -155,7 +155,7 @@ worker::worker(const char * fileName, const char * params, bool release)
   m_uuid     = os::uuid();
   m_fileName = fileName;
   m_params   = params;
-  m_release    = release;
+  m_release  = release;
   m_total    = std::shared_ptr<std::atomic<int>>(new std::atomic<int>(0));
   m_progress = std::shared_ptr<std::atomic<int>>(new std::atomic<int>(0));
 

@@ -80,7 +80,7 @@ task::task(const char * fileName, const char * params, bool release)
 {
   m_fileName  = fileName;
   m_params    = params;
-  m_release     = release;
+  m_release   = release;
   m_microtime = os::microtime();
   m_uuid      = os::uuid();
 

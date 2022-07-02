@@ -96,7 +96,7 @@ scheduled::node::node(const node &obj)
   m_microtime = obj.m_microtime;
   m_shared    = obj.m_shared;
   m_finished  = obj.m_finished;
-  m_release     = obj.m_release;
+  m_release   = obj.m_release;
 }
 
 scheduled::node::node(const char * fileName, const char * params, const char * name, bool release)
@@ -104,7 +104,7 @@ scheduled::node::node(const char * fileName, const char * params, const char * n
   m_fileName  = fileName;
   m_params    = params;
   m_name      = name;
-  m_release     = release;
+  m_release   = release;
   m_microtime = os::microtime();
   m_finished  = std::shared_ptr<std::atomic<bool>>(new std::atomic<bool>(false));
   m_shared.name("arken.concurrent.task.scheduled");

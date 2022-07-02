@@ -23,7 +23,7 @@ service::service( const char * fileName, const char * params, bool release )
   m_version   = mvm::version();
   m_fileName  = fileName;
   m_params    = params;
-  m_release     = release;
+  m_release   = release;
 
   string tmp("arken.concurrent.service#");
   tmp.append(m_fileName);
@@ -37,7 +37,7 @@ service::service(const service &obj)
   m_version   = mvm::version();
   m_fileName  = obj.m_fileName;
   m_params    = obj.m_params;
-  m_release     = obj.m_release;
+  m_release   = obj.m_release;
   m_shared    = obj.m_shared;
   m_uuid      = obj.m_uuid;
   m_microtime = obj.m_microtime;
