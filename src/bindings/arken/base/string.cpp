@@ -1212,7 +1212,15 @@ register_arken_string_List( lua_State *L ) {
 static int
 arken_string_List_gc( lua_State *L ) {
   List *udata = checkList( L );
+  // check if arken_string_List_each running
+  bool running = (udata->cursor() > 0 && udata->cursor() < udata->size());
   delete udata;
+  if( running ) {
+    const char * msg =
+      "Resource closed when using \"each\" method, try to allocate a variable";
+    lua_pushstring(L, msg);
+    lua_error(L);
+  }
   return 0;
 }
 

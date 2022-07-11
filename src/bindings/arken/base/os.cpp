@@ -103,7 +103,6 @@ static int arken_os_glob( lua_State *L ) {
   *ptr = new List(std::move(list));
   luaL_getmetatable(L, "arken.string.List.metatable");
   lua_setmetatable(L, -2);
-
   return 1;
 }
 
