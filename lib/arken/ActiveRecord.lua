@@ -7,7 +7,6 @@ local json    = require("arken.json")
 local Class   = require("arken.oop.Class")
 local Array   = require("arken.Array")
 local mvm     = require("arken.mvm")
-local env     = mvm.env()
 local config  = nil
 
 ActiveRecord  = Class.new("ActiveRecord")
@@ -263,8 +262,9 @@ ActiveRecord.inherit = function(class)
       end
 
       local raw  = template.execute(fileName, params)
-      local env  = env or 'development'
+      local env  = mvm.env() or 'development'
       local data = json.decode(raw)
+
       if type(data) == 'table' then
         config = data[env]
       else
