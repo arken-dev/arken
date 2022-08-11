@@ -352,7 +352,9 @@ function ActiveRecord_Adapter:execute(sql)
     error(string.format("error %s, tracekback %s, sql %s", errmsg, debug.traceback(), sql))
   end
   time = os.microtime() - time
-  if ActiveRecord.debug then
+  local debug    = ActiveRecord.debug
+  local max_time = ActiveRecord.debug_max_query_time
+  if debug or (max_time and max_time <= time) then
     ActiveRecord_Adapter.output(sql .. string.format(" (%.3f) secs", time))
   end
   ActiveRecord.time = ActiveRecord.time + time
