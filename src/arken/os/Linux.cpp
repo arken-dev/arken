@@ -38,7 +38,7 @@ size_t os::mem()
   size_t result{0};
   FILE *file = fopen("/proc/self/status", "r");
   char line[128];
-  while (fgets(line, 128, file) != NULL) {
+  while (fgets(line, 128, file) != nullptr) {
     if (strncmp(line, "VmRSS:", 6) == 0) {
       result = static_cast<size_t>(parseLine(line));
       break;
