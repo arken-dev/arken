@@ -160,7 +160,7 @@ ActiveRecord.inherit = function(class)
       local major  = nil
 
       if id then
-        major = string.format("%s.%s %s %s", table, key, operator, id)
+        major = string.format("%s.%s %s '%s'", table, key, operator, id)
       end
 
       local _where = nil
