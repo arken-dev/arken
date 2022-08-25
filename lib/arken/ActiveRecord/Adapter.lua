@@ -59,7 +59,7 @@ format.number = function(value)
 end
 
 format.string = function(value)
-  return "'".. value .. "'"
+  return "'".. value:escape() .. "'"
 end
 
 format.table = function(value)
