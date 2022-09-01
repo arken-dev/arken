@@ -11,6 +11,16 @@ core::core(uint32_t max)
 core::~core()
 {
   for( size_t i=0; i< workers().size(); i++ ) {
+    queue().push(nullptr);
+    actives()++;
+    condition().notify_one();
+  }
+
+  while( actives() > 0 ) {
+    os::sleep(0.005);
+  }
+
+  for( size_t i=0; i< workers().size(); i++ ) {
     workers().at(i).detach();
   }
 }
@@ -67,6 +77,11 @@ void core::working()
   while( true ) {
     std::unique_ptr<concurrent::base>ptr{get()};
 
+    if(!ptr) {
+      actives()--;
+      return;
+    }
+
     ptr->run();
     ptr->finished(true);
 
@@ -98,8 +113,11 @@ base * core::get()
   condition().wait(lck, []{ return ! queue().empty(); });
   concurrent::base * ptr = queue().front();
   queue().pop();
-  waiting().erase(ptr->uuid());
-  running()[std::this_thread::get_id()] = ptr;
+
+  if( ptr ) {
+    waiting().erase(ptr->uuid());
+    running()[std::this_thread::get_id()] = ptr;
+  }
 
   return ptr;
 }
