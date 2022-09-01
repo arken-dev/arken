@@ -13,6 +13,7 @@ include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${PROJECT_SOURCE_DIR}/deps/include)
 
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/clib/luasql)
+set(LUA_POSTGRES_LIB pq CACHE STRING "alternativa path for libpq.so")
 
 add_library(
   postgres SHARED
@@ -22,4 +23,4 @@ add_library(
 
 set_target_properties(postgres PROPERTIES PREFIX "")
 
-target_link_libraries(postgres arken pq)
+target_link_libraries(postgres arken ${LUA_POSTGRES_LIB})
