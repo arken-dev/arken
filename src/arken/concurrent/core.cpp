@@ -78,6 +78,7 @@ void core::working()
     std::unique_ptr<concurrent::base>ptr{get()};
 
     if(!ptr) {
+      std::unique_lock<std::mutex> lck(mutex());
       actives()--;
       return;
     }
