@@ -22,7 +22,7 @@ checkImage( lua_State *L , int position = 1) {
 
 static int
 arken_Image_new( lua_State *L ) {
-  arken::Image **ptr = (arken::Image **)lua_newuserdata(L, sizeof(Image*));
+  auto ptr = static_cast<arken::Image **>(lua_newuserdata(L, sizeof(Image*)));
 
   if(lua_gettop(L) == 4) { // number of arguments
     int width  = luaL_checkinteger(L, 1);
