@@ -68,6 +68,7 @@ Dialog::Dialog(QWidget *parent) :
     setWindowFlags(Qt::Window
       | Qt::WindowTitleHint
       | Qt::CustomizeWindowHint
+      | Qt::WindowSystemMenuHint
       | Qt::FramelessWindowHint
       | Qt::WindowStaysOnTopHint // remove porque ele não mostra uma janela em cima da outra
       | Qt::SplashScreen //Ele mantem em backgroud mesmo quand otermina a aplicaçao.
