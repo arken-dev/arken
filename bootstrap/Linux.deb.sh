@@ -28,7 +28,7 @@ apt-get install libpq-dev
 # apt-get install libmagickcore-dev libmagickwand-dev
 
 # arken.notify
-# apt-get install libqt5opengl5-dev  # qt
+# apt-get install qtbase5-dev libqt5opengl5-dev  # qt
 # apt-get install libnotify-dev      # libnotify
 # apt-get install libglib2.0-dev     # glib
 # apt-get install freeglut3-dev      # opengl
