@@ -539,11 +539,19 @@ function ActiveRecord_Adapter:validateLength(record, params)
 end
 
 function ActiveRecord_Adapter:validateUnique(record, params)
+  local scope = params.scope or {}
   local value = record[params.column]
   local where = string.format("%s = '%s'", params.column, value)
   if not empty(record[self.primaryKey]) then
     where = string.format("%s AND %s != %s", where, self.primaryKey, record[self.primaryKey])
   end
+
+  for _, column in ipairs(scope) do
+    if record[column] then
+      where = string.format("%s AND %s = %s", where, column, record[column])
+    end
+  end
+
   if value ~= nil and value ~= '' then
     -- TODO create exists method in Adapter
     if self:find{ where = where } ~= nil then
