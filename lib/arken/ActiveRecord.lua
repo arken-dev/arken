@@ -307,7 +307,7 @@ ActiveRecord.inherit = function(class)
     Adapter.neat    = {}
     Adapter.cache   = {}
     Adapter.errors  = {}
-    Adapter.pendint = {}
+    Adapter.pending = {}
     for _, cursor in ipairs(Adapter.cursor) do
       cursor:close()
     end
