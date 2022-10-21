@@ -304,8 +304,10 @@ ActiveRecord.inherit = function(class)
   -- clear all cache
   function class.clear()
     local Adapter = require("arken.ActiveRecord.Adapter")
-    Adapter.neat  = {}
-    Adapter.cache = {}
+    Adapter.neat    = {}
+    Adapter.cache   = {}
+    Adapter.errors  = {}
+    Adapter.pendint = {}
     for _, cursor in ipairs(Adapter.cursor) do
       cursor:close()
     end
