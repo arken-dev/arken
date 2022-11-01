@@ -315,7 +315,7 @@ bool string::equals(const char * str1, const char * str2)
   return strcmp(str1, str2) == 0;
 }
 
-char * string::escape(const char * string)
+char * string::escape(const char * string, char chr)
 {
   int i, j;
   int len   = strlen(string);
@@ -334,7 +334,7 @@ char * string::escape(const char * string)
   j = 0;
   for(i = 0; i < len; i++) {
     if (string[i] == 34 || string[i] == 39 || string[i] == 92) {
-      result[j] = 92;
+      result[j] = chr;
       j++;
     }
     result[j] = string[i];
@@ -1565,9 +1565,9 @@ bool string::equals(const char * data)
   return string::equals(m_data, data);
 }
 
-string string::escape()
+string string::escape(char chr)
 {
-  return string::escape(m_data);
+  return string::escape(m_data, chr);
 }
 
 string string::escapeHtml()

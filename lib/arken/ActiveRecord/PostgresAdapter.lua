@@ -10,6 +10,8 @@ local toboolean = require('arken.toboolean')
 local Class     = require('arken.oop.Class')
 local Adapter   = require('arken.ActiveRecord.Adapter')
 
+Adapter._escape = [[']]
+
 local ActiveRecord_PostgresAdapter = Class.new("ActiveRecord.PostgresAdapter", Adapter)
 
 ------------------------------------------------------------------------------

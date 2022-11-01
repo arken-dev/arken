@@ -43,7 +43,7 @@ class string {
   static char * encode64(const char *string, size_t size);
   static bool   endsWith(const char * string, const char * ba);
   static bool   equals(const char * str1, const char * str2);
-  static char * escape(const char * string);
+  static char * escape(const char * string, char chr = 92);
   static char * escapeHtml(const char * string);
   static size_t hash(const char * string, size_t size);
   static int    indexOf(const char * string, const char * str, int i = 0);
@@ -115,7 +115,7 @@ class string {
   string encode64();
   bool   endsWith(const char * ba);
   bool   equals(const char * str);
-  string escape();
+  string escape(char chr = 92);
   string escapeHtml();
   size_t hash() const;
   int    indexOf(const char * str, int i = 0);

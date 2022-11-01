@@ -197,7 +197,14 @@ arken_string_endsWith( lua_State *L ) {
 static int
 arken_string_escape( lua_State *L ) {
   const char *string = luaL_checkstring(L, 1);
-  char * result      = string::escape(string);
+  char * result;
+  if(lua_gettop(L) == 2) { /* número de argumentos */
+    const char *escape = luaL_checkstring(L, 2);
+     result = string::escape(string, escape[0]);
+  } else {
+     result = string::escape(string);
+  }
+
   lua_pushstring(L, result);
   delete[] result;
   return 1;
@@ -686,8 +693,15 @@ arken_string_metatable_empty( lua_State *L ) {
 static int
 arken_string_metatable_escape( lua_State *L ) {
   string * udata = checkString( L );
-  string result  = udata->escape();
-  lua_pushlstring(L, result.data(), result.size());
+  if(lua_gettop(L) == 2) { /* número de argumentos */
+    const char *escape = luaL_checkstring(L, 2);
+    string result  = udata->escape(escape[0]);
+    lua_pushlstring(L, result.data(), result.size());
+  } else {
+    string result  = udata->escape();
+    lua_pushlstring(L, result.data(), result.size());
+  }
+
   return 1;
 }
 

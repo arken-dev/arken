@@ -32,6 +32,7 @@ ActiveRecord_Adapter.neat    = {}
 ActiveRecord_Adapter.cursor  = {}
 ActiveRecord_Adapter.pending = {}
 ActiveRecord_Adapter.output  = print
+ActiveRecord_Adapter._escape = [[\]]
 
 ActiveRecord_Adapter.booleanValues = {
   ['t']     = true,
@@ -59,7 +60,7 @@ format.number = function(value)
 end
 
 format.string = function(value)
-  return "'".. value:escape() .. "'"
+  return "'".. value:escape(ActiveRecord_Adapter._escape) .. "'"
 end
 
 format.table = function(value)
@@ -541,7 +542,7 @@ end
 function ActiveRecord_Adapter:validateUnique(record, params)
   local scope = params.scope or {}
   local value = record[params.column]
-  local where = string.format("%s = '%s'", params.column, value)
+  local where = string.format("%s = '%s'", params.column, tostring(value):escape(ActiveRecord_Adapter._escape))
   if not empty(record[self.primaryKey]) then
     where = string.format("%s AND %s != %s", where, self.primaryKey, record[self.primaryKey])
   end
