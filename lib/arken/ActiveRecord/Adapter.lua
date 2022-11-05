@@ -23,7 +23,8 @@ ActiveRecord_Adapter.reserved = {
   order     = true,
   limit     = true,
   offset    = true,
-  lock      = true
+  lock      = true,
+  reload    = true
 }
 
 ActiveRecord_Adapter.errors  = Array.new()
@@ -296,7 +297,8 @@ end
 --------------------------------------------------------------------------------
 
 function ActiveRecord_Adapter:find(params)
-  if params[self.primaryKey] and not params.lock then
+  local reload = params.lock or params.reload
+  if params[self.primaryKey] and not reload then
     local key = self.tableName .. '_' .. tostring(params[self.primaryKey])
     if ActiveRecord_Adapter.cache[key] then
       return ActiveRecord_Adapter.cache[key]
@@ -315,7 +317,7 @@ function ActiveRecord_Adapter:find(params)
   end
 
   local sql = self:select(params, true)
-  return self:fetch(sql, params.lock)
+  return self:fetch(sql, reload)
 end
 
 --------------------------------------------------------------------------------
@@ -382,14 +384,14 @@ end
 -- FETCH
 --------------------------------------------------------------------------------
 
-function ActiveRecord_Adapter:fetch(sql, lock)
+function ActiveRecord_Adapter:fetch(sql, reload)
   local cursor = self:execute(sql)
   local result = cursor:fetch({}, 'a')
   cursor:close()
   if result == nil then
     return nil
   else
-    return self:parser_fetch(result, lock)
+    return self:parser_fetch(result, reload)
   end
 end
 
@@ -397,10 +399,10 @@ end
 -- PARSER FETCH
 -------------------------------------------------------------------------------
 
-function ActiveRecord_Adapter:parser_fetch(res, lock)
+function ActiveRecord_Adapter:parser_fetch(res, reload)
   local key  = self.tableName .. '_' .. tostring(res[self.primaryKey])
 
-  if ActiveRecord_Adapter.cache[key] and not lock then
+  if ActiveRecord_Adapter.cache[key] and not reload then
     return ActiveRecord_Adapter.cache[key]
   else
     local neat  = ActiveRecord_Adapter.neat[key]  or {}
