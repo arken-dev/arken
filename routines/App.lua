@@ -48,7 +48,8 @@ function App:create()
   end
 
   if params.web then
-    os.copy(ARKEN_PATH .. '/skel', dirName)
+    local path = os.dirpath(os.executablePath())
+    os.copy(path .. '/../skel', dirName)
     for fileName in os.find(dirName, ".*", true):each() do
       if not fileName:endsWith('.') and not fileName:endsWith('..') then
         App.output(fileName)
