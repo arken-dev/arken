@@ -2,9 +2,6 @@ local notify = require('arken.notify')
 local File   = Class.new("routines.File")
 local buffer = ""
 
-_G.print = function(message)
-  buffer = buffer .. tostring(message) .. '\n'
-end
 
 File.help = {}
 
@@ -17,6 +14,11 @@ File.help.notify = [[
 ]]
 
 function File:notify()
+
+  _G.print = function(message)
+    buffer = buffer .. tostring(message) .. '\n'
+  end
+
   local file = arg[1]
 
   if not file:endsWith('.lua') then
