@@ -1,5 +1,6 @@
 local dispatcher = require 'arken.dispatcher'
 
-function dispatch(env)
+return function(env)
+  print(env)
   return dispatcher.dispatch(env)
 end
