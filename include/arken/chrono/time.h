@@ -31,7 +31,7 @@ namespace chrono {
     Time addMonths(int months);
     Time addDays(int days);
     Time addHours(int hours);
-    Time addMinutes(int secs);
+    Time addMinutes(int minutes);
     Time addSecs(int secs);
 
     Time beginningOfDay();
