@@ -1,4 +1,3 @@
-local notify = require('arken.notify')
 local File   = Class.new("routines.File")
 local buffer = ""
 
@@ -14,6 +13,7 @@ File.help.notify = [[
 ]]
 
 function File:notify()
+  local notify = require('arken.notify')
 
   _G.print = function(message)
     buffer = buffer .. tostring(message) .. '\n'
