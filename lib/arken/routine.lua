@@ -109,7 +109,7 @@ routine.run = function(args)
       end
     end
   else
-    local name, action = routine.parseName(arg[0])
+    local name, action = routine.parseName(args[0])
     local module = require('routines.' .. name)
 
     if action == 'help' then
@@ -142,6 +142,28 @@ routine.run = function(args)
       end
     end
   end
+end
+
+-- execute routine passing all args
+-- routine.execute('routine:action', 'param1', 'param2')
+-- example: routine.execute('migrate:up')
+routine.execute = function(...)
+  local tmp = {}
+  for i, value in ipairs({...}) do
+    tmp[i-1] = value
+  end
+  routine.run(tmp)
+end
+
+-- execute routine with forward args params
+-- rotine.foward('routine:action') args passing console send params
+routine.forward = function(name)
+  local tmp = {}
+  for i, value in ipairs(arg) do
+    tmp[i] = value
+  end
+  tmp[0] = name
+  routine.run(tmp)
 end
 
 return routine
