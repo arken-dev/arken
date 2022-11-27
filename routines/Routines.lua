@@ -1,4 +1,4 @@
-local Routines = Class.new("routines.Routines")
+local Routines = Class.new("routines.Routines", "arken.routine.Base")
 Routines.help    = {}
 Routines.output  = print
 
