@@ -1,11 +1,15 @@
+local routine = require('arken.routine')
 local Class = require("arken.oop.Class")
 local Base  = Class.new("arken.routine.Base")
 
-function Base.new(params)
-  local obj = { __params = params }
-  setmetatable(obj, class)
-  obj:initialize()
-  return obj
+Base.inherit = function(class)
+  function class.new(params)
+    local params = params or routine.parseArgs(arg)
+    local obj = { __params = params }
+    setmetatable(obj, class)
+    obj:initialize()
+    return obj
+  end
 end
 
 function Base:params(rebuild)

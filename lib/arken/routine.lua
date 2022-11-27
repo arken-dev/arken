@@ -124,7 +124,7 @@ routine.run = function(args)
     local params = routine.parseArgs(args)
 
     if module[action] then
-      local object = module.new{ __params = params, params = function(self) return self.__params end }
+      local object = module.new(params)
       if params.help then
         if object.help[action] then
           local help   = object.help[action]
