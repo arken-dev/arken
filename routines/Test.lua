@@ -4,7 +4,7 @@ local test  = require('arken.test')
 
 mvm.env('test')
 
-local Test = Class.new("routines.Test")
+local Test = Class.new("routines.Test", "arken.routine.Base")
 
 Test.help = {}
 

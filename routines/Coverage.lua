@@ -2,9 +2,7 @@ local worker = require('arken.concurrent.worker')
 local mvm    = require('arken.mvm')
 mvm.env('test')
 
-local Coverage = Class.new("routines.Coverage")
-
-Coverage.help   = {}
+local Coverage = Class.new("routines.Coverage", "arken.routine.Base")
 
 -------------------------------------------------------------------------------
 -- MODELS

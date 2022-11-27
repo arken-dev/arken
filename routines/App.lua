@@ -4,9 +4,7 @@ local template = require('arken.template')
 local json     = require('arken.jsonp')
 local Class    = require('arken.oop.Class')
 
-
-local App   = Class.new("App")
-App.help    = {}
+local App   = Class.new("App", "arken.routine.Base")
 App.output  = print
 
 -------------------------------------------------------------------------------

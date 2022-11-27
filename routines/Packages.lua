@@ -3,9 +3,7 @@ local zip        = require('arken.compress.Zip')
 local mvm        = require('arken.mvm')
 local packages   = string.format("%s/config/packages", mvm.path())
 
-local Packages = Class.new("routines.Packages")
-
-Packages.help   = {}
+local Packages = Class.new("routines.Packages", "arken.routine.Base")
 
 -------------------------------------------------------------------------------
 -- UPDATE

@@ -2,8 +2,7 @@ require 'arken.ActiveRecord'
 
 local Lock     = require("arken.concurrent.Lock")
 local lock     = Lock.new("routines.Migrate#print")
-local Migrate  = Class.new("routines.Migrate")
-Migrate.help   = {}
+local Migrate  = Class.new("routines.Migrate", "arken.routine.Base")
 Migrate.dir    = nil
 Migrate.output = function(value)
   lock:enable()
