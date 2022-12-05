@@ -15,15 +15,16 @@ include_directories(${PROJECT_SOURCE_DIR}/src/vendors/ap)
 include_directories(${PROJECT_SOURCE_DIR}/src/vendors/mongrel2)
 include_directories(${PROJECT_SOURCE_DIR}/src/vendors/mongrel2/http11)
 
-file(GLOB src      ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
-file(GLOB os       ${CMAKE_CURRENT_SOURCE_DIR}/os/*.c)
-file(GLOB os-glob  ${PROJECT_SOURCE_DIR}/src/vendors/apple/glob.c)
-file(GLOB net      ${CMAKE_CURRENT_SOURCE_DIR}/net/*.cpp)
-file(GLOB concurrent ${CMAKE_CURRENT_SOURCE_DIR}/concurrent/*.cpp)
+file(GLOB src             ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
+file(GLOB os              ${CMAKE_CURRENT_SOURCE_DIR}/os/*.c)
+file(GLOB os-glob         ${PROJECT_SOURCE_DIR}/src/vendors/apple/glob.c)
+file(GLOB net             ${CMAKE_CURRENT_SOURCE_DIR}/net/*.cpp)
+file(GLOB concurrent      ${CMAKE_CURRENT_SOURCE_DIR}/concurrent/*.cpp)
 file(GLOB concurrent-task ${CMAKE_CURRENT_SOURCE_DIR}/concurrent/task/*.cpp)
-file(GLOB compress ${CMAKE_CURRENT_SOURCE_DIR}/compress/*.cpp)
-file(GLOB time     ${CMAKE_CURRENT_SOURCE_DIR}/time/*.cpp)
-file(GLOB chrono   ${CMAKE_CURRENT_SOURCE_DIR}/chrono/*.cpp)
+file(GLOB compress        ${CMAKE_CURRENT_SOURCE_DIR}/compress/*.cpp)
+file(GLOB time            ${CMAKE_CURRENT_SOURCE_DIR}/time/*.cpp)
+file(GLOB chrono          ${CMAKE_CURRENT_SOURCE_DIR}/chrono/*.cpp)
+file(GLOB json-parse      ${PROJECT_SOURCE_DIR}/src/vendors/json-parser/json.c)
 
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/deps)
 set(mongrel2 ${PROJECT_SOURCE_DIR}/src/vendors/mongrel2/http11/http11_parser.c)
@@ -50,6 +51,7 @@ add_library(
   ${time}
   ${mongrel2}
   ${utf8}
+  ${json-parse}
 )
 
 target_link_libraries(arken pthread)

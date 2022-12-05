@@ -59,6 +59,14 @@ HttpServer::HttpServer(string fileName)
 
   printf("--------------------------------\n\n");
 
+  json = (json_char*)file_contents;
+  value = json_parse(json,file_size);
+
+  if (value == NULL) {
+    fprintf(stderr, "Unable to parse data\n");
+    free(file_contents);
+    //exit(1);
+  }
 
 
 }
