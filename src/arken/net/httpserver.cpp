@@ -4,6 +4,7 @@
 // license that can be found in the LICENSE file.
 
 
+#include <sys/stat.h>
 #include <string>
 #include <lua/lua.hpp>
 #include <json-parser/json.h>
@@ -24,7 +25,9 @@ string HttpServer::dispatcher = "arken.net.dispatcher";
 HttpServer::HttpServer(string fileName)
 {
   string raw = os::read(fileName);
-
+  struct stat filestatus;
+  json_char* json;
+  json_value* value;
 }
 
 HttpServer::HttpServer(const char * address, int port)
