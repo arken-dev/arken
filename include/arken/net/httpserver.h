@@ -30,6 +30,7 @@ class HttpServer
   std::string handler(const char * data, size_t size);
   static const char * status(int code);
 
+  HttpServer();
   HttpServer(const char * address, int port);
   void setThreads(int threads);
   void setPid(const char * pid);

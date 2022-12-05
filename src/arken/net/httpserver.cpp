@@ -20,6 +20,8 @@ namespace net {
 
 string HttpServer::dispatcher = "arken.net.dispatcher";
 
+HttpServer::HttpServer() = default;
+
 HttpServer::HttpServer(const char * address, int port)
 {
   m_address = address;
