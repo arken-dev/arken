@@ -28,6 +28,9 @@ HttpServer::HttpServer(string fileName)
   struct stat filestatus;
   json_char* json;
   json_value* value;
+  if (stat(fileName.data(), &filestatus) != 0) {
+    fprintf(stderr, "File %s not found\n", fileName.data());
+  }
 }
 
 HttpServer::HttpServer(const char * address, int port)
