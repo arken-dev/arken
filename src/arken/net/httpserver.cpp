@@ -6,6 +6,7 @@
 
 #include <string>
 #include <lua/lua.hpp>
+#include <json-parser/json.h>
 #include <arken/os.h>
 #include <arken/mvm.h>
 #include <arken/net/httpserver.h>
@@ -22,6 +23,7 @@ string HttpServer::dispatcher = "arken.net.dispatcher";
 
 HttpServer::HttpServer(string fileName)
 {
+  string raw = os::read(fileName);
 
 }
 
