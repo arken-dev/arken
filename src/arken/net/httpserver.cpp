@@ -20,7 +20,10 @@ namespace net {
 
 string HttpServer::dispatcher = "arken.net.dispatcher";
 
-HttpServer::HttpServer() = default;
+HttpServer::HttpServer(string fileName)
+{
+
+}
 
 HttpServer::HttpServer(const char * address, int port)
 {
