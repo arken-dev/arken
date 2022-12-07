@@ -27,10 +27,11 @@ HttpServer::HttpServer(string fileName)
   string raw = os::read(fileName);
   struct stat filestatus;
   int file_size;
+  int depth = 0;
   char* file_contents;
   FILE *fp;
   json_char* json;
-  json_value* value;
+  json_value value;
   if (stat(fileName.data(), &filestatus) != 0) {
     fprintf(stderr, "File %s not found\n", fileName.data());
   }
@@ -59,16 +60,87 @@ HttpServer::HttpServer(string fileName)
 
   printf("--------------------------------\n\n");
 
-  json = (json_char*)file_contents;
-  value = json_parse(json,file_size);
 
+  json = (json_char*)file_contents;
+  value = *json_parse(json, file_size);
+
+  /*
+  TODO
   if (value == NULL) {
     fprintf(stderr, "Unable to parse data\n");
     free(file_contents);
     //exit(1);
   }
+  */
 
+  json_value address = value["address"];
+  if ( address.type == json_string ) {
+    m_address = address.u.string.ptr;
+  } else {
+    std::cout << "address not defined using 127.0.0.1" << std::endl;
+    m_address = "127.0.0.1";
+  }
 
+  json_value port = value["port"];
+  if ( port.type == json_integer ) {
+    m_port = port.u.integer;
+  } else {
+    std::cout << "port not defined using 2345" << std::endl;
+    m_port = 2345;
+  }
+
+  json_value threads = value["threads"];
+  if ( threads.type == json_integer ) {
+    m_threads = threads.u.integer;
+  } else {
+    std::cout << "threads not defined using " << os::cores() << std::endl;
+    m_threads = os::cores();
+  }
+
+  json_value service = value["service"];
+  if ( service.type == json_boolean && service.u.boolean ) {
+    std::cout << "service is enable using app/services" << std::endl;
+    addService("app/services");
+  } else {
+    std::cout << "service not enable" << std::endl;
+  }
+
+  json_value pid = value["pid"];
+  if ( pid.type == json_string ) {
+    m_pid = pid.u.string.ptr;
+  } else {
+    std::cout << "pid not defined using tmp/pid/server.pid" << std::endl;
+    m_pid = "tmp/pid/server.pid";
+  }
+
+/*
+    switch (value->type) {
+                case json_none:
+                        printf("none\n");
+                        break;
+                case json_null:
+                        printf("null\n");
+                        break;
+                case json_object:
+                        printf("object");
+                        break;
+                case json_array:
+                        printf("array");
+                        break;
+                case json_integer:
+                        printf("int: %10ld\n", (long)value->u.integer);
+                        break;
+                case json_double:
+                        printf("double: %f\n", value->u.dbl);
+                        break;
+                case json_string:
+                        printf("string: %s\n", value->u.string.ptr);
+                        break;
+                case json_boolean:
+                        printf("bool: %d\n", value->u.boolean);
+                        break;
+        }
+*/
 }
 
 HttpServer::HttpServer(const char * address, int port)
