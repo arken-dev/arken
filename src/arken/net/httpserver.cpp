@@ -23,9 +23,6 @@ string HttpServer::dispatcher = "arken.net.dispatcher";
 
 HttpServer::HttpServer(string fileName)
 {
-  string raw = os::read(fileName);
-  //struct stat filestatus;
-  int depth = 0;
   json_value value = *json_parse_file(fileName.data());
 
   /*
