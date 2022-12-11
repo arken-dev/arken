@@ -4,10 +4,9 @@
 // license that can be found in the LICENSE file.
 
 
-#include <sys/stat.h>
 #include <string>
 #include <lua/lua.hpp>
-#include <json-parser/json.h>
+#include <json-parser/util.h>
 #include <arken/os.h>
 #include <arken/mvm.h>
 #include <arken/net/httpserver.h>
@@ -25,44 +24,9 @@ string HttpServer::dispatcher = "arken.net.dispatcher";
 HttpServer::HttpServer(string fileName)
 {
   string raw = os::read(fileName);
-  struct stat filestatus;
-  int file_size;
+  //struct stat filestatus;
   int depth = 0;
-  char* file_contents;
-  FILE *fp;
-  json_char* json;
-  json_value value;
-  if (stat(fileName.data(), &filestatus) != 0) {
-    fprintf(stderr, "File %s not found\n", fileName.data());
-  }
-
-  file_size = filestatus.st_size;
-  file_contents = (char*)malloc(filestatus.st_size);
-  if ( file_contents == NULL) {
-    fprintf(stderr, "Memory error: unable to allocate %d bytes\n", file_size);
-  }
-
-  fp = fopen(fileName.data(), "rt");
-  if (fp == NULL) {
-    fprintf(stderr, "Unable to open %s\n", fileName.data());
-    fclose(fp);
-    free(file_contents);
-  }
-
-  if ( fread(file_contents, file_size, 1, fp) != 1 ) {
-    fprintf(stderr, "Unable to read content of %s\n", fileName.data());
-    fclose(fp);
-    free(file_contents);
-  }
-  fclose(fp);
-
-  printf("%s\n", file_contents);
-
-  printf("--------------------------------\n\n");
-
-
-  json = (json_char*)file_contents;
-  value = *json_parse(json, file_size);
+  json_value value = *json_parse_file(fileName.data());
 
   /*
   TODO
