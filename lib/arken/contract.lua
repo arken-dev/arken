@@ -29,6 +29,7 @@ contract.bang = function(errors)
       break
     end
     if flag then
+      errors.bang = true
       errors.traceback = debug.traceback()
       error(errors)
     end
