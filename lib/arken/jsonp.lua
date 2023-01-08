@@ -46,13 +46,6 @@ json.pretty = function(dt, lf, id, ac, ec)
         end
         p, i = c, i + 1
     end
-    local t1 = {
-      id = '1',
-      name = 'teste'
-    }
-    local t2 = [[
-      este é um teste
-    ]]
     return table.concat(r)
 end
 
