@@ -165,7 +165,7 @@ function Controller:render_html(params)
       if type(result) == "table" then
         local errors = ""
         for key, value in pairs(result) do
-          if key ~= "traceback" then
+          if key ~= "traceback" and key ~= "bang" then
             errors = errors .. " - " .. value .. "\n"
           end
         end
