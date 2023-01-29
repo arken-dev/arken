@@ -10,6 +10,7 @@
 #include <arken/net/httpclient.h>
 #include <atomic>
 #include <mutex>
+#include <sstream>
 
 static uint32_t   global_count{0};
 static std::mutex global_mutex;
@@ -27,10 +28,11 @@ uint64_t HttpClient::callback(void *contents, size_t size, size_t nmemb, void *u
 
 HttpClient::HttpClient(const char * url)
 {
-  m_url     = url;
-  m_status  = 0;
-  m_failure = false;
-  m_verbose = false;
+  m_url           = url;
+  m_status        = 0;
+  m_failure       = false;
+  m_verbose       = false;
+  m_formdata      = false;
   m_sslVerifyPeer = false;
   m_sslVerifyHost = -1;
   m_sslVersion    = -1;
@@ -179,6 +181,12 @@ string HttpClient::perform(string method)
 
   for(size_t i=0; i < m_headers.size(); i++) {
     list = curl_slist_append(list, m_headers[i].data());
+
+    // multipart/form-data submission
+    std::string header = m_headers[1].data();
+    if (header.find("Content-Type: multipart/form-data") != std::string::npos) {
+      m_formdata = true;
+    }
   }
 
   // set our custom set of headers
@@ -194,8 +202,32 @@ string HttpClient::perform(string method)
   // POST PUT
   if( method.equals("POST") || method.equals("PUT") || m_body.size() > 0) {
     //curl_easy_setopt(curl, CURLOPT_POST, 1);
-    curl_easy_setopt(curl, CURLOPT_POSTFIELDS, m_body.data());
-    curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, m_body.size());
+    if( m_formdata ) { // multipart/form-data submission
+      curl_mime *form = curl_mime_init(curl);
+      curl_mimepart *field = NULL;
+
+      std::string input = m_body.data();
+      std::vector<std::string> lines;
+      std::istringstream stream(input);
+      std::string line;
+
+      while (std::getline(stream, line)) {
+        std::string input2 = line;
+        std::array<std::string, 2> parts;
+        size_t equal_pos = input2.find("=");
+        parts[0] = input2.substr(0, equal_pos);
+        parts[1] = input2.substr(equal_pos + 2, input2.size() - equal_pos - 3);
+
+        field = curl_mime_addpart(form);
+        curl_mime_data(field, parts[1].data(), CURL_ZERO_TERMINATED);
+        curl_mime_name(field, parts[0].data());
+      }
+
+      curl_easy_setopt(curl, CURLOPT_MIMEPOST, form);
+    } else {
+      curl_easy_setopt(curl, CURLOPT_POSTFIELDS, m_body.data());
+      curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, m_body.size());
+    }
   }
 
   // perform
