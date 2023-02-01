@@ -219,8 +219,19 @@ string HttpClient::perform(string method)
         parts[1] = input2.substr(equal_pos + 2, input2.size() - equal_pos - 3);
 
         field = curl_mime_addpart(form);
-        curl_mime_data(field, parts[1].data(), CURL_ZERO_TERMINATED);
-        curl_mime_name(field, parts[0].data());
+ 
+        if(input2.find("image") != std::string::npos || input2.find("file") != std::string::npos){
+          /* Add file */
+          std::string input_name = parts[0].data();
+          input_name.erase(0, input_name.find_first_not_of(" \t\n\r\f\v"));
+          input_name.erase(input_name.find_last_not_of(" \t\n\r\f\v") + 1);
+
+          curl_mime_name(field, input_name.data());
+          curl_mime_filedata(field, parts[1].data());
+        } else {
+          curl_mime_data(field, parts[1].data(), CURL_ZERO_TERMINATED);
+          curl_mime_name(field, parts[0].data());
+        }
       }
 
       curl_easy_setopt(curl, CURLOPT_MIMEPOST, form);
