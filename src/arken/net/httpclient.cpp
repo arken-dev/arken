@@ -184,7 +184,7 @@ string HttpClient::perform(string method)
     list = curl_slist_append(list, m_headers[i].data());
 
     // multipart/form-data submission
-    string header = m_headers[1];
+    string header = m_headers[i];
     if (header.contains("multipart/form-data")){
       m_formdata = true;
     }
