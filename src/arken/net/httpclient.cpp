@@ -10,13 +10,14 @@
 #include <arken/net/httpclient.h>
 #include <atomic>
 #include <mutex>
-#include <sstream>
 
 static uint32_t   global_count{0};
 static std::mutex global_mutex;
 
 namespace arken {
 namespace net {
+
+using List = arken::string::List;
 
 uint64_t HttpClient::callback(void *contents, size_t size, size_t nmemb, void *userp)
 {
@@ -183,8 +184,8 @@ string HttpClient::perform(string method)
     list = curl_slist_append(list, m_headers[i].data());
 
     // multipart/form-data submission
-    std::string header = m_headers[1].data();
-    if (header.find("Content-Type: multipart/form-data") != std::string::npos) {
+    string header = m_headers[1];
+    if (header.contains("multipart/form-data")){
       m_formdata = true;
     }
   }
@@ -206,31 +207,20 @@ string HttpClient::perform(string method)
       curl_mime *form = curl_mime_init(curl);
       curl_mimepart *field = NULL;
 
-      std::string input = m_body.data();
-      std::vector<std::string> lines;
-      std::istringstream stream(input);
-      std::string line;
-
-      while (std::getline(stream, line)) {
-        std::string input2 = line;
-        std::array<std::string, 2> parts;
-        size_t equal_pos = input2.find("=");
-        parts[0] = input2.substr(0, equal_pos);
-        parts[1] = input2.substr(equal_pos + 2, input2.size() - equal_pos - 3);
+      List list = m_body.split("\n");
+      for(int i=0; i < list.size(); i++) {
+        string line = list[i];
+        string key = line.prefix("=");
+        string value = line.suffix("=");
 
         field = curl_mime_addpart(form);
- 
-        if(input2.find("image") != std::string::npos || input2.find("file") != std::string::npos){
+        curl_mime_name(field, key.trim());
+        value = value.replace("\"", "");
+        if(key.contains("image") || key.contains("file")){
           /* Add file */
-          std::string input_name = parts[0].data();
-          input_name.erase(0, input_name.find_first_not_of(" \t\n\r\f\v"));
-          input_name.erase(input_name.find_last_not_of(" \t\n\r\f\v") + 1);
-
-          curl_mime_name(field, input_name.data());
-          curl_mime_filedata(field, parts[1].data());
-        } else {
-          curl_mime_data(field, parts[1].data(), CURL_ZERO_TERMINATED);
-          curl_mime_name(field, parts[0].data());
+          curl_mime_filedata(field, value);
+         } else {
+          curl_mime_data(field, value, CURL_ZERO_TERMINATED);
         }
       }
 
