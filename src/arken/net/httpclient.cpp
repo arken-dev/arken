@@ -119,6 +119,7 @@ string HttpClient::perform(string method)
 
   // init the curl session
   curl = curl_easy_init();
+  curl_mime *form = curl_mime_init(curl);
 
   // url
   curl_easy_setopt(curl, CURLOPT_URL, m_url.data());
@@ -204,7 +205,6 @@ string HttpClient::perform(string method)
   if( method.equals("POST") || method.equals("PUT") || m_body.size() > 0) {
     //curl_easy_setopt(curl, CURLOPT_POST, 1);
     if( m_formdata ) { // multipart/form-data submission
-      curl_mime *form = curl_mime_init(curl);
       curl_mimepart *field = NULL;
 
       List list = m_body.split("\n");
@@ -235,6 +235,7 @@ string HttpClient::perform(string method)
   res = curl_easy_perform(curl);
 
   // cleanup curl stuff
+  curl_mime_free(form);
   curl_easy_cleanup(curl);
 
   /* Free the list */
