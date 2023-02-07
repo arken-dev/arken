@@ -353,7 +353,7 @@ function ActiveRecord_Adapter:execute(sql)
   local cursor, errmsg = self:connect():execute(sql)
   if errmsg ~= nil then
     self:close()
-    error({ errmsg = errmsg, backtrace = debug.traceback(), sql = sql })
+    error({ message = errmsg, backtrace = debug.traceback(), sql = sql })
   end
   time = os.microtime() - time
   local debug    = ActiveRecord.debug
