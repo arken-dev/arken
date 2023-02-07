@@ -35,6 +35,12 @@ function ActiveRecord_PostgresAdapter:connect()
   return ActiveRecord_PostgresAdapter.instanceConnection
 end
 
+function ActiveRecord_PostgresAdapter:close()
+  local conn = self:connect()
+  conn:close()
+  ActiveRecord_PostgresAdapter.instanceConnection = nil
+end
+
 --------------------------------------------------------------------------------
 -- ESCAPE
 --------------------------------------------------------------------------------
