@@ -17,6 +17,8 @@ static std::mutex global_mutex;
 namespace arken {
 namespace net {
 
+using List = arken::string::List;
+
 uint64_t HttpClient::callback(void *contents, size_t size, size_t nmemb, void *userp)
 {
   size_t realsize = size * nmemb;
@@ -27,10 +29,11 @@ uint64_t HttpClient::callback(void *contents, size_t size, size_t nmemb, void *u
 
 HttpClient::HttpClient(const char * url)
 {
-  m_url     = url;
-  m_status  = 0;
-  m_failure = false;
-  m_verbose = false;
+  m_url           = url;
+  m_status        = 0;
+  m_failure       = false;
+  m_verbose       = false;
+  m_formdata      = false;
   m_sslVerifyPeer = false;
   m_sslVerifyHost = -1;
   m_sslVersion    = -1;
@@ -116,6 +119,7 @@ string HttpClient::perform(string method)
 
   // init the curl session
   curl = curl_easy_init();
+  curl_mime *form = curl_mime_init(curl);
 
   // url
   curl_easy_setopt(curl, CURLOPT_URL, m_url.data());
@@ -179,6 +183,12 @@ string HttpClient::perform(string method)
 
   for(size_t i=0; i < m_headers.size(); i++) {
     list = curl_slist_append(list, m_headers[i].data());
+
+    // multipart/form-data submission
+    string header = m_headers[i];
+    if (header.contains("multipart/form-data")){
+      m_formdata = true;
+    }
   }
 
   // set our custom set of headers
@@ -194,14 +204,38 @@ string HttpClient::perform(string method)
   // POST PUT
   if( method.equals("POST") || method.equals("PUT") || m_body.size() > 0) {
     //curl_easy_setopt(curl, CURLOPT_POST, 1);
-    curl_easy_setopt(curl, CURLOPT_POSTFIELDS, m_body.data());
-    curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, m_body.size());
+    if( m_formdata ) { // multipart/form-data submission
+      curl_mimepart *field = NULL;
+
+      List list = m_body.split("\n");
+      for(int i=0; i < list.size(); i++) {
+        string line = list[i];
+        string key = line.prefix("=");
+        string value = line.suffix("=");
+
+        field = curl_mime_addpart(form);
+        curl_mime_name(field, key.trim());
+        value = value.replace("\"", "");
+        if(key.contains("image") || key.contains("file")){
+          /* Add file */
+          curl_mime_filedata(field, value);
+         } else {
+          curl_mime_data(field, value, CURL_ZERO_TERMINATED);
+        }
+      }
+
+      curl_easy_setopt(curl, CURLOPT_MIMEPOST, form);
+    } else {
+      curl_easy_setopt(curl, CURLOPT_POSTFIELDS, m_body.data());
+      curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, m_body.size());
+    }
   }
 
   // perform
   res = curl_easy_perform(curl);
 
   // cleanup curl stuff
+  curl_mime_free(form);
   curl_easy_cleanup(curl);
 
   /* Free the list */
