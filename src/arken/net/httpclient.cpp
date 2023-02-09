@@ -209,9 +209,10 @@ string HttpClient::perform(string method)
 
       List list = m_body.split("\n");
       for(int i=0; i < list.size(); i++) {
-        string line = list[i];
-        string key = line.prefix("=");
-        string value = line.suffix("=");
+        string line  = list[i];
+        string key   = line.prefix("=");
+        int index    = line.indexOf("=");
+        string value = line.mid(index + 1, line.size());
 
         field = curl_mime_addpart(form);
         curl_mime_name(field, key.trim());
