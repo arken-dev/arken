@@ -109,6 +109,9 @@ string HttpClient::perform(string method)
   int          index;
   CURLcode     res;
 
+  struct curl_httppost *formpost = NULL;
+  struct curl_httppost *lastptr = NULL;
+
   // init globlal
   global_mutex.lock();
   if( global_count == 0 ) {
@@ -119,7 +122,6 @@ string HttpClient::perform(string method)
 
   // init the curl session
   curl = curl_easy_init();
-  curl_mime *form = curl_mime_init(curl);
 
   // url
   curl_easy_setopt(curl, CURLOPT_URL, m_url.data());
@@ -205,8 +207,6 @@ string HttpClient::perform(string method)
   if( method.equals("POST") || method.equals("PUT") || m_body.size() > 0) {
     //curl_easy_setopt(curl, CURLOPT_POST, 1);
     if( m_formdata ) { // multipart/form-data submission
-      curl_mimepart *field = NULL;
-
       List list = m_body.split("\n");
       for(int i=0; i < list.size(); i++) {
         string line  = list[i];
@@ -214,18 +214,24 @@ string HttpClient::perform(string method)
         int index    = line.indexOf("=");
         string value = line.mid(index + 1, line.size());
 
-        field = curl_mime_addpart(form);
-        curl_mime_name(field, key.trim());
         value = value.replace("\"", "");
         if(key.contains("image") || key.contains("file")){
           /* Add file */
-          curl_mime_filedata(field, value);
+          curl_formadd(&formpost,
+            &lastptr,
+            CURLFORM_COPYNAME, key.trim().data(),
+            CURLFORM_FILE, value.data(),
+            CURLFORM_END);
          } else {
-          curl_mime_data(field, value, CURL_ZERO_TERMINATED);
+          curl_formadd(&formpost,
+            &lastptr,
+            CURLFORM_COPYNAME, key.trim().data(),
+            CURLFORM_COPYCONTENTS, value.data(),
+            CURLFORM_END);
         }
       }
 
-      curl_easy_setopt(curl, CURLOPT_MIMEPOST, form);
+      curl_easy_setopt(curl, CURLOPT_HTTPPOST, formpost);
     } else {
       curl_easy_setopt(curl, CURLOPT_POSTFIELDS, m_body.data());
       curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, m_body.size());
@@ -236,8 +242,8 @@ string HttpClient::perform(string method)
   res = curl_easy_perform(curl);
 
   // cleanup curl stuff
-  curl_mime_free(form);
   curl_easy_cleanup(curl);
+  curl_formfree(formpost);
 
   /* Free the list */
   if( list ) {
