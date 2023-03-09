@@ -139,6 +139,9 @@ routine.run = function(args)
     else
       if params.help then
         routine.help(module)
+      else
+        local message = string.format('action %s not exists in %s', action, module.className)
+        print( message )
       end
     end
   end
