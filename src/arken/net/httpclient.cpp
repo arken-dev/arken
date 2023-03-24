@@ -242,7 +242,10 @@ string HttpClient::perform(string method)
   // cleanup curl stuff
   curl_easy_cleanup(curl);
   curl_formfree(formpost);
-  curl_formfree(lastptr);
+
+  if( !m_formdata ) {
+    curl_formfree(lastptr);
+  }
 
   /* Free the list */
   if( list ) {
