@@ -667,9 +667,9 @@ end
 
 function ActiveRecord_Adapter.read_value_date(value)
   if value:sub(5, 5) == '-' then
-    return Date.parse(value:left(10), '%Y-%M-%d')
+    return Date.parse(value:left(10), '%Y-%m-%d')
   else
-    return Date.parse(value:left(10), '%Y/%M/%d')
+    return Date.parse(value:left(10), '%Y/%m/%d')
   end
 end
 
