@@ -16,6 +16,13 @@ core::~core()
     condition().notify_one();
   }
 
+  {
+    std::unique_lock<std::mutex> lck(mutex());
+    for (std::pair<std::thread::id, concurrent::base *> element : running()) {
+      element.second->finished(true);
+    }
+  }
+
   while( actives() > 0 ) {
     os::sleep(0.005);
   }
