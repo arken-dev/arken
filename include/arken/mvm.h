@@ -169,6 +169,7 @@ class mvm {
   static std::atomic<uint32_t> s_gc;
   static std::atomic<uint32_t> s_version;
   static std::atomic<uint32_t> s_pool;
+  static std::atomic<bool>     s_shutdown;
 
   static int      s_argc;
   static char  ** s_argv;
@@ -200,6 +201,8 @@ class mvm {
   static mvm::instance getInstance(bool create = false);
   static const char * path();
   static void wait();
+  static void shutdown();
+  static bool running();
   static void env(const char * value);
   static const char * env();
   static string inspect();

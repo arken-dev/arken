@@ -5,6 +5,7 @@
 
 #include <clocale>
 #include <arken/mvm.h>
+#include <arken/concurrent/core.h>
 
 namespace arken {
 
@@ -19,6 +20,7 @@ std::atomic<uint32_t> mvm::s_gc(0);
 std::atomic<uint32_t> mvm::s_version(0);
 std::atomic<uint32_t> mvm::s_pool(0);
 std::atomic<double>   mvm::s_uptime(os::microtime());
+std::atomic<bool>     mvm::s_shutdown(false);
 
 
 string mvm::s_arkenPath    = "";
@@ -333,6 +335,17 @@ void mvm::wait()
     os::sleep(0.05);
   }
 
+}
+
+void mvm::shutdown()
+{
+  s_shutdown = true;
+  concurrent::core::instance().shutdown();
+}
+
+bool mvm::running()
+{
+  return (s_shutdown == false);
 }
 
 char * mvm::setlocale(string locale, string category)

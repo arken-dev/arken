@@ -113,6 +113,12 @@ arken_mvm_wait(lua_State *L) {
 }
 
 static int
+arken_mvm_running(lua_State *L) {
+  lua_pushboolean(L, mvm::running());
+  return 1;
+}
+
+static int
 arken_mvm_env(lua_State *L) {
   if(lua_gettop(L) == 1) { // number of arguments
     const char *env = luaL_checkstring(L, 1);
@@ -178,6 +184,7 @@ register_arken_mvm( lua_State *L ) {
     {"set",       arken_mvm_set},
     {"at",        arken_mvm_at},
     {"wait",      arken_mvm_wait},
+    {"running",   arken_mvm_running},
     {"path",      arken_mvm_path},
     {"env",       arken_mvm_env},
     {"inspect",   arken_mvm_inspect},

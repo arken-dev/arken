@@ -8,19 +8,14 @@ core::core(uint32_t max)
   m_max = max;
 }
 
-core::~core()
+core::~core() = default;
+
+void core::shutdown()
 {
   for( size_t i=0; i< workers().size(); i++ ) {
     queue().push(nullptr);
     actives()++;
     condition().notify_one();
-  }
-
-  {
-    std::unique_lock<std::mutex> lck(mutex());
-    for (std::pair<std::thread::id, concurrent::base *> element : running()) {
-      element.second->finished(true);
-    }
   }
 
   while( actives() > 0 ) {
@@ -30,6 +25,7 @@ core::~core()
   for( size_t i=0; i< workers().size(); i++ ) {
     workers().at(i).detach();
   }
+
 }
 
 core & core::instance()
@@ -94,8 +90,8 @@ void core::working()
     ptr->finished(true);
 
     std::unique_lock<std::mutex> lck(mutex());
-    actives()--;
     running().erase(std::this_thread::get_id());
+    actives()--;
   } // while
 
 } // core::working

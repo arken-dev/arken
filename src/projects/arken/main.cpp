@@ -174,19 +174,21 @@ int main(int argc, char * argv[])
   lua_State * L = i.state();
 
   if ( argc == 1 ) {
-    return arkenConsoleLoad(L);
+    rv = arkenConsoleLoad(L);
   }
 
   if( os::exists(argv[1]) ) {
-    return arkenFileLoad(L, argv[1]);
+    rv = arkenFileLoad(L, argv[1]);
   } else {
     if (arken::string::contains(argv[1], ":")) {
-      return executeRoutine(L);
+      rv = executeRoutine(L);
     } else {
       fprintf(stderr, "No such file or directory %s\n", argv[1]);
-      return 1;
+      rv = 1;
     }
   }
+
+  mvm::shutdown();
 
   return rv;
 }
