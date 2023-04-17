@@ -53,13 +53,14 @@ function Array:uniq()
   return uniq
 end
 
-function Array:join(str)
+function Array:join(str, func)
+  local func = func or function(value) return tostring(value) end
   local raw = ''
   for _, value in pairs(self) do
     if not empty(raw) then
       raw = raw .. str
     end
-    raw = raw .. tostring(value)
+    raw = raw .. func(value)
   end
   return raw
 end

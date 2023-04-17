@@ -352,7 +352,8 @@ function ActiveRecord_Adapter:execute(sql)
   local time = os.microtime()
   local cursor, errmsg = self:connect():execute(sql)
   if errmsg ~= nil then
-    error(string.format("error %s, tracekback %s, sql %s", errmsg, debug.traceback(), sql))
+    self:close()
+    error({ message = errmsg, backtrace = debug.traceback(), sql = sql })
   end
   time = os.microtime() - time
   local debug    = ActiveRecord.debug
@@ -666,9 +667,9 @@ end
 
 function ActiveRecord_Adapter.read_value_date(value)
   if value:sub(5, 5) == '-' then
-    return Date.parse(value:left(10), '%Y-%M-%d')
+    return Date.parse(value:left(10), '%Y-%m-%d')
   else
-    return Date.parse(value:left(10), '%Y/%M/%d')
+    return Date.parse(value:left(10), '%Y/%m/%d')
   end
 end
 

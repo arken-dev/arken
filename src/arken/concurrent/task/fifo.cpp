@@ -79,6 +79,7 @@ fifo::node::node(const char * fileName, const char * params, bool release)
   m_fileName  = fileName;
   m_params    = params;
   m_release   = release;
+  m_uuid      = os::uuid();
   m_microtime = os::microtime();
   m_finished  = std::shared_ptr<std::atomic<bool>>(new std::atomic<bool>(false));
   m_shared.name("arken.concurrent.task.fifo");

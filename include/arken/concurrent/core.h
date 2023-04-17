@@ -23,6 +23,7 @@ namespace concurrent {
 
 class core
 {
+  friend arken::mvm;
   using string = arken::string;
 
   std::vector<std::thread>       m_workers;
@@ -40,6 +41,7 @@ class core
   static void working();
   public:
   static void start(concurrent::base * pointer);
+  static void shutdown();
   static concurrent::base * get();
   static std::queue<concurrent::base *> & queue();
   static std::mutex               & mutex();
