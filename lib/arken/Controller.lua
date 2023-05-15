@@ -166,7 +166,7 @@ function Controller:render_html(params)
         local errors = ""
         for key, value in pairs(result) do
           if key ~= "traceback" then
-            errors = errors .. " - " .. value .. "\n"
+            errors = errors .. " - " .. tostring(value) .. "\n"
           end
         end
         result = errors
