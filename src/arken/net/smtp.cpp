@@ -123,9 +123,9 @@ bool SMTP::perform()
       url.append("smtp://");
     }
 
-    curl_easy_setopt(curl, CURLOPT_PORT, m_port);
+    //curl_easy_setopt(curl, CURLOPT_PORT, m_port);
     url.append(m_url).append(":").append(std::to_string(m_port));
-    curl_easy_setopt(curl, CURLOPT_URL, m_url.data());
+    curl_easy_setopt(curl, CURLOPT_URL, url.data());
 
     // ???
     curl_easy_setopt(curl, CURLOPT_HTTPAUTH, CURLAUTH_NONE);
