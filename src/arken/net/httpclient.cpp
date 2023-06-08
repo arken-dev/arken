@@ -17,8 +17,6 @@ static std::mutex global_mutex;
 namespace arken {
 namespace net {
 
-using List = arken::string::List;
-
 uint64_t HttpClient::callback(void *contents, size_t size, size_t nmemb, void *userp)
 {
   size_t realsize = size * nmemb;
@@ -29,11 +27,10 @@ uint64_t HttpClient::callback(void *contents, size_t size, size_t nmemb, void *u
 
 HttpClient::HttpClient(const char * url)
 {
-  m_url           = url;
-  m_status        = 0;
-  m_failure       = false;
-  m_verbose       = false;
-  m_formdata      = false;
+  m_url     = url;
+  m_status  = 0;
+  m_failure = false;
+  m_verbose = false;
   m_sslVerifyPeer = false;
   m_sslVerifyHost = -1;
   m_sslVersion    = -1;
@@ -109,9 +106,6 @@ string HttpClient::perform(string method)
   int          index;
   CURLcode     res;
 
-  struct curl_httppost *formpost = NULL;
-  struct curl_httppost *lastptr = NULL;
-
   // init globlal
   global_mutex.lock();
   if( global_count == 0 ) {
@@ -185,12 +179,6 @@ string HttpClient::perform(string method)
 
   for(size_t i=0; i < m_headers.size(); i++) {
     list = curl_slist_append(list, m_headers[i].data());
-
-    // multipart/form-data submission
-    string header = m_headers[i];
-    if (header.contains("multipart/form-data")){
-      m_formdata = true;
-    }
   }
 
   // set our custom set of headers
@@ -206,34 +194,8 @@ string HttpClient::perform(string method)
   // POST PUT
   if( method.equals("POST") || method.equals("PUT") || m_body.size() > 0) {
     //curl_easy_setopt(curl, CURLOPT_POST, 1);
-    if( m_formdata ) { // multipart/form-data submission
-      List list = m_body.split("\n");
-      for(int i=0; i < list.size(); i++) {
-        string line  = list[i];
-        string key   = line.prefix("=");
-        int index    = line.indexOf("=");
-        string value = line.mid(index + 1, line.size());
-
-        value = value.replace("\"", "");
-        if(key.contains("image") || key.contains("file")){
-          curl_formadd(&formpost,
-            &lastptr,
-            CURLFORM_COPYNAME, key.trim().data(),
-            CURLFORM_FILE, value.data(),
-            CURLFORM_END);
-        } else {
-          curl_formadd(&formpost,
-            &lastptr,
-            CURLFORM_COPYNAME, key.trim().data(),
-            CURLFORM_COPYCONTENTS, value.data(),
-            CURLFORM_END);
-        }
-      }
-      curl_easy_setopt(curl, CURLOPT_HTTPPOST, formpost);
-    } else {
-      curl_easy_setopt(curl, CURLOPT_POSTFIELDS, m_body.data());
-      curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, m_body.size());
-    }
+    curl_easy_setopt(curl, CURLOPT_POSTFIELDS, m_body.data());
+    curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, m_body.size());
   }
 
   // perform
@@ -241,11 +203,6 @@ string HttpClient::perform(string method)
 
   // cleanup curl stuff
   curl_easy_cleanup(curl);
-  curl_formfree(formpost);
-
-  if( !m_formdata ) {
-    curl_formfree(lastptr);
-  }
 
   /* Free the list */
   if( list ) {
