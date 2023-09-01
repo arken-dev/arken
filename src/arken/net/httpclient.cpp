@@ -215,7 +215,7 @@ string HttpClient::perform(string method)
         string value = line.mid(index + 1, line.size());
 
         value = value.replace("\"", "");
-        if(key.contains("image") || key.contains("file")){
+        if(key.contains("image") || key.equals("file")){
           curl_formadd(&formpost,
             &lastptr,
             CURLFORM_COPYNAME, key.trim().data(),
