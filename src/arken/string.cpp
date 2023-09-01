@@ -953,6 +953,69 @@ char * string::squish(const char *string)
   return result;
 }
 
+static inline bool parameterize_special_char(const char chr)
+{
+  if(( chr >= 48 && chr <= 57 ) || (chr >= 65 && chr <= 90) || (chr >= 97 && chr <= 122)) {
+    return false;
+  } else {
+    return true;
+  }
+}
+
+char * string::parameterize(const char *string)
+{
+  int i = 0;
+  int j = 0;
+  int f = 0;
+  int len;
+  char * result;
+
+  len = strlen(string);
+
+  while(i < len && parameterize_special_char(string[i])) {
+    i++;
+  }
+
+  while(len > 0 && parameterize_special_char(string[len-1])) {
+    len--;
+  }
+
+  if( (len - i) <= 0 ) {
+    result = new char[1]();
+  } else {
+    result = new char[len + 1];
+    while(i < len) {
+      if( parameterize_special_char(string[i]) ) {
+        if( f ) {
+          i++;
+        } else {
+          f = 1;
+          result[j] = '-';
+          i++;
+          j++;
+        }
+      } else {
+        if (string[i] >= 65 && string[i] <= 90) {
+          result[j] = string[i] + 32;
+        } else {
+          result[j] = string[i];
+        }
+        i++;
+        j++;
+        f = 0;
+      }
+    }
+
+    if( parameterize_special_char(string[j]) ) {
+      j--;
+    }
+
+    result[j] = '\0';
+  }
+
+  return result;
+}
+
 char * string::replace(const char * string, const char * before, const char * after, int start)
 {
   int count = 0;
@@ -1635,6 +1698,11 @@ string string::prefix(const char * pattern)
 string string::squish()
 {
   return string::squish(m_data);
+}
+
+string string::parameterize()
+{
+  return string::parameterize(m_data);
 }
 
 string string::remove(const char * rep, int start)

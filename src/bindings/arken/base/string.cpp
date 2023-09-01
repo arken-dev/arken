@@ -366,6 +366,15 @@ arken_string_squish( lua_State *L ) {
 }
 
 static int
+arken_string_parameterize( lua_State *L ) {
+  const char * string = luaL_checkstring(L, 1);
+  char * result = string::parameterize(string);
+  lua_pushstring(L, result);
+  delete[] result;
+  return 1;
+}
+
+static int
 arken_string_startsWith( lua_State *L ) {
   const char * string = luaL_checkstring(L, 1);
   const char * ba     = luaL_checkstring(L, 2);
@@ -577,6 +586,7 @@ arken_string[] = {
   {"padRight",    arken_string_padRight},
   {"prefix",      arken_string_prefix},
   {"squish",      arken_string_squish},
+  {"parameterize",arken_string_parameterize},
   {"repeated",    arken_string_repeated},
   {"replace",     arken_string_replace},
   {"replaceChar", arken_string_replaceChar},
@@ -970,6 +980,15 @@ arken_string_metatable_squish( lua_State *L ) {
 }
 
 static int
+arken_string_metatable_parameterize( lua_State *L ) {
+  string *  udata = checkString( L );
+  string result = udata->parameterize();
+  lua_pushlstring(L, result.data(), result.size());
+  return 1;
+}
+
+
+static int
 arken_string_metatable_suffix( lua_State *L ) {
   string * udata = checkString( L );
   const char * chr = luaL_checkstring(L, 2);
@@ -1162,6 +1181,7 @@ luaL_reg arken_string_metatable[] = {
   {"sha1",        arken_string_metatable_sha1},
   {"size",        arken_string_metatable_size},
   {"squish",      arken_string_metatable_squish},
+  {"parameterize",arken_string_metatable_parameterize},
   {"suffix",      arken_string_metatable_suffix},
   {"split",       arken_string_metatable_split},
   {"trim",        arken_string_metatable_trim},

@@ -69,6 +69,7 @@ class string {
   static char * right(const char * buffer, int len);
   static char * sha1(const char * string, size_t len);
   static char * squish(const char *buffer);
+  static char * parameterize(const char *buffer);
   static List split(const char * string, const char * pattern);
   static List split(const char * string, size_t len, const char * pattern);
   static bool   startsWith(const char * string, const char *str);
@@ -144,6 +145,7 @@ class string {
   string right(int len);
   string sha1();
   string squish();
+  string parameterize();
   size_t size();
   List split(const char * pattern);
   bool   startsWith(const char *str);
