@@ -9,6 +9,13 @@ extern "C" {
 namespace arken {
 namespace digest {
 
+unsigned char * sha1::bytes(const char * data, int length)
+{
+  unsigned char * hash = new unsigned char[SHA_DIGEST_LENGTH];
+  SHA1(reinterpret_cast<const unsigned char *>(data), length, hash);
+  return hash;
+}
+
 char * sha1::hash(const char * data, int length)
 {
   unsigned char hash[SHA_DIGEST_LENGTH];

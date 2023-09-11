@@ -28,6 +28,13 @@ char * sha1::hash(const char * hash, int length)
   return out;
 }
 
+unsigned char * sha1::bytes(const char * hash, int length)
+{
+  unsigned char *x = new unsigned char[20];
+  sha1_buffer (hash, length, x);
+  return x;
+}
+
 char * sha1::file(const char * path)
 {
   char * buffer;

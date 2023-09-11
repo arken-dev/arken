@@ -9,6 +9,15 @@
 
 using sha1 = arken::digest::sha1;
 
+static int arken_digest_sha1_bytes( lua_State *L ) {
+  size_t size;
+  const char *path = luaL_checklstring(L, 1, &size);
+  char* result = reinterpret_cast<char*>(sha1::bytes(path, size));
+  lua_pushlstring( L, result, 20 );
+  delete[] result;
+  return 1;
+}
+
 static int arken_digest_sha1_hash( lua_State *L ) {
   size_t size;
   const char *path = luaL_checklstring(L, 1, &size);
@@ -29,8 +38,9 @@ static int arken_digest_sha1_file( lua_State *L ) {
 
 static void register_arken_digest_sha1( lua_State *L ) {
   static const luaL_reg Map[] = {
-    {"hash", arken_digest_sha1_hash},
-    {"file", arken_digest_sha1_file},
+    {"bytes", arken_digest_sha1_bytes},
+    {"hash",  arken_digest_sha1_hash},
+    {"file",  arken_digest_sha1_file},
     {nullptr, nullptr}
   };
   luaL_newmetatable(L, "arken.digest.sha1");
