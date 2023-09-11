@@ -16,7 +16,7 @@ namespace digest {
 
 char * sha1::hash(const char * hash, int length)
 {
-  unsigned char x[40];
+  unsigned char x[20];
   auto out = new char[41];
   int i;
   sha1_buffer (hash, length, x);
