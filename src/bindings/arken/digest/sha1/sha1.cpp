@@ -40,17 +40,22 @@ static int arken_digest_sha1_assign( lua_State *L ) {
   size_t size;
   const char *path = luaL_checkstring(L, 1);
   const char *value = luaL_checklstring(L, 2, &size);
-  char* result = reinterpret_cast<char*>(sha1::assign(path, value, size));
-  lua_pushlstring( L, result, 20 );
+  unsigned char* result = sha1::assign(path, value, size);
+  if( result == nullptr ) {
+    lua_pushnil( L );
+  } else {
+    lua_pushlstring( L, reinterpret_cast<char*>(result), 256 );
+  }
   delete[] result;
   return 1;
 }
 
 static void register_arken_digest_sha1( lua_State *L ) {
   static const luaL_reg Map[] = {
-    {"bytes", arken_digest_sha1_bytes},
-    {"hash",  arken_digest_sha1_hash},
-    {"file",  arken_digest_sha1_file},
+    {"bytes",  arken_digest_sha1_bytes},
+    {"hash",   arken_digest_sha1_hash},
+    {"file",   arken_digest_sha1_file},
+    {"assign", arken_digest_sha1_assign},
     {nullptr, nullptr}
   };
   luaL_newmetatable(L, "arken.digest.sha1");

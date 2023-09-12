@@ -56,7 +56,7 @@ char * sha1::file(const char * path)
 unsigned char * sha1::assign(const char * path_cert, const char * data, int length)
 {
   std::cout << "sha1:assign not work with emmbedded library change for libssl" << std::endl;
-  return NULL;
+  return nullptr;
 }
 
 
