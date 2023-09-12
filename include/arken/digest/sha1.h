@@ -15,6 +15,7 @@ class sha1 {
   static char * hash(const char * value, int length);
   static unsigned char * bytes(const char * value, int length);
   static char * file(const char * path);
+  static unsigned char * assign(const char * path_cert, const char * value, int length);
 };
 
 } // namespace digest

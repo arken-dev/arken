@@ -4,6 +4,7 @@
 
 extern "C" {
 #include <openssl/sha.h>
+#include <openssl/rsa.h>
 }
 
 namespace arken {
@@ -47,6 +48,12 @@ char * sha1::file(const char * path)
 
   return result;
 }
+
+unsigned char * sha1::assign(const char * path_cert, const char * data, int length)
+{
+  return NULL;
+}
+
 
 } // namespace digest
 } // namespace arken

@@ -36,6 +36,16 @@ static int arken_digest_sha1_file( lua_State *L ) {
   return 1;
 }
 
+static int arken_digest_sha1_assign( lua_State *L ) {
+  size_t size;
+  const char *path = luaL_checkstring(L, 1);
+  const char *value = luaL_checklstring(L, 2, &size);
+  char* result = reinterpret_cast<char*>(sha1::assign(path, value, size));
+  lua_pushlstring( L, result, 20 );
+  delete[] result;
+  return 1;
+}
+
 static void register_arken_digest_sha1( lua_State *L ) {
   static const luaL_reg Map[] = {
     {"bytes", arken_digest_sha1_bytes},
