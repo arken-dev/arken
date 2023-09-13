@@ -50,6 +50,7 @@ add_library(
   ${time}
   ${mongrel2}
   ${utf8}
+  ${arken-xml}
 )
 
 target_link_libraries(arken pthread)
@@ -160,4 +161,12 @@ endif()
 
 if(ARKEN_BARCODE)
   target_link_libraries( arken ZXing )
+endif()
+
+#------------------------------------------------------------------------------
+# ARKEN_XML
+#------------------------------------------------------------------------------
+
+if(ARKEN_XML)
+  target_link_libraries( arken ${LIBXML2_LIBRARIES} )
 endif()

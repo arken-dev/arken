@@ -38,8 +38,12 @@ add_subdirectory(odebug)
 add_subdirectory(concurrent)
 
 if(NOT ARKEN_NOTIFY STREQUAL "")
-  add_subdirectory(notify)
+add_subdirectory(notify)
 endif()
 
 add_subdirectory(regex)
 add_subdirectory(utf8)
+
+if(ARKEN_XML)
+add_subdirectory(xml)
+endif()
