@@ -80,6 +80,14 @@ arken_xml_Document_canonicalize( lua_State *L ) {
 }
 
 static int
+arken_xml_Document_c14n( lua_State *L ) {
+  arken::xml::Document * ptr = checkDocument( L );
+  string result = ptr->c14n();
+  lua_pushlstring(L, result.data(), result.size());
+  return 1;
+}
+
+static int
 arken_xml_Document_save( lua_State *L ) {
   arken::xml::Document * ptr = checkDocument( L );
   string result = ptr->save();
@@ -135,6 +143,7 @@ luaL_reg arken_xml_Document_metatable[] = {
   {"loadXml",      arken_xml_Document_loadXml},
   {"loadFile",     arken_xml_Document_loadFile},
   {"canonicalize", arken_xml_Document_canonicalize},
+  {"c14n",         arken_xml_Document_c14n},
   {"save",         arken_xml_Document_save},
   {"create",       arken_xml_Document_create},
   {"root",         arken_xml_Document_root},
@@ -160,6 +169,15 @@ arken_xml_Node_append( lua_State *L ) {
 }
 
 static int
+arken_xml_Node_attribute( lua_State *L ) {
+  arken::xml::Node *node = checkNode( L , 1 );
+  const char *key   = luaL_checkstring(L, 2);
+  const char *value = luaL_checkstring(L, 3);
+  node->attribute(key, value);
+  return 0;
+}
+
+static int
 arken_xml_Node_gc( lua_State *L ) {
   arken::xml::Node *node= checkNode( L );
   delete node;
@@ -169,6 +187,7 @@ arken_xml_Node_gc( lua_State *L ) {
 static const
 luaL_reg arken_xml_Node_metatable[] = {
   {"append",      arken_xml_Node_append},
+  {"attribute",   arken_xml_Node_attribute},
   {"__gc",        arken_xml_Node_gc},
   {nullptr, nullptr}
 };

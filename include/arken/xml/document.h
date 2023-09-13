@@ -23,6 +23,7 @@ class Node
   Node(xmlDocPtr doc, const char * name, const char * value);
   Node(xmlNode * node);
   void append(Node *);
+  void attribute(const char *key, const char *value);
   xmlNode * value();
 };
 
@@ -38,6 +39,7 @@ class Document
   void loadFile(const char * path);
   void loadXml(string buffer);
   string canonicalize();
+  string c14n();
   string save();
   Node * create(const char * name, const char * value = nullptr);
   Node * root();

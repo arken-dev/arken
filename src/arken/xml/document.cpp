@@ -36,6 +36,10 @@ void Node::append(Node * node) {
   xmlAddChild(m_node, node->m_node);
 }
 
+void Node::attribute(const char *key, const char *value) {
+  xmlNewProp(m_node, BAD_CAST key, BAD_CAST value);
+}
+
 Document::Document() {
   m_ctx = xmlNewParserCtxt();
 }
@@ -65,6 +69,11 @@ string Document::canonicalize()
   // clear buf ??? double free error
   // xmlOutputBufferClose(buf);
   return result;
+}
+
+string Document::c14n()
+{
+  return this->canonicalize();
 }
 
 //size_t size = xmlSaveFile("/tmp/save.xml", m_doc);
