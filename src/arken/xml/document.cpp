@@ -82,13 +82,13 @@ Document::~Document() {
 
 void Document::loadFile(const char *path)
 {
-  m_doc  = xmlCtxtReadFile(m_ctx, path, NULL, XML_PARSE_NOERROR);
+  m_doc  = xmlCtxtReadFile(m_ctx, path, NULL, XML_PARSE_NOERROR | XML_PARSE_NOBLANKS);
   m_root = xmlDocGetRootElement(m_doc);
 }
 
 void Document::loadXml(string buffer)
 {
-  m_doc  = xmlCtxtReadMemory(m_ctx, buffer.data(), buffer.size(), NULL, NULL, XML_PARSE_NOERROR);
+  m_doc  = xmlCtxtReadMemory(m_ctx, buffer.data(), buffer.size(), NULL, NULL, XML_PARSE_NOERROR | XML_PARSE_NOBLANKS);
   m_root = xmlDocGetRootElement(m_doc);
 }
 
