@@ -21,6 +21,34 @@ print_element_names(xmlNode * a_node)
   }
 }
 
+// https://qnaplus.com/search-for-an-xml-node-using-libxml2-in-c/
+xmlNode * find_node(xmlNode * node, const char * node_name) {
+
+  xmlNode * result;
+
+  if (node == NULL) return NULL;
+  printf("find_node: Element, name: %s\n", node->name);
+
+  while(node) {
+    if((node->type == XML_ELEMENT_NODE)
+        && (strcmp((char*)node->name, node_name) == 0)) {
+      printf("achei: Element, name: %s\n", node->name);
+      return node;
+    }
+
+    result = find_node(node->children, node_name);
+
+    if(result) {
+      printf("dentro do if: %s\n", node->name);
+      return result;
+    }
+
+    node = node->next;
+  }
+
+  return NULL;
+}
+
 namespace arken {
 namespace xml {
 
@@ -38,6 +66,10 @@ void Node::append(Node * node) {
 
 void Node::attribute(const char *key, const char *value) {
   xmlNewProp(m_node, BAD_CAST key, BAD_CAST value);
+}
+
+void Node::setContent(const char *content) {
+  xmlNodeSetContent(m_node, BAD_CAST content);
 }
 
 Document::Document() {
@@ -92,6 +124,16 @@ Node * Document::create(const char * name, const char * value)
   return new Node(m_doc, name, value);
 }
 
+Node * Document::search(const char * name)
+{
+  xmlNode * node = find_node(m_root, name);
+  if( node == nullptr) {
+    return nullptr;
+  } else {
+    return new Node(node);
+  }
+}
+
 xmlNode * Node::value()
 {
   return m_node;
@@ -115,6 +157,20 @@ void Document::append(Node * node) {
   } else {
     xmlAddChild(m_root, node->value());
   }
+}
+
+string Node::c14n()
+{
+  xmlDocPtr doc = xmlNewDoc(BAD_CAST "1.0");
+  xmlDocSetRootElement(doc, m_node);
+
+  xmlOutputBufferPtr buf = xmlAllocOutputBuffer(NULL);
+  xmlC14NDocSaveTo(doc, 0, 0, 0, 0, buf);
+  size_t size  = xmlOutputBufferGetSize(buf);
+  string result = string((char *) xmlOutputBufferGetContent(buf), size);
+  // clear buf ??? double free error
+  // xmlOutputBufferClose(buf);
+  return result;
 }
 
 } // namespace xml

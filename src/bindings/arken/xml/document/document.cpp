@@ -114,6 +114,22 @@ arken_xml_Document_create( lua_State *L ) {
 }
 
 static int
+arken_xml_Document_search( lua_State *L ) {
+  arken::xml::Document * ptr = checkDocument( L );
+  auto node = static_cast<arken::xml::Node **>(lua_newuserdata(L, sizeof(Node *)));
+  const char *name  = luaL_checkstring(L, 2);
+  Node *n = ptr->search(name);
+  if( n == nullptr ) {
+    lua_pushnil(L);
+  } else {
+    *node  = n;
+    luaL_getmetatable(L, "arken.xml.Node.metatable");
+    lua_setmetatable(L, -2);
+  }
+  return 1;
+}
+
+static int
 arken_xml_Document_root( lua_State *L ) {
   arken::xml::Document * ptr = checkDocument( L );
   auto node = static_cast<arken::xml::Node **>(lua_newuserdata(L, sizeof(Node *)));
@@ -148,6 +164,7 @@ luaL_reg arken_xml_Document_metatable[] = {
   {"create",       arken_xml_Document_create},
   {"root",         arken_xml_Document_root},
   {"append",       arken_xml_Document_append},
+  {"search",       arken_xml_Document_search},
   {"__gc",         arken_xml_Document_gc},
   {nullptr, nullptr}
 };
@@ -178,6 +195,22 @@ arken_xml_Node_attribute( lua_State *L ) {
 }
 
 static int
+arken_xml_Node_setContent( lua_State *L ) {
+  arken::xml::Node *node = checkNode( L , 1 );
+  const char *content = luaL_checkstring(L, 2);
+  node->setContent(content);
+  return 0;
+}
+
+static int
+arken_xml_Node_c14n( lua_State *L ) {
+  arken::xml::Node * ptr = checkNode( L );
+  string result = ptr->c14n();
+  lua_pushlstring(L, result.data(), result.size());
+  return 1;
+}
+
+static int
 arken_xml_Node_gc( lua_State *L ) {
   arken::xml::Node *node= checkNode( L );
   delete node;
@@ -188,6 +221,8 @@ static const
 luaL_reg arken_xml_Node_metatable[] = {
   {"append",      arken_xml_Node_append},
   {"attribute",   arken_xml_Node_attribute},
+  {"setContent",  arken_xml_Node_setContent},
+  {"c14n",        arken_xml_Node_c14n},
   {"__gc",        arken_xml_Node_gc},
   {nullptr, nullptr}
 };

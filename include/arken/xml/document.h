@@ -24,7 +24,9 @@ class Node
   Node(xmlNode * node);
   void append(Node *);
   void attribute(const char *key, const char *value);
+  void setContent(const char *content);
   xmlNode * value();
+  string c14n();
 };
 
 class Document
@@ -42,6 +44,7 @@ class Document
   string c14n();
   string save();
   Node * create(const char * name, const char * value = nullptr);
+  Node * search(const char * name);
   Node * root();
   void append(Node *);
 };
