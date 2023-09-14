@@ -27,19 +27,19 @@ xmlNode * find_node(xmlNode * node, const char * node_name) {
   xmlNode * result;
 
   if (node == NULL) return NULL;
-  printf("find_node: Element, name: %s\n", node->name);
+  //printf("find_node: Element, name: %s\n", node->name);
 
   while(node) {
     if((node->type == XML_ELEMENT_NODE)
         && (strcmp((char*)node->name, node_name) == 0)) {
-      printf("achei: Element, name: %s\n", node->name);
+      //printf("achei: Element, name: %s\n", node->name);
       return node;
     }
 
     result = find_node(node->children, node_name);
 
     if(result) {
-      printf("dentro do if: %s\n", node->name);
+      //printf("dentro do if: %s\n", node->name);
       return result;
     }
 
