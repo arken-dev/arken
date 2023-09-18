@@ -150,6 +150,14 @@ arken_net_HttpClient_performPost( lua_State *L ) {
 }
 
 static int
+arken_net_HttpClient_performPatch( lua_State *L ) {
+  HttpClient *udata = checkHttpClient( L );
+  string result = udata->performPatch();
+  lua_pushlstring(L, result.data(), result.size());
+  return 1;
+}
+
+static int
 arken_net_HttpClient_performPut( lua_State *L ) {
   HttpClient *udata = checkHttpClient( L );
   string result = udata->performPut();
@@ -216,6 +224,7 @@ luaL_reg arken_net_HttpClient_metatable[] = {
   {"body",             arken_net_HttpClient_body},
   {"performGet",       arken_net_HttpClient_performGet},
   {"performPost",      arken_net_HttpClient_performPost},
+  {"performPatch",     arken_net_HttpClient_performPatch},
   {"performPut",       arken_net_HttpClient_performPut},
   {"performDelete",    arken_net_HttpClient_performDelete},
   {"status",           arken_net_HttpClient_status},

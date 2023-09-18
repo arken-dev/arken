@@ -72,6 +72,11 @@ string HttpClient::performPost()
   return perform("POST");
 }
 
+string HttpClient::performPatch()
+{
+  return perform("PATCH");
+}
+
 string HttpClient::performPut()
 {
   return perform("PUT");

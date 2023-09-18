@@ -50,6 +50,7 @@ class HttpClient
   void setUseSsl(long useSsl);
   string performGet();
   string performPost();
+  string performPatch();
   string performPut();
   string performDelete();
   string body();
