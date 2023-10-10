@@ -228,10 +228,14 @@ function Controller:partial(params)
   params = params or {}
   local file   = nil
 
-  if params.view == nil then
-    file = self.prefixViews .. "/" .. self.controllerName .. "/_" .. self.actionName .. ".html"
+  if params.template == nil then
+    if params.view == nil then
+      file = self.prefixViews .. "/" .. self.controllerName .. "/_" .. self.actionName .. ".html"
+    else
+      file = self.prefixViews .. "/" .. self.controllerName .. "/_" .. params.view .. ".html"
+    end
   else
-    file = self.prefixViews .. "/" .. self.controllerName .. "/_" .. params.view .. ".html"
+    file = self.prefixViews .. "/" .. params.template .. ".html"
   end
 
   local context = params.context or self
