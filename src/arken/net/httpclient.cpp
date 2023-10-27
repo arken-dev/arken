@@ -185,7 +185,11 @@ string HttpClient::perform(string method)
 
   // https://curl.se/libcurl/c/CURLOPT_SSLVERSION.html
   if( m_sslVersion > 0 ) {
-    curl_easy_setopt(curl, CURLOPT_SSLVERSION, m_sslVersion);
+    if( m_sslVersion == 2 ) {
+      curl_easy_setopt(curl, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2);
+    } else {
+      curl_easy_setopt(curl, CURLOPT_SSLVERSION, m_sslVersion);
+    }
   }
 
   for(size_t i=0; i < m_headers.size(); i++) {
