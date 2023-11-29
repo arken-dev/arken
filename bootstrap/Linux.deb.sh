@@ -16,6 +16,7 @@ apt-get install libcurl4-gnutls-dev
 
 # arken.net.HttpServer
 apt-get install libev-dev # default
+# apt-get install libevent-dev
 
 # mysql
 apt-get install default-libmysqlclient-dev
