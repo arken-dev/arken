@@ -11,7 +11,7 @@ local empty = function(value)
   if type(value) == 'table' then
     return next(value) == nil
   else
-    return ( value == '' or value == nil or value == null)
+    return ( value == '' or value == nil or value == null )
   end
 end
 
