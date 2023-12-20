@@ -3,11 +3,15 @@
 -- Use of this source code is governed by a BSD-style
 -- license that can be found in the LICENSE file.
 
+-- JSON null
+local JSON = require('arken.json')
+local null = JSON.decode("null")
+
 local empty = function(value)
   if type(value) == 'table' then
-    return next(value) == nil
+    return ( next(value) == nil )
   else
-    return ( value == '' or value == nil )
+    return ( value == '' or value == nil or value == null )
   end
 end
 
