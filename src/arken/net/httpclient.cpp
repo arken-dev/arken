@@ -223,8 +223,15 @@ string HttpClient::perform(string method)
         int index    = line.indexOf("=");
         string value = line.mid(index + 1, line.size());
 
+        List valuePart = value.split(".");
+        string ext     = "";
+
+        if( valuePart.size() > 1 ){
+          ext = valuePart[1];
+        }
+
         value = value.replace("\"", "");
-        if(key.contains("image") || key.equals("file")){
+        if( !ext.empty() ) {
           curl_formadd(&formpost,
             &lastptr,
             CURLFORM_COPYNAME, key.trim().data(),
