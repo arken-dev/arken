@@ -81,8 +81,10 @@ void SMTP::loadText()
     m_payload_text.push_back( string("Subject: ").append(m_subject).append("\r\n") );
   }
 
-  //m_payload_text.push_back( "Content-Type: text/plain\r\n" );
-  m_payload_text.push_back( string("Content-Type: ").append(m_contentType).append("\r\n") );
+  if(! m_contentType.empty() ) {
+    //m_payload_text.push_back( "Content-Type: text/plain\r\n" );
+    m_payload_text.push_back( string("Content-Type: ").append(m_contentType).append("\r\n") );
+  }
 
   /* empty line to divide headers from body, see RFC5322 */
   m_payload_text.push_back( "\r\n" );
@@ -198,7 +200,9 @@ bool SMTP::perform()
     }
 
     /* Free the list of recipients */
-    curl_slist_free_all(slist);
+    if(slist) {
+      curl_slist_free_all(slist);
+    }
 
     /* curl won't send the QUIT command until you call cleanup, so you should
      * be able to re-use this connection for additional messages (setting
