@@ -39,6 +39,7 @@ class SMTP
   string m_domain;
   string m_contentType = "text/plain";
   string m_message;
+  string m_source;
 
   unsigned int m_lines = 0;
   int  m_port = 587;
@@ -68,6 +69,7 @@ class SMTP
   void setUsername(const char * username);
   void setPassword(const char * password);
   void setContentType(const char * contentType);
+  void setSource(const char * source);
   const char * message();
   string raw();
   static
