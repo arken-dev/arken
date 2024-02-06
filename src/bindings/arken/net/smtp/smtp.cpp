@@ -177,6 +177,14 @@ arken_net_SMTP_setBody( lua_State *L ) {
 }
 
 static int
+arken_net_SMTP_setSource( lua_State *L ) {
+  SMTP * udata = checkSMTP( L );
+  const char * source = luaL_checkstring(L, 2);
+  udata->setSource(source);
+  return 0;
+}
+
+static int
 arken_net_SMTP_perform( lua_State *L ) {
   SMTP * udata = checkSMTP( L );
   bool result = udata->perform();
@@ -316,6 +324,7 @@ luaL_reg arken_net_SMTP_metatable[] = {
   {"setVerbose",     arken_net_SMTP_setVerbose},
   {"setSsl",         arken_net_SMTP_setSsl},
   {"setBody",        arken_net_SMTP_setBody},
+  {"setSource",      arken_net_SMTP_setSource},
   {"setSubject",     arken_net_SMTP_setSubject},
   {"setDomain",      arken_net_SMTP_setDomain},
   {"setFrom",        arken_net_SMTP_setFrom},
