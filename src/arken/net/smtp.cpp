@@ -15,22 +15,20 @@ using os   = arken::os;
 size_t SMTP::payload_source(void *ptr, size_t size, size_t nmemb, void *userp)
 {
   auto upload_ctx = static_cast<SMTP *>(userp);
-  const char *data;
 
   if((size == 0) || (nmemb == 0) || ((size*nmemb) < 1)) {
     return 0;
   }
 
-  data = upload_ctx->m_payload_text[upload_ctx->m_lines];
-  if( upload_ctx->m_verbose ) {
-     std::cout << "upload " << upload_ctx->m_lines << ":" << data;
-  }
 
   if( upload_ctx->m_lines < upload_ctx->m_payload_text.size() ) {
-    size_t len = strlen(data);
-    memcpy(ptr, data, len);
+    string line = upload_ctx->m_payload_text[upload_ctx->m_lines];
+    if( upload_ctx->m_verbose ) {
+       std::cout << "upload " << upload_ctx->m_lines << ":" << line;
+    }
+    memcpy(ptr, line.data(), line.size());
     upload_ctx->m_lines++;
-    return len;
+    return line.size();
   }
 
   return 0;
