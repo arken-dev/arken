@@ -42,7 +42,7 @@ class SMTP
   string m_source;
 
   unsigned int m_lines = 0;
-  int  m_port = 587;
+  int  m_port = 0;
   bool m_ssl;
   bool m_verbose;
   bool m_success;
