@@ -8,12 +8,13 @@
 #
 # ------------------------------------------------------------------------------
 
+set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/clib/arken/net/HttpServer)
+
 add_library(
-  arken.net.HttpServer SHARED
-  httpserver.cpp
+  arken.net.HttpServer.default SHARED httpserver.cpp
   ${httpserver}
   ${PROJECT_SOURCE_DIR}/src/arken/net/httpserver/httpserver.cpp
 )
 
-set_target_properties(arken.net.HttpServer PROPERTIES PREFIX "" OUTPUT_NAME HttpServer)
-target_link_libraries(arken.net.HttpServer arken)
+set_target_properties(arken.net.HttpServer.default PROPERTIES PREFIX "" OUTPUT_NAME default)
+target_link_libraries(arken.net.HttpServer.default arken)
