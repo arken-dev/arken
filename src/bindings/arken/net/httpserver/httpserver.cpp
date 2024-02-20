@@ -26,7 +26,7 @@ checkHttpServer( lua_State *L ) {
 static int
 arken_net_HttpServer_new( lua_State *L ) {
   const char * address = luaL_checkstring(L, 1);
-  int port = luaL_checkinteger(L, 2); 
+  int port = luaL_checkinteger(L, 2);
   auto ptr = static_cast<HttpServer **>(lua_newuserdata(L, sizeof(HttpServer*)));
   *ptr = new HttpServer(address, port);
   luaL_getmetatable(L, "arken.net.HttpServer.metatable");
