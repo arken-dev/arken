@@ -102,10 +102,22 @@ void SMTP::loadText()
     //m_payload_text.push_back(
     //  string("Message-ID: <").append(os::uuid()).append("@").append(m_domain).append(">\r\n")
     //);
+    //m_payload_text.push_back( string(m_source) );
+
     List list = m_source.split("\n");
+    string buffer;
     for(int i=0; i < list.size(); i++) {
-      m_payload_text.push_back( string(list[i]).append("\n") );
+      if ( buffer.size() < 500 ) {
+        buffer.append(list[i]);
+        buffer.append("\n");
+      } else {
+        m_payload_text.push_back( string(buffer) );
+        buffer.clear();
+        buffer.append(list[i]);
+        buffer.append("\n");
+      }
     }
+
   }
 
 }
