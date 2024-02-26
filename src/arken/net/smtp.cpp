@@ -118,6 +118,11 @@ void SMTP::loadText()
       }
     }
 
+    if( buffer.size() > 0 ) {
+      m_payload_text.push_back( string(buffer) );
+      buffer.clear();
+    }
+
   }
 
 }
