@@ -42,7 +42,7 @@ add_library(
   ${digest-embedded}
   ${mvm-container}
   ${net}
-  ${httpserver}
+#  ${httpserver}
   ${arken-notify}
   ${os} ${os-system} ${os-uuid} ${os-glob}
   ${concurrent} ${concurrent-task} ${arken-concurrent-worker}

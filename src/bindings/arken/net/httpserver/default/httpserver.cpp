@@ -118,7 +118,7 @@ register_arken_net_HttpServer_metatable( lua_State *L ) {
 
 extern "C" {
   int
-  luaopen_arken_net_HttpServer( lua_State *L ) {
+  luaopen_arken_net_HttpServer_default( lua_State *L ) {
     register_arken_net_HttpServer_metatable(L);
     register_arken_net_HttpServer(L);
     return 1;
