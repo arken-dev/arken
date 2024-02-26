@@ -119,6 +119,7 @@ void SMTP::loadText()
     }
 
     if( buffer.size() > 0 ) {
+      buffer.append("\n");
       m_payload_text.push_back( string(buffer) );
     }
 
