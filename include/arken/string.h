@@ -96,9 +96,11 @@ class string {
   string(const std::string &str);
   ~string();
 
+  string & append(char chr);
   string & append(const char * str);
   string & append(const char * str, size_t len);
   string & append(std::string str);
+
   bool   blank();
   string camelCase(bool lcfirst = false);
   string capitalize();

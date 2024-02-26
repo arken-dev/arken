@@ -1523,6 +1523,18 @@ string & string::append(std::string str)
   return this->append(str.c_str(), str.size());
 }
 
+string & string::append(char chr)
+{
+  reserve(m_size + 1);
+
+  m_data[m_size] = chr;
+  m_size++;
+  m_data[m_size] = '\0';
+
+  return *this;
+}
+
+
 string & string::append(const char * data, size_t len)
 {
   reserve(m_size + len);
