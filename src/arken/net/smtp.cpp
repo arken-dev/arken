@@ -98,31 +98,21 @@ void SMTP::loadText()
     //m_payload_text.push_back("It could be a lot of lines, could be MIME encoded, whatever.\r\n");
     //m_payload_text.push_back("Check RFC5322.\r\n");
   } else {
-    //m_payload_text.push_back( string("Date: ").append(SMTP::rfc2822Date()).append("\r\n") );
-    //m_payload_text.push_back(
-    //  string("Message-ID: <").append(os::uuid()).append("@").append(m_domain).append(">\r\n")
-    //);
-    //m_payload_text.push_back( string(m_source) );
-
-    List list = m_source.split("\n");
+    const
+    char * data = m_source.data();
+    size_t size = m_source.size();
     string buffer;
-    for(int i=0; i < list.size(); i++) {
-      if ( buffer.size() < 500 ) {
-        buffer.append(list[i]);
-        buffer.append("\n");
-      } else {
+    for( size_t i=0; i < size; i++ ) {
+      buffer.append(data[i]);
+      if ( buffer.size() == 500 ) {
         m_payload_text.push_back( string(buffer) );
         buffer.clear();
-        buffer.append(list[i]);
-        buffer.append("\n");
       }
     }
 
     if( buffer.size() > 0 ) {
-      buffer.append("\n");
       m_payload_text.push_back( string(buffer) );
     }
-
   }
 
 }
