@@ -984,7 +984,7 @@ char * string::parameterize(const char *string)
     result = new char[1]();
   } else {
     result = new char[len + 1];
-    while(i < len) {
+    while(i <= len) {
       if( parameterize_special_char(string[i]) ) {
         if( f ) {
           i++;
