@@ -56,10 +56,18 @@ add_library(
 target_link_libraries(arken pthread)
 target_link_libraries(arken m)
 target_link_libraries(arken zip)
-target_link_libraries(arken curl)
 target_link_libraries(arken json)
+target_link_libraries(arken ${CURL_LIB})
 target_link_libraries(arken ${LUA_FLAVOR})
 target_link_libraries(arken ${ImageMagick_LIBRARIES})
+if(NOT LIBCRYPTO_PATH STREQUAL "")
+  message("LIBCRYPTO......................: ${LIBCRYPTO_PATH}")
+  target_link_libraries(arken ${LIBCRYPTO_PATH})
+endif()
+if(NOT LIBSSL_PATH STREQUAL "")
+  message("LIBSSL......................: ${LIBSSL_PATH}")
+  target_link_libraries(arken ${LIBSSL_PATH})
+endif()
 
 #------------------------------------------------------------------------------
 # ARKEN_DOC_PDF
