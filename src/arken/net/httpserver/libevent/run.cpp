@@ -232,7 +232,7 @@ start_server(char const *addr, uint16_t port, int threads)
 //-----------------------------------------------------------------------------
 // SIGNAL HANDLER
 //-----------------------------------------------------------------------------
-
+/*
 static void
 signal_handler(int signo)
 {
@@ -250,6 +250,7 @@ signal_handler(int signo)
       break;
   }
 }
+*/
 
 //-----------------------------------------------------------------------------
 // HTTP SERVER RUN
@@ -267,8 +268,8 @@ void HttpServer::run()
   std::cout << "start arken.net.HttpServer (libevent) " << m_address <<
      ":" << m_port << " (" << m_threads << ") threads..." << std::endl;
 
-  signal(SIGTERM, signal_handler);
-  signal(SIGINT,  signal_handler);
+  //signal(SIGTERM, signal_handler);
+  //signal(SIGINT,  signal_handler);
 
   start_server(m_address, m_port, m_threads);
 }
