@@ -91,4 +91,10 @@ test['should return whitout first char'] = function()
   assert( res == ' 1 + 1', res )
 end
 
+test['should return empty for negativa index'] = function()
+  local str = 'abcd'
+  local res = str:mid(-1, 2)
+  assert( res == "", res )
+end
+
 return test

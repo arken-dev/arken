@@ -595,6 +595,10 @@ char * string::mid(const char * string, int pos, int len, int string_len, size_t
   //string_len = strlen(string);
   char * result;
 
+  if( pos < 0 ) {
+    return new char[1]();
+  }
+
   if ( len < 0 ) {
     len = (size_t) string_len + (len+1);
     len = len - pos;

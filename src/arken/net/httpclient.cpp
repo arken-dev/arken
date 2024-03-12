@@ -289,17 +289,7 @@ string HttpClient::perform(string method)
   }
 
   if( !m_data.empty() ) {
-    // parse status
-    index = m_data.lastIndexOf("HTTP");
-    index = m_data.indexOf(" ", index);
-    if( index > -1 ) {
-      //m_status = m_data.mid(index+1, index+4).atoi();
-      string status = m_data.mid(index + 1, index + 4);
-      // TODO atoi in arken:string
-      m_status = atoi(status);
-    } else {
-      m_status = 0;
-    }
+    m_status =  HttpClient::parseStatus(m_data);
 
     // parse body TODO refactory return {}
     index = m_data.lastIndexOf("\r\n\r\n");
@@ -318,6 +308,17 @@ string HttpClient::perform(string method)
     m_status = 0;
     return {};
   }
+}
+
+uint32_t HttpClient::parseStatus(string data)
+{
+  int index = data.lastIndexOf("HTTP/");
+  index = data.indexOf(" ", index);
+  if( index > -1 ) {
+    string status = data.mid(index + 1, index + 4);
+    return atoi(status);
+  }
+  return 0;
 }
 
 void HttpClient::setCert(string cert)

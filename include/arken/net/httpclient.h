@@ -58,6 +58,7 @@ class HttpClient
   string message();
   int    status();
   bool   failure();
+  static uint32_t parseStatus(string data);
 
 };
 

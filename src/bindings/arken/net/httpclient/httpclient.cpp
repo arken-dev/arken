@@ -33,8 +33,16 @@ arken_net_HttpClient_new( lua_State *L ) {
   return 1;
 }
 
+static int
+arken_net_HttpClient_parseStatus( lua_State *L ) {
+  const char * data = luaL_checkstring(L, 1);
+  lua_pushnumber(L, HttpClient::parseStatus(data));
+  return 1;
+}
+
 static const luaL_reg arken_net_HttpClient[] = {
-  {"new", arken_net_HttpClient_new},
+  {"new",         arken_net_HttpClient_new},
+  {"parseStatus", arken_net_HttpClient_parseStatus},
   {nullptr, nullptr}
 };
 
