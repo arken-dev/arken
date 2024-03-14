@@ -488,6 +488,10 @@ int string::indexOf(const char * string, const char * str, int i)
 
   result = -1;
 
+  if( i < 0 ) {
+    return result;
+  }
+
   for(; i < string_len; i++) {
     c = 0;
     for(j = 0 ; j < str_len; j++) {
