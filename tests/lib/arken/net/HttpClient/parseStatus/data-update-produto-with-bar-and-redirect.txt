@@ -1,0 +1,45 @@
+HTTP/1.1 301 Moved Permanently
+Server: CloudFront
+Date: Tue, 12 Mar 2024 13:40:11 GMT
+Content-Type: text/html
+Content-Length: 167
+Connection: keep-alive
+Location: https://www.mercadolivre.com.br/
+X-Cache: Redirect from cloudfront
+Via: 1.1 52a2b3a670e785f6c4690371c236c572.cloudfront.net (CloudFront)
+X-Amz-Cf-Pop: GRU1-P3
+Alt-Svc: h3=":443"; ma=86400
+X-Amz-Cf-Id: u9SAyiiYn5IdkEQfInKX3rl0wv1fKQRu7RGM3qS101UHsIsgfJwVyg==
+
+HTTP/1.1 200 OK
+Server: hcdn
+Date: Tue, 12 Mar 2024 14:32:59 GMT
+Content-Type: application/json; charset=UTF-8
+Transfer-Encoding: chunked
+Connection: keep-alive
+Vary: Accept-Encoding
+x-powered-by: PHP/8.1.27
+set-cookie: PHPSESSID=4ij8b2kbbv31v64c6k9c06s2q6; path=/; secure
+pragma: no-cache
+set-cookie: mailpoet_page_view=%7B%22timestamp%22%3A1710243179%7D; expires=Fri, 10-Mar-2034 14:32:59 GMT; Max-Age=315360000; path=/; secure
+x-robots-tag: noindex
+link: <https://promasters.shop/wp-json/>; rel="https://api.w.org/"
+x-content-type-options: nosniff
+access-control-expose-headers: X-WP-Total, X-WP-TotalPages, Link
+access-control-allow-headers: Authorization, X-WP-Nonce, Content-Disposition, Content-MD5, Content-Type, X-OptinMonster-ApiKey
+x-wp-total: 0
+x-wp-totalpages: 0
+allow: GET, POST
+expires: Wed, 11 Jan 1984 05:00:00 GMT
+cache-control: no-cache, must-revalidate, max-age=0, no-store, private
+x-litespeed-cache-control: no-cache
+x-litespeed-tag: 984_tag_priv,public:984_HTTP/779,public:984_default,public:984_URL.e6d05710c811022f0bdad31f69c65996,public:984_REST,public:984_
+platform: hostinger
+content-security-policy: upgrade-insecure-requests
+x-turbo-charged-by: LiteSpeed
+alt-svc: h3=":443"; ma=86400
+x-hcdn-request-id: b946193dba64c23ee3c55873bcfed037-asc-edge1
+x-hcdn-cache-status: MISS
+x-hcdn-upstream-rt: 0.494
+
+[]

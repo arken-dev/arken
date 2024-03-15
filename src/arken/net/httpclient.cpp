@@ -310,13 +310,17 @@ string HttpClient::perform(string method)
   }
 }
 
-uint32_t HttpClient::parseStatus(string data)
+uint32_t HttpClient::parseStatus(string data, int pos)
 {
-  int index = data.lastIndexOf("HTTP/");
+  int index = data.indexOf("HTTP/", pos);
   index = data.indexOf(" ", index);
   if( index > -1 ) {
     string status = data.mid(index + 1, index + 4);
-    return atoi(status);
+    if ( status[0] == '3' ) {
+      return HttpClient::parseStatus(data, index + 1);
+    } else {
+      return atoi(status);
+    }
   }
   return 0;
 }
