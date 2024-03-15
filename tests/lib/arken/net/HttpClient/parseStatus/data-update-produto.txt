@@ -20,7 +20,7 @@ allow: GET, POST
 expires: Wed, 11 Jan 1984 05:00:00 GMT
 cache-control: no-cache, must-revalidate, max-age=0, no-store, private
 x-litespeed-cache-control: no-cache
-x-litespeed-tag: 984_tag_priv,public:984_HTTi.200,public:984_default,public:984_URL.e6d05710c811022f0bdad31f69c65996,public:984_REST,public:984_
+x-litespeed-tag: 984_tag_priv,public:984_HTTP.200,public:984_default,public:984_URL.e6d05710c811022f0bdad31f69c65996,public:984_REST,public:984_
 platform: hostinger
 content-security-policy: upgrade-insecure-requests
 x-turbo-charged-by: LiteSpeed
