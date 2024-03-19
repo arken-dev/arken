@@ -1,0 +1,143 @@
+HTTP/1.1 100 Continue
+
+HTTP/1.1 201 Created
+Date: Tue, 19 Mar 2024 12:48:13 GMT
+Content-Type: application/json; charset=UTF-8
+Transfer-Encoding: chunked
+Connection: keep-alive
+Location: https://api.tiendanube.com/v1/4330127/products/205307018
+X-Version: 234-cccbbb8-p4-78
+X-Rate-Limit-Limit: 40
+X-Rate-Limit-Remaining: 40
+X-Rate-Limit-Reset: 0
+X-Main-Language: pt
+CF-Cache-Status: DYNAMIC
+Set-Cookie: __cf_bm=nAc0BkcKW5U2KGbC86hjP2XJOlNT3QFmKXCwpOUNF3Q-1710852493-1.0.1.1-r0kHKZdwG4RK3szdil9dMUD42BscAbOEdVhIdUMLlqSWe4AIXcunk1SypAvPNdZUFRz.aXNWCX6gMT9lzzLVsQ; path=/; expires=Tue, 19-Mar-24 13:18:13 GMT; domain=.tiendanube.com; HttpOnly; Secure; SameSite=None
+Server: cloudflare
+CF-RAY: 866d92b76ac21d3e-GIG
+
+{
+    "id": 205307018,
+    "name": {
+        "pt": "Kit 6 Marca Texto Space"
+    },
+    "description": {
+        "pt": "Garanta o melhor marca texto para ter um toque a mais nos seus desenhos."
+    },
+    "handle": {
+        "pt": "kit-6-marca-texto-space1"
+    },
+    "attributes": [],
+    "published": true,
+    "free_shipping": false,
+    "requires_shipping": true,
+    "canonical_url": "https:\/\/mrstore126.lojavirtualnuvem.com.br\/produtos\/kit-6-marca-texto-space1\/",
+    "video_url": null,
+    "seo_title": {
+        "pt": ""
+    },
+    "seo_description": {
+        "pt": ""
+    },
+    "brand": "Doule",
+    "created_at": "2024-03-19T12:47:49+0000",
+    "updated_at": "2024-03-19T12:47:49+0000",
+    "variants": [
+        {
+            "id": 856336538,
+            "image_id": 621309635,
+            "product_id": 205307018,
+            "position": 1,
+            "price": "16.50",
+            "compare_at_price": "16.50",
+            "promotional_price": "16.50",
+            "stock_management": true,
+            "stock": 1,
+            "weight": "0.350",
+            "width": "10.00",
+            "height": "1.00",
+            "depth": "10.00",
+            "sku": "491",
+            "values": [],
+            "barcode": null,
+            "mpn": null,
+            "age_group": null,
+            "gender": null,
+            "created_at": "2024-03-19T12:47:49+0000",
+            "updated_at": "2024-03-19T12:48:13+0000",
+            "cost": null,
+            "inventory_levels": [
+                {
+                    "id": 474457592,
+                    "variant_id": 856336538,
+                    "location_id": "01HQ6885Q2FDMB8M879V0XVS7W",
+                    "stock": 1
+                }
+            ]
+        }
+    ],
+    "tags": "",
+    "images": [
+        {
+            "id": 621309635,
+            "product_id": 205307018,
+            "src": "https:\/\/dcdn.mitiendanube.com\/stores\/004\/330\/127\/products\/kit-6-marca-texto-space-491-dff70b32bd05e3ccad17108524695465-1024-1024.jpg",
+            "position": 1,
+            "alt": [],
+            "created_at": "2024-03-19T12:47:55+0000",
+            "updated_at": "2024-03-19T12:47:55+0000"
+        },
+        {
+            "id": 621309663,
+            "product_id": 205307018,
+            "src": "https:\/\/dcdn.mitiendanube.com\/stores\/004\/330\/127\/products\/kit-6-marca-texto-space-491-72-34b533f8a7af948f9e17108524755301-1024-1024.jpg",
+            "position": 2,
+            "alt": [],
+            "created_at": "2024-03-19T12:48:01+0000",
+            "updated_at": "2024-03-19T12:48:01+0000"
+        },
+        {
+            "id": 621309700,
+            "product_id": 205307018,
+            "src": "https:\/\/dcdn.mitiendanube.com\/stores\/004\/330\/127\/products\/kit-6-marca-texto-space-491-71-098c21f3bb74f9bb1c17108524816646-1024-1024.jpg",
+            "position": 3,
+            "alt": [],
+            "created_at": "2024-03-19T12:48:07+0000",
+            "updated_at": "2024-03-19T12:48:07+0000"
+        },
+        {
+            "id": 621309734,
+            "product_id": 205307018,
+            "src": "https:\/\/dcdn.mitiendanube.com\/stores\/004\/330\/127\/products\/kit-6-marca-texto-space-491-73-80dd3ab7318d619ca317108524877769-1024-1024.jpg",
+            "position": 4,
+            "alt": [],
+            "created_at": "2024-03-19T12:48:13+0000",
+            "updated_at": "2024-03-19T12:48:13+0000"
+        }
+    ],
+    "categories": [
+        {
+            "id": 23840855,
+            "name": {
+                "pt": "Escrit\u00f3rio"
+            },
+            "description": {
+                "pt": ""
+            },
+            "handle": {
+                "pt": "escritorio"
+            },
+            "parent": null,
+            "subcategories": [],
+            "seo_title": {
+                "pt": ""
+            },
+            "seo_description": {
+                "pt": ""
+            },
+            "google_shopping_category": "",
+            "created_at": "2024-03-19T01:53:13+0000",
+            "updated_at": "2024-03-19T01:53:13+0000"
+        }
+    ]
+}

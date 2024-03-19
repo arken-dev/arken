@@ -58,4 +58,11 @@ test['parse product api example example with bar / and redirect'] = function()
   assert( status == 200, status )
 end
 
+test['parse product api example example with bar / and continue'] = function()
+  local path = debug.getinfo(1).source:sub(2):prefix(".lua")
+  local data = os.read(path .. '/data-update-produto-with-bar-and-continue.txt')
+  local status = HttpClient.parseStatus(data)
+  assert( status == 201, status )
+end
+
 return test

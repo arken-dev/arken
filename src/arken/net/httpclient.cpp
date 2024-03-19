@@ -316,7 +316,7 @@ uint32_t HttpClient::parseStatus(string data, int pos)
   index = data.indexOf(" ", index);
   if( index > -1 ) {
     string status = data.mid(index + 1, index + 4);
-    if ( status[0] == '3' ) {
+    if ( status[0] == '3' || status.startsWith("100") ) {
       return HttpClient::parseStatus(data, index + 1);
     } else {
       return atoi(status);
