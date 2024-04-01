@@ -78,6 +78,7 @@ contract.create = function(table, name)
     contract.clear(self)
     table[prepare](self, ...)
     local errors = table[validate](self, ...) or self.errors
+    self.errors = {}
     contract.bang(errors)
     table[before](self, ...)
     local result = table[body](self, ...)
