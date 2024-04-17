@@ -10,7 +10,7 @@ void worker::perform(unsigned int cores)
   std::vector<worker::node *> list;
 
   for(unsigned int i=0; i < cores; i++) {
-    auto n = new worker::node(this, m_fileName, i);
+    auto n = new worker::node(this, m_fileName, i, m_release);
     list.push_back(new worker::node(*n));
     core::start(n);
   }

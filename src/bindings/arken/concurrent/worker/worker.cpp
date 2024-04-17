@@ -42,7 +42,6 @@ arken_worker_start(lua_State *L) {
     }
     params = json::encode(L);
   }
-
   worker wrk = worker::start( fileName, params, release );
   auto ptr = static_cast<worker **>(lua_newuserdata(L, sizeof(worker*)));
   *ptr = new worker(wrk);

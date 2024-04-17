@@ -15,7 +15,7 @@ Coverage.help.models = [[
 ]]
 
 function Coverage:models()
-  worker.start('workers.coverage.models');
+  worker.start('workers.coverage.models', {}, true);
   mvm.wait();
 end
 

@@ -206,12 +206,13 @@ string worker::node::dequeue()
   }
 }
 
-worker::node::node(worker * ptr, string fileName, uint32_t number)
+worker::node::node(worker * ptr, string fileName, uint32_t number, bool release)
 {
   m_uuid     = os::uuid();
   m_worker   = ptr;
   m_fileName = fileName;
   m_number   = number;
+  m_release  = release;
   m_shared   = m_worker->m_shared;
   m_shared.name("arken.concurrent.worker.node#");
   m_shared.name().append(std::to_string(m_number));
@@ -329,6 +330,13 @@ void worker::node::run()
     }
   } else {
     lua_settop(L, -2);
+  }
+
+  // GC
+  if( m_release ) {
+    instance.release();
+  } else {
+    lua_gc(L, LUA_GCCOLLECT, 0);
   }
 
 }
