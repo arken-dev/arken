@@ -130,7 +130,7 @@ function M.stop(worker)
 
   local result = "%i tests, %i pendings, %i failures, %.4f%% coverage"
   print('\n' .. shared:getString('message'))
-  print(string.format(result, shared:getNumber('tests'), shared:getNumber('failure'), shared:getNumber('pending'), data.coverage))
+  print(string.format(result, shared:getNumber('tests'), shared:getNumber('pending'), shared:getNumber('failure'), data.coverage))
   print(string.format("Finished in %.2f seconds mem usage %s", os.microtime() - start, os.mem()))
 end
 
