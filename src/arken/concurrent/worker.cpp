@@ -206,12 +206,13 @@ string worker::node::dequeue()
   }
 }
 
-worker::node::node(worker * ptr, string fileName, uint32_t number, bool release)
+worker::node::node(worker * ptr, string fileName, uint32_t number, string params, bool release)
 {
   m_uuid     = os::uuid();
   m_worker   = ptr;
   m_fileName = fileName;
   m_number   = number;
+  m_params   = params;
   m_release  = release;
   m_shared   = m_worker->m_shared;
   m_shared.name("arken.concurrent.worker.node#");

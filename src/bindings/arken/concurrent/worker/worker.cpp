@@ -93,6 +93,14 @@ arken_concurrent_worker_uuid( lua_State *L ) {
 }
 
 static int
+arken_concurrent_worker_params( lua_State *L ) {
+  worker * pointer = checkWorker( L );
+  json::decode(L, pointer->params());
+
+  return 1;
+}
+
+static int
 arken_concurrent_worker_progress( lua_State *L ) {
   worker * pointer = checkWorker( L );
   lua_pushnumber(L, pointer->progress());
@@ -137,6 +145,7 @@ static const
 luaL_reg arken_concurrent_worker_metatable[] = {
   {"enqueue",  arken_concurrent_worker_enqueue},
   {"uuid",     arken_concurrent_worker_uuid},
+  {"params",   arken_concurrent_worker_params},
   {"shared",   arken_concurrent_worker_shared},
   {"progress", arken_concurrent_worker_progress},
   {"finished", arken_concurrent_worker_finished},
@@ -159,6 +168,14 @@ static int
 arken_concurrent_worker_node_number( lua_State *L ) {
   worker::node * pointer = checkWorkerNode( L );
   lua_pushinteger(L, pointer->number());
+
+  return 1;
+}
+
+static int
+arken_concurrent_worker_node_params( lua_State *L ) {
+  worker::node * pointer = checkWorkerNode( L );
+  json::decode(L, pointer->params());
 
   return 1;
 }
@@ -207,6 +224,7 @@ static const
 luaL_reg arken_concurrent_worker_node_metatable[] = {
   {"number",  arken_concurrent_worker_node_number},
   {"uuid",    arken_concurrent_worker_node_uuid},
+  {"params",  arken_concurrent_worker_node_params},
   {"shared",  arken_concurrent_worker_node_shared},
   {"master",  arken_concurrent_worker_node_master},
   {nullptr, nullptr}

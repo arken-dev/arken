@@ -53,7 +53,7 @@ namespace concurrent {
       uint32_t m_number = 0;
 
       string dequeue();
-      node(worker * ptr, string fileName, uint32_t number, bool release);
+      node(worker * ptr, string fileName, uint32_t number, string params, bool release);
       node(const node &obj);
 
       public:

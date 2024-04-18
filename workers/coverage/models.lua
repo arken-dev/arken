@@ -14,7 +14,6 @@ local M = {}
 -------------------------------------------------------------------------------
 
 function M.start(worker)
-  print('WORKER...')
   local prepare = 'worker/coverage/prepare.lua'
   if os.exists(prepare) then
     dofile(prepare)
@@ -40,13 +39,16 @@ end
 function M.before(worker)
   local ActiveRecord = require('arken.ActiveRecord')
   ActiveRecord.loadConfig{ number = worker:number() }
+  if worker:params().progress then
+    test.output = function() end
+  end
 end
 
 -------------------------------------------------------------------------------
 -- RUN
 -------------------------------------------------------------------------------
 
-function M.run(worker, fileName)
+function M.run(worker, fileName, params)
   local tests     = {}
   local shared    = worker:shared()
   local dirName   = fileName:replace(".lua", ""):replace("/app", "/tests")
@@ -62,7 +64,7 @@ function M.run(worker, fileName)
 
   coverage.reset()
   coverage.start()
-  local results = test.execute(tests)
+  local results = test.execute(tests, flag)
   coverage.stop()
 
   for fileName, result in pairs(results) do

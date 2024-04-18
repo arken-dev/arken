@@ -16,7 +16,7 @@ void worker::perform(unsigned int cores)
   std::vector<std::thread *> threads;
 
   for(unsigned int i=0; i < cores; i++) {
-    node *n = new node(this, m_fileName, i);
+    node *n = new node(this, m_fileName, i, m_params, m_release);
     threads.push_back(new std::thread(working, n));
   }
 

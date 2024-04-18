@@ -53,6 +53,11 @@ string base::uuid()
   return m_uuid;
 }
 
+string base::params()
+{
+  return m_params;
+}
+
 void base::finished(bool flag)
 {
   (*m_finished.get()) = flag;

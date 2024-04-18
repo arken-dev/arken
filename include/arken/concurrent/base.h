@@ -36,6 +36,7 @@ class base {
   void   finished(bool flag);
   string inspect();
   string uuid();
+  string params();
   Shared shared();
   double microtime();
   void wait();
