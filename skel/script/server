@@ -1,3 +1,4 @@
+#!/usr/bin/env arken
 local mvm  = require('arken.mvm')
 local json = require('arken.json')
 
