@@ -88,3 +88,17 @@ local routine = require('arken.routine')
   log:dump()
   routine._run(arg)
 end
+
+-------------------------------------------------------------------------------
+-- MANAGER SETUP
+-------------------------------------------------------------------------------
+
+local cron = false
+local list = os.find("/etc/cron.d/", "base-.*$", true)
+for fileName in list:each() do
+  cron = true
+end
+if cron == false and (os.getenv('USER') ~= 'root' or arg[0] ~= 'manager:setup') then
+  print('arquivo /etc/cron.d/base não existe, execute arken manager:setup como root')
+  os.exit()
+end
