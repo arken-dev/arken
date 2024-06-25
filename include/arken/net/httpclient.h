@@ -23,6 +23,7 @@ class HttpClient
   string       m_message;
   string       m_cert;
   string       m_certKey;
+  long         m_timeout;
   bool         m_verbose;
   bool         m_formdata;
   bool         m_sslVerifyPeer;
@@ -48,6 +49,7 @@ class HttpClient
   void setSslVerifyHost(long sslVerifyHost);
   void setSslVersion(long sslVersion);
   void setUseSsl(long useSsl);
+  void setTimeout(long timeout);
   string performGet();
   string performPost();
   string performPatch();
