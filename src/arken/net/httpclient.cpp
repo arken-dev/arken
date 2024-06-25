@@ -38,6 +38,7 @@ HttpClient::HttpClient(const char * url)
   m_sslVerifyHost = -1;
   m_sslVersion    = -1;
   m_useSsl        = -1;
+  m_timeout       = 60;
 }
 
 HttpClient::~HttpClient() = default;
@@ -50,6 +51,11 @@ void HttpClient::appendHeader(const char * header)
 void HttpClient::setVerbose(bool verbose)
 {
   m_verbose = verbose;
+}
+
+void HttpClient::setTimeout(long timeout)
+{
+  m_timeout = timeout;
 }
 
 void HttpClient::setBody(string body)
@@ -134,7 +140,7 @@ string HttpClient::perform(string method)
   // example.com is redirected, so we tell libcurl to follow redirection
   curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
 
-  curl_easy_setopt(curl, CURLOPT_TIMEOUT, 60L);
+  curl_easy_setopt(curl, CURLOPT_TIMEOUT, m_timeout);
 
   // send all data to this function
   curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, HttpClient::callback);

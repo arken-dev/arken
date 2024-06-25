@@ -116,6 +116,14 @@ arken_net_HttpClient_setBody( lua_State *L ) {
 }
 
 static int
+arken_net_HttpClient_setTimeout( lua_State *L ) {
+  HttpClient *udata  = checkHttpClient( L );
+  const long timeout = luaL_checkint(L, 2);
+  udata->setTimeout(timeout);
+  return 0;
+}
+
+static int
 arken_net_HttpClient_setCert( lua_State *L ) {
   size_t len;
   HttpClient * udata = checkHttpClient( L );
@@ -226,6 +234,7 @@ luaL_reg arken_net_HttpClient_metatable[] = {
   {"setSslVerifyHost", arken_net_HttpClient_setSslVerifyHost},
   {"setSslVersion",    arken_net_HttpClient_setSslVersion},
   {"setUseSsl",        arken_net_HttpClient_setUseSsl},
+  {"setTimeout",       arken_net_HttpClient_setTimeout},
   {"setBody",          arken_net_HttpClient_setBody},
   {"setCert",          arken_net_HttpClient_setCert},
   {"setCertKey",       arken_net_HttpClient_setCertKey},
