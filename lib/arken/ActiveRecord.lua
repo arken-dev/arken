@@ -554,4 +554,12 @@ function ActiveRecord:dup()
   return dup
 end
 
+--------------------------------------------------------------------------------
+-- RELOAD
+--------------------------------------------------------------------------------
+
+function ActiveRecord:reload()
+  self.adapter():find{ id = self.id, reload = true }
+end
+
 return ActiveRecord
