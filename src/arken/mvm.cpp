@@ -698,6 +698,12 @@ short mvm::Shared::flag(string key)
   }
 }
 
+void mvm::Shared::erase(string key)
+{
+  std::unique_lock<std::mutex> lck(*m_mutex);
+  m_map->erase(key);
+}
+
 mvm::Shared::data mvm::Shared::get(string key)
 {
   std::unique_lock<std::mutex> lck(*m_mutex);

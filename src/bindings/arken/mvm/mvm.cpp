@@ -290,6 +290,16 @@ arken_mvm_Shared_info( lua_State *L ) {
 }
 
 static int
+arken_mvm_Shared_erase( lua_State *L ) {
+  Shared * shr = checkShared( L );
+  const char * key = luaL_checkstring(L, 2);
+
+  shr->erase(key);
+
+  return 0;
+}
+
+static int
 arken_mvm_Shared_put( lua_State *L ) {
   Shared * shr = checkShared( L );
   const char  * key  = luaL_checkstring(L, 2);
@@ -444,6 +454,7 @@ static const
 luaL_reg arken_mvm_Shared_metatable[] = {
   {"name",      arken_mvm_Shared_name},
   {"info",      arken_mvm_Shared_info},
+  {"erase",     arken_mvm_Shared_erase},
   {"put",       arken_mvm_Shared_put},
   {"get",       arken_mvm_Shared_get},
   {"setNumber", arken_mvm_Shared_setNumber},
