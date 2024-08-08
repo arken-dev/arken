@@ -76,6 +76,7 @@ class mvm {
     // flag
     short flag(string key);
     data get(string key);
+    void erase(string key);
 
     // NUMBER
     double getNumber(string key);
