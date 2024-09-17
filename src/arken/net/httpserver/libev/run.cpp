@@ -61,6 +61,8 @@ create_serverfd(char const *addr, uint16_t port)
     throw;
   }
 
+  // https://www.baeldung.com/linux/socket-options-difference
+  // https://stackoverflow.com/questions/24194961/how-do-i-use-setsockoptso-reuseaddr
   int optval = 1;
   if(setsockopt(fd, SOL_SOCKET,  SO_REUSEADDR, &optval, sizeof(optval)) == -1) {
     std::cerr << "setsockopt fail\n";
