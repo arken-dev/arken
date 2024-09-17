@@ -61,8 +61,15 @@ create_serverfd(char const *addr, uint16_t port)
     throw;
   }
 
+  int optval = 1;
+  if(setsockopt(fd, SOL_SOCKET,  SO_REUSEADDR, &optval, sizeof(optval)) == -1) {
+    std::cerr << "setsockopt fail\n";
+    throw;
+  }
+
   server.sin_family = AF_INET;
   server.sin_port = htons(port);
+  server.sin_addr.s_addr = htonl(INADDR_ANY);
   inet_pton(AF_INET, addr, &server.sin_addr);
 
   if (bind(fd, (struct sockaddr *)&server, sizeof(server)) < 0) { //NOLINT
@@ -70,13 +77,15 @@ create_serverfd(char const *addr, uint16_t port)
     throw;
   }
 
-  if (listen(fd, 10) < 0) {
+  if (listen(fd, 2048) < 0) {
     std::cerr << "listen err\n";
     throw;
   }
 
   // set nonblock flag
-  fcntl(fd, F_SETFL, fcntl(fd, F_GETFL, 0) | O_NONBLOCK);
+  if( fd > 0 ) {
+    fcntl(fd, F_SETFL, fcntl(fd, F_GETFL, 0) | O_NONBLOCK);
+  }
 
   return fd;
 }
