@@ -69,6 +69,7 @@ static int arken_utf8_encode( lua_State *L ) {
   const char * str = luaL_checkstring(L, 1);
   char * result = utf8::encode(str);
   lua_pushstring( L, result );
+  delete[] result;
   return 1;
 }
 
