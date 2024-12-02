@@ -2208,6 +2208,7 @@ const char * string::List::each()
 {
 
   if( m_cursor >= m_size ) {
+    m_cursor = 0;
     return nullptr;
   }
 
