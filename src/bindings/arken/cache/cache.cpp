@@ -28,9 +28,9 @@ static int arken_cache_insert( lua_State *L ) {
     expires = lua_tointeger(L, 3);
     lua_remove(L, 3);
   }
-  char * value = json::encode(L);
+  const char * value = luaL_checkstring(L, 2);//json::encode(L);
   cache::insert(key, value, expires);
-  delete[] value;
+  //delete[] value;
   return 1;
 }
 
@@ -40,12 +40,19 @@ static int arken_cache_remove( lua_State *L ) {
   return 0;
 }
 
+static int arken_cache_size( lua_State *L ) {
+  double result = cache::size();
+  lua_pushnumber(L, result);
+  return 1;
+}
+
 extern "C" {
   int luaopen_arken_cache( lua_State *L ) {
     static const luaL_reg Map[] = {
       {"value",  arken_cache_value},
       {"insert", arken_cache_insert},
       {"remove", arken_cache_remove},
+      {"size",   arken_cache_size},
       {nullptr, nullptr}
     };
     luaL_newmetatable(L, "arken.cache");
