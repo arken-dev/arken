@@ -28,9 +28,9 @@ static int arken_cache_insert( lua_State *L ) {
     expires = lua_tointeger(L, 3);
     lua_remove(L, 3);
   }
-  const char * value = luaL_checkstring(L, 2);//json::encode(L);
+  char * value = json::encode(L);
   cache::insert(key, value, expires);
-  //delete[] value;
+  delete[] value;
   return 1;
 }
 
