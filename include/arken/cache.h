@@ -19,6 +19,7 @@ class cache {
   static void insert(const char *key, const char * value, int expires = -1);
   static void remove(const char * key);
   static double size();
+  static void   gc();
 
   private:
 
@@ -31,7 +32,7 @@ class cache {
 
     private:
     char * m_value;
-    double m_expires;
+    int    m_expires;
   };
 
   static std::mutex s_mutex;
