@@ -46,6 +46,11 @@ static int arken_cache_size( lua_State *L ) {
   return 1;
 }
 
+static int arken_cache_gc( lua_State *L ) {
+  cache::gc();
+  return 0;
+}
+
 extern "C" {
   int luaopen_arken_cache( lua_State *L ) {
     static const luaL_reg Map[] = {
@@ -53,6 +58,7 @@ extern "C" {
       {"insert", arken_cache_insert},
       {"remove", arken_cache_remove},
       {"size",   arken_cache_size},
+      {"gc",     arken_cache_gc},
       {nullptr, nullptr}
     };
     luaL_newmetatable(L, "arken.cache");
