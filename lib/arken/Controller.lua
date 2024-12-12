@@ -7,6 +7,7 @@ local Class      = require "arken.oop.Class"
 local template   = require "arken.template"
 local url        = require "arken.net.url"
 local json       = require "arken.json"
+local empty      = require "arken.empty"
 
 local Controller = Class.new("Controller", "arken.net.HttpRequest")
 

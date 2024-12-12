@@ -18,6 +18,7 @@ class cache {
   static const char * value(const char * key);
   static void insert(const char *key, const char * value, int expires = -1);
   static void remove(const char * key);
+  static double size();
 
   private:
 

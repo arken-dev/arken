@@ -59,7 +59,8 @@ cache::data::data(const char * value, int expires)
 
   int size = strlen(value);
   m_value  = new char[size + 1];
-  strncpy(m_value, value, size + 1);
+  strncpy(m_value, value, size);
+  m_value[size] = '\0';
 
   if( expires < 0 ) {
     m_expires = -1;
@@ -85,6 +86,18 @@ bool cache::data::isExpires()
   } else {
     return false;
   }
+}
+
+double cache::size()
+{
+  long long int result = 0;
+
+  std::unique_lock<std::mutex> lck(s_mutex);
+  for (std::pair<std::string, cache::data *> element : *cache::s_cache) {
+    result = result + strlen(element.second->value());
+  }
+
+  return result;
 }
 
 } // namespace arken

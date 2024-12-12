@@ -16,6 +16,11 @@ namespace arken {
 
 char * base64::encode(const char *input, int length)
 {
+
+  if( length == 0 ) {
+    return new char[1]();
+  }
+
   BIO *buff, *b64;
   BUF_MEM *bptr;
 

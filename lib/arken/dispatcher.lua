@@ -58,7 +58,9 @@ dispatcher.dispatchLocal = function(fileName)
   local mimetype = tostring(list[suffix])
   local header   = "Content-type: " .. mimetype
   local file     = io.open(fileName, "rb")
-  return 200, {header}, file:read("*all")
+  local buffer   = file:read("*all")
+  file:close()
+  return 200, {header}, buffer
 end
 
 -------------------------------------------------------------------------------
