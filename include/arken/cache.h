@@ -32,7 +32,7 @@ class cache {
 
     private:
     char * m_value;
-    double m_expires;
+    int    m_expires;
   };
 
   static std::mutex s_mutex;

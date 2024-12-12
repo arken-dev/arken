@@ -6,6 +6,7 @@
 #include <arken/base>
 #include <arken/cache>
 #include <arken/json>
+#include <vector>
 
 namespace arken {
 
@@ -61,9 +62,8 @@ cache::data::data(const char * value, int expires)
   m_value  = new char[size + 1];
   strncpy(m_value, value, size);
   m_value[size] = '\0';
-
   if( expires < 0 ) {
-    m_expires = 60;
+    m_expires = os::microtime() + 60;
   } else {
     m_expires = os::microtime() + expires;
   }
@@ -104,15 +104,23 @@ double cache::size()
 void cache::gc()
 {
   std::unique_lock<std::mutex> lck(s_mutex);
+
+  std::vector<std::string> list;
+
   for (std::pair<std::string, cache::data *> element : *cache::s_cache) {
     if( element.second->isExpires() ) {
       std::string key = element.first;
-      // TODO criar método remove sem mutex exemplo _remove
-      cache::data * data = s_cache->at(key);
-      delete data;
-      s_cache->erase(key);
+      list.push_back(key);
     }
   }
+
+  for( long unsigned int i=0; i < list.size(); i++ ) {
+    std::string key = list.at(i);
+    cache::data * data = s_cache->at(key);
+    delete data;
+    s_cache->erase(key);
+  }
+
 }
 
 } // namespace arken
