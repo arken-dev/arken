@@ -90,7 +90,7 @@ bool cache::data::isExpires()
 
 double cache::size()
 {
-  long long int result = 0;
+  double result = 0;
 
   std::unique_lock<std::mutex> lck(s_mutex);
   for (std::pair<std::string, cache::data *> element : *cache::s_cache) {
