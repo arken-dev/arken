@@ -64,7 +64,12 @@ ActiveRecord.inherit = function(class)
       else
         local record     = Class.lookup(params.record)
         local conditions = params.conditions or {}
-        conditions[params.foreignKey] = self[record.primaryKey]
+        if conditions.where then
+          conditions.where = string.gsub(conditions.where, "%$([%w_]+)", self)
+        end
+        if params.foreignKey then
+          conditions[params.foreignKey] = self[record.primaryKey]
+        end
         if params.order then
           conditions.order = params.order
         end
