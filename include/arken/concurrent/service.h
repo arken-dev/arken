@@ -28,8 +28,8 @@ namespace concurrent {
     std::vector<string> s_dirName;
     static
     std::mutex s_mutex;
-
     uint32_t m_version;
+    bool m_stop{false};
 
     void run();
 
@@ -43,6 +43,7 @@ namespace concurrent {
     static void reload();
     static bool checkReload();
     bool loop(int secs);
+    void stop();
   };
 
 } // namespace concurrent
