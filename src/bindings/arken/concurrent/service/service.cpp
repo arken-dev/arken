@@ -72,6 +72,13 @@ arken_concurrent_service_loop( lua_State *L ) {
 }
 
 static int
+arken_concurrent_service_stop( lua_State *L ) {
+  service * srv = checkService( L );
+  srv->stop();
+  return 0;
+}
+
+static int
 arken_concurrent_service_shared( lua_State *L ) {
   service * pointer = checkService( L );
   int rv;
@@ -94,6 +101,7 @@ static const
 luaL_reg arken_concurrent_service_metatable[] = {
   {"shared",   arken_concurrent_service_shared},
   {"loop",     arken_concurrent_service_loop},
+  {"stop",     arken_concurrent_service_stop},
   {nullptr, nullptr}
 };
 
