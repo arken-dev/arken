@@ -22,6 +22,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <signal.h>
+#include <sys/ioctl.h>
 
 #include <vector>
 #include <thread>
@@ -87,6 +88,14 @@ create_serverfd(char const *addr, uint16_t port)
   // set nonblock flag
   if( fd > 0 ) {
     fcntl(fd, F_SETFL, fcntl(fd, F_GETFL, 0) | O_NONBLOCK);
+  }
+
+  // https://peps.python.org/pep-0446/
+  int res;
+  res = ioctl(fd, FIOCLEX, 0);
+  if (!res) {
+    //std::cerr << "ioctl fd FIOCLEX err\n";
+    //throw;
   }
 
   return fd;
