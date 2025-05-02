@@ -100,7 +100,7 @@ List os::glob(const char * pattern)
   paths.gl_offs  = 0;
   paths.gl_pathv = nullptr;
 
-  retval = ::glob( pattern, GLOB_NOCHECK | GLOB_BRACE, nullptr, &paths );
+  retval = ::glob( pattern, GLOB_BRACE, nullptr, &paths );
   if( retval == 0 ) {
 
     for( int idx = 0; idx < paths.gl_pathc; idx++ ) {
