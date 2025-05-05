@@ -10,8 +10,8 @@ string os::uuid()
   uuid_t uuid;
 
   // generate
-  uuid_generate_time_safe(uuid);
-  // uuid_generate_random(uuid);
+  uuid_generate_random(uuid);
+  // uuid_generate_time_safe(uuid);
   // uuid_generate(uuid);
   // uuid_generate_time(uuid);
 

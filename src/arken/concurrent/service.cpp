@@ -41,6 +41,7 @@ service::service(const service &obj)
   m_shared    = obj.m_shared;
   m_uuid      = obj.m_uuid;
   m_microtime = obj.m_microtime;
+  m_stop      = obj.m_stop;
 }
 
 service::~service() = default;
@@ -82,6 +83,10 @@ void service::run()
     if (rv) {
       fprintf(stderr, "%s\n", lua_tostring(L, -1));
     }
+  }
+
+  if( m_stop ) {
+    return;
   }
 
   auto ptr = static_cast<service **>(lua_newuserdata(L, sizeof(service*)));
@@ -180,6 +185,11 @@ void service::load(const char * dirName)
   s_dirName.push_back(dirName);
   service::run(dirName);
 
+}
+
+void service::stop()
+{
+  m_stop = true;
 }
 
 } // namespace concurrent

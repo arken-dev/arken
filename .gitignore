@@ -25,3 +25,4 @@ deps/*
 .qmake.stash
 coverage/*
 .DS_Store
+cmake/*
