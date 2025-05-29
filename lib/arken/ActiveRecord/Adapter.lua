@@ -547,12 +547,12 @@ function ActiveRecord_Adapter:validateUnique(record, params)
   local value = record[params.column]
   local where = string.format("%s = '%s'", params.column, tostring(value):escape(ActiveRecord_Adapter._escape))
   if not empty(record[self.primaryKey]) then
-    where = string.format("%s AND %s != %s", where, self.primaryKey, record[self.primaryKey])
+    where = string.format("%s AND %s != '%s'", where, self.primaryKey, record[self.primaryKey])
   end
 
   for _, column in ipairs(scope) do
     if record[column] then
-      where = string.format("%s AND %s = %s", where, column, record[column])
+      where = string.format("%s AND %s = '%s'", where, column, record[column])
     end
   end
 
