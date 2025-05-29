@@ -23,31 +23,31 @@ function template.compile(file_name)
   local buffer = ""
   buffer = buffer .. "return function(self, helper)\n"
   buffer = buffer .. "  local __buffer = ''\n"
-  buffer = buffer .. "   __buffer = __buffer .. [[\n"
+  buffer = buffer .. "   __buffer = __buffer .. [==[\n"
 
   while i <= len do
 
     if data:sub(i, i+2) == '<%=' then
-      buffer = buffer .. "]] .. tostring("
+      buffer = buffer .. "]==] .. tostring("
       flag = true
       i = i + 3
     elseif data:sub(i, i+1) == '<%'  then
-      buffer = buffer .. "]]\n"
+      buffer = buffer .. "]==]\n"
       i = i + 2
     elseif data:sub(i, i+2) == '-%>'  then
       if flag then
-        buffer = buffer .. ") .. [["
+        buffer = buffer .. ") .. [==["
         flag   = false
       else
-        buffer = buffer .. "\n __buffer = __buffer .. [["
+        buffer = buffer .. "\n __buffer = __buffer .. [==["
       end
       i = i + 2
     elseif data:sub(i, i+1) == '%>'  then
       if flag then
-        buffer = buffer .. ") .. [[\n"
+        buffer = buffer .. ") .. [==[\n"
         flag   = false
       else
-        buffer = buffer .. "\n __buffer = __buffer .. [["
+        buffer = buffer .. "\n __buffer = __buffer .. [==["
       end
       i = i + 1
 
@@ -71,7 +71,7 @@ function template.compile(file_name)
 
   end
 
-  buffer = buffer .. "]]\n"
+  buffer = buffer .. "]==]\n"
   buffer = buffer .. "  return __buffer\n"
   buffer = buffer .. "end\n"
   return template.filter(file_name, buffer)
