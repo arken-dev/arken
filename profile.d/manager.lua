@@ -30,9 +30,13 @@ os.iowait = function()
 end
 
 os.exec = function(cmd, sanitize)
-  local handle = assert(io.popen(cmd, 'r'))
-  local output = assert(handle:read('*a'))
-  handle:close()
+  --local handle = assert(io.popen(cmd, 'r'))
+  --local output = assert(handle:read('*a'))
+  --handle:close()
+  local tmpname = os.tmpname()
+  os.execute(cmd .. " > " .. tmpname)
+  local output = os.read(tmpname)
+  os.remove(tmpname)
   if sanitize then
     output = string.gsub(output, '^%s+', '')
     output = string.gsub(output, '%s+$', '')
