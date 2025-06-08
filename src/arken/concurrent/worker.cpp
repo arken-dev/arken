@@ -214,7 +214,11 @@ worker::node::node(worker * ptr, string fileName, uint32_t number, string params
   m_number   = number;
   m_params   = params;
   m_release  = release;
-  m_shared   = m_worker->m_shared;
+  // esse código foi adicionado errado assim não se via o que ocorria 
+  // no node e passa a todos gravar o mesmo info no pai
+  // fiz essa alteração em 8 de junho de 2025
+  // é possível excluir esse comentário e código depois de um período
+  // m_shared   = m_worker->m_shared;
   m_shared.name("arken.concurrent.worker.node#");
   m_shared.name().append(std::to_string(m_number));
 }
