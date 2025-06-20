@@ -570,7 +570,7 @@ end
 
 function ActiveRecord_Adapter:sql(name, params, flag)
   local table = self.record_class.tableName
-  local query = (ActiveRecord.query_prefix or '') .. 'query/' .. table
+  local query = (self.record_class.query_prefix or '') .. 'query/' .. table
     query  = query .. '/' .. name .. '.sql'
   local values  = self.record_class.where(params)
   if values == nil then
