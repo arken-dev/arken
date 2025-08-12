@@ -715,6 +715,18 @@ function ActiveRecord_Adapter:count(params)
   return tonumber(res.count_all)
 end
 
+--------------------------------------------------------------------------------
+-- SUM
+--------------------------------------------------------------------------------
+
+function ActiveRecord_Adapter:sum(column, params)
+  local sql    = "SELECT sum(" .. column .. ") sum_all FROM " .. self.tableName .. " " .. self:where(params)
+  local cursor = self:execute(sql)
+  local res    = cursor:fetch({}, 'a')
+  cursor:close()
+  return tonumber(res.sum_all)
+end
+
 -------------------------------------------------------------------------------
 -- CHANGES
 -------------------------------------------------------------------------------
