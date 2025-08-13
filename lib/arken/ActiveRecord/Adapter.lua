@@ -570,7 +570,7 @@ end
 
 function ActiveRecord_Adapter:sql(name, params, flag)
   local table = self.record_class.tableName
-  local query = (ActiveRecord.query_prefix or '') .. 'query/' .. table
+  local query = (self.record_class.query_prefix or '') .. 'query/' .. table
     query  = query .. '/' .. name .. '.sql'
   local values  = self.record_class.where(params)
   if values == nil then
@@ -713,6 +713,18 @@ function ActiveRecord_Adapter:count(params)
   local res    = cursor:fetch({}, 'a')
   cursor:close()
   return tonumber(res.count_all)
+end
+
+--------------------------------------------------------------------------------
+-- SUM
+--------------------------------------------------------------------------------
+
+function ActiveRecord_Adapter:sum(column, params)
+  local sql    = "SELECT sum(" .. column .. ") sum_all FROM " .. self.tableName .. " " .. self:where(params)
+  local cursor = self:execute(sql)
+  local res    = cursor:fetch({}, 'a')
+  cursor:close()
+  return tonumber(res.sum_all)
 end
 
 -------------------------------------------------------------------------------
