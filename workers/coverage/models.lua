@@ -48,9 +48,9 @@ end
 -- RUN
 -------------------------------------------------------------------------------
 
-function M.run(worker, fileName, params)
+function M.run(node, fileName, params)
   local tests     = {}
-  local shared    = worker:shared()
+  local shared    = node:master():shared()
   local dirName   = fileName:replace(".lua", ""):replace("/app", "/tests")
   local modelName = dirName:replace("./tests/models/", ""):replace("/", ".")
 
