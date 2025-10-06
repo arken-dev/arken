@@ -14,7 +14,7 @@ namespace arken {
 namespace chrono {
   struct tm* localtime(const time_t* time);
   char* asctime( const std::tm* time_ptr );
-
+  char *strptime(const char *buf, const char *format, struct tm *tm);
 
   class Date
   {
