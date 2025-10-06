@@ -18,7 +18,7 @@ Time Time::now()
 {
   Time t;
   t.m_time = std::time(nullptr);
-  std::tm * timeinfo = std::localtime(&t.m_time);
+  std::tm * timeinfo = arken::chrono::localtime(&t.m_time);
 
   t.m_calendar.tm_sec   = timeinfo->tm_sec;
   t.m_calendar.tm_min   = timeinfo->tm_min;
@@ -37,7 +37,7 @@ Time Time::currentDateTime()
 {
   Time t;
   t.m_time = std::time(nullptr);
-  std::tm * timeinfo = std::localtime(&t.m_time);
+  std::tm * timeinfo = arken::chrono::localtime(&t.m_time);
 
   t.m_calendar.tm_sec   = timeinfo->tm_sec;
   t.m_calendar.tm_min   = timeinfo->tm_min;

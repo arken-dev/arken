@@ -1,7 +1,17 @@
+#include <mutex>
 #include <arken/chrono/date.h>
+
 
 namespace arken {
 namespace chrono {
+
+static std::mutex s_chrono_mutex;
+
+struct std::tm* localtime(const time_t* t)
+{
+  std::unique_lock<std::mutex> lck(s_chrono_mutex);
+  return std::localtime(t);
+}
 
 Date::Date()
 {
@@ -18,7 +28,7 @@ Date Date::today()
 {
   Date t;
   t.m_time = std::time(nullptr);
-  std::tm * timeinfo = std::localtime(&t.m_time);
+  std::tm * timeinfo = arken::chrono::localtime(&t.m_time);
 
   t.m_time -= (timeinfo->tm_sec + (timeinfo->tm_min * 60) + (timeinfo->tm_hour * 60 * 60));
 
@@ -39,7 +49,7 @@ Date Date::currentDate()
 {
   Date t;
   t.m_time = std::time(nullptr);
-  std::tm * timeinfo = std::localtime(&t.m_time);
+  std::tm * timeinfo = arken::chrono::localtime(&t.m_time);
 
   t.m_time -= (timeinfo->tm_sec + (timeinfo->tm_min * 60) + (timeinfo->tm_hour * 60 * 60));
 
