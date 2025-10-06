@@ -15,6 +15,7 @@ namespace chrono {
   struct tm* localtime(const time_t* time);
   char* asctime( const std::tm* time_ptr );
   char *strptime(const char *buf, const char *format, struct tm *tm);
+  time_t mktime(struct std::tm *time_ptr);
 
   class Date
   {
