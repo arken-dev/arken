@@ -2112,12 +2112,6 @@ const char * string::List::operator[](int pos)
 
 const char * string::List::at(int pos)
 {
-
-   if( pos > 10000 ) {
-    std::cout << "achei" << std::endl;
-    return nullptr;
-  }
-
   if( pos > m_size ) {
     return nullptr;
   }
