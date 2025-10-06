@@ -92,7 +92,7 @@ Time Time::parse(const char * str, const char * fmt)
   t.m_calendar.tm_yday  = 0;
   t.m_calendar.tm_isdst = -1;
 
-  if ( strptime(str, fmt, &t.m_calendar) ) {
+  if ( arken::chrono::strptime(str, fmt, &t.m_calendar) ) {
     t.m_time = std::mktime(&t.m_calendar);
   } else {
     t.m_calendar.tm_year = 0;
