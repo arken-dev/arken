@@ -173,8 +173,8 @@ class string {
   {
     private:
     void init();
-    int m_size;
-    int m_resource;
+    int m_size{0};
+    int m_resource{0};
     int m_cursor;
     string ** m_array;
 
