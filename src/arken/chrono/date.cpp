@@ -19,6 +19,12 @@ char* asctime( const std::tm* time_ptr )
   return std::asctime(time_ptr);
 }
 
+char *strptime(const char *buf, const char *format, struct tm *tm)
+{
+  std::unique_lock<std::mutex> lck(s_chrono_mutex);
+  return ::strptime(buf, format, tm);
+}
+
 Date::Date()
 {
   m_time = 0;
@@ -104,7 +110,7 @@ Date Date::parse(const char * str, const char * fmt)
   t.m_calendar.tm_yday  = 0;
   t.m_calendar.tm_isdst = 0;
 
-  if ( strptime(str, fmt, &t.m_calendar) ) {
+  if ( arken::chrono::strptime(str, fmt, &t.m_calendar) ) {
     t.m_calendar.tm_sec  = 0;
     t.m_calendar.tm_min  = 0;
     t.m_calendar.tm_hour = 0;
