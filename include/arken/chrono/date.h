@@ -10,7 +10,10 @@
 #include <arken/string.h>
 
 namespace arken {
+
 namespace chrono {
+  struct tm* localtime(const time_t* time);
+
 
   class Date
   {
