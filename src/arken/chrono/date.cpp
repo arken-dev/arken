@@ -25,6 +25,12 @@ char *strptime(const char *buf, const char *format, struct tm *tm)
   return ::strptime(buf, format, tm);
 }
 
+time_t mktime(struct std::tm *time_ptr)
+{
+  std::unique_lock<std::mutex> lck(s_chrono_mutex);
+  return ::std::mktime(time_ptr);
+}
+
 Date::Date()
 {
   m_time = 0;
@@ -114,7 +120,7 @@ Date Date::parse(const char * str, const char * fmt)
     t.m_calendar.tm_sec  = 0;
     t.m_calendar.tm_min  = 0;
     t.m_calendar.tm_hour = 0;
-    t.m_time = std::mktime(&t.m_calendar);
+    t.m_time = arken::chrono::mktime(&t.m_calendar);
   } else {
     t.m_calendar.tm_year = 0;
   }
@@ -129,7 +135,7 @@ Date Date::addYears(int years)
   t.m_calendar = m_calendar;
   t.m_calendar.tm_year += years;
 
-  t.m_time = std::mktime(&t.m_calendar);
+  t.m_time = arken::chrono::mktime(&t.m_calendar);
 
   return t;
 }
@@ -142,7 +148,7 @@ Date Date::addMonths(int months)
   t.m_calendar = m_calendar;
   t.m_calendar.tm_mon += months;
 
-  t.m_time = std::mktime(&t.m_calendar);
+  t.m_time = arken::chrono::mktime(&t.m_calendar);
 
   return t;
 }
@@ -154,7 +160,7 @@ Date Date::addDays(int days)
   t.m_calendar = m_calendar;
   t.m_calendar.tm_mday += days;
 
-  t.m_time = std::mktime(&t.m_calendar);
+  t.m_time = arken::chrono::mktime(&t.m_calendar);
 
   return t;
 }
