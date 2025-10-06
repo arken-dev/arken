@@ -13,6 +13,12 @@ struct std::tm* localtime(const time_t* t)
   return std::localtime(t);
 }
 
+char* asctime( const std::tm* time_ptr )
+{
+  std::unique_lock<std::mutex> lck(s_chrono_mutex);
+  return std::asctime(time_ptr);
+}
+
 Date::Date()
 {
   m_time = 0;
@@ -268,7 +274,7 @@ int Date::daysInMonth()
 
 string Date::asctime()
 {
-  const char * result = std::asctime(&m_calendar);
+  const char * result = arken::chrono::asctime(&m_calendar);
   return string(result, 24);
 }
 
