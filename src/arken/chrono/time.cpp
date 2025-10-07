@@ -6,6 +6,17 @@ namespace chrono {
 Time::Time()
 {
   m_time = 0;
+  m_calendar = {};
+
+  m_calendar.tm_sec   = 0;
+  m_calendar.tm_min   = 0;
+  m_calendar.tm_hour  = 0;
+  m_calendar.tm_mday  = 0;
+  m_calendar.tm_mon   = 0;
+  m_calendar.tm_year  = 0;
+  m_calendar.tm_wday  = 0;
+  m_calendar.tm_yday  = 0;
+  m_calendar.tm_isdst = -1;
 }
 
 Time::Time(const Time &obj)
@@ -17,7 +28,7 @@ Time::Time(const Time &obj)
 Time Time::now()
 {
   Time t;
-  t.m_time = std::time(nullptr);
+  t.m_time = arken::chrono::time(nullptr);
   std::tm * timeinfo = arken::chrono::localtime(&t.m_time);
 
   t.m_calendar.tm_sec   = timeinfo->tm_sec;
@@ -36,7 +47,7 @@ Time Time::now()
 Time Time::currentDateTime()
 {
   Time t;
-  t.m_time = std::time(nullptr);
+  t.m_time = arken::chrono::time(nullptr);
   std::tm * timeinfo = arken::chrono::localtime(&t.m_time);
 
   t.m_calendar.tm_sec   = timeinfo->tm_sec;

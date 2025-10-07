@@ -31,9 +31,22 @@ time_t mktime(struct std::tm *time_ptr)
   return ::std::mktime(time_ptr);
 }
 
+time_t time(std::time_t* arg)
+{
+  std::unique_lock<std::mutex> lck(s_chrono_mutex);
+  return ::std::time(arg);
+}
+
+size_t strftime( char* str, std::size_t count, const char* format, const std::tm* tp )
+{
+  std::unique_lock<std::mutex> lck(s_chrono_mutex);
+  return ::std::strftime(str, count, format, tp);
+}
+
 Date::Date()
 {
   m_time = 0;
+  m_calendar = {};
 }
 
 Date::Date(const Date &obj)
@@ -45,7 +58,7 @@ Date::Date(const Date &obj)
 Date Date::today()
 {
   Date t;
-  t.m_time = std::time(nullptr);
+  t.m_time = arken::chrono::time(nullptr);
   std::tm * timeinfo = arken::chrono::localtime(&t.m_time);
 
   t.m_time -= (timeinfo->tm_sec + (timeinfo->tm_min * 60) + (timeinfo->tm_hour * 60 * 60));
@@ -66,7 +79,7 @@ Date Date::today()
 Date Date::currentDate()
 {
   Date t;
-  t.m_time = std::time(nullptr);
+  t.m_time = arken::chrono::time(nullptr);
   std::tm * timeinfo = arken::chrono::localtime(&t.m_time);
 
   t.m_time -= (timeinfo->tm_sec + (timeinfo->tm_min * 60) + (timeinfo->tm_hour * 60 * 60));
@@ -293,7 +306,7 @@ string Date::asctime()
 string Date::strftime(const char * format)
 {
   auto result = new char[100]();
-  std::strftime(result, 100, format, &m_calendar);
+  arken::chrono::strftime(result, 100, format, &m_calendar);
   return string(std::move(result));
 }
 
