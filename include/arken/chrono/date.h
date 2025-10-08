@@ -16,6 +16,10 @@ namespace chrono {
   char* asctime( const std::tm* time_ptr );
   char *strptime(const char *buf, const char *format, struct tm *tm);
   time_t mktime(struct std::tm *time_ptr);
+  time_t time( std::time_t* arg );
+  size_t strftime( char* str, std::size_t count, const char* format, const std::tm* tp );
+
+
 
   class Date
   {
