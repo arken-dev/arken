@@ -66,6 +66,7 @@ Time Time::currentDateTime()
 
 Time Time::parse(const char * str)
 {
+  size_t size = strlen(str);
   string format;
 
   if(str[4] == '-') {
@@ -78,12 +79,15 @@ Time Time::parse(const char * str)
     format.append("%d/%m/%Y");
   }
 
-  if(str[13] == ':') {
-    format.append(" %H:%M");
-  }
+  // TODO porque ele adiciona o append mesmo não tendo
+  if( size > 10 ) {
+    if(str[13] == ':') {
+      format.append(" %H:%M");
+    }
 
-  if(str[16] == ':') {
-    format.append(":%S");
+    if(str[16] == ':') {
+      format.append(":%S");
+    }
   }
 
   return Time::parse(str, format);
@@ -106,6 +110,13 @@ Time Time::parse(const char * str, const char * fmt)
   if ( arken::chrono::strptime(str, fmt, &t.m_calendar) ) {
     t.m_time = arken::chrono::mktime(&t.m_calendar);
   } else {
+    /*
+    size_t size = strlen(str);
+    for(size_t s = 0; s < size; s++ ) {
+      std::cout << (char) str[s] << std::endl;
+    }
+    std::cout << "falha no parse" << "str " << str << "len " << strlen(str) << "fmt " << fmt << std::endl;
+    */
     t.m_calendar.tm_year = 0;
   }
 
