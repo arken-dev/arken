@@ -104,6 +104,10 @@ function M.run(worker, fileName, params)
   file:write(json.encode(data))
   file:close()
 
+  if os.mem()/1024 > 800 then
+    shared:append('debug-mem', string.format("%s memória: %s MB\n", fileName, os.mem()/1024))
+  end
+
   collectgarbage("collect")
 end
 
@@ -134,6 +138,9 @@ function M.stop(worker)
   print('\n' .. shared:getString('message'))
   print(string.format(result, shared:getNumber('tests'), shared:getNumber('pending'), shared:getNumber('failure'), data.coverage))
   print(string.format("Finished in %.2f seconds mem usage %s", os.microtime() - start, os.mem()))
+  if worker:params().progress then
+    print(shared:getString('debug-mem'))
+  end
 end
 
 return M
