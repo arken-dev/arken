@@ -26,15 +26,22 @@
     <% local coverage = 0 -%>
     <% table.sort(self.files) -%>
     <% for i, file in ipairs(self.files) do -%>
-    <% local row = json.decode(os.read('coverage/' .. file:replace('/', '-') .. '.json')) -%>
+    <% local fileName = 'coverage/' .. file:replace('/', '-') .. '.json' -%>
+    <% if os.exists(fileName) then -%>
+    <% local row = json.decode(os.read(fileName)) -%>
     <tr bgcolor='<%= helper.color_coverage(row.coverage) -%>'>
        <% coverage = coverage + row.coverage -%>
        <td align='right'> <%= i -%></td>
        <td><a href='<%= helper.parameterize(file) -%>.html'><%= helper.sanitize(file) -%></a></td>
        <td align='right'><%= helper.number_format(row.coverage) -%>%&nbsp;</td>
     </tr>
-    <% end -%>
     <% self.coverage = coverage/#self.files -%>
+    <% else -%>
+    <tr>
+    <td colspan='3'><%= fileName -%> não encontrado</td>
+    </tr>
+    <% end -%>
+    <% end -%>
     <tr>
       <td></td>
       <td align='right'>
