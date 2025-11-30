@@ -6,21 +6,12 @@
 #ifndef _ARKEN_CHRONO_DATE_
 #define _ARKEN_CHRONO_DATE_
 
-#include <ctime>
+#include <arken/chrono/base.h>
 #include <arken/string.h>
 
 namespace arken {
 
 namespace chrono {
-  struct tm* localtime(const time_t* time);
-  char* asctime( const std::tm* time_ptr );
-  char *strptime(const char *buf, const char *format, struct tm *tm);
-  time_t mktime(struct std::tm *time_ptr);
-  time_t time( std::time_t* arg );
-  size_t strftime( char* str, std::size_t count, const char* format, const std::tm* tp );
-
-
-
   class Date
   {
 
