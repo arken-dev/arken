@@ -172,7 +172,8 @@ function Controller:render_html(params)
         end
         result = errors
       end
-      return 500, {'Content-Type: text/plain'}, file .. '\n\n' .. result .. '\n\n' .. template.debug(file)
+      error{ traceback = result, message = file .. '\n\n' .. result .. '\n\n' .. template.debug(file) }
+      --return 500, {'Content-Type: text/plain'}, file .. '\n\n' .. result .. '\n\n' .. template.debug(file)
     end
 
     file = self.prefixViews .. "/layouts/" .. self.layout .. ".html"
