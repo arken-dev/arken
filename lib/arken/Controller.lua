@@ -241,7 +241,7 @@ function Controller:partial(params)
   end
 
   local context = params.context or self
-  local flag, result = pcall(template.execute, file, self, self:helper(), ARKEN_ENV ~= 'production')
+  local flag, result = pcall(template.execute, file, context, self:helper(), ARKEN_ENV ~= 'production')
   if flag then
     return result
   else
