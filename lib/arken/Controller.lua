@@ -244,7 +244,7 @@ function Controller:partial(params)
   if flag then
     return result
   else
-    error(file .. '\n\n' .. result .. '\n\n' .. template.debug(file))
+    error(file .. '\n\n' .. JSON.pretty(result) .. '\n\n' .. template.debug(file))
   end
 end
 
