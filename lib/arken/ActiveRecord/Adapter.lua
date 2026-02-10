@@ -8,6 +8,7 @@ local Class     = require('arken.oop.Class')
 local toboolean = require('arken.toboolean')
 local Date      = require('arken.chrono.Date')
 local Time      = require('arken.chrono.Time')
+local template  = require("arken.template")
 local empty     = require('arken.empty')
 
 local ActiveRecord_Adapter = Class.new("ActiveRecord.Adapter")
@@ -580,7 +581,12 @@ function ActiveRecord_Adapter:sql(name, params, flag)
   if not os.exists(query) then
     error(query .. ' file not exists')
   end
-  local sql     = os.read(query)
+  --local sql     = os.read(query)
+  local status, sql = pcall(template.execute, query, params, {}, ARKEN_ENV ~= 'production')
+  if not status then
+    error(sql)
+  end
+
   local where   = nil
   if flag then
     where = self.record_class.adapter():where(params)
