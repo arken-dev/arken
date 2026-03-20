@@ -6,12 +6,12 @@
 #ifndef _ARKEN_CHRONO_DATE_
 #define _ARKEN_CHRONO_DATE_
 
-#include <ctime>
+#include <arken/chrono/base.h>
 #include <arken/string.h>
 
 namespace arken {
-namespace chrono {
 
+namespace chrono {
   class Date
   {
 

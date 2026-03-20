@@ -64,7 +64,7 @@ arken_Log_gc( lua_State *L ) {
 static int
 arken_Log_append( lua_State *L ) {
   Log * udata  = checkLog( L );
-  const char * append = lua_tostring(L, 2);
+  const char * append = luaL_checkstring(L, 2);
   udata->append(append);
   return 0;
 }
@@ -79,8 +79,8 @@ arken_Log_dump( lua_State *L ) {
 static int
 arken_Log_log( lua_State *L ) {
   Log * udata  = checkLog( L );
-  const char * level  = lua_tostring(L, 2);
-  const char * append = lua_tostring(L, 3);
+  const char * level  = luaL_checkstring(L, 2);
+  const char * append = luaL_checkstring(L, 3);
   udata->log(level, append);
   return 0;
 }
@@ -88,7 +88,7 @@ arken_Log_log( lua_State *L ) {
 static int
 arken_Log_trace( lua_State *L ) {
   Log * udata  = checkLog( L );
-  const char * append = lua_tostring(L, 2);
+  const char * append = luaL_checkstring(L, 2);
   udata->trace(append);
   return 0;
 }
@@ -96,7 +96,7 @@ arken_Log_trace( lua_State *L ) {
 static int
 arken_Log_debug( lua_State *L ) {
   Log * udata  = checkLog( L );
-  const char * append = lua_tostring(L, 2);
+  const char * append = luaL_checkstring(L, 2);
   udata->debug(append);
   return 0;
 }
@@ -104,7 +104,7 @@ arken_Log_debug( lua_State *L ) {
 static int
 arken_Log_info( lua_State *L ) {
   Log * udata  = checkLog( L );
-  const char * append = lua_tostring(L, 2);
+  const char * append = luaL_checkstring(L, 2);
   udata->info(append);
   return 0;
 }
@@ -112,7 +112,7 @@ arken_Log_info( lua_State *L ) {
 static int
 arken_Log_warn( lua_State *L ) {
   Log * udata  = checkLog( L );
-  const char * append = lua_tostring(L, 2);
+  const char * append = luaL_checkstring(L, 2);
   udata->warn(append);
   return 0;
 }
@@ -120,7 +120,7 @@ arken_Log_warn( lua_State *L ) {
 static int
 arken_Log_error( lua_State *L ) {
   Log * udata  = checkLog( L );
-  const char * append = lua_tostring(L, 2);
+  const char * append = luaL_checkstring(L, 2);
   udata->error(append);
   return 0;
 }
@@ -128,7 +128,7 @@ arken_Log_error( lua_State *L ) {
 static int
 arken_Log_fatal( lua_State *L ) {
   Log * udata  = checkLog( L );
-  const char * append = lua_tostring(L, 2);
+  const char * append = luaL_checkstring(L, 2);
   udata->fatal(append);
   return 0;
 }

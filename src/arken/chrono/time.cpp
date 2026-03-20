@@ -6,6 +6,17 @@ namespace chrono {
 Time::Time()
 {
   m_time = 0;
+  m_calendar = {};
+
+  m_calendar.tm_sec   = 0;
+  m_calendar.tm_min   = 0;
+  m_calendar.tm_hour  = 0;
+  m_calendar.tm_mday  = 0;
+  m_calendar.tm_mon   = 0;
+  m_calendar.tm_year  = 0;
+  m_calendar.tm_wday  = 0;
+  m_calendar.tm_yday  = 0;
+  m_calendar.tm_isdst = -1;
 }
 
 Time::Time(const Time &obj)
@@ -17,8 +28,8 @@ Time::Time(const Time &obj)
 Time Time::now()
 {
   Time t;
-  t.m_time = std::time(nullptr);
-  std::tm * timeinfo = std::localtime(&t.m_time);
+  t.m_time = arken::chrono::time(nullptr);
+  std::tm * timeinfo = arken::chrono::localtime(&t.m_time);
 
   t.m_calendar.tm_sec   = timeinfo->tm_sec;
   t.m_calendar.tm_min   = timeinfo->tm_min;
@@ -36,8 +47,8 @@ Time Time::now()
 Time Time::currentDateTime()
 {
   Time t;
-  t.m_time = std::time(nullptr);
-  std::tm * timeinfo = std::localtime(&t.m_time);
+  t.m_time = arken::chrono::time(nullptr);
+  std::tm * timeinfo = arken::chrono::localtime(&t.m_time);
 
   t.m_calendar.tm_sec   = timeinfo->tm_sec;
   t.m_calendar.tm_min   = timeinfo->tm_min;
@@ -55,6 +66,7 @@ Time Time::currentDateTime()
 
 Time Time::parse(const char * str)
 {
+  size_t size = strlen(str);
   string format;
 
   if(str[4] == '-') {
@@ -67,12 +79,15 @@ Time Time::parse(const char * str)
     format.append("%d/%m/%Y");
   }
 
-  if(str[13] == ':') {
-    format.append(" %H:%M");
-  }
+  // TODO porque ele adiciona o append mesmo não tendo
+  if( size > 10 ) {
+    if(str[13] == ':') {
+      format.append(" %H:%M");
+    }
 
-  if(str[16] == ':') {
-    format.append(":%S");
+    if(str[16] == ':') {
+      format.append(":%S");
+    }
   }
 
   return Time::parse(str, format);
@@ -92,9 +107,16 @@ Time Time::parse(const char * str, const char * fmt)
   t.m_calendar.tm_yday  = 0;
   t.m_calendar.tm_isdst = -1;
 
-  if ( strptime(str, fmt, &t.m_calendar) ) {
-    t.m_time = std::mktime(&t.m_calendar);
+  if ( arken::chrono::strptime(str, fmt, &t.m_calendar) ) {
+    t.m_time = arken::chrono::mktime(&t.m_calendar);
   } else {
+    /*
+    size_t size = strlen(str);
+    for(size_t s = 0; s < size; s++ ) {
+      std::cout << (char) str[s] << std::endl;
+    }
+    std::cout << "falha no parse" << "str " << str << "len " << strlen(str) << "fmt " << fmt << std::endl;
+    */
     t.m_calendar.tm_year = 0;
   }
 
@@ -108,7 +130,7 @@ Time Time::addYears(int years)
   t.m_calendar = m_calendar;
   t.m_calendar.tm_year += years;
 
-  t.m_time = std::mktime(&t.m_calendar);
+  t.m_time = arken::chrono::mktime(&t.m_calendar);
 
   return t;
 }
@@ -121,7 +143,7 @@ Time Time::addMonths(int months)
   t.m_calendar = m_calendar;
   t.m_calendar.tm_mon += months;
 
-  t.m_time = std::mktime(&t.m_calendar);
+  t.m_time = arken::chrono::mktime(&t.m_calendar);
 
   return t;
 }
@@ -133,7 +155,7 @@ Time Time::addDays(int days)
   t.m_calendar = m_calendar;
   t.m_calendar.tm_mday += days;
 
-  t.m_time = std::mktime(&t.m_calendar);
+  t.m_time = arken::chrono::mktime(&t.m_calendar);
 
   return t;
 }
@@ -145,7 +167,7 @@ Time Time::addHours(int hours)
   t.m_calendar = m_calendar;
   t.m_calendar.tm_hour += hours;
 
-  t.m_time = std::mktime(&t.m_calendar);
+  t.m_time = arken::chrono::mktime(&t.m_calendar);
 
   return t;
 }
@@ -158,7 +180,7 @@ Time Time::addMinutes(int minutes)
   t.m_calendar = m_calendar;
   t.m_calendar.tm_min += minutes;
 
-  t.m_time = std::mktime(&t.m_calendar);
+  t.m_time = arken::chrono::mktime(&t.m_calendar);
 
   return t;
 }
@@ -170,7 +192,7 @@ Time Time::addSecs(int secs)
   t.m_calendar = m_calendar;
   t.m_calendar.tm_sec += secs;
 
-  t.m_time = std::mktime(&t.m_calendar);
+  t.m_time = arken::chrono::mktime(&t.m_calendar);
 
   return t;
 }
@@ -182,7 +204,7 @@ Time Time::beginningOfDay()
   t.m_calendar.tm_sec  = 0;
   t.m_calendar.tm_min  = 0;
   t.m_calendar.tm_hour = 0;
-  t.m_time = std::mktime(&t.m_calendar);
+  t.m_time = arken::chrono::mktime(&t.m_calendar);
   return t;
 }
 
@@ -193,7 +215,7 @@ Time Time::endOfDay()
   t.m_calendar.tm_sec  = 59;
   t.m_calendar.tm_min  = 59;
   t.m_calendar.tm_hour = 23;
-  t.m_time = std::mktime(&t.m_calendar);
+  t.m_time = arken::chrono::mktime(&t.m_calendar);
   return t;
 }
 

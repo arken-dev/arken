@@ -8,6 +8,7 @@ local Class     = require('arken.oop.Class')
 local toboolean = require('arken.toboolean')
 local Date      = require('arken.chrono.Date')
 local Time      = require('arken.chrono.Time')
+local template  = require("arken.template")
 local empty     = require('arken.empty')
 
 local ActiveRecord_Adapter = Class.new("ActiveRecord.Adapter")
@@ -570,7 +571,7 @@ end
 
 function ActiveRecord_Adapter:sql(name, params, flag)
   local table = self.record_class.tableName
-  local query = (ActiveRecord.query_prefix or '') .. 'query/' .. table
+  local query = (self.record_class.query_prefix or '') .. 'query/' .. table
     query  = query .. '/' .. name .. '.sql'
   local values  = self.record_class.where(params)
   if values == nil then
@@ -580,7 +581,12 @@ function ActiveRecord_Adapter:sql(name, params, flag)
   if not os.exists(query) then
     error(query .. ' file not exists')
   end
-  local sql     = os.read(query)
+  --local sql     = os.read(query)
+  local status, sql = pcall(template.execute, query, params, {}, ARKEN_ENV ~= 'production')
+  if not status then
+    error(sql)
+  end
+
   local where   = nil
   if flag then
     where = self.record_class.adapter():where(params)
@@ -713,6 +719,18 @@ function ActiveRecord_Adapter:count(params)
   local res    = cursor:fetch({}, 'a')
   cursor:close()
   return tonumber(res.count_all)
+end
+
+--------------------------------------------------------------------------------
+-- SUM
+--------------------------------------------------------------------------------
+
+function ActiveRecord_Adapter:sum(column, params)
+  local sql    = "SELECT sum(" .. column .. ") sum_all FROM " .. self.tableName .. " " .. self:where(params)
+  local cursor = self:execute(sql)
+  local res    = cursor:fetch({}, 'a')
+  cursor:close()
+  return tonumber(res.sum_all)
 end
 
 -------------------------------------------------------------------------------

@@ -1,4 +1,6 @@
+#include <mutex>
 #include <arken/chrono/date.h>
+
 
 namespace arken {
 namespace chrono {
@@ -6,6 +8,7 @@ namespace chrono {
 Date::Date()
 {
   m_time = 0;
+  m_calendar = {};
 }
 
 Date::Date(const Date &obj)
@@ -17,8 +20,8 @@ Date::Date(const Date &obj)
 Date Date::today()
 {
   Date t;
-  t.m_time = std::time(nullptr);
-  std::tm * timeinfo = std::localtime(&t.m_time);
+  t.m_time = arken::chrono::time(nullptr);
+  std::tm * timeinfo = arken::chrono::localtime(&t.m_time);
 
   t.m_time -= (timeinfo->tm_sec + (timeinfo->tm_min * 60) + (timeinfo->tm_hour * 60 * 60));
 
@@ -38,8 +41,8 @@ Date Date::today()
 Date Date::currentDate()
 {
   Date t;
-  t.m_time = std::time(nullptr);
-  std::tm * timeinfo = std::localtime(&t.m_time);
+  t.m_time = arken::chrono::time(nullptr);
+  std::tm * timeinfo = arken::chrono::localtime(&t.m_time);
 
   t.m_time -= (timeinfo->tm_sec + (timeinfo->tm_min * 60) + (timeinfo->tm_hour * 60 * 60));
 
@@ -88,11 +91,11 @@ Date Date::parse(const char * str, const char * fmt)
   t.m_calendar.tm_yday  = 0;
   t.m_calendar.tm_isdst = 0;
 
-  if ( strptime(str, fmt, &t.m_calendar) ) {
+  if ( arken::chrono::strptime(str, fmt, &t.m_calendar) ) {
     t.m_calendar.tm_sec  = 0;
     t.m_calendar.tm_min  = 0;
     t.m_calendar.tm_hour = 0;
-    t.m_time = std::mktime(&t.m_calendar);
+    t.m_time = arken::chrono::mktime(&t.m_calendar);
   } else {
     t.m_calendar.tm_year = 0;
   }
@@ -107,7 +110,7 @@ Date Date::addYears(int years)
   t.m_calendar = m_calendar;
   t.m_calendar.tm_year += years;
 
-  t.m_time = std::mktime(&t.m_calendar);
+  t.m_time = arken::chrono::mktime(&t.m_calendar);
 
   return t;
 }
@@ -120,7 +123,7 @@ Date Date::addMonths(int months)
   t.m_calendar = m_calendar;
   t.m_calendar.tm_mon += months;
 
-  t.m_time = std::mktime(&t.m_calendar);
+  t.m_time = arken::chrono::mktime(&t.m_calendar);
 
   return t;
 }
@@ -132,7 +135,7 @@ Date Date::addDays(int days)
   t.m_calendar = m_calendar;
   t.m_calendar.tm_mday += days;
 
-  t.m_time = std::mktime(&t.m_calendar);
+  t.m_time = arken::chrono::mktime(&t.m_calendar);
 
   return t;
 }
@@ -258,14 +261,14 @@ int Date::daysInMonth()
 
 string Date::asctime()
 {
-  const char * result = std::asctime(&m_calendar);
+  const char * result = arken::chrono::asctime(&m_calendar);
   return string(result, 24);
 }
 
 string Date::strftime(const char * format)
 {
   auto result = new char[100]();
-  std::strftime(result, 100, format, &m_calendar);
+  arken::chrono::strftime(result, 100, format, &m_calendar);
   return string(std::move(result));
 }
 

@@ -1278,6 +1278,11 @@ arken_string_List_closure( lua_State *L ) {
   luaL_checktype(L, i, LUA_TLIGHTUSERDATA);
   auto ba  = static_cast<List *>(lua_touserdata(L, i));
   const char * result = ba->each();
+  if ( ba->size() > 100000 ) {
+    lua_pushstring(L, "achei!!!!!!!!");
+    lua_error(L);
+    return 0;
+  }
   if( result == nullptr ) {
     lua_pushnil(L);
   } else {

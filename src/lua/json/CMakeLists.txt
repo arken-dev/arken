@@ -20,4 +20,4 @@ add_library(
   json.c strbuf.c g_fmt.c dtoa.c #fpconv.c
 )
 
-target_link_libraries(json ${LUA_FLAVOR})
+# target_link_libraries(json arken)

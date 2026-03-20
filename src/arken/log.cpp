@@ -5,7 +5,7 @@
 
 #include <arken/base>
 #include <arken/log.h>
-#include <ctime>
+#include <arken/chrono/base.h>
 #include <mutex>
 
 namespace arken {
@@ -55,8 +55,8 @@ void Log::log(const char * level, const char * value)
   std::string log(level);
 
   // time
-  std::time_t result = std::time(nullptr);
-  char * t = std::asctime(std::localtime(&result));
+  std::time_t result = arken::chrono::time(nullptr);
+  char * t = arken::chrono::asctime(std::localtime(&result));
   t[24] = 32; // space
   log.append(t);
   log.append(value);

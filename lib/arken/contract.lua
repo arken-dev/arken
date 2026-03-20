@@ -49,6 +49,10 @@ contract.create = function(table, name)
   local body     = name .. "Body"
   local after    = name .. "After"
 
+  if table[body] then
+    error(string.format("Contract %s already defined.", name))
+  end
+
   -- check if not exists contract_prepare
   if table[prepare] == nil then
     table[prepare] = function(self, ...) end
