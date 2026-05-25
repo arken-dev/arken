@@ -162,6 +162,11 @@ function ActiveRecord_Adapter:where(values, flag)
   local offset = values.offset
   local lock   = values.lock
 
+  local tmp_order = tostring(order):lower()
+  if tmp_order:contains('select') or tmp_order:contains(';') or tmp_order:contains('delete') or tonumber(tmp_order) ~= nil then
+    error('invalid order 2')
+  end
+
 --[[
   values.join    = nil
   values.binding = nil
