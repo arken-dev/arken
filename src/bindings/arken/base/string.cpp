@@ -1277,16 +1277,19 @@ arken_string_List_closure( lua_State *L ) {
   int i = lua_upvalueindex(1);
   luaL_checktype(L, i, LUA_TLIGHTUSERDATA);
   auto ba  = static_cast<List *>(lua_touserdata(L, i));
-  const char * result = ba->each();
-  if ( ba->size() > 100000 ) {
-    lua_pushstring(L, "achei!!!!!!!!");
-    lua_error(L);
-    return 0;
+  int pos = lua_tointeger(L, lua_upvalueindex(2));
+  if( pos >= ba->size() ) {
+    lua_pushnil(L);
+    return 1;
   }
+  int len;
+  const char * result = ba->at(pos, &len);
+  lua_pushinteger(L, pos + 1);
+  lua_replace(L, lua_upvalueindex(2));
   if( result == nullptr ) {
     lua_pushnil(L);
   } else {
-    lua_pushstring(L, result);
+    lua_pushlstring(L, result, len);
   }
   return 1;
 }
@@ -1295,7 +1298,8 @@ static int
 arken_string_List_each( lua_State *L ) {
   List * udata  = checkList( L );
   lua_pushlightuserdata(L, udata);
-  lua_pushcclosure(L, arken_string_List_closure, 1);
+  lua_pushinteger(L, 0);
+  lua_pushcclosure(L, arken_string_List_closure, 2);
   return 1;
 }
 
