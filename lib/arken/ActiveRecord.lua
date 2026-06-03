@@ -142,18 +142,19 @@ ActiveRecord.inherit = function(class)
     params.key     = nil
     params.reverse = nil
 
-    params.order   = params.order or table .. "."  .. key
 
     if empty(where) then
       where = class.adapter():createWhereByParams(params)
     end
     --error(params.where)
 
-    if reverse then
-      params.order = params.order .. " DESC"
-      operator = "<"
-    else
-      params.order = params.order .. " ASC"
+    if empty(params.order) then
+      if reverse then
+        params.order = table .. "."  .. key .. " DESC"
+        operator = "<"
+      else
+        params.order = table .. "."  .. key .. " ASC"
+      end
     end
 
     params.limit = 1
