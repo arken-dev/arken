@@ -402,8 +402,6 @@ arken_string_split( lua_State *L ) {
   List list = string::split(string, len, pattern);
   auto ptr  = static_cast<List **>(lua_newuserdata(L, sizeof(List*)));
   List *tmp = new List(std::move(list));
-  //*ptr = new List(std::move(list));
-  std::cout << "constutor " << tmp << std::endl;
   *ptr = tmp;
 
   arken::mvm::data * data = arken::mvm::current();
@@ -1256,8 +1254,6 @@ arken_string_List_gc( lua_State *L ) {
   List *udata = checkList( L );
   // check if arken_string_List_each running
   bool running = (udata->cursor() > 0 && udata->cursor() < udata->size());
-  std::cout << "list gc..." << udata << std::endl;
-
   //delete udata;
   if( running ) {
     const char * msg =

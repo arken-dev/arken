@@ -6,7 +6,6 @@
 #include <clocale>
 #include <arken/mvm.h>
 #include <arken/concurrent/core.h>
-#include <arken/string.h>
 
 namespace arken {
 
@@ -474,26 +473,9 @@ string mvm::data::inspect()
   return tmp;
 }
 
-void mvm::data::addMemory(void * pointer)
-{
-  std::cout << "addMemory " << pointer << std::endl;
-  m_memoryPool.push_back(new memory(pointer));
-}
-
 void mvm::data::clearMemory()
 {
-  /*
-  for (size_t i = 0; i < m_memoryPool.size(); ++i) {
-    void *ptr  = (arken::string::List *) m_memoryPool[i]->m_pointer;
-    std::cout << "Índice " << i << ": " << ptr << "\n";
-    //delete ptr;
-    delete m_memoryPool[i];
-  }
-  */
-  std::cout << "tamanho m_memoryPool.size()" << m_memoryPool.size() << std::endl;
   for (auto ponteiro : m_memoryPool) {
-    //arken::string::List  *ptr  = (arken::string::List *) ponteiro->m_pointer;
-    //delete ptr;
     delete ponteiro;
   }
   m_memoryPool.clear();
@@ -504,15 +486,11 @@ void mvm::data::clearMemory()
 // MVM - DATA MEMORY
 //-----------------------------------------------------------------------------
 
-mvm::data::memory::memory( void * pointer )
-{
-  m_pointer = pointer;
-}
-
 mvm::data::memory::~memory()
 {
-  std::cout << "data::memory destrutor" << m_pointer << std::endl;
-  delete m_pointer;
+  if (m_deleter) {
+    m_deleter();
+  }
 }
 
 

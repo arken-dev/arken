@@ -18,6 +18,7 @@
 #include <cstring>
 #include <iostream>
 #include <atomic>
+#include <functional>
 #include <memory>
 
 namespace arken {
@@ -112,8 +113,15 @@ class mvm {
 
     class memory {
       public:
-      void * m_pointer = nullptr;
-      memory(void * pointer);
+      void *                m_pointer = nullptr;
+      std::function<void()> m_deleter;
+
+      template<typename T>
+      memory(T * pointer)
+        : m_pointer(pointer)
+        , m_deleter([pointer]() { delete pointer; })
+      {}
+
       ~memory();
     };
 
@@ -135,7 +143,10 @@ class mvm {
     uint32_t    version();
     Shared      shared();
     string      inspect();
-    void addMemory(void * pointer);
+    template<typename T>
+    void addMemory(T * pointer) {
+      m_memoryPool.push_back(new memory(pointer));
+    }
     void clearMemory();
   };
 
