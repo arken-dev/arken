@@ -401,11 +401,10 @@ arken_string_split( lua_State *L ) {
   const char  * pattern = luaL_checkstring(L, 2);
   List list = string::split(string, len, pattern);
   auto ptr  = static_cast<List **>(lua_newuserdata(L, sizeof(List*)));
-  List *tmp = new List(std::move(list));
-  *ptr = tmp;
+  *ptr = new List(std::move(list));
 
   arken::mvm::data * data = arken::mvm::current();
-  data->addMemory(tmp);
+  data->addMemory(*ptr);
 
   luaL_getmetatable(L, "arken.string.List.metatable");
   lua_setmetatable(L, -2);
