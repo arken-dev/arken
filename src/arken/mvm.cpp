@@ -473,6 +473,33 @@ string mvm::data::inspect()
   return tmp;
 }
 
+void mvm::data::addMemory(void * pointer)
+{
+  m_memoryPool.push_back(memory(pointer));
+}
+
+void mvm::data::clearMemory()
+{
+  m_memoryPool.clear();
+}
+
+
+//-----------------------------------------------------------------------------
+// MVM - DATA MEMORY
+//-----------------------------------------------------------------------------
+
+mvm::data::memory::memory( void * pointer )
+{
+  m_pointer = pointer;
+}
+
+mvm::data::memory::~memory()
+{
+  std::cout << "data::memory destrutor" << std::endl;
+  delete m_pointer;
+}
+
+
 //-----------------------------------------------------------------------------
 // MVM - INSTANCE
 //-----------------------------------------------------------------------------
@@ -487,6 +514,8 @@ mvm::instance::instance(mvm::data * data)
 
 mvm::instance::~instance()
 {
+
+  m_data->clearMemory();
 
   if( m_data->m_release ) {
     delete m_data;

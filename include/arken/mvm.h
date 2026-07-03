@@ -110,6 +110,13 @@ class mvm {
 
   class data {
 
+    class memory {
+      void * m_pointer = nullptr;
+      public:
+      memory(void * pointer);
+      ~memory();
+    };
+
     friend class mvm;
 
     private:
@@ -118,6 +125,7 @@ class mvm {
     uint32_t    m_gc;
     bool        m_release = false;
     Shared      m_shared;
+    std::vector<memory> m_memoryPool;
 
     public:
     data(uint32_t version = s_version);
@@ -127,6 +135,8 @@ class mvm {
     uint32_t    version();
     Shared      shared();
     string      inspect();
+    void addMemory(void * pointer);
+    void clearMemory();
   };
 
   //---------------------------------------------------------------------------
