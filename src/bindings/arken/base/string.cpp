@@ -401,13 +401,16 @@ arken_string_split( lua_State *L ) {
   const char  * pattern = luaL_checkstring(L, 2);
   List list = string::split(string, len, pattern);
   auto ptr  = static_cast<List **>(lua_newuserdata(L, sizeof(List*)));
-  *ptr = new List(std::move(list));
+  List *tmp = new List(std::move(list));
+  //*ptr = new List(std::move(list));
+  std::cout << "constutor " << tmp << std::endl;
+  *ptr = tmp;
+
+  arken::mvm::data * data = arken::mvm::current();
+  data->addMemory(tmp);
 
   luaL_getmetatable(L, "arken.string.List.metatable");
   lua_setmetatable(L, -2);
-
-  arken::mvm::data * data = arken::mvm::current();
-  data->addMemory(ptr);
 
   return 1;
 }
@@ -1253,7 +1256,8 @@ arken_string_List_gc( lua_State *L ) {
   List *udata = checkList( L );
   // check if arken_string_List_each running
   bool running = (udata->cursor() > 0 && udata->cursor() < udata->size());
-  std::cout << "list gc..." << std::endl;
+  std::cout << "list gc..." << udata << std::endl;
+
   //delete udata;
   if( running ) {
     const char * msg =
