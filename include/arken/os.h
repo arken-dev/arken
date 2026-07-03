@@ -27,6 +27,7 @@ class os {
   static bool     chdir(const char * dirpath);
   static size_t   ctime(const char * path);
   static string   dirpath(const char * path);
+  static size_t   du(const char * path);
   static bool     exists(const char * path);
   static string   executablePath();
   static List glob(const char * dir);

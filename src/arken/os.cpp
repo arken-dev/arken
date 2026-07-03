@@ -20,6 +20,8 @@
 #include <filesystem>
 #include <unistd.h>
 #include <limits.h>
+#include <sys/stat.h>
+#include <set>
 
 using path   = std::filesystem::path;
 using string = arken::string;
@@ -241,6 +243,35 @@ string os::dirpath(const char * p)
 {
   path path = std::filesystem::absolute(p).parent_path();
   return string(path.string());
+}
+
+size_t os::du(const char * path)
+{
+  namespace fs = std::filesystem;
+  uintmax_t blocks512 = 0;
+  std::set<std::pair<dev_t, ino_t>> seen;
+
+  auto add = [&](const char * p) {
+    struct stat st;
+    if (lstat(p, &st) != 0) return;
+    if (st.st_nlink > 1) {
+      if (!seen.emplace(st.st_dev, st.st_ino).second) return;
+    }
+    blocks512 += st.st_blocks;
+  };
+
+  std::error_code ec;
+  add(path);
+
+  if (fs::is_directory(path)) {
+    fs::recursive_directory_iterator it(path, fs::directory_options::skip_permission_denied, ec);
+    for (; it != fs::recursive_directory_iterator(); it.increment(ec)) {
+      if (ec) break;
+      add(it->path().c_str());
+    }
+  }
+
+  return (blocks512 * 512) / 1024;
 }
 
 bool os::exists(const char * path)
