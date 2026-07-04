@@ -144,10 +144,10 @@ class mvm {
     Shared      shared();
     string      inspect();
     template<typename T>
-    void addMemory(T * pointer) {
+    void manage(T * pointer) {
       m_memoryPool.push_back(new memory(pointer));
     }
-    void clearMemory();
+    void collect();
   };
 
   //---------------------------------------------------------------------------

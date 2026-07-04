@@ -403,8 +403,11 @@ arken_string_split( lua_State *L ) {
   auto ptr  = static_cast<List **>(lua_newuserdata(L, sizeof(List*)));
   *ptr = new List(std::move(list));
 
+
   arken::mvm::data * data = arken::mvm::current();
-  data->addMemory(*ptr);
+  data->manage(*ptr);
+
+  //mvm::manage(*ptr);
 
   luaL_getmetatable(L, "arken.string.List.metatable");
   lua_setmetatable(L, -2);

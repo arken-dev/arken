@@ -473,7 +473,7 @@ string mvm::data::inspect()
   return tmp;
 }
 
-void mvm::data::clearMemory()
+void mvm::data::collect()
 {
   for (auto ponteiro : m_memoryPool) {
     delete ponteiro;
@@ -509,7 +509,7 @@ mvm::instance::instance(mvm::data * data)
 mvm::instance::~instance()
 {
 
-  m_data->clearMemory();
+  m_data->collect();
 
   if( m_data->m_release ) {
     delete m_data;
