@@ -18,6 +18,7 @@
 #include <cstring>
 #include <iostream>
 #include <atomic>
+#include <functional>
 #include <memory>
 
 namespace arken {
@@ -110,6 +111,20 @@ class mvm {
 
   class data {
 
+    class memory {
+      public:
+      void *                m_pointer = nullptr;
+      std::function<void()> m_deleter;
+
+      template<typename T>
+      memory(T * pointer)
+        : m_pointer(pointer)
+        , m_deleter([pointer]() { delete pointer; })
+      {}
+
+      ~memory();
+    };
+
     friend class mvm;
 
     private:
@@ -117,7 +132,9 @@ class mvm {
     uint32_t    m_version;
     uint32_t    m_gc;
     bool        m_release = false;
+    bool        m_collect = false;
     Shared      m_shared;
+    std::vector<memory *> m_memoryPool;
 
     public:
     data(uint32_t version = s_version);
@@ -127,6 +144,12 @@ class mvm {
     uint32_t    version();
     Shared      shared();
     string      inspect();
+    template<typename T>
+    void manage(T * pointer) {
+      m_memoryPool.push_back(new memory(pointer));
+      m_collect = true;
+    }
+    void collect();
   };
 
   //---------------------------------------------------------------------------
@@ -210,6 +233,10 @@ class mvm {
   static char * setlocale(string locale, string category);
   static char * setlocale(string locale);
   static mvm::data * current();
+  template<typename T>
+  static void manage(T * pointer) {
+    current()->manage(pointer);
+  }
   static Shared & shared();
 
 };
