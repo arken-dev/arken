@@ -473,6 +473,30 @@ string mvm::data::inspect()
   return tmp;
 }
 
+void mvm::data::collect()
+{
+  if (m_collect) {
+    for (auto ponteiro : m_memoryPool) {
+      delete ponteiro;
+    }
+    m_memoryPool.clear();
+    m_collect = false;
+  }
+}
+
+
+//-----------------------------------------------------------------------------
+// MVM - DATA MEMORY
+//-----------------------------------------------------------------------------
+
+mvm::data::memory::~memory()
+{
+  if (m_deleter) {
+    m_deleter();
+  }
+}
+
+
 //-----------------------------------------------------------------------------
 // MVM - INSTANCE
 //-----------------------------------------------------------------------------
@@ -487,6 +511,8 @@ mvm::instance::instance(mvm::data * data)
 
 mvm::instance::~instance()
 {
+
+  m_data->collect();
 
   if( m_data->m_release ) {
     delete m_data;
