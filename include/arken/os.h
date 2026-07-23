@@ -6,6 +6,7 @@
 #ifndef _ARKEN_OS_
 #define _ARKEN_OS_
 
+#include <cstdint>
 #include <arken/string.h>
 
 
