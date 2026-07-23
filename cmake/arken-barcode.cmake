@@ -6,11 +6,11 @@ if( ARKEN_BARCODE )
   set( arken-barcode ${files} )
 
   include_directories(
-    /opt/objectdata/zxing/include/ZXing
-    /opt/objectdata/zxing/include/stb
+    ${PROJECT_SOURCE_DIR}/deps/zxing/include/ZXing
+    ${PROJECT_SOURCE_DIR}/deps/zxing/include/stb
   )
 
-  link_directories( /opt/objectdata/zxing/lib/ )
+  link_directories( ${PROJECT_SOURCE_DIR}/deps/zxing/lib/ )
 
 endif()
 

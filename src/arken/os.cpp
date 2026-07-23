@@ -151,7 +151,7 @@ List os::find(const char * dir, const char * rgx, bool recursive)
 
 double os::microtime()
 {
-  uint64_t value = std::chrono::high_resolution_clock::now().time_since_epoch() / std::chrono::microseconds(1);
+  uint64_t value = std::chrono::system_clock::now().time_since_epoch() / std::chrono::microseconds(1);
   return (double) value / 1.0e6;
 }
 

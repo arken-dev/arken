@@ -19,5 +19,5 @@ add_library(
   json.h dtoa_config.h fpconv.h strbuf.h
   json.c strbuf.c g_fmt.c dtoa.c #fpconv.c
 )
-
+target_link_libraries(json luajit)
 # target_link_libraries(json arken)

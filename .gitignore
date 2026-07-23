@@ -26,3 +26,4 @@ deps/*
 coverage/*
 .DS_Store
 cmake/*
+bootstrap/tmp/
