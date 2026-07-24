@@ -150,18 +150,19 @@ List os::glob(string full_path_pattern)
 
   if( recursive ) {
     for(auto& p: fs::recursive_directory_iterator(base_dir)) {
-       std::smatch matches;
+       //std::smatch matches;
        std::string path(p.path().string());
         std::cout << "path " << path << std::endl;
-       if( std::regex_search(path, matches, exp) ) {
+       if (std::regex_match(path, exp)) {
+       //if( std::regex_search(path, matches, exp) ) {
          list.append( std::string(path).c_str() );
        }
     }
   } else {
     for(auto& p: fs::directory_iterator(base_dir)) {
-       std::smatch matches;
+       //std::smatch matches;
        std::string path(p.path().string());
-       if( std::regex_search(path, matches, exp) ) {
+       if (std::regex_match(path, exp)) {
          list.append( std::string(path).c_str() );
        }
     }
