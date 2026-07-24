@@ -93,14 +93,17 @@ unsigned int os::cores()
 
 static std::string glob_to_regex(const std::string& pattern) {
   namespace fs = std::filesystem;
-  std::string regex_str = "^";
+  std::string regex_str = "";
+
+  std::cout << pattern << std::endl;
+
   for (char c : pattern) {
     switch (c) {
       case '*': regex_str += ".*"; break;
       case '?': regex_str += "."; break;
       case '.': case '+': case '^': case '$': case '{':
       case '}': case '[': case ']': case '(': case ')':
-      case '|': case '\\':
+      case '|': case '\\' : case '/':
         regex_str += '\\';
         regex_str += c;
         break;
@@ -111,19 +114,20 @@ static std::string glob_to_regex(const std::string& pattern) {
     return regex_str;
 }
 
-List os::glob(const char * full_path_pattern)
+List os::glob(string full_path_pattern)
 {
   namespace fs = std::filesystem;
-  bool recursive = true;
+  bool recursive = full_path_pattern.contains("**");
+  std::cout << "recursive " << recursive << std::endl;
   List list;
 
   //std::vector<fs::path> matches; remover// arken:string:List
 
   // Converte para objeto path para extrair componentes
-  fs::path input_path(full_path_pattern);
+  string input_path(full_path_pattern.prefix("*").data());
 
   // O diretório base será o pai do caminho indicado (ex: de "./src/*.cpp" extrai "./src")
-  fs::path base_dir = input_path.parent_path();
+  fs::path base_dir = input_path.data();//.parent_path(); TODO
 
   // Se não houver diretório explicitado (ex: apenas "*.txt"), assume o diretório atual "."
   if (base_dir.empty()) {
@@ -131,33 +135,38 @@ List os::glob(const char * full_path_pattern)
   }
 
   // O padrão do glob será o nome do arquivo final (ex: "*.cpp")
-  std::string pattern = input_path.filename().string();
+  string pattern = full_path_pattern.suffix(input_path).data();//input_path.filename().string();
 
   // Se o diretório base não existir, retorna vazio imediatamente
   if (!fs::exists(base_dir) || !fs::is_directory(base_dir)) {
     return list;
   }
 
-  std::regex regex_pattern(glob_to_regex(pattern));
+  std::cout << "base_dir " << base_dir << std::endl;
+  std::cout << "patterh" << pattern << std::endl;
+  std::cout << "glob to regex " << glob_to_regex(pattern.replace("**", "*").data()) << std::endl;
 
-  // Lambda para processar e filtrar os arquivos
-  auto search_dir = [&](auto& iterator) {
-    for (const auto& entry : iterator) {
-      std::string filename = entry.path().filename().string();
-      if (std::regex_match(filename, regex_pattern)) {
-        //matches.push_back(entry.path());
-        list.append(entry.path().string().c_str());
-      }
+  std::regex exp(glob_to_regex(pattern.data()));
+
+  if( recursive ) {
+    for(auto& p: fs::recursive_directory_iterator(base_dir)) {
+       std::smatch matches;
+       std::string path(p.path().string());
+        std::cout << "path " << path << std::endl;
+       if( std::regex_search(path, matches, exp) ) {
+         list.append( std::string(path).c_str() );
+       }
     }
-  };
-
-  if (recursive) {
-    fs::recursive_directory_iterator iter(base_dir, fs::directory_options::skip_permission_denied);
-    search_dir(iter);
   } else {
-    fs::directory_iterator iter(base_dir, fs::directory_options::skip_permission_denied);
-    search_dir(iter);
+    for(auto& p: fs::directory_iterator(base_dir)) {
+       std::smatch matches;
+       std::string path(p.path().string());
+       if( std::regex_search(path, matches, exp) ) {
+         list.append( std::string(path).c_str() );
+       }
+    }
   }
+
 
   return list;
 }
