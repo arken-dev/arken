@@ -118,10 +118,7 @@ List os::glob(string full_path_pattern)
 {
   namespace fs = std::filesystem;
   bool recursive = full_path_pattern.contains("**");
-  std::cout << "recursive " << recursive << std::endl;
   List list;
-
-  //std::vector<fs::path> matches; remover// arken:string:List
 
   // Converte para objeto path para extrair componentes
   string input_path(full_path_pattern.prefix("*").data());
@@ -142,32 +139,23 @@ List os::glob(string full_path_pattern)
     return list;
   }
 
-  std::cout << "base_dir " << base_dir << std::endl;
-  std::cout << "patterh" << pattern << std::endl;
-  std::cout << "glob to regex " << glob_to_regex(pattern.replace("**", "*").data()) << std::endl;
-
   std::regex exp(glob_to_regex(pattern.data()));
 
   if( recursive ) {
     for(auto& p: fs::recursive_directory_iterator(base_dir)) {
-       //std::smatch matches;
-       std::string path(p.path().string());
-        std::cout << "path " << path << std::endl;
+       std::string path{p.path().string()};
        if (std::regex_match(path, exp)) {
-       //if( std::regex_search(path, matches, exp) ) {
-         list.append( std::string(path).c_str() );
+         list.append( path.c_str() );
        }
     }
   } else {
     for(auto& p: fs::directory_iterator(base_dir)) {
-       //std::smatch matches;
        std::string path(p.path().string());
        if (std::regex_match(path, exp)) {
          list.append( std::string(path).c_str() );
        }
     }
   }
-
 
   return list;
 }
