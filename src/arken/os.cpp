@@ -23,6 +23,7 @@
 #include <set>
 #include <vector>
 
+namespace fs = std::filesystem;
 using path   = std::filesystem::path;
 using string = arken::string;
 using List   = arken::string::List;
@@ -90,11 +91,6 @@ unsigned int os::cores()
 {
   return std::thread::hardware_concurrency();
 }
-
-
-namespace {
-
-namespace fs = std::filesystem;
 
 // Divide o padrão em componentes de diretório, um por nível (separador "/").
 std::vector<std::string> glob_split(const std::string& pattern) {
@@ -235,11 +231,8 @@ void glob_collect(const fs::path& base, const std::vector<std::string>& segments
   }
 }
 
-} // namespace
-
 List os::glob(string full_path_pattern)
 {
-  namespace fs = std::filesystem;
   List list;
 
   std::string pattern(full_path_pattern.data());
@@ -264,7 +257,6 @@ List os::glob(string full_path_pattern)
 
 List os::find(const char * dir, const char * rgx, bool recursive)
 {
-  namespace fs = std::filesystem;
 
   List list;
   std::regex exp(rgx);
@@ -392,7 +384,6 @@ string os::dirpath(const char * p)
 
 size_t os::du(const char * path)
 {
-  namespace fs = std::filesystem;
   uintmax_t blocks512 = 0;
   std::set<std::pair<dev_t, ino_t>> seen;
 
