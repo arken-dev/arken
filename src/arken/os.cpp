@@ -114,37 +114,87 @@ bool glob_has_wildcard(const std::string& segment) {
   return segment.find_first_of("*?[") != std::string::npos;
 }
 
-// Converte um único componente do glob (nunca contém "/") em regex,
-// já que cada nível de diretório é resolvido separadamente.
-std::regex glob_segment_to_regex(const std::string& segment) {
-  std::string regex_str = "^";
+// Casa um caractere contra uma classe "[...]" do padrão (colchetes já
+// localizados pelo chamador). Suporta faixas ("a-z") e negação ("[^...]"),
+// nos mesmos moldes de uma classe de caracteres de regex.
+bool glob_match_class(const std::string& pattern, size_t start, size_t end, char c) {
+  bool negate = false;
+  size_t i = start;
 
-  for (size_t i = 0; i < segment.size(); ++i) {
-    char c = segment[i];
-    switch (c) {
-      case '*': regex_str += "[^/]*"; break;
-      case '?': regex_str += "[^/]"; break;
-      case '.': case '+': case '^': case '$':
-      case '(': case ')': case '|': case '\\':
-        regex_str += '\\';
-        regex_str += c;
-        break;
-      case '[': {
-        size_t close = segment.find(']', i + 1);
-        if (close == std::string::npos) {
-          regex_str += "\\[";
-        } else {
-          regex_str += segment.substr(i, close - i + 1);
-          i = close;
-        }
-        break;
+  if (i < end && pattern[i] == '^') {
+    negate = true;
+    ++i;
+  }
+
+  bool matched = false;
+  while (i < end) {
+    if (i + 2 < end && pattern[i + 1] == '-') {
+      if (c >= pattern[i] && c <= pattern[i + 2]) {
+        matched = true;
       }
-      default: regex_str += c; break;
+      i += 3;
+    } else {
+      if (pattern[i] == c) {
+        matched = true;
+      }
+      ++i;
     }
   }
 
-  regex_str += "$";
-  return std::regex(regex_str);
+  return negate ? !matched : matched;
+}
+
+// Casa "name" contra um único componente do glob (nunca contém "/"),
+// comparando caractere a caractere em vez de compilar/rodar uma regex —
+// backtracking guloso clássico de wildcard matching, sem alocações.
+bool glob_match_segment(const std::string& name, const std::string& pattern) {
+  size_t n = 0, p = 0;
+  size_t star_p = std::string::npos, star_n = 0;
+
+  while (n < name.size()) {
+    if (p < pattern.size() && pattern[p] == '?') {
+      ++n; ++p;
+      continue;
+    }
+
+    if (p < pattern.size() && pattern[p] == '*') {
+      star_p = p++;
+      star_n = n;
+      continue;
+    }
+
+    if (p < pattern.size() && pattern[p] == '[') {
+      size_t close = pattern.find(']', p + 1);
+      if (close != std::string::npos) {
+        if (glob_match_class(pattern, p + 1, close, name[n])) {
+          ++n;
+          p = close + 1;
+          continue;
+        }
+      } else if (pattern[p] == name[n]) {
+        // "[" sem "]" correspondente é tratado como caractere literal.
+        ++n; ++p;
+        continue;
+      }
+    } else if (p < pattern.size() && pattern[p] == name[n]) {
+      ++n; ++p;
+      continue;
+    }
+
+    if (star_p != std::string::npos) {
+      p = star_p + 1;
+      n = ++star_n;
+      continue;
+    }
+
+    return false;
+  }
+
+  while (p < pattern.size() && pattern[p] == '*') {
+    ++p;
+  }
+
+  return p == pattern.size();
 }
 
 // Casa recursivamente os componentes do padrão a partir de "base", um nível
@@ -155,7 +205,8 @@ void glob_collect(const fs::path& base, const std::vector<std::string>& segments
   if (idx == segments.size()) {
     std::error_code ec;
     if (fs::exists(base, ec)) {
-      results.append(base.string().c_str());
+      const std::string& value = base.native();
+      results.append(value.data(), (int) value.size());
     }
     return;
   }
@@ -171,24 +222,65 @@ void glob_collect(const fs::path& base, const std::vector<std::string>& segments
   std::error_code ec;
 
   if (segment == "**") {
-    // "**" casando com zero diretórios: aplica o restante do padrão aqui mesmo.
-    glob_collect(base, segments, idx + 1, results);
-
     fs::path dir = base.empty() ? fs::path(".") : base;
+    size_t next_idx = idx + 1;
+
+    // Quando o componente seguinte a "**" tem wildcard, casá-lo exige varrer
+    // "dir" — o mesmo diretório que o laço abaixo já varre para achar
+    // subdiretórios. Sem esse merge, "dir" seria listado duas vezes por
+    // nível (uma para casar o próximo componente, outra para descer o "**"),
+    // dobrando as chamadas de readdir em toda a árvore.
+    const std::string* next_segment = nullptr;
+    bool next_last = false;
+
+    if (next_idx < segments.size()) {
+      const std::string& seg = segments[next_idx];
+      if (!seg.empty() && seg != "**" && glob_has_wildcard(seg)) {
+        next_segment = &seg;
+        next_last = (next_idx + 1 == segments.size());
+      }
+    }
+
+    if (next_segment == nullptr) {
+      // Componente seguinte vazio, "**" ou literal: não requer varrer "dir"
+      // de novo (checagem única de existência, ou recursão mais barata).
+      glob_collect(base, segments, next_idx, results);
+    }
+
     if (!fs::is_directory(dir, ec)) {
       return;
     }
 
     for (auto& entry : fs::directory_iterator(dir, ec)) {
-      fs::path child = base / entry.path().filename();
+      fs::path fname = entry.path().filename();
+      bool is_dir = entry.is_directory();
 
-      if (entry.is_directory()) {
+      if (next_segment != nullptr && glob_match_segment(fname.native(), *next_segment)) {
+        // "**" casando com zero diretórios aqui: este entry é o próximo
+        // componente do padrão.
+        fs::path matched = base / fname;
+        if (next_last) {
+          const std::string& value = matched.native();
+          results.append(value.data(), (int) value.size());
+        } else if (is_dir) {
+          glob_collect(matched, segments, next_idx + 1, results);
+        }
+      }
+
+      if (is_dir) {
+        fs::path child = base / fname;
         // Diretório: continua expandindo "**" mais fundo (que por sua vez
         // volta a tentar casar o restante do padrão a partir daqui).
         glob_collect(child, segments, idx, results);
-      } else {
-        // Arquivo: só pode ser o fim da expansão de "**", não há como descer mais.
-        glob_collect(child, segments, idx + 1, results);
+      } else if (next_segment == nullptr) {
+        // Arquivo, componente seguinte sem wildcard: já tratado acima via
+        // glob_collect(base, ...) sobre o diretório inteiro, nada a fazer
+        // por entry aqui a não ser no caso de "**" ser o último componente,
+        // onde cada arquivo deve ser checado individualmente.
+        if (next_idx == segments.size()) {
+          fs::path child = base / fname;
+          glob_collect(child, segments, next_idx, results);
+        }
       }
     }
     return;
@@ -201,7 +293,8 @@ void glob_collect(const fs::path& base, const std::vector<std::string>& segments
     fs::path next = base / segment;
     if (last) {
       if (fs::exists(next, ec)) {
-        results.append(next.string().c_str());
+        const std::string& value = next.native();
+        results.append(value.data(), (int) value.size());
       }
     } else if (fs::is_directory(next, ec)) {
       glob_collect(next, segments, idx + 1, results);
@@ -213,18 +306,18 @@ void glob_collect(const fs::path& base, const std::vector<std::string>& segments
     return;
   }
 
-  std::regex exp = glob_segment_to_regex(segment);
-
   for (auto& entry : fs::directory_iterator(dir, ec)) {
-    std::string name = entry.path().filename().string();
-    if (!std::regex_match(name, exp)) {
+    fs::path fname = entry.path().filename();
+
+    if (!glob_match_segment(fname.native(), segment)) {
       continue;
     }
 
-    fs::path child = base / entry.path().filename();
+    fs::path child = base / fname;
 
     if (last) {
-      results.append(child.string().c_str());
+      const std::string& value = child.native();
+      results.append(value.data(), (int) value.size());
     } else if (entry.is_directory()) {
       glob_collect(child, segments, idx + 1, results);
     }
