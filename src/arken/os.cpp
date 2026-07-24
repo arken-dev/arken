@@ -324,11 +324,12 @@ void glob_collect(const fs::path& base, const std::vector<std::string>& segments
   }
 }
 
-List os::glob(string full_path_pattern)
+List os::glob(const char * full_path_pattern)
 {
   List list;
 
-  std::string pattern(full_path_pattern.data());
+  std::string pattern(full_path_pattern);
+
   if (pattern.empty()) {
     return list;
   }
