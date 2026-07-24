@@ -21,6 +21,7 @@
 #include <limits.h>
 #include <sys/stat.h>
 #include <set>
+#include <vector>
 
 using path   = std::filesystem::path;
 using string = arken::string;
@@ -91,71 +92,172 @@ unsigned int os::cores()
 }
 
 
-static std::string glob_to_regex(const std::string& pattern) {
-  namespace fs = std::filesystem;
-  std::string regex_str = "";
+namespace {
 
-  std::cout << pattern << std::endl;
+namespace fs = std::filesystem;
+
+// Divide o padrão em componentes de diretório, um por nível (separador "/").
+std::vector<std::string> glob_split(const std::string& pattern) {
+  std::vector<std::string> segments;
+  std::string current;
 
   for (char c : pattern) {
+    if (c == '/') {
+      segments.push_back(current);
+      current.clear();
+    } else {
+      current += c;
+    }
+  }
+  segments.push_back(current);
+
+  return segments;
+}
+
+bool glob_has_wildcard(const std::string& segment) {
+  return segment.find_first_of("*?[") != std::string::npos;
+}
+
+// Converte um único componente do glob (nunca contém "/") em regex,
+// já que cada nível de diretório é resolvido separadamente.
+std::regex glob_segment_to_regex(const std::string& segment) {
+  std::string regex_str = "^";
+
+  for (size_t i = 0; i < segment.size(); ++i) {
+    char c = segment[i];
     switch (c) {
-      case '*': regex_str += ".*"; break;
-      case '?': regex_str += "."; break;
-      case '.': case '+': case '^': case '$': case '{':
-      case '}': case '[': case ']': case '(': case ')':
-      case '|': case '\\' : case '/':
+      case '*': regex_str += "[^/]*"; break;
+      case '?': regex_str += "[^/]"; break;
+      case '.': case '+': case '^': case '$':
+      case '(': case ')': case '|': case '\\':
         regex_str += '\\';
         regex_str += c;
         break;
-        default: regex_str += c; break;
+      case '[': {
+        size_t close = segment.find(']', i + 1);
+        if (close == std::string::npos) {
+          regex_str += "\\[";
+        } else {
+          regex_str += segment.substr(i, close - i + 1);
+          i = close;
+        }
+        break;
+      }
+      default: regex_str += c; break;
+    }
+  }
+
+  regex_str += "$";
+  return std::regex(regex_str);
+}
+
+// Casa recursivamente os componentes do padrão a partir de "base", um nível
+// de diretório por vez. "**" é tratado à parte pois pode representar zero ou
+// mais níveis de diretório, diferente de "*" que representa exatamente um.
+void glob_collect(const fs::path& base, const std::vector<std::string>& segments,
+                   size_t idx, List& results) {
+  if (idx == segments.size()) {
+    std::error_code ec;
+    if (fs::exists(base, ec)) {
+      results.append(base.string().c_str());
+    }
+    return;
+  }
+
+  const std::string& segment = segments[idx];
+
+  // Componente vazio (ex.: "//" no meio do padrão) apenas avança um nível.
+  if (segment.empty()) {
+    glob_collect(base, segments, idx + 1, results);
+    return;
+  }
+
+  std::error_code ec;
+
+  if (segment == "**") {
+    // "**" casando com zero diretórios: aplica o restante do padrão aqui mesmo.
+    glob_collect(base, segments, idx + 1, results);
+
+    fs::path dir = base.empty() ? fs::path(".") : base;
+    if (!fs::is_directory(dir, ec)) {
+      return;
+    }
+
+    for (auto& entry : fs::directory_iterator(dir, ec)) {
+      fs::path child = base / entry.path().filename();
+
+      if (entry.is_directory()) {
+        // Diretório: continua expandindo "**" mais fundo (que por sua vez
+        // volta a tentar casar o restante do padrão a partir daqui).
+        glob_collect(child, segments, idx, results);
+      } else {
+        // Arquivo: só pode ser o fim da expansão de "**", não há como descer mais.
+        glob_collect(child, segments, idx + 1, results);
       }
     }
-    regex_str += "$";
-    return regex_str;
+    return;
+  }
+
+  fs::path dir = base.empty() ? fs::path(".") : base;
+  bool last = (idx + 1 == segments.size());
+
+  if (!glob_has_wildcard(segment)) {
+    fs::path next = base / segment;
+    if (last) {
+      if (fs::exists(next, ec)) {
+        results.append(next.string().c_str());
+      }
+    } else if (fs::is_directory(next, ec)) {
+      glob_collect(next, segments, idx + 1, results);
+    }
+    return;
+  }
+
+  if (!fs::is_directory(dir, ec)) {
+    return;
+  }
+
+  std::regex exp = glob_segment_to_regex(segment);
+
+  for (auto& entry : fs::directory_iterator(dir, ec)) {
+    std::string name = entry.path().filename().string();
+    if (!std::regex_match(name, exp)) {
+      continue;
+    }
+
+    fs::path child = base / entry.path().filename();
+
+    if (last) {
+      results.append(child.string().c_str());
+    } else if (entry.is_directory()) {
+      glob_collect(child, segments, idx + 1, results);
+    }
+  }
 }
+
+} // namespace
 
 List os::glob(string full_path_pattern)
 {
   namespace fs = std::filesystem;
-  bool recursive = full_path_pattern.contains("**");
   List list;
 
-  // Converte para objeto path para extrair componentes
-  string input_path(full_path_pattern.prefix("*").data());
-
-  // O diretório base será o pai do caminho indicado (ex: de "./src/*.cpp" extrai "./src")
-  fs::path base_dir = input_path.data();//.parent_path(); TODO
-
-  // Se não houver diretório explicitado (ex: apenas "*.txt"), assume o diretório atual "."
-  if (base_dir.empty()) {
-    base_dir = ".";
-  }
-
-  // O padrão do glob será o nome do arquivo final (ex: "*.cpp")
-  string pattern = full_path_pattern.suffix(input_path).data();//input_path.filename().string();
-
-  // Se o diretório base não existir, retorna vazio imediatamente
-  if (!fs::exists(base_dir) || !fs::is_directory(base_dir)) {
+  std::string pattern(full_path_pattern.data());
+  if (pattern.empty()) {
     return list;
   }
 
-  std::regex exp(glob_to_regex(pattern.data()));
+  fs::path start;
+  std::vector<std::string> segments;
 
-  if( recursive ) {
-    for(auto& p: fs::recursive_directory_iterator(base_dir)) {
-       std::string path{p.path().string()};
-       if (std::regex_match(path, exp)) {
-         list.append( path.c_str() );
-       }
-    }
+  if (pattern.front() == '/') {
+    start = "/";
+    segments = glob_split(pattern.substr(1));
   } else {
-    for(auto& p: fs::directory_iterator(base_dir)) {
-       std::string path(p.path().string());
-       if (std::regex_match(path, exp)) {
-         list.append( std::string(path).c_str() );
-       }
-    }
+    segments = glob_split(pattern);
   }
+
+  glob_collect(start, segments, 0, list);
 
   return list;
 }
