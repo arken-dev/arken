@@ -15,7 +15,6 @@
 #include <arken/net/HttpClient>
 #include <arken/digest/md5.h>
 #include <arken/digest/sha1.h>
-#include <apple/glob.h>
 #include <regex>
 #include <filesystem>
 #include <unistd.h>
@@ -95,24 +94,6 @@ List os::glob(const char * pattern)
 {
 
   List list;
-  glob_t paths;
-  int retval;
-
-  paths.gl_pathc = 0;
-  paths.gl_offs  = 0;
-  paths.gl_pathv = nullptr;
-
-  retval = ::glob( pattern, GLOB_BRACE, nullptr, &paths );
-  if( retval == 0 ) {
-
-    for( int idx = 0; idx < paths.gl_pathc; idx++ ) {
-      list.append( paths.gl_pathv[idx] );
-    }
-
-    globfree( &paths );
-  } else {
-    puts( "glob() failed" );
-  }
 
   return list;
 }
