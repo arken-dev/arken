@@ -90,10 +90,74 @@ unsigned int os::cores()
   return std::thread::hardware_concurrency();
 }
 
-List os::glob(const char * pattern)
-{
 
+static std::string glob_to_regex(const std::string& pattern) {
+  namespace fs = std::filesystem;
+  std::string regex_str = "^";
+  for (char c : pattern) {
+    switch (c) {
+      case '*': regex_str += ".*"; break;
+      case '?': regex_str += "."; break;
+      case '.': case '+': case '^': case '$': case '{':
+      case '}': case '[': case ']': case '(': case ')':
+      case '|': case '\\':
+        regex_str += '\\';
+        regex_str += c;
+        break;
+        default: regex_str += c; break;
+      }
+    }
+    regex_str += "$";
+    return regex_str;
+}
+
+List os::glob(const char * full_path_pattern)
+{
+  namespace fs = std::filesystem;
+  bool recursive = true;
   List list;
+
+  //std::vector<fs::path> matches; remover// arken:string:List
+
+  // Converte para objeto path para extrair componentes
+  fs::path input_path(full_path_pattern);
+
+  // O diretório base será o pai do caminho indicado (ex: de "./src/*.cpp" extrai "./src")
+  fs::path base_dir = input_path.parent_path();
+
+  // Se não houver diretório explicitado (ex: apenas "*.txt"), assume o diretório atual "."
+  if (base_dir.empty()) {
+    base_dir = ".";
+  }
+
+  // O padrão do glob será o nome do arquivo final (ex: "*.cpp")
+  std::string pattern = input_path.filename().string();
+
+  // Se o diretório base não existir, retorna vazio imediatamente
+  if (!fs::exists(base_dir) || !fs::is_directory(base_dir)) {
+    return list;
+  }
+
+  std::regex regex_pattern(glob_to_regex(pattern));
+
+  // Lambda para processar e filtrar os arquivos
+  auto search_dir = [&](auto& iterator) {
+    for (const auto& entry : iterator) {
+      std::string filename = entry.path().filename().string();
+      if (std::regex_match(filename, regex_pattern)) {
+        //matches.push_back(entry.path());
+        list.append(entry.path().string().c_str());
+      }
+    }
+  };
+
+  if (recursive) {
+    fs::recursive_directory_iterator iter(base_dir, fs::directory_options::skip_permission_denied);
+    search_dir(iter);
+  } else {
+    fs::directory_iterator iter(base_dir, fs::directory_options::skip_permission_denied);
+    search_dir(iter);
+  }
 
   return list;
 }
