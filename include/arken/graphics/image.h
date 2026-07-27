@@ -10,13 +10,15 @@
 // http://astroa.physics.metu.edu.tr/MANUALS/ImageMagick-6.2.5/www/api/magick-image.html
 // https://imagemagick.org/api/magick-image.php
 
-#ifndef _ARKEN_IMAGE_
-#define _ARKEN_IMAGE_
+#ifndef _ARKEN_GRAPHICS_IMAGE_
+#define _ARKEN_GRAPHICS_IMAGE_
 
 #include <arken/base>
 #include <wand/magick-wand.h>
 
 namespace arken
+{
+namespace graphics
 {
 
 class Image {
@@ -41,6 +43,7 @@ class Image {
 
 };
 
+} // namespace graphics
 } // namespace arken
 
 #endif

@@ -32,7 +32,8 @@ add_library(
   ${src}
   ${arken-barcode}
   ${arken-doc-pdf}
-  ${arken-image}
+  ${arken-graphics-image}
+  ${arken-graphics-chart}
   ${base64}
   ${base64-embedded}
   ${compress}
@@ -84,10 +85,10 @@ if(ARKEN_DOC_PDF)
 endif()
 
 #------------------------------------------------------------------------------
-# ARKEN_IMAGE
+# ARKEN_GRAPHICS_IMAGE / ARKEN_GRAPHICS_CHART
 #------------------------------------------------------------------------------
 
-if(ARKEN_IMAGE)
+if(ARKEN_GRAPHICS_IMAGE OR ARKEN_GRAPHICS_CHART)
   target_link_libraries(arken ${ImageMagick_MagickWand_LIBRARY})
 endif()
 

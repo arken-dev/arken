@@ -1,6 +1,7 @@
-#include <arken/image.h>
+#include <arken/graphics/image.h>
 
 namespace arken {
+namespace graphics {
 
 Image::Image(int width, int height, string color)
 {
@@ -88,4 +89,5 @@ void Image::composite(Image * img, size_t x, size_t y)
 }
 
 
+} // namespace graphics
 } // namespace arken
