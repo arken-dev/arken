@@ -118,7 +118,18 @@ if(ARKEN_NOTIFY STREQUAL "glib")
 endif()
 
 if(ARKEN_NOTIFY STREQUAL "opengl")
-  target_link_libraries(arken glut GL)
+  target_link_libraries(arken ${OPENGL_LIBRARIES})
+  target_link_libraries(arken ${GLFW_LIBRARIES})
+  target_link_libraries(arken ${FREETYPE_LIBRARIES})
+
+  if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    target_link_libraries(arken gdi32)
+  elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    target_link_libraries(arken "-framework Cocoa" "-framework IOKit" "-framework CoreVideo")
+  else()
+    target_link_libraries(arken ${FONTCONFIG_LIBRARIES})
+    target_link_libraries(arken ${X11_LIBRARIES})
+  endif()
 endif()
 
 #------------------------------------------------------------------------------

@@ -32,4 +32,4 @@ apt-get install libpq-dev
 # apt-get install qtbase5-dev libqt5opengl5-dev  # qt
 # apt-get install libnotify-dev      # libnotify
 # apt-get install libglib2.0-dev     # glib
-# apt-get install freeglut3-dev      # opengl
+# apt-get install libglfw3-dev libfreetype-dev libfontconfig-dev libx11-dev  # opengl

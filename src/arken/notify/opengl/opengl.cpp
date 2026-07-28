@@ -10,7 +10,7 @@ namespace arken {
 
 void notify::send(const char * title, const char * message, const char * status)
 {
-  Dialog::send(new NotifyNode(status, title, message));
+  notifygl::Dialog::send(notifygl::NotifyNode(status, title, message));
 }
 
 } // namespace arken
