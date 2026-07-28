@@ -14,7 +14,8 @@
 #define _ARKEN_GRAPHICS_IMAGE_
 
 #include <arken/base>
-#include <wand/magick-wand.h>
+
+typedef struct _MagickWand MagickWand;
 
 namespace arken
 {

@@ -6,6 +6,7 @@
 // Translated from gruff/line.rb.
 
 #include <arken/graphics/chart.h>
+#include <arken/graphics/im_compat.h>
 #include <cmath>
 
 namespace arken {

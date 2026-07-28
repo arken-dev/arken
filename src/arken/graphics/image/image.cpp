@@ -1,4 +1,5 @@
 #include <arken/graphics/image.h>
+#include <arken/graphics/im_compat.h>
 
 namespace arken {
 namespace graphics {
@@ -52,7 +53,7 @@ void Image::resize(int width, int height)
   m_width  = width;
   m_height = height;
 
-  MagickResizeImage(mw, (unsigned long) m_width, (unsigned long) m_height, BoxFilter, 1.0);
+  ResizeImageCompat(mw, (unsigned long) m_width, (unsigned long) m_height, BoxFilter);
 }
 
 int Image::width()
@@ -80,12 +81,12 @@ void Image::composite(Image * img)
 {
   size_t x = ( this->width()  - img->width()  ) / 2;
   size_t y = ( this->height() - img->height() ) / 2;
-  MagickCompositeImage(mw, img->mw, OverCompositeOp, x, y);
+  CompositeImageCompat(mw, img->mw, OverCompositeOp, x, y);
 }
 
 void Image::composite(Image * img, size_t x, size_t y)
 {
-  MagickCompositeImage(mw, img->mw, OverCompositeOp, x, y);
+  CompositeImageCompat(mw, img->mw, OverCompositeOp, x, y);
 }
 
 

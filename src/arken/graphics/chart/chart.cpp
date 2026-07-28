@@ -4,8 +4,12 @@
 // license that can be found in the LICENSE file.
 
 #include <arken/graphics/chart.h>
+#include <arken/graphics/im_compat.h>
+#include <arken/mvm.h>
+#include <arken/os.h>
 #include <cmath>
 #include <cstdio>
+#include <cstdlib>
 #include <algorithm>
 #include <atomic>
 #include <string>
@@ -25,6 +29,44 @@ static std::atomic<int> g_wandInstances{ 0 };
 static inline const unsigned char *
 ustr(const string &s) {
   return reinterpret_cast<const unsigned char *>((const char *) s);
+}
+
+// Builds sem fontconfig (p.ex. o ImageMagick 7 do Homebrew no macOS, ou
+// containers minimos sem nenhuma fonte instalada) nao registram fonte
+// alguma: MagickQueryFonts devolve zero e o IM nao tem como resolver a
+// fonte padrao "". Como MagickDrawImage aborta a stream MVG no primeiro
+// primitivo que falha, um unico texto sem fonte descarta todo o desenho do
+// grafico -- barras inclusive -- e sobra so o fundo. Nesse caso caimos na
+// Roboto empacotada em assets/fonts, que acompanha o proprio arken e
+// portanto nao depende de nada instalado no sistema.
+static string
+bundledFontPath()
+{
+  // Um caminho invalido aqui reproduziria o bug que esta funcao existe para
+  // evitar (grafico so com o fundo), entao a env so vence se apontar mesmo
+  // para um arquivo; caso contrario cai na fonte empacotada.
+  const char *env = std::getenv("ARKEN_CHART_FONT");
+  if (env && *env && os::isfile(env)) return string(env);
+
+  string path(mvm::path());
+  path.append("/assets/fonts/Roboto-Regular.ttf");
+
+  return os::isfile(path) ? path : string("");
+}
+
+// A varredura toca o disco e o resultado nao muda durante o processo, entao
+// roda uma vez so. MagickQueryFonts exige MagickWandGenesis ja chamado.
+static string
+defaultFont()
+{
+  static const string cached = [] {
+    size_t total = 0;
+    char **fonts = MagickQueryFonts("*", &total);
+    if (fonts) MagickRelinquishMemory(fonts);
+    return (total > 0) ? string("") : bundledFontPath();
+  }();
+
+  return cached;
 }
 
 //------------------------------------------------------------------------------
@@ -47,6 +89,8 @@ Chart::init(int width, int height)
   // (e.g. pt_BR), every annotateText()/shape call would corrupt the MVG
   // primitive stream and MagickDrawImage would silently drop all drawing.
   std::setlocale(LC_NUMERIC, "C");
+
+  m_font = defaultFont();
 
   m_columns = (double) width;
   m_rows    = (height > 0) ? (double) height : width * 0.75;
@@ -904,11 +948,11 @@ Chart::annotateText(double width, double height, double x, double y,
     : boxTop + boxHeight / 2.0 - textHeight / 2.0 + ascender;
 
   if (angle != 0.0) {
-    DrawPushGraphicContext(m_draw);
+    PushDrawingWand(m_draw);
     DrawTranslate(m_draw, drawX, baselineY);
     DrawRotate(m_draw, angle);
     DrawAnnotation(m_draw, 0, 0, ustr(text));
-    DrawPopGraphicContext(m_draw);
+    PopDrawingWand(m_draw);
   } else {
     DrawAnnotation(m_draw, drawX, baselineY, ustr(text));
   }

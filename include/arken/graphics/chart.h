@@ -11,10 +11,12 @@
 #define _ARKEN_GRAPHICS_CHART_
 
 #include <arken/base>
-#include <wand/magick-wand.h>
 #include <vector>
 #include <map>
 #include <limits>
+
+typedef struct _MagickWand  MagickWand;
+typedef struct _DrawingWand DrawingWand;
 
 namespace arken
 {
