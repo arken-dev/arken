@@ -14,8 +14,8 @@
 using aes = arken::crypto::aes;
 
 static int arken_crypto_aes_encrypt(lua_State *L) {
-  size_t valueSize;
-  const char *value = luaL_checklstring(L, 1, &valueSize);
+  size_t size;
+  const char *value = luaL_checklstring(L, 1, &size);
   const char *password = luaL_optstring(L, 2, ARKEN_CRYPTO_AES_KEY);
   int bits = luaL_optint(L, 3, 256);
 
@@ -23,7 +23,7 @@ static int arken_crypto_aes_encrypt(lua_State *L) {
     return luaL_error(L, "arken.crypto.aes: no password given and ARKEN_CRYPTO_AES_KEY is not configured");
 
   try {
-    arken::string result = aes::encrypt(arken::string(value, valueSize), password, bits);
+    arken::string result = aes::encrypt(arken::string(value, size), password, bits);
     lua_pushlstring(L, result.data(), result.size());
   } catch (const char *msg) {
     lua_pushstring(L, msg);
@@ -34,8 +34,8 @@ static int arken_crypto_aes_encrypt(lua_State *L) {
 }
 
 static int arken_crypto_aes_decrypt(lua_State *L) {
-  size_t valueSize;
-  const char *value = luaL_checklstring(L, 1, &valueSize);
+  size_t size;
+  const char *value = luaL_checklstring(L, 1, &size);
   const char *password = luaL_optstring(L, 2, ARKEN_CRYPTO_AES_KEY);
   int bits = luaL_optint(L, 3, 256);
 
@@ -43,7 +43,7 @@ static int arken_crypto_aes_decrypt(lua_State *L) {
     return luaL_error(L, "arken.crypto.aes: no password given and ARKEN_CRYPTO_AES_KEY is not configured");
 
   try {
-    arken::string result = aes::decrypt(arken::string(value, valueSize), password, bits);
+    arken::string result = aes::decrypt(arken::string(value, size), password, bits);
     lua_pushlstring(L, result.data(), result.size());
   } catch (const char *msg) {
     lua_pushstring(L, msg);
