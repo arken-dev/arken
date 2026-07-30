@@ -14,3 +14,4 @@ add_library(
 
 set_target_properties(arken.crypto.aes PROPERTIES PREFIX "" OUTPUT_NAME aes)
 target_link_libraries(arken.crypto.aes arken)
+target_compile_definitions(arken.crypto.aes PRIVATE ARKEN_CRYPTO_AES_KEY="${ARKEN_CRYPTO_AES_KEY}")

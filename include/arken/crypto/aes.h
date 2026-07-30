@@ -6,13 +6,15 @@
 #ifndef _ARKEN_CRYPTO_AES_
 #define _ARKEN_CRYPTO_AES_
 
+#include <arken/string.h>
+
 namespace arken {
 namespace crypto {
 
 class aes {
 public:
-  static char *encrypt(const char *value, int length, const char *password);
-  static char *decrypt(const char *value, int length, const char *password);
+  static string encrypt(string value, const char *password, int bits = 256);
+  static string decrypt(string value, const char *password, int bits = 256);
 };
 
 } // namespace crypto
