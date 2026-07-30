@@ -21,6 +21,7 @@ add_subdirectory(cache)
 add_subdirectory(chrono)
 add_subdirectory(compress)
 add_subdirectory(digest)
+add_subdirectory(crypto)
 
 if(ARKEN_DOC_PDF)
 add_subdirectory(doc/pdf)

@@ -1,7 +1,7 @@
 -------------------------------------------------------------------------------
 -- MANAGER PATH
 -------------------------------------------------------------------------------
-
+--[[
 MANAGER_PATH  = '/opt/objectdata/manager'
 
 package.path = package.path .. ";" .. MANAGER_PATH .. "/app/?.lua"
@@ -105,4 +105,4 @@ end
 if cron == false and (os.getenv('USER') ~= 'root' or arg[0] ~= 'manager:setup') then
   print('arquivo /etc/cron.d/base não existe, execute arken manager:setup como root')
   os.exit()
-end
+end]]
