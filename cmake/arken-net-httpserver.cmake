@@ -5,6 +5,7 @@ set_property(
   "libev"
   "libevent"
   "epoll"
+  "io_uring"
 )
 
 if(ARKEN_NOTIFY STREQUAL "qt")

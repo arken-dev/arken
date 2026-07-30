@@ -181,6 +181,10 @@ if(ARKEN_NET_HTTPSERVER STREQUAL "libevent")
   target_link_libraries(arken event event_pthreads)
 endif()
 
+if(ARKEN_NET_HTTPSERVER STREQUAL "io_uring")
+  target_link_libraries(arken uring)
+endif()
+
 #------------------------------------------------------------------------------
 # ARKEN_BARCODE
 #------------------------------------------------------------------------------
