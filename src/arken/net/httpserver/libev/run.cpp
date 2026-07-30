@@ -155,7 +155,8 @@ accept_cb(struct ev_loop *loop, struct ev_io *watcher, int revents)
   int connfd = accept(watcher->fd, nullptr, nullptr);
   if (connfd > 0) {
     if (++client_number > MAX_CLIENTS) {
-      close(watcher->fd);
+      close(connfd);
+      --client_number;
     } else {
       ev_io *client = (ev_io *) calloc(1, sizeof(*client)); //NOLINT
       ev_io_init(client, read_cb, connfd, EV_READ); //NOLINT ev_io_init is macro
@@ -247,6 +248,9 @@ void HttpServer::run()
 {
   std::cout << "start arken.net.HttpServer (libev) " << m_address <<
     ":" << m_port << " (" << m_threads << ") threads..." << std::endl;
+
+  // avoid process death when writing to a socket the peer already closed
+  signal(SIGPIPE, SIG_IGN);
 
   //signal(SIGTERM, signal_handler);
   //signal(SIGINT,  signal_handler);

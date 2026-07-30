@@ -4,6 +4,7 @@ set_property(
   CACHE ARKEN_NET_HTTPSERVER PROPERTY STRINGS
   "libev"
   "libevent"
+  "epoll"
 )
 
 if(ARKEN_NOTIFY STREQUAL "qt")
