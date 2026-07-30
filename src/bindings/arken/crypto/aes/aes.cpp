@@ -16,6 +16,7 @@ static int arken_crypto_aes_encrypt(lua_State *L) {
   char *result = aes::encrypt(value, size, password);
   lua_pushlstring(L, result, strlen(result));
   delete[] result;
+
   return 1;
 }
 
@@ -26,6 +27,7 @@ static int arken_crypto_aes_decrypt(lua_State *L) {
   char *result = aes::decrypt(value, size, password);
   lua_pushlstring(L, result, strlen(result));
   delete[] result;
+
   return 1;
 }
 
