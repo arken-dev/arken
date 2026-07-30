@@ -15,6 +15,7 @@ include_directories(${PROJECT_SOURCE_DIR}/src/vendors/ap)
 include_directories(${PROJECT_SOURCE_DIR}/src/vendors/mongrel2)
 include_directories(${PROJECT_SOURCE_DIR}/src/vendors/mongrel2/http11)
 
+
 file(GLOB src      ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
 file(GLOB os       ${CMAKE_CURRENT_SOURCE_DIR}/os/*.c)
 file(GLOB net      ${CMAKE_CURRENT_SOURCE_DIR}/net/*.cpp)
@@ -54,6 +55,9 @@ add_library(
   ${utf8}
   ${arken-xml}
 )
+
+configure_file(${PROJECT_SOURCE_DIR}/include/arken/crypto/aes_key.h.in ${PROJECT_SOURCE_DIR}/include/arken/crypto/aes_key.h @ONLY)
+target_include_directories(arken PUBLIC "${CMAKE_CURRENT_BINARY_DIR}")
 
 target_link_libraries(arken pthread)
 target_link_libraries(arken m)

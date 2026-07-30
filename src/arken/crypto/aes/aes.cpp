@@ -27,6 +27,7 @@ static const EVP_CIPHER *cipher_for(int bits)
 
 string aes::encrypt(string value, const char *password, int bits)
 {
+  std::cout << "teste " << ARKEN_CRYPTO_AES_KEY << std::endl;
   auto cipher = cipher_for(bits);
   int ivLength = EVP_CIPHER_iv_length(cipher);
 

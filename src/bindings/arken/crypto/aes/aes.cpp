@@ -6,16 +6,20 @@
 #include <lua/lua.hpp>
 #include <arken/base>
 #include <arken/crypto/aes.h>
+#include <arken/digest/sha1.h>
 
 #ifndef ARKEN_CRYPTO_AES_KEY
 #define ARKEN_CRYPTO_AES_KEY ""
 #endif
 
-using aes = arken::crypto::aes;
+using aes  = arken::crypto::aes;
 
 static int arken_crypto_aes_encrypt(lua_State *L) {
   size_t size;
   const char *value = luaL_checklstring(L, 1, &size);
+  std::cout << "primeiro" << ARKEN_CRYPTO_AES_KEY << std::endl;
+  //std::cout << "segundo" << aes::ARKEN_CRYPTO_AES_KEY << std::endl;
+
   const char *password = luaL_optstring(L, 2, ARKEN_CRYPTO_AES_KEY);
   int bits = luaL_optint(L, 3, 256);
 

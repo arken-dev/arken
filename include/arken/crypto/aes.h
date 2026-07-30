@@ -12,6 +12,9 @@ namespace arken {
 namespace crypto {
 
 class aes {
+
+#include <arken/crypto/aes_key.h>
+
 public:
   static string encrypt(string value, const char *password, int bits = 256);
   static string decrypt(string value, const char *password, int bits = 256);
