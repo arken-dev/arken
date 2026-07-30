@@ -248,6 +248,9 @@ void HttpServer::run()
   std::cout << "start arken.net.HttpServer (libev) " << m_address <<
     ":" << m_port << " (" << m_threads << ") threads..." << std::endl;
 
+  // avoid process death when writing to a socket the peer already closed
+  signal(SIGPIPE, SIG_IGN);
+
   //signal(SIGTERM, signal_handler);
   //signal(SIGINT,  signal_handler);
 
