@@ -13,9 +13,8 @@ static int arken_crypto_aes_encrypt(lua_State *L) {
   size_t size;
   const char *value = luaL_checklstring(L, 1, &size);
   const char *password = luaL_checklstring(L, 2, &size);
-  char *result = aes::encrypt(value, size, password);
-  lua_pushlstring(L, result, strlen(result));
-  delete[] result;
+  arken::string result = aes::encrypt(value, size, password);
+  lua_pushlstring(L, result.data(), result.size());
 
   return 1;
 }
