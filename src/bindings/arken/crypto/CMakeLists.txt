@@ -11,3 +11,4 @@
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/clib/arken/crypto)
 
 add_subdirectory(aes)
+add_subdirectory(credential)
