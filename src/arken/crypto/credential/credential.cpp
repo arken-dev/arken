@@ -22,9 +22,9 @@ void crypto::Credential::load(string fileName)
   if ( ! os::exists(fileName) ) {
     throw "file credential not exists";
   } else{
-	  std::cout << "estou aqui" << std::endl;
+    //std::cout << "estou aqui" << std::endl;
     string value = os::read(fileName);
-    std::cout << "size " << value.size() << "dpeois do read" << value;
+    //std::cout << "size " << value.size() << "dpeois do read" << value;
     string data;
     try {
       data  = aes::decrypt(value, ARKEN_CRYPTO_AES_KEY);
@@ -32,19 +32,22 @@ void crypto::Credential::load(string fileName)
       std::cout << "deu ruim " << msg << std::endl;
       return;
     }
-    std::cout << "decript----------------------" << std::endl;
-    std::cout << data << std::endl;
+    //std::cout << "decript----------------------" << std::endl;
+    //std::cout << data << std::endl;
     List   list  = data.split("\n");
 
     for( int i=0; i< list.size(); i++ ) {
-      string row = list[i];
-      string key = row.prefix("=").squish();
-      string val = row.suffix("=").squish();
-      std::cout << "key " << key << "value:" << val << std::endl;
-      s_credential->insert({key, val});
+      string row = list.at(i);
+      if(row.indexOf("=") != -1) {
+        string key = row.prefix("=").squish();
+        string val = row.suffix("=").squish();
+        //std::cout << "key " << key << "value:" << val << std::endl;
+        s_credential->insert({key, val});
+      }
     }
   }
-  std::cout << "funcionou: " << crypto::Credential::get("alexandre") << std::endl;
+  //std::cout << "funcionou: " << crypto::Credential::get("alexandre") << std::endl;
+  std::cout << "este é a senha meli_1" << crypto::Credential::get("meli_1") << std::endl;
 }
 
 
