@@ -24,12 +24,13 @@ void crypto::Credential::load(string fileName)
   } else{
 	  std::cout << "estou aqui" << std::endl;
     string value = os::read(fileName);
-    //std::cout << "size " << value.size() << "dpeois do read" << value << std::endl;
+    std::cout << "size " << value.size() << "dpeois do read" << value;
     string data;
     try {
-      data  = aes::decrypt(value, "abc123");//ARKEN_CRYPTO_AES_KEY);
+      data  = aes::decrypt(value, ARKEN_CRYPTO_AES_KEY);
     } catch (const char *msg) {
       std::cout << "deu ruim " << msg << std::endl;
+      return;
     }
     std::cout << "decript----------------------" << std::endl;
     std::cout << data << std::endl;
@@ -39,10 +40,11 @@ void crypto::Credential::load(string fileName)
       string row = list[i];
       string key = row.prefix("=").squish();
       string val = row.suffix("=").squish();
-      std::cout << "key " << key << "value " << value << std::endl;
+      std::cout << "key " << key << "value:" << val << std::endl;
       s_credential->insert({key, val});
     }
   }
+  std::cout << "funcionou: " << crypto::Credential::get("alexandre") << std::endl;
 }
 
 
