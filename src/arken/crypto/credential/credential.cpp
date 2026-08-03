@@ -1,6 +1,8 @@
 #include <arken/base>
 #include <arken/crypto/credential.h>
 #include <arken/crypto/aes_key.h>
+#include <iostream>
+#include <fstream>
 
 #ifndef ARKEN_CRYPTO_AES_KEY
 #define ARKEN_CRYPTO_AES_KEY ""
@@ -11,6 +13,38 @@ namespace arken {
 
 
 std::unordered_map<string, string> * s_credential = new std::unordered_map<string, string>;
+
+void crypto::Credential::save(string fileName)
+{
+  using aes    = arken::crypto::aes;
+
+  if ( ! os::exists(fileName) ) {
+    throw "file not exists";
+  } else{
+    string value = os::read(fileName);
+    string data;
+    try {
+      data  = aes::encrypt(value, ARKEN_CRYPTO_AES_KEY);
+    } catch (const char *msg) {
+      std::cout << "deu ruim " << msg << std::endl;
+      return;
+    }
+
+    fileName.append(".cred");
+    std::ofstream my_file(fileName.data());
+
+    // 2. Check if the file opened successfully
+    if (!my_file.is_open()) {
+        throw "Error opening the file!";
+    }
+
+    // 3. Write data to the file using the insertion operator (<<)
+    my_file << data ;
+
+    // 4. Close the file to free up system resources
+    my_file.close();
+  }
+}
 
 void crypto::Credential::load(string fileName)
 {
@@ -44,7 +78,7 @@ void crypto::Credential::load(string fileName)
       s_credential->insert({key, val});
     }
   }
-  std::cout << "funcionou: " << crypto::Credential::get("alexandre") << std::endl;
+  std::cout << "\n\nfuncionou (TESTE): " << crypto::Credential::get("TESTE") << std::endl;
 }
 
 

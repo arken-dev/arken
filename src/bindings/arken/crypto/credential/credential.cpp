@@ -10,6 +10,14 @@
 
 using Credential = arken::crypto::Credential;
 
+static int arken_crypto_credential_save(lua_State *L) {
+  size_t size;
+  const char *fileName= luaL_checklstring(L, 1, &size);
+  std::cout << "fileName " << fileName << std::endl;
+  Credential::save(fileName);
+  return 0;
+}
+
 static int arken_crypto_credential_load(lua_State *L) {
   size_t size;
   const char *fileName= luaL_checklstring(L, 1, &size);
@@ -21,6 +29,7 @@ static int arken_crypto_credential_load(lua_State *L) {
 void static
 register_arken_crypto_credential( lua_State *L ) {
   static const luaL_reg Map[] = {
+    {"save", arken_crypto_credential_save},
     {"load", arken_crypto_credential_load},
     {nullptr, nullptr}
   };

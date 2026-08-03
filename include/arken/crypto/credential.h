@@ -21,6 +21,7 @@ namespace crypto {
 
     public:
     static void         load(string fileName);
+    static void         save(string fileName);
     static const char * get(string key);
   };
 

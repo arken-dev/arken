@@ -7,6 +7,7 @@
 #include <arken/base>
 #include <arken/mvm.h>
 #include <arken/log>
+#include <arken/crypto/credential.h>
 #include <iostream>
 #include <cstdio>
 #include <breakpad.h>
@@ -172,6 +173,21 @@ int main(int argc, char * argv[])
   arken::string  arg1;
   mvm::instance i = mvm::getInstance();
   lua_State * L = i.state();
+
+
+  // credencial
+  using Credential = arken::crypto::Credential;
+  using List = arken::string::List;
+  string path = "/etc";
+  if (string("windows").equals(os::name())) {
+    path = os::root();
+  }
+  path.append("/arken/*.cred");
+  List list = os::glob(path);
+  for(int i=0; i < list.size(); i++) {
+    std::cout << "load credential " << list.at(i) << std::endl;
+    Credential::load(list.at(i));
+  }
 
   if ( argc == 1 ) {
     rv = arkenConsoleLoad(L);
