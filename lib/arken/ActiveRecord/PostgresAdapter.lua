@@ -305,6 +305,14 @@ function ActiveRecord_PostgresAdapter:parserFormat(format_type)
     return 'string'
   end
 
+  if format_type == 'jsonb' then
+    return 'string'
+  end
+
+  if format_type == 'text[]' then
+    return 'string'
+  end
+
   error('format_type: ' .. format_type ..' not resolved')
 end
 
