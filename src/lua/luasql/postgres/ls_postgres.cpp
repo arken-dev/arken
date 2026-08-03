@@ -50,7 +50,7 @@ typedef struct {
 typedef void (*creator) (lua_State *L, cur_data *cur);
 
 
-LUASQL_API int luaopen_luasql_postgres(lua_State *L);
+//LUASQL_API int luaopen_luasql_postgres(lua_State *L);
 
 /* check and return pointer */
 static void *luaL_checkpointer(lua_State* L, int i) {
@@ -306,7 +306,7 @@ static void create_colnames (lua_State *L, cur_data *cur) {
 static void create_coltypes (lua_State *L, cur_data *cur) {
 	PGresult *result = cur->pg_res;
 	conn_data *conn;
-	char typename[100];
+	char tname[100];
 	int i;
 	lua_rawgeti (L, LUA_REGISTRYINDEX, cur->conn);
 	if (!lua_isuserdata (L, -1))
@@ -314,7 +314,7 @@ static void create_coltypes (lua_State *L, cur_data *cur) {
 	conn = (conn_data *)lua_touserdata (L, -1);
 	lua_newtable (L);
 	for (i = 1; i <= cur->numcols; i++) {
-		lua_pushstring(L, getcolumntype (conn->pg_conn, result, i-1, typename));
+		lua_pushstring(L, getcolumntype (conn->pg_conn, result, i-1, tname));
 		lua_rawseti (L, -2, i);
 	}
 }
@@ -589,6 +589,11 @@ static int env_connect (lua_State *L) {
 	const char *password = luaL_optstring(L, 4, NULL);
 	const char *pghost = luaL_optstring(L, 5, NULL);
 	const char *pgport = luaL_optstring(L, 6, NULL);
+        // credencial
+        if (lua_toboolean (L, 7)) {
+	  // credencial
+        }
+
 	PGconn *conn;
 	getenvironment (L);	/* validate environment */
 	conn = PQsetdbLogin(pghost, pgport, NULL, NULL, sourcename, username, password);
@@ -690,6 +695,9 @@ static int create_environment (lua_State *L) {
 ** Creates the metatables for the objects and registers the
 ** driver open method.
 */
+
+extern "C" {
+
 LUASQL_API int luaopen_luasql_postgres (lua_State *L) {
 	struct luaL_Reg driver[] = {
 		{"postgres", create_environment},
@@ -700,4 +708,6 @@ LUASQL_API int luaopen_luasql_postgres (lua_State *L) {
 	luaL_setfuncs (L, driver, 0);
 	luasql_set_info (L);
 	return 1;
+}
+
 }

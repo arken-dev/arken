@@ -17,7 +17,7 @@ set(LUA_POSTGRES_LIB pq CACHE STRING "alternativa path for libpq.so")
 
 add_library(
   postgres SHARED
-  ls_postgres.c
+  ls_postgres.cpp
   ../luasql.c
 )
 
