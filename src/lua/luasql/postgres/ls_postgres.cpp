@@ -6,6 +6,8 @@
 ** $Id: ls_postgres.c,v 1.11 2009/02/07 23:16:23 tomas Exp $
 */
 
+#include <arken/crypto/credential.h>
+
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -584,6 +586,7 @@ static void notice_processor (void *arg, const char *message) {
 ** Connects to a data source.
 */
 static int env_connect (lua_State *L) {
+
 	const char *sourcename = luaL_checkstring(L, 2);
 	const char *username = luaL_optstring(L, 3, NULL);
 	const char *password = luaL_optstring(L, 4, NULL);
@@ -591,6 +594,7 @@ static int env_connect (lua_State *L) {
 	const char *pgport = luaL_optstring(L, 6, NULL);
         // credencial
         if (lua_toboolean (L, 7)) {
+          std::cout << "credencial " << arken::crypto::Credential::get(password);
 	  // credencial
         }
 
