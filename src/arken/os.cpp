@@ -22,6 +22,7 @@
 #include <sys/stat.h>
 #include <set>
 #include <vector>
+#include <algorithm>
 
 namespace fs = std::filesystem;
 using path   = std::filesystem::path;
@@ -345,6 +346,21 @@ List os::glob(const char * full_path_pattern)
   }
 
   glob_collect(start, segments, 0, list);
+
+  // fs::directory_iterator não garante ordem (depende do filesystem), então
+  // a lista é ordenada alfabeticamente no final para reproduzir o
+  // comportamento do glob(3) da libc, que ordena por padrão.
+  int count = list.size();
+  std::vector<std::string> sorted;
+  sorted.reserve(count);
+  for (int i = 0; i < count; ++i) {
+    const char * value = list.at(i);
+    sorted.emplace_back(value == nullptr ? "" : value);
+  }
+  std::sort(sorted.begin(), sorted.end());
+  for (int i = 0; i < count; ++i) {
+    list.replace(i, sorted[i].c_str());
+  }
 
   return list;
 }
