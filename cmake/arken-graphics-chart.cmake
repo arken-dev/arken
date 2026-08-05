@@ -1,9 +1,12 @@
-option(ARKEN_GRAPHICS_CHART "enable arken.graphics.Chart" false)
+option(ARKEN_GRAPHICS_CHART "enable arken.graphics.chart" false)
 set(IMAGEMAGICK6_ROOT "" CACHE PATH "Prefix of a standalone ImageMagick 6 install (e.g. /opt/objectdata/ImageMagic-6). If empty, the system ImageMagick is located via find_package(ImageMagick).")
 
 if(ARKEN_GRAPHICS_CHART)
 
-  file(GLOB files ${PROJECT_SOURCE_DIR}/src/arken/graphics/chart/*.cpp)
+  file(GLOB files
+    ${PROJECT_SOURCE_DIR}/src/arken/graphics/chart.cpp
+    ${PROJECT_SOURCE_DIR}/src/arken/graphics/chart/*.cpp
+  )
   set(arken-graphics-chart ${files})
 
   if(IMAGEMAGICK6_ROOT)

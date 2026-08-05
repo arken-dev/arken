@@ -1,4 +1,4 @@
--- arken.graphics.ChartBar example
+-- arken.graphics.chart.Bar example
 --
 -- Ported from Gruff::Bar usage:
 --   g = Gruff::Bar.new
@@ -7,11 +7,11 @@
 --   g.data 'Hamburgers', [50, 19, 99, 29]
 --   g.write("test/output/bar.png")
 
-local ChartBar = require('arken.graphics.ChartBar')
+local Bar = require('arken.graphics.chart.Bar')
 
-local output = os.pwd() .. '/examples/arken.graphics.Chart/bar.png'
+local output = os.pwd() .. '/examples/arken.graphics.chart/bar.png'
 
-local bar = ChartBar.new(800, 600)
+local bar = Bar.new(800, 600)
 
 bar:setTitle('Visual Bar Graph Test')
 bar:themeKeynote()
@@ -24,4 +24,4 @@ bar:data('Hamburgers', { 50, 19, 99, 29 })
 
 bar:write(output)
 
-print('arken.graphics.ChartBar OK -> ' .. output)
+print('arken.graphics.chart.Bar OK -> ' .. output)

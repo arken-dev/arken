@@ -22,8 +22,10 @@ namespace arken
 {
 namespace graphics
 {
+namespace chart
+{
 
-class Chart {
+class Base {
 
   public:
 
@@ -40,11 +42,11 @@ class Chart {
   };
 
   // If height <= 0 the graph is drawn at 4/3 ratio based on width.
-  Chart(int width = 800, int height = -1);
-  virtual ~Chart();
+  Base(int width = 800, int height = -1);
+  virtual ~Base();
 
-  Chart(const Chart &) = delete;
-  Chart & operator=(const Chart &) = delete;
+  Base(const Base &) = delete;
+  Base & operator=(const Base &) = delete;
 
   // -- data ------------------------------------------------------------
 
@@ -248,96 +250,7 @@ class Chart {
   void init(int width, int height);
 };
 
-// ---------------------------------------------------------------------------
-// ChartBar - translated from gruff/bar.rb (+ gruff/bar_conversion.rb)
-// ---------------------------------------------------------------------------
-
-class ChartBar : public Chart {
-
-  public:
-  using Chart::Chart;
-
-  void   setBarSpacing(double v);
-  double barSpacing();
-
-  protected:
-  void draw() override;
-
-  private:
-  double m_barSpacing = 0.9;
-  double m_barWidth   = 0.0;
-
-  void drawBars();
-  void barYRange(double dataPoint, int mode, double zero, double &y1, double &y2);
-};
-
-// ---------------------------------------------------------------------------
-// ChartLine - translated from gruff/line.rb
-// ---------------------------------------------------------------------------
-
-class ChartLine : public Chart {
-
-  public:
-  using Chart::Chart;
-
-  void   setBaselineValue(double v); double baselineValue();
-  void   setBaselineColor(string v); string baselineColor();
-  void   setLineWidth(double v);     double lineWidth();
-  void   setDotRadius(double v);     double dotRadius();
-  void   setHideDots(bool v);        bool   hideDots();
-  void   setHideLines(bool v);       bool   hideLines();
-
-  protected:
-  void draw() override;
-  void normalize(bool force = false) override;
-
-  private:
-  double m_baselineValue = NoValue;
-  string m_baselineColor = "red";
-  double m_lineWidth     = NoValue;
-  double m_dotRadius     = NoValue;
-  bool   m_hideDots      = false;
-  bool   m_hideLines     = false;
-  double m_normBaseline  = NoValue;
-
-  static bool containsOnlyOnePoint(const Dataset &row);
-};
-
-// ---------------------------------------------------------------------------
-// ChartPie - translated from gruff/pie.rb
-// ---------------------------------------------------------------------------
-
-class ChartPie : public Chart {
-
-  public:
-  using Chart::Chart;
-
-  void   setZeroDegree(double v);
-  double zeroDegree();
-
-  protected:
-  void draw() override;
-
-  private:
-  double m_zeroDegree = 0.0;
-
-  double sumsForPie();
-  void   drawSliceLabel(double centerX, double centerY, double angle, double radius, const string &amount);
-};
-
-// ---------------------------------------------------------------------------
-// ChartArea - translated from gruff/area.rb
-// ---------------------------------------------------------------------------
-
-class ChartArea : public Chart {
-
-  public:
-  using Chart::Chart;
-
-  protected:
-  void draw() override;
-};
-
+} // namespace chart
 } // namespace graphics
 } // namespace arken
 

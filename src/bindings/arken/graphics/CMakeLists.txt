@@ -15,5 +15,6 @@ add_subdirectory(image)
 endif()
 
 if(ARKEN_GRAPHICS_CHART)
+set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/clib/arken/graphics/chart)
 add_subdirectory(chart)
 endif()

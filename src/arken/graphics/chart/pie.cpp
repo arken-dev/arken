@@ -5,21 +5,22 @@
 //
 // Translated from gruff/pie.rb.
 
-#include <arken/graphics/chart.h>
+#include <arken/graphics/chart/pie.h>
 #include <cmath>
 #include <cstdio>
 #include <algorithm>
 
 namespace arken {
 namespace graphics {
+namespace chart {
 
 static const double TEXT_OFFSET_PERCENTAGE = 0.15;
 
-void   ChartPie::setZeroDegree(double v) { m_zeroDegree = v; }
-double ChartPie::zeroDegree()            { return m_zeroDegree; }
+void   Pie::setZeroDegree(double v) { m_zeroDegree = v; }
+double Pie::zeroDegree()            { return m_zeroDegree; }
 
 double
-ChartPie::sumsForPie()
+Pie::sumsForPie()
 {
   double total = 0.0;
   for (auto &row : m_data) {
@@ -29,7 +30,7 @@ ChartPie::sumsForPie()
 }
 
 void
-ChartPie::drawSliceLabel(double centerX, double centerY, double angle, double radius, const string &amount)
+Pie::drawSliceLabel(double centerX, double centerY, double angle, double radius, const string &amount)
 {
   double rOffset       = 20.0;
   double radiusOffset  = radius + rOffset;
@@ -43,11 +44,11 @@ ChartPie::drawSliceLabel(double centerX, double centerY, double angle, double ra
 }
 
 void
-ChartPie::draw()
+Pie::draw()
 {
   m_hideLineMarkers = true;
 
-  Chart::draw();
+  Base::draw();
   if (!m_hasData) return;
 
   double radius  = std::min(m_graphWidth, m_graphHeight) / 2.0 * 0.8;
@@ -96,5 +97,6 @@ ChartPie::draw()
   }
 }
 
+} // namespace chart
 } // namespace graphics
 } // namespace arken

@@ -5,33 +5,34 @@
 //
 // Translated from gruff/line.rb.
 
-#include <arken/graphics/chart.h>
+#include <arken/graphics/chart/line.h>
 #include <arken/graphics/im_compat.h>
 #include <cmath>
 
 namespace arken {
 namespace graphics {
+namespace chart {
 
-void   ChartLine::setBaselineValue(double v) { m_baselineValue = v; }
-double ChartLine::baselineValue()            { return m_baselineValue; }
-void   ChartLine::setBaselineColor(string v) { m_baselineColor = v; }
-string ChartLine::baselineColor()            { return m_baselineColor; }
-void   ChartLine::setLineWidth(double v)     { m_lineWidth = v; }
-double ChartLine::lineWidth()                { return m_lineWidth; }
-void   ChartLine::setDotRadius(double v)     { m_dotRadius = v; }
-double ChartLine::dotRadius()                { return m_dotRadius; }
-void   ChartLine::setHideDots(bool v)        { m_hideDots = v; }
-bool   ChartLine::hideDots()                 { return m_hideDots; }
-void   ChartLine::setHideLines(bool v)       { m_hideLines = v; }
-bool   ChartLine::hideLines()                { return m_hideLines; }
+void   Line::setBaselineValue(double v) { m_baselineValue = v; }
+double Line::baselineValue()            { return m_baselineValue; }
+void   Line::setBaselineColor(string v) { m_baselineColor = v; }
+string Line::baselineColor()            { return m_baselineColor; }
+void   Line::setLineWidth(double v)     { m_lineWidth = v; }
+double Line::lineWidth()                { return m_lineWidth; }
+void   Line::setDotRadius(double v)     { m_dotRadius = v; }
+double Line::dotRadius()                { return m_dotRadius; }
+void   Line::setHideDots(bool v)        { m_hideDots = v; }
+bool   Line::hideDots()                 { return m_hideDots; }
+void   Line::setHideLines(bool v)       { m_hideLines = v; }
+bool   Line::hideLines()                { return m_hideLines; }
 
 void
-ChartLine::normalize(bool force)
+Line::normalize(bool force)
 {
   double baselineF = std::isnan(m_baselineValue) ? 0.0 : m_baselineValue;
   m_maximumValue = std::max(m_maximumValue, baselineF);
 
-  Chart::normalize(force);
+  Base::normalize(force);
 
   if (!std::isnan(m_baselineValue)) {
     m_normBaseline = m_baselineValue / m_maximumValue;
@@ -39,7 +40,7 @@ ChartLine::normalize(bool force)
 }
 
 bool
-ChartLine::containsOnlyOnePoint(const Dataset &row)
+Line::containsOnlyOnePoint(const Dataset &row)
 {
   bool found = false;
   for (double v : row.values) {
@@ -52,9 +53,9 @@ ChartLine::containsOnlyOnePoint(const Dataset &row)
 }
 
 void
-ChartLine::draw()
+Line::draw()
 {
-  Chart::draw();
+  Base::draw();
   if (!m_hasData) return;
 
   double xIncrement = (m_columnCount > 1)
@@ -116,5 +117,6 @@ ChartLine::draw()
   }
 }
 
+} // namespace chart
 } // namespace graphics
 } // namespace arken

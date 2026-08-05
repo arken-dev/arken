@@ -5,15 +5,16 @@
 //
 // Translated from gruff/area.rb.
 
-#include <arken/graphics/chart.h>
+#include <arken/graphics/chart/area.h>
 
 namespace arken {
 namespace graphics {
+namespace chart {
 
 void
-ChartArea::draw()
+Area::draw()
 {
-  Chart::draw();
+  Base::draw();
   if (!m_hasData) return;
 
   double xIncrement = m_graphWidth / (double) (m_columnCount - 1);
@@ -58,5 +59,6 @@ ChartArea::draw()
   }
 }
 
+} // namespace chart
 } // namespace graphics
 } // namespace arken

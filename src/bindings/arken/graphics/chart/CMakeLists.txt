@@ -8,17 +8,17 @@
 #
 # ------------------------------------------------------------------------------
 
-add_library(arken.graphics.ChartBar  SHARED bar.cpp)
-add_library(arken.graphics.ChartLine SHARED line.cpp)
-add_library(arken.graphics.ChartPie  SHARED pie.cpp)
-add_library(arken.graphics.ChartArea SHARED area.cpp)
+add_library(arken.graphics.chart.Bar  SHARED bar.cpp)
+add_library(arken.graphics.chart.Line SHARED line.cpp)
+add_library(arken.graphics.chart.Pie  SHARED pie.cpp)
+add_library(arken.graphics.chart.Area SHARED area.cpp)
 
-set_target_properties(arken.graphics.ChartBar  PROPERTIES PREFIX "" OUTPUT_NAME ChartBar)
-set_target_properties(arken.graphics.ChartLine PROPERTIES PREFIX "" OUTPUT_NAME ChartLine)
-set_target_properties(arken.graphics.ChartPie  PROPERTIES PREFIX "" OUTPUT_NAME ChartPie)
-set_target_properties(arken.graphics.ChartArea PROPERTIES PREFIX "" OUTPUT_NAME ChartArea)
+set_target_properties(arken.graphics.chart.Bar  PROPERTIES PREFIX "" OUTPUT_NAME Bar)
+set_target_properties(arken.graphics.chart.Line PROPERTIES PREFIX "" OUTPUT_NAME Line)
+set_target_properties(arken.graphics.chart.Pie  PROPERTIES PREFIX "" OUTPUT_NAME Pie)
+set_target_properties(arken.graphics.chart.Area PROPERTIES PREFIX "" OUTPUT_NAME Area)
 
-target_link_libraries(arken.graphics.ChartBar  arken)
-target_link_libraries(arken.graphics.ChartLine arken)
-target_link_libraries(arken.graphics.ChartPie  arken)
-target_link_libraries(arken.graphics.ChartArea arken)
+target_link_libraries(arken.graphics.chart.Bar  arken)
+target_link_libraries(arken.graphics.chart.Line arken)
+target_link_libraries(arken.graphics.chart.Pie  arken)
+target_link_libraries(arken.graphics.chart.Area arken)

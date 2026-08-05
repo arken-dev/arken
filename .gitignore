@@ -28,4 +28,4 @@ coverage/*
 cmake/*
 bootstrap/tmp/
 
-examples/arken.graphics.Chart/*.png
+examples/arken.graphics.chart/*.png

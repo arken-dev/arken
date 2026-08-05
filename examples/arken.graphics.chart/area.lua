@@ -1,4 +1,4 @@
--- arken.graphics.ChartArea example
+-- arken.graphics.chart.Area example
 --
 -- Ported from Gruff::Area usage:
 --   g = Gruff::Area.new
@@ -7,11 +7,11 @@
 --   g.data 'Memory', [40, 45, 41, 52, 58, 61, 65]
 --   g.write("test/output/area.png")
 
-local ChartArea = require('arken.graphics.ChartArea')
+local Area = require('arken.graphics.chart.Area')
 
-local output = os.pwd() .. '/examples/arken.graphics.Chart/area.png'
+local output = os.pwd() .. '/examples/arken.graphics.chart/area.png'
 
-local area = ChartArea.new(800, 600)
+local area = Area.new(800, 600)
 
 area:setTitle('CPU and Memory Usage')
 area:themeKeynote()
@@ -29,4 +29,4 @@ area:data('Memory', { 40, 45, 97, 52, 58, 61, 65 })
 
 area:write(output)
 
-print('arken.graphics.ChartArea OK -> ' .. output)
+print('arken.graphics.chart.Area OK -> ' .. output)

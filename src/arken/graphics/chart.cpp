@@ -17,12 +17,13 @@
 
 namespace arken {
 namespace graphics {
+namespace chart {
 
 static const double LABEL_MARGIN = 10.0;
 
 // MagickWandGenesis/Terminus initialize and tear down process-wide state, so
-// they must be reference counted across every live Chart instance instead of
-// being called per-object (Terminus running while a sibling Chart is still
+// they must be reference counted across every live Base instance instead of
+// being called per-object (Terminus running while a sibling Base is still
 // alive crashes on the next MagickWand call).
 static std::atomic<int> g_wandInstances{ 0 };
 
@@ -73,13 +74,13 @@ defaultFont()
 // construction / destruction
 //------------------------------------------------------------------------------
 
-Chart::Chart(int width, int height)
+Base::Base(int width, int height)
 {
   init(width, height);
 }
 
 void
-Chart::init(int width, int height)
+Base::init(int width, int height)
 {
   if (g_wandInstances.fetch_add(1) == 0) MagickWandGenesis();
 
@@ -103,7 +104,7 @@ Chart::init(int width, int height)
   themeKeynote();
 }
 
-Chart::~Chart()
+Base::~Base()
 {
   if (m_draw) m_draw = DestroyDrawingWand(m_draw);
   if (m_wand) m_wand = DestroyMagickWand(m_wand);
@@ -115,7 +116,7 @@ Chart::~Chart()
 //------------------------------------------------------------------------------
 
 void
-Chart::data(string name, std::vector<double> values, string color)
+Base::data(string name, std::vector<double> values, string color)
 {
   Dataset row;
   row.name  = name;
@@ -143,7 +144,7 @@ Chart::data(string name, std::vector<double> values, string color)
 }
 
 void
-Chart::data(string name, double value, string color)
+Base::data(string name, double value, string color)
 {
   data(name, std::vector<double>{ value }, color);
 }
@@ -153,26 +154,26 @@ Chart::data(string name, double value, string color)
 //------------------------------------------------------------------------------
 
 void
-Chart::addColor(string color)
+Base::addColor(string color)
 {
   m_colors.push_back(color);
 }
 
 void
-Chart::setColors(std::vector<string> colors)
+Base::setColors(std::vector<string> colors)
 {
   m_colors = colors;
   m_colorIndex = 0;
 }
 
 std::vector<string>
-Chart::colors()
+Base::colors()
 {
   return m_colors;
 }
 
 void
-Chart::setTheme(Theme theme)
+Base::setTheme(Theme theme)
 {
   resetThemes();
 
@@ -185,7 +186,7 @@ Chart::setTheme(Theme theme)
 }
 
 void
-Chart::themeKeynote()
+Base::themeKeynote()
 {
   Theme t;
   t.colors = { "#FDD84E", "#6886B4", "#72AE6E", "#D1695E", "#8A6EAF", "#EFAA43", "white" };
@@ -196,7 +197,7 @@ Chart::themeKeynote()
 }
 
 void
-Chart::theme37signals()
+Base::theme37signals()
 {
   Theme t;
   t.colors = { "#FFF804", "#336699", "#339933", "#ff0000", "#cc99cc", "#cf5910", "black" };
@@ -207,7 +208,7 @@ Chart::theme37signals()
 }
 
 void
-Chart::themeRailsKeynote()
+Base::themeRailsKeynote()
 {
   Theme t;
   t.colors = { "#00ff00", "#333333", "#ff5d00", "#f61100", "white", "#999999", "black" };
@@ -218,7 +219,7 @@ Chart::themeRailsKeynote()
 }
 
 void
-Chart::themeOdeo()
+Base::themeOdeo()
 {
   Theme t;
   t.colors = { "#202020", "white", "#3a5b87", "#a21764", "#8ab438", "#999999", "black" };
@@ -229,7 +230,7 @@ Chart::themeOdeo()
 }
 
 void
-Chart::themePastel()
+Base::themePastel()
 {
   Theme t;
   t.colors = { "#a9dada", "#aedaa9", "#daaea9", "#dadaa9", "#a9a9da", "#daaeda", "#dadada" };
@@ -240,7 +241,7 @@ Chart::themePastel()
 }
 
 void
-Chart::themeGreyscale()
+Base::themeGreyscale()
 {
   Theme t;
   t.colors = { "#282828", "#383838", "#686868", "#989898", "#c8c8c8", "#e8e8e8" };
@@ -255,13 +256,13 @@ Chart::themeGreyscale()
 //------------------------------------------------------------------------------
 
 void
-Chart::addLabel(int index, string label)
+Base::addLabel(int index, string label)
 {
   m_labels[index] = label;
 }
 
 void
-Chart::setLabels(std::map<int, string> labels)
+Base::setLabels(std::map<int, string> labels)
 {
   m_labels = labels;
 }
@@ -270,87 +271,87 @@ Chart::setLabels(std::map<int, string> labels)
 // attr_accessor equivalents
 //------------------------------------------------------------------------------
 
-void   Chart::setTopMargin(double v)    { m_topMargin = v; }
-double Chart::topMargin()               { return m_topMargin; }
-void   Chart::setBottomMargin(double v) { m_bottomMargin = v; }
-double Chart::bottomMargin()            { return m_bottomMargin; }
-void   Chart::setLeftMargin(double v)   { m_leftMargin = v; }
-double Chart::leftMargin()              { return m_leftMargin; }
-void   Chart::setRightMargin(double v)  { m_rightMargin = v; }
-double Chart::rightMargin()             { return m_rightMargin; }
+void   Base::setTopMargin(double v)    { m_topMargin = v; }
+double Base::topMargin()               { return m_topMargin; }
+void   Base::setBottomMargin(double v) { m_bottomMargin = v; }
+double Base::bottomMargin()            { return m_bottomMargin; }
+void   Base::setLeftMargin(double v)   { m_leftMargin = v; }
+double Base::leftMargin()              { return m_leftMargin; }
+void   Base::setRightMargin(double v)  { m_rightMargin = v; }
+double Base::rightMargin()             { return m_rightMargin; }
 
 void
-Chart::setMargins(double v)
+Base::setMargins(double v)
 {
   m_topMargin = m_bottomMargin = m_leftMargin = m_rightMargin = v;
 }
 
-void   Chart::setTitleMargin(double v)  { m_titleMargin = v; }
-double Chart::titleMargin()             { return m_titleMargin; }
-void   Chart::setLegendMargin(double v) { m_legendMargin = v; }
-double Chart::legendMargin()            { return m_legendMargin; }
+void   Base::setTitleMargin(double v)  { m_titleMargin = v; }
+double Base::titleMargin()             { return m_titleMargin; }
+void   Base::setLegendMargin(double v) { m_legendMargin = v; }
+double Base::legendMargin()            { return m_legendMargin; }
 
-void   Chart::setCenterLabelsOverPoint(bool v) { m_centerLabelsOverPoint = v; }
-bool   Chart::centerLabelsOverPoint()          { return m_centerLabelsOverPoint; }
-void   Chart::setHasLeftLabels(bool v)         { m_hasLeftLabels = v; }
-bool   Chart::hasLeftLabels()                  { return m_hasLeftLabels; }
+void   Base::setCenterLabelsOverPoint(bool v) { m_centerLabelsOverPoint = v; }
+bool   Base::centerLabelsOverPoint()          { return m_centerLabelsOverPoint; }
+void   Base::setHasLeftLabels(bool v)         { m_hasLeftLabels = v; }
+bool   Base::hasLeftLabels()                  { return m_hasLeftLabels; }
 
-void   Chart::setXAxisLabel(string v) { m_xAxisLabel = v; }
-string Chart::xAxisLabel()            { return m_xAxisLabel; }
-void   Chart::setYAxisLabel(string v) { m_yAxisLabel = v; }
-string Chart::yAxisLabel()            { return m_yAxisLabel; }
-void   Chart::setYAxisIncrement(double v) { m_yAxisIncrement = v; }
-double Chart::yAxisIncrement()            { return m_yAxisIncrement; }
+void   Base::setXAxisLabel(string v) { m_xAxisLabel = v; }
+string Base::xAxisLabel()            { return m_xAxisLabel; }
+void   Base::setYAxisLabel(string v) { m_yAxisLabel = v; }
+string Base::yAxisLabel()            { return m_yAxisLabel; }
+void   Base::setYAxisIncrement(double v) { m_yAxisIncrement = v; }
+double Base::yAxisIncrement()            { return m_yAxisIncrement; }
 
-void   Chart::setTitle(string v) { m_title = v; }
-string Chart::title()            { return m_title; }
+void   Base::setTitle(string v) { m_title = v; }
+string Base::title()            { return m_title; }
 
-void   Chart::setFont(string fontPath) { m_font = fontPath; }
-string Chart::font()                   { return m_font; }
-void   Chart::setFontColor(string v)   { m_fontColor = v; }
-string Chart::fontColor()              { return m_fontColor; }
+void   Base::setFont(string fontPath) { m_font = fontPath; }
+string Base::font()                   { return m_font; }
+void   Base::setFontColor(string v)   { m_fontColor = v; }
+string Base::fontColor()              { return m_fontColor; }
 
-void   Chart::setHideLineMarkers(bool v) { m_hideLineMarkers = v; }
-bool   Chart::hideLineMarkers()          { return m_hideLineMarkers; }
-void   Chart::setHideLegend(bool v)      { m_hideLegend = v; }
-bool   Chart::hideLegend()               { return m_hideLegend; }
-void   Chart::setHideTitle(bool v)       { m_hideTitle = v; }
-bool   Chart::hideTitle()                { return m_hideTitle; }
-void   Chart::setHideLineNumbers(bool v) { m_hideLineNumbers = v; }
-bool   Chart::hideLineNumbers()          { return m_hideLineNumbers; }
+void   Base::setHideLineMarkers(bool v) { m_hideLineMarkers = v; }
+bool   Base::hideLineMarkers()          { return m_hideLineMarkers; }
+void   Base::setHideLegend(bool v)      { m_hideLegend = v; }
+bool   Base::hideLegend()               { return m_hideLegend; }
+void   Base::setHideTitle(bool v)       { m_hideTitle = v; }
+bool   Base::hideTitle()                { return m_hideTitle; }
+void   Base::setHideLineNumbers(bool v) { m_hideLineNumbers = v; }
+bool   Base::hideLineNumbers()          { return m_hideLineNumbers; }
 
-void   Chart::setNoDataMessage(string v) { m_noDataMessage = v; }
-string Chart::noDataMessage()            { return m_noDataMessage; }
+void   Base::setNoDataMessage(string v) { m_noDataMessage = v; }
+string Base::noDataMessage()            { return m_noDataMessage; }
 
-void   Chart::setTitleFontSize(double v)  { m_titleFontSize = v; }
-double Chart::titleFontSize()             { return m_titleFontSize; }
-void   Chart::setLegendFontSize(double v) { m_legendFontSize = v; }
-double Chart::legendFontSize()            { return m_legendFontSize; }
-void   Chart::setMarkerFontSize(double v) { m_markerFontSize = v; }
-double Chart::markerFontSize()            { return m_markerFontSize; }
+void   Base::setTitleFontSize(double v)  { m_titleFontSize = v; }
+double Base::titleFontSize()             { return m_titleFontSize; }
+void   Base::setLegendFontSize(double v) { m_legendFontSize = v; }
+double Base::legendFontSize()            { return m_legendFontSize; }
+void   Base::setMarkerFontSize(double v) { m_markerFontSize = v; }
+double Base::markerFontSize()            { return m_markerFontSize; }
 
-void   Chart::setMarkerColor(string v) { m_markerColor = v; }
-string Chart::markerColor()            { return m_markerColor; }
-void   Chart::setMarkerCount(int v)    { m_markerCount = v; }
-int    Chart::markerCount()            { return m_markerCount; }
+void   Base::setMarkerColor(string v) { m_markerColor = v; }
+string Base::markerColor()            { return m_markerColor; }
+void   Base::setMarkerCount(int v)    { m_markerCount = v; }
+int    Base::markerCount()            { return m_markerCount; }
 
-void   Chart::setMinimumValue(double v) { m_minimumValue = v; }
-double Chart::minimumValue()            { return m_minimumValue; }
-void   Chart::setMaximumValue(double v) { m_maximumValue = v; }
-double Chart::maximumValue()            { return m_maximumValue; }
+void   Base::setMinimumValue(double v) { m_minimumValue = v; }
+double Base::minimumValue()            { return m_minimumValue; }
+void   Base::setMaximumValue(double v) { m_maximumValue = v; }
+double Base::maximumValue()            { return m_maximumValue; }
 
-void   Chart::setSort(bool v) { m_sort = v; }
-bool   Chart::sort()          { return m_sort; }
+void   Base::setSort(bool v) { m_sort = v; }
+bool   Base::sort()          { return m_sort; }
 
-void   Chart::setLegendBoxSize(double v) { m_legendBoxSize = v; }
-double Chart::legendBoxSize()            { return m_legendBoxSize; }
+void   Base::setLegendBoxSize(double v) { m_legendBoxSize = v; }
+double Base::legendBoxSize()            { return m_legendBoxSize; }
 
 //------------------------------------------------------------------------------
 // output
 //------------------------------------------------------------------------------
 
 void
-Chart::write(string filename)
+Base::write(string filename)
 {
   draw();
   // Some MagickCore internals (config/exception handling) call setlocale()
@@ -366,13 +367,13 @@ Chart::write(string filename)
 //------------------------------------------------------------------------------
 
 void
-Chart::draw()
+Base::draw()
 {
   setupDrawing();
 }
 
 void
-Chart::setupDrawing()
+Base::setupDrawing()
 {
   if (!m_hasData) {
     drawNoData();
@@ -390,7 +391,7 @@ Chart::setupDrawing()
 }
 
 void
-Chart::normalize(bool force)
+Base::normalize(bool force)
 {
   if (m_normDataValid && !force) return;
 
@@ -423,14 +424,14 @@ Chart::normalize(bool force)
 }
 
 void
-Chart::calculateSpread()
+Base::calculateSpread()
 {
   m_spread = m_maximumValue - m_minimumValue;
   if (m_spread <= 0) m_spread = 1;
 }
 
 void
-Chart::setupGraphMeasurements()
+Base::setupGraphMeasurements()
 {
   m_markerCapsHeight = m_hideLineMarkers ? 0 : calculateCapsHeight(m_markerFontSize);
   m_titleCapsHeight  = m_hideTitle       ? 0 : calculateCapsHeight(m_titleFontSize);
@@ -486,7 +487,7 @@ Chart::setupGraphMeasurements()
 }
 
 void
-Chart::drawAxisLabels()
+Base::drawAxisLabels()
 {
   if (!m_xAxisLabel.empty()) {
     double y = m_graphBottom + LABEL_MARGIN * 2 + m_markerCapsHeight;
@@ -501,7 +502,7 @@ Chart::drawAxisLabels()
 }
 
 void
-Chart::drawLineMarkers()
+Base::drawLineMarkers()
 {
   if (m_hideLineMarkers) return;
 
@@ -543,7 +544,7 @@ Chart::drawLineMarkers()
 }
 
 void
-Chart::drawLegend()
+Base::drawLegend()
 {
   if (m_hideLegend) return;
 
@@ -619,7 +620,7 @@ Chart::drawLegend()
 }
 
 void
-Chart::drawTitle()
+Base::drawTitle()
 {
   if (m_hideTitle || m_title.empty()) return;
 
@@ -628,7 +629,7 @@ Chart::drawTitle()
 }
 
 void
-Chart::drawLabel(double xOffset, int index)
+Base::drawLabel(double xOffset, int index)
 {
   if (m_hideLineMarkers) return;
 
@@ -643,7 +644,7 @@ Chart::drawLabel(double xOffset, int index)
 }
 
 void
-Chart::drawNoData()
+Base::drawNoData()
 {
   annotateText(m_rawColumns, m_rawRows / 2.0, 0, 10, m_noDataMessage, Gravity::Center, m_fontColor, 80.0);
 }
@@ -653,7 +654,7 @@ Chart::drawNoData()
 //------------------------------------------------------------------------------
 
 void
-Chart::renderBackground()
+Base::renderBackground()
 {
   if (m_wand) m_wand = DestroyMagickWand(m_wand);
 
@@ -683,7 +684,7 @@ Chart::renderBackground()
 }
 
 void
-Chart::resetThemes()
+Base::resetThemes()
 {
   m_colorIndex = 0;
   m_labelsSeen.clear();
@@ -698,13 +699,13 @@ Chart::resetThemes()
 //------------------------------------------------------------------------------
 
 double
-Chart::scaleFontSize(double value)
+Base::scaleFontSize(double value)
 {
   return value * m_scaleRatio;
 }
 
 double
-Chart::significant(double inc)
+Base::significant(double inc)
 {
   if (inc == 0) return 1.0;
 
@@ -722,7 +723,7 @@ Chart::significant(double inc)
 }
 
 void
-Chart::sortNormData()
+Base::sortNormData()
 {
   std::sort(m_normData.begin(), m_normData.end(), [](const Dataset &a, const Dataset &b) {
     return sumValues(b.values) < sumValues(a.values);
@@ -730,7 +731,7 @@ Chart::sortNormData()
 }
 
 double
-Chart::sumValues(const std::vector<double> &values)
+Base::sumValues(const std::vector<double> &values)
 {
   double total = 0;
   for (double v : values) total += std::isnan(v) ? 0.0 : v;
@@ -738,7 +739,7 @@ Chart::sumValues(const std::vector<double> &values)
 }
 
 string
-Chart::formatLabel(double value)
+Base::formatLabel(double value)
 {
   char buffer[64];
   string label;
@@ -777,7 +778,7 @@ Chart::formatLabel(double value)
 }
 
 double
-Chart::calculateCapsHeight(double fontSize)
+Base::calculateCapsHeight(double fontSize)
 {
   double w, h;
   measureText("X", fontSize, false, w, h);
@@ -785,7 +786,7 @@ Chart::calculateCapsHeight(double fontSize)
 }
 
 double
-Chart::calculateWidth(double fontSize, const string &text)
+Base::calculateWidth(double fontSize, const string &text)
 {
   double w, h;
   measureText(text, fontSize, false, w, h);
@@ -793,7 +794,7 @@ Chart::calculateWidth(double fontSize, const string &text)
 }
 
 string
-Chart::incrementColor()
+Base::incrementColor()
 {
   if (m_colors.empty()) return string("");
 
@@ -803,19 +804,19 @@ Chart::incrementColor()
 }
 
 bool
-Chart::largerThanMax(double dataPoint)
+Base::largerThanMax(double dataPoint)
 {
   return dataPoint > m_maximumValue;
 }
 
 bool
-Chart::lessThanMin(double dataPoint)
+Base::lessThanMin(double dataPoint)
 {
   return dataPoint < m_minimumValue;
 }
 
 double
-Chart::clipValueIfGreaterThan(double value, double maxValue)
+Base::clipValueIfGreaterThan(double value, double maxValue)
 {
   return (value > maxValue) ? maxValue : value;
 }
@@ -825,7 +826,7 @@ Chart::clipValueIfGreaterThan(double value, double maxValue)
 //------------------------------------------------------------------------------
 
 void
-Chart::setFillColor(const string &color)
+Base::setFillColor(const string &color)
 {
   PixelWand *pw = NewPixelWand();
   PixelSetColor(pw, color);
@@ -834,7 +835,7 @@ Chart::setFillColor(const string &color)
 }
 
 void
-Chart::setStrokeColor(const string &color)
+Base::setStrokeColor(const string &color)
 {
   PixelWand *pw = NewPixelWand();
   PixelSetColor(pw, color);
@@ -843,53 +844,53 @@ Chart::setStrokeColor(const string &color)
 }
 
 void
-Chart::setStrokeOpacity(double opacity)
+Base::setStrokeOpacity(double opacity)
 {
   DrawSetStrokeOpacity(m_draw, opacity);
 }
 
 void
-Chart::setFillOpacity(double opacity)
+Base::setFillOpacity(double opacity)
 {
   DrawSetFillOpacity(m_draw, opacity);
 }
 
 void
-Chart::setStrokeWidth(double width)
+Base::setStrokeWidth(double width)
 {
   DrawSetStrokeWidth(m_draw, width * m_scaleRatio);
 }
 
 void
-Chart::drawRectangleShape(double x1, double y1, double x2, double y2)
+Base::drawRectangleShape(double x1, double y1, double x2, double y2)
 {
   double s = m_scaleRatio;
   DrawRectangle(m_draw, x1 * s, y1 * s, x2 * s, y2 * s);
 }
 
 void
-Chart::drawLineShape(double x1, double y1, double x2, double y2)
+Base::drawLineShape(double x1, double y1, double x2, double y2)
 {
   double s = m_scaleRatio;
   DrawLine(m_draw, x1 * s, y1 * s, x2 * s, y2 * s);
 }
 
 void
-Chart::drawCircleShape(double ox, double oy, double px, double py)
+Base::drawCircleShape(double ox, double oy, double px, double py)
 {
   double s = m_scaleRatio;
   DrawCircle(m_draw, ox * s, oy * s, px * s, py * s);
 }
 
 void
-Chart::drawEllipseShape(double cx, double cy, double rx, double ry, double startDeg, double endDeg)
+Base::drawEllipseShape(double cx, double cy, double rx, double ry, double startDeg, double endDeg)
 {
   double s = m_scaleRatio;
   DrawEllipse(m_draw, cx * s, cy * s, rx * s, ry * s, startDeg, endDeg);
 }
 
 void
-Chart::drawPolygonShape(const std::vector<double> &points)
+Base::drawPolygonShape(const std::vector<double> &points)
 {
   double s = m_scaleRatio;
   size_t n = points.size() / 2;
@@ -902,7 +903,7 @@ Chart::drawPolygonShape(const std::vector<double> &points)
 }
 
 void
-Chart::measureText(const string &text, double rawPointSize, bool bold, double &width, double &height)
+Base::measureText(const string &text, double rawPointSize, bool bold, double &width, double &height)
 {
   if (!m_font.empty()) DrawSetFont(m_draw, m_font);
   DrawSetFontSize(m_draw, rawPointSize);
@@ -915,7 +916,7 @@ Chart::measureText(const string &text, double rawPointSize, bool bold, double &w
 }
 
 void
-Chart::annotateText(double width, double height, double x, double y,
+Base::annotateText(double width, double height, double x, double y,
                      const string &text, Gravity gravity, const string &fillColor,
                      double rawPointSize, bool bold, double angle)
 {
@@ -958,5 +959,6 @@ Chart::annotateText(double width, double height, double x, double y,
   }
 }
 
+} // namespace chart
 } // namespace graphics
 } // namespace arken

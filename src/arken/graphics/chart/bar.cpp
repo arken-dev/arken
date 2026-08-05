@@ -5,32 +5,33 @@
 //
 // Translated from gruff/bar.rb + gruff/bar_conversion.rb.
 
-#include <arken/graphics/chart.h>
+#include <arken/graphics/chart/bar.h>
 #include <cmath>
 
 namespace arken {
 namespace graphics {
+namespace chart {
 
 void
-ChartBar::setBarSpacing(double v) { m_barSpacing = v; }
+Bar::setBarSpacing(double v) { m_barSpacing = v; }
 double
-ChartBar::barSpacing() { return m_barSpacing; }
+Bar::barSpacing() { return m_barSpacing; }
 
 void
-ChartBar::draw()
+Bar::draw()
 {
   // Labels are centered over the left edge of the bar when there are more
   // labels than columns (same rule used for line graphs).
   m_centerLabelsOverPoint = ((int) m_labels.size() > m_columnCount);
 
-  Chart::draw();
+  Base::draw();
   if (!m_hasData) return;
 
   drawBars();
 }
 
 void
-ChartBar::barYRange(double dataPoint, int mode, double zero, double &y1, double &y2)
+Bar::barYRange(double dataPoint, int mode, double zero, double &y1, double &y2)
 {
   switch (mode) {
     case 1: // all values >= 0
@@ -53,7 +54,7 @@ ChartBar::barYRange(double dataPoint, int mode, double zero, double &y1, double 
 }
 
 void
-ChartBar::drawBars()
+Bar::drawBars()
 {
   m_barWidth = m_graphWidth / (double) (m_columnCount * m_data.size());
   double padding = (m_barWidth * (1 - m_barSpacing)) / 2;
@@ -100,5 +101,6 @@ ChartBar::drawBars()
   if (m_centerLabelsOverPoint) drawLabel(m_graphRight, m_columnCount);
 }
 
+} // namespace chart
 } // namespace graphics
 } // namespace arken

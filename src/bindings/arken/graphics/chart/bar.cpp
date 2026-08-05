@@ -4,12 +4,13 @@
 // license that can be found in the LICENSE file.
 
 #include "chart_common.h"
+#include <arken/graphics/chart/bar.h>
 
-using arken::graphics::ChartBar;
+using arken::graphics::chart::Bar;
 
-static ChartBar *
-checkChartBar(lua_State *L, int position = 1) {
-  return *static_cast<ChartBar **>(luaL_checkudata(L, position, "arken.graphics.ChartBar.metatable"));
+static Bar *
+checkBar(lua_State *L, int position = 1) {
+  return *static_cast<Bar **>(luaL_checkudata(L, position, "arken.graphics.chart.Bar.metatable"));
 }
 
 /**
@@ -17,27 +18,27 @@ checkChartBar(lua_State *L, int position = 1) {
  */
 
 static int
-arken_graphics_ChartBar_new(lua_State *L) {
+arken_graphics_chart_Bar_new(lua_State *L) {
   int width  = lua_isnumber(L, 1) ? (int) luaL_checkinteger(L, 1) : 800;
   int height = lua_isnumber(L, 2) ? (int) luaL_checkinteger(L, 2) : -1;
 
-  auto ptr = static_cast<ChartBar **>(lua_newuserdata(L, sizeof(ChartBar *)));
-  *ptr = new ChartBar(width, height);
+  auto ptr = static_cast<Bar **>(lua_newuserdata(L, sizeof(Bar *)));
+  *ptr = new Bar(width, height);
 
-  luaL_getmetatable(L, "arken.graphics.ChartBar.metatable");
+  luaL_getmetatable(L, "arken.graphics.chart.Bar.metatable");
   lua_setmetatable(L, -2);
   return 1;
 }
 
-static const luaL_reg arken_graphics_ChartBar[] = {
-  {"new", arken_graphics_ChartBar_new},
+static const luaL_reg arken_graphics_chart_Bar[] = {
+  {"new", arken_graphics_chart_Bar_new},
   {nullptr, nullptr}
 };
 
 void static
-register_arken_graphics_ChartBar(lua_State *L) {
-  luaL_newmetatable(L, "arken.graphics.ChartBar");
-  luaL_register(L, nullptr, arken_graphics_ChartBar);
+register_arken_graphics_chart_Bar(lua_State *L) {
+  luaL_newmetatable(L, "arken.graphics.chart.Bar");
+  luaL_register(L, nullptr, arken_graphics_chart_Bar);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -47,34 +48,34 @@ register_arken_graphics_ChartBar(lua_State *L) {
  */
 
 static int
-arken_graphics_ChartBar_setBarSpacing(lua_State *L) {
-  checkChartBar(L)->setBarSpacing(luaL_checknumber(L, 2));
+arken_graphics_chart_Bar_setBarSpacing(lua_State *L) {
+  checkBar(L)->setBarSpacing(luaL_checknumber(L, 2));
   return 0;
 }
 
 static int
-arken_graphics_ChartBar_barSpacing(lua_State *L) {
-  lua_pushnumber(L, checkChartBar(L)->barSpacing());
+arken_graphics_chart_Bar_barSpacing(lua_State *L) {
+  lua_pushnumber(L, checkBar(L)->barSpacing());
   return 1;
 }
 
 static int
-arken_graphics_ChartBar_gc(lua_State *L) {
-  delete checkChartBar(L);
+arken_graphics_chart_Bar_gc(lua_State *L) {
+  delete checkBar(L);
   return 0;
 }
 
-static const luaL_reg arken_graphics_ChartBar_metatable[] = {
-  {"setBarSpacing", arken_graphics_ChartBar_setBarSpacing},
-  {"barSpacing",    arken_graphics_ChartBar_barSpacing},
-  {"__gc",          arken_graphics_ChartBar_gc},
+static const luaL_reg arken_graphics_chart_Bar_metatable[] = {
+  {"setBarSpacing", arken_graphics_chart_Bar_setBarSpacing},
+  {"barSpacing",    arken_graphics_chart_Bar_barSpacing},
+  {"__gc",          arken_graphics_chart_Bar_gc},
   {nullptr, nullptr}
 };
 
 void static
-register_arken_graphics_ChartBar_metatable(lua_State *L) {
-  luaL_newmetatable(L, "arken.graphics.ChartBar.metatable");
-  luaL_register(L, nullptr, arken_graphics_ChartBar_metatable);
+register_arken_graphics_chart_Bar_metatable(lua_State *L) {
+  luaL_newmetatable(L, "arken.graphics.chart.Bar.metatable");
+  luaL_register(L, nullptr, arken_graphics_chart_Bar_metatable);
   register_arken_graphics_Chart_common(L);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
@@ -82,9 +83,9 @@ register_arken_graphics_ChartBar_metatable(lua_State *L) {
 
 extern "C" {
   int
-  luaopen_arken_graphics_ChartBar(lua_State *L) {
-    register_arken_graphics_ChartBar_metatable(L);
-    register_arken_graphics_ChartBar(L);
+  luaopen_arken_graphics_chart_Bar(lua_State *L) {
+    register_arken_graphics_chart_Bar_metatable(L);
+    register_arken_graphics_chart_Bar(L);
     return 1;
   }
 }
