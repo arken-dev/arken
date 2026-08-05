@@ -200,7 +200,7 @@ class Base {
   virtual void calculateSpread();
   void setupGraphMeasurements();
   void drawAxisLabels();
-  void drawLineMarkers();
+  virtual void drawLineMarkers();
   void drawLegend();
   void drawTitle();
   void drawLabel(double xOffset, int index);
@@ -232,6 +232,7 @@ class Base {
   void setStrokeOpacity(double opacity);
   void setFillOpacity(double opacity);
   void setStrokeWidth(double width);
+  void setStrokeAntialias(bool antialias);
 
   void drawRectangleShape(double x1, double y1, double x2, double y2);
   void drawLineShape(double x1, double y1, double x2, double y2);

@@ -862,6 +862,12 @@ Base::setStrokeWidth(double width)
 }
 
 void
+Base::setStrokeAntialias(bool antialias)
+{
+  DrawSetStrokeAntialias(m_draw, antialias ? MagickTrue : MagickFalse);
+}
+
+void
 Base::drawRectangleShape(double x1, double y1, double x2, double y2)
 {
   double s = m_scaleRatio;
