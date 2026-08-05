@@ -24,16 +24,12 @@
 #include <thread>
 
 #include <event2/event.h>
-#include <event2/thread.h>
 #include <event2/buffer.h>
 #include <event2/bufferevent.h>
 
 #include <arken/net/httpserver.h>
 #include <arken/mvm.h>
 #include <arken/base>
-
-#define ARKEN_NET_HTTPSERVER_LIBEVENT_PERSIST 0
-#define ARKEN_NET_HTTPSERVER_LIBEVENT_DEBUG   0
 
 using HttpServer = arken::net::HttpServer;
 
@@ -103,6 +99,7 @@ static int create_serverfd(char const *addr, uint16_t port)
 
 void read_cb(int fd, short events, void *arg)
 {
+  auto ev = static_cast<struct event *>(arg);
   char buf[MAX_MESSAGE_LEN+1] = {0};
   ssize_t ret;
   std::string tmp;
@@ -127,21 +124,13 @@ void read_cb(int fd, short events, void *arg)
       }
       bytes += write(fd, result+bytes, size-bytes);
     }
-    #if ARKEN_NET_HTTPSERVER_LIBEVENT_PERSIST == 0
-    // not works without close socket and read_cb without EV_PERSIST :(
-    #if ARKEN_NET_HTTPSERVER_LIBEVENT_DEBUG
-      std::cout << "close client" << std::endl;
-    #endif
-    --client_number;
-    close(fd);
-    #endif
   } else if ((ret < 0) && (errno == EAGAIN || errno == EWOULDBLOCK)) {
     return;
   } else {
     --client_number;
+    event_free(ev);
     close(fd);
   }
-
 }
 
 //-----------------------------------------------------------------------------
@@ -159,22 +148,12 @@ accept_cb(int fd, short event, void *arg)
   if (sockfd > 0) {
     if (++client_number > MAX_CLIENTS) {
       std::cout << "max clients" << std::endl;
-      close(fd); // or close sockfd ???
+      close(sockfd);
+      --client_number;
     } else {
       auto base = static_cast<event_base*>(arg);
       struct event *ev = event_new(nullptr, -1, 0, nullptr, nullptr);
-      // not works without close socket and read_cb without EV_PERSIST :(
-      #if ARKEN_NET_HTTPSERVER_LIBEVENT_PERSIST == 0
-      #if ARKEN_NET_HTTPSERVER_LIBEVENT_DEBUG
-        std::cout << "accept EV_READ" << std::endl;
-      #endif
-      event_assign(ev, base, sockfd, EV_READ, read_cb, (void*)ev);
-      #else
-      #if ARKEN_NET_HTTPSERVER_LIBEVENT_DEBUG
-        std::cout << "accept EV_READ | EV_PERSIST" << std::endl;
-      #endif
       event_assign(ev, base, sockfd, EV_READ | EV_PERSIST, read_cb, (void*)ev);
-      #endif
       event_add(ev, nullptr);
     }
   } else if ((sockfd < 0) && (errno == EAGAIN || errno == EWOULDBLOCK)) {
@@ -263,15 +242,11 @@ signal_handler(int signo)
 
 void HttpServer::run()
 {
-  #ifdef WIN32
-  evthread_use_windows_threads();
-  #endif
-  #ifdef _EVENT_HAVE_PTHREADS
-  evthread_use_pthreads();
-  #endif
-
   std::cout << "start arken.net.HttpServer (libevent) " << m_address <<
      ":" << m_port << " (" << m_threads << ") threads..." << std::endl;
+
+  // avoid process death when writing to a socket the peer already closed
+  signal(SIGPIPE, SIG_IGN);
 
   //signal(SIGTERM, signal_handler);
   //signal(SIGINT,  signal_handler);

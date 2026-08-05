@@ -6,6 +6,7 @@
 #ifndef _ARKEN_OS_
 #define _ARKEN_OS_
 
+#include <cstdint>
 #include <arken/string.h>
 
 
@@ -27,9 +28,10 @@ class os {
   static bool     chdir(const char * dirpath);
   static size_t   ctime(const char * path);
   static string   dirpath(const char * path);
+  static size_t   du(const char * path);
   static bool     exists(const char * path);
   static string   executablePath();
-  static List glob(const char * dir);
+  static List glob(const char * full_path_pattern);
   static List find(const char * dir, const char * regex = ".*", bool sub = false);
   static string   home();
   static string   hostname();

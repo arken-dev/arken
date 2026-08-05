@@ -8,7 +8,7 @@
 #
 # ------------------------------------------------------------------------------
 
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.5)
 project("arken")
 
 # ------------------------------------------------------------------------------
@@ -30,7 +30,8 @@ include(arken-concurrent-worker)
 include(arken-debug)
 include(arken-digest)
 include(arken-doc-pdf)
-include(arken-image)
+include(arken-graphics-image)
+include(arken-graphics-chart)
 include(arken-mvm)
 include(arken-net-httpserver)
 include(arken-os)

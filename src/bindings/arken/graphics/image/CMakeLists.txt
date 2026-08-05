@@ -9,8 +9,8 @@
 # ------------------------------------------------------------------------------
 
 add_library(
-  arken.Image SHARED image.cpp
+  arken.graphics.Image SHARED image.cpp
 )
 
-set_target_properties(arken.Image PROPERTIES PREFIX "" OUTPUT_NAME Image)
-target_link_libraries(arken.Image arken)
+set_target_properties(arken.graphics.Image PROPERTIES PREFIX "" OUTPUT_NAME Image)
+target_link_libraries(arken.graphics.Image arken)

@@ -49,9 +49,14 @@ function HttpRequest:cookie(name, value, params)
       cookie = cookie .. '; Secure'
     end
 
+    if params['max-age'] then
+      cookie = cookie .. '; Max-Age=' .. params['max-age']
+    end
+
     if params.expires then
       cookie = cookie .. '; Expires=' .. params.expires
     end
+
 
     if params.domain then
       cookie = cookie .. '; Domain=' .. params.domain
@@ -60,6 +65,7 @@ function HttpRequest:cookie(name, value, params)
     if params.path then
       cookie = cookie .. '; Path=' .. params.path
     end
+
   end
 
   self:append(cookie)

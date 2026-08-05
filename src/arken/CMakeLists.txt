@@ -17,7 +17,6 @@ include_directories(${PROJECT_SOURCE_DIR}/src/vendors/mongrel2/http11)
 
 file(GLOB src      ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
 file(GLOB os       ${CMAKE_CURRENT_SOURCE_DIR}/os/*.c)
-file(GLOB os-glob  ${PROJECT_SOURCE_DIR}/src/vendors/apple/glob.c)
 file(GLOB net      ${CMAKE_CURRENT_SOURCE_DIR}/net/*.cpp)
 file(GLOB concurrent ${CMAKE_CURRENT_SOURCE_DIR}/concurrent/*.cpp)
 file(GLOB concurrent-task ${CMAKE_CURRENT_SOURCE_DIR}/concurrent/task/*.cpp)
@@ -33,7 +32,8 @@ add_library(
   ${src}
   ${arken-barcode}
   ${arken-doc-pdf}
-  ${arken-image}
+  ${arken-graphics-image}
+  ${arken-graphics-chart}
   ${base64}
   ${base64-embedded}
   ${compress}
@@ -44,7 +44,7 @@ add_library(
   ${net}
 #  ${httpserver}
   ${arken-notify}
-  ${os} ${os-system} ${os-uuid} ${os-glob}
+  ${os} ${os-system} ${os-uuid}
   ${concurrent} ${concurrent-task} ${arken-concurrent-worker}
   ${regex}
   ${time}
@@ -85,10 +85,10 @@ if(ARKEN_DOC_PDF)
 endif()
 
 #------------------------------------------------------------------------------
-# ARKEN_IMAGE
+# ARKEN_GRAPHICS_IMAGE / ARKEN_GRAPHICS_CHART
 #------------------------------------------------------------------------------
 
-if(ARKEN_IMAGE)
+if(ARKEN_GRAPHICS_IMAGE OR ARKEN_GRAPHICS_CHART)
   target_link_libraries(arken ${ImageMagick_MagickWand_LIBRARY})
 endif()
 
@@ -118,7 +118,18 @@ if(ARKEN_NOTIFY STREQUAL "glib")
 endif()
 
 if(ARKEN_NOTIFY STREQUAL "opengl")
-  target_link_libraries(arken glut GL)
+  target_link_libraries(arken ${OPENGL_LIBRARIES})
+  target_link_libraries(arken ${GLFW_LIBRARIES})
+  target_link_libraries(arken ${FREETYPE_LIBRARIES})
+
+  if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    target_link_libraries(arken gdi32)
+  elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    target_link_libraries(arken "-framework Cocoa" "-framework IOKit" "-framework CoreVideo")
+  else()
+    target_link_libraries(arken ${FONTCONFIG_LIBRARIES})
+    target_link_libraries(arken ${X11_LIBRARIES})
+  endif()
 endif()
 
 #------------------------------------------------------------------------------

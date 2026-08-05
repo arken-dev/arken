@@ -26,3 +26,6 @@ deps/*
 coverage/*
 .DS_Store
 cmake/*
+bootstrap/tmp/
+
+examples/arken.graphics.Chart/*.png
