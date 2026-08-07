@@ -31,6 +31,7 @@ class os {
   static size_t   du(const char * path);
   static bool     exists(const char * path);
   static string   executablePath();
+  static bool     fsync(const char * path);
   static List glob(const char * full_path_pattern);
   static List find(const char * dir, const char * regex = ".*", bool sub = false);
   static string   home();

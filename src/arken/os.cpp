@@ -20,6 +20,7 @@
 #include <unistd.h>
 #include <limits.h>
 #include <sys/stat.h>
+#include <fcntl.h>
 #include <set>
 #include <vector>
 #include <algorithm>
@@ -523,6 +524,19 @@ size_t os::du(const char * path)
 bool os::exists(const char * path)
 {
   return std::filesystem::exists(path);
+}
+
+bool os::fsync(const char * path)
+{
+  int fd = open(path, O_RDONLY);
+  if (fd == -1) {
+    return false;
+  }
+
+  int result = ::fsync(fd);
+  close(fd);
+
+  return result == 0;
 }
 
 string os::home()
