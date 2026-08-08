@@ -87,19 +87,27 @@ if( ARKEN_BARCODE )
       set(CMAKE_PREFIX_PATH "${zxing-root};${CMAKE_PREFIX_PATH}")
     endif()
 
+    # ZXing::ZXing's exported link interface pulls in Threads::Threads.
+    # That target only gets created elsewhere in this project when
+    # ARKEN_NET_HTTPSERVER/ARKEN_MVM_CONTAINER use boost, so make sure it
+    # exists here too or linking ZXing::ZXing fails ("-lThreads::Threads").
+    find_package(Threads REQUIRED)
     find_package(ZXing CONFIG REQUIRED)
 
+    # Link against the ZXing::ZXing imported target directly (arken-graphics
+    # links plain lib names like "ZXing" via link_directories, but that
+    # relies on reading back IMPORTED_LOCATION_<CONFIG> ourselves to derive
+    # a -L dir, and the config suffix — NOCONFIG, RELEASE, ... — varies by
+    # how ZXing was built, so it silently breaks on some installs). Linking
+    # the imported target sidesteps all of that: CMake resolves the actual
+    # library file itself, whatever it's named/configured as.
     get_target_property(ZXING_INCLUDE_DIR ZXing::ZXing INTERFACE_INCLUDE_DIRECTORIES)
-    get_target_property(ZXING_LIB_PATH ZXing::ZXing IMPORTED_LOCATION_NOCONFIG)
-    get_filename_component(ZXING_LIB_DIR ${ZXING_LIB_PATH} DIRECTORY)
 
     include_directories(
       ${ZXING_INCLUDE_DIR}
       ${ZXING_INCLUDE_DIR}/ZXing
       ${PROJECT_SOURCE_DIR}/src/vendors/stb
     )
-
-    link_directories( ${ZXING_LIB_DIR} )
 
   endif()
 
