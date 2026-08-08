@@ -95,6 +95,7 @@ if( ARKEN_BARCODE )
 
     include_directories(
       ${ZXING_INCLUDE_DIR}
+      ${ZXING_INCLUDE_DIR}/ZXing
       ${PROJECT_SOURCE_DIR}/src/vendors/stb
     )
 
