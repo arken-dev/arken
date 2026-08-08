@@ -102,6 +102,12 @@ void Barcode::save(string path)
 
   symbol->symbology = symbology;
 
+  // DataMatrix defaults to whichever symbol size (square or rectangular)
+  // fits the data smallest, which can produce a visibly non-square symbol.
+  // Force square versions, since that's the expected shape almost always.
+  if (symbology == BARCODE_DATAMATRIX)
+    symbol->option_3 = DM_SQUARE;
+
   // Pass 1: encode at the default scale just to measure the symbol's
   // natural size, so pass 2 can pick a scale that fits (m_width, m_height).
   int error = ZBarcode_Encode_and_Buffer(
