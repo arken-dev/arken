@@ -3,12 +3,12 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 //
-// Shared Lua bindings for the arken::graphics::Chart base API. Included by
+// Shared Lua bindings for the arken::graphics::chart::Base API. Included by
 // each concrete chart binding (bar.cpp, line.cpp, pie.cpp, area.cpp) so the
 // ~70 inherited setters/getters are written once instead of four times.
 // Every wrapper below works against any of the four chart userdata types,
-// since ChartBar/ChartLine/ChartPie/ChartArea are plain (non-virtual,
-// single) subclasses of Chart and therefore share the same object address.
+// since Bar/Line/Pie/Area are plain (non-virtual, single) subclasses of
+// chart::Base and therefore share the same object address.
 
 #ifndef _ARKEN_BINDINGS_GRAPHICS_CHART_COMMON_
 #define _ARKEN_BINDINGS_GRAPHICS_CHART_COMMON_
@@ -17,11 +17,11 @@
 #include <arken/base>
 #include <arken/graphics/chart.h>
 
-using arken::graphics::Chart;
+using arken::graphics::chart::Base;
 
-static inline Chart *
+static inline Base *
 checkChart(lua_State *L, int position = 1) {
-  return *static_cast<Chart **>(lua_touserdata(L, position));
+  return *static_cast<Base **>(lua_touserdata(L, position));
 }
 
 //------------------------------------------------------------------------------
@@ -162,7 +162,7 @@ CHART_ACTION0(themeGreyscale)
 
 static int
 arken_graphics_Chart_data(lua_State *L) {
-  Chart *chart = checkChart(L);
+  Base *chart = checkChart(L);
 
   size_t nameLen;
   const char *name = luaL_checklstring(L, 2, &nameLen);
@@ -192,14 +192,14 @@ arken_graphics_Chart_data(lua_State *L) {
 
 static int
 arken_graphics_Chart_addColor(lua_State *L) {
-  Chart *chart = checkChart(L);
+  Base *chart = checkChart(L);
   chart->addColor(string(luaL_checkstring(L, 2)));
   return 0;
 }
 
 static int
 arken_graphics_Chart_setColors(lua_State *L) {
-  Chart *chart = checkChart(L);
+  Base *chart = checkChart(L);
   luaL_checktype(L, 2, LUA_TTABLE);
 
   std::vector<string> colors;
@@ -216,7 +216,7 @@ arken_graphics_Chart_setColors(lua_State *L) {
 
 static int
 arken_graphics_Chart_colors(lua_State *L) {
-  Chart *chart = checkChart(L);
+  Base *chart = checkChart(L);
   std::vector<string> colors = chart->colors();
 
   lua_newtable(L);
@@ -233,7 +233,7 @@ arken_graphics_Chart_colors(lua_State *L) {
 
 static int
 arken_graphics_Chart_addLabel(lua_State *L) {
-  Chart *chart = checkChart(L);
+  Base *chart = checkChart(L);
   int index = (int) luaL_checkinteger(L, 2);
   chart->addLabel(index, string(luaL_checkstring(L, 3)));
   return 0;
@@ -241,7 +241,7 @@ arken_graphics_Chart_addLabel(lua_State *L) {
 
 static int
 arken_graphics_Chart_setLabels(lua_State *L) {
-  Chart *chart = checkChart(L);
+  Base *chart = checkChart(L);
   luaL_checktype(L, 2, LUA_TTABLE);
 
   std::map<int, string> labels;
@@ -263,7 +263,7 @@ arken_graphics_Chart_setLabels(lua_State *L) {
 
 static int
 arken_graphics_Chart_write(lua_State *L) {
-  Chart *chart = checkChart(L);
+  Base *chart = checkChart(L);
   const char *filename = lua_isstring(L, 2) ? luaL_checkstring(L, 2) : "graph.png";
   chart->write(string(filename));
   return 0;

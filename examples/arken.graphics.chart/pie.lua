@@ -1,4 +1,4 @@
--- arken.graphics.ChartPie example
+-- arken.graphics.chart.Pie example
 --
 -- Ported from Gruff::Pie usage:
 --   g = Gruff::Pie.new
@@ -7,11 +7,11 @@
 --   g.data 'Hamburgers', 50
 --   g.write("test/output/pie_keynote.png")
 
-local ChartPie = require('arken.graphics.ChartPie')
+local Pie = require('arken.graphics.chart.Pie')
 
-local output = os.pwd() .. '/examples/arken.graphics.Chart/pie.png'
+local output = os.pwd() .. '/examples/arken.graphics.chart/pie.png'
 
-local pie = ChartPie.new(800, 600)
+local pie = Pie.new(800, 600)
 
 pie:setTitle('Visual Pie Graph Test')
 pie:themeKeynote()
@@ -22,4 +22,4 @@ pie:data('Onion Rings', 30)
 
 pie:write(output)
 
-print('arken.graphics.ChartPie OK -> ' .. output)
+print('arken.graphics.chart.Pie OK -> ' .. output)

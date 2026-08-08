@@ -1,0 +1,29 @@
+-- arken.graphics.chart.StackedArea example
+--
+-- Ported from Gruff::StackedArea usage:
+--   g = Gruff::StackedArea.new
+--   g.title = "CPU and Memory Usage"
+--   g.data 'CPU',    [20, 35, 42, 30, 55, 48, 60]
+--   g.data 'Memory', [40, 45, 41, 52, 58, 61, 65]
+--   g.write("test/output/stacked_area.png")
+
+local StackedArea = require('arken.graphics.chart.StackedArea')
+
+local output = os.pwd() .. '/examples/arken.graphics.chart/stacked_area.png'
+
+local area = StackedArea.new(800, 600)
+
+area:setTitle('CPU and Memory Usage')
+area:themeKeynote()
+
+area:setLabels({
+  [0] = '00h', [1] = '04h', [2] = '08h', [3] = '12h',
+  [4] = '16h', [5] = '20h', [6] = '24h',
+})
+
+area:data('CPU',    { 20, 35, 42, 30, 55, 48, 60 })
+area:data('Memory', { 40, 45, 41, 52, 58, 61, 65 })
+
+area:write(output)
+
+print('arken.graphics.chart.StackedArea OK -> ' .. output)

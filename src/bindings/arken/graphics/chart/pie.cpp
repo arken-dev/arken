@@ -4,12 +4,13 @@
 // license that can be found in the LICENSE file.
 
 #include "chart_common.h"
+#include <arken/graphics/chart/pie.h>
 
-using arken::graphics::ChartPie;
+using arken::graphics::chart::Pie;
 
-static ChartPie *
-checkChartPie(lua_State *L, int position = 1) {
-  return *static_cast<ChartPie **>(luaL_checkudata(L, position, "arken.graphics.ChartPie.metatable"));
+static Pie *
+checkPie(lua_State *L, int position = 1) {
+  return *static_cast<Pie **>(luaL_checkudata(L, position, "arken.graphics.chart.Pie.metatable"));
 }
 
 /**
@@ -17,27 +18,27 @@ checkChartPie(lua_State *L, int position = 1) {
  */
 
 static int
-arken_graphics_ChartPie_new(lua_State *L) {
+arken_graphics_chart_Pie_new(lua_State *L) {
   int width  = lua_isnumber(L, 1) ? (int) luaL_checkinteger(L, 1) : 800;
   int height = lua_isnumber(L, 2) ? (int) luaL_checkinteger(L, 2) : -1;
 
-  auto ptr = static_cast<ChartPie **>(lua_newuserdata(L, sizeof(ChartPie *)));
-  *ptr = new ChartPie(width, height);
+  auto ptr = static_cast<Pie **>(lua_newuserdata(L, sizeof(Pie *)));
+  *ptr = new Pie(width, height);
 
-  luaL_getmetatable(L, "arken.graphics.ChartPie.metatable");
+  luaL_getmetatable(L, "arken.graphics.chart.Pie.metatable");
   lua_setmetatable(L, -2);
   return 1;
 }
 
-static const luaL_reg arken_graphics_ChartPie[] = {
-  {"new", arken_graphics_ChartPie_new},
+static const luaL_reg arken_graphics_chart_Pie[] = {
+  {"new", arken_graphics_chart_Pie_new},
   {nullptr, nullptr}
 };
 
 void static
-register_arken_graphics_ChartPie(lua_State *L) {
-  luaL_newmetatable(L, "arken.graphics.ChartPie");
-  luaL_register(L, nullptr, arken_graphics_ChartPie);
+register_arken_graphics_chart_Pie(lua_State *L) {
+  luaL_newmetatable(L, "arken.graphics.chart.Pie");
+  luaL_register(L, nullptr, arken_graphics_chart_Pie);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
 }
@@ -47,34 +48,34 @@ register_arken_graphics_ChartPie(lua_State *L) {
  */
 
 static int
-arken_graphics_ChartPie_setZeroDegree(lua_State *L) {
-  checkChartPie(L)->setZeroDegree(luaL_checknumber(L, 2));
+arken_graphics_chart_Pie_setZeroDegree(lua_State *L) {
+  checkPie(L)->setZeroDegree(luaL_checknumber(L, 2));
   return 0;
 }
 
 static int
-arken_graphics_ChartPie_zeroDegree(lua_State *L) {
-  lua_pushnumber(L, checkChartPie(L)->zeroDegree());
+arken_graphics_chart_Pie_zeroDegree(lua_State *L) {
+  lua_pushnumber(L, checkPie(L)->zeroDegree());
   return 1;
 }
 
 static int
-arken_graphics_ChartPie_gc(lua_State *L) {
-  delete checkChartPie(L);
+arken_graphics_chart_Pie_gc(lua_State *L) {
+  delete checkPie(L);
   return 0;
 }
 
-static const luaL_reg arken_graphics_ChartPie_metatable[] = {
-  {"setZeroDegree", arken_graphics_ChartPie_setZeroDegree},
-  {"zeroDegree",    arken_graphics_ChartPie_zeroDegree},
-  {"__gc",          arken_graphics_ChartPie_gc},
+static const luaL_reg arken_graphics_chart_Pie_metatable[] = {
+  {"setZeroDegree", arken_graphics_chart_Pie_setZeroDegree},
+  {"zeroDegree",    arken_graphics_chart_Pie_zeroDegree},
+  {"__gc",          arken_graphics_chart_Pie_gc},
   {nullptr, nullptr}
 };
 
 void static
-register_arken_graphics_ChartPie_metatable(lua_State *L) {
-  luaL_newmetatable(L, "arken.graphics.ChartPie.metatable");
-  luaL_register(L, nullptr, arken_graphics_ChartPie_metatable);
+register_arken_graphics_chart_Pie_metatable(lua_State *L) {
+  luaL_newmetatable(L, "arken.graphics.chart.Pie.metatable");
+  luaL_register(L, nullptr, arken_graphics_chart_Pie_metatable);
   register_arken_graphics_Chart_common(L);
   lua_pushvalue(L, -1);
   lua_setfield(L, -1, "__index");
@@ -82,9 +83,9 @@ register_arken_graphics_ChartPie_metatable(lua_State *L) {
 
 extern "C" {
   int
-  luaopen_arken_graphics_ChartPie(lua_State *L) {
-    register_arken_graphics_ChartPie_metatable(L);
-    register_arken_graphics_ChartPie(L);
+  luaopen_arken_graphics_chart_Pie(lua_State *L) {
+    register_arken_graphics_chart_Pie_metatable(L);
+    register_arken_graphics_chart_Pie(L);
     return 1;
   }
 }

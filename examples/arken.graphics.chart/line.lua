@@ -1,4 +1,4 @@
--- arken.graphics.ChartLine example
+-- arken.graphics.chart.Line example
 --
 -- Ported from Gruff::Line usage:
 --   g = Gruff::Line.new
@@ -7,11 +7,11 @@
 --   g.data 'Hamburgers', [50, 19, 99, 29]
 --   g.write("test/output/line.png")
 
-local ChartLine = require('arken.graphics.ChartLine')
+local Line = require('arken.graphics.chart.Line')
 
-local output = os.pwd() .. '/examples/arken.graphics.Chart/line.png'
+local output = os.pwd() .. '/examples/arken.graphics.chart/line.png'
 
-local line = ChartLine.new(800, 600)
+local line = Line.new(800, 600)
 
 line:setTitle('A Line Graph')
 line:themeKeynote()
@@ -27,4 +27,4 @@ line:data('Hamburgers', { 50, 19, 99, 29 })
 
 line:write(output)
 
-print('arken.graphics.ChartLine OK -> ' .. output)
+print('arken.graphics.chart.Line OK -> ' .. output)
