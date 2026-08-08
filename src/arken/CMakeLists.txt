@@ -186,7 +186,11 @@ endif()
 #------------------------------------------------------------------------------
 
 if(ARKEN_BARCODE)
-  target_link_libraries( arken ZXing )
+  if(ARKEN_BARCODE_BACKEND STREQUAL "zint")
+    target_link_libraries( arken zint )
+  else() # zxing | zxing-legacy
+    target_link_libraries( arken ZXing )
+  endif()
 endif()
 
 #------------------------------------------------------------------------------
