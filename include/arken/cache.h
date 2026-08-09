@@ -8,6 +8,9 @@
 
 #include <mutex>
 #include <unordered_map>
+#include <optional>
+#include <string>
+#include <vector>
 #include <arken/base>
 
 namespace arken
@@ -15,24 +18,25 @@ namespace arken
 
 class cache {
   public:
-  static const char * value(const char * key);
+  static std::optional<std::string> value(const char * key);
   static void insert(const char *key, const char * value, int expires = -1);
   static void remove(const char * key);
   static double size();
   static void   gc();
+  static std::vector<std::string> keys(const char * pattern = "*");
 
   private:
 
   class data {
     public:
-    data(const char * value, int expires);
-    ~data();
-    const char * value();
+    data(const std::string & value, int expires);
+    ~data() = default;
+    const std::string & value();
     bool isExpires();
 
     private:
-    char * m_value;
-    int    m_expires;
+    std::string m_value;
+    int         m_expires;
   };
 
   static std::mutex s_mutex;

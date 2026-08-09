@@ -6,25 +6,49 @@
 #include <arken/base>
 #include <arken/cache>
 #include <arken/json>
+#include <arken/utils/glob.h>
 #include <vector>
+#include <thread>
 
 namespace arken {
+
+namespace {
+  const int GC_INTERVAL_SECONDS = 5;
+
+  void backgroundGC()
+  {
+    while (true) {
+      os::sleep(GC_INTERVAL_SECONDS);
+      cache::gc();
+    }
+  }
+
+  // primeira inserção agenda uma thread própria que roda gc() periodicamente
+  // pelo tempo de vida do processo, sem depender de nenhuma rotina externa
+  void ensureBackgroundGC()
+  {
+    static std::once_flag flag;
+    std::call_once(flag, []() {
+      std::thread(backgroundGC).detach();
+    });
+  }
+}
 
 std::mutex cache::s_mutex;
 std::unordered_map<std::string, cache::data *> * cache::s_cache = new std::unordered_map<std::string, cache::data *>;
 
-const char * cache::value(const char * key)
+std::optional<std::string> cache::value(const char * key)
 {
   std::unique_lock<std::mutex> lck(s_mutex);
 
   if (s_cache->find(key) == s_cache->end()) {
-    return nullptr;
+    return std::nullopt;
   } else {
     cache::data * data = s_cache->at(key);
     if ( data->isExpires() ) {
       s_cache->erase(key);
       delete data;
-      return nullptr;
+      return std::nullopt;
     } else {
       return data->value();
     }
@@ -33,6 +57,8 @@ const char * cache::value(const char * key)
 
 void cache::insert(const char *key, const char * value, int expires)
 {
+  ensureBackgroundGC();
+
   std::unique_lock<std::mutex> lck(s_mutex);
 
   if ( s_cache->count(key) ) {
@@ -55,27 +81,19 @@ void cache::remove(const char * key)
 
 }
 
-cache::data::data(const char * value, int expires)
+cache::data::data(const std::string & value, int expires) : m_value(value)
 {
-
-  int size = strlen(value);
-  m_value  = new char[size + 1];
-  strncpy(m_value, value, size);
-  m_value[size] = '\0';
   if( expires < 0 ) {
     m_expires = os::microtime() + 60;
+  } else if( expires == 0 ) {
+    // expires == 0 é o sentinel para "nunca expira" (isExpires() trata m_expires <= 0 como sem TTL)
+    m_expires = 0;
   } else {
     m_expires = os::microtime() + expires;
   }
-
 }
 
-cache::data::~data()
-{
-  delete[] m_value;
-}
-
-const char * cache::data::value()
+const std::string & cache::data::value()
 {
   return m_value;
 }
@@ -95,7 +113,25 @@ double cache::size()
 
   std::unique_lock<std::mutex> lck(s_mutex);
   for (std::pair<std::string, cache::data *> element : *cache::s_cache) {
-    result = result + strlen(element.second->value());
+    result = result + element.second->value().size();
+  }
+
+  return result;
+}
+
+std::vector<std::string> cache::keys(const char * pattern)
+{
+  std::unique_lock<std::mutex> lck(s_mutex);
+
+  std::vector<std::string> result;
+
+  for (std::pair<std::string, cache::data *> element : *cache::s_cache) {
+    if ( element.second->isExpires() ) {
+      continue;
+    }
+    if ( utils::glob::match(element.first, pattern) ) {
+      result.push_back(element.first);
+    }
   }
 
   return result;

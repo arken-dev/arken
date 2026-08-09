@@ -11,12 +11,12 @@ using arken::cache;
 using arken::json;
 
 static int arken_cache_value( lua_State *L ) {
-  const char * key   = luaL_checkstring(L, 1);
-  const char * value = cache::value(key);
-  if( value == nullptr ) {
+  const char * key = luaL_checkstring(L, 1);
+  std::optional<std::string> value = cache::value(key);
+  if( !value.has_value() ) {
     lua_pushnil(L);
   } else {
-    json::decode(L, value);
+    json::decode(L, value->c_str());
   }
   return 1;
 }
@@ -51,6 +51,22 @@ static int arken_cache_gc( lua_State *L ) {
   return 0;
 }
 
+static int arken_cache_keys( lua_State *L ) {
+  const char * pattern = "*";
+  if( lua_gettop(L) >= 1 && !lua_isnil(L, 1) ) {
+    pattern = luaL_checkstring(L, 1);
+  }
+
+  std::vector<std::string> result = cache::keys(pattern);
+
+  lua_newtable(L);
+  for( size_t i = 0; i < result.size(); i++ ) {
+    lua_pushstring(L, result[i].c_str());
+    lua_rawseti(L, -2, i + 1);
+  }
+  return 1;
+}
+
 extern "C" {
   int luaopen_arken_cache( lua_State *L ) {
     static const luaL_reg Map[] = {
@@ -59,6 +75,7 @@ extern "C" {
       {"remove", arken_cache_remove},
       {"size",   arken_cache_size},
       {"gc",     arken_cache_gc},
+      {"keys",   arken_cache_keys},
       {nullptr, nullptr}
     };
     luaL_newmetatable(L, "arken.cache");

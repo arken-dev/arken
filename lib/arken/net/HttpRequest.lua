@@ -76,8 +76,8 @@ function HttpRequest:session()
   if cookies.arken_session_id then
     if self._session_data == nil then
       self._session_id = cookies.arken_session_id
-      if cache.value(self.__session_id) then
-        local data = cache.value(self._session_id)
+      local data = cache.value(self._session_id)
+      if data then
         if #data == 0 then
           self._session_data = {}
         else
