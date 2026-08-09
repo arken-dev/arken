@@ -56,8 +56,6 @@ class HttpEnv
   const char * data();
   size_t len();
 
-  bool isWebSocketUpgrade();
-
 };
 
 } // namespace net

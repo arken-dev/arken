@@ -10,6 +10,8 @@
 #include <queue>
 #include <string>
 
+#include <arken/net/httpenv.h>
+
 namespace arken {
 namespace net {
 
@@ -33,6 +35,8 @@ struct WebSocketMessage {
 //   - erro de protocolo (RFC 6455) -> gera close 1002 em output() e marca closed()
 class WebSocketParser {
   public:
+  static bool isWebSocketUpgrade(HttpEnv * env);
+
   void parse(const char * data, size_t len);
 
   bool             hasMessage();

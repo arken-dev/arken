@@ -5,6 +5,8 @@
 //
 // https://datatracker.ietf.org/doc/html/rfc6455#section-5.2
 
+#include <cstring>
+
 #include <arken/net/websocket.h>
 
 namespace arken {
@@ -79,6 +81,13 @@ buildCloseFrame(uint16_t code, const std::string & reason)
 }
 
 } // namespace
+
+bool
+WebSocketParser::isWebSocketUpgrade(HttpEnv * env)
+{
+  return strcmp(env->field("Connection").data(), "Upgrade") == 0 &&
+         strcmp(env->field("Upgrade").data(), "websocket") == 0;
+}
 
 void
 WebSocketParser::protocolError(uint16_t code)

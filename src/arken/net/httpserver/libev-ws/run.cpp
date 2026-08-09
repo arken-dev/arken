@@ -190,7 +190,7 @@ processHttp(struct ev_loop *loop, Connection * connection)
   HttpEnv * env = new HttpEnv(connection->input.data(), connection->input.size(), false);
 
   std::string data;
-  if( env->isWebSocketUpgrade() ) {
+  if( WebSocketParser::isWebSocketUpgrade(env) ) {
     std::string acceptKey = websocket_accept_key(env->field("Sec-WebSocket-Key").data());
 
     data.append(HttpServer::status(101));
