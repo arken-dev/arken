@@ -38,6 +38,7 @@ class HttpServer
   void setThreads(int threads);
   void setPid(const char * pid);
   void setDispatcher(string dispatcher);
+  void setWebSocketDispatcher(string dispatcher);
   void addService(string service);
   void start();
 

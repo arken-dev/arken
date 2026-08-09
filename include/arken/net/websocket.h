@@ -37,6 +37,7 @@ class WebSocketParser {
   public:
   static bool        isWebSocketUpgrade(HttpEnv * env);
   static std::string acceptKey(const std::string & key);
+  static std::string buildMessage(WebSocketOpcode opcode, const std::string & payload);
 
   void parse(const char * data, size_t len);
 
@@ -61,6 +62,31 @@ class WebSocketParser {
   std::string     m_fragmentPayload;
 
   void protocolError(uint16_t code);
+};
+
+// Representa a conexão do ponto de vista de quem quer mandar uma mensagem
+// pra ela (tipicamente exposto pro Lua). Só guarda o fd e sabe montar +
+// escrever um frame de texto - não sabe nada de Lua.
+class WebSocketConnection {
+  public:
+  explicit WebSocketConnection(int fd);
+  void send(const std::string & payload);
+
+  private:
+  int m_fd;
+};
+
+// Ponte entre uma mensagem já parseada e o Lua: pega uma VM do pool, chama
+// o dispatcher configurado passando (connection, payload). Igual o
+// HttpServer::handler() faz pro HTTP - por isso mora fora do core (precisa
+// de lua_State/mvm), não em websocket.cpp.
+class WebSocketHandler {
+  public:
+  static void setDispatcher(std::string dispatcher);
+  static void dispatch(int fd, const std::string & payload);
+
+  private:
+  static std::string dispatcher;
 };
 
 } // namespace net

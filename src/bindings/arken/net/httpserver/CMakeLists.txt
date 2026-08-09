@@ -13,6 +13,7 @@ add_library(
   httpserver.cpp
   ${httpserver}
   ${PROJECT_SOURCE_DIR}/src/arken/net/httpserver/httpserver.cpp
+  ${PROJECT_SOURCE_DIR}/src/arken/net/httpserver/websockethandler.cpp
 )
 
 set_target_properties(arken.net.HttpServer PROPERTIES PREFIX "" OUTPUT_NAME HttpServer)

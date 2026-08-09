@@ -35,9 +35,10 @@
 #include <arken/mvm.h>
 #include <arken/base>
 
-using HttpServer      = arken::net::HttpServer;
-using HttpEnv         = arken::net::HttpEnv;
-using WebSocketParser = arken::net::WebSocketParser;
+using HttpServer       = arken::net::HttpServer;
+using HttpEnv          = arken::net::HttpEnv;
+using WebSocketParser  = arken::net::WebSocketParser;
+using WebSocketHandler = arken::net::WebSocketHandler;
 
 /* client number limitation */
 #define MAX_CLIENTS 1000
@@ -198,10 +199,7 @@ processWebSocket(struct ev_loop *loop, Connection * connection)
 
   while( connection->websocket.hasMessage() ) {
     auto message = connection->websocket.message();
-    // TODO: ainda não decidimos como uma mensagem de aplicação chega no
-    // Lua - por enquanto só provamos que o parsing/plumbing funciona.
-    std::cout << "[websocket] mensagem recebida (" << message.payload.size()
-      << " bytes): " << message.payload << std::endl;
+    WebSocketHandler::dispatch(connection->io.fd, message.payload);
   }
 
   if( connection->websocket.closed() ) {

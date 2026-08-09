@@ -6,6 +6,7 @@
 // https://datatracker.ietf.org/doc/html/rfc6455#section-5.2
 
 #include <cstring>
+#include <unistd.h>
 
 #include <arken/net/websocket.h>
 #include <arken/digest/sha1.h>
@@ -111,6 +112,12 @@ WebSocketParser::acceptKey(const std::string & key)
   delete[] encoded;
 
   return result;
+}
+
+std::string
+WebSocketParser::buildMessage(WebSocketOpcode opcode, const std::string & payload)
+{
+  return buildFrame(static_cast<uint8_t>(opcode), payload);
 }
 
 void
@@ -280,6 +287,25 @@ bool
 WebSocketParser::closed()
 {
   return m_closed;
+}
+
+WebSocketConnection::WebSocketConnection(int fd)
+  : m_fd(fd)
+{
+}
+
+void
+WebSocketConnection::send(const std::string & payload)
+{
+  std::string frame = WebSocketParser::buildMessage(WebSocketOpcode::Text, payload);
+
+  ssize_t bytes = write(m_fd, frame.data(), frame.size());
+  while( bytes < static_cast<ssize_t>(frame.size()) ) {
+    if( bytes == -1 ) {
+      break;
+    }
+    bytes += write(m_fd, frame.data() + bytes, frame.size() - bytes);
+  }
 }
 
 } // namespace net

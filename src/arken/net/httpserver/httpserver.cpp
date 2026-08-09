@@ -11,6 +11,7 @@
 #include <arken/net/httpserver.h>
 #include <arken/net/httpbody.h>
 #include <arken/net/httpenv.h>
+#include <arken/net/websocket.h>
 #include <arken/concurrent/service.h>
 
 using service = arken::concurrent::service;
@@ -40,6 +41,11 @@ void HttpServer::setPid(const char * pid)
 void HttpServer::setDispatcher(string dispatcher)
 {
   HttpServer::dispatcher = dispatcher;
+}
+
+void HttpServer::setWebSocketDispatcher(string dispatcher)
+{
+  WebSocketHandler::setDispatcher(dispatcher.data());
 }
 
 void HttpServer::addService(string service)
