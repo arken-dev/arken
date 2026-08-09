@@ -33,6 +33,7 @@
 #include <arken/net/httpenv.h>
 #include <arken/net/websocket.h>
 #include <arken/mvm.h>
+#include <arken/os.h>
 #include <arken/base>
 
 using HttpServer       = arken::net::HttpServer;
@@ -70,6 +71,8 @@ struct Connection {
   std::string     input;
   ConnectionType  type = ConnectionType::HTTP;
   WebSocketParser websocket;
+  std::string     sessionId; // só existe depois do handshake (type == WEBSOCKET)
+  std::string     path;      // idem - path do request que fez o upgrade
 };
 
 static void
@@ -88,6 +91,10 @@ writeAll(int fd, const char * data, size_t size)
 static void
 closeConnection(struct ev_loop *loop, Connection * connection)
 {
+  if( connection->type == ConnectionType::WEBSOCKET ) {
+    WebSocketHandler::close(connection->io.fd, connection->sessionId, connection->path);
+  }
+
   --client_number;
   ev_io_stop(loop, &connection->io);
   close(connection->io.fd);
@@ -164,7 +171,9 @@ processHttp(struct ev_loop *loop, Connection * connection)
   HttpEnv * env = new HttpEnv(connection->input.data(), connection->input.size(), false);
 
   std::string data;
-  if( WebSocketParser::isWebSocketUpgrade(env) ) {
+  bool isUpgrade = WebSocketParser::isWebSocketUpgrade(env);
+
+  if( isUpgrade ) {
     std::string acceptKey = WebSocketParser::acceptKey(env->field("Sec-WebSocket-Key").data());
 
     data.append(HttpServer::status(101));
@@ -175,7 +184,9 @@ processHttp(struct ev_loop *loop, Connection * connection)
     data.append(acceptKey);
     data.append("\r\n\r\n");
 
-    connection->type = ConnectionType::WEBSOCKET;
+    connection->type      = ConnectionType::WEBSOCKET;
+    connection->sessionId = arken::os::uuid();
+    connection->path      = env->requestPath();
   } else {
     data = HttpServer::handler(env);
   }
@@ -184,6 +195,10 @@ processHttp(struct ev_loop *loop, Connection * connection)
   connection->input.clear();
 
   writeAll(connection->io.fd, data.data(), data.size());
+
+  if( isUpgrade ) {
+    WebSocketHandler::open(connection->io.fd, connection->sessionId, connection->path);
+  }
 }
 
 static void
@@ -199,7 +214,9 @@ processWebSocket(struct ev_loop *loop, Connection * connection)
 
   while( connection->websocket.hasMessage() ) {
     auto message = connection->websocket.message();
-    WebSocketHandler::dispatch(connection->io.fd, message.payload);
+    bool binary  = message.opcode == arken::net::WebSocketOpcode::Binary;
+    WebSocketHandler::message(connection->io.fd, connection->sessionId, connection->path,
+                               message.payload, binary);
   }
 
   if( connection->websocket.closed() ) {

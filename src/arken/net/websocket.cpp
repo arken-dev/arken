@@ -289,9 +289,21 @@ WebSocketParser::closed()
   return m_closed;
 }
 
-WebSocketConnection::WebSocketConnection(int fd)
-  : m_fd(fd)
+WebSocketConnection::WebSocketConnection(int fd, const std::string & sessionId, const std::string & path)
+  : m_fd(fd), m_sessionId(sessionId), m_path(path)
 {
+}
+
+const std::string &
+WebSocketConnection::sessionId()
+{
+  return m_sessionId;
+}
+
+const std::string &
+WebSocketConnection::path()
+{
+  return m_path;
 }
 
 void

@@ -12,6 +12,8 @@
 
 #include <arken/net/httpenv.h>
 
+struct lua_State;
+
 namespace arken {
 namespace net {
 
@@ -65,28 +67,54 @@ class WebSocketParser {
 };
 
 // Representa a conexão do ponto de vista de quem quer mandar uma mensagem
-// pra ela (tipicamente exposto pro Lua). Só guarda o fd e sabe montar +
-// escrever um frame de texto - não sabe nada de Lua.
+// pra ela (tipicamente exposto pro Lua). Carrega fd (send), sessionId
+// (chave estável pro app persistir estado, ex: em arken.cache) e path (o
+// path do handshake, pra resolver roteamento) - não sabe nada de Lua.
 class WebSocketConnection {
   public:
-  explicit WebSocketConnection(int fd);
+  WebSocketConnection(int fd, const std::string & sessionId, const std::string & path);
   void send(const std::string & payload);
 
+  const std::string & sessionId();
+  const std::string & path();
+
   private:
-  int m_fd;
+  int         m_fd;
+  std::string m_sessionId;
+  std::string m_path;
 };
 
-// Ponte entre uma mensagem já parseada e o Lua: pega uma VM do pool, chama
-// o dispatcher configurado passando (connection, payload). Igual o
-// HttpServer::handler() faz pro HTTP - por isso mora fora do core (precisa
-// de lua_State/mvm), não em websocket.cpp.
+// Ponte entre os eventos de uma conexão WebSocket e o Lua: pega uma VM do
+// pool, chama o campo (open/message/close) do dispatcher configurado
+// passando a connection. Igual o HttpServer::handler() faz pro HTTP - por
+// isso mora fora do core (precisa de lua_State/mvm), não em websocket.cpp.
+//
+// São 3 entradas porque cada evento acontece em momento e lugar diferentes
+// do event loop (open no handshake, message a cada frame completo, close
+// na desconexão) - não dá pra unificar numa chamada só. Por baixo,
+// compartilham o mesmo mecanismo (prepareCall).
+//
+// Não existe WebSocketHandler::error() - erro é tratado inteiramente do
+// lado Lua (WebSocket:pexecute captura a exceção com pcall e chama
+// self:error() na mesma instância, sem precisar voltar pro C++).
 class WebSocketHandler {
   public:
   static void setDispatcher(std::string dispatcher);
-  static void dispatch(int fd, const std::string & payload);
+
+  static void open(int fd, const std::string & sessionId, const std::string & path);
+  static void message(int fd, const std::string & sessionId, const std::string & path,
+                       const std::string & payload, bool binary);
+  static void close(int fd, const std::string & sessionId, const std::string & path);
 
   private:
   static std::string dispatcher;
+
+  // deixa a stack pronta com [dispatcherTable, method, connection] no
+  // topo - quem chamou empilha os args extras (se tiver) e faz o
+  // lua_pcall. Devolve nullptr (e já limpa a stack) se algo falhar antes
+  // de chegar nesse ponto.
+  static WebSocketConnection * prepareCall(lua_State * L, int fd, const std::string & sessionId,
+                                            const std::string & path, const char * method);
 };
 
 } // namespace net
