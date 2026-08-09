@@ -33,6 +33,7 @@ class HttpServer
   static
   std::string handler(HttpEnv * env);
   static const char * status(int code);
+  static bool headerTooLarge(size_t size);
 
   HttpServer(const char * address, int port);
   void setThreads(int threads);

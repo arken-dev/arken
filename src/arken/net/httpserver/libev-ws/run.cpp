@@ -74,6 +74,14 @@ struct Connection {
   WebSocketParser websocket;
   std::string     sessionId; // só existe depois do handshake (type == WEBSOCKET)
   std::string     path;      // idem - path do request que fez o upgrade
+
+  // casca fina - a lógica/limiar de verdade mora em HttpServer, porque
+  // esse Connection aqui é específico do libev-ws; um backend futuro
+  // (libevent-ws, epoll-ws) tem o seu próprio Connection, mas delega pro
+  // mesmo HttpServer::headerTooLarge()
+  bool isMaxHttpHeaderSize() {
+    return HttpServer::headerTooLarge(input.size());
+  }
 };
 
 static void
@@ -167,6 +175,16 @@ processHttp(struct ev_loop *loop, Connection * connection)
   // espera os headers completos chegarem antes de tentar processar -
   // uma requisição (ou o handshake) pode vir fragmentada em vários recv()
   if( connection->input.find("\r\n\r\n") == std::string::npos ) {
+    if( connection->isMaxHttpHeaderSize() ) {
+      fprintf(stderr, "arken.net.HttpServer (libev-ws): headers grandes demais (%zu bytes), fechando conexão\n",
+        connection->input.size());
+
+      std::string response(HttpServer::status(431));
+      response.append("\r\nConnection: close\r\nContent-Length: 0\r\n\r\n");
+      writeAll(connection->io.fd, response.data(), response.size());
+
+      closeConnection(loop, connection);
+    }
     return;
   }
 

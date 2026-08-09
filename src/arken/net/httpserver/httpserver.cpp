@@ -231,5 +231,19 @@ const char * HttpServer::status(int code)
   return list[code];
 }
 
+// tamanho máximo aceito pro buffer enquanto espera os headers HTTP
+// completarem (\r\n\r\n) - sem isso, um cliente que nunca manda o fim dos
+// headers faz esse buffer crescer sem limite. 8KB é o default comum de
+// nginx/Apache pra tamanho de headers. Mora aqui (não em cada backend)
+// porque todo backend (libev, libev-ws, futuros libevent-ws/epoll-ws)
+// compila através desse mesmo arquivo, independente de qual for
+// escolhido - a lógica não pode ficar presa num run.cpp específico.
+static const size_t MAX_HTTP_HEADER_SIZE = 8192;
+
+bool HttpServer::headerTooLarge(size_t size)
+{
+  return size > MAX_HTTP_HEADER_SIZE;
+}
+
 } // namespace net
 } // namespace arken
