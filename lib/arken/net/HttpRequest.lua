@@ -1,8 +1,7 @@
-local url         = require 'arken.net.url'
-local cookie      = require 'arken.net.cookie'
-local multipart   = require 'arken.net.multi-part'
-local json        = require 'arken.json'
-local Class       = require 'arken.oop.Class'
+local url       = require 'arken.net.url'
+local cookie    = require 'arken.net.cookie'
+local multipart = require 'arken.net.multi-part'
+local Class     = require 'arken.oop.Class'
 
 local HttpRequest = Class.new("arken.net.HttpRequest")
 
@@ -81,7 +80,7 @@ function HttpRequest:session()
         if #data == 0 then
           self._session_data = {}
         else
-          self._session_data = json.decode(data)
+          self._session_data = data
         end
       end
     end
@@ -104,7 +103,7 @@ end
 
 function HttpRequest:response(headers)
   if self._session_id and type(self._session_data) == 'table' then
-    cache.insert(self._session_id, json.encode(self._session_data))
+    cache.insert(self._session_id, self._session_data)
   end
 
   if self._response then

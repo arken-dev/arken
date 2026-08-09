@@ -61,6 +61,13 @@ test['should exclude an expired key from keys() scoped to that bucket'] = functi
   assert( present['expiring'] == nil )
 end
 
+test['should support put/get (raw, no json) scoped to a named bucket'] = function()
+  sessionBucket.put('raw-key', 'raw-value')
+  assert( sessionBucket.get('raw-key') == 'raw-value' )
+  assert( htmlBucket.get('raw-key') == nil, 'put on one bucket must not leak into another' )
+  sessionBucket.remove('raw-key')
+end
+
 test['should purge a named bucket automatically, without any explicit gc() call'] = function()
   sessionBucket.insert('auto-gc-me', 'x', 1)
   local before = sessionBucket.size()

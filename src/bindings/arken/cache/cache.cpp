@@ -93,6 +93,32 @@ static int bucket_load( lua_State *L, cache::bucket & bucket ) {
   return 1;
 }
 
+// put/get: caminho raw, sem arken::json — usa luaL_checklstring/
+// lua_pushlstring (tamanho explícito) em vez de luaL_checkstring/
+// lua_pushstring, então são binário-seguros (aceitam byte nulo embutido).
+static int bucket_put( lua_State *L, cache::bucket & bucket ) {
+  const char * key = luaL_checkstring(L, 1);
+  size_t size = 0;
+  const char * value = luaL_checklstring(L, 2, &size);
+  int expires = -1;
+  if( lua_gettop(L) >= 3 && !lua_isnil(L, 3) ) {
+    expires = lua_tointeger(L, 3);
+  }
+  bucket.put(key, value, size, expires);
+  return 0;
+}
+
+static int bucket_get( lua_State *L, cache::bucket & bucket ) {
+  const char * key = luaL_checkstring(L, 1);
+  std::optional<std::string> value = bucket.get(key);
+  if( !value.has_value() ) {
+    lua_pushnil(L);
+  } else {
+    lua_pushlstring(L, value->data(), value->size());
+  }
+  return 1;
+}
+
 // ---------------------------------------------------------------------------
 // funções top-level: cache.value(key), cache.insert(key, value, [expires])...
 // operam implicitamente no bucket "default"
@@ -141,6 +167,16 @@ static int arken_cache_dump( lua_State *L )
 static int arken_cache_load( lua_State *L )
 {
   return bucket_load(L, cache::get());
+}
+
+static int arken_cache_put( lua_State *L )
+{
+  return bucket_put(L, cache::get());
+}
+
+static int arken_cache_get( lua_State *L )
+{
+  return bucket_get(L, cache::get());
 }
 
 static int arken_cache_buckets( lua_State *L ) {
@@ -211,6 +247,16 @@ static int arken_cache_bucket_load( lua_State *L )
   return bucket_load(L, namedBucket(L));
 }
 
+static int arken_cache_bucket_put( lua_State *L )
+{
+  return bucket_put(L, namedBucket(L));
+}
+
+static int arken_cache_bucket_get( lua_State *L )
+{
+  return bucket_get(L, namedBucket(L));
+}
+
 // empilha uma closure de fn com "name" (o nome do bucket) como upvalue 1, e
 // guarda no campo "field" da tabela no topo da pilha
 static void pushBucketMethod( lua_State *L, const char * name,
@@ -235,6 +281,8 @@ static int arken_cache_bucket( lua_State *L ) {
   pushBucketMethod(L, name, arken_cache_bucket_maxSize, "maxSize");
   pushBucketMethod(L, name, arken_cache_bucket_dump,    "dump");
   pushBucketMethod(L, name, arken_cache_bucket_load,    "load");
+  pushBucketMethod(L, name, arken_cache_bucket_put,     "put");
+  pushBucketMethod(L, name, arken_cache_bucket_get,     "get");
 
   return 1;
 }
@@ -251,6 +299,8 @@ extern "C" {
       {"maxSize", arken_cache_maxSize},
       {"dump",    arken_cache_dump},
       {"load",    arken_cache_load},
+      {"put",     arken_cache_put},
+      {"get",     arken_cache_get},
       {"bucket",  arken_cache_bucket},
       {"buckets", arken_cache_buckets},
       {nullptr, nullptr}

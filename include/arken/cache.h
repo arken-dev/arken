@@ -41,6 +41,15 @@ class cache {
     public:
     std::optional<std::string> value(const char * key);
     void insert(const char *key, const char * value, int expires = -1);
+
+    // caminho raw, sem passar por arken::json (usado pelo binding de
+    // insert/value pra aceitar qualquer valor Lua) — string->string puro e
+    // binário-seguro (tamanho explícito, não depende de strlen). Mais
+    // rápido que insert/value pra quem só precisa guardar/ler strings.
+    void put(const char *key, const char * value, size_t size,
+             int expires = -1);
+    std::optional<std::string> get(const char * key);
+
     void remove(const char * key);
     double size();
     void   gc();

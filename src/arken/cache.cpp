@@ -11,6 +11,7 @@
 #include <thread>
 #include <fstream>
 #include <cstdint>
+#include <cstring>
 
 namespace arken {
 
@@ -158,6 +159,11 @@ void cache::bucket::evict()
 
 std::optional<std::string> cache::bucket::value(const char * key)
 {
+  return get(key);
+}
+
+std::optional<std::string> cache::bucket::get(const char * key)
+{
   std::unique_lock<std::mutex> lck(m_mutex);
 
   auto it = m_index.find(key);
@@ -182,7 +188,17 @@ std::optional<std::string> cache::bucket::value(const char * key)
 
 void cache::bucket::insert(const char *key, const char * value, int expires)
 {
+  // json::encode sempre devolve uma string C válida terminada em '\0' sem
+  // byte nulo embutido, então strlen() é seguro pro caminho JSON.
+  put(key, value, strlen(value), expires);
+}
+
+void cache::bucket::put(const char *key, const char * value, size_t size,
+                         int expires)
+{
   cache::ensureBackgroundGC();
+
+  std::string content(value, size);
 
   std::unique_lock<std::mutex> lck(m_mutex);
 
@@ -192,11 +208,11 @@ void cache::bucket::insert(const char *key, const char * value, int expires)
     data * old = orderIt->second;
     m_bytes -= old->value().size();
     delete old;
-    orderIt->second = new data(value, expires);
+    orderIt->second = new data(content, expires);
     m_bytes += orderIt->second->value().size();
     touch(orderIt);
   } else {
-    m_order.emplace_front(std::string(key), new data(value, expires));
+    m_order.emplace_front(std::string(key), new data(content, expires));
     m_index[key] = m_order.begin();
     m_bytes += m_order.begin()->second->value().size();
   }
