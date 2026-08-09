@@ -8,11 +8,19 @@
 #include <cstring>
 
 #include <arken/net/websocket.h>
+#include <arken/digest/sha1.h>
+#include <arken/base64.h>
 
 namespace arken {
 namespace net {
 
 namespace {
+
+using sha1   = arken::digest::sha1;
+using base64 = arken::base64;
+
+/* RFC 6455 4.2.2 */
+const char * WS_GUID = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
 
 const uint8_t OPCODE_CONTINUATION = 0x0;
 const uint8_t OPCODE_TEXT         = 0x1;
@@ -87,6 +95,22 @@ WebSocketParser::isWebSocketUpgrade(HttpEnv * env)
 {
   return strcmp(env->field("Connection").data(), "Upgrade") == 0 &&
          strcmp(env->field("Upgrade").data(), "websocket") == 0;
+}
+
+std::string
+WebSocketParser::acceptKey(const std::string & key)
+{
+  std::string combined = key + WS_GUID;
+
+  unsigned char * digest  = sha1::bytes(combined.data(), combined.size());
+  char *          encoded = base64::encode(reinterpret_cast<const char *>(digest), 20);
+
+  std::string result(encoded);
+
+  delete[] digest;
+  delete[] encoded;
+
+  return result;
 }
 
 void

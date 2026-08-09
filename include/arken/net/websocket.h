@@ -35,7 +35,8 @@ struct WebSocketMessage {
 //   - erro de protocolo (RFC 6455) -> gera close 1002 em output() e marca closed()
 class WebSocketParser {
   public:
-  static bool isWebSocketUpgrade(HttpEnv * env);
+  static bool        isWebSocketUpgrade(HttpEnv * env);
+  static std::string acceptKey(const std::string & key);
 
   void parse(const char * data, size_t len);
 

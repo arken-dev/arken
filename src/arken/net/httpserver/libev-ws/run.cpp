@@ -34,37 +34,10 @@
 #include <arken/net/websocket.h>
 #include <arken/mvm.h>
 #include <arken/base>
-#include <arken/digest/sha1.h>
-#include <arken/base64.h>
 
 using HttpServer      = arken::net::HttpServer;
 using HttpEnv         = arken::net::HttpEnv;
 using WebSocketParser = arken::net::WebSocketParser;
-using sha1            = arken::digest::sha1;
-using base64          = arken::base64;
-
-/* RFC 6455 4.2.2 */
-#define WS_GUID "258EAFA5-E914-47DA-95CA-C5AB0DC85B11"
-
-//-----------------------------------------------------------------------------
-// WEBSOCKET ACCEPT KEY (RFC 6455 4.2.2)
-//-----------------------------------------------------------------------------
-
-static std::string
-websocket_accept_key(const std::string & key)
-{
-  std::string combined = key + WS_GUID;
-
-  unsigned char * digest  = sha1::bytes(combined.data(), combined.size());
-  char *          encoded = base64::encode(reinterpret_cast<const char *>(digest), 20);
-
-  std::string result(encoded);
-
-  delete[] digest;
-  delete[] encoded;
-
-  return result;
-}
 
 /* client number limitation */
 #define MAX_CLIENTS 1000
@@ -191,7 +164,7 @@ processHttp(struct ev_loop *loop, Connection * connection)
 
   std::string data;
   if( WebSocketParser::isWebSocketUpgrade(env) ) {
-    std::string acceptKey = websocket_accept_key(env->field("Sec-WebSocket-Key").data());
+    std::string acceptKey = WebSocketParser::acceptKey(env->field("Sec-WebSocket-Key").data());
 
     data.append(HttpServer::status(101));
     data.append("\r\n");
