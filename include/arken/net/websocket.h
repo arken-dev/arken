@@ -75,7 +75,7 @@ class WebSocketParser {
 class WebSocketConnection {
   public:
   WebSocketConnection(int fd, const std::string & sessionId, const std::string & path);
-  void send(const std::string & payload);
+  void send(const std::string & payload, bool binary = false);
 
   const std::string & sessionId();
   const std::string & path();

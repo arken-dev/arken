@@ -27,7 +27,8 @@ arken_net_WebSocketConnection_send( lua_State *L ) {
   WebSocketConnection * udata = checkWebSocketConnection( L );
   size_t len;
   const char * payload = luaL_checklstring(L, 2, &len);
-  udata->send(std::string(payload, len));
+  bool binary = lua_toboolean(L, 3);
+  udata->send(std::string(payload, len), binary);
   return 0;
 }
 

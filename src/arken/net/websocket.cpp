@@ -395,9 +395,10 @@ WebSocketConnection::path()
 }
 
 void
-WebSocketConnection::send(const std::string & payload)
+WebSocketConnection::send(const std::string & payload, bool binary)
 {
-  std::string frame = WebSocketParser::buildMessage(WebSocketOpcode::Text, payload);
+  WebSocketOpcode opcode = binary ? WebSocketOpcode::Binary : WebSocketOpcode::Text;
+  std::string frame = WebSocketParser::buildMessage(opcode, payload);
 
   ssize_t bytes = write(m_fd, frame.data(), frame.size());
   while( bytes < static_cast<ssize_t>(frame.size()) ) {
