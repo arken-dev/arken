@@ -31,15 +31,17 @@
 
 #include <arken/net/httpserver.h>
 #include <arken/net/httpenv.h>
+#include <arken/net/websocket.h>
 #include <arken/mvm.h>
 #include <arken/base>
 #include <arken/digest/sha1.h>
 #include <arken/base64.h>
 
-using HttpServer = arken::net::HttpServer;
-using HttpEnv    = arken::net::HttpEnv;
-using sha1       = arken::digest::sha1;
-using base64     = arken::base64;
+using HttpServer      = arken::net::HttpServer;
+using HttpEnv         = arken::net::HttpEnv;
+using WebSocketParser = arken::net::WebSocketParser;
+using sha1            = arken::digest::sha1;
+using base64          = arken::base64;
 
 /* RFC 6455 4.2.2 */
 #define WS_GUID "258EAFA5-E914-47DA-95CA-C5AB0DC85B11"
@@ -75,6 +77,48 @@ static int client_number;
 
 /* record fd for close with SIGTERM */
 static int fd;
+
+//-----------------------------------------------------------------------------
+// CONNECTION
+//-----------------------------------------------------------------------------
+
+enum class ConnectionType {
+  HTTP,
+  WEBSOCKET,
+};
+
+// io precisa ser o primeiro membro: o libev só conhece struct ev_io*, então
+// todo callback recebe o endereço de connection->io de volta - como é o
+// primeiro membro, esse endereço é o mesmo do Connection inteiro, e dá pra
+// converter de volta com reinterpret_cast (mesma técnica do titan/HttpData).
+struct Connection {
+  ev_io           io;
+  std::string     input;
+  ConnectionType  type = ConnectionType::HTTP;
+  WebSocketParser websocket;
+};
+
+static void
+writeAll(int fd, const char * data, size_t size)
+{
+  ssize_t bytes = write(fd, data, size);
+  while( bytes < static_cast<ssize_t>(size) ) {
+    if( bytes == -1 ) {
+      puts("write error");
+      return;
+    }
+    bytes += write(fd, data + bytes, size - bytes);
+  }
+}
+
+static void
+closeConnection(struct ev_loop *loop, Connection * connection)
+{
+  --client_number;
+  ev_io_stop(loop, &connection->io);
+  close(connection->io.fd);
+  delete connection;
+}
 
 //-----------------------------------------------------------------------------
 // CREATE SERVER
@@ -135,61 +179,88 @@ create_serverfd(char const *addr, uint16_t port)
 //-----------------------------------------------------------------------------
 
 static void
+processHttp(struct ev_loop *loop, Connection * connection)
+{
+  // espera os headers completos chegarem antes de tentar processar -
+  // uma requisição (ou o handshake) pode vir fragmentada em vários recv()
+  if( connection->input.find("\r\n\r\n") == std::string::npos ) {
+    return;
+  }
+
+  HttpEnv * env = new HttpEnv(connection->input.data(), connection->input.size(), false);
+
+  std::string data;
+  if( strcmp(env->field("Connection").data(), "Upgrade") == 0 &&
+      strcmp(env->field("Upgrade").data(), "websocket") == 0 ) {
+    std::string acceptKey = websocket_accept_key(env->field("Sec-WebSocket-Key").data());
+
+    data.append(HttpServer::status(101));
+    data.append("\r\n");
+    data.append("Upgrade: websocket\r\n");
+    data.append("Connection: Upgrade\r\n");
+    data.append("Sec-WebSocket-Accept: ");
+    data.append(acceptKey);
+    data.append("\r\n\r\n");
+
+    connection->type = ConnectionType::WEBSOCKET;
+  } else {
+    data = HttpServer::handler(env);
+  }
+
+  delete env;
+  connection->input.clear();
+
+  writeAll(connection->io.fd, data.data(), data.size());
+}
+
+static void
+processWebSocket(struct ev_loop *loop, Connection * connection)
+{
+  connection->websocket.parse(connection->input.data(), connection->input.size());
+  connection->input.clear();
+
+  while( connection->websocket.hasOutput() ) {
+    std::string out = connection->websocket.output();
+    writeAll(connection->io.fd, out.data(), out.size());
+  }
+
+  while( connection->websocket.hasMessage() ) {
+    auto message = connection->websocket.message();
+    // TODO: ainda não decidimos como uma mensagem de aplicação chega no
+    // Lua - por enquanto só provamos que o parsing/plumbing funciona.
+    std::cout << "[websocket] mensagem recebida (" << message.payload.size()
+      << " bytes): " << message.payload << std::endl;
+  }
+
+  if( connection->websocket.closed() ) {
+    closeConnection(loop, connection);
+  }
+}
+
+static void
 read_cb(struct ev_loop *loop, struct ev_io *watcher, int revents)
 {
-  char buf[MAX_MESSAGE_LEN+1] = {0};
+  auto * connection = reinterpret_cast<Connection *>(watcher);
+
+  char buf[MAX_MESSAGE_LEN];
   ssize_t ret;
-  std::string tmp;
 
   do {
-    ret = recv(watcher->fd, buf, MAX_MESSAGE_LEN, MSG_DONTWAIT);
-    if( ret < 0 ) {
-      break;
+    ret = recv(connection->io.fd, buf, MAX_MESSAGE_LEN, MSG_DONTWAIT);
+    if( ret > 0 ) {
+      connection->input.append(buf, ret);
     }
-    tmp.append(buf, ret);
-  } while(ret == MAX_MESSAGE_LEN);
+  } while( ret == MAX_MESSAGE_LEN );
 
-
-  if (ret > 0) {
-    HttpEnv * env = new HttpEnv(tmp.c_str(), tmp.size(), false);
-
-    std::string data;
-    if( strcmp(env->field("Connection").data(), "Upgrade") == 0 &&
-        strcmp(env->field("Upgrade").data(), "websocket") == 0 ) {
-      std::string acceptKey = websocket_accept_key(env->field("Sec-WebSocket-Key").data());
-
-      data.append(HttpServer::status(101));
-      data.append("\r\n");
-      data.append("Upgrade: websocket\r\n");
-      data.append("Connection: Upgrade\r\n");
-      data.append("Sec-WebSocket-Accept: ");
-      data.append(acceptKey);
-      data.append("\r\n\r\n");
-    } else {
-      data = HttpServer::handler(env);
-    }
-
-    delete env;
-
-    const char * result = data.c_str();
-    auto size = static_cast<ssize_t>(data.size());
-    //ssize_t write(int fildes, const void *buf, size_t nbyte);
-    ssize_t bytes = write(watcher->fd, result, size);
-    while( bytes < size ) {
-      if (bytes == -1) {
-        puts("write error");
-        break;
-      }
-      bytes += write(watcher->fd, result+bytes, size-bytes);
-    }
-
-  } else if ((ret < 0) && (errno == EAGAIN || errno == EWOULDBLOCK)) {
+  if( ret == 0 || (ret < 0 && errno != EAGAIN && errno != EWOULDBLOCK) ) {
+    closeConnection(loop, connection);
     return;
+  }
+
+  if( connection->type == ConnectionType::WEBSOCKET ) {
+    processWebSocket(loop, connection);
   } else {
-    --client_number;
-    ev_io_stop(loop, watcher);
-    close(watcher->fd);
-    free(watcher); //NOLINT
+    processHttp(loop, connection);
   }
 }
 
@@ -206,9 +277,9 @@ accept_cb(struct ev_loop *loop, struct ev_io *watcher, int revents)
       close(connfd);
       --client_number;
     } else {
-      ev_io *client = (ev_io *) calloc(1, sizeof(*client)); //NOLINT
-      ev_io_init(client, read_cb, connfd, EV_READ); //NOLINT ev_io_init is macro
-      ev_io_start(loop, client);
+      Connection * connection = new Connection();
+      ev_io_init(&connection->io, read_cb, connfd, EV_READ); //NOLINT ev_io_init is macro
+      ev_io_start(loop, &connection->io);
     }
   } else if ((connfd < 0) && (errno == EAGAIN || errno == EWOULDBLOCK)) {
     return;
