@@ -33,9 +33,36 @@
 #include <arken/net/httpenv.h>
 #include <arken/mvm.h>
 #include <arken/base>
+#include <arken/digest/sha1.h>
+#include <arken/base64.h>
 
 using HttpServer = arken::net::HttpServer;
 using HttpEnv    = arken::net::HttpEnv;
+using sha1       = arken::digest::sha1;
+using base64     = arken::base64;
+
+/* RFC 6455 4.2.2 */
+#define WS_GUID "258EAFA5-E914-47DA-95CA-C5AB0DC85B11"
+
+//-----------------------------------------------------------------------------
+// WEBSOCKET ACCEPT KEY (RFC 6455 4.2.2)
+//-----------------------------------------------------------------------------
+
+static std::string
+websocket_accept_key(const std::string & key)
+{
+  std::string combined = key + WS_GUID;
+
+  unsigned char * digest  = sha1::bytes(combined.data(), combined.size());
+  char *          encoded = base64::encode(reinterpret_cast<const char *>(digest), 20);
+
+  std::string result(encoded);
+
+  delete[] digest;
+  delete[] encoded;
+
+  return result;
+}
 
 /* client number limitation */
 #define MAX_CLIENTS 1000
@@ -129,10 +156,15 @@ read_cb(struct ev_loop *loop, struct ev_io *watcher, int revents)
     std::string data;
     if( strcmp(env->field("Connection").data(), "Upgrade") == 0 &&
         strcmp(env->field("Upgrade").data(), "websocket") == 0 ) {
-      // TODO: handshake do RFC 6455 (Sec-WebSocket-Accept) ainda não implementado.
-      // Por enquanto só provamos que a detecção funciona.
-      data.append(HttpServer::status(501));
-      data.append("\r\nContent-Length: 0\r\n\r\n");
+      std::string acceptKey = websocket_accept_key(env->field("Sec-WebSocket-Key").data());
+
+      data.append(HttpServer::status(101));
+      data.append("\r\n");
+      data.append("Upgrade: websocket\r\n");
+      data.append("Connection: Upgrade\r\n");
+      data.append("Sec-WebSocket-Accept: ");
+      data.append(acceptKey);
+      data.append("\r\n\r\n");
     } else {
       data = HttpServer::handler(env);
     }
