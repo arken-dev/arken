@@ -58,6 +58,66 @@ isKnownOpcode(uint8_t opcode)
   }
 }
 
+// RFC 6455 8.1: mensagens de texto tem que ser UTF-8 válido. Valida o
+// payload inteiro de uma vez (não incrementalmente por frame) - mais
+// simples, e o RFC só exige que a validação aconteça antes da mensagem
+// chegar na aplicação, não que seja feita cedo.
+bool
+isValidUtf8(const std::string & data)
+{
+  size_t i   = 0;
+  size_t len = data.size();
+
+  while( i < len ) {
+    auto byte = static_cast<uint8_t>(data[i]);
+
+    int      extra;
+    uint32_t codepoint;
+    uint32_t minValue;
+
+    if( (byte & 0x80) == 0x00 ) {
+      i++;
+      continue;
+    } else if( (byte & 0xE0) == 0xC0 ) {
+      extra = 1; codepoint = byte & 0x1F; minValue = 0x80;
+    } else if( (byte & 0xF0) == 0xE0 ) {
+      extra = 2; codepoint = byte & 0x0F; minValue = 0x800;
+    } else if( (byte & 0xF8) == 0xF0 ) {
+      extra = 3; codepoint = byte & 0x07; minValue = 0x10000;
+    } else {
+      return false; // byte de continuação sozinho, ou 0xF8-0xFF (nunca válido em UTF-8)
+    }
+
+    if( i + extra >= len ) {
+      return false; // sequência cortada, faltam bytes de continuação
+    }
+
+    for(int j = 1; j <= extra; j++) {
+      auto cont = static_cast<uint8_t>(data[i + j]);
+      if( (cont & 0xC0) != 0x80 ) {
+        return false; // esperava byte de continuação (10xxxxxx), não veio
+      }
+      codepoint = (codepoint << 6) | (cont & 0x3F);
+    }
+
+    if( codepoint < minValue ) {
+      return false; // encoding "overlong" (mesmo code point codificado com mais bytes do que precisa)
+    }
+
+    if( codepoint >= 0xD800 && codepoint <= 0xDFFF ) {
+      return false; // metade de surrogate pair - inválido em UTF-8 (só existe em UTF-16)
+    }
+
+    if( codepoint > 0x10FFFF ) {
+      return false; // além do range válido do Unicode
+    }
+
+    i += extra + 1;
+  }
+
+  return true;
+}
+
 // monta um frame de resposta do servidor pro cliente.
 // servidor NUNCA mascara (RFC 6455 5.1) - MASK sempre 0.
 std::string
@@ -238,6 +298,10 @@ WebSocketParser::parse(const char * data, size_t len)
         }
         m_fragmentPayload.append(payload);
         if( fin ) {
+          if( m_fragmentOpcode == WebSocketOpcode::Text && ! isValidUtf8(m_fragmentPayload) ) {
+            closeWithCode(1007);
+            return;
+          }
           m_messages.push({m_fragmentOpcode, std::move(m_fragmentPayload)});
           m_fragmented = false;
           m_fragmentPayload.clear();
@@ -252,6 +316,10 @@ WebSocketParser::parse(const char * data, size_t len)
           return;
         }
         if( fin ) {
+          if( opcode == OPCODE_TEXT && ! isValidUtf8(payload) ) {
+            closeWithCode(1007);
+            return;
+          }
           m_messages.push({static_cast<WebSocketOpcode>(opcode), std::move(payload)});
         } else {
           m_fragmented      = true;
