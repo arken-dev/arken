@@ -25,6 +25,7 @@ class cache {
   static std::optional<std::string> value(const char * key);
   static void insert(const char *key, const char * value, int expires = -1);
   static void remove(const char * key);
+  static void removeAll(const char * pattern);
   static double size();
   static void   gc();
   static std::vector<std::string> keys(const char * pattern = "*");
@@ -51,6 +52,12 @@ class cache {
     std::optional<std::string> get(const char * key);
 
     void remove(const char * key);
+
+    // remove todas as chaves não expiradas que casam com pattern (mesmo
+    // glob de keys()). Sem default: pattern precisa ser explícito, pra não
+    // virar um "apaga tudo" silencioso por argumento esquecido.
+    void removeAll(const char * pattern);
+
     double size();
     void   gc();
     std::vector<std::string> keys(const char * pattern = "*");

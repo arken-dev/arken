@@ -45,6 +45,12 @@ static int bucket_remove( lua_State *L, cache::bucket & bucket ) {
   return 0;
 }
 
+static int bucket_removeAll( lua_State *L, cache::bucket & bucket ) {
+  const char * pattern = luaL_checkstring(L, 1);
+  bucket.removeAll(pattern);
+  return 0;
+}
+
 static int bucket_size( lua_State *L, cache::bucket & bucket ) {
   lua_pushnumber(L, bucket.size());
   return 1;
@@ -139,6 +145,11 @@ static int arken_cache_remove( lua_State *L )
   return bucket_remove(L, cache::get());
 }
 
+static int arken_cache_removeAll( lua_State *L )
+{
+  return bucket_removeAll(L, cache::get());
+}
+
 static int arken_cache_size( lua_State *L )
 {
   return bucket_size(L, cache::get());
@@ -217,6 +228,11 @@ static int arken_cache_bucket_remove( lua_State *L )
   return bucket_remove(L, namedBucket(L));
 }
 
+static int arken_cache_bucket_removeAll( lua_State *L )
+{
+  return bucket_removeAll(L, namedBucket(L));
+}
+
 static int arken_cache_bucket_size( lua_State *L )
 {
   return bucket_size(L, namedBucket(L));
@@ -275,6 +291,7 @@ static int arken_cache_bucket( lua_State *L ) {
   pushBucketMethod(L, name, arken_cache_bucket_value,   "value");
   pushBucketMethod(L, name, arken_cache_bucket_insert,  "insert");
   pushBucketMethod(L, name, arken_cache_bucket_remove,  "remove");
+  pushBucketMethod(L, name, arken_cache_bucket_removeAll, "removeAll");
   pushBucketMethod(L, name, arken_cache_bucket_size,    "size");
   pushBucketMethod(L, name, arken_cache_bucket_gc,      "gc");
   pushBucketMethod(L, name, arken_cache_bucket_keys,    "keys");
@@ -293,6 +310,7 @@ extern "C" {
       {"value",   arken_cache_value},
       {"insert",  arken_cache_insert},
       {"remove",  arken_cache_remove},
+      {"removeAll", arken_cache_removeAll},
       {"size",    arken_cache_size},
       {"gc",      arken_cache_gc},
       {"keys",    arken_cache_keys},

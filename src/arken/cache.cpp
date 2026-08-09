@@ -85,6 +85,11 @@ void cache::remove(const char * key)
   get().remove(key);
 }
 
+void cache::removeAll(const char * pattern)
+{
+  get().removeAll(pattern);
+}
+
 double cache::size()
 {
   return get().size();
@@ -232,6 +237,23 @@ void cache::bucket::remove(const char * key)
     delete d;
     m_order.erase(orderIt);
     m_index.erase(it);
+  }
+}
+
+void cache::bucket::removeAll(const char * pattern)
+{
+  std::unique_lock<std::mutex> lck(m_mutex);
+
+  auto it = m_order.begin();
+  while (it != m_order.end()) {
+    if (utils::glob::match(it->first, pattern)) {
+      m_bytes -= it->second->value().size();
+      delete it->second;
+      m_index.erase(it->first);
+      it = m_order.erase(it);
+    } else {
+      ++it;
+    }
   }
 }
 
