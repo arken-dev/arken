@@ -244,9 +244,12 @@ void cache::bucket::removeAll(const char * pattern)
 {
   std::unique_lock<std::mutex> lck(m_mutex);
 
+  // ver keys(): converte pattern uma única vez, fora do loop.
+  std::string patternStr(pattern);
+
   auto it = m_order.begin();
   while (it != m_order.end()) {
-    if (utils::glob::match(it->first, pattern)) {
+    if (utils::glob::match(it->first, patternStr)) {
       m_bytes -= it->second->value().size();
       delete it->second;
       m_index.erase(it->first);
@@ -282,11 +285,15 @@ std::vector<std::string> cache::bucket::keys(const char * pattern)
 
   std::vector<std::string> result;
 
+  // glob::match recebe std::string; convertendo pattern uma única vez aqui
+  // evita reconstruir o mesmo std::string a cada chave do bucket.
+  std::string patternStr(pattern);
+
   for (Entry & entry : m_order) {
     if (entry.second->isExpires()) {
       continue;
     }
-    if (utils::glob::match(entry.first, pattern)) {
+    if (utils::glob::match(entry.first, patternStr)) {
       result.push_back(entry.first);
     }
   }
