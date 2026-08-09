@@ -38,6 +38,17 @@ struct WebSocketMessage {
 //   - ping  -> gera um pong de resposta (mesmo payload) em output()
 //   - close -> gera um close de resposta em output() e marca closed()
 //   - erro de protocolo (RFC 6455) -> gera close 1002 em output() e marca closed()
+//
+// Não implementa negociação de Sec-WebSocket-Protocol/Extensions
+// (RFC 6455 §11.3.4 / §9) - decisão deliberada, não esquecida. Protocol é
+// pra quando cliente e servidor não são a mesma aplicação (cliente de
+// terceiro, múltiplos protocolos no mesmo servidor); Extensions
+// (permessage-deflate) exigiria compressão de verdade no framing, não só
+// trocar header. Se algum dia precisar: Protocol dá pra fazer com uma
+// lista fixa configurada no HttpServer (server:setWebSocketProtocols),
+// sem precisar mudar a ordem handshake-antes-do-Lua atual; por-controller
+// exigiria resolver a rota antes do 101, que hoje só acontece depois
+// (open() já dispara com a resposta enviada).
 class WebSocketParser {
   public:
   static bool        isWebSocketUpgrade(HttpEnv * env);
