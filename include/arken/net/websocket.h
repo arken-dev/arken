@@ -63,7 +63,9 @@ class WebSocketParser {
   WebSocketOpcode m_fragmentOpcode;
   std::string     m_fragmentPayload;
 
-  void protocolError(uint16_t code);
+  // fecha com o close code dado (1002 violação de protocolo, 1009
+  // mensagem grande demais) e marca closed() - o Connection encerra o fd
+  void closeWithCode(uint16_t code);
 };
 
 // Representa a conexão do ponto de vista de quem quer mandar uma mensagem

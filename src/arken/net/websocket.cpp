@@ -23,6 +23,12 @@ using base64 = arken::base64;
 /* RFC 6455 4.2.2 */
 const char * WS_GUID = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
 
+// limite de tamanho pra payload de um frame e pra soma de uma mensagem
+// fragmentada (senão um cliente mal-intencionado podia declarar um
+// payloadLen gigante, ou emendar muitos frames pequenos, e fazer o
+// m_buffer/m_fragmentPayload crescer sem limite até estourar memória
+const uint64_t MAX_MESSAGE_SIZE = 16 * 1024 * 1024; // 16MB
+
 const uint8_t OPCODE_CONTINUATION = 0x0;
 const uint8_t OPCODE_TEXT         = 0x1;
 const uint8_t OPCODE_BINARY       = 0x2;
@@ -121,7 +127,7 @@ WebSocketParser::buildMessage(WebSocketOpcode opcode, const std::string & payloa
 }
 
 void
-WebSocketParser::protocolError(uint16_t code)
+WebSocketParser::closeWithCode(uint16_t code)
 {
   m_output.push(buildCloseFrame(code, ""));
   m_closed = true;
@@ -148,22 +154,22 @@ WebSocketParser::parse(const char * data, size_t len)
 
     // cliente é obrigado a mascarar (RFC 6455 5.1)
     if( ! mask ) {
-      protocolError(1002);
+      closeWithCode(1002);
       return;
     }
 
     if( rsv != 0 ) {
-      protocolError(1002);
+      closeWithCode(1002);
       return;
     }
 
     if( ! isKnownOpcode(opcode) ) {
-      protocolError(1002);
+      closeWithCode(1002);
       return;
     }
 
     if( isControlOpcode(opcode) && (! fin || len7 > 125) ) {
-      protocolError(1002);
+      closeWithCode(1002);
       return;
     }
 
@@ -186,6 +192,14 @@ WebSocketParser::parse(const char * data, size_t len)
         payloadLen = (payloadLen << 8) | static_cast<uint8_t>(m_buffer[offset + i]);
       }
       offset += 8;
+    }
+
+    // rejeita antes de esperar os bytes do payload chegarem - senão um
+    // frame declarando um tamanho gigante faria a gente bufferizar tudo
+    // isso só pra descobrir depois que era grande demais
+    if( payloadLen > MAX_MESSAGE_SIZE ) {
+      closeWithCode(1009);
+      return;
     }
 
     if( m_buffer.size() < offset + 4 ) {
@@ -213,7 +227,13 @@ WebSocketParser::parse(const char * data, size_t len)
     switch(opcode) {
       case OPCODE_CONTINUATION:
         if( ! m_fragmented ) {
-          protocolError(1002);
+          closeWithCode(1002);
+          return;
+        }
+        // cada frame de continuação já passou no limite individual, mas a
+        // soma de vários frames pequenos também precisa ser limitada
+        if( m_fragmentPayload.size() + payload.size() > MAX_MESSAGE_SIZE ) {
+          closeWithCode(1009);
           return;
         }
         m_fragmentPayload.append(payload);
@@ -228,7 +248,7 @@ WebSocketParser::parse(const char * data, size_t len)
       case OPCODE_BINARY:
         if( m_fragmented ) {
           // frame de dados novo no meio de uma mensagem fragmentada ainda aberta
-          protocolError(1002);
+          closeWithCode(1002);
           return;
         }
         if( fin ) {
