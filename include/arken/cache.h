@@ -19,48 +19,95 @@ namespace arken
 
 class cache {
   public:
+  // API estática opera implicitamente no bucket "default" (mesmo bucket
+  // devolvido por get("default")) — comportamento idêntico ao de antes dos
+  // buckets existirem.
   static std::optional<std::string> value(const char * key);
   static void insert(const char *key, const char * value, int expires = -1);
   static void remove(const char * key);
   static double size();
   static void   gc();
   static std::vector<std::string> keys(const char * pattern = "*");
-
-  // limite (em bytes) de memória ocupada pelos valores armazenados; 0 (default)
-  // significa sem limite. Quando o total ultrapassa o limite, as chaves menos
-  // recentemente usadas (LRU) são despejadas até voltar a caber, independente
-  // de TTL — inclusive entradas com expires=0 ("nunca expira" por tempo).
   static void   maxSize(double bytes);
   static double maxSize();
+  static bool   dump(const char * path);
+  static bool   load(const char * path);
 
-  private:
-
-  class data {
+  // bucket é um cache independente: mutex, lista LRU, índice e maxSize
+  // próprios, sem interferir em nenhum outro bucket. Serve pra separar
+  // usos com padrões de acesso e orçamento de memória diferentes (ex.:
+  // sessão vs. fragmentos de HTML) sem que um afete o outro.
+  class bucket {
     public:
-    data(const std::string & value, int expires);
-    ~data() = default;
-    const std::string & value();
-    bool isExpires();
+    std::optional<std::string> value(const char * key);
+    void insert(const char *key, const char * value, int expires = -1);
+    void remove(const char * key);
+    double size();
+    void   gc();
+    std::vector<std::string> keys(const char * pattern = "*");
+
+    // limite (em bytes) de memória ocupada pelos valores deste bucket; 0
+    // (default) significa sem limite. Quando o total ultrapassa o limite, as
+    // chaves menos recentemente usadas (LRU) são despejadas até voltar a
+    // caber, independente de TTL — inclusive entradas com expires=0 ("nunca
+    // expira" por tempo, não imune a pressão de espaço).
+    void   maxSize(double bytes);
+    double maxSize();
+
+    // grava/restaura este bucket num arquivo binário próprio. O TTL restante
+    // de cada chave é preservado (uma chave com 3h pra expirar continua com
+    // ~3h depois do load); chaves já expiradas no momento do load() são
+    // descartadas em vez de restauradas. Devolve false se o arquivo não pôde
+    // ser aberto.
+    bool dump(const char * path);
+    bool load(const char * path);
 
     private:
-    std::string m_value;
-    int         m_expires;
+
+    class data {
+      public:
+      data(const std::string & value, int expires);
+      ~data() = default;
+      const std::string & value();
+      bool isExpires();
+      int  expiresAt();
+
+      private:
+      std::string m_value;
+      int         m_expires;
+    };
+
+    // m_order mantém as chaves ordenadas por uso: início = mais recentemente
+    // usada (MRU), fim = menos recentemente usada (LRU). m_index dá acesso
+    // O(1) ao nó de uma chave em m_order, para mover pro início (touch) sem
+    // percorrer a lista.
+    using Entry = std::pair<std::string, data *>;
+
+    void touch(std::list<Entry>::iterator it);
+    void evict();
+
+    std::mutex m_mutex;
+    std::list<Entry> m_order;
+    std::unordered_map<std::string, std::list<Entry>::iterator> m_index;
+    double m_bytes    = 0;
+    double m_maxBytes = 0;
   };
 
-  // s_order mantém as chaves ordenadas por uso: início = mais recentemente
-  // usada (MRU), fim = menos recentemente usada (LRU). s_index dá acesso O(1)
-  // ao nó de uma chave em s_order, para mover pro início (touch) sem
-  // percorrer a lista.
-  using Entry = std::pair<std::string, data *>;
+  // acessa (criando na primeira vez) o bucket com esse nome. "default" é o
+  // mesmo bucket usado pelos métodos estáticos acima.
+  static bucket & get(const char * name = "default");
 
-  static void touch(std::list<Entry>::iterator it);
-  static void evict();
+  // nomes de todos os buckets já criados (por acesso via get()/insert() em
+  // algum momento da vida do processo) — mesmo tipo de retorno de keys(),
+  // por consistência dentro do módulo.
+  static std::vector<std::string> bucketNames();
 
-  static std::mutex s_mutex;
-  static std::list<Entry> s_order;
-  static std::unordered_map<std::string, std::list<Entry>::iterator> s_index;
-  static double s_bytes;
-  static double s_maxBytes;
+  private:
+  static void backgroundGC();
+  static void ensureBackgroundGC();
+
+  static std::mutex s_registryMutex;
+  static std::unordered_map<std::string, bucket *> s_registry;
 
 };
 
