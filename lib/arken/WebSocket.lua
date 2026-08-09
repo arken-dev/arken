@@ -34,18 +34,26 @@ end
 function WebSocket:pexecute(method, ...)
   local status, err = pcall(self[method], self, ...)
   if not status then
-    self:error(err)
+    self:rescue(err)
   end
+  self:persist()
+end
+
+function WebSocket:persist()
   if self._session ~= nil then
     cache.insert(self:connection():sessionId(), self._session)
   end
 end
 
 -------------------------------------------------------------------------------
--- ERROR
+-- RESCUE
+-- chamado quando open/message/close lançam exceção (pcall acima), e
+-- também direto pelo dispatcher quando o C++ detecta algo que não é uma
+-- mensagem normal (violação de protocolo, UTF-8 inválido, mensagem
+-- grande demais, timeout de ping) - o motivo vem em err nesse caso.
 -------------------------------------------------------------------------------
 
-function WebSocket:error(err)
+function WebSocket:rescue(err)
 end
 
 return WebSocket

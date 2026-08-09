@@ -103,5 +103,23 @@ WebSocketHandler::close(int fd, const std::string & sessionId, const std::string
   }
 }
 
+void
+WebSocketHandler::error(int fd, const std::string & sessionId, const std::string & path,
+                         const std::string & reason)
+{
+  mvm::instance i = mvm::getInstance();
+  lua_State * L = i.state();
+
+  if( prepareCall(L, fd, sessionId, path, "error") == nullptr ) {
+    return;
+  }
+
+  lua_pushlstring(L, reason.data(), reason.size());
+
+  if( lua_pcall(L, 2, 0, 0) != 0 ) {
+    fprintf(stderr, " %s\n", lua_tostring(L, -1));
+  }
+}
+
 } // namespace net
 } // namespace arken

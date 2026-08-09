@@ -48,6 +48,13 @@ using WebSocketRegistry = arken::net::WebSocketRegistry;
 /* message length limitation */
 #define MAX_MESSAGE_LEN (4096)
 
+/* intervalo do ping que o servidor manda pra cada conexão WebSocket -
+ * detecta conexão morta (sem pong de volta) e mantém viva através de
+ * proxy/NAT que derrubam conexão ociosa. Quem decide o que fazer quando
+ * falta resposta é o app (via WebSocket:rescue("timeout")), não o C++ -
+ * o framework só avisa, nunca fecha sozinho por causa disso. */
+#define PING_INTERVAL 30.0
+
 /* record the number of clients */
 static int client_number;
 
@@ -75,6 +82,9 @@ struct Connection {
   std::string     sessionId; // só existe depois do handshake (type == WEBSOCKET)
   std::string     path;      // idem - path do request que fez o upgrade
 
+  ev_timer pingTimer;               // idem - só existe depois do handshake
+  bool     awaitingPong = false;    // true = já mandamos um ping e ainda não veio pong
+
   // casca fina - a lógica/limiar de verdade mora em HttpServer, porque
   // esse Connection aqui é específico do libev-ws; um backend futuro
   // (libevent-ws, epoll-ws) tem o seu próprio Connection, mas delega pro
@@ -83,6 +93,37 @@ struct Connection {
     return HttpServer::headerTooLarge(input.size());
   }
 };
+
+// código de close != 1000 (violação de protocolo/UTF-8/tamanho) tem que
+// virar rescue() no app - mapeia pro motivo que o dispatcher Lua recebe
+static const char *
+closeCodeReason(uint16_t code)
+{
+  switch(code) {
+    case 1007: return "invalid_utf8";
+    case 1009: return "too_large";
+    default:   return "protocol"; // 1002 e qualquer outro código de erro
+  }
+}
+
+// dispara a cada PING_INTERVAL segundos numa conexão WebSocket já aberta.
+// Usa watcher->data (não o truque de "primeiro membro" do ev_io) porque
+// ev_timer não é o primeiro membro do Connection - só o ev_io pode ser.
+static void
+ping_cb(struct ev_loop *loop, struct ev_timer *watcher, int revents)
+{
+  auto * connection = static_cast<Connection *>(watcher->data);
+
+  if( connection->awaitingPong && ! connection->websocket.consumePong() ) {
+    // não fecha sozinho - só avisa o app, quem decide o que fazer é o
+    // controller (ex: contar quantas vezes seguidas isso aconteceu e
+    // decidir remover a pessoa de uma sala depois de N)
+    WebSocketHandler::error(connection->io.fd, connection->sessionId, connection->path, "timeout");
+  }
+
+  WebSocketRegistry::writeFrame(connection->sessionId, WebSocketParser::buildPing());
+  connection->awaitingPong = true;
+}
 
 static void
 writeAll(int fd, const char * data, size_t size)
@@ -101,6 +142,7 @@ static void
 closeConnection(struct ev_loop *loop, Connection * connection)
 {
   if( connection->type == ConnectionType::WEBSOCKET ) {
+    ev_timer_stop(loop, &connection->pingTimer);
     WebSocketHandler::close(connection->io.fd, connection->sessionId, connection->path);
     WebSocketRegistry::remove(connection->sessionId);
   }
@@ -218,6 +260,11 @@ processHttp(struct ev_loop *loop, Connection * connection)
 
   if( isUpgrade ) {
     WebSocketRegistry::add(connection->sessionId, connection->io.fd);
+
+    ev_timer_init(&connection->pingTimer, ping_cb, PING_INTERVAL, PING_INTERVAL); //NOLINT ev_timer_init is macro
+    connection->pingTimer.data = connection;
+    ev_timer_start(loop, &connection->pingTimer);
+
     WebSocketHandler::open(connection->io.fd, connection->sessionId, connection->path);
   }
 }
@@ -241,6 +288,10 @@ processWebSocket(struct ev_loop *loop, Connection * connection)
   }
 
   if( connection->websocket.closed() ) {
+    if( connection->websocket.closeCode() != 1000 ) {
+      WebSocketHandler::error(connection->io.fd, connection->sessionId, connection->path,
+        closeCodeReason(connection->websocket.closeCode()));
+    }
     closeConnection(loop, connection);
   }
 }

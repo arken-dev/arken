@@ -66,6 +66,15 @@ arken_net_WebSocketConnection_send( lua_State *L ) {
 }
 
 static int
+arken_net_WebSocketConnection_close( lua_State *L ) {
+  WebSocketConnection * udata = checkWebSocketConnection( L );
+  size_t len = 0;
+  const char * reason = lua_isstring(L, 2) ? luaL_checklstring(L, 2, &len) : "";
+  udata->close(std::string(reason, len));
+  return 0;
+}
+
+static int
 arken_net_WebSocketConnection_sessionId( lua_State *L ) {
   WebSocketConnection * udata = checkWebSocketConnection( L );
   lua_pushstring(L, udata->sessionId().data());
@@ -89,6 +98,7 @@ arken_net_WebSocketConnection_gc( lua_State *L ) {
 static const
 luaL_reg arken_net_WebSocketConnection_metatable[] = {
   {"send",      arken_net_WebSocketConnection_send},
+  {"close",     arken_net_WebSocketConnection_close},
   {"sessionId", arken_net_WebSocketConnection_sessionId},
   {"path",      arken_net_WebSocketConnection_path},
   {"__gc",      arken_net_WebSocketConnection_gc},

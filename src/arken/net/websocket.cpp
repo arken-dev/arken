@@ -186,9 +186,22 @@ WebSocketParser::buildMessage(WebSocketOpcode opcode, const std::string & payloa
   return buildFrame(static_cast<uint8_t>(opcode), payload);
 }
 
+std::string
+WebSocketParser::buildPing(const std::string & payload)
+{
+  return buildFrame(OPCODE_PING, payload);
+}
+
+std::string
+WebSocketParser::buildClose(uint16_t code, const std::string & reason)
+{
+  return buildCloseFrame(code, reason);
+}
+
 void
 WebSocketParser::closeWithCode(uint16_t code)
 {
+  m_closeCode = code;
   m_output.push(buildCloseFrame(code, ""));
   m_closed = true;
 }
@@ -338,6 +351,7 @@ WebSocketParser::parse(const char * data, size_t len)
         break;
 
       case OPCODE_PONG:
+        m_pongReceived = true;
         break;
     }
   }
@@ -377,6 +391,20 @@ WebSocketParser::closed()
   return m_closed;
 }
 
+uint16_t
+WebSocketParser::closeCode()
+{
+  return m_closeCode;
+}
+
+bool
+WebSocketParser::consumePong()
+{
+  bool result = m_pongReceived;
+  m_pongReceived = false;
+  return result;
+}
+
 WebSocketConnection::WebSocketConnection(int fd, const std::string & sessionId, const std::string & path)
   : m_fd(fd), m_sessionId(sessionId), m_path(path)
 {
@@ -398,6 +426,12 @@ void
 WebSocketConnection::send(const std::string & payload, bool binary)
 {
   WebSocketRegistry::send(m_sessionId, payload, binary);
+}
+
+void
+WebSocketConnection::close(const std::string & reason)
+{
+  WebSocketRegistry::writeFrame(m_sessionId, WebSocketParser::buildClose(1000, reason));
 }
 
 std::mutex WebSocketRegistry::s_mutex;

@@ -46,4 +46,18 @@ dispatcher.close = function(connection)
   call(connection, "close")
 end
 
+-------------------------------------------------------------------------------
+-- ERROR
+-- não passa por pexecute/pcall de novo (evita recursão se o próprio
+-- rescue falhar) - o C++ já sabe que isso é um erro, só chama rescue()
+-- direto na instância nova.
+-------------------------------------------------------------------------------
+
+dispatcher.error = function(connection, reason)
+  local class  = dispatcher.resolveController(connection:path())
+  local object = class.new{ _connection = connection }
+  object:rescue(reason)
+  object:persist()
+end
+
 return dispatcher

@@ -43,6 +43,8 @@ class WebSocketParser {
   static bool        isWebSocketUpgrade(HttpEnv * env);
   static std::string acceptKey(const std::string & key);
   static std::string buildMessage(WebSocketOpcode opcode, const std::string & payload);
+  static std::string buildPing(const std::string & payload = "");
+  static std::string buildClose(uint16_t code = 1000, const std::string & reason = "");
 
   void parse(const char * data, size_t len);
 
@@ -53,6 +55,9 @@ class WebSocketParser {
   std::string      output();
 
   bool closed();
+  uint16_t closeCode(); // só significativo depois de closed() == true; 1000 = close normal (não é erro)
+
+  bool consumePong(); // true se um pong chegou desde a última checagem (e reseta) - usado pro ping do servidor
 
   private:
   std::string m_buffer;
@@ -60,14 +65,17 @@ class WebSocketParser {
   std::queue<WebSocketMessage> m_messages;
   std::queue<std::string>      m_output;
 
-  bool m_closed = false;
+  bool     m_closed    = false;
+  uint16_t m_closeCode = 1000;
+  bool     m_pongReceived = false;
 
   bool            m_fragmented = false;
   WebSocketOpcode m_fragmentOpcode;
   std::string     m_fragmentPayload;
 
-  // fecha com o close code dado (1002 violação de protocolo, 1009
-  // mensagem grande demais) e marca closed() - o Connection encerra o fd
+  // fecha com o close code dado (1002 violação de protocolo, 1007 UTF-8
+  // inválido, 1009 mensagem grande demais) e marca closed() - o
+  // Connection encerra o fd
   void closeWithCode(uint16_t code);
 };
 
@@ -79,6 +87,13 @@ class WebSocketConnection {
   public:
   WebSocketConnection(int fd, const std::string & sessionId, const std::string & path);
   void send(const std::string & payload, bool binary = false);
+
+  // manda um frame de close pro cliente - encerramento "educado" (RFC
+  // 6455 7.1.2), não derruba o fd na hora. A conexão termina de verdade
+  // pelo caminho normal (cliente responde com close, ou a leitura na
+  // thread dona percebe EOF) - fechar de fato só pode acontecer na
+  // thread dona (não dá pra mexer no ev_io/timer de fora com segurança)
+  void close(const std::string & reason = "");
 
   const std::string & sessionId();
   const std::string & path();
@@ -121,18 +136,22 @@ class WebSocketRegistry {
 };
 
 // Ponte entre os eventos de uma conexão WebSocket e o Lua: pega uma VM do
-// pool, chama o campo (open/message/close) do dispatcher configurado
+// pool, chama o campo (open/message/close/error) do dispatcher configurado
 // passando a connection. Igual o HttpServer::handler() faz pro HTTP - por
 // isso mora fora do core (precisa de lua_State/mvm), não em websocket.cpp.
 //
-// São 3 entradas porque cada evento acontece em momento e lugar diferentes
+// São 4 entradas porque cada evento acontece em momento e lugar diferentes
 // do event loop (open no handshake, message a cada frame completo, close
-// na desconexão) - não dá pra unificar numa chamada só. Por baixo,
-// compartilham o mesmo mecanismo (prepareCall).
+// na desconexão, error em violação de protocolo/timeout de ping) - não dá
+// pra unificar numa chamada só. Por baixo, compartilham o mesmo mecanismo
+// (prepareCall).
 //
-// Não existe WebSocketHandler::error() - erro é tratado inteiramente do
-// lado Lua (WebSocket:pexecute captura a exceção com pcall e chama
-// self:error() na mesma instância, sem precisar voltar pro C++).
+// error() não é sobre exceção Lua - isso o próprio WebSocket:pexecute já
+// resolve sozinho (pcall + self:rescue()), sem precisar voltar pro C++.
+// Esse error() aqui é o C++ avisando de algo que ele mesmo detectou
+// (violação de protocolo, UTF-8 inválido, mensagem grande demais, timeout
+// de ping) - o dispatcher Lua chama object:rescue(reason) direto, sem
+// passar por pexecute de novo (evita recursão se o próprio rescue falhar).
 class WebSocketHandler {
   public:
   static void setDispatcher(std::string dispatcher);
@@ -141,6 +160,8 @@ class WebSocketHandler {
   static void message(int fd, const std::string & sessionId, const std::string & path,
                        const std::string & payload, bool binary);
   static void close(int fd, const std::string & sessionId, const std::string & path);
+  static void error(int fd, const std::string & sessionId, const std::string & path,
+                     const std::string & reason);
 
   private:
   static std::string dispatcher;
