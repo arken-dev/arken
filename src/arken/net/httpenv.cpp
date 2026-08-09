@@ -7,6 +7,7 @@ extern "C" {
   #include <http11/http11_parser.h>
 }
 
+#include <cstring>
 #include <memory>
 #include <arken/net/httpenv.h>
 
@@ -190,6 +191,12 @@ size_t HttpEnv::len()
 bool HttpEnv::luaOwned()
 {
   return m_luaOwned;
+}
+
+bool HttpEnv::isWebSocketUpgrade()
+{
+  return strcmp(field("Connection").data(), "Upgrade") == 0 &&
+         strcmp(field("Upgrade").data(), "websocket") == 0;
 }
 
 } // namespace net
