@@ -8,6 +8,39 @@
 #include <arken/net/websocket.h>
 
 using arken::net::WebSocketConnection;
+using arken::net::WebSocketRegistry;
+
+/**
+ * ClassMethods
+ */
+
+// WebSocketConnection.send(sessionId, payload, binary) - manda uma
+// mensagem pra uma conexão diferente da atual (broadcast), identificada
+// pelo sessionId dela. Não precisa de instância porque não é "a minha
+// conexão", é "uma conexão qualquer que eu conheço o id".
+static int
+arken_net_WebSocketConnection_class_send( lua_State *L ) {
+  size_t sessionLen;
+  const char * sessionId = luaL_checklstring(L, 1, &sessionLen);
+  size_t payloadLen;
+  const char * payload = luaL_checklstring(L, 2, &payloadLen);
+  bool binary = lua_toboolean(L, 3);
+  WebSocketRegistry::send(std::string(sessionId, sessionLen), std::string(payload, payloadLen), binary);
+  return 0;
+}
+
+static const luaL_reg arken_net_WebSocketConnection[] = {
+  {"send", arken_net_WebSocketConnection_class_send},
+  {nullptr, nullptr}
+};
+
+void static
+register_arken_net_WebSocketConnection( lua_State *L ) {
+  luaL_newmetatable(L, "arken.net.WebSocketConnection");
+  luaL_register(L, nullptr, arken_net_WebSocketConnection);
+  lua_pushvalue(L, -1);
+  lua_setfield(L, -1, "__index");
+}
 
 /**
  * checkWebSocketConnection
@@ -74,6 +107,7 @@ extern "C" {
   int
   luaopen_arken_net_WebSocketConnection( lua_State *L ) {
     register_arken_net_WebSocketConnection_metatable(L);
+    register_arken_net_WebSocketConnection(L);
     return 1;
   }
 }

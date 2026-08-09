@@ -36,10 +36,11 @@
 #include <arken/os.h>
 #include <arken/base>
 
-using HttpServer       = arken::net::HttpServer;
-using HttpEnv          = arken::net::HttpEnv;
-using WebSocketParser  = arken::net::WebSocketParser;
-using WebSocketHandler = arken::net::WebSocketHandler;
+using HttpServer        = arken::net::HttpServer;
+using HttpEnv           = arken::net::HttpEnv;
+using WebSocketParser   = arken::net::WebSocketParser;
+using WebSocketHandler  = arken::net::WebSocketHandler;
+using WebSocketRegistry = arken::net::WebSocketRegistry;
 
 /* client number limitation */
 #define MAX_CLIENTS 1000
@@ -93,6 +94,7 @@ closeConnection(struct ev_loop *loop, Connection * connection)
 {
   if( connection->type == ConnectionType::WEBSOCKET ) {
     WebSocketHandler::close(connection->io.fd, connection->sessionId, connection->path);
+    WebSocketRegistry::remove(connection->sessionId);
   }
 
   --client_number;
@@ -197,6 +199,7 @@ processHttp(struct ev_loop *loop, Connection * connection)
   writeAll(connection->io.fd, data.data(), data.size());
 
   if( isUpgrade ) {
+    WebSocketRegistry::add(connection->sessionId, connection->io.fd);
     WebSocketHandler::open(connection->io.fd, connection->sessionId, connection->path);
   }
 }
@@ -209,7 +212,7 @@ processWebSocket(struct ev_loop *loop, Connection * connection)
 
   while( connection->websocket.hasOutput() ) {
     std::string out = connection->websocket.output();
-    writeAll(connection->io.fd, out.data(), out.size());
+    WebSocketRegistry::writeFrame(connection->sessionId, out);
   }
 
   while( connection->websocket.hasMessage() ) {

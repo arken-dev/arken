@@ -397,16 +397,70 @@ WebSocketConnection::path()
 void
 WebSocketConnection::send(const std::string & payload, bool binary)
 {
-  WebSocketOpcode opcode = binary ? WebSocketOpcode::Binary : WebSocketOpcode::Text;
-  std::string frame = WebSocketParser::buildMessage(opcode, payload);
+  WebSocketRegistry::send(m_sessionId, payload, binary);
+}
 
-  ssize_t bytes = write(m_fd, frame.data(), frame.size());
+std::mutex WebSocketRegistry::s_mutex;
+std::unordered_map<std::string, std::shared_ptr<WebSocketRegistry::Entry>> WebSocketRegistry::s_connections;
+
+void
+WebSocketRegistry::add(const std::string & sessionId, int fd)
+{
+  std::lock_guard<std::mutex> lock(s_mutex);
+  s_connections[sessionId] = std::make_shared<Entry>(fd);
+}
+
+void
+WebSocketRegistry::remove(const std::string & sessionId)
+{
+  std::shared_ptr<Entry> entry;
+  {
+    std::lock_guard<std::mutex> lock(s_mutex);
+    auto it = s_connections.find(sessionId);
+    if( it == s_connections.end() ) {
+      return;
+    }
+    entry = it->second;
+    s_connections.erase(it);
+  }
+
+  // espera qualquer write em andamento terminar antes de devolver -
+  // garante que ninguém mais vai escrever nesse fd depois que a gente
+  // volta pra quem chamou (que aí sim pode dar close() com segurança,
+  // sem risco do fd ser reaproveitado por uma conexão nova enquanto
+  // ainda tem alguém escrevendo na antiga)
+  std::lock_guard<std::mutex> writeLock(entry->writeMutex);
+}
+
+void
+WebSocketRegistry::writeFrame(const std::string & sessionId, const std::string & frame)
+{
+  std::shared_ptr<Entry> entry;
+  {
+    std::lock_guard<std::mutex> lock(s_mutex);
+    auto it = s_connections.find(sessionId);
+    if( it == s_connections.end() ) {
+      return;
+    }
+    entry = it->second; // shared_ptr local mantém o Entry vivo mesmo se remove() apagar do mapa entre aqui e o write
+  }
+
+  std::lock_guard<std::mutex> writeLock(entry->writeMutex);
+
+  ssize_t bytes = write(entry->fd, frame.data(), frame.size());
   while( bytes < static_cast<ssize_t>(frame.size()) ) {
     if( bytes == -1 ) {
       break;
     }
-    bytes += write(m_fd, frame.data() + bytes, frame.size() - bytes);
+    bytes += write(entry->fd, frame.data() + bytes, frame.size() - bytes);
   }
+}
+
+void
+WebSocketRegistry::send(const std::string & sessionId, const std::string & payload, bool binary)
+{
+  WebSocketOpcode opcode = binary ? WebSocketOpcode::Binary : WebSocketOpcode::Text;
+  writeFrame(sessionId, WebSocketParser::buildMessage(opcode, payload));
 }
 
 } // namespace net

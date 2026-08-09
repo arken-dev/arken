@@ -7,8 +7,11 @@
 #define _ARKEN_NET_WEBSOCKET_
 
 #include <cstdint>
+#include <memory>
+#include <mutex>
 #include <queue>
 #include <string>
+#include <unordered_map>
 
 #include <arken/net/httpenv.h>
 
@@ -84,6 +87,37 @@ class WebSocketConnection {
   int         m_fd;
   std::string m_sessionId;
   std::string m_path;
+};
+
+// Registro de conexões WebSocket vivas, indexado por sessionId - permite
+// mandar mensagem pra uma conexão diferente da que está processando o
+// evento atual (ex: broadcast num chat). Compartilhado entre threads
+// (cada thread do event loop tem seu próprio conjunto de Connection, mas
+// esse registro é único pro processo inteiro, igual arken::cache).
+//
+// Todo write num fd passa por aqui - inclusive o de WebSocketConnection
+// (a própria conexão respondendo pra si mesma) e as respostas automáticas
+// (pong/close) do libev-ws - porque duas threads podem escrever no mesmo
+// fd ao mesmo tempo (a dona da conexão, respondendo algo normal, e outra
+// thread mandando uma mensagem pra essa sessão via send()) e os bytes dos
+// dois writes podiam se intercalar e corromper o frame.
+class WebSocketRegistry {
+  public:
+  static void add(const std::string & sessionId, int fd);
+  static void remove(const std::string & sessionId); // bloqueia até qualquer write em andamento terminar
+
+  static void send(const std::string & sessionId, const std::string & payload, bool binary = false);
+  static void writeFrame(const std::string & sessionId, const std::string & frame);
+
+  private:
+  struct Entry {
+    int        fd;
+    std::mutex writeMutex;
+    explicit Entry(int fd) : fd(fd) {}
+  };
+
+  static std::mutex                                              s_mutex;
+  static std::unordered_map<std::string, std::shared_ptr<Entry>> s_connections;
 };
 
 // Ponte entre os eventos de uma conexão WebSocket e o Lua: pega uma VM do
