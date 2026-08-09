@@ -1,0 +1,33 @@
+#!/usr/bin/env arken
+-- arken.net.WebSocket example server
+--
+-- Pré-requisito: esse exemplo só funciona num build com suporte a
+-- WebSocket (backend "libev-ws"). Configure o CMake com:
+--   cmake -DARKEN_NET_HTTPSERVER=libev-ws ..
+-- (o backend padrão "libev", usado em produção, não entende upgrade
+-- de WebSocket)
+--
+-- Como rodar (a partir da raiz do repositório):
+--   cd examples/arken.net.WebSocket/chat
+--   arken script/server
+--
+-- Endpoints disponíveis (roteados pelo path do handshake, ver
+-- lib/arken/net/websocketDispatcher.lua):
+--   ws://127.0.0.1:8090/ws/echo        -> ws/controllers/EchoWebSocket.lua
+--   ws://127.0.0.1:8090/ws/chat/room   -> ws/controllers/Chat/RoomWebSocket.lua
+
+local json = require('arken.json')
+
+local HttpServer = require('arken.net.HttpServer')
+local config     = json.file('config/server.json')
+local server     = HttpServer.new(config.address, config.port)
+
+server:setThreads(config.threads)
+server:setPid(config.pid)
+
+-- server:setWebSocketDispatcher(...) não é chamado de propósito - o
+-- padrão de fábrica (arken.net.websocketDispatcher) já resolve o path
+-- pra classe do controller sozinho, não precisa de configuração pra
+-- esse caso de uso simples.
+
+server:start()

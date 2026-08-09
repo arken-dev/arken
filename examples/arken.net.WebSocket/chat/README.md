@@ -1,0 +1,56 @@
+# arken.net.WebSocket — exemplo de chat
+
+Aplicação completa mostrando o suporte a WebSocket do Arken: handshake,
+roteamento por path, sessão por conexão, broadcast entre conexões
+diferentes, e tratamento de erro/timeout via `rescue()`.
+
+## Pré-requisito
+
+Esse exemplo só funciona num build com o backend `libev-ws` (o backend
+padrão, `libev`, usado em produção, não entende upgrade de WebSocket —
+fica intocado de propósito). Configure o CMake com:
+
+```sh
+cmake -DARKEN_NET_HTTPSERVER=libev-ws ..
+```
+
+## Como rodar
+
+A partir da raiz do repositório:
+
+```sh
+cd examples/arken.net.WebSocket/chat
+mkdir -p tmp/pid
+arken script/server
+```
+
+O servidor sobe em `ws://127.0.0.1:8090`.
+
+## Endpoints
+
+O path do handshake decide qual controller atende a conexão (ver
+`lib/arken/net/websocketDispatcher.lua` — `/segmento/resto` vira
+`segmento.controllers.Resto`, em PascalCase, com sufixo `WebSocket`):
+
+- `ws://127.0.0.1:8090/ws/echo` → `ws/controllers/EchoWebSocket.lua`
+  O mais simples possível: manda de volta exatamente o que recebeu.
+
+- `ws://127.0.0.1:8090/ws/chat/room` → `ws/controllers/Chat/RoomWebSocket.lua`
+  Sala de chat de verdade: quem entra/sai é anunciado pra todo mundo na
+  sala (`WebSocketConnection.send()` pra cada `session_id` guardado em
+  `arken.cache`), mensagens são retransmitidas pra todos, e 3 timeouts de
+  ping seguidos fazem a aplicação encerrar a conexão (`rescue()` decide
+  isso, não o framework).
+
+## Testando manualmente
+
+Com qualquer cliente WebSocket (ex: [websocat](https://github.com/vi/websocat),
+ou o console do navegador):
+
+```sh
+websocat ws://127.0.0.1:8090/ws/echo
+websocat ws://127.0.0.1:8090/ws/chat/room
+```
+
+Abra `ws/chat/room` em duas abas/terminais diferentes pra ver o broadcast
+funcionando entre as duas conexões.
