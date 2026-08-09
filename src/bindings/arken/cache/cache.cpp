@@ -67,15 +67,26 @@ static int arken_cache_keys( lua_State *L ) {
   return 1;
 }
 
+static int arken_cache_maxSize( lua_State *L ) {
+  if( lua_gettop(L) >= 1 && !lua_isnil(L, 1) ) {
+    double bytes = luaL_checknumber(L, 1);
+    cache::maxSize(bytes);
+    return 0;
+  }
+  lua_pushnumber(L, cache::maxSize());
+  return 1;
+}
+
 extern "C" {
   int luaopen_arken_cache( lua_State *L ) {
     static const luaL_reg Map[] = {
-      {"value",  arken_cache_value},
-      {"insert", arken_cache_insert},
-      {"remove", arken_cache_remove},
-      {"size",   arken_cache_size},
-      {"gc",     arken_cache_gc},
-      {"keys",   arken_cache_keys},
+      {"value",   arken_cache_value},
+      {"insert",  arken_cache_insert},
+      {"remove",  arken_cache_remove},
+      {"size",    arken_cache_size},
+      {"gc",      arken_cache_gc},
+      {"keys",    arken_cache_keys},
+      {"maxSize", arken_cache_maxSize},
       {nullptr, nullptr}
     };
     luaL_newmetatable(L, "arken.cache");

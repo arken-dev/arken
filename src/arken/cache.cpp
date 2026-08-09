@@ -35,24 +35,58 @@ namespace {
 }
 
 std::mutex cache::s_mutex;
-std::unordered_map<std::string, cache::data *> * cache::s_cache = new std::unordered_map<std::string, cache::data *>;
+std::list<cache::Entry> cache::s_order;
+std::unordered_map<std::string, std::list<cache::Entry>::iterator> cache::s_index;
+double cache::s_bytes    = 0;
+double cache::s_maxBytes = 0;
+
+// move o nó pro início de s_order (MRU). splice não invalida iteradores, então
+// o iterador guardado em s_index continua válido depois da chamada.
+void cache::touch(std::list<Entry>::iterator it)
+{
+  s_order.splice(s_order.begin(), s_order, it);
+}
+
+// despeja do fim de s_order (LRU) até caber no limite configurado. chamador
+// já precisa estar segurando s_mutex. maxSize() <= 0 (default) é "sem
+// limite" e não faz nada aqui, seguindo a mesma convenção de expires == 0.
+void cache::evict()
+{
+  if (s_maxBytes <= 0) {
+    return;
+  }
+
+  while (s_bytes > s_maxBytes && !s_order.empty()) {
+    Entry & back = s_order.back();
+    s_bytes -= back.second->value().size();
+    delete back.second;
+    s_index.erase(back.first);
+    s_order.pop_back();
+  }
+}
 
 std::optional<std::string> cache::value(const char * key)
 {
   std::unique_lock<std::mutex> lck(s_mutex);
 
-  if (s_cache->find(key) == s_cache->end()) {
+  auto it = s_index.find(key);
+  if (it == s_index.end()) {
     return std::nullopt;
-  } else {
-    cache::data * data = s_cache->at(key);
-    if ( data->isExpires() ) {
-      s_cache->erase(key);
-      delete data;
-      return std::nullopt;
-    } else {
-      return data->value();
-    }
   }
+
+  auto orderIt = it->second;
+  cache::data * data = orderIt->second;
+
+  if (data->isExpires()) {
+    s_bytes -= data->value().size();
+    delete data;
+    s_order.erase(orderIt);
+    s_index.erase(it);
+    return std::nullopt;
+  }
+
+  touch(orderIt);
+  return data->value();
 }
 
 void cache::insert(const char *key, const char * value, int expires)
@@ -61,24 +95,37 @@ void cache::insert(const char *key, const char * value, int expires)
 
   std::unique_lock<std::mutex> lck(s_mutex);
 
-  if ( s_cache->count(key) ) {
-    cache::data * data = s_cache->at(key);
-    delete data;
+  auto it = s_index.find(key);
+  if (it != s_index.end()) {
+    auto orderIt = it->second;
+    cache::data * old = orderIt->second;
+    s_bytes -= old->value().size();
+    delete old;
+    orderIt->second = new data(value, expires);
+    s_bytes += orderIt->second->value().size();
+    touch(orderIt);
+  } else {
+    s_order.emplace_front(std::string(key), new data(value, expires));
+    s_index[key] = s_order.begin();
+    s_bytes += s_order.begin()->second->value().size();
   }
 
-  (*s_cache)[key] = new data(value, expires);
+  evict();
 }
 
 void cache::remove(const char * key)
 {
   std::unique_lock<std::mutex> lck(s_mutex);
 
-  if ( s_cache->count(key) ) {
-    cache::data * data = s_cache->at(key);
+  auto it = s_index.find(key);
+  if (it != s_index.end()) {
+    auto orderIt = it->second;
+    cache::data * data = orderIt->second;
+    s_bytes -= data->value().size();
     delete data;
-    s_cache->erase(key);
+    s_order.erase(orderIt);
+    s_index.erase(it);
   }
-
 }
 
 cache::data::data(const std::string & value, int expires) : m_value(value)
@@ -109,14 +156,21 @@ bool cache::data::isExpires()
 
 double cache::size()
 {
-  double result = 0;
-
   std::unique_lock<std::mutex> lck(s_mutex);
-  for (std::pair<std::string, cache::data *> element : *cache::s_cache) {
-    result = result + element.second->value().size();
-  }
+  return s_bytes;
+}
 
-  return result;
+void cache::maxSize(double bytes)
+{
+  std::unique_lock<std::mutex> lck(s_mutex);
+  s_maxBytes = bytes;
+  evict();
+}
+
+double cache::maxSize()
+{
+  std::unique_lock<std::mutex> lck(s_mutex);
+  return s_maxBytes;
 }
 
 std::vector<std::string> cache::keys(const char * pattern)
@@ -125,12 +179,12 @@ std::vector<std::string> cache::keys(const char * pattern)
 
   std::vector<std::string> result;
 
-  for (std::pair<std::string, cache::data *> element : *cache::s_cache) {
-    if ( element.second->isExpires() ) {
+  for (Entry & entry : s_order) {
+    if ( entry.second->isExpires() ) {
       continue;
     }
-    if ( utils::glob::match(element.first, pattern) ) {
-      result.push_back(element.first);
+    if ( utils::glob::match(entry.first, pattern) ) {
+      result.push_back(entry.first);
     }
   }
 
@@ -141,22 +195,19 @@ void cache::gc()
 {
   std::unique_lock<std::mutex> lck(s_mutex);
 
-  std::vector<std::string> list;
-
-  for (std::pair<std::string, cache::data *> element : *cache::s_cache) {
-    if( element.second->isExpires() ) {
-      std::string key = element.first;
-      list.push_back(key);
+  auto it = s_order.begin();
+  while (it != s_order.end()) {
+    if ( it->second->isExpires() ) {
+      s_bytes -= it->second->value().size();
+      delete it->second;
+      s_index.erase(it->first);
+      it = s_order.erase(it);
+    } else {
+      ++it;
     }
   }
 
-  for( long unsigned int i=0; i < list.size(); i++ ) {
-    std::string key = list.at(i);
-    cache::data * data = s_cache->at(key);
-    delete data;
-    s_cache->erase(key);
-  }
-
+  evict();
 }
 
 } // namespace arken
