@@ -80,6 +80,19 @@ if( ARKEN_BARCODE )
       set(zxing-root ${ZXING_ROOT})
     else()
       arken_vendor_root(zxing-root ${ARKEN_BARCODE_BACKEND})
+
+      if(NOT zxing-root AND ARKEN_BARCODE_BACKEND STREQUAL "zxing-legacy")
+        # a legacy install often just sits under a directory named "zxing"
+        # rather than "zxing-legacy" (that's how auto-detection finds it
+        # in the first place). Accept it here too, but only once verified
+        # as the old API, same check as the auto-detect block above.
+        arken_vendor_root(zxing-fallback-root zxing)
+        if(zxing-fallback-root AND (
+             EXISTS "${zxing-fallback-root}/include/MultiFormatWriter.h" OR
+             EXISTS "${zxing-fallback-root}/include/ZXing/MultiFormatWriter.h"))
+          set(zxing-root ${zxing-fallback-root})
+        endif()
+      endif()
     endif()
 
     if(zxing-root)
