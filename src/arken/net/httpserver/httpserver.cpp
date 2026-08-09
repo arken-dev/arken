@@ -61,6 +61,14 @@ void HttpServer::start()
 
 std::string HttpServer::handler(const char * data, size_t size)
 {
+  HttpEnv * env = new HttpEnv(data, size, false);
+  std::string response = HttpServer::handler(env);
+  delete env;
+  return response;
+}
+
+std::string HttpServer::handler(HttpEnv * env)
+{
   int code;
   size_t len;
   const char * result;
@@ -81,7 +89,7 @@ std::string HttpServer::handler(const char * data, size_t size)
   }
 
   auto ptr = static_cast<HttpEnv **>(lua_newuserdata(L, sizeof(HttpEnv*)));
-  *ptr = new HttpEnv(data, size);
+  *ptr = env;
   luaL_getmetatable(L, "arken.net.HttpEnv.metatable");
   lua_setmetatable(L, -2);
 

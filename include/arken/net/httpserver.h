@@ -12,6 +12,8 @@
 namespace arken {
 namespace net {
 
+class HttpEnv;
+
 class HttpServer
 {
   using string = arken::string;
@@ -28,6 +30,8 @@ class HttpServer
 
   static
   std::string handler(const char * data, size_t size);
+  static
+  std::string handler(HttpEnv * env);
   static const char * status(int code);
 
   HttpServer(const char * address, int port);
