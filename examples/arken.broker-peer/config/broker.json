@@ -1,0 +1,31 @@
+{
+  "development": {
+    "self":  "http://127.0.0.1:2346",
+    "peers": [
+      { "url": "http://127.0.0.1:2345", "token": "<%= os.getenv('BROKER_TOKEN_SP01') %>" },
+      { "url": "http://127.0.0.1:2346", "token": "<%= os.getenv('BROKER_TOKEN_RJ01') %>" }
+    ],
+    "default": {
+      "delivery":       "sync",
+      "min_replicas":   1,
+      "retention_days": 3,
+      "timeout_ms":     5000,
+      "retry": { "enabled": false }
+    },
+    "topics": {
+      "wal": {
+        "delivery":       "sync",
+        "min_replicas":   1,
+        "retention_days": 7,
+        "timeout_ms":     5000,
+        "retry": { "enabled": false }
+      },
+      "pedidos": {
+        "delivery":       "async",
+        "retention_days": 3,
+        "timeout_ms":     2000,
+        "retry": { "enabled": true, "attempts": 5, "backoff_ms": 1000 }
+      }
+    }
+  }
+}

@@ -1,0 +1,23 @@
+#!/usr/bin/env arken
+-- Roda catch-up (puxa dos peers o que este nó ainda não tem) e limpeza por
+-- retenção, pra cada tópico/agente conhecido localmente. Pensado pra rodar
+-- periodicamente (cron / arken.concurrent.service).
+local broker = require "arken.broker"
+
+for _, pair in ipairs(broker.list()) do
+  local removed = broker.cleanup(pair.topic, pair.agente)
+  if #removed > 0 then
+    print(string.format("cleanup %s/%s: removeu %d pasta(s) expirada(s)", pair.topic, pair.agente, #removed))
+  end
+
+  for _, peer in ipairs(broker.peers()) do
+    local ok, result = pcall(broker.catchUp, peer, pair.topic, pair.agente)
+    if ok then
+      if result > 0 then
+        print(string.format("catchup %s/%s <- %s: %d mensagem(ns) aplicada(s)", pair.topic, pair.agente, peer.url, result))
+      end
+    else
+      print(string.format("catchup %s/%s <- %s: falhou (%s)", pair.topic, pair.agente, peer.url, tostring(result)))
+    end
+  end
+end

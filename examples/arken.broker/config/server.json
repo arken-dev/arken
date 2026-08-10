@@ -1,0 +1,6 @@
+{
+  "address" : "127.0.0.1",
+  "port"    : 2345,
+  "threads" : 5,
+  "pid"     : "tmp/pid/broker.pid"
+}

@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# Simula o Postgres chamando o archive_command, sem precisar de um Postgres real
+# rodando. Gera um segmento WAL falso (nome no formato real: 24 hex) com
+# conteúdo aleatório e dispara o archive_command contra o broker.
+set -euo pipefail
+
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+TIMELINE="00000001"
+LOGID="000000000000"
+SEGMENT="$(printf '%04X' $((RANDOM % 65535)))"
+WAL_NAME="${TIMELINE}${LOGID}${SEGMENT}"
+
+WAL_DIR="$(mktemp -d)"
+trap 'rm -rf "$WAL_DIR"' EXIT
+WAL_PATH="${WAL_DIR}/${WAL_NAME}"
+
+# 16MB é o tamanho padrão de um segmento WAL real; aqui usamos algo pequeno
+# só pra validar o fluxo ponta a ponta.
+head -c 65536 /dev/urandom > "$WAL_PATH"
+
+export BROKER_AGENTE="${BROKER_AGENTE:-projeto-009765}"
+
+echo "Simulando archive_command para WAL: ${WAL_NAME}"
+"${DIR}/archive_command" "${WAL_NAME}" "${WAL_PATH}"
+echo
+echo "OK. Verifique em: topics/${BROKER_TOPIC:-wal}/${BROKER_AGENTE}/"
