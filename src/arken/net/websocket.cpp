@@ -6,6 +6,7 @@
 // https://datatracker.ietf.org/doc/html/rfc6455#section-5.2
 
 #include <cstring>
+#include <strings.h>
 #include <unistd.h>
 
 #include <arken/net/websocket.h>
@@ -160,8 +161,12 @@ buildCloseFrame(uint16_t code, const std::string & reason)
 bool
 WebSocketParser::isWebSocketUpgrade(HttpEnv * env)
 {
-  return strcmp(env->field("Connection").data(), "Upgrade") == 0 &&
-         strcmp(env->field("Upgrade").data(), "websocket") == 0;
+  // case-insensitive de propósito: valor de header HTTP não diferencia
+  // maiúscula/minúscula (RFC 7230 3.2.6), e proxies reais mandam isso de
+  // jeitos diferentes - a receita padrão do nginx, por exemplo, manda
+  // "Connection: upgrade" (minúsculo)
+  return strcasecmp(env->field("Connection").data(), "Upgrade") == 0 &&
+         strcasecmp(env->field("Upgrade").data(), "websocket") == 0;
 }
 
 std::string
