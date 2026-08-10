@@ -15,7 +15,7 @@ test.afterAll = function()
   _G.cache = nil
 end
 
-test.should_return_table_data = function()
+test.should_return_table_data_when_cookie_has_no_session_id = function()
   local env = {}
   env.field = function()
     return os.read(mvm.path() .. "/tests/lib/arken/net/cookie/1-example.cookie")
@@ -27,15 +27,17 @@ end
 
 test.should_return_table_restore_from_cache = function()
   local request = HttpRequest.new()
-  cache.value = function()
-    return json.encode({ myvalue = '123' })
+  cache.value = function(key)
+    if key == 'uuid-1234' then
+      return json.encode({ myvalue = '123' })
+    end
   end
   local uuid    = os.uuid()
   local cookies = request.cookies
   request.cookies = function(val)
     return { arken_session_id = 'uuid-1234' }
   end
-  request.__session_data = nil
+  request._session_data = nil
   local session = request:session()
 
   assert( type(session) == 'table', type(session) )
@@ -44,6 +46,9 @@ end
 
 test.should_return_table_data = function()
   local request = HttpRequest.new()
+  cache.value = function()
+    return json.encode({})
+  end
   request.cookies = function()
     return { arken_session_id = os.uuid() }
   end
