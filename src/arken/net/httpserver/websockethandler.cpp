@@ -22,7 +22,8 @@ WebSocketHandler::setDispatcher(std::string dispatcher)
 
 WebSocketConnection *
 WebSocketHandler::prepareCall(lua_State * L, int fd, const std::string & sessionId,
-                               const std::string & path, const char * method)
+                               const std::string & path, const std::string & queryString,
+                               const char * method)
 {
   lua_settop(L, 0);
 
@@ -47,7 +48,7 @@ WebSocketHandler::prepareCall(lua_State * L, int fd, const std::string & session
   lua_getfield(L, -1, method);
 
   auto ptr = static_cast<WebSocketConnection **>(lua_newuserdata(L, sizeof(WebSocketConnection*)));
-  *ptr = new WebSocketConnection(fd, sessionId, path);
+  *ptr = new WebSocketConnection(fd, sessionId, path, queryString);
   luaL_getmetatable(L, "arken.net.WebSocketConnection.metatable");
   lua_setmetatable(L, -2);
 
@@ -55,12 +56,13 @@ WebSocketHandler::prepareCall(lua_State * L, int fd, const std::string & session
 }
 
 void
-WebSocketHandler::open(int fd, const std::string & sessionId, const std::string & path)
+WebSocketHandler::open(int fd, const std::string & sessionId, const std::string & path,
+                        const std::string & queryString)
 {
   mvm::instance i = mvm::getInstance();
   lua_State * L = i.state();
 
-  if( prepareCall(L, fd, sessionId, path, "open") == nullptr ) {
+  if( prepareCall(L, fd, sessionId, path, queryString, "open") == nullptr ) {
     return;
   }
 
@@ -71,12 +73,12 @@ WebSocketHandler::open(int fd, const std::string & sessionId, const std::string 
 
 void
 WebSocketHandler::message(int fd, const std::string & sessionId, const std::string & path,
-                           const std::string & payload, bool binary)
+                           const std::string & queryString, const std::string & payload, bool binary)
 {
   mvm::instance i = mvm::getInstance();
   lua_State * L = i.state();
 
-  if( prepareCall(L, fd, sessionId, path, "message") == nullptr ) {
+  if( prepareCall(L, fd, sessionId, path, queryString, "message") == nullptr ) {
     return;
   }
 
@@ -89,12 +91,13 @@ WebSocketHandler::message(int fd, const std::string & sessionId, const std::stri
 }
 
 void
-WebSocketHandler::close(int fd, const std::string & sessionId, const std::string & path)
+WebSocketHandler::close(int fd, const std::string & sessionId, const std::string & path,
+                         const std::string & queryString)
 {
   mvm::instance i = mvm::getInstance();
   lua_State * L = i.state();
 
-  if( prepareCall(L, fd, sessionId, path, "close") == nullptr ) {
+  if( prepareCall(L, fd, sessionId, path, queryString, "close") == nullptr ) {
     return;
   }
 
@@ -105,12 +108,12 @@ WebSocketHandler::close(int fd, const std::string & sessionId, const std::string
 
 void
 WebSocketHandler::error(int fd, const std::string & sessionId, const std::string & path,
-                         const std::string & reason)
+                         const std::string & queryString, const std::string & reason)
 {
   mvm::instance i = mvm::getInstance();
   lua_State * L = i.state();
 
-  if( prepareCall(L, fd, sessionId, path, "error") == nullptr ) {
+  if( prepareCall(L, fd, sessionId, path, queryString, "error") == nullptr ) {
     return;
   }
 

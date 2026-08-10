@@ -79,8 +79,9 @@ struct Connection {
   std::string     input;
   ConnectionType  type = ConnectionType::HTTP;
   WebSocketParser websocket;
-  std::string     sessionId; // só existe depois do handshake (type == WEBSOCKET)
-  std::string     path;      // idem - path do request que fez o upgrade
+  std::string     sessionId;   // só existe depois do handshake (type == WEBSOCKET)
+  std::string     path;        // idem - path do request que fez o upgrade
+  std::string     queryString; // idem - query string do request que fez o upgrade
 
   ev_timer pingTimer;               // idem - só existe depois do handshake
   bool     awaitingPong = false;    // true = já mandamos um ping e ainda não veio pong
@@ -118,7 +119,8 @@ ping_cb(struct ev_loop *loop, struct ev_timer *watcher, int revents)
     // não fecha sozinho - só avisa o app, quem decide o que fazer é o
     // controller (ex: contar quantas vezes seguidas isso aconteceu e
     // decidir remover a pessoa de uma sala depois de N)
-    WebSocketHandler::error(connection->io.fd, connection->sessionId, connection->path, "timeout");
+    WebSocketHandler::error(connection->io.fd, connection->sessionId, connection->path,
+                             connection->queryString, "timeout");
   }
 
   WebSocketRegistry::writeFrame(connection->sessionId, WebSocketParser::buildPing());
@@ -143,7 +145,8 @@ closeConnection(struct ev_loop *loop, Connection * connection)
 {
   if( connection->type == ConnectionType::WEBSOCKET ) {
     ev_timer_stop(loop, &connection->pingTimer);
-    WebSocketHandler::close(connection->io.fd, connection->sessionId, connection->path);
+    WebSocketHandler::close(connection->io.fd, connection->sessionId, connection->path,
+                             connection->queryString);
     WebSocketRegistry::remove(connection->sessionId);
   }
 
@@ -246,9 +249,10 @@ processHttp(struct ev_loop *loop, Connection * connection)
     data.append(acceptKey);
     data.append("\r\n\r\n");
 
-    connection->type      = ConnectionType::WEBSOCKET;
-    connection->sessionId = arken::os::uuid();
-    connection->path      = env->requestPath();
+    connection->type        = ConnectionType::WEBSOCKET;
+    connection->sessionId   = arken::os::uuid();
+    connection->path        = env->requestPath();
+    connection->queryString = env->queryString();
   } else {
     data = HttpServer::handler(env);
   }
@@ -265,7 +269,8 @@ processHttp(struct ev_loop *loop, Connection * connection)
     connection->pingTimer.data = connection;
     ev_timer_start(loop, &connection->pingTimer);
 
-    WebSocketHandler::open(connection->io.fd, connection->sessionId, connection->path);
+    WebSocketHandler::open(connection->io.fd, connection->sessionId, connection->path,
+                            connection->queryString);
   }
 }
 
@@ -284,13 +289,13 @@ processWebSocket(struct ev_loop *loop, Connection * connection)
     auto message = connection->websocket.message();
     bool binary  = message.opcode == arken::net::WebSocketOpcode::Binary;
     WebSocketHandler::message(connection->io.fd, connection->sessionId, connection->path,
-                               message.payload, binary);
+                               connection->queryString, message.payload, binary);
   }
 
   if( connection->websocket.closed() ) {
     if( connection->websocket.closeCode() != 1000 ) {
       WebSocketHandler::error(connection->io.fd, connection->sessionId, connection->path,
-        closeCodeReason(connection->websocket.closeCode()));
+        connection->queryString, closeCodeReason(connection->websocket.closeCode()));
     }
     closeConnection(loop, connection);
   }

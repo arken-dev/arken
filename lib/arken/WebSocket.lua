@@ -5,6 +5,8 @@
 
 local Class = require 'arken.oop.Class'
 local cache = require 'arken.cache'
+local url   = require 'arken.net.url'
+local Room  = require 'arken.net.Room'
 
 local WebSocket = Class.new("WebSocket")
 
@@ -14,6 +16,29 @@ local WebSocket = Class.new("WebSocket")
 
 function WebSocket:connection()
   return self._connection
+end
+
+-------------------------------------------------------------------------------
+-- PARAMS
+-- query string do handshake (ex: ws://host/ws/chat/room?id=abc123 -> { id
+-- = "abc123" }) - disponível em open/message/close/error, não só no open,
+-- porque connection:queryString() vem do Connection do libev-ws (fixo pra
+-- vida da conexão), igual path().
+-------------------------------------------------------------------------------
+
+function WebSocket:params()
+  if self._params == nil then
+    self._params = url.parseQuery(self:connection():queryString())
+  end
+  return self._params
+end
+
+-------------------------------------------------------------------------------
+-- ROOM
+-------------------------------------------------------------------------------
+
+function WebSocket:room(name)
+  return Room.new{ name = name, connection = self:connection() }
 end
 
 -------------------------------------------------------------------------------

@@ -1,50 +1,31 @@
 -- arken.net.WebSocket example: sala de chat completa.
 --
--- Path: ws://127.0.0.1:8090/ws/chat/room
+-- Path: ws://127.0.0.1:8090/ws/chat/room?id=<nome-da-sala>
 -- (o path com barra vira namespace: "chat/room" -> Chat.RoomWebSocket,
--- ver lib/arken/net/websocketDispatcher.lua)
+-- ver lib/arken/net/websocketDispatcher.lua - o "?id=..." não entra nessa
+-- conta, é query string, resolvida à parte por self:params())
 --
 -- Mostra as peças que um chat de verdade precisa:
---   - lista de quem está na sala (arken.cache, compartilhado entre threads
---     e mensagens - não dá pra guardar isso numa variável Lua comum)
+--   - qual sala: self:params().id, vindo da query string do handshake
+--     (self:connection():queryString(), parseada por WebSocket:params())
+--   - lista de quem está na sala (arken.net.Room, sobre arken.cache -
+--     compartilhado entre threads e mensagens, uma chave por membro em
+--     vez de uma lista JSON única lida/regravada inteira)
 --   - broadcast: mandar mensagem pra conexões diferentes da que está
---     processando o evento atual (WebSocketConnection.send(sessionId, ...))
+--     processando o evento atual (self:room():broadcast() não ecoa pra
+--     quem mandou por padrão)
 --   - sessão por conexão (self:session(), persiste entre mensagens)
 --   - rescue(): o app decide o que fazer com timeout de ping/erro de
 --     protocolo, não o framework - aqui, 3 timeouts seguidos = kick
 
-local WebSocketConnection = require 'arken.net.WebSocketConnection'
-local cache               = require 'arken.cache'
-
 local RoomWebSocket = Class.new("RoomWebSocket", "WebSocket")
 
--- chave fixa porque esse exemplo só tem uma sala. Uma aplicação com
--- várias salas usaria uma chave por sala (ex: "chat_room_" .. roomId).
-local ROOM_KEY = "example_chat_room_members"
+-- nome default pra quem conectar sem "?id=..." (ex: abrindo a URL crua).
+-- Uma aplicação de verdade decidiria se isso devia ser permitido ou não.
+local DEFAULT_ROOM_NAME = "example_chat_room"
 
-local function members()
-  return cache.value(ROOM_KEY) or {}
-end
-
--- expires em segundos - sem isso, arken.cache expira a entrada em 60s por
--- padrão (ver src/arken/cache.cpp), e como essa lista só é regravada em
--- open()/close() (nunca em message()), uma sala parada por 60s+ sem
--- ninguém entrar/sair perdia a lista de membros e o broadcast passava a
--- não mandar mensagem pra ninguém, silenciosamente.
-local MEMBERS_TTL = 86400
-
-local function saveMembers(list)
-  cache.insert(ROOM_KEY, list, MEMBERS_TTL)
-end
-
--------------------------------------------------------------------------------
--- BROADCAST
--------------------------------------------------------------------------------
-
-function RoomWebSocket:broadcast(text)
-  for _, sessionId in ipairs(members()) do
-    WebSocketConnection.send(sessionId, text)
-  end
+function RoomWebSocket:room()
+  return self:super("room", self:params().id or DEFAULT_ROOM_NAME)
 end
 
 -------------------------------------------------------------------------------
@@ -52,31 +33,25 @@ end
 -------------------------------------------------------------------------------
 
 function RoomWebSocket:open()
-  local list = members()
-  table.insert(list, self:connection():sessionId())
-  saveMembers(list)
-
-  self:broadcast(self:connection():sessionId() .. " entrou na sala")
+  local room = self:room()
+  room:add()
+  -- includeSelf = true: quem entrou também vê o próprio aviso de entrada
+  room:broadcast(self:connection():sessionId() .. " entrou na sala", false, true)
 end
 
 function RoomWebSocket:message(payload, binary)
   local time = Time.now():toString()
   local session_id = self:connection():sessionId()
   local message = string.format("%s#%s: %s", session_id, time, payload)
-  self:broadcast( message )
+  -- broadcast exclui o remetente por padrão - quem manda já sabe o que
+  -- escreveu, o cliente faz o eco local se quiser mostrar na hora
+  self:room():broadcast(message)
 end
 
 function RoomWebSocket:close()
-  local list = members()
-  for i, sessionId in ipairs(list) do
-    if sessionId == self:connection():sessionId() then
-      table.remove(list, i)
-      break
-    end
-  end
-  saveMembers(list)
-
-  self:broadcast(self:connection():sessionId() .. " saiu da sala")
+  local room = self:room()
+  room:leave()
+  room:broadcast(self:connection():sessionId() .. " saiu da sala", false, true)
 end
 
 -------------------------------------------------------------------------------

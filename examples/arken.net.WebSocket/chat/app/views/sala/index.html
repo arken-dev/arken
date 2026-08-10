@@ -71,7 +71,7 @@
   }
 
   var protocolo = (location.protocol === 'https:') ? 'wss:' : 'ws:';
-  var ws = new WebSocket(protocolo + '//' + location.host + '/ws/chat/room');
+  var ws = new WebSocket(protocolo + '//' + location.host + '/ws/chat/room?id=aqui');
 
   ws.onopen = function () {
     status.textContent = 'conectado';
@@ -102,6 +102,12 @@
     var texto = input.value.trim();
     if (texto === '') return;
     ws.send(texto);
+    // eco local: o broadcast do servidor não manda a mensagem de volta
+    // pra quem escreveu (ver RoomWebSocket:message) - sem isso a
+    // conversa ficaria incompleta pra quem está digitando. "você" em vez
+    // de repetir o formato sessionId#tempo porque o cliente não sabe o
+    // próprio sessionId nem quer esperar o servidor pra ter o timestamp.
+    adicionarLinha('você: ' + texto);
     input.value = '';
   });
 })();

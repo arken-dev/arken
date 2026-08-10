@@ -92,11 +92,13 @@ class WebSocketParser {
 
 // Representa a conexão do ponto de vista de quem quer mandar uma mensagem
 // pra ela (tipicamente exposto pro Lua). Carrega fd (send), sessionId
-// (chave estável pro app persistir estado, ex: em arken.cache) e path (o
-// path do handshake, pra resolver roteamento) - não sabe nada de Lua.
+// (chave estável pro app persistir estado, ex: em arken.cache), path (o
+// path do handshake, pra resolver roteamento) e queryString (o "?..." do
+// handshake, ex: id da sala - não sabe nada de Lua.
 class WebSocketConnection {
   public:
-  WebSocketConnection(int fd, const std::string & sessionId, const std::string & path);
+  WebSocketConnection(int fd, const std::string & sessionId, const std::string & path,
+                       const std::string & queryString);
   void send(const std::string & payload, bool binary = false);
 
   // manda um frame de close pro cliente - encerramento "educado" (RFC
@@ -108,11 +110,13 @@ class WebSocketConnection {
 
   const std::string & sessionId();
   const std::string & path();
+  const std::string & queryString();
 
   private:
   int         m_fd;
   std::string m_sessionId;
   std::string m_path;
+  std::string m_queryString;
 };
 
 // Registro de conexões WebSocket vivas, indexado por sessionId - permite
@@ -167,12 +171,14 @@ class WebSocketHandler {
   public:
   static void setDispatcher(std::string dispatcher);
 
-  static void open(int fd, const std::string & sessionId, const std::string & path);
+  static void open(int fd, const std::string & sessionId, const std::string & path,
+                    const std::string & queryString);
   static void message(int fd, const std::string & sessionId, const std::string & path,
-                       const std::string & payload, bool binary);
-  static void close(int fd, const std::string & sessionId, const std::string & path);
+                       const std::string & queryString, const std::string & payload, bool binary);
+  static void close(int fd, const std::string & sessionId, const std::string & path,
+                     const std::string & queryString);
   static void error(int fd, const std::string & sessionId, const std::string & path,
-                     const std::string & reason);
+                     const std::string & queryString, const std::string & reason);
 
   private:
   static std::string dispatcher;
@@ -182,7 +188,8 @@ class WebSocketHandler {
   // lua_pcall. Devolve nullptr (e já limpa a stack) se algo falhar antes
   // de chegar nesse ponto.
   static WebSocketConnection * prepareCall(lua_State * L, int fd, const std::string & sessionId,
-                                            const std::string & path, const char * method);
+                                            const std::string & path, const std::string & queryString,
+                                            const char * method);
 };
 
 } // namespace net

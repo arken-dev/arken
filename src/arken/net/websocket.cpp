@@ -410,8 +410,9 @@ WebSocketParser::consumePong()
   return result;
 }
 
-WebSocketConnection::WebSocketConnection(int fd, const std::string & sessionId, const std::string & path)
-  : m_fd(fd), m_sessionId(sessionId), m_path(path)
+WebSocketConnection::WebSocketConnection(int fd, const std::string & sessionId, const std::string & path,
+                                          const std::string & queryString)
+  : m_fd(fd), m_sessionId(sessionId), m_path(path), m_queryString(queryString)
 {
 }
 
@@ -425,6 +426,12 @@ const std::string &
 WebSocketConnection::path()
 {
   return m_path;
+}
+
+const std::string &
+WebSocketConnection::queryString()
+{
+  return m_queryString;
 }
 
 void
