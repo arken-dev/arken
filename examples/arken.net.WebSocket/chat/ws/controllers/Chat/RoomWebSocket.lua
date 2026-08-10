@@ -13,9 +13,8 @@
 --   - rescue(): o app decide o que fazer com timeout de ping/erro de
 --     protocolo, não o framework - aqui, 3 timeouts seguidos = kick
 
-local WebSocket           = require 'arken.WebSocket'
 local WebSocketConnection = require 'arken.net.WebSocketConnection'
-local cache                = require 'arken.cache'
+local cache               = require 'arken.cache'
 
 local RoomWebSocket = Class.new("RoomWebSocket", "WebSocket")
 
@@ -27,8 +26,15 @@ local function members()
   return cache.value(ROOM_KEY) or {}
 end
 
+-- expires em segundos - sem isso, arken.cache expira a entrada em 60s por
+-- padrão (ver src/arken/cache.cpp), e como essa lista só é regravada em
+-- open()/close() (nunca em message()), uma sala parada por 60s+ sem
+-- ninguém entrar/sair perdia a lista de membros e o broadcast passava a
+-- não mandar mensagem pra ninguém, silenciosamente.
+local MEMBERS_TTL = 86400
+
 local function saveMembers(list)
-  cache.insert(ROOM_KEY, list)
+  cache.insert(ROOM_KEY, list, MEMBERS_TTL)
 end
 
 -------------------------------------------------------------------------------
