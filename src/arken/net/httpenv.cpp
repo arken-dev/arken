@@ -69,11 +69,12 @@ on_query_string_cb(void *data, const char *value, size_t len)
   p->setQueryString(value, len);
 }
 
-HttpEnv::HttpEnv(const char * data, size_t len)
+HttpEnv::HttpEnv(const char * data, size_t len, bool owned)
 {
 
-  m_data = data;
-  m_len  = len;
+  m_data     = data;
+  m_len      = len;
+  m_luaOwned = owned;
 
   std::unique_ptr<http_parser> parser(new http_parser);
   http_parser_init(parser.get());
@@ -184,6 +185,11 @@ const char * HttpEnv::data()
 size_t HttpEnv::len()
 {
   return m_len;
+}
+
+bool HttpEnv::luaOwned()
+{
+  return m_luaOwned;
 }
 
 } // namespace net

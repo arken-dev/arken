@@ -12,6 +12,8 @@
 namespace arken {
 namespace net {
 
+class HttpEnv;
+
 class HttpServer
 {
   using string = arken::string;
@@ -28,12 +30,16 @@ class HttpServer
 
   static
   std::string handler(const char * data, size_t size);
+  static
+  std::string handler(HttpEnv * env);
   static const char * status(int code);
+  static bool headerTooLarge(size_t size);
 
   HttpServer(const char * address, int port);
   void setThreads(int threads);
   void setPid(const char * pid);
   void setDispatcher(string dispatcher);
+  void setWebSocketDispatcher(string dispatcher);
   void addService(string service);
   void start();
 

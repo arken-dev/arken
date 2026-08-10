@@ -195,7 +195,9 @@ arken_net_HttpEnv_headerDone( lua_State *L ) {
 static int
 arken_net_HttpEnv_gc( lua_State *L ) {
   HttpEnv *udata = checkHttpEnv( L );
-  delete udata;
+  if( udata->luaOwned() ) {
+    delete udata;
+  }
   return 0;
 }
 

@@ -83,6 +83,14 @@ arken_net_HttpServer_setDispatcher( lua_State *L ) {
 }
 
 static int
+arken_net_HttpServer_setWebSocketDispatcher( lua_State *L ) {
+  HttpServer * udata  = checkHttpServer( L );
+  const char * dispatcher = luaL_checkstring(L, 2);
+  udata->setWebSocketDispatcher(dispatcher);
+  return 0;
+}
+
+static int
 arken_net_HttpServer_addService( lua_State *L ) {
   HttpServer * udata  = checkHttpServer( L );
   const char * service = luaL_checkstring(L, 2);
@@ -103,6 +111,7 @@ luaL_reg arken_net_HttpServer_metatable[] = {
   {"setThreads",    arken_net_HttpServer_setThreads},
   {"setPid",        arken_net_HttpServer_setPid},
   {"setDispatcher", arken_net_HttpServer_setDispatcher},
+  {"setWebSocketDispatcher", arken_net_HttpServer_setWebSocketDispatcher},
   {"addService",    arken_net_HttpServer_addService},
   {"__gc",          arken_net_HttpServer_gc},
   {nullptr, nullptr}

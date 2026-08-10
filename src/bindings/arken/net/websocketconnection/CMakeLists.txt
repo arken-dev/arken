@@ -8,12 +8,9 @@
 #
 # ------------------------------------------------------------------------------
 
-set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/clib/arken/net)
+add_library(
+  arken.net.WebSocketConnection SHARED websocketconnection.cpp
+)
 
-add_subdirectory(httpbody)
-add_subdirectory(httpclient)
-add_subdirectory(httpenv)
-add_subdirectory(httpserver)
-add_subdirectory(httpserver/default)
-add_subdirectory(smtp)
-add_subdirectory(websocketconnection)
+set_target_properties(arken.net.WebSocketConnection PROPERTIES PREFIX "" OUTPUT_NAME WebSocketConnection)
+target_link_libraries(arken.net.WebSocketConnection arken)
