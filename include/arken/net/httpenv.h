@@ -21,6 +21,7 @@ class HttpEnv
   const
   char * m_data;
   size_t m_len;
+  bool   m_luaOwned;
   string m_fragment;
   string m_requestPath;
   string m_queryString;
@@ -30,8 +31,10 @@ class HttpEnv
   string m_headerDone;
 
   public:
-  HttpEnv(const char * data, size_t len);
+  HttpEnv(const char * data, size_t len, bool owned = true);
   ~HttpEnv();
+
+  bool luaOwned();
 
   void  setField(string fragment, string value);
   void  setFragment(const char *at, size_t len);

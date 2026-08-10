@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Sala de chat - exemplo arken.net.WebSocket</title>
+<style>
+  body {
+    font-family: sans-serif;
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 0 16px;
+  }
+  #log {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    height: 320px;
+    overflow-y: auto;
+    padding: 8px 12px;
+    background: #fafafa;
+  }
+  #log p {
+    margin: 4px 0;
+  }
+  #log p.sistema {
+    color: #888;
+    font-style: italic;
+  }
+  #status {
+    font-size: 0.9em;
+    margin-bottom: 8px;
+  }
+  #status.aberto   { color: green; }
+  #status.fechado  { color: red; }
+  form {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  #mensagem {
+    flex: 1;
+    padding: 6px 8px;
+  }
+</style>
+</head>
+<body>
+
+<h1>Sala de chat</h1>
+<p id="status" class="fechado">conectando...</p>
+
+<div id="log"></div>
+
+<form id="form">
+  <input id="mensagem" type="text" placeholder="digite uma mensagem" autocomplete="off" disabled>
+  <button type="submit" disabled>enviar</button>
+</form>
+
+<script>
+(function () {
+  var log       = document.getElementById('log');
+  var status    = document.getElementById('status');
+  var form      = document.getElementById('form');
+  var input     = document.getElementById('mensagem');
+  var botao     = form.querySelector('button');
+
+  function adicionarLinha(texto, classe) {
+    var p = document.createElement('p');
+    if (classe) p.className = classe;
+    p.textContent = texto;
+    log.appendChild(p);
+    log.scrollTop = log.scrollHeight;
+  }
+
+  var protocolo = (location.protocol === 'https:') ? 'wss:' : 'ws:';
+  var ws = new WebSocket(protocolo + '//' + location.host + '/ws/chat/room');
+
+  ws.onopen = function () {
+    status.textContent = 'conectado';
+    status.className   = 'aberto';
+    input.disabled  = false;
+    botao.disabled  = false;
+    input.focus();
+  };
+
+  ws.onmessage = function (event) {
+    adicionarLinha(event.data);
+  };
+
+  ws.onclose = function () {
+    status.textContent = 'desconectado';
+    status.className   = 'fechado';
+    input.disabled  = true;
+    botao.disabled  = true;
+    adicionarLinha('conexão encerrada', 'sistema');
+  };
+
+  ws.onerror = function () {
+    adicionarLinha('erro na conexão', 'sistema');
+  };
+
+  form.addEventListener('submit', function (event) {
+    event.preventDefault();
+    var texto = input.value.trim();
+    if (texto === '') return;
+    ws.send(texto);
+    input.value = '';
+  });
+})();
+</script>
+
+</body>
+</html>

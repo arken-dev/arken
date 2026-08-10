@@ -11,6 +11,7 @@
 #include <arken/net/httpserver.h>
 #include <arken/net/httpbody.h>
 #include <arken/net/httpenv.h>
+#include <arken/net/websocket.h>
 #include <arken/concurrent/service.h>
 
 using service = arken::concurrent::service;
@@ -42,6 +43,11 @@ void HttpServer::setDispatcher(string dispatcher)
   HttpServer::dispatcher = dispatcher;
 }
 
+void HttpServer::setWebSocketDispatcher(string dispatcher)
+{
+  WebSocketHandler::setDispatcher(dispatcher.data());
+}
+
 void HttpServer::addService(string service)
 {
   std::cout << "add service " << service << std::endl;
@@ -60,6 +66,14 @@ void HttpServer::start()
 }
 
 std::string HttpServer::handler(const char * data, size_t size)
+{
+  HttpEnv * env = new HttpEnv(data, size, false);
+  std::string response = HttpServer::handler(env);
+  delete env;
+  return response;
+}
+
+std::string HttpServer::handler(HttpEnv * env)
 {
   int code;
   size_t len;
@@ -81,7 +95,7 @@ std::string HttpServer::handler(const char * data, size_t size)
   }
 
   auto ptr = static_cast<HttpEnv **>(lua_newuserdata(L, sizeof(HttpEnv*)));
-  *ptr = new HttpEnv(data, size);
+  *ptr = env;
   luaL_getmetatable(L, "arken.net.HttpEnv.metatable");
   lua_setmetatable(L, -2);
 
@@ -215,6 +229,20 @@ const char * HttpServer::status(int code)
   };
 
   return list[code];
+}
+
+// tamanho máximo aceito pro buffer enquanto espera os headers HTTP
+// completarem (\r\n\r\n) - sem isso, um cliente que nunca manda o fim dos
+// headers faz esse buffer crescer sem limite. 8KB é o default comum de
+// nginx/Apache pra tamanho de headers. Mora aqui (não em cada backend)
+// porque todo backend (libev, libev-ws, futuros libevent-ws/epoll-ws)
+// compila através desse mesmo arquivo, independente de qual for
+// escolhido - a lógica não pode ficar presa num run.cpp específico.
+static const size_t MAX_HTTP_HEADER_SIZE = 8192;
+
+bool HttpServer::headerTooLarge(size_t size)
+{
+  return size > MAX_HTTP_HEADER_SIZE;
 }
 
 } // namespace net

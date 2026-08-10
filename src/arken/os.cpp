@@ -15,6 +15,7 @@
 #include <arken/net/HttpClient>
 #include <arken/digest/md5.h>
 #include <arken/digest/sha1.h>
+#include <arken/utils/glob.h>
 #include <regex>
 #include <filesystem>
 #include <unistd.h>
@@ -112,93 +113,6 @@ std::vector<std::string> glob_split(const std::string& pattern) {
   return segments;
 }
 
-bool glob_has_wildcard(const std::string& segment) {
-  return segment.find_first_of("*?[") != std::string::npos;
-}
-
-// Casa um caractere contra uma classe "[...]" do padrão (colchetes já
-// localizados pelo chamador). Suporta faixas ("a-z") e negação ("[^...]"),
-// nos mesmos moldes de uma classe de caracteres de regex.
-bool glob_match_class(const std::string& pattern, size_t start, size_t end, char c) {
-  bool negate = false;
-  size_t i = start;
-
-  if (i < end && pattern[i] == '^') {
-    negate = true;
-    ++i;
-  }
-
-  bool matched = false;
-  while (i < end) {
-    if (i + 2 < end && pattern[i + 1] == '-') {
-      if (c >= pattern[i] && c <= pattern[i + 2]) {
-        matched = true;
-      }
-      i += 3;
-    } else {
-      if (pattern[i] == c) {
-        matched = true;
-      }
-      ++i;
-    }
-  }
-
-  return negate ? !matched : matched;
-}
-
-// Casa "name" contra um único componente do glob (nunca contém "/"),
-// comparando caractere a caractere em vez de compilar/rodar uma regex —
-// backtracking guloso clássico de wildcard matching, sem alocações.
-bool glob_match_segment(const std::string& name, const std::string& pattern) {
-  size_t n = 0, p = 0;
-  size_t star_p = std::string::npos, star_n = 0;
-
-  while (n < name.size()) {
-    if (p < pattern.size() && pattern[p] == '?') {
-      ++n; ++p;
-      continue;
-    }
-
-    if (p < pattern.size() && pattern[p] == '*') {
-      star_p = p++;
-      star_n = n;
-      continue;
-    }
-
-    if (p < pattern.size() && pattern[p] == '[') {
-      size_t close = pattern.find(']', p + 1);
-      if (close != std::string::npos) {
-        if (glob_match_class(pattern, p + 1, close, name[n])) {
-          ++n;
-          p = close + 1;
-          continue;
-        }
-      } else if (pattern[p] == name[n]) {
-        // "[" sem "]" correspondente é tratado como caractere literal.
-        ++n; ++p;
-        continue;
-      }
-    } else if (p < pattern.size() && pattern[p] == name[n]) {
-      ++n; ++p;
-      continue;
-    }
-
-    if (star_p != std::string::npos) {
-      p = star_p + 1;
-      n = ++star_n;
-      continue;
-    }
-
-    return false;
-  }
-
-  while (p < pattern.size() && pattern[p] == '*') {
-    ++p;
-  }
-
-  return p == pattern.size();
-}
-
 // Casa recursivamente os componentes do padrão a partir de "base", um nível
 // de diretório por vez. "**" é tratado à parte pois pode representar zero ou
 // mais níveis de diretório, diferente de "*" que representa exatamente um.
@@ -237,7 +151,7 @@ void glob_collect(const fs::path& base, const std::vector<std::string>& segments
 
     if (next_idx < segments.size()) {
       const std::string& seg = segments[next_idx];
-      if (!seg.empty() && seg != "**" && glob_has_wildcard(seg)) {
+      if (!seg.empty() && seg != "**" && utils::glob::hasWildcard(seg)) {
         next_segment = &seg;
         next_last = (next_idx + 1 == segments.size());
       }
@@ -257,7 +171,7 @@ void glob_collect(const fs::path& base, const std::vector<std::string>& segments
       fs::path fname = entry.path().filename();
       bool is_dir = entry.is_directory();
 
-      if (next_segment != nullptr && glob_match_segment(fname.native(), *next_segment)) {
+      if (next_segment != nullptr && utils::glob::match(fname.native(), *next_segment)) {
         // "**" casando com zero diretórios aqui: este entry é o próximo
         // componente do padrão.
         fs::path matched = base / fname;
@@ -291,7 +205,7 @@ void glob_collect(const fs::path& base, const std::vector<std::string>& segments
   fs::path dir = base.empty() ? fs::path(".") : base;
   bool last = (idx + 1 == segments.size());
 
-  if (!glob_has_wildcard(segment)) {
+  if (!utils::glob::hasWildcard(segment)) {
     fs::path next = base / segment;
     if (last) {
       if (fs::exists(next, ec)) {
@@ -311,7 +225,7 @@ void glob_collect(const fs::path& base, const std::vector<std::string>& segments
   for (auto& entry : fs::directory_iterator(dir, ec)) {
     fs::path fname = entry.path().filename();
 
-    if (!glob_match_segment(fname.native(), segment)) {
+    if (!utils::glob::match(fname.native(), segment)) {
       continue;
     }
 

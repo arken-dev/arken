@@ -13,7 +13,14 @@ add_library(
   httpserver.cpp
   ${httpserver}
   ${PROJECT_SOURCE_DIR}/src/arken/net/httpserver/httpserver.cpp
+  ${PROJECT_SOURCE_DIR}/src/arken/net/httpserver/websockethandler.cpp
 )
 
 set_target_properties(arken.net.HttpServer PROPERTIES PREFIX "" OUTPUT_NAME HttpServer)
 target_link_libraries(arken.net.HttpServer arken)
+
+if(ARKEN_NET_HTTPSERVER STREQUAL "libev" OR ARKEN_NET_HTTPSERVER STREQUAL "libev-ws")
+  target_link_libraries(arken.net.HttpServer ev)
+elseif(ARKEN_NET_HTTPSERVER STREQUAL "libevent")
+  target_link_libraries(arken.net.HttpServer event)
+endif()
