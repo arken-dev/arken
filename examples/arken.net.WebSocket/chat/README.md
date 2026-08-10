@@ -54,3 +54,20 @@ websocat ws://127.0.0.1:8090/ws/chat/room
 
 Abra `ws/chat/room` em duas abas/terminais diferentes pra ver o broadcast
 funcionando entre as duas conexões.
+
+## Página HTML (`/sala`)
+
+`http://127.0.0.1:8090/sala` é um controller HTTP normal (não WebSocket) —
+ver `app/controllers/SalaController.lua` e `app/views/sala/index.html` —
+que serve uma página com um chat funcional em HTML/JS puro, sem nenhuma
+lib externa: o JavaScript da própria página abre a conexão
+(`new WebSocket(...)`) com `ws://127.0.0.1:8090/ws/chat/room`, mostra as
+mensagens recebidas em tela e manda o que for digitado no formulário.
+
+Diferente do roteamento WebSocket (automático por convenção de path),
+o roteamento HTTP normal precisa ser ligado explicitamente - ver
+`server:setDispatcher("lib.dispatcher")` em `script/server` e
+`lib/dispatcher.lua`.
+
+Abra `http://127.0.0.1:8090/sala` em duas abas do navegador pra ver o
+broadcast acontecendo entre elas.

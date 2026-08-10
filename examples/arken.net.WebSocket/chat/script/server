@@ -11,10 +11,14 @@
 --   cd examples/arken.net.WebSocket/chat
 --   arken script/server
 --
--- Endpoints disponíveis (roteados pelo path do handshake, ver
+-- Endpoints WebSocket disponíveis (roteados pelo path do handshake, ver
 -- lib/arken/net/websocketDispatcher.lua):
 --   ws://127.0.0.1:8090/ws/echo        -> ws/controllers/EchoWebSocket.lua
 --   ws://127.0.0.1:8090/ws/chat/room   -> ws/controllers/Chat/RoomWebSocket.lua
+--
+-- Endpoint HTTP normal (página que abre a conexão WebSocket via JS, ver
+-- app/views/sala/index.html):
+--   http://127.0.0.1:8090/sala         -> app/controllers/SalaController.lua
 
 local json = require('arken.json')
 
@@ -29,5 +33,10 @@ server:setPid(config.pid)
 -- padrão de fábrica (arken.net.websocketDispatcher) já resolve o path
 -- pra classe do controller sozinho, não precisa de configuração pra
 -- esse caso de uso simples.
+
+-- Diferente do WebSocket, o roteamento HTTP normal não é automático -
+-- precisa apontar explicitamente pro dispatcher baseado em convenção
+-- (path /prefixo/controller/action -> prefixo.controllers.ControllerAction).
+server:setDispatcher("lib.dispatcher")
 
 server:start()
