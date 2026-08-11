@@ -1,5 +1,5 @@
 #!/usr/bin/env arken
--- arken.net.WebSocket example server
+-- arken.net.WebSocket example server - echo
 --
 -- Pré-requisito: esse exemplo só funciona num build com suporte a
 -- WebSocket (backend "libev-ws"). Configure o CMake com:
@@ -8,18 +8,19 @@
 -- de WebSocket)
 --
 -- Como rodar (a partir da raiz do repositório):
---   cd examples/arken.net.WebSocket/chat
+--   cd examples/arken.net.WebSocket/echo
 --   arken script/server
 --
 -- Endpoint WebSocket disponível (roteado pelo path do handshake, ver
 -- lib/arken/net/websocketDispatcher.lua):
---   ws://127.0.0.1:8090/ws/chat/room   -> ws/controllers/Chat/RoomWebSocket.lua
---
--- (o exemplo de echo simples mudou pra examples/arken.net.WebSocket/echo)
+--   ws://127.0.0.1:8091/ws/echo   -> ws/controllers/EchoWebSocket.lua
 --
 -- Endpoint HTTP normal (página que abre a conexão WebSocket via JS, ver
 -- app/views/index/index.html):
---   http://127.0.0.1:8090/             -> app/controllers/IndexController.lua
+--   http://127.0.0.1:8091/       -> app/controllers/IndexController.lua
+--
+-- Porta diferente da do exemplo "chat" (8090) de propósito, pra dar pra
+-- rodar os dois exemplos ao mesmo tempo sem conflito.
 
 local json = require('arken.json')
 

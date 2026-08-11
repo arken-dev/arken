@@ -239,6 +239,23 @@ processHttp(struct ev_loop *loop, Connection * connection)
   bool isUpgrade = WebSocketParser::isWebSocketUpgrade(env);
 
   if( isUpgrade ) {
+    std::string sessionId, path, queryString;
+    sessionId   = arken::os::uuid();
+    path        = env->requestPath();
+    queryString = env->queryString();
+
+    std::string handshakeReject = WebSocketHandler::handshake(connection->io.fd, sessionId, path, queryString);
+
+    if( ! handshakeReject.empty() ) {
+      delete env;
+      connection->input.clear();
+
+      writeAll(connection->io.fd, handshakeReject.data(), handshakeReject.size());
+
+      closeConnection(loop, connection);
+      return;
+    }
+
     std::string acceptKey = WebSocketParser::acceptKey(env->field("Sec-WebSocket-Key").data());
 
     data.append(HttpServer::status(101));
@@ -250,9 +267,9 @@ processHttp(struct ev_loop *loop, Connection * connection)
     data.append("\r\n\r\n");
 
     connection->type        = ConnectionType::WEBSOCKET;
-    connection->sessionId   = arken::os::uuid();
-    connection->path        = env->requestPath();
-    connection->queryString = env->queryString();
+    connection->sessionId   = sessionId;
+    connection->path        = path;
+    connection->queryString = queryString;
   } else {
     data = HttpServer::handler(env);
   }
@@ -269,8 +286,12 @@ processHttp(struct ev_loop *loop, Connection * connection)
     connection->pingTimer.data = connection;
     ev_timer_start(loop, &connection->pingTimer);
 
-    WebSocketHandler::open(connection->io.fd, connection->sessionId, connection->path,
-                            connection->queryString);
+    if( ! WebSocketHandler::open(connection->io.fd, connection->sessionId, connection->path,
+                                  connection->queryString) ) {
+      WebSocketRegistry::writeFrame(connection->sessionId, WebSocketParser::buildClose(1011, "internal error"));
+      closeConnection(loop, connection);
+      return;
+    }
   }
 }
 
@@ -288,8 +309,12 @@ processWebSocket(struct ev_loop *loop, Connection * connection)
   while( connection->websocket.hasMessage() ) {
     auto message = connection->websocket.message();
     bool binary  = message.opcode == arken::net::WebSocketOpcode::Binary;
-    WebSocketHandler::message(connection->io.fd, connection->sessionId, connection->path,
-                               connection->queryString, message.payload, binary);
+    if( ! WebSocketHandler::message(connection->io.fd, connection->sessionId, connection->path,
+                                     connection->queryString, message.payload, binary) ) {
+      WebSocketRegistry::writeFrame(connection->sessionId, WebSocketParser::buildClose(1011, "internal error"));
+      closeConnection(loop, connection);
+      return;
+    }
   }
 
   if( connection->websocket.closed() ) {

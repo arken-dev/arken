@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Echo - exemplo arken.net.WebSocket</title>
+<style>
+  body {
+    font-family: sans-serif;
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 0 16px;
+  }
+  #log {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    height: 200px;
+    overflow-y: auto;
+    padding: 8px 12px;
+    background: #fafafa;
+  }
+  #log p {
+    margin: 4px 0;
+  }
+  #log p.sistema {
+    color: #888;
+    font-style: italic;
+  }
+  #log p.echo .info {
+    color: #888;
+    font-size: 0.85em;
+  }
+  #status {
+    font-size: 0.9em;
+    margin-bottom: 8px;
+  }
+  #status.aberto   { color: green; }
+  #status.fechado  { color: red; }
+  form {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  #mensagem {
+    flex: 1;
+    padding: 6px 8px;
+  }
+</style>
+</head>
+<body>
+
+<h1>Echo</h1>
+<p>Digite um texto e mande - a resposta que volta veio de verdade do
+servidor (não é o navegador repetindo sozinho): o servidor devolve junto
+o <code>sessionId</code> da conexão e um horário calculado do lado dele,
+informação que o cliente não tem como inventar.</p>
+<p id="status" class="fechado">conectando...</p>
+
+<div id="log"></div>
+
+<form id="form">
+  <input id="mensagem" type="text" placeholder="digite um texto" autocomplete="off" disabled>
+  <button type="submit" disabled>enviar</button>
+</form>
+
+<script>
+(function () {
+  var log       = document.getElementById('log');
+  var status    = document.getElementById('status');
+  var form      = document.getElementById('form');
+  var input     = document.getElementById('mensagem');
+  var botao     = form.querySelector('button');
+
+  function adicionarLinha(texto, classe) {
+    var p = document.createElement('p');
+    if (classe) p.className = classe;
+    p.textContent = texto;
+    log.appendChild(p);
+    log.scrollTop = log.scrollHeight;
+  }
+
+  // monta o prefixo "[sessionId=... · 14:32:07]" só com o que realmente
+  // veio no JSON - se o servidor não mandar um desses campos (ou mandar
+  // uma mensagem que não é nem JSON), a linha ainda aparece, só sem essa
+  // parte, em vez de quebrar
+  function prefixoInfo(data) {
+    var partes = [];
+    if (data.sessionId) partes.push('sessionId=' + data.sessionId);
+    if (data.timestamp) partes.push(data.timestamp);
+    return partes.length ? '[' + partes.join(' · ') + '] ' : '';
+  }
+
+  var protocolo = (location.protocol === 'https:') ? 'wss:' : 'ws:';
+  var ws = new WebSocket(protocolo + '//' + location.host + '/ws/echo');
+
+  ws.onopen = function () {
+    status.textContent = 'conectado';
+    status.className   = 'aberto';
+    input.disabled  = false;
+    botao.disabled  = false;
+    input.focus();
+  };
+
+  ws.onmessage = function (event) {
+    var data;
+    try {
+      data = JSON.parse(event.data);
+    } catch (e) {
+      // não veio como JSON (ex: frame binário) - mostra cru mesmo assim
+      adicionarLinha(event.data, 'echo');
+      return;
+    }
+
+    var prefixo = prefixoInfo(data);
+
+    if (data.event === 'open') {
+      adicionarLinha(prefixo + 'conectado ao servidor', 'sistema');
+    } else {
+      adicionarLinha(prefixo + (data.payload !== undefined ? data.payload : ''), 'echo');
+    }
+  };
+
+  ws.onclose = function () {
+    status.textContent = 'desconectado';
+    status.className   = 'fechado';
+    input.disabled  = true;
+    botao.disabled  = true;
+    adicionarLinha('conexão encerrada', 'sistema');
+  };
+
+  ws.onerror = function () {
+    adicionarLinha('erro na conexão', 'sistema');
+  };
+
+  form.addEventListener('submit', function (event) {
+    event.preventDefault();
+    var texto = input.value.trim();
+    if (texto === '') return;
+    ws.send(texto);
+    input.value = '';
+    // sem eco local aqui de propósito - o objetivo desse exemplo é
+    // justamente esperar a resposta do servidor pra provar o round-trip,
+    // diferente do exemplo de chat (que tem eco local pra não atrasar a
+    // conversa)
+  });
+})();
+</script>
+
+</body>
+</html>

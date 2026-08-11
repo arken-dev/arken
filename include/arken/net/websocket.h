@@ -47,8 +47,7 @@ struct WebSocketMessage {
 // trocar header. Se algum dia precisar: Protocol dá pra fazer com uma
 // lista fixa configurada no HttpServer (server:setWebSocketProtocols),
 // sem precisar mudar a ordem handshake-antes-do-Lua atual; por-controller
-// exigiria resolver a rota antes do 101, que hoje só acontece depois
-// (open() já dispara com a resposta enviada).
+// já dá pra fazer hoje via WebSocketHandler::handshake (roda antes do 101).
 class WebSocketParser {
   public:
   static bool        isWebSocketUpgrade(HttpEnv * env);
@@ -165,16 +164,35 @@ class WebSocketRegistry {
 // resolve sozinho (pcall + self:rescue()), sem precisar voltar pro C++.
 // Esse error() aqui é o C++ avisando de algo que ele mesmo detectou
 // (violação de protocolo, UTF-8 inválido, mensagem grande demais, timeout
-// de ping) - o dispatcher Lua chama object:rescue(reason) direto, sem
-// passar por pexecute de novo (evita recursão se o próprio rescue falhar).
+// de ping) - o dispatcher Lua chama object:error(reason) direto (não
+// object:rescue(), reservado pra exceção de aplicação), sem passar por
+// pexecute de novo (evita recursão se o próprio error() falhar).
 class WebSocketHandler {
   public:
   static void setDispatcher(std::string dispatcher);
 
-  static void open(int fd, const std::string & sessionId, const std::string & path,
+  // roda antes do 101 ser respondido - decide se o handshake pode ser
+  // aceito. Devolve string vazia se pode (200, upgrade prossegue
+  // normalmente) ou a resposta HTTP completa (status+headers+body) já
+  // pronta pra escrever no socket no lugar do 101, quando o controller
+  // (via object:handshake(params) - 404/500 automáticos se o controller
+  // nem existe/carrega, qualquer outro código/headers/body é decisão do
+  // controller, ex: 403 recusando por permissão, ou 302 com Location pra
+  // redirecionar) decide recusar - a conexão nunca chega a virar WebSocket.
+  static std::string handshake(int fd, const std::string & sessionId, const std::string & path,
+                                const std::string & queryString);
+
+  // devolvem false se o dispatch pro controller falhou (dispatcher não
+  // carregou, ou o método Lua lançou) - quem chama deve mandar um close
+  // frame com código de erro e derrubar a conexão, não deixar aberta
+  static bool open(int fd, const std::string & sessionId, const std::string & path,
                     const std::string & queryString);
-  static void message(int fd, const std::string & sessionId, const std::string & path,
+  static bool message(int fd, const std::string & sessionId, const std::string & path,
                        const std::string & queryString, const std::string & payload, bool binary);
+
+  // pode disparar pra uma conexão cujo open() nunca terminou com sucesso
+  // (open() retornou false) - o controller precisa assumir que o setup
+  // feito em open() pode não ter rodado
   static void close(int fd, const std::string & sessionId, const std::string & path,
                      const std::string & queryString);
   static void error(int fd, const std::string & sessionId, const std::string & path,

@@ -34,6 +34,18 @@ function WebSocket:params()
 end
 
 -------------------------------------------------------------------------------
+-- HANDSHAKE
+-- roda antes do 101 ser respondido - decide se essa conexão pode virar
+-- WebSocket. Default sempre aceita; um controller sobrescreve pra recusar
+-- (ex: checar permissão via self:params() e devolver 403, {}, "sem
+-- permissão", ou redirecionar com 302, {"Location: /login"}, "").
+-------------------------------------------------------------------------------
+
+function WebSocket:handshake(params)
+  return 200, {}, ""
+end
+
+-------------------------------------------------------------------------------
 -- ROOM
 -------------------------------------------------------------------------------
 
@@ -72,13 +84,26 @@ end
 
 -------------------------------------------------------------------------------
 -- RESCUE
--- chamado quando open/message/close lançam exceção (pcall acima), e
--- também direto pelo dispatcher quando o C++ detecta algo que não é uma
--- mensagem normal (violação de protocolo, UTF-8 inválido, mensagem
--- grande demais, timeout de ping) - o motivo vem em err nesse caso.
+-- erro de aplicação/lógica: chamado só quando open/message/close lançam
+-- exceção Lua de verdade (pcall acima) - igual Controller:rescue() no
+-- HTTP. Erro de protocolo WebSocket (timeout de ping, UTF-8 inválido,
+-- mensagem grande demais, violação de protocolo) não passa por aqui,
+-- vai pra error() - ver mais embaixo.
 -------------------------------------------------------------------------------
 
 function WebSocket:rescue(err)
+end
+
+-------------------------------------------------------------------------------
+-- ERROR
+-- chamado direto pelo dispatcher (não passa por pexecute/pcall) quando o
+-- C++ detecta algo que não é uma mensagem normal: timeout de ping
+-- ("timeout"), UTF-8 inválido ("invalid_utf8"), mensagem grande demais
+-- ("too_large") ou outra violação de protocolo ("protocol"). Não é
+-- exceção Lua - isso é rescue(), acima.
+-------------------------------------------------------------------------------
+
+function WebSocket:error(reason)
 end
 
 return WebSocket
