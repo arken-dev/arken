@@ -3,7 +3,10 @@
 -- Use of this source code is governed by a BSD-style
 -- license that can be found in the LICENSE file.
 
--- arken.net.Room: membership de sala pra WebSocket, sobre arken.cache.
+-- Room: membership de sala pra WebSocket, sobre arken.cache. Classe de
+-- exemplo, específica desse chat - não faz parte do arken.net.WebSocket
+-- (ver ws/controllers/Chat/RoomWebSocket.lua, que a instancia direto em
+-- vez de passar pela classe pai WebSocket).
 --
 -- Cada sala vira um bucket próprio (cache.bucket("room:" .. name)) - todo
 -- Room.new{ name = "chat/123" } criado em qualquer conexão/thread aponta
@@ -17,7 +20,7 @@ local Class               = require 'arken.oop.Class'
 local cache                = require 'arken.cache'
 local WebSocketConnection  = require 'arken.net.WebSocketConnection'
 
-local Room = Class.new("arken.net.Room")
+local Room = Class.new("Room")
 
 function Room:initialize()
   self._bucket = cache.bucket("room:" .. self.name)
@@ -48,9 +51,9 @@ end
 
 -------------------------------------------------------------------------------
 -- BROADCAST
--- por padrão não ecoa pra quem está mandando (self.connection, quando o
--- Room veio de self:room() numa WebSocket) - pra incluir o remetente,
--- passe includeSelf = true.
+-- por padrão não ecoa pra quem está mandando (self.connection, passado em
+-- Room.new{ connection = ... }) - pra incluir o remetente, passe includeSelf
+-- = true.
 -------------------------------------------------------------------------------
 
 function Room:broadcast(payload, binary, includeSelf)

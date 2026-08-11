@@ -8,9 +8,10 @@
 -- Mostra as peças que um chat de verdade precisa:
 --   - qual sala: self:params().id, vindo da query string do handshake
 --     (self:connection():queryString(), parseada por WebSocket:params())
---   - lista de quem está na sala (arken.net.Room, sobre arken.cache -
---     compartilhado entre threads e mensagens, uma chave por membro em
---     vez de uma lista JSON única lida/regravada inteira)
+--   - lista de quem está na sala (lib/Room.lua, classe de exemplo desse
+--     chat sobre arken.cache - compartilhado entre threads e mensagens,
+--     uma chave por membro em vez de uma lista JSON única lida/regravada
+--     inteira)
 --   - broadcast: mandar mensagem pra conexões diferentes da que está
 --     processando o evento atual (self:room():broadcast() não ecoa pra
 --     quem mandou por padrão)
@@ -49,6 +50,8 @@
 -- aplicação, não erro de protocolo), cai em rescue() em vez de seguir
 -- o fluxo normal.
 
+local Room = require 'lib.Room'
+
 local RoomWebSocket = Class.new("RoomWebSocket", "WebSocket")
 
 -- nome default pra quem conectar sem "?id=..." (ex: abrindo a URL crua).
@@ -56,7 +59,7 @@ local RoomWebSocket = Class.new("RoomWebSocket", "WebSocket")
 local DEFAULT_ROOM_NAME = "example_chat_room"
 
 function RoomWebSocket:room()
-  return self:super("room", self:params().id or DEFAULT_ROOM_NAME)
+  return Room.new{ name = self:params().id or DEFAULT_ROOM_NAME, connection = self:connection() }
 end
 
 -------------------------------------------------------------------------------

@@ -6,7 +6,6 @@
 local Class = require 'arken.oop.Class'
 local cache = require 'arken.cache'
 local url   = require 'arken.net.url'
-local Room  = require 'arken.net.Room'
 
 local WebSocket = Class.new("WebSocket")
 
@@ -43,14 +42,6 @@ end
 
 function WebSocket:handshake(params)
   return 200, {}, ""
-end
-
--------------------------------------------------------------------------------
--- ROOM
--------------------------------------------------------------------------------
-
-function WebSocket:room(name)
-  return Room.new{ name = name, connection = self:connection() }
 end
 
 -------------------------------------------------------------------------------
