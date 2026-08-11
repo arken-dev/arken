@@ -11,6 +11,8 @@
 // https://www.utf8-chartable.de/
 // https://github.com/dart-lang/http/issues/175
 
+#include <cstdint>
+
 #include <arken/base>
 #include <arken/utf8>
 
@@ -333,6 +335,62 @@ char * utf8::asc(const char * str, char chr)
   res[j] = '\0';
 
   return res;
+}
+
+// RFC 3629: valida se um buffer é UTF-8 bem formado. Recebe len em vez de
+// depender de terminador nulo porque UTF-8 válido pode conter bytes \0.
+bool utf8::valid(const char * data, size_t len)
+{
+  size_t i = 0;
+
+  while( i < len ) {
+    auto byte = static_cast<uint8_t>(data[i]);
+
+    size_t   extra;
+    uint32_t codepoint;
+    uint32_t minValue;
+
+    if( (byte & 0x80) == 0x00 ) {
+      i++;
+      continue;
+    } else if( (byte & 0xE0) == 0xC0 ) {
+      extra = 1; codepoint = byte & 0x1F; minValue = 0x80;
+    } else if( (byte & 0xF0) == 0xE0 ) {
+      extra = 2; codepoint = byte & 0x0F; minValue = 0x800;
+    } else if( (byte & 0xF8) == 0xF0 ) {
+      extra = 3; codepoint = byte & 0x07; minValue = 0x10000;
+    } else {
+      return false; // byte de continuação sozinho, ou 0xF8-0xFF (nunca válido em UTF-8)
+    }
+
+    if( i + extra >= len ) {
+      return false; // sequência cortada, faltam bytes de continuação
+    }
+
+    for(size_t j = 1; j <= extra; j++) {
+      auto cont = static_cast<uint8_t>(data[i + j]);
+      if( (cont & 0xC0) != 0x80 ) {
+        return false; // esperava byte de continuação (10xxxxxx), não veio
+      }
+      codepoint = (codepoint << 6) | (cont & 0x3F);
+    }
+
+    if( codepoint < minValue ) {
+      return false; // encoding "overlong" (mesmo code point codificado com mais bytes do que precisa)
+    }
+
+    if( codepoint >= 0xD800 && codepoint <= 0xDFFF ) {
+      return false; // metade de surrogate pair - inválido em UTF-8 (só existe em UTF-16)
+    }
+
+    if( codepoint > 0x10FFFF ) {
+      return false; // além do range válido do Unicode
+    }
+
+    i += extra + 1;
+  }
+
+  return true;
 }
 
 } // namespace arken

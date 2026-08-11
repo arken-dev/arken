@@ -6,6 +6,8 @@
 #ifndef _ARKEN_UTF8_
 #define _ARKEN_UTF8_
 
+#include <cstddef>
+
 namespace arken
 {
 
@@ -20,6 +22,7 @@ class utf8 {
   static char * sanitize(const char * string);
   static char * asc(const char * string, const char chr = 0);
   static int    len(const char * string);
+  static bool   valid(const char * data, size_t len);
 
 };
 
