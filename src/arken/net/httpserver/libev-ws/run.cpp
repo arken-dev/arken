@@ -24,6 +24,7 @@
 #include <signal.h>
 #include <sys/ioctl.h>
 
+#include <atomic>
 #include <vector>
 #include <thread>
 
@@ -55,8 +56,10 @@ using WebSocketRegistry = arken::net::WebSocketRegistry;
  * o framework só avisa, nunca fecha sozinho por causa disso. */
 #define PING_INTERVAL 30.0
 
-/* record the number of clients */
-static int client_number;
+/* record the number of clients - acessado de todas as worker threads
+ * (accept_cb incrementa, closeConnection decrementa, cada thread com seu
+ * próprio ev_loop), por isso atomic em vez de int puro */
+static std::atomic<int> client_number{0};
 
 /* record fd for close with SIGTERM */
 static int fd;
