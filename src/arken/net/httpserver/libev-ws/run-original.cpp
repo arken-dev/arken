@@ -10,23 +10,6 @@
 // https://github.com/dexgeh/webserver-libev-httpparser.git
 // https://blog.titanwolf.in/a?ID=01200-c35750d4-727b-474c-9c57-f539e92e1e28
 // https://titanwolf.org/Network/Articles/Article?AID=c17ed0b7-7679-467e-b324-05def67552ff
-//
-// Correções (peguei da tela http e coloquei aqui, não foi automático)
-// 1. Data Race na variável global client_number (Risco Crítico):
-// 2. Fechamento incorreto do Listening Socket compartilhado fd (Risco Crítico):
-// No accept_cb, em caso de erro no accept() (como falta de file descriptors no SO EMFILE/ENFILE), o código executa close(watcher->fd).
-//Impacto: watcher->fd é o socket servidor compartilhado por todas as worker threads. Fechar este descriptor derruba o escutador do servidor para todas as outras threads, gerando erros de EBADF e comportamento imprevisível no Kernel.
-//Correção: Interromper o watcher local com ev_io_stop(loop, watcher) sem executar close() no socket mestre.
-// 3. Falhas de Thread-Safety e Race Condition no WebSocketRegistry (Risco Alto):
-// Métodos estáticos como WebSocketRegistry::add, remove e writeFrame lidam com mapas globais de sessão (sessionId $\rightarrow$ fd).Impacto: Modificações simultâneas no mapa a partir de threads diferentes geram corrupção na tabela hash (rehash race condition). Além disso, escrever em um fd a partir de uma thread enquanto outra thread executa closeConnection gera corrupção no fluxo de quadros do WebSocket (stream interleaving) e chamadas em sockets fechados.Correção: Adicionar std::mutex / std::shared_mutex interno na classe WebSocketRegistry.
-// 4. Tratamento de I/O inadequado em Sockets Não-Bloqueantes (writeAll) (Risco Alto):
-// A função writeAll tenta enviar dados em loop síncrono em sockets configurados com O_NONBLOCK.
-//Impacto: Se o buffer do Kernel encher, write() retorna -1 com errno == EAGAIN. A função trata isso como erro fatal e aborta, descartando pacotes HTTP/WebSocket parciais. Se o check de erro fosse ignorado, data + bytes faria aritmética com -1, acessando memória inválida.
-//Correção: Tratar EAGAIN/EWOULDBLOCK e EINTR, ou utilizar buffers de saída vinculados a eventos EV_WRITE no libev.
-//
-// 5. Acesso Cross-Thread a objetos libev (Risco Médio/Alto)
-// O libev exige que ev_loop e seus watchers (ev_timer, ev_io) sejam manipulados estritamente pela thread dona do loop.
-// Impacto: Se encerramentos de conexão ou comandos de ping forem acionados fora do evento da thread do loop correspondente, a estrutura do min-heap de timers do libev pode ser corrompida.
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -43,8 +26,6 @@
 
 #include <vector>
 #include <thread>
-#include <atomic>
-#include <iostream>
 
 #include <ev.h>
 
@@ -74,8 +55,8 @@ using WebSocketRegistry = arken::net::WebSocketRegistry;
  * o framework só avisa, nunca fecha sozinho por causa disso. */
 #define PING_INTERVAL 30.0
 
-/* record the number of clients - atomic para evitar data race em ambiente multi-thread */
-static std::atomic<int> client_number{0};
+/* record the number of clients */
+static int client_number;
 
 /* record fd for close with SIGTERM */
 static int fd;
@@ -146,26 +127,16 @@ ping_cb(struct ev_loop *loop, struct ev_timer *watcher, int revents)
   connection->awaitingPong = true;
 }
 
-// Resiliente a sockets O_NONBLOCK (trata EAGAIN, EWOULDBLOCK e EINTR)
 static void
 writeAll(int fd, const char * data, size_t size)
 {
-  size_t total_written = 0;
-  while (total_written < size) {
-    ssize_t bytes = write(fd, data + total_written, size - total_written);
-    if (bytes > 0) {
-      total_written += static_cast<size_t>(bytes);
-    } else if (bytes == -1) {
-      if (errno == EINTR) {
-        continue;
-      }
-      if (errno == EAGAIN || errno == EWOULDBLOCK) {
-        usleep(500); // Pausa defensiva para esvaziar buffer do kernel
-        continue;
-      }
-      perror("write error");
+  ssize_t bytes = write(fd, data, size);
+  while( bytes < static_cast<ssize_t>(size) ) {
+    if( bytes == -1 ) {
+      puts("write error");
       return;
     }
+    bytes += write(fd, data + bytes, size - bytes);
   }
 }
 
@@ -402,10 +373,9 @@ accept_cb(struct ev_loop *loop, struct ev_io *watcher, int revents)
   } else if ((connfd < 0) && (errno == EAGAIN || errno == EWOULDBLOCK)) {
     return;
   } else {
-    // IMPORTANTE: Nunca fechar watcher->fd (o listening socket do servidor)
-    // aqui, pois ele é compartilhado por todas as worker threads.
-    std::cerr << "accept err on worker thread (errno: " << errno << "), stopping watcher local\n";
-    ev_io_stop(loop, watcher);
+    close(watcher->fd);
+    ev_break(loop, EVBREAK_ALL);
+    /* this will lead main to exit, no need to free watchers of clients */
   }
 }
 
