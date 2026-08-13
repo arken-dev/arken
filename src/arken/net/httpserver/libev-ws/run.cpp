@@ -412,11 +412,13 @@ processHttp(struct ev_loop *loop, Connection * connection)
     connection->sessionId   = sessionId;
     connection->path        = path;
     connection->queryString = queryString;
+
+    delete env;
   } else {
     data = HttpServer::handler(env);
   }
 
-  delete env;
+  //delete env;
   connection->input.clear();
 
   queueOutput(connection, data.data(), data.size());
