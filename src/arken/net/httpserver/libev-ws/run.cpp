@@ -49,6 +49,16 @@ using WebSocketRegistry = arken::net::WebSocketRegistry;
 /* message length limitation */
 #define MAX_MESSAGE_LEN (4096)
 
+/* teto de bytes drenados do socket por chamada de read_cb - sem isso, uma
+ * conexão que mantém dado sempre disponível (flood, upload grande) prende
+ * a thread lendo só dela até o kernel secar, atrasando as outras conexões
+ * do mesmo ev_loop (cada thread processa uma conexão de cada vez). Ao
+ * bater o teto a gente simplesmente para e devolve o controle pro loop -
+ * como EV_READ é level-triggered, se ainda sobrar dado no kernel o
+ * read_cb é chamado de novo na próxima volta, só que depois de dar chance
+ * pras outras conexões dessa thread rodarem também. */
+#define MAX_READ_PER_CALLBACK (256 * 1024)
+
 /* intervalo do ping que o servidor manda pra cada conexão WebSocket -
  * detecta conexão morta (sem pong de volta) e mantém viva através de
  * proxy/NAT que derrubam conexão ociosa. Quem decide o que fazer quando
@@ -480,13 +490,15 @@ read_cb(struct ev_loop *loop, struct ev_io *watcher, int revents)
 
   char buf[MAX_MESSAGE_LEN];
   ssize_t ret;
+  size_t  totalRead = 0;
 
   do {
     ret = recv(connection->io.fd, buf, MAX_MESSAGE_LEN, MSG_DONTWAIT);
     if( ret > 0 ) {
       connection->input.append(buf, ret);
+      totalRead += static_cast<size_t>(ret);
     }
-  } while( ret == MAX_MESSAGE_LEN );
+  } while( ret == MAX_MESSAGE_LEN && totalRead < MAX_READ_PER_CALLBACK );
 
   if( ret == 0 || (ret < 0 && errno != EAGAIN && errno != EWOULDBLOCK) ) {
     closeConnection(loop, connection);
