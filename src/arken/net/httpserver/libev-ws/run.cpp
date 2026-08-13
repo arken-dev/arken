@@ -375,7 +375,15 @@ processHttp(struct ev_loop *loop, Connection * connection)
     return;
   }
 
-  HttpEnv * env = new HttpEnv(connection->input.data(), connection->input.size(), false);
+  // owned=true (padrão) - necessário pro branch else logo abaixo, onde env
+  // vira userdata do Lua dentro de HttpServer::handler(env) e passa a ser
+  // o Lua (via __gc) quem decide quando recolher, não um delete manual
+  // daqui competindo com isso. No branch de upgrade (isUpgrade), env
+  // nunca chega a virar userdata - WebSocketHandler::handshake() recebe
+  // só strings simples - então o delete manual ali embaixo continua
+  // seguro mesmo com owned=true: nada vai chamar __gc numa instância que
+  // nunca foi empacotada como userdata.
+  HttpEnv * env = new HttpEnv(connection->input.data(), connection->input.size());
 
   std::string data;
   bool isUpgrade = WebSocketParser::isWebSocketUpgrade(env);
@@ -415,10 +423,11 @@ processHttp(struct ev_loop *loop, Connection * connection)
 
     delete env;
   } else {
+    // sem delete env aqui - handler(env) empacotou env como userdata do
+    // Lua, então agora é o __gc dele quem cuida da vida desse objeto
     data = HttpServer::handler(env);
   }
 
-  //delete env;
   connection->input.clear();
 
   queueOutput(connection, data.data(), data.size());
