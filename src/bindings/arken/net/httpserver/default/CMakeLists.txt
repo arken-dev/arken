@@ -20,7 +20,7 @@ add_library(
 set_target_properties(arken.net.HttpServer.default PROPERTIES PREFIX "" OUTPUT_NAME default)
 target_link_libraries(arken.net.HttpServer.default arken)
 
-if(ARKEN_NET_HTTPSERVER STREQUAL "libev" OR ARKEN_NET_HTTPSERVER STREQUAL "libev-ws")
+if(ARKEN_NET_HTTPSERVER STREQUAL "libev" OR ARKEN_NET_HTTPSERVER STREQUAL "libev-rev" OR ARKEN_NET_HTTPSERVER STREQUAL "libev-ws")
   target_link_libraries(arken.net.HttpServer.default ev)
 elseif(ARKEN_NET_HTTPSERVER STREQUAL "libevent")
   target_link_libraries(arken.net.HttpServer.default event)
