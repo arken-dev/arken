@@ -375,7 +375,7 @@ processHttp(struct ev_loop *loop, Connection * connection)
     return;
   }
 
-  HttpEnv * env = new HttpEnv(connection->input.data(), connection->input.size(), false);
+  HttpEnv * env = new HttpEnv(connection->input.data(), connection->input.size(), true);
 
   std::string data;
   bool isUpgrade = WebSocketParser::isWebSocketUpgrade(env);
@@ -418,7 +418,7 @@ processHttp(struct ev_loop *loop, Connection * connection)
     data = HttpServer::handler(env);
   }
 
-  //delete env;
+ // delete env;
   connection->input.clear();
 
   queueOutput(connection, data.data(), data.size());
