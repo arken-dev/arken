@@ -7,6 +7,7 @@
 #define _ARKEN_NET_WEBSOCKET_
 
 #include <cstdint>
+#include <functional>
 #include <memory>
 #include <mutex>
 #include <queue>
@@ -124,25 +125,34 @@ class WebSocketConnection {
 // (cada thread do event loop tem seu próprio conjunto de Connection, mas
 // esse registro é único pro processo inteiro, igual arken::cache).
 //
-// Todo write num fd passa por aqui - inclusive o de WebSocketConnection
-// (a própria conexão respondendo pra si mesma) e as respostas automáticas
-// (pong/close) do libev-ws - porque duas threads podem escrever no mesmo
-// fd ao mesmo tempo (a dona da conexão, respondendo algo normal, e outra
-// thread mandando uma mensagem pra essa sessão via send()) e os bytes dos
-// dois writes podiam se intercalar e corromper o frame.
+// Nunca escreve no fd diretamente - um write() de verdade só pode
+// acontecer na thread dona da conexão (é ela que sabe se o socket tá
+// pronto pra escrita sem bloquear, via EV_WRITE). writeFrame()/send()
+// (chamáveis de qualquer thread) só enfileiram bytes em Entry::pending e
+// chamam Entry::wake() - um callback registrado pela thread dona em add()
+// que avisa ela (tipicamente via ev_async_send, a única operação do
+// libev segura de chamar de fora da thread dona do loop) que tem
+// trabalho pendente. A thread dona então chama drainPending() dentro do
+// próprio callback de wake pra pegar os bytes e escrever de verdade,
+// através do buffer de saída/EV_WRITE dela.
 class WebSocketRegistry {
   public:
-  static void add(const std::string & sessionId, int fd);
-  static void remove(const std::string & sessionId); // bloqueia até qualquer write em andamento terminar
+  static void add(const std::string & sessionId, std::function<void()> wake);
+  static void remove(const std::string & sessionId); // bloqueia até qualquer enfileiramento em andamento terminar
 
   static void send(const std::string & sessionId, const std::string & payload, bool binary = false);
   static void writeFrame(const std::string & sessionId, const std::string & frame);
 
+  // só a thread dona da conexão deve chamar isso (de dentro do callback
+  // de wake) - devolve e limpa os bytes pendentes
+  static std::string drainPending(const std::string & sessionId);
+
   private:
   struct Entry {
-    int        fd;
-    std::mutex writeMutex;
-    explicit Entry(int fd) : fd(fd) {}
+    std::mutex             mutex; // protege pending e wake
+    std::string            pending;
+    std::function<void()>  wake;
+    explicit Entry(std::function<void()> wake) : wake(std::move(wake)) {}
   };
 
   static std::mutex                                              s_mutex;
