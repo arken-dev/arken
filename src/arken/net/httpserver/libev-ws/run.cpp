@@ -365,6 +365,15 @@ accept_cb(struct ev_loop *loop, struct ev_io *watcher, int revents)
 {
   int connfd = accept(watcher->fd, nullptr, nullptr);
   if (connfd > 0) {
+    // conexão aceita entra bloqueante por padrão - sem isso, um write()
+    // pra essa conexão (writeAll/WebSocketRegistry) trava a thread inteira
+    // (todas as outras conexões do mesmo ev_loop) se o cliente for lento
+    // pra consumir e o buffer de envio do kernel encher
+    int flags = fcntl(connfd, F_GETFL, 0);
+    if( flags >= 0 ) {
+      fcntl(connfd, F_SETFL, flags | O_NONBLOCK);
+    }
+
     if (++client_number > MAX_CLIENTS) {
       close(connfd);
       --client_number;
@@ -376,9 +385,16 @@ accept_cb(struct ev_loop *loop, struct ev_io *watcher, int revents)
   } else if ((connfd < 0) && (errno == EAGAIN || errno == EWOULDBLOCK)) {
     return;
   } else {
-    close(watcher->fd);
-    ev_break(loop, EVBREAK_ALL);
-    /* this will lead main to exit, no need to free watchers of clients */
+    // watcher->fd é o socket de escuta compartilhado por todas as worker
+    // threads (cada uma tem seu próprio ev_loop, mas todas dão accept()
+    // no mesmo fd) - um erro aqui (ex: EMFILE/ENFILE, comum sob alta
+    // concorrência) é local a esta thread; fechar watcher->fd derrubaria
+    // o accept pra todas as outras threads, e ev_break só mata o loop
+    // desta thread, deixando as demais rodando com o fd compartilhado já
+    // fechado (accept() delas passa a falhar com EBADF em loop). Só para
+    // de aceitar nesta thread - as outras continuam normalmente.
+    fprintf(stderr, "arken.net.HttpServer (libev-ws): accept error (errno=%d), parando accept nesta thread\n", errno);
+    ev_io_stop(loop, watcher);
   }
 }
 
