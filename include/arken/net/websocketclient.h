@@ -79,9 +79,9 @@ class WebSocketClient
   int    m_peerCloseCode = 1000;
   string m_peerCloseReason;
 
-  lws_context  * m_context   = nullptr;
-  lws_protocols * m_protocols = nullptr;
-  std::thread    m_thread;
+  std::atomic<lws_context *> m_context{nullptr};
+  lws_protocols             * m_protocols = nullptr;
+  std::thread                 m_thread;
 
   lua_State  * m_ownerState  = nullptr;
   int          m_onOpenRef    = -2; // LUA_NOREF - evita puxar lua.h nesse header
@@ -104,6 +104,7 @@ class WebSocketClient
   void parseUrl(const string & url);
   void setFailure(const string & message);
   void run();
+  void wakeService(); // lws_service() dorme até lws_cancel_service() acordar - ver .cpp
 
   void setCallback(lua_State * L, int & slot, int ref);
 

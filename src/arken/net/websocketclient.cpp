@@ -139,11 +139,30 @@ WebSocketClient::connect()
   m_thread = std::thread(&WebSocketClient::run, this);
 }
 
+// lws_service() (chamado no loop de run()) ignora o timeout_ms desde a
+// lws 3.2 - o scheduler dorme de verdade até um evento ser enfileirado,
+// então só empilhar em m_sendQueue/marcar m_closeRequested não é o
+// bastante: send()/close() (chamados de fora, geralmente da thread do
+// script) precisam acordar a thread do serviço explicitamente, ou ela só
+// nota a mudança na próxima vez que ALGO MAIS a acordar por conta
+// própria (na prática, minutos de atraso é possível)
+void
+WebSocketClient::wakeService()
+{
+  lws_context * ctx = m_context.load();
+  if( ctx != nullptr ) {
+    lws_cancel_service(ctx);
+  }
+}
+
 void
 WebSocketClient::send(string payload, bool binary)
 {
-  std::lock_guard<std::mutex> lock(m_sendMutex);
-  m_sendQueue.emplace(std::move(payload), binary);
+  {
+    std::lock_guard<std::mutex> lock(m_sendMutex);
+    m_sendQueue.emplace(std::move(payload), binary);
+  }
+  wakeService();
 }
 
 void
@@ -154,6 +173,7 @@ WebSocketClient::close(string reason)
     m_closeReason = std::move(reason);
   }
   m_closeRequested = true;
+  wakeService();
 }
 
 bool
@@ -460,10 +480,12 @@ WebSocketClient::callback(lws * wsi, int reason, void * user, void * in, size_t 
       break;
 
     case LWS_CALLBACK_CLIENT_WRITEABLE: {
-      if( self->m_pendingLwsClose ) {
-        return -1;
-      }
-
+      // drena a fila de envio primeiro, mesmo com um close já pedido -
+      // send() seguido de close() na mesma "rodada" síncrona (ex: manda
+      // a última fala e já fecha, padrão comum) deixa m_pendingLwsClose
+      // e a fila não-vazia ao mesmo tempo; se o close "ganhasse" aqui, a
+      // mensagem final nunca seria escrita - só fecha de verdade quando
+      // não sobra mais nada pra mandar
       std::pair<string, bool> item;
       bool has = false;
       {
@@ -482,9 +504,14 @@ WebSocketClient::callback(lws * wsi, int reason, void * user, void * in, size_t 
                    item.second ? LWS_WRITE_BINARY : LWS_WRITE_TEXT);
 
         std::lock_guard<std::mutex> lock(self->m_sendMutex);
-        if( ! self->m_sendQueue.empty() ) {
+        if( ! self->m_sendQueue.empty() || self->m_pendingLwsClose ) {
           lws_callback_on_writable(wsi);
         }
+        break;
+      }
+
+      if( self->m_pendingLwsClose ) {
+        return -1;
       }
       break;
     }
