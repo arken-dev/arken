@@ -18,6 +18,7 @@ include_directories(${PROJECT_SOURCE_DIR}/src/vendors/mongrel2/http11)
 file(GLOB src      ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
 file(GLOB os       ${CMAKE_CURRENT_SOURCE_DIR}/os/*.c)
 file(GLOB net      ${CMAKE_CURRENT_SOURCE_DIR}/net/*.cpp)
+list(REMOVE_ITEM net ${CMAKE_CURRENT_SOURCE_DIR}/net/websocketclient.cpp)
 file(GLOB concurrent ${CMAKE_CURRENT_SOURCE_DIR}/concurrent/*.cpp)
 file(GLOB concurrent-task ${CMAKE_CURRENT_SOURCE_DIR}/concurrent/task/*.cpp)
 file(GLOB compress ${CMAKE_CURRENT_SOURCE_DIR}/compress/*.cpp)
@@ -44,6 +45,7 @@ add_library(
   ${utils}
   ${mvm-container}
   ${net}
+  ${arken-net-websocketclient}
 #  ${httpserver}
   ${arken-notify}
   ${os} ${os-system} ${os-uuid}
