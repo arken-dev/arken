@@ -357,11 +357,11 @@ Tente obter uma mensagem agora. Se não houver, retorne imediatamente.
 Tabela:
 
 Operação	Bloqueia	Remove mensagem
-send()	Não	Não
+send()		Não		Não
 receive()	Sim, se vazia	Sim
-fetch()	Não	Sim
-isClosed()	Não	Não
-close()	Não	Não
+fetch()		Não		Sim
+isClosed()	Não		Não
+close()		Não		Não
 13. fetch() não deve utilizar condition_variable
 
 fetch() nunca deve esperar.
