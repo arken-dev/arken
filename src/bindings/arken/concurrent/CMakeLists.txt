@@ -13,6 +13,11 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/clib/arken/concurrent)
 add_subdirectory(core)
 add_subdirectory(channel)
 add_subdirectory(lock)
+
+if(ARKEN_CONCURRENT_MAILBOX)
+add_subdirectory(mailbox)
+endif()
+
 add_subdirectory(service)
 add_subdirectory(task)
 add_subdirectory(worker)
