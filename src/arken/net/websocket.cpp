@@ -7,7 +7,6 @@
 
 #include <cstring>
 #include <strings.h>
-#include <unistd.h>
 
 #include <arken/net/websocket.h>
 #include <arken/digest/sha1.h>
@@ -392,10 +391,10 @@ std::mutex WebSocketRegistry::s_mutex;
 std::unordered_map<std::string, std::shared_ptr<WebSocketRegistry::Entry>> WebSocketRegistry::s_connections;
 
 void
-WebSocketRegistry::add(const std::string & sessionId, int fd)
+WebSocketRegistry::add(const std::string & sessionId, std::function<void()> wake)
 {
   std::lock_guard<std::mutex> lock(s_mutex);
-  s_connections[sessionId] = std::make_shared<Entry>(fd);
+  s_connections[sessionId] = std::make_shared<Entry>(std::move(wake));
 }
 
 void
@@ -412,12 +411,15 @@ WebSocketRegistry::remove(const std::string & sessionId)
     s_connections.erase(it);
   }
 
-  // espera qualquer write em andamento terminar antes de devolver -
-  // garante que ninguém mais vai escrever nesse fd depois que a gente
-  // volta pra quem chamou (que aí sim pode dar close() com segurança,
-  // sem risco do fd ser reaproveitado por uma conexão nova enquanto
-  // ainda tem alguém escrevendo na antiga)
-  std::lock_guard<std::mutex> writeLock(entry->writeMutex);
+  // espera qualquer writeFrame()/send() em andamento (que já pegou o
+  // shared_ptr antes do erase acima) terminar de enfileirar + chamar
+  // wake() antes de devolver - só depois disso é seguro pra quem chamou
+  // destruir o que wake() referenciava (ex: o ev_async da conexão).
+  // Zera wake também: se algum writeFrame() ainda vier a pegar esse
+  // shared_ptr depois daqui, só vai enfileirar em pending (nunca lido
+  // por ninguém) sem tentar acordar uma conexão que já era.
+  std::lock_guard<std::mutex> lock(entry->mutex);
+  entry->wake = nullptr;
 }
 
 void
@@ -430,18 +432,33 @@ WebSocketRegistry::writeFrame(const std::string & sessionId, const std::string &
     if( it == s_connections.end() ) {
       return;
     }
-    entry = it->second; // shared_ptr local mantém o Entry vivo mesmo se remove() apagar do mapa entre aqui e o write
+    entry = it->second; // shared_ptr local mantém o Entry vivo mesmo se remove() apagar do mapa entre aqui e o enfileiramento
   }
 
-  std::lock_guard<std::mutex> writeLock(entry->writeMutex);
+  std::lock_guard<std::mutex> lock(entry->mutex);
+  entry->pending.append(frame);
+  if( entry->wake ) {
+    entry->wake();
+  }
+}
 
-  ssize_t bytes = write(entry->fd, frame.data(), frame.size());
-  while( bytes < static_cast<ssize_t>(frame.size()) ) {
-    if( bytes == -1 ) {
-      break;
+std::string
+WebSocketRegistry::drainPending(const std::string & sessionId)
+{
+  std::shared_ptr<Entry> entry;
+  {
+    std::lock_guard<std::mutex> lock(s_mutex);
+    auto it = s_connections.find(sessionId);
+    if( it == s_connections.end() ) {
+      return "";
     }
-    bytes += write(entry->fd, frame.data() + bytes, frame.size() - bytes);
+    entry = it->second;
   }
+
+  std::lock_guard<std::mutex> lock(entry->mutex);
+  std::string result;
+  std::swap(result, entry->pending);
+  return result;
 }
 
 void

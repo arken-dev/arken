@@ -6,19 +6,19 @@ local RecordingWebSocket = Class.new("WssTestRecordingWebSocket", "WebSocket")
 
 RecordingWebSocket.log = {}
 
-function RecordingWebSocket:open()
+function RecordingWebSocket:onOpen()
 end
 
-function RecordingWebSocket:message(payload, binary)
+function RecordingWebSocket:onMessage(payload, binary)
   if payload == "boom" then
     error("erro de aplicacao de teste")
   end
 end
 
-function RecordingWebSocket:close()
+function RecordingWebSocket:onClose()
 end
 
-function RecordingWebSocket:error(reason)
+function RecordingWebSocket:onError(reason)
   table.insert(RecordingWebSocket.log, { kind = "error", reason = reason })
 end
 

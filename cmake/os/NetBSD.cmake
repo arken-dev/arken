@@ -5,7 +5,7 @@ if ( ARKEN_IMAGE )
   include_directories( /usr/pkg/include/ImageMagick-6 )
 endif( ARKEN_IMAGE )
 
-if ( ARKEN_NET_HTTPSERVER STREQUAL "libev" )
+if ( ARKEN_NET_HTTPSERVER STREQUAL "libev" OR ARKEN_NET_HTTPSERVER STREQUAL "libev-rev" OR ARKEN_NET_HTTPSERVER STREQUAL "libev-ws" )
   include_directories( /usr/pkg/include/ev )
   link_directories( /usr/pkg/lib/ev )
 endif()
