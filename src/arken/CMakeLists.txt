@@ -63,7 +63,6 @@ target_link_libraries(arken m)
 target_link_libraries(arken zip)
 target_link_libraries(arken json)
 target_link_libraries(arken ${CURL_LIB})
-target_link_libraries(arken ${LWS_LIB})
 target_link_libraries(arken ${ImageMagick_LIBRARIES})
 
 if(LUA_LIB_PATH)
@@ -80,6 +79,14 @@ endif()
 if(NOT LIBSSL_PATH STREQUAL "")
   message("LIBSSL......................: ${LIBSSL_PATH}")
   target_link_libraries(arken ${LIBSSL_PATH})
+endif()
+
+#------------------------------------------------------------------------------
+# ARKEN_NET_WEBSOCKETCLIENT
+#------------------------------------------------------------------------------
+
+if(ARKEN_NET_WEBSOCKETCLIENT)
+  target_link_libraries(arken ${LWS_LIB})
 endif()
 
 #------------------------------------------------------------------------------
