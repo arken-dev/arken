@@ -3,13 +3,13 @@
 local WebSocket = require 'arken.WebSocket'
 local EchoWebSocket = Class.new("WssTestEchoWebSocket", "WebSocket")
 
-function EchoWebSocket:open()
+function EchoWebSocket:onOpen()
 end
 
-function EchoWebSocket:message(payload, binary)
+function EchoWebSocket:onMessage(payload, binary)
 end
 
-function EchoWebSocket:close()
+function EchoWebSocket:onClose()
 end
 
 return EchoWebSocket

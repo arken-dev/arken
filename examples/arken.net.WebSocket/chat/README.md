@@ -2,7 +2,7 @@
 
 Aplicação completa mostrando o suporte a WebSocket do Arken: handshake,
 roteamento por path, sessão por conexão, broadcast entre conexões
-diferentes, e tratamento de erro/timeout via `error()`.
+diferentes, e tratamento de erro/timeout via `onError()`.
 
 ## Pré-requisito
 
@@ -36,7 +36,7 @@ O path do handshake decide qual controller atende a conexão (ver
   Sala de chat de verdade: quem entra/sai é anunciado pra todo mundo na
   sala (`WebSocketConnection.send()` pra cada `session_id` guardado em
   `arken.cache`), mensagens são retransmitidas pra todos, e 3 timeouts de
-  ping seguidos fazem a aplicação encerrar a conexão (`error()` decide
+  ping seguidos fazem a aplicação encerrar a conexão (`onError()` decide
   isso, não o framework).
 
 ## Testando manualmente

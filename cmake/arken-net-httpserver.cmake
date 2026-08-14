@@ -3,6 +3,7 @@ set(ARKEN_NET_HTTPSERVER libev CACHE STRING "httpserver backend")
 set_property(
   CACHE ARKEN_NET_HTTPSERVER PROPERTY STRINGS
   "libev"
+  "libev-rev"
   "libev-ws"
   "libevent"
   "epoll"

@@ -176,7 +176,7 @@ if(ARKEN_NET_HTTPSERVER MATCHES "boost" OR ARKEN_MVM_CONTAINER MATCHES "boost")
   target_link_libraries(arken pthread m ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
 endif()
 
-if(ARKEN_NET_HTTPSERVER STREQUAL "libev" OR ARKEN_NET_HTTPSERVER STREQUAL "libev-ws")
+if(ARKEN_NET_HTTPSERVER STREQUAL "libev" OR ARKEN_NET_HTTPSERVER STREQUAL "libev-rev" OR ARKEN_NET_HTTPSERVER STREQUAL "libev-ws")
   target_link_libraries(arken ev)
 endif()
 

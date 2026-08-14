@@ -24,19 +24,19 @@
 --          403 (ou outro)        101     <- a partir daqui é WebSocket
 --                                 │
 --                                 ▼
---                              open()    <- primeira vez que fala com o client
+--                             onOpen()    <- primeira vez que fala com o client
 --                                 │
 --                       ┌─────────┴─────────┐
 --                       │                   │
---                  message()             error()   <- mensagem normal x erro de protocolo
+--                 onMessage()           onError()   <- mensagem normal x erro de protocolo
 --                       │                   │
 --                       └─────────┬─────────┘
 --                                 │
 --                                 ▼
---                              close()   <- fim da conexão, de qualquer jeito
+--                             onClose()   <- fim da conexão, de qualquer jeito
 --
--- rescue() não aparece nesse fluxo - é um desvio à parte: se open(),
--- message() ou close() lançarem uma exceção Lua de verdade (bug da
+-- rescue() não aparece nesse fluxo - é um desvio à parte: se onOpen(),
+-- onMessage() ou onClose() lançarem uma exceção Lua de verdade (bug da
 -- aplicação, não erro de protocolo), cai em rescue() em vez de seguir
 -- o fluxo normal.
 
@@ -60,14 +60,14 @@ function EchoWebSocket:handshake(params)
 end
 
 -------------------------------------------------------------------------------
--- OPEN / MESSAGE / CLOSE / ERROR (WEBSOCKET)
+-- ONOPEN / ONMESSAGE / ONCLOSE / ONERROR (WEBSOCKET)
 -- a partir daqui a conexão já é WebSocket de verdade - o 101 já foi
 -- respondido, handshake() já aprovou
 -------------------------------------------------------------------------------
 
 -- dispara uma vez, assim que a conexão vira WebSocket - primeiro momento
 -- em que dá pra falar com esse cliente
-function EchoWebSocket:open()
+function EchoWebSocket:onOpen()
   self:connection():send(json.encode{
     event     = "open",
     sessionId = self:connection():sessionId(),
@@ -75,7 +75,7 @@ function EchoWebSocket:open()
 end
 
 -- dispara a cada frame de texto/binário completo recebido do cliente
-function EchoWebSocket:message(payload, binary)
+function EchoWebSocket:onMessage(payload, binary)
   -- só embrulha em JSON se for texto - frame binário não tem por que
   -- virar string JSON, ecoa cru como sempre
   if binary then
@@ -94,7 +94,7 @@ end
 -- dispara quando a conexão termina, de qualquer jeito (cliente fechou,
 -- rede caiu, servidor derrubou) - último momento pra liberar recursos.
 -- nada a fazer aqui nesse exemplo (não tem sala/sessão pra limpar)
-function EchoWebSocket:close()
+function EchoWebSocket:onClose()
 end
 
 -- erro de protocolo WebSocket detectado pelo C++ (timeout de ping,
@@ -103,16 +103,16 @@ end
 -- rescue(), logo abaixo. Esse exemplo só loga; uma aplicação real
 -- decidiria o que fazer (ver Chat/RoomWebSocket.lua pra um exemplo que
 -- derruba a conexão depois de N timeouts de ping seguidos)
-function EchoWebSocket:error(reason)
+function EchoWebSocket:onError(reason)
   print("[EchoWebSocket] error: " .. tostring(reason) ..
     " (session=" .. self:connection():sessionId() .. ")")
 end
 
 -------------------------------------------------------------------------------
 -- RESCUE
--- erro de aplicação: exceção Lua real lançada dentro de open/message/close
--- (capturada pelo pcall de WebSocket:pexecute) - err é a mensagem do erro,
--- não uma das strings fixas de error() acima.
+-- erro de aplicação: exceção Lua real lançada dentro de
+-- onOpen/onMessage/onClose (capturada pelo pcall de WebSocket:pexecute) -
+-- err é a mensagem do erro, não uma das strings fixas de onError() acima.
 -------------------------------------------------------------------------------
 
 function EchoWebSocket:rescue(err)

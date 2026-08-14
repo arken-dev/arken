@@ -7,13 +7,13 @@ function DenyWebSocket:handshake(params)
   return 403, {"X-Test-Reason: negado"}, "acesso negado"
 end
 
-function DenyWebSocket:open()
+function DenyWebSocket:onOpen()
 end
 
-function DenyWebSocket:message(payload, binary)
+function DenyWebSocket:onMessage(payload, binary)
 end
 
-function DenyWebSocket:close()
+function DenyWebSocket:onClose()
 end
 
 return DenyWebSocket

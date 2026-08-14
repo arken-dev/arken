@@ -74,31 +74,31 @@ end
 -------------------------------------------------------------------------------
 
 dispatcher.open = function(connection)
-  call(connection, "open")
+  call(connection, "onOpen")
 end
 
 dispatcher.message = function(connection, payload, binary)
-  call(connection, "message", payload, binary)
+  call(connection, "onMessage", payload, binary)
 end
 
 dispatcher.close = function(connection)
-  call(connection, "close")
+  call(connection, "onClose")
 end
 
 -------------------------------------------------------------------------------
 -- ERROR
 -- erro de protocolo WebSocket detectado pelo C++ (timeout de ping, UTF-8
 -- inválido, mensagem grande demais, violação de protocolo) - não é
--- exceção de aplicação, por isso chama object:error() e não
+-- exceção de aplicação, por isso chama object:onError() e não
 -- object:rescue() (reservado pra exceção Lua real, capturada por
 -- pexecute). Não passa por pexecute/pcall de novo aqui (evita recursão
--- se o próprio error() falhar).
+-- se o próprio onError() falhar).
 -------------------------------------------------------------------------------
 
 dispatcher.error = function(connection, reason)
   local class  = dispatcher.resolveController(connection:path())
   local object = class.new{ _connection = connection }
-  object:error(reason)
+  object:onError(reason)
   object:persist()
 end
 

@@ -41,7 +41,7 @@ O servidor sobe em `ws://127.0.0.1:8091` (porta diferente do exemplo
   ```
 
   (frame binário é a exceção: ecoa cru, sem embrulhar em JSON — ver
-  comentário em `EchoWebSocket:message`)
+  comentário em `EchoWebSocket:onMessage`)
 
 ## Testando manualmente
 

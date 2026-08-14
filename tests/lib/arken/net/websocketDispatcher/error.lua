@@ -1,6 +1,6 @@
 -- cobre a separação entre erro de protocolo WebSocket (dispatcher.error
--- -> object:error()) e erro de aplicação/lógica (exceção Lua real dentro
--- de open/message/close, capturada por pexecute -> object:rescue()) -
+-- -> object:onError()) e erro de aplicação/lógica (exceção Lua real dentro
+-- de onOpen/onMessage/onClose, capturada por pexecute -> object:rescue()) -
 -- antes das duas caírem em rescue(), o que misturava os dois conceitos
 local dispatcher = require 'arken.net.websocketDispatcher'
 local test = {}
