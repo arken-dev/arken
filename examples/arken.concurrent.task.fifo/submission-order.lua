@@ -20,10 +20,10 @@ local fifo = require('arken.concurrent.task.fifo')
 
 fifo.max(1)
 
-fifo.start('examples/arken.concurrent.task.fifo/worker', { i = 'A', sleep = 0.2 })
-fifo.start('examples/arken.concurrent.task.fifo/worker', { i = 'B', sleep = 0.2 })
-fifo.start('examples/arken.concurrent.task.fifo/worker', { i = 'C', sleep = 0.2 })
-fifo.start('examples/arken.concurrent.task.fifo/worker', { i = 'D', sleep = 0.2 })
+fifo.start('examples/arken.concurrent.task.fifo/worker.lua', { i = 'A', sleep = 0.2 })
+fifo.start('examples/arken.concurrent.task.fifo/worker.lua', { i = 'B', sleep = 0.2 })
+fifo.start('examples/arken.concurrent.task.fifo/worker.lua', { i = 'C', sleep = 0.2 })
+fifo.start('examples/arken.concurrent.task.fifo/worker.lua', { i = 'D', sleep = 0.2 })
 
 require('arken.mvm').wait()
 print('done')

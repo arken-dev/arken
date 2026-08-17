@@ -21,7 +21,7 @@
 -- touching the other.
 
 local scheduled = require('arken.concurrent.task.scheduled')
-local worker     = 'examples/arken.concurrent.task.scheduled/worker'
+local worker     = 'examples/arken.concurrent.task.scheduled/worker.lua'
 
 scheduled.max(2)
 

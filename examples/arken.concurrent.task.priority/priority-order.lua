@@ -19,12 +19,12 @@ local priority = require('arken.concurrent.task.priority')
 priority.max(1)
 
 -- submitted first, but LOW priority
-priority.start('examples/arken.concurrent.task.priority/worker', { i = 'low',    priority = 1, sleep = 0.2 }, 1)
+priority.start('examples/arken.concurrent.task.priority/worker.lua', { i = 'low',    priority = 1, sleep = 0.2 }, 1)
 -- submitted right after, HIGH priority -- runs before "low" even though
 -- it was queued second
-priority.start('examples/arken.concurrent.task.priority/worker', { i = 'high',   priority = 9, sleep = 0.2 }, 9)
+priority.start('examples/arken.concurrent.task.priority/worker.lua', { i = 'high',   priority = 9, sleep = 0.2 }, 9)
 -- middle priority, runs between the two above
-priority.start('examples/arken.concurrent.task.priority/worker', { i = 'medium', priority = 5, sleep = 0.2 }, 5)
+priority.start('examples/arken.concurrent.task.priority/worker.lua', { i = 'medium', priority = 5, sleep = 0.2 }, 5)
 
 require('arken.mvm').wait()
 print('done')

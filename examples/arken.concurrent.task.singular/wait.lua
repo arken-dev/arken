@@ -7,7 +7,7 @@
 local singular = require('arken.concurrent.task.singular')
 
 local node = singular.start(
-  'examples/arken.concurrent.task.singular/worker',
+  'examples/arken.concurrent.task.singular/worker.lua',
   { key = 'marketplace:1234', i = 1, sleep = 0.5 },
   'marketplace:1234'
 )

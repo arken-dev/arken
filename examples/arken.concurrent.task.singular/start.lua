@@ -14,7 +14,7 @@
 -- certain conditions instead of always queuing.
 
 local singular = require('arken.concurrent.task.singular')
-local worker    = 'examples/arken.concurrent.task.singular/worker'
+local worker    = 'examples/arken.concurrent.task.singular/worker.lua'
 local key       = 'marketplace:1234'
 
 -- three calls, three tasks queued -- always, unconditionally

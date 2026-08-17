@@ -16,7 +16,7 @@
 -- does not parse them, it only compares them for equality.
 
 local singular = require('arken.concurrent.task.singular')
-local worker    = 'examples/arken.concurrent.task.singular/worker'
+local worker    = 'examples/arken.concurrent.task.singular/worker.lua'
 
 -- Three tasks under the SAME key: they run one after another, never
 -- overlapping -- watch the [worker] start/finish lines for

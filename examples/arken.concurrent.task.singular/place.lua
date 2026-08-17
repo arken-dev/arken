@@ -22,7 +22,7 @@
 -- blocks while the queue itself is non-empty).
 
 local singular = require('arken.concurrent.task.singular')
-local worker    = 'examples/arken.concurrent.task.singular/worker'
+local worker    = 'examples/arken.concurrent.task.singular/worker.lua'
 local key       = 'marketplace:1234'
 
 singular.place(worker, { key = key, i = 1, sleep = 0.3 }, key)

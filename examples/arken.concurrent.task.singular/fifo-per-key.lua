@@ -9,9 +9,9 @@ local singular = require('arken.concurrent.task.singular')
 
 local key = 'marketplace:1234'
 
-singular.start('examples/arken.concurrent.task.singular/worker', { key = key, i = 'A', sleep = 0.3 }, key)
-singular.start('examples/arken.concurrent.task.singular/worker', { key = key, i = 'B', sleep = 0.3 }, key)
-local c = singular.start('examples/arken.concurrent.task.singular/worker', { key = key, i = 'C', sleep = 0.3 }, key)
+singular.start('examples/arken.concurrent.task.singular/worker.lua', { key = key, i = 'A', sleep = 0.3 }, key)
+singular.start('examples/arken.concurrent.task.singular/worker.lua', { key = key, i = 'B', sleep = 0.3 }, key)
+local c = singular.start('examples/arken.concurrent.task.singular/worker.lua', { key = key, i = 'C', sleep = 0.3 }, key)
 
 -- Waiting on the LAST task queued is enough: it can only finish after A
 -- and B, since all three share the same key and run strictly in order.

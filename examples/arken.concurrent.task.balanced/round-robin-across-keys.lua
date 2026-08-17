@@ -17,7 +17,7 @@
 -- "b", "a", "b", ... instead of draining one key before the other.
 
 local balanced = require('arken.concurrent.task.balanced')
-local worker    = 'examples/arken.concurrent.task.balanced/worker'
+local worker    = 'examples/arken.concurrent.task.balanced/worker.lua'
 
 balanced.max(2)
 
