@@ -75,11 +75,11 @@ end
 
 -------------------------------------------------------------------------------
 -- RESCUE
--- erro de aplicação/lógica: chamado só quando open/message/close lançam
--- exceção Lua de verdade (pcall acima) - igual Controller:rescue() no
--- HTTP. Erro de protocolo WebSocket (timeout de ping, UTF-8 inválido,
+-- erro de aplicação/lógica: chamado só quando onOpen/onMessage/onClose
+-- lançam exceção Lua de verdade (pcall acima) - igual Controller:rescue()
+-- no HTTP. Erro de protocolo WebSocket (timeout de ping, UTF-8 inválido,
 -- mensagem grande demais, violação de protocolo) não passa por aqui,
--- vai pra error() - ver mais embaixo.
+-- vai pra onError() - ver mais embaixo.
 -------------------------------------------------------------------------------
 
 function WebSocket:rescue(err)
@@ -94,7 +94,7 @@ end
 -- exceção Lua - isso é rescue(), acima.
 -------------------------------------------------------------------------------
 
-function WebSocket:error(reason)
+function WebSocket:onError(reason)
 end
 
 return WebSocket

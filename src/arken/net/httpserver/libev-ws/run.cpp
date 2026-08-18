@@ -24,6 +24,7 @@
 #include <signal.h>
 #include <sys/ioctl.h>
 
+#include <atomic>
 #include <vector>
 #include <thread>
 
@@ -48,6 +49,16 @@ using WebSocketRegistry = arken::net::WebSocketRegistry;
 /* message length limitation */
 #define MAX_MESSAGE_LEN (4096)
 
+/* teto de bytes drenados do socket por chamada de read_cb - sem isso, uma
+ * conexão que mantém dado sempre disponível (flood, upload grande) prende
+ * a thread lendo só dela até o kernel secar, atrasando as outras conexões
+ * do mesmo ev_loop (cada thread processa uma conexão de cada vez). Ao
+ * bater o teto a gente simplesmente para e devolve o controle pro loop -
+ * como EV_READ é level-triggered, se ainda sobrar dado no kernel o
+ * read_cb é chamado de novo na próxima volta, só que depois de dar chance
+ * pras outras conexões dessa thread rodarem também. */
+#define MAX_READ_PER_CALLBACK (256 * 1024)
+
 /* intervalo do ping que o servidor manda pra cada conexão WebSocket -
  * detecta conexão morta (sem pong de volta) e mantém viva através de
  * proxy/NAT que derrubam conexão ociosa. Quem decide o que fazer quando
@@ -55,8 +66,10 @@ using WebSocketRegistry = arken::net::WebSocketRegistry;
  * o framework só avisa, nunca fecha sozinho por causa disso. */
 #define PING_INTERVAL 30.0
 
-/* record the number of clients */
-static int client_number;
+/* record the number of clients - acessado de todas as worker threads
+ * (accept_cb incrementa, closeConnection decrementa, cada thread com seu
+ * próprio ev_loop), por isso atomic em vez de int puro */
+static std::atomic<int> client_number{0};
 
 /* record fd for close with SIGTERM */
 static int fd;
@@ -85,6 +98,27 @@ struct Connection {
 
   ev_timer pingTimer;               // idem - só existe depois do handshake
   bool     awaitingPong = false;    // true = já mandamos um ping e ainda não veio pong
+
+  // buffer de saída local - toda escrita (resposta HTTP, handshake,
+  // frames de WebSocket) acaba aqui e é drenada por write_cb via
+  // EV_WRITE quando o socket fica pronto pra escrita; nunca escrevemos
+  // sincronamente dentro do callback que gerou o dado, senão um cliente
+  // lento trava a thread inteira (todas as outras conexões do mesmo
+  // ev_loop) esperando o kernel abrir espaço no buffer de envio.
+  std::string outputBuffer;
+  size_t      outputOffset = 0;
+  bool        writeWatcherActive = false;
+  static constexpr size_t MAX_OUTPUT_BUFFER = 8 * 1024 * 1024; // 8 MiB - acima disso é slow consumer, fecha a conexão
+
+  // só existe depois do handshake (type == WEBSOCKET). Acordado (de
+  // QUALQUER thread, via WebSocketRegistry::writeFrame/send) sempre que
+  // essa sessão tem bytes pendentes pra escrever - inclusive quando é a
+  // própria conexão escrevendo pra si mesma (ping_cb, pong/close-echo do
+  // parser), por uniformidade: um único caminho de escrita pra toda
+  // mensagem de WebSocket, local ou cross-thread (broadcast). ev_async é
+  // a única forma segura do libev de notificar a thread dona de um loop
+  // a partir de outra thread.
+  ev_async asyncWatcher;
 
   // casca fina - a lógica/limiar de verdade mora em HttpServer, porque
   // esse Connection aqui é específico do libev-ws; um backend futuro
@@ -127,17 +161,48 @@ ping_cb(struct ev_loop *loop, struct ev_timer *watcher, int revents)
   connection->awaitingPong = true;
 }
 
-static void
-writeAll(int fd, const char * data, size_t size)
+// enfileira dado no buffer de saída local - nunca escreve no fd direto.
+// devolve false se estourar o teto (slow consumer) - quem chamou deve
+// tratar como motivo pra fechar a conexão.
+static bool
+queueOutput(Connection * connection, const char * data, size_t size)
 {
-  ssize_t bytes = write(fd, data, size);
-  while( bytes < static_cast<ssize_t>(size) ) {
-    if( bytes == -1 ) {
-      puts("write error");
-      return;
-    }
-    bytes += write(fd, data + bytes, size - bytes);
+  if( size == 0 ) {
+    return true;
   }
+  if( connection->outputBuffer.size() - connection->outputOffset + size > Connection::MAX_OUTPUT_BUFFER ) {
+    return false;
+  }
+  if( connection->outputOffset > 0 ) {
+    connection->outputBuffer.erase(0, connection->outputOffset);
+    connection->outputOffset = 0;
+  }
+  connection->outputBuffer.append(data, size);
+  return true;
+}
+
+static void
+enableWrite(struct ev_loop *loop, Connection *connection)
+{
+  if( connection->writeWatcherActive || connection->outputBuffer.empty() ) {
+    return;
+  }
+  ev_io_stop(loop, &connection->io);
+  ev_io_set(&connection->io, connection->io.fd, EV_READ | EV_WRITE);
+  ev_io_start(loop, &connection->io);
+  connection->writeWatcherActive = true;
+}
+
+static void
+disableWrite(struct ev_loop *loop, Connection *connection)
+{
+  if( ! connection->writeWatcherActive ) {
+    return;
+  }
+  ev_io_stop(loop, &connection->io);
+  ev_io_set(&connection->io, connection->io.fd, EV_READ);
+  ev_io_start(loop, &connection->io);
+  connection->writeWatcherActive = false;
 }
 
 static void
@@ -147,13 +212,90 @@ closeConnection(struct ev_loop *loop, Connection * connection)
     ev_timer_stop(loop, &connection->pingTimer);
     WebSocketHandler::close(connection->io.fd, connection->sessionId, connection->path,
                              connection->queryString);
-    WebSocketRegistry::remove(connection->sessionId);
+
+    // drena o que sobrou pendente no registry (ex: o close frame que a
+    // gente acabou de enfileirar, ou um pong/close-echo do parser) antes
+    // de tirar a sessão do registro - depois do remove() abaixo ninguém
+    // mais consegue achar essa sessão pra drenar
+    std::string pending = WebSocketRegistry::drainPending(connection->sessionId);
+    if( ! pending.empty() ) {
+      queueOutput(connection, pending.data(), pending.size());
+    }
+
+    WebSocketRegistry::remove(connection->sessionId); // espera qualquer enfileiramento em andamento terminar
+    ev_async_stop(loop, &connection->asyncWatcher);    // só seguro depois do remove() acima
+  }
+
+  if( connection->outputOffset < connection->outputBuffer.size() ) {
+    // última tentativa, não-bloqueante e best-effort, de mandar o que
+    // sobrou (resposta HTTP, handshake reject ou frame de WebSocket)
+    // antes de fechar. Não é garantia de entrega - se o kernel não tiver
+    // espaço agora o final se perde, mas a conexão já está de saída de
+    // qualquer forma (nunca mais vamos rodar EV_WRITE pra ela)
+    send(connection->io.fd, connection->outputBuffer.data() + connection->outputOffset,
+         connection->outputBuffer.size() - connection->outputOffset, MSG_DONTWAIT | MSG_NOSIGNAL);
   }
 
   --client_number;
   ev_io_stop(loop, &connection->io);
   close(connection->io.fd);
   delete connection;
+}
+
+// drena o outputBuffer até esvaziar ou até o socket não aceitar mais
+// (EAGAIN) - nunca bloqueia. Devolve false se a conexão foi fechada (erro
+// real de escrita); quem chamou não deve tocar em `connection` de novo
+// nesse caso.
+static bool
+write_cb(struct ev_loop *loop, Connection *connection)
+{
+  while( connection->outputOffset < connection->outputBuffer.size() ) {
+    const char * data      = connection->outputBuffer.data() + connection->outputOffset;
+    size_t       remaining = connection->outputBuffer.size() - connection->outputOffset;
+
+    ssize_t sent = send(connection->io.fd, data, remaining, MSG_DONTWAIT | MSG_NOSIGNAL);
+
+    if( sent > 0 ) {
+      connection->outputOffset += static_cast<size_t>(sent);
+      continue;
+    }
+
+    if( sent < 0 && (errno == EAGAIN || errno == EWOULDBLOCK) ) {
+      return true; // socket ainda não tá pronto - espera o próximo EV_WRITE
+    }
+
+    // erro real (EPIPE, ECONNRESET etc.) - encerra a conexão
+    closeConnection(loop, connection);
+    return false;
+  }
+
+  connection->outputBuffer.clear();
+  connection->outputOffset = 0;
+  disableWrite(loop, connection);
+  return true;
+}
+
+// disparado (nesta mesma thread dona) quando WebSocketRegistry::writeFrame/
+// send enfileirou bytes novos pra esta sessão - seja de outra thread
+// (broadcast) ou desta mesma (ping_cb, pong/close-echo, mensagens): tudo
+// passa por aqui, por uniformidade. Só aqui é seguro mexer no
+// outputBuffer/EV_WRITE desta conexão.
+static void
+asyncWake_cb(struct ev_loop *loop, struct ev_async *watcher, int revents)
+{
+  auto * connection = static_cast<Connection *>(watcher->data);
+
+  std::string pending = WebSocketRegistry::drainPending(connection->sessionId);
+  if( pending.empty() ) {
+    return;
+  }
+
+  if( ! queueOutput(connection, pending.data(), pending.size()) ) {
+    closeConnection(loop, connection); // estourou MAX_OUTPUT_BUFFER - slow consumer
+    return;
+  }
+
+  enableWrite(loop, connection);
 }
 
 //-----------------------------------------------------------------------------
@@ -226,14 +368,14 @@ processHttp(struct ev_loop *loop, Connection * connection)
 
       std::string response(HttpServer::status(431));
       response.append("\r\nConnection: close\r\nContent-Length: 0\r\n\r\n");
-      writeAll(connection->io.fd, response.data(), response.size());
+      queueOutput(connection, response.data(), response.size());
 
       closeConnection(loop, connection);
     }
     return;
   }
 
-  HttpEnv * env = new HttpEnv(connection->input.data(), connection->input.size(), false);
+  HttpEnv * env = new HttpEnv(connection->input.data(), connection->input.size(), true);
 
   std::string data;
   bool isUpgrade = WebSocketParser::isWebSocketUpgrade(env);
@@ -250,7 +392,7 @@ processHttp(struct ev_loop *loop, Connection * connection)
       delete env;
       connection->input.clear();
 
-      writeAll(connection->io.fd, handshakeReject.data(), handshakeReject.size());
+      queueOutput(connection, handshakeReject.data(), handshakeReject.size());
 
       closeConnection(loop, connection);
       return;
@@ -270,17 +412,27 @@ processHttp(struct ev_loop *loop, Connection * connection)
     connection->sessionId   = sessionId;
     connection->path        = path;
     connection->queryString = queryString;
+
+    delete env;
   } else {
+    // sem delete env aqui - handler(env) empacotou env como userdata do
+    // Lua, então agora é o __gc dele quem cuida da vida desse objeto
     data = HttpServer::handler(env);
   }
 
-  delete env;
   connection->input.clear();
 
-  writeAll(connection->io.fd, data.data(), data.size());
+  queueOutput(connection, data.data(), data.size());
+  enableWrite(loop, connection);
 
   if( isUpgrade ) {
-    WebSocketRegistry::add(connection->sessionId, connection->io.fd);
+    ev_async_init(&connection->asyncWatcher, asyncWake_cb); //NOLINT ev_async_init is macro
+    connection->asyncWatcher.data = connection;
+    ev_async_start(loop, &connection->asyncWatcher);
+
+    WebSocketRegistry::add(connection->sessionId, [loop, connection]() {
+      ev_async_send(loop, &connection->asyncWatcher);
+    });
 
     ev_timer_init(&connection->pingTimer, ping_cb, PING_INTERVAL, PING_INTERVAL); //NOLINT ev_timer_init is macro
     connection->pingTimer.data = connection;
@@ -331,15 +483,25 @@ read_cb(struct ev_loop *loop, struct ev_io *watcher, int revents)
 {
   auto * connection = reinterpret_cast<Connection *>(watcher);
 
+  if( (revents & EV_WRITE) && ! write_cb(loop, connection) ) {
+    return; // conexão foi fechada dentro do write_cb (erro real de escrita)
+  }
+
+  if( ! (revents & EV_READ) ) {
+    return;
+  }
+
   char buf[MAX_MESSAGE_LEN];
   ssize_t ret;
+  size_t  totalRead = 0;
 
   do {
     ret = recv(connection->io.fd, buf, MAX_MESSAGE_LEN, MSG_DONTWAIT);
     if( ret > 0 ) {
       connection->input.append(buf, ret);
+      totalRead += static_cast<size_t>(ret);
     }
-  } while( ret == MAX_MESSAGE_LEN );
+  } while( ret == MAX_MESSAGE_LEN && totalRead < MAX_READ_PER_CALLBACK );
 
   if( ret == 0 || (ret < 0 && errno != EAGAIN && errno != EWOULDBLOCK) ) {
     closeConnection(loop, connection);
@@ -362,6 +524,15 @@ accept_cb(struct ev_loop *loop, struct ev_io *watcher, int revents)
 {
   int connfd = accept(watcher->fd, nullptr, nullptr);
   if (connfd > 0) {
+    // conexão aceita entra bloqueante por padrão - o send() não-bloqueante
+    // em write_cb/closeConnection depende disso pra nunca travar a thread
+    // (todas as outras conexões do mesmo ev_loop) mesmo se o cliente for
+    // lento pra consumir e o buffer de envio do kernel encher
+    int flags = fcntl(connfd, F_GETFL, 0);
+    if( flags >= 0 ) {
+      fcntl(connfd, F_SETFL, flags | O_NONBLOCK);
+    }
+
     if (++client_number > MAX_CLIENTS) {
       close(connfd);
       --client_number;
@@ -373,9 +544,16 @@ accept_cb(struct ev_loop *loop, struct ev_io *watcher, int revents)
   } else if ((connfd < 0) && (errno == EAGAIN || errno == EWOULDBLOCK)) {
     return;
   } else {
-    close(watcher->fd);
-    ev_break(loop, EVBREAK_ALL);
-    /* this will lead main to exit, no need to free watchers of clients */
+    // watcher->fd é o socket de escuta compartilhado por todas as worker
+    // threads (cada uma tem seu próprio ev_loop, mas todas dão accept()
+    // no mesmo fd) - um erro aqui (ex: EMFILE/ENFILE, comum sob alta
+    // concorrência) é local a esta thread; fechar watcher->fd derrubaria
+    // o accept pra todas as outras threads, e ev_break só mata o loop
+    // desta thread, deixando as demais rodando com o fd compartilhado já
+    // fechado (accept() delas passa a falhar com EBADF em loop). Só para
+    // de aceitar nesta thread - as outras continuam normalmente.
+    fprintf(stderr, "arken.net.HttpServer (libev-ws): accept error (errno=%d), parando accept nesta thread\n", errno);
+    ev_io_stop(loop, watcher);
   }
 }
 

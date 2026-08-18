@@ -11,7 +11,7 @@ end
 
 test.should_be_used_consistently_by_resolveController = function()
   -- resolveController precisa continuar resolvendo pro mesmo módulo que
-  -- modulePath calcula, já que dispatch (open/message/close) depende disso
+  -- modulePath calcula, já que dispatch (onOpen/onMessage/onClose) depende disso
   package.path = package.path .. ';util/?.lua'
   local class = dispatcher.resolveController("/wss/echo")
   assert(class.className == "WssTestEchoWebSocket", class.className)

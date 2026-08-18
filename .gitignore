@@ -25,7 +25,9 @@ deps/*
 .qmake.stash
 coverage/*
 .DS_Store
-cmake/*
+cmake/CMakeCache.txt
+cmake/CMakeFiles/
+cmake/cmake_install.cmake
 bootstrap/tmp/
 
 examples/arken.graphics.chart/*.png

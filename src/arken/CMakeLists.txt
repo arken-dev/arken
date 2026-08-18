@@ -18,7 +18,9 @@ include_directories(${PROJECT_SOURCE_DIR}/src/vendors/mongrel2/http11)
 file(GLOB src      ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
 file(GLOB os       ${CMAKE_CURRENT_SOURCE_DIR}/os/*.c)
 file(GLOB net      ${CMAKE_CURRENT_SOURCE_DIR}/net/*.cpp)
+list(REMOVE_ITEM net ${CMAKE_CURRENT_SOURCE_DIR}/net/websocketclient.cpp)
 file(GLOB concurrent ${CMAKE_CURRENT_SOURCE_DIR}/concurrent/*.cpp)
+list(REMOVE_ITEM concurrent ${CMAKE_CURRENT_SOURCE_DIR}/concurrent/mailbox.cpp)
 file(GLOB concurrent-task ${CMAKE_CURRENT_SOURCE_DIR}/concurrent/task/*.cpp)
 file(GLOB compress ${CMAKE_CURRENT_SOURCE_DIR}/compress/*.cpp)
 file(GLOB time     ${CMAKE_CURRENT_SOURCE_DIR}/time/*.cpp)
@@ -44,10 +46,11 @@ add_library(
   ${utils}
   ${mvm-container}
   ${net}
+  ${arken-net-websocketclient}
 #  ${httpserver}
   ${arken-notify}
   ${os} ${os-system} ${os-uuid}
-  ${concurrent} ${concurrent-task} ${arken-concurrent-worker}
+  ${concurrent} ${concurrent-task} ${arken-concurrent-mailbox} ${arken-concurrent-worker}
   ${regex}
   ${time}
   ${mongrel2}
@@ -76,6 +79,14 @@ endif()
 if(NOT LIBSSL_PATH STREQUAL "")
   message("LIBSSL......................: ${LIBSSL_PATH}")
   target_link_libraries(arken ${LIBSSL_PATH})
+endif()
+
+#------------------------------------------------------------------------------
+# ARKEN_NET_WEBSOCKETCLIENT
+#------------------------------------------------------------------------------
+
+if(ARKEN_NET_WEBSOCKETCLIENT)
+  target_link_libraries(arken ${LWS_LIB})
 endif()
 
 #------------------------------------------------------------------------------
@@ -175,7 +186,7 @@ if(ARKEN_NET_HTTPSERVER MATCHES "boost" OR ARKEN_MVM_CONTAINER MATCHES "boost")
   target_link_libraries(arken pthread m ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
 endif()
 
-if(ARKEN_NET_HTTPSERVER STREQUAL "libev")
+if(ARKEN_NET_HTTPSERVER STREQUAL "libev" OR ARKEN_NET_HTTPSERVER STREQUAL "libev-rev" OR ARKEN_NET_HTTPSERVER STREQUAL "libev-ws")
   target_link_libraries(arken ev)
 endif()
 

@@ -67,10 +67,18 @@ void HttpServer::start()
 
 std::string HttpServer::handler(const char * data, size_t size)
 {
-  HttpEnv * env = new HttpEnv(data, size, false);
-  std::string response = HttpServer::handler(env);
-  delete env;
-  return response;
+  // owned=true (padrão) - env vira userdata do Lua dentro de handler(env)
+  // logo abaixo, e é o Lua quem decide quando recolher (__gc), não C++
+  // manualmente. Antes de "websocket experimental release" (ba2a15a0)
+  // sempre foi assim aqui - o owned=false + delete manual introduzido
+  // ali foi engano de refactor (pensado pro caso específico do handshake
+  // de WebSocket em run.cpp, que nunca expõe env ao Lua), aplicado por
+  // engano nesse caminho compartilhado por todo HTTP puro (libev,
+  // libev-rev, libevent, epoll) e causou use-after-free se o dispatcher
+  // guardar `env` além da chamada síncrona (delete manual competindo
+  // com o __gc do Lua, ou apagando o objeto antes da hora).
+  HttpEnv * env = new HttpEnv(data, size);
+  return HttpServer::handler(env);
 }
 
 std::string HttpServer::handler(HttpEnv * env)
