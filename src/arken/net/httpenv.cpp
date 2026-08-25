@@ -99,7 +99,7 @@ HttpEnv::~HttpEnv()
 
 void HttpEnv::setField(string field, string value)
 {
-  m_fields[field] = value;
+  m_fields[field.lower()] = value;
 }
 
 void HttpEnv::setFragment(const char * at, size_t len)
@@ -174,7 +174,7 @@ string HttpEnv::fragment()
 
 string HttpEnv::field(const char * key)
 {
-  return m_fields[key];
+  return m_fields[string(key).lower()];
 }
 
 const char * HttpEnv::data()

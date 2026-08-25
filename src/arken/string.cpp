@@ -109,6 +109,19 @@ char * string::capitalize(const char * string)
   return result;
 }
 
+char * string::lower(const char * string)
+{
+  int len = strlen(string);
+  auto result = new char[len + 1];
+
+  for (int i = 0; i < len; i++) {
+    result[i] = tolower(string[i]);
+  }
+  result[len] = '\0';
+
+  return result;
+}
+
 char * string::center(const char * string, size_t size, const char * pad)
 {
   size_t str_len = strlen(string);
@@ -1593,6 +1606,11 @@ string string::camelCase(bool lcfirst)
 string string::capitalize()
 {
   return string::capitalize(m_data);
+}
+
+string string::lower()
+{
+  return string::lower(m_data);
 }
 
 string string::center(size_t size, const char * pad)

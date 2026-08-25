@@ -51,7 +51,7 @@ class string {
   static int    lastIndexOf(const char * string, const char * str);
   static char * left(const char *string, int len);
   // len
-  // lower
+  static char * lower(const char * string);
   static char * md5(const char * string, size_t len);
   static char * mid(const char * string, int pos, int len = -1, int string_len = 0, size_t * _len = nullptr);
   static char * normalize(const char * string);
@@ -126,7 +126,7 @@ class string {
   int    lastIndexOf(const char * str);
   string left(int len);
   size_t len();
-  // lower
+  string lower();
   string md5();
   string mid(int pos, int len = -1);
   string normalize();
