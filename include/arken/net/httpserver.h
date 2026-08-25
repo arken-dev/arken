@@ -34,6 +34,8 @@ class HttpServer
   std::string handler(HttpEnv * env);
   static const char * status(int code);
   static bool headerTooLarge(size_t size);
+  static bool bodyTooLarge(size_t size);
+  static size_t requestSize(const char * data, size_t headerEnd);
 
   HttpServer(const char * address, int port);
   void setThreads(int threads);
