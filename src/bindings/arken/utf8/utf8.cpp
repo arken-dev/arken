@@ -87,6 +87,13 @@ static int arken_utf8_sanitize( lua_State *L ) {
   return 1;
 }
 
+static int arken_utf8_valid( lua_State *L ) {
+  size_t size;
+  const char * data = luaL_checklstring(L, 1, &size);
+  lua_pushboolean( L, utf8::valid(data, size) );
+  return 1;
+}
+
 static int arken_utf8_asc( lua_State *L ) {
   const char * str = luaL_checkstring(L, 1);
   char chr = 0;
@@ -111,6 +118,7 @@ register_arken_utf8( lua_State *L ) {
     {"encode",   arken_utf8_encode},
     {"sanitize", arken_utf8_sanitize},
     {"asc",      arken_utf8_asc},
+    {"valid",    arken_utf8_valid},
     {nullptr, nullptr}
   };
   luaL_newmetatable(L, "arken.utf8");

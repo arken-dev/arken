@@ -8,7 +8,7 @@
 #
 # ------------------------------------------------------------------------------
 
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.5)
 project("arken")
 
 # ------------------------------------------------------------------------------
@@ -16,6 +16,26 @@ project("arken")
 # ------------------------------------------------------------------------------
 
 LIST(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+
+# ------------------------------------------------------------------------------
+# ARKEN VENDOR ROOT
+# ------------------------------------------------------------------------------
+# Base prefix where prebuilt third-party libraries are installed system-wide
+# (e.g. /opt/objectdata/zxing, /opt/objectdata/postgres, ...). Modules look
+# for ${ARKEN_VENDOR_ROOT}/<name> first, preferring it over whatever the
+# system provides, before falling back to find_package/default search paths.
+
+set(ARKEN_VENDOR_ROOT "/opt/objectdata" CACHE PATH
+  "Base prefix scanned first for prebuilt third-party libraries (e.g. /opt/objectdata/zxing).")
+
+function(arken_vendor_root outVar name)
+  set(candidate "${ARKEN_VENDOR_ROOT}/${name}")
+  if(EXISTS "${candidate}")
+    set(${outVar} "${candidate}" PARENT_SCOPE)
+  else()
+    set(${outVar} "" PARENT_SCOPE)
+  endif()
+endfunction()
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${PROJECT_SOURCE_DIR}/deps/include)
@@ -26,13 +46,16 @@ include_directories(${PROJECT_SOURCE_DIR}/src/lua/json)
 include(clang-tidy)
 include(arken-barcode)
 include(arken-base64)
+include(arken-concurrent-mailbox)
 include(arken-concurrent-worker)
 include(arken-debug)
 include(arken-digest)
 include(arken-doc-pdf)
-include(arken-image)
+include(arken-graphics-image)
+include(arken-graphics-chart)
 include(arken-mvm)
 include(arken-net-httpserver)
+include(arken-net-websocketclient)
 include(arken-os)
 include(arken-regex)
 include(arken-notify)
@@ -40,6 +63,7 @@ include(arken-macros)
 include(arken-xml)
 include(google-breakpad)
 include(curl)
+include(libwebsockets)
 include(openssl)
 include(lua-mysql)
 include(lua-postgres)

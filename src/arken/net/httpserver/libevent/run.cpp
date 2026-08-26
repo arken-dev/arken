@@ -20,20 +20,17 @@
 #include <arpa/inet.h>
 #include <signal.h>
 
+#include <atomic>
 #include <vector>
 #include <thread>
 
 #include <event2/event.h>
-#include <event2/thread.h>
 #include <event2/buffer.h>
 #include <event2/bufferevent.h>
 
 #include <arken/net/httpserver.h>
 #include <arken/mvm.h>
 #include <arken/base>
-
-#define ARKEN_NET_HTTPSERVER_LIBEVENT_PERSIST 0
-#define ARKEN_NET_HTTPSERVER_LIBEVENT_DEBUG   0
 
 using HttpServer = arken::net::HttpServer;
 
@@ -46,8 +43,10 @@ using HttpServer = arken::net::HttpServer;
 /* message length limitation */
 #define MAX_LINE 4096
 
-/* record the number of clients */
-static int client_number;
+/* record the number of clients - acessado de todas as worker threads
+ * (accept_cb incrementa, closeConn decrementa, cada thread com seu
+ * próprio event_base), por isso atomic em vez de int puro */
+static std::atomic<int> client_number{0};
 
 /* record fd for close with SIGTERM */
 static int fd;
@@ -98,11 +97,105 @@ static int create_serverfd(char const *addr, uint16_t port)
 }
 
 //-----------------------------------------------------------------------------
+// CONNECTION STATE
+//-----------------------------------------------------------------------------
+
+// buffer de saída por conexão - toda resposta HTTP acaba aqui e é drenada
+// por writeSome() via EV_WRITE quando o socket fica pronto pra escrita;
+// nunca escrevemos sincronamente dentro do callback que gerou a resposta,
+// senão um cliente lento trava a thread inteira (todas as outras conexões
+// do mesmo event_base) esperando o kernel abrir espaço no buffer de envio.
+struct ConnState {
+  struct event * ev = nullptr;
+  event_base *   base = nullptr;
+  std::string    output;
+  size_t         offset = 0;
+  bool           writeEnabled = false;
+};
+
+static void
+ioCallback(int fd, short events, void *arg);
+
+static void
+closeConn(ConnState *state, int fd)
+{
+  --client_number;
+  event_free(state->ev);
+  close(fd);
+  delete state;
+}
+
+static void
+enableWrite(ConnState *state, int fd)
+{
+  if( state->writeEnabled ) {
+    return;
+  }
+  event_del(state->ev);
+  event_assign(state->ev, state->base, fd, EV_READ | EV_WRITE | EV_PERSIST, ioCallback, state);
+  event_add(state->ev, nullptr);
+  state->writeEnabled = true;
+}
+
+static void
+disableWrite(ConnState *state, int fd)
+{
+  if( ! state->writeEnabled ) {
+    return;
+  }
+  event_del(state->ev);
+  event_assign(state->ev, state->base, fd, EV_READ | EV_PERSIST, ioCallback, state);
+  event_add(state->ev, nullptr);
+  state->writeEnabled = false;
+}
+
+// drena o output até esvaziar ou até o socket não aceitar mais (EAGAIN) -
+// nunca bloqueia. Devolve false se a conexão foi fechada (erro real de
+// escrita); quem chamou não deve tocar em `state`/`fd` de novo nesse caso.
+static bool
+writeSome(ConnState *state, int fd)
+{
+  while( state->offset < state->output.size() ) {
+    const char * data      = state->output.data() + state->offset;
+    size_t       remaining = state->output.size() - state->offset;
+
+    ssize_t sent = send(fd, data, remaining, MSG_DONTWAIT | MSG_NOSIGNAL);
+
+    if( sent > 0 ) {
+      state->offset += static_cast<size_t>(sent);
+      continue;
+    }
+
+    if( sent < 0 && (errno == EAGAIN || errno == EWOULDBLOCK) ) {
+      return true; // socket ainda não tá pronto - espera o próximo EV_WRITE
+    }
+
+    closeConn(state, fd);
+    return false;
+  }
+
+  state->output.clear();
+  state->offset = 0;
+  disableWrite(state, fd);
+  return true;
+}
+
+//-----------------------------------------------------------------------------
 // READ CALLBACK
 //-----------------------------------------------------------------------------
 
-void read_cb(int fd, short events, void *arg)
+static void
+ioCallback(int fd, short events, void *arg)
 {
+  auto *state = static_cast<ConnState *>(arg);
+
+  if( (events & EV_WRITE) && ! writeSome(state, fd) ) {
+    return;
+  }
+  if( ! (events & EV_READ) ) {
+    return;
+  }
+
   char buf[MAX_MESSAGE_LEN+1] = {0};
   ssize_t ret;
   std::string tmp;
@@ -116,32 +209,14 @@ void read_cb(int fd, short events, void *arg)
   } while(ret == MAX_MESSAGE_LEN);
 
   if (ret > 0) {
-    std::string data = HttpServer::handler(tmp.c_str(), tmp.size());
-    const char * result = data.c_str();
-    auto size  = static_cast<ssize_t>(data.size());
-    ssize_t bytes = write(fd, result, size);
-    while( bytes < size ) {
-      if (bytes == -1) {
-        puts("write error");
-        break;
-      }
-      bytes += write(fd, result+bytes, size-bytes);
-    }
-    #if ARKEN_NET_HTTPSERVER_LIBEVENT_PERSIST == 0
-    // not works without close socket and read_cb without EV_PERSIST :(
-    #if ARKEN_NET_HTTPSERVER_LIBEVENT_DEBUG
-      std::cout << "close client" << std::endl;
-    #endif
-    --client_number;
-    close(fd);
-    #endif
+    state->output = HttpServer::handler(tmp.c_str(), tmp.size());
+    state->offset = 0;
+    enableWrite(state, fd);
   } else if ((ret < 0) && (errno == EAGAIN || errno == EWOULDBLOCK)) {
     return;
   } else {
-    --client_number;
-    close(fd);
+    closeConn(state, fd);
   }
-
 }
 
 //-----------------------------------------------------------------------------
@@ -159,28 +234,35 @@ accept_cb(int fd, short event, void *arg)
   if (sockfd > 0) {
     if (++client_number > MAX_CLIENTS) {
       std::cout << "max clients" << std::endl;
-      close(fd); // or close sockfd ???
+      close(sockfd);
+      --client_number;
     } else {
-      auto base = static_cast<event_base*>(arg);
-      struct event *ev = event_new(nullptr, -1, 0, nullptr, nullptr);
-      // not works without close socket and read_cb without EV_PERSIST :(
-      #if ARKEN_NET_HTTPSERVER_LIBEVENT_PERSIST == 0
-      #if ARKEN_NET_HTTPSERVER_LIBEVENT_DEBUG
-        std::cout << "accept EV_READ" << std::endl;
-      #endif
-      event_assign(ev, base, sockfd, EV_READ, read_cb, (void*)ev);
-      #else
-      #if ARKEN_NET_HTTPSERVER_LIBEVENT_DEBUG
-        std::cout << "accept EV_READ | EV_PERSIST" << std::endl;
-      #endif
-      event_assign(ev, base, sockfd, EV_READ | EV_PERSIST, read_cb, (void*)ev);
-      #endif
-      event_add(ev, nullptr);
+      // conexão aceita entra bloqueante por padrão - writeSome() depende
+      // de O_NONBLOCK pra nunca travar a thread (todas as outras conexões
+      // do mesmo event_base) mesmo se o cliente for lento pra consumir
+      int flags = fcntl(sockfd, F_GETFL, 0);
+      if( flags >= 0 ) {
+        fcntl(sockfd, F_SETFL, flags | O_NONBLOCK);
+      }
+
+      auto self  = static_cast<struct event *>(arg); // listener_event, ver working()
+      auto base  = event_get_base(self);
+      auto state = new ConnState();
+      state->base = base;
+      state->ev   = event_new(nullptr, -1, 0, nullptr, nullptr);
+      event_assign(state->ev, base, sockfd, EV_READ | EV_PERSIST, ioCallback, state);
+      event_add(state->ev, nullptr);
     }
   } else if ((sockfd < 0) && (errno == EAGAIN || errno == EWOULDBLOCK)) {
     return;
   } else {
-    close(sockfd);
+    // `fd` aqui é o socket de escuta compartilhado por todas as worker
+    // threads - um erro real (ex: EMFILE/ENFILE sob alta concorrência) é
+    // local a esta thread; fechar `fd` derrubaria o accept pra todas as
+    // outras. Só para de escutar por accept nesta thread (event_del não
+    // mexe no fd nem afeta as conexões já abertas neste mesmo event_base)
+    fprintf(stderr, "arken.net.HttpServer (libevent): accept error (errno=%d), parando accept nesta thread\n", errno);
+    event_del(static_cast<struct event *>(arg));
   }
 }
 
@@ -201,9 +283,12 @@ working( int fd )
     return;
   }
 
-  listener_event = event_new(base, fd, EV_READ | EV_PERSIST, accept_cb, (void *)base);
-
-  /* check it? */
+  // event_new/event_assign em dois passos (em vez de um event_new só) pra
+  // poder passar o próprio listener_event como arg do accept_cb - assim
+  // o accept_cb consegue se auto-desregistrar (event_del) em caso de erro,
+  // sem precisar de uma variável global pra isso
+  listener_event = event_new(nullptr, -1, 0, nullptr, nullptr);
+  event_assign(listener_event, base, fd, EV_READ | EV_PERSIST, accept_cb, listener_event);
   event_add(listener_event, nullptr);
 
   event_base_dispatch(base);
@@ -263,15 +348,11 @@ signal_handler(int signo)
 
 void HttpServer::run()
 {
-  #ifdef WIN32
-  evthread_use_windows_threads();
-  #endif
-  #ifdef _EVENT_HAVE_PTHREADS
-  evthread_use_pthreads();
-  #endif
-
   std::cout << "start arken.net.HttpServer (libevent) " << m_address <<
      ":" << m_port << " (" << m_threads << ") threads..." << std::endl;
+
+  // avoid process death when writing to a socket the peer already closed
+  signal(SIGPIPE, SIG_IGN);
 
   //signal(SIGTERM, signal_handler);
   //signal(SIGINT,  signal_handler);

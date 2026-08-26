@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# archive_command do Postgres para o broker.
+# postgresql.conf:
+#   archive_mode    = on
+#   archive_command = '/caminho/para/archive_command %f %p'
+#
+# Postgres chama com:
+#   %f = nome do segmento WAL (ex: 00000001000000000000007B)
+#   %p = caminho completo do arquivo a arquivar
+#
+# Exit code != 0 faz o Postgres tentar de novo mais tarde (retry nativo),
+# por isso não fazemos retry aqui dentro.
+set -euo pipefail
+
+WAL_NAME="$1"
+WAL_PATH="$2"
+
+BROKER_URL="${BROKER_URL:-http://127.0.0.1:2345/broker}"
+BROKER_TOPIC="${BROKER_TOPIC:-wal}"
+BROKER_AGENTE="${BROKER_AGENTE:?defina BROKER_AGENTE, ex: projeto-009765}"
+
+TMP_GZ="$(mktemp)"
+trap 'rm -f "$TMP_GZ"' EXIT
+
+gzip -c "$WAL_PATH" > "$TMP_GZ"
+
+curl -fsS -X POST "$BROKER_URL" \
+  -H "X-Broker-Topic: ${BROKER_TOPIC}" \
+  -H "X-Broker-Agente: ${BROKER_AGENTE}" \
+  -H "X-Broker-Identificador: ${WAL_NAME}" \
+  -H "X-Broker-Ext: gz" \
+  --data-binary @"${TMP_GZ}"

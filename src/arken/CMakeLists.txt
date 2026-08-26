@@ -17,13 +17,15 @@ include_directories(${PROJECT_SOURCE_DIR}/src/vendors/mongrel2/http11)
 
 file(GLOB src      ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
 file(GLOB os       ${CMAKE_CURRENT_SOURCE_DIR}/os/*.c)
-file(GLOB os-glob  ${PROJECT_SOURCE_DIR}/src/vendors/apple/glob.c)
 file(GLOB net      ${CMAKE_CURRENT_SOURCE_DIR}/net/*.cpp)
+list(REMOVE_ITEM net ${CMAKE_CURRENT_SOURCE_DIR}/net/websocketclient.cpp)
 file(GLOB concurrent ${CMAKE_CURRENT_SOURCE_DIR}/concurrent/*.cpp)
+list(REMOVE_ITEM concurrent ${CMAKE_CURRENT_SOURCE_DIR}/concurrent/mailbox.cpp)
 file(GLOB concurrent-task ${CMAKE_CURRENT_SOURCE_DIR}/concurrent/task/*.cpp)
 file(GLOB compress ${CMAKE_CURRENT_SOURCE_DIR}/compress/*.cpp)
 file(GLOB time     ${CMAKE_CURRENT_SOURCE_DIR}/time/*.cpp)
 file(GLOB chrono   ${CMAKE_CURRENT_SOURCE_DIR}/chrono/*.cpp)
+file(GLOB utils    ${CMAKE_CURRENT_SOURCE_DIR}/utils/*.cpp)
 
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/deps)
 set(mongrel2 ${PROJECT_SOURCE_DIR}/src/vendors/mongrel2/http11/http11_parser.c)
@@ -33,19 +35,22 @@ add_library(
   ${src}
   ${arken-barcode}
   ${arken-doc-pdf}
-  ${arken-image}
+  ${arken-graphics-image}
+  ${arken-graphics-chart}
   ${base64}
   ${base64-embedded}
   ${compress}
   ${chrono}
   ${digest}
   ${digest-embedded}
+  ${utils}
   ${mvm-container}
   ${net}
+  ${arken-net-websocketclient}
 #  ${httpserver}
   ${arken-notify}
-  ${os} ${os-system} ${os-uuid} ${os-glob}
-  ${concurrent} ${concurrent-task} ${arken-concurrent-worker}
+  ${os} ${os-system} ${os-uuid}
+  ${concurrent} ${concurrent-task} ${arken-concurrent-mailbox} ${arken-concurrent-worker}
   ${regex}
   ${time}
   ${mongrel2}
@@ -77,6 +82,14 @@ if(NOT LIBSSL_PATH STREQUAL "")
 endif()
 
 #------------------------------------------------------------------------------
+# ARKEN_NET_WEBSOCKETCLIENT
+#------------------------------------------------------------------------------
+
+if(ARKEN_NET_WEBSOCKETCLIENT)
+  target_link_libraries(arken ${LWS_LIB})
+endif()
+
+#------------------------------------------------------------------------------
 # ARKEN_DOC_PDF
 #------------------------------------------------------------------------------
 
@@ -85,10 +98,10 @@ if(ARKEN_DOC_PDF)
 endif()
 
 #------------------------------------------------------------------------------
-# ARKEN_IMAGE
+# ARKEN_GRAPHICS_IMAGE / ARKEN_GRAPHICS_CHART
 #------------------------------------------------------------------------------
 
-if(ARKEN_IMAGE)
+if(ARKEN_GRAPHICS_IMAGE OR ARKEN_GRAPHICS_CHART)
   target_link_libraries(arken ${ImageMagick_MagickWand_LIBRARY})
 endif()
 
@@ -118,7 +131,18 @@ if(ARKEN_NOTIFY STREQUAL "glib")
 endif()
 
 if(ARKEN_NOTIFY STREQUAL "opengl")
-  target_link_libraries(arken glut GL)
+  target_link_libraries(arken ${OPENGL_LIBRARIES})
+  target_link_libraries(arken ${GLFW_LIBRARIES})
+  target_link_libraries(arken ${FREETYPE_LIBRARIES})
+
+  if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    target_link_libraries(arken gdi32)
+  elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    target_link_libraries(arken "-framework Cocoa" "-framework IOKit" "-framework CoreVideo")
+  else()
+    target_link_libraries(arken ${FONTCONFIG_LIBRARIES})
+    target_link_libraries(arken ${X11_LIBRARIES})
+  endif()
 endif()
 
 #------------------------------------------------------------------------------
@@ -162,7 +186,7 @@ if(ARKEN_NET_HTTPSERVER MATCHES "boost" OR ARKEN_MVM_CONTAINER MATCHES "boost")
   target_link_libraries(arken pthread m ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
 endif()
 
-if(ARKEN_NET_HTTPSERVER STREQUAL "libev")
+if(ARKEN_NET_HTTPSERVER STREQUAL "libev" OR ARKEN_NET_HTTPSERVER STREQUAL "libev-rev" OR ARKEN_NET_HTTPSERVER STREQUAL "libev-ws")
   target_link_libraries(arken ev)
 endif()
 
@@ -175,7 +199,11 @@ endif()
 #------------------------------------------------------------------------------
 
 if(ARKEN_BARCODE)
-  target_link_libraries( arken ZXing )
+  if(ARKEN_BARCODE_BACKEND STREQUAL "zint")
+    target_link_libraries( arken zint )
+  else() # zxing | zxing-legacy
+    target_link_libraries( arken ZXing::ZXing )
+  endif()
 endif()
 
 #------------------------------------------------------------------------------

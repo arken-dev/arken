@@ -82,6 +82,12 @@ static int arken_os_dirpath( lua_State *L ) {
   return 1;
 }
 
+static int arken_os_du( lua_State *L ) {
+  const char * path = luaL_checkstring(L, 1);
+  lua_pushnumber( L, os::du(path) );
+  return 1;
+}
+
 static int arken_os_exists( lua_State *L ) {
   const char * path = luaL_checkstring(L, 1);
   lua_pushboolean( L, os::exists(path) );
@@ -91,6 +97,12 @@ static int arken_os_exists( lua_State *L ) {
 static int arken_os_executablePath( lua_State *L ) {
   string result = os::executablePath();
   lua_pushlstring( L, result.data(), result.size() );
+  return 1;
+}
+
+static int arken_os_fsync( lua_State *L ) {
+  const char * path = luaL_checkstring(L, 1);
+  lua_pushboolean( L, os::fsync(path) );
   return 1;
 }
 
@@ -294,8 +306,10 @@ int luaopen_arken_os( lua_State *L ) {
     {"chdir",          arken_os_chdir},
     {"ctime",          arken_os_ctime},
     {"dirpath",        arken_os_dirpath},
+    {"du",             arken_os_du},
     {"exists",         arken_os_exists},
     {"executablePath", arken_os_executablePath},
+    {"fsync",          arken_os_fsync},
     {"glob",           arken_os_glob},
     {"find",           arken_os_find},
     {"home",           arken_os_home},

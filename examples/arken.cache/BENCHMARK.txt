@@ -1,0 +1,55 @@
+arken.cache vs Redis — benchmark de escrita/leitura
+=====================================================
+
+Metodologia
+-----------
+- 100.000 operações, valor de 100 bytes, mesma carga nos três casos.
+- Redis via TCP loopback (127.0.0.1:6379) — cenário mais favorável possível
+  pra ele, sem nem hop de rede.
+- arken.cache: script Lua sequencial (bin/arken), cronometrado com
+  os.microtime(). Single-threaded — não mede contenção sob N threads reais
+  concorrendo pelo mesmo mutex, só o custo por operação.
+- Redis: redis-benchmark oficial, comando "SET"/"GET", payload -d 100.
+  Duas colunas: 1 cliente (comparação justa com o script sequencial acima,
+  nenhum dos dois lados usando paralelismo) e 50 clientes paralelos
+  (pipeline default do redis-benchmark — o melhor caso realista do Redis).
+- arken.cache INSERT/VALUE passam por arken::json por dentro (aceitam
+  qualquer valor Lua). arken.cache PUT/GET não passam por JSON nenhum
+  (string->string puro, binário-seguro). Ver insert-value.lua e put-get.lua
+  nesta pasta pra quando usar cada um.
+
+Resultado
+---------
+
+                             ops/sec  ms/op medio  vs Redis (1 cliente)  vs Redis (50 clientes)
+arken.cache INSERT           865.644   0,00116 ms                 38,6x                   11,9x
+arken.cache VALUE          1.153.536   0,00087 ms                 48,9x                   15,9x
+arken.cache PUT            1.477.997   0,00068 ms                 65,8x                   20,4x
+arken.cache GET            3.407.039   0,00029 ms                144,3x                   46,9x
+Redis SET (1 cliente)         22.447   0,04455 ms                     -                       -
+Redis GET (1 cliente)         23.607   0,04236 ms                     -                       -
+Redis SET (50 clientes)       72.464            -                     -                       -
+Redis GET (50 clientes)       72.622            -                     -                       -
+
+Leitura dos números
+--------------------
+- PUT/GET (sem JSON) é o caminho mais rápido: ~66x mais rápido que o Redis
+  na escrita e ~144x na leitura, contra um único cliente Redis — e ainda
+  ~20x/~47x mais rápido que o melhor caso do Redis (50 clientes paralelos).
+- INSERT/VALUE (com JSON) já é bem mais rápido que o Redis sozinho (~39-49x
+  contra 1 cliente, ~12-16x contra 50 clientes), mesmo pagando o custo de
+  serialização — a vantagem de estar in-process (sem round-trip de socket
+  nem protocolo RESP) domina o resultado.
+- A diferença entre INSERT/VALUE e PUT/GET mostra o preço do JSON: ~41% do
+  tempo de escrita e ~66% do tempo de leitura em INSERT/VALUE vêm só do
+  encode/decode — por isso put/get existe como alternativa pra quem só
+  precisa guardar string.
+
+Ressalvas
+---------
+- Isso mede a operação de cache isolada, não um request HTTP completo.
+- Teste single-threaded: não mede contenção do mutex sob concorrência real
+  (N threads do HttpServer batendo no mesmo bucket ao mesmo tempo).
+- Redis está na mesma máquina, sem rede real entre cliente e servidor — em
+  produção, com Redis num host separado, a vantagem do arken.cache tende a
+  ser ainda maior, não menor.

@@ -26,8 +26,8 @@ if(ARKEN_DOC_PDF)
 add_subdirectory(doc/pdf)
 endif()
 
-if(ARKEN_IMAGE)
-add_subdirectory(image)
+if(ARKEN_GRAPHICS_IMAGE OR ARKEN_GRAPHICS_CHART)
+add_subdirectory(graphics)
 endif()
 
 add_subdirectory(json)

@@ -1,0 +1,224 @@
+ANÁLISE DE CONCORRÊNCIA - run.cpp (libev-ws)
+==============================================
+
+Contexto: servidor caiu em produção sob alta concorrência. Revisão do
+run.cpp (backend libev-ws do arken.net.HttpServer), comparando análise
+própria com sugestões de outros modelos (arquivos run-*.cpp.ref na mesma
+pasta).
+
+
+ANÁLISE PRÓPRIA (antes de olhar os .ref)
+==========================================
+
+1. (CRÍTICO) write() bloqueante dentro do event loop - provável causa da queda
+
+O socket aceito nunca é colocado em non-blocking. create_serverfd só seta
+O_NONBLOCK no fd de escuta (run.cpp:198-200); o connfd que sai do accept()
+em accept_cb (run.cpp:363) fica em modo bloqueante. O recv() usa
+MSG_DONTWAIT explícito (run.cpp:338), então a leitura não sofre - mas os
+writes não:
+
+- writeAll() (run.cpp:130-141) - usado nas respostas HTTP e no handshake
+- WebSocketRegistry::writeFrame() (websocket.cpp:424-445) - usado por
+  processWebSocket, ping_cb e por WebSocketConnection::send() (ou seja,
+  todo connection:send() chamado do Lua)
+
+Ambos fazem write() síncrono, sem EV_WRITE/fila de saída. Se o cliente do
+outro lado é lento pra consumir (mobile, rede ruim, ou muita gente sendo
+alvo de um broadcast ao mesmo tempo), o buffer TCP de envio enche e o
+write() trava a thread inteira - e como cada thread roda seu próprio
+ev_loop, isso congela todas as outras conexões que por acaso estão naquela
+mesma thread, não só a lenta.
+
+Piora em concorrência: WebSocketRegistry serializa escritas por sessão com
+entry->writeMutex (websocket.h:144). Se a thread A está travada escrevendo
+pro cliente lento X, e a thread B tenta mandar mensagem pra esse mesmo X
+(ex: outro membro da sala broadcastando), a thread B também trava,
+esperando o mutex. Numa sala de chat com N conexões distribuídas em várias
+threads, um único cliente lento pode ir travando thread por thread
+conforme cada uma tenta falar com ele - em tese consegue travar o processo
+inteiro sob carga de broadcast. Isso bate exatamente com "caiu sob alta
+concorrência".
+
+Além disso, WebSocketRegistry::remove() (websocket.cpp:401-421) espera
+esse mesmo mutex antes de devolver - então closeConnection() da própria
+thread dona da conexão lenta também fica bloqueada esperando o write
+travado terminar, mesmo que a intenção fosse só fechar essa conexão.
+
+2. (ALTO) client_number sem sincronização
+
+static int client_number (run.cpp:59) é incrementado em accept_cb (linha
+365) e decrementado em closeConnection (linha 153) - ambos chamados de
+threads diferentes (cada thread tem seu próprio loop, todas aceitando do
+mesmo fd de escuta). Não há std::atomic nem mutex. Isso é data race real
+(UB em C++), não só "meio impreciso" - sob alta concorrência (várias
+threads aceitando/fechando ao mesmo tempo), o contador pode perder updates
+e o limite MAX_CLIENTS (1000) fica furado ou negativo.
+
+[CORRIGIDO nesta sessão: client_number virou std::atomic<int>, commit
+ace78d7f na branch libev-ws-revisao.]
+
+3. (MÉDIO) Loop de leitura sem limite de fatia por conexão
+
+  do {
+    ret = recv(connection->io.fd, buf, MAX_MESSAGE_LEN, MSG_DONTWAIT);
+    ...
+  } while( ret == MAX_MESSAGE_LEN );
+
+(run.cpp:337-342) - drena o socket até não ter mais nada pronto. Um
+cliente enviando dados continuamente (malicioso ou só rápido) mantém essa
+thread presa lendo dessa única conexão, sem round-robin com as outras fds
+registradas no mesmo loop. Combinado com o item 1, uma conexão ruim domina
+a thread inteira duas vezes: uma lendo, outra escrevendo.
+
+4. (BAIXO/MÉDIO) Thundering herd no accept()
+
+Todas as `threads` rodam ev_loop_new próprio, mas todas registram
+accept_cb no MESMO fd de escuta (run.cpp:407-419, working()). Sem
+SO_REUSEPORT nem EPOLLEXCLUSIVE, cada conexão nova pode acordar todas as N
+threads mesmo que só uma consiga o accept() - overhead de context-switch
+que cresce junto com a taxa de conexões, exatamente quando você menos
+quer isso.
+
+Não é problema: o design do WebSocketRegistry em si (mutex por-fd + mapa
+global protegido, shared_ptr mantendo o Entry vivo durante remove()) está
+correto para a *correção* - a ordem de erase-antes-de-esperar-lock evita
+write-após-close. O problema não é a lógica de sincronização, é que ela
+protege uma operação (write() bloqueante) que nunca deveria rodar dentro
+do event loop sem non-blocking + backpressure.
+
+Resumo da causa raiz mais provável: sockets aceitos em modo bloqueante +
+write() síncrono dentro dos callbacks do libev, sem fila de saída baseada
+em EV_WRITE. Sob carga normal isso não aparece (buffer TCP nunca enche);
+sob alta concorrência com clientes lentos ou broadcast pra sala cheia,
+vira travamento em cascata.
+
+
+COMPARAÇÃO COM OS ARQUIVOS DE REFERÊNCIA (.ref)
+==================================================
+
+run-gemini-raciocinio.cpp.ref
+------------------------------
+ACHADO NOVO E REAL que eu não peguei: no accept_cb, quando accept() falha
+com erro não-EAGAIN (ex: EMFILE/ENFILE - falta de file descriptors, algo
+bem plausível sob alta concorrência), o run.cpp original faz
+close(watcher->fd). Mas watcher->fd é o socket de escuta COMPARTILHADO
+por todas as threads - fechar ele aqui derruba o accept pra todo mundo, e
+o ev_break(loop, EVBREAK_ALL) só mata o loop DESSA thread, deixando as
+outras N-1 threads vivas tentando accept() num fd fechado (EBADF em
+loop). Isso é um jeito bem concreto de "o servidor cai" sob carga -
+esgotar fds é exatamente o tipo de coisa que acontece com muita
+concorrência. Achado legítimo, bate com o cenário descrito. O fix deles
+(ev_io_stop(loop, watcher) em vez de fechar o fd) é a direção certa,
+embora incompleto (mata a capacidade de accept dessa thread pra sempre,
+sem retry/backoff).
+
+ERRADO: o comentário do arquivo afirma que WebSocketRegistry não tem
+sincronização e "precisa" de mutex. Isso é falso - websocket.h/websocket.cpp
+JÁ TEM s_mutex + mutex por conexão (Entry::writeMutex), corretamente
+implementado. Faz sentido o Gemini não ter visto isso - só recebeu o
+run.cpp, não o websocket.cpp sibling. Mas é um diagnóstico incorreto que,
+se agido sem checar, levaria a duplicar/mexer numa sincronização que já
+existe.
+
+NÃO RESOLVE NADA: o writeAll novo trata EAGAIN com usleep(500) e tenta de
+novo em loop. Isso não conserta o travamento - troca "o kernel bloqueia a
+thread" por "a gente mesmo fica fazendo busy-retry bloqueando a thread",
+com o agravante de gastar CPU escutando. O problema #1 (uma conexão lenta
+trava a thread inteira) continua intacto.
+
+run-grok.cpp.ref
+-----------------
+BOM, DIRETO AO PONTO: bota O_NONBLOCK no socket aceito (accept_cb) -
+ataca a causa raiz do item #1 (o accept nunca setava non-blocking).
+Também adiciona MAX_WS_INPUT_SIZE (1 MiB) como teto pro buffer de entrada
+WebSocket antes do parse - reforço razoável, ainda que o WebSocketParser
+já limite a 16 MB por mensagem lá dentro.
+
+MEIO QUEBRADO: o writeAll agora detecta EAGAIN/EWOULDBLOCK e simplesmente
+desiste (return), sem re-enfileirar o resto. Isso troca "trava pra
+sempre" por "trunca a resposta/handshake/frame silenciosamente" - que é
+pior em outro sentido: quebra o protocolo pro cliente lento em vez de só
+atrasar. Não é a correção certa (a certa é bufferizar e mandar o resto
+quando EV_WRITE disparar).
+
+INERTE: adiciona SO_REUSEPORT no socket de escuta, com o comentário
+dizendo que isso "reduz thundering herd" (bateria com o item #4). Só que
+o código continua criando um único fd em create_serverfd() e passando ele
+pra todas as threads via working(fd) - SO_REUSEPORT só tem efeito quando
+cada thread cria/bind seu próprio socket na mesma porta. Do jeito que
+está, a flag não muda nada; o thundering herd continua exatamente como
+era.
+
+run-claude-sonnet-5.cpp.ref
+----------------------------
+Adiciona um writeMutex por Connection, protegendo writeAll/writeFrame
+locais (ping_cb, handshake, resposta HTTP). Só que todas essas chamadas
+já rodam na MESMA thread dona daquela conexão (libev é single-thread por
+loop) - elas nunca competiam entre si pra começo de conversa, então o
+mutex protege uma corrida que não existe. O próprio comentário do arquivo
+admite isso: reconhece nos [EXTERNAL TODO] que o problema de verdade é
+escrita cross-thread via WebSocketRegistry::writeFrame/remove(), e diz
+explicitamente que "não é possível resolver a partir daqui" - o que é uma
+boa identificação verbal do problema (bate com o item #1), mas nenhum
+código foi de fato mudado pra resolvê-lo. É o arquivo que menos avança na
+prática.
+
+run-chatgpt.cpp.ref
+---------------------
+O mais ambicioso arquiteturalmente - e o único que tenta a solução
+"certa" pro item #1: buffer de saída por Connection (output/outputOffset),
+queueWrite() com backpressure (fecha a conexão se passar de 8 MiB
+acumulado), write_cb não-bloqueante via send(MSG_DONTWAIT), ligado a um
+watcher EV_WRITE que liga/desliga sob demanda. Essa é exatamente a
+direção certa pro item #1.
+
+Só que NÃO COMPILA: usa closeConnection() dentro de write_cb antes dela
+ser declarada (foi literalmente o erro visto no build ao tentar compilar
+todos os run-*.cpp juntos), e chama writeAll() no caminho de rejeição de
+handshake - função que esse arquivo nunca define. Além disso tem um bug
+lógico real: ev_io_stop+ev_io_start pra "desligar" o EV_WRITE depois que
+o buffer esvazia nunca troca a máscara de evento de volta pra EV_READ
+puro (falta um ev_io_set) - então, na prática, uma vez que uma conexão
+escreve alguma coisa, o watcher fica pra sempre inscrito em EV_WRITE, e o
+loop passa a disparar o callback toda hora mesmo sem nada pra escrever -
+100% de CPU numa conexão ociosa. E, mais importante: só cobre o caminho
+de resposta HTTP (processHttp's data) - processWebSocket e ping_cb
+continuam chamando WebSocketRegistry::writeFrame() direto, que ainda é
+bloqueante. Ou seja, nem consertado ele resolveria o caso que mais
+importa (mensagens/ping de WebSocket).
+
+
+CONCLUSÃO
+==========
+
+Nenhum dos quatro é aproveitável como está. Mas, juntos, trazem duas
+coisas genuinamente novas que valem a pena adotar:
+
+1. O bug do accept_cb fechando o fd de escuta compartilhado (Gemini) -
+   real, severo, bate com "caiu sob carga" (esgotamento de fd é comum em
+   alta concorrência), não identificado na análise própria inicial.
+   Fácil de corrigir.
+
+2. O_NONBLOCK no socket aceito (Grok/ChatGPT) - pré-requisito necessário
+   pro fix de verdade do item #1, mesmo que nenhum dos dois tenha
+   completado a arquitetura em volta dele direito.
+
+E confirmam, sem acrescentar nada, o que já tinha sido identificado:
+client_number atômico (unânime, já corrigido - commit ace78d7f), e o
+problema de escrita bloqueante cross-thread via WebSocketRegistry (citado
+em palavras por Claude e Gemini, mas NENHUM dos quatro arquivos toca
+websocket.cpp) - então esse, que é o achado mais grave, continua 100% em
+aberto em todas as versões, inclusive na do ChatGPT que tenta resolver o
+write bloqueante só pelo lado HTTP.
+
+PRÓXIMOS PASSOS SUGERIDOS
+===========================
+1. Aplicar no run.cpp: fix do accept_cb (não fechar o fd de escuta
+   compartilhado em erro não-EAGAIN) + O_NONBLOCK no connfd aceito.
+2. Arquitetura completa de buffer de saída + EV_WRITE para TODOS os
+   caminhos de escrita, incluindo WebSocketRegistry::writeFrame/send
+   (websocket.cpp) - não só o HTTP local do run.cpp. Precisa cobrir o
+   caso cross-thread (broadcast via WebSocketConnection:send() vindo de
+   outra conexão/thread), que é o que causa o travamento em cascata
+   descrito no item 1.

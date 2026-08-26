@@ -11,6 +11,7 @@
 #include <arken/net/httpserver.h>
 #include <arken/net/httpbody.h>
 #include <arken/net/httpenv.h>
+#include <arken/net/websocket.h>
 #include <arken/concurrent/service.h>
 
 using service = arken::concurrent::service;
@@ -42,6 +43,11 @@ void HttpServer::setDispatcher(string dispatcher)
   HttpServer::dispatcher = dispatcher;
 }
 
+void HttpServer::setWebSocketDispatcher(string dispatcher)
+{
+  WebSocketHandler::setDispatcher(dispatcher.data());
+}
+
 void HttpServer::addService(string service)
 {
   std::cout << "add service " << service << std::endl;
@@ -60,6 +66,22 @@ void HttpServer::start()
 }
 
 std::string HttpServer::handler(const char * data, size_t size)
+{
+  // owned=true (padrão) - env vira userdata do Lua dentro de handler(env)
+  // logo abaixo, e é o Lua quem decide quando recolher (__gc), não C++
+  // manualmente. Antes de "websocket experimental release" (ba2a15a0)
+  // sempre foi assim aqui - o owned=false + delete manual introduzido
+  // ali foi engano de refactor (pensado pro caso específico do handshake
+  // de WebSocket em run.cpp, que nunca expõe env ao Lua), aplicado por
+  // engano nesse caminho compartilhado por todo HTTP puro (libev,
+  // libev-rev, libevent, epoll) e causou use-after-free se o dispatcher
+  // guardar `env` além da chamada síncrona (delete manual competindo
+  // com o __gc do Lua, ou apagando o objeto antes da hora).
+  HttpEnv * env = new HttpEnv(data, size);
+  return HttpServer::handler(env);
+}
+
+std::string HttpServer::handler(HttpEnv * env)
 {
   int code;
   size_t len;
@@ -81,7 +103,7 @@ std::string HttpServer::handler(const char * data, size_t size)
   }
 
   auto ptr = static_cast<HttpEnv **>(lua_newuserdata(L, sizeof(HttpEnv*)));
-  *ptr = new HttpEnv(data, size);
+  *ptr = env;
   luaL_getmetatable(L, "arken.net.HttpEnv.metatable");
   lua_setmetatable(L, -2);
 
@@ -215,6 +237,20 @@ const char * HttpServer::status(int code)
   };
 
   return list[code];
+}
+
+// tamanho máximo aceito pro buffer enquanto espera os headers HTTP
+// completarem (\r\n\r\n) - sem isso, um cliente que nunca manda o fim dos
+// headers faz esse buffer crescer sem limite. 8KB é o default comum de
+// nginx/Apache pra tamanho de headers. Mora aqui (não em cada backend)
+// porque todo backend (libev, libev-ws, futuros libevent-ws/epoll-ws)
+// compila através desse mesmo arquivo, independente de qual for
+// escolhido - a lógica não pode ficar presa num run.cpp específico.
+static const size_t MAX_HTTP_HEADER_SIZE = 8192;
+
+bool HttpServer::headerTooLarge(size_t size)
+{
+  return size > MAX_HTTP_HEADER_SIZE;
 }
 
 } // namespace net

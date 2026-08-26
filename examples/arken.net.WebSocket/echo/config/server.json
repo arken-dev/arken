@@ -1,0 +1,6 @@
+{
+  "address" : "127.0.0.1",
+  "port"    : 8091,
+  "threads" : 2,
+  "pid"     : "tmp/pid/example-websocket-echo.pid"
+}
