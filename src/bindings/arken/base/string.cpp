@@ -124,9 +124,10 @@ arken_string_sha1( lua_State *L ) {
 
 static int
 arken_string_contains( lua_State *L ) {
-  const char *string = luaL_checkstring(L, 1);
-  const char *str    = luaL_checkstring(L, 2);
-  bool result        = string::contains(string, str);
+  size_t length, len;
+  const char *string = luaL_checklstring(L, 1, &length);
+  const char *str    = luaL_checklstring(L, 2, &len);
+  bool result        = string::contains(string, length, str, len);
   lua_pushboolean(L, result);
   return 1;
 }
