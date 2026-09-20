@@ -161,24 +161,35 @@ char * string::center(const char * string, size_t size, const char * pad)
   return result;
 }
 
-bool string::contains(const char * string, const char * str)
+// versao binary-safe -- nao usa strlen(), entao funciona com buffers que tem
+// bytes NUL no meio (ex: /proc/pid/cmdline, que separa argumentos por NUL).
+// tambem corrige um over-read da versao antiga: o loop externo ia ate
+// "length" mas o acesso interno era string[i+j], lendo ate "len-1" bytes
+// alem do buffer perto do fim.
+bool string::contains(const char * string, size_t length, const char * str, size_t len)
 {
-  int length = strlen(string);
-  int len    = strlen(str);
-  int i, j;
+  if (len == 0) {
+    return true;
+  }
 
-  for(i = 0; i < length; i++) {
-    for(j=0; j < len; j++) {
-      if( str[j] != string[i+j] ) {
+  for (size_t i = 0; i + len <= length; i++) {
+    size_t j = 0;
+    for (; j < len; j++) {
+      if (str[j] != string[i+j]) {
         break;
       }
     }
-    if(j == len) {
+    if (j == len) {
       return true;
     }
   }
 
   return false;
+}
+
+bool string::contains(const char * string, const char * str)
+{
+  return contains(string, strlen(string), str, strlen(str));
 }
 
 int string::count(const char * str1, const char * str2)
@@ -1631,7 +1642,7 @@ void string::clear()
 
 bool string::contains(const char * str)
 {
-  return arken::string::contains(m_data, str);
+  return arken::string::contains(m_data, m_size, str, strlen(str));
 }
 
 string string::chop()

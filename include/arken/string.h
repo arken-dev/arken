@@ -36,6 +36,7 @@ class string {
   static char * center(const char * string, size_t size, const char * pad);
   static char * chop(const char * string);
   static bool   contains(const char * string, const char * str);
+  static bool   contains(const char * string, size_t length, const char * str, size_t len);
   static int    count(const char * str1, const char * str2);
   static char * dasherize(const char *string);
   static char * decode64(const char *string, size_t * size);
