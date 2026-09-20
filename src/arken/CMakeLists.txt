@@ -23,6 +23,7 @@ file(GLOB concurrent ${CMAKE_CURRENT_SOURCE_DIR}/concurrent/*.cpp)
 list(REMOVE_ITEM concurrent ${CMAKE_CURRENT_SOURCE_DIR}/concurrent/mailbox.cpp)
 file(GLOB concurrent-task ${CMAKE_CURRENT_SOURCE_DIR}/concurrent/task/*.cpp)
 file(GLOB compress ${CMAKE_CURRENT_SOURCE_DIR}/compress/*.cpp)
+file(GLOB security  ${CMAKE_CURRENT_SOURCE_DIR}/security/*.cpp)
 file(GLOB time     ${CMAKE_CURRENT_SOURCE_DIR}/time/*.cpp)
 file(GLOB chrono   ${CMAKE_CURRENT_SOURCE_DIR}/chrono/*.cpp)
 file(GLOB utils    ${CMAKE_CURRENT_SOURCE_DIR}/utils/*.cpp)
@@ -52,6 +53,7 @@ add_library(
   ${os} ${os-system} ${os-uuid}
   ${concurrent} ${concurrent-task} ${arken-concurrent-mailbox} ${arken-concurrent-worker}
   ${regex}
+  ${security}
   ${time}
   ${mongrel2}
   ${utf8}
