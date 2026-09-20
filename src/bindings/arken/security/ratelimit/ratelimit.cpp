@@ -84,11 +84,19 @@ arken_security_RateLimit_gcIdle( lua_State *L ) {
   return 0;
 }
 
+static int
+arken_security_RateLimit_size( lua_State *L ) {
+  RateLimit * udata = checkRateLimit( L );
+  lua_pushinteger(L, static_cast<lua_Integer>(udata->size()));
+  return 1;
+}
+
 static const
 luaL_reg arken_security_RateLimit_metatable[] = {
   {"count", arken_security_RateLimit_count},
   {"clear", arken_security_RateLimit_clear},
   {"gc",    arken_security_RateLimit_gcIdle},
+  {"size",  arken_security_RateLimit_size},
   {"__gc",  arken_security_RateLimit_gc},
   {nullptr, nullptr}
 };

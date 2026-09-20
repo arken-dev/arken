@@ -7,6 +7,7 @@
 #define _ARKEN_SECURITY_RATELIMIT_
 
 #include <chrono>
+#include <cstddef>
 #include <mutex>
 #include <string>
 #include <unordered_map>
@@ -28,6 +29,11 @@ class RateLimit
   void clear(const char * ip);
   void gc(unsigned idle_seconds);
 
+  // número de IPs atualmente rastreados (introspecção/monitoramento; útil
+  // também pra provar que a faxina, manual ou automática, não deixa
+  // m_map crescer sem limite)
+  size_t size();
+
   private:
   struct Record {
     unsigned hits = 0;
@@ -35,10 +41,16 @@ class RateLimit
     std::chrono::steady_clock::time_point last{};
   };
 
+  // varre m_map descartando entradas ociosas há mais de `idle`; chamador
+  // precisa já estar segurando m_mutex (usado por gc() e pela faxina
+  // amortizada dentro de count()).
+  void sweep(std::chrono::seconds idle);
+
   unsigned m_limit;
   std::chrono::seconds m_window;
   std::mutex m_mutex;
   std::unordered_map<std::string, Record> m_map;
+  std::chrono::steady_clock::time_point m_lastSweep{};
 };
 
 } // namespace security

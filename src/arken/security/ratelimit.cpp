@@ -26,6 +26,19 @@ bool RateLimit::count(const char * ip)
 
   const auto now = clock::now();
   std::lock_guard<std::mutex> lock(m_mutex);
+
+  // faxina amortizada: sem isso, m_map só cresce -- um IP que aparece uma
+  // única vez nunca é removido sozinho (count() só reseta a janela de um
+  // IP que volta a aparecer). Peça carona no tráfego normal em vez de
+  // abrir uma thread própria: uma RateLimit é destruída pelo app (__gc do
+  // binding chama delete), e uma thread detached com `this` capturado
+  // ficaria com ponteiro pendurado assim que a instância for liberada.
+  if( m_lastSweep.time_since_epoch().count() == 0 ||
+      now - m_lastSweep >= m_window * 2 ) {
+    sweep(m_window * 2);
+    m_lastSweep = now;
+  }
+
   auto & r = m_map[ip];
 
   if( r.window_start.time_since_epoch().count() == 0 ||
@@ -48,11 +61,9 @@ void RateLimit::clear(const char * ip)
   m_map.erase(ip);
 }
 
-void RateLimit::gc(unsigned idle_seconds)
+void RateLimit::sweep(std::chrono::seconds idle)
 {
-  const auto now  = clock::now();
-  const auto idle = std::chrono::seconds(idle_seconds);
-  std::lock_guard<std::mutex> lock(m_mutex);
+  const auto now = clock::now();
   for( auto it = m_map.begin(); it != m_map.end(); ) {
     if( now - it->second.last > idle ) {
       it = m_map.erase(it);
@@ -60,6 +71,18 @@ void RateLimit::gc(unsigned idle_seconds)
       ++it;
     }
   }
+}
+
+void RateLimit::gc(unsigned idle_seconds)
+{
+  std::lock_guard<std::mutex> lock(m_mutex);
+  sweep(std::chrono::seconds(idle_seconds));
+}
+
+size_t RateLimit::size()
+{
+  std::lock_guard<std::mutex> lock(m_mutex);
+  return m_map.size();
 }
 
 } // namespace security

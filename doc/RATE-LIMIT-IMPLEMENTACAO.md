@@ -46,6 +46,7 @@ tests/lib/arken/security/RateLimit/new.lua
 tests/lib/arken/security/RateLimit/count.lua
 tests/lib/arken/security/RateLimit/clear.lua
 tests/lib/arken/security/RateLimit/gc.lua
+tests/lib/arken/security/RateLimit/size.lua
 
 examples/arken.security.ratelimit/basic-usage.lua
 examples/arken.security.ratelimit/controller.lua
@@ -66,132 +67,37 @@ PascalCase.
 
 ---
 
-## `include/arken/security/ratelimit.h`
+## `include/arken/security/ratelimit.h` / `src/arken/security/ratelimit.cpp`
 
-```cpp
-// Copyright 2016 The Arken Platform Authors.
-// All rights reserved.
-// Use of this source code is governed by a BSD-style
-// license that can be found in the LICENSE file.
+Não duplicado aqui (já divergiu do código real uma vez — ver histórico
+do namespace, `env():get` vs `env():field()`). Código-fonte é a
+referência; resumo do que importa:
 
-#ifndef _ARKEN_SECURITY_RATELIMIT_
-#define _ARKEN_SECURITY_RATELIMIT_
+- Janela **fixa**: no primeiro hit do IP a janela abre; depois de
+  `seconds` segundos os hits zeram e começa outra. Não é token bucket.
+  Parâmetro em segundos (não minutos) — quem quiser 1 minuto passa `60`
+  (default do construtor).
 
-#include <chrono>
-#include <mutex>
-#include <string>
-#include <unordered_map>
+- **Faxina automática, sem thread própria.** `count()` nunca removia
+  entradas sozinho — só reseta a janela de um IP que *volta* a aparecer.
+  Um IP visto uma única vez (comum: milhares de IPs distintos por dia)
+  ficava em `m_map` pra sempre, sem `gc()` explícito. A correção: a cada
+  `2×window` de tempo real decorrido, `count()` varre e descarta (sob o
+  mesmo lock que já segura) os IPs ociosos há mais de `2×window`,
+  pegando carona no tráfego normal.
 
-namespace arken {
-namespace security {
+  Cogitou-se copiar o padrão de `arken::cache` (thread de background via
+  `std::thread(...).detach()`), mas esse padrão só é seguro lá porque os
+  buckets do cache são singletons que nunca são destruídos. Uma
+  `RateLimit` é criada/destruída pelo app (`__gc` do binding chama
+  `delete`) — uma thread detached capturando `this` ficaria com ponteiro
+  pendurado assim que a instância fosse liberada. Por isso a faxina é
+  amortizada dentro do próprio `count()`, sem thread nova.
 
-// janela fixa: no primeiro hit do IP a janela abre; depois de
-// `seconds` segundos os hits zeram e uma nova janela começa.
-// Não é token bucket.
-class RateLimit
-{
-  public:
-  RateLimit(unsigned limit, unsigned seconds = 60);
-  ~RateLimit();
-
-  // incrementa o IP; true = estourou o limite (avisar a borda)
-  bool count(const char * ip);
-  void clear(const char * ip);
-  void gc(unsigned idle_seconds);
-
-  private:
-  struct Record {
-    unsigned hits = 0;
-    std::chrono::steady_clock::time_point window_start{};
-    std::chrono::steady_clock::time_point last{};
-  };
-
-  unsigned m_limit;
-  std::chrono::seconds m_window;
-  std::mutex m_mutex;
-  std::unordered_map<std::string, Record> m_map;
-};
-
-} // namespace security
-} // namespace arken
-
-#endif
-```
-
-Janela **fixa**: no primeiro hit abre-se a janela; depois de `seconds` segundos os hits zeram e começa outra. Não é token bucket. Parâmetro em segundos (não minutos) — quem quiser 1 minuto passa `60`.
-
----
-
-## `src/arken/security/ratelimit.cpp`
-
-```cpp
-// Copyright 2016 The Arken Platform Authors.
-// All rights reserved.
-// Use of this source code is governed by a BSD-style
-// license that can be found in the LICENSE file.
-
-#include <arken/security/ratelimit.h>
-
-namespace arken {
-namespace security {
-
-using clock = std::chrono::steady_clock;
-
-RateLimit::RateLimit(unsigned limit, unsigned seconds)
-  : m_limit(limit)
-  , m_window(seconds == 0 ? 1 : seconds)
-{
-}
-
-RateLimit::~RateLimit() = default;
-
-bool RateLimit::count(const char * ip)
-{
-  if( ip == nullptr || ip[0] == '\0' ) {
-    return false;
-  }
-
-  const auto now = clock::now();
-  std::lock_guard<std::mutex> lock(m_mutex);
-  auto & r = m_map[ip];
-
-  if( r.window_start.time_since_epoch().count() == 0 ||
-      now - r.window_start >= m_window ) {
-    r.hits = 0;
-    r.window_start = now;
-  }
-
-  r.hits += 1;
-  r.last  = now;
-  return r.hits >= m_limit;
-}
-
-void RateLimit::clear(const char * ip)
-{
-  if( ip == nullptr ) {
-    return;
-  }
-  std::lock_guard<std::mutex> lock(m_mutex);
-  m_map.erase(ip);
-}
-
-void RateLimit::gc(unsigned idle_seconds)
-{
-  const auto now  = clock::now();
-  const auto idle = std::chrono::seconds(idle_seconds);
-  std::lock_guard<std::mutex> lock(m_mutex);
-  for( auto it = m_map.begin(); it != m_map.end(); ) {
-    if( now - it->second.last > idle ) {
-      it = m_map.erase(it);
-    } else {
-      ++it;
-    }
-  }
-}
-
-} // namespace security
-} // namespace arken
-```
+- `size()` — número de IPs atualmente rastreados. Existe pra
+  introspecção/monitoramento e pra provar em teste que a faxina (manual
+  via `gc()` ou automática) realmente encolhe `m_map` — ver
+  `tests/lib/arken/security/RateLimit/size.lua`.
 
 ---
 
@@ -210,7 +116,8 @@ local rl = RateLimit.new(30, 60)  -- 30 hits / 60 segundos
 
 rl:count(ip)   -- boolean: true = estourou → borda
 rl:clear(ip)   -- login OK
-rl:gc(3600)    -- apaga IPs ociosos (chamar de timer)
+rl:gc(3600)    -- apaga IPs ociosos manualmente (opcional: count() já faxina sozinho)
+rl:size()      -- quantos IPs estão rastreados agora (introspecção/monitoramento)
 ```
 
 Uma instância por processo (módulo, não por request):
@@ -299,7 +206,7 @@ A app e o fail2ban usam **a mesma lista**. Comece mandando à borda **só** quan
 - [ ] Instância única de `RateLimit` no processo
 - [ ] `:count` só em evento ruim
 - [ ] `:clear` no login OK
-- [ ] `gc` periódico (ex. 1 h de ociosidade)
+- [x] faxina automática (dentro do `:count`, sem precisar de timer externo) — `gc()` manual continua disponível, mas é opcional
 - [ ] `:count == true` → Lists API
 - [ ] Escada 5/5 min só no `Usuario.login`
 - [ ] Começar com `new(30, 60)`; descer para 25 e 20 com base no log
