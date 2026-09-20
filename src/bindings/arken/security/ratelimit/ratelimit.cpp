@@ -73,6 +73,11 @@ static void pushRateLimitMethod( lua_State *L, const char * name,
   lua_setfield(L, -2, field);
 }
 
+// nome "new" por convenção (é o que o app chama pra obter o limiter), mas
+// a semântica é get-or-create: name já existente devolve a instância que
+// já está no registro, limit/seconds só valem na primeira chamada com
+// esse name (ver RateLimit::get). Não confundir com um construtor que
+// sempre cria algo novo.
 static int
 arken_security_RateLimit_new( lua_State *L ) {
   const char * name    = luaL_checkstring(L, 1);
