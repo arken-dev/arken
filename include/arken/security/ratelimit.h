@@ -15,12 +15,12 @@ namespace arken {
 namespace security {
 
 // janela fixa: no primeiro hit do IP a janela abre; depois de
-// minutes * 60 segundos os hits zeram e uma nova janela começa.
+// `seconds` segundos os hits zeram e uma nova janela começa.
 // Não é token bucket.
 class RateLimit
 {
   public:
-  RateLimit(unsigned limit, unsigned minutes = 1);
+  RateLimit(unsigned limit, unsigned seconds = 60);
   ~RateLimit();
 
   // incrementa o IP; true = estourou o limite (avisar a borda)

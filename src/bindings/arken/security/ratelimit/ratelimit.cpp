@@ -24,12 +24,12 @@ checkRateLimit( lua_State *L ) {
 static int
 arken_security_RateLimit_new( lua_State *L ) {
   unsigned limit   = static_cast<unsigned>(luaL_checkinteger(L, 1));
-  unsigned minutes = 1;
+  unsigned seconds = 60;
   if( lua_gettop(L) >= 2 ) {
-    minutes = static_cast<unsigned>(luaL_checkinteger(L, 2));
+    seconds = static_cast<unsigned>(luaL_checkinteger(L, 2));
   }
   auto ptr = static_cast<RateLimit **>(lua_newuserdata(L, sizeof(RateLimit*)));
-  *ptr = new RateLimit(limit, minutes);
+  *ptr = new RateLimit(limit, seconds);
   luaL_getmetatable(L, "arken.security.RateLimit.metatable");
   lua_setmetatable(L, -2);
 

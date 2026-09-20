@@ -10,9 +10,9 @@ namespace security {
 
 using clock = std::chrono::steady_clock;
 
-RateLimit::RateLimit(unsigned limit, unsigned minutes)
+RateLimit::RateLimit(unsigned limit, unsigned seconds)
   : m_limit(limit)
-  , m_window(static_cast<long>(minutes == 0 ? 1 : minutes) * 60)
+  , m_window(seconds == 0 ? 1 : seconds)
 {
 }
 

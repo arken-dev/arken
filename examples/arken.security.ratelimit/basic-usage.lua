@@ -1,13 +1,13 @@
 -- arken.security.RateLimit example: basic usage
 --
--- Janela fixa: new(limit, minutes) conta hits por IP dentro de uma janela
--- de `minutes` minutos. count(ip) devolve true quando o IP estoura o
--- limite dentro da janela atual -- esse `true` é o sinal para avisar a
--- borda (Cloudflare, WAF, etc), não um erro.
+-- Janela fixa: new(limit, seconds) conta hits por IP dentro de uma janela
+-- de `seconds` segundos (default: 60). count(ip) devolve true quando o IP
+-- estoura o limite dentro da janela atual -- esse `true` é o sinal para
+-- avisar a borda (Cloudflare, WAF, etc), não um erro.
 
 local RateLimit = require('arken.security.RateLimit')
 
-local limiter = RateLimit.new(3, 1) -- 3 hits / 1 minuto
+local limiter = RateLimit.new(3, 60) -- 3 hits / 60 segundos
 local ip      = '203.0.113.10'
 
 for i = 1, 4 do

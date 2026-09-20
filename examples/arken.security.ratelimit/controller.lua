@@ -15,7 +15,7 @@ require('arken.Controller') -- registra a classe "Controller" em Class.lookup
 local RateLimit = require('arken.security.RateLimit')
 
 -- instância única do processo
-local badLogins = RateLimit.new(3, 1) -- 3 eventos ruins / 1 minuto
+local badLogins = RateLimit.new(3, 60) -- 3 eventos ruins / 60 segundos
 
 local blockedIps = {}
 local function CloudflareBlock(ip)

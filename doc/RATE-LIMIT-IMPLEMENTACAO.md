@@ -86,12 +86,12 @@ namespace arken {
 namespace security {
 
 // janela fixa: no primeiro hit do IP a janela abre; depois de
-// minutes * 60 segundos os hits zeram e uma nova janela começa.
+// `seconds` segundos os hits zeram e uma nova janela começa.
 // Não é token bucket.
 class RateLimit
 {
   public:
-  RateLimit(unsigned limit, unsigned minutes = 1);
+  RateLimit(unsigned limit, unsigned seconds = 60);
   ~RateLimit();
 
   // incrementa o IP; true = estourou o limite (avisar a borda)
@@ -118,7 +118,7 @@ class RateLimit
 #endif
 ```
 
-Janela **fixa**: no primeiro hit abre-se a janela; depois de `minutes * 60` segundos os hits zeram e começa outra. Não é token bucket.
+Janela **fixa**: no primeiro hit abre-se a janela; depois de `seconds` segundos os hits zeram e começa outra. Não é token bucket. Parâmetro em segundos (não minutos) — quem quiser 1 minuto passa `60`.
 
 ---
 
@@ -137,9 +137,9 @@ namespace security {
 
 using clock = std::chrono::steady_clock;
 
-RateLimit::RateLimit(unsigned limit, unsigned minutes)
+RateLimit::RateLimit(unsigned limit, unsigned seconds)
   : m_limit(limit)
-  , m_window(static_cast<long>(minutes == 0 ? 1 : minutes) * 60)
+  , m_window(seconds == 0 ? 1 : seconds)
 {
 }
 
@@ -206,7 +206,7 @@ API Lua:
 
 ```lua
 local RateLimit = require('arken.security.RateLimit')
-local rl = RateLimit.new(30, 1)  -- 30 hits / 1 minuto
+local rl = RateLimit.new(30, 60)  -- 30 hits / 60 segundos
 
 rl:count(ip)   -- boolean: true = estourou → borda
 rl:clear(ip)   -- login OK
@@ -218,7 +218,7 @@ Uma instância por processo (módulo, não por request):
 ```lua
 -- lib/Security/RateLimit.lua  (alias opcional)
 local RateLimit = require('arken.security.RateLimit')
-return RateLimit.new(30, 1)
+return RateLimit.new(30, 60)
 ```
 
 ---
@@ -302,4 +302,4 @@ A app e o fail2ban usam **a mesma lista**. Comece mandando à borda **só** quan
 - [ ] `gc` periódico (ex. 1 h de ociosidade)
 - [ ] `:count == true` → Lists API
 - [ ] Escada 5/5 min só no `Usuario.login`
-- [ ] Começar com `new(30, 1)`; descer para 25 e 20 com base no log
+- [ ] Começar com `new(30, 60)`; descer para 25 e 20 com base no log
