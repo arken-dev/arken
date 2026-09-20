@@ -75,7 +75,7 @@ void RateLimit::ensureBackgroundGC()
   });
 }
 
-bool RateLimit::count(const char * ip)
+bool RateLimit::exceeded(const char * ip)
 {
   if( ip == nullptr || ip[0] == '\0' ) {
     return false;

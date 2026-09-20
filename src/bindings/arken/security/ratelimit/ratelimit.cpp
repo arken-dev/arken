@@ -16,8 +16,8 @@ using arken::security::RateLimit;
 // todas as VMs do pool mvm. Cada chamada resolve `name` de novo via
 // RateLimit::get(); chamadas depois da primeira ignoram limit/seconds.
 //
-// Sintaxe de chamada: ponto, não dois-pontos (bad.count(ip), não
-// bad:count(ip)) -- igual ao cache.bucket(); dois-pontos empurraria a
+// Sintaxe de chamada: ponto, não dois-pontos (bad.exceeded(ip), não
+// bad:exceeded(ip)) -- igual ao cache.bucket(); dois-pontos empurraria a
 // própria tabela como primeiro argumento no lugar do ip/idle real.
 
 // nome/limit/seconds são os upvalues 1/2/3 de cada closure devolvida por
@@ -31,10 +31,10 @@ static RateLimit & namedRateLimit( lua_State *L )
 }
 
 static int
-arken_security_RateLimit_count( lua_State *L ) {
+arken_security_RateLimit_exceeded( lua_State *L ) {
   RateLimit & rl  = namedRateLimit(L);
   const char * ip = luaL_checkstring(L, 1);
-  lua_pushboolean(L, rl.count(ip));
+  lua_pushboolean(L, rl.exceeded(ip));
   return 1;
 }
 
@@ -88,14 +88,14 @@ arken_security_RateLimit_new( lua_State *L ) {
   }
 
   // registra já aqui, na hora do new() -- não espera o primeiro
-  // count/clear/gc/size. Sem isso, "primeira chamada vence" dependeria de
+  // exceeded/clear/gc/size. Sem isso, "primeira chamada vence" dependeria de
   // qual closure é invocada primeiro (não determinístico entre VMs),
   // e não de qual new(name, ...) rodou primeiro (a intenção real).
   RateLimit::get(name, limit, seconds);
 
   lua_newtable(L);
 
-  pushRateLimitMethod(L, name, limit, seconds, arken_security_RateLimit_count, "count");
+  pushRateLimitMethod(L, name, limit, seconds, arken_security_RateLimit_exceeded, "exceeded");
   pushRateLimitMethod(L, name, limit, seconds, arken_security_RateLimit_clear, "clear");
   pushRateLimitMethod(L, name, limit, seconds, arken_security_RateLimit_gc,    "gc");
   pushRateLimitMethod(L, name, limit, seconds, arken_security_RateLimit_size,  "size");

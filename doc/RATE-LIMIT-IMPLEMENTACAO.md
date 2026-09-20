@@ -15,7 +15,7 @@ Dois relógios **separados**:
 1. **C++ `RateLimit`** — janela de N minutos, só soma. `true` = avisar a Cloudflare.
 2. **Lua `Usuario.login`** — escada 5 erros → espera 5 min (depois 10, 15… teto 60). Isso **não** vive no C++.
 
-Evento ruim (sempre chama `.count(ip)`):
+Evento ruim (sempre chama `.exceeded(ip)`):
 
 - `POST` login com senha errada
 - `POST` login **durante** a espera de 5 min (a app nem valida senha; mesmo assim conta)
@@ -43,7 +43,7 @@ src/bindings/arken/security/ratelimit/CMakeLists.txt
 src/bindings/arken/security/CMakeLists.txt
 
 tests/lib/arken/security/RateLimit/new.lua
-tests/lib/arken/security/RateLimit/count.lua
+tests/lib/arken/security/RateLimit/exceeded.lua
 tests/lib/arken/security/RateLimit/clear.lua
 tests/lib/arken/security/RateLimit/gc.lua
 tests/lib/arken/security/RateLimit/size.lua
@@ -100,7 +100,7 @@ referência; resumo do que importa:
   buckets do `cache`: vive pelo tempo de vida do processo).
 
 - **Faxina automática por thread de background**, igual
-  `arken::cache::backgroundGC()`/`ensureBackgroundGC()`. `count()` nunca
+  `arken::cache::backgroundGC()`/`ensureBackgroundGC()`. `exceeded()` nunca
   removia entradas sozinho — só reseta a janela de um IP que *volta* a
   aparecer; um IP visto uma única vez (comum: milhares de IPs distintos
   por dia) ficava em `m_map` pra sempre, sem `gc()` explícito. A primeira
@@ -113,7 +113,7 @@ referência; resumo do que importa:
   destruída livremente pelo app (`__gc` do binding chamava `delete`), e
   uma thread detached capturando `this` ficaria com ponteiro pendurado
   assim que a instância fosse liberada — por isso a primeira versão desse
-  fix rodava a faxina amortizada dentro do próprio `count()`, sem thread.
+  fix rodava a faxina amortizada dentro do próprio `exceeded()`, sem thread.
   Isso deixou de ser necessário: como toda instância agora só existe via
   `get()` e nunca é destruída, o mesmo padrão de thread do `cache` passou
   a ser seguro.
@@ -141,7 +141,7 @@ userdata, sem `__gc`. `RateLimit.new(name, limit, seconds)` devolve uma
 tabela comum de *closures*, cada uma carregando `name`/`limit`/`seconds`
 como upvalue e resolvendo `RateLimit::get(...)` a cada chamada. Como é
 uma tabela comum (não um objeto com metatabela própria), as chamadas são
-com **ponto, não dois-pontos**: `bad.count(ip)`, não `bad:count(ip)` — o
+com **ponto, não dois-pontos**: `bad.exceeded(ip)`, não `bad:exceeded(ip)` — o
 `:` empurraria a própria tabela como primeiro argumento no lugar do `ip`
 real (mesma pegadinha existente em `cache.bucket(name).insert(...)`).
 
@@ -154,7 +154,7 @@ API Lua:
 local RateLimit = require('arken.security.RateLimit')
 local rl = RateLimit.new('bad-logins', 30, 60)  -- 30 hits / 60 segundos
 
-rl.count(ip)   -- boolean: true = estourou → borda
+rl.exceeded(ip)   -- boolean: true = estourou → borda
 rl.clear(ip)   -- login OK
 rl.gc(3600)    -- apaga IPs ociosos manualmente (opcional: uma thread de
                -- background já faxina sozinha, ver seção anterior)
@@ -188,9 +188,9 @@ Dois pontos importantes:
 
 - A API real de `arken.net.HttpEnv` (ver `lib/arken/net/HttpRequest.lua`)
   é `env():field(nome)`, **não** `env():get(nome)`.
-- `bad.count(ip)` / `bad.clear(ip)` são chamadas com **ponto**, não
+- `bad.exceeded(ip)` / `bad.clear(ip)` são chamadas com **ponto**, não
   dois-pontos — `bad` é uma tabela de closures (ver seção "Binding
-  Lua"), não um objeto com metatabela; `bad:count(ip)` empurraria `bad`
+  Lua"), não um objeto com metatabela; `bad:exceeded(ip)` empurraria `bad`
   como primeiro argumento no lugar do `ip`.
 
 ```lua
@@ -211,7 +211,7 @@ function MyController:loginAction()
   end
 
   -- senha errada OU tentou dentro da espera de 5 min
-  if bad.count(ip) then
+  if bad.exceeded(ip) then
     Cloudflare.block(ip) -- POST na IP List $blocklist
   end
 end
@@ -226,7 +226,7 @@ function MyController:algumaActionProtegida()
   end
 
   local ip = clientIp(self)
-  if bad.count(ip) then
+  if bad.exceeded(ip) then
     Cloudflare.block(ip)
   end
   -- 401; mensagem genérica
@@ -236,30 +236,30 @@ end
 `Usuario.login` (camada Lua, **não** o C++):
 
 - 5 falhas → não valida senha pelos próximos 5 min
-- nessa espera cada `pcall` falha de propósito e o controller ainda chama `bad.count`
+- nessa espera cada `pcall` falha de propósito e o controller ainda chama `bad.exceeded`
 - mais 5 na espera → 10 min, etc., teto 60 min
 - quem espera quieto: a janela de 60 s do C++ esvazia sozinha
 
 ---
 
-## Cloudflare (o `true` do `.count`)
+## Cloudflare (o `true` do `.exceeded`)
 
 1. Account → Lists → IP list `blocklist`
 2. Security rule: `ip.src in $blocklist` → **Block** (os dois hosts)
 3. Token: **Account Filter Lists: Edit**
 4. `Cloudflare.block(ip)` = `POST /accounts/{id}/rules/lists/{list_id}/items` com `[{"ip":"...","comment":"app-ratelimit"}]`
 
-A app e o fail2ban usam **a mesma lista**. Comece mandando à borda **só** quando `.count` for `true`. Fail2ban cobre reincidência via log.
+A app e o fail2ban usam **a mesma lista**. Comece mandando à borda **só** quando `.exceeded` for `true`. Fail2ban cobre reincidência via log.
 
 ---
 
 ## Checklist
 
-- [ ] Header `CF-Connecting-IP` no log e no `.count`
+- [ ] Header `CF-Connecting-IP` no log e no `.exceeded`
 - [x] Mesmo `name` em todo lugar que usa `RateLimit.new(name, ...)` (garante o mesmo contador em qualquer VM do pool `mvm`, não só dentro de uma VM)
-- [ ] `.count` só em evento ruim
+- [ ] `.exceeded` só em evento ruim
 - [ ] `.clear` no login OK
 - [x] faxina automática (thread de background compartilhada, mesmo esquema do `arken::cache`) — `gc()` manual continua disponível, mas é opcional
-- [ ] `.count == true` → Lists API
+- [ ] `.exceeded == true` → Lists API
 - [ ] Escada 5/5 min só no `Usuario.login`
 - [ ] Começar com `new(name, 30, 60)`; descer para 25 e 20 com base no log

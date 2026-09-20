@@ -37,7 +37,7 @@ class RateLimit
   static RateLimit & get(const char * name, unsigned limit, unsigned seconds = 60);
 
   // incrementa o IP; true = estourou o limite (avisar a borda)
-  bool count(const char * ip);
+  bool exceeded(const char * ip);
   void clear(const char * ip);
   void gc(unsigned idle_seconds);
 
@@ -74,7 +74,7 @@ class RateLimit
   // IPs ociosos há mais de 2x a janela de cada uma -- mesmo esquema de
   // arken::cache::backgroundGC()/ensureBackgroundGC(). Sem isso, m_map só
   // cresce: um IP visto uma única vez (comum: milhares de IPs distintos
-  // por dia de tráfego real) nunca seria removido, já que count() só
+  // por dia de tráfego real) nunca seria removido, já que exceeded() só
   // reseta a janela de um IP que volta a aparecer.
   static void backgroundGC();
   static void ensureBackgroundGC();

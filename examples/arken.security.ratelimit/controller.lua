@@ -2,12 +2,12 @@
 --
 -- Padrão real de uso: um nome único por processo (não por request), que
 -- referencia o mesmo registro estático em C++ em qualquer VM do pool mvm
--- que chame RateLimit.new() com esse nome -- count() só em evento ruim,
+-- que chame RateLimit.new() com esse nome -- exceeded() só em evento ruim,
 -- clear() no login OK, IP lido via env():field('CF-Connecting-IP')
 -- (não existe env():get() na API do Arken, ver lib/arken/net/HttpRequest.lua).
 --
--- Chamadas em ponto, não dois-pontos (badLogins.count(ip), não
--- badLogins:count(ip)): o valor devolvido por RateLimit.new() é uma
+-- Chamadas em ponto, não dois-pontos (badLogins.exceeded(ip), não
+-- badLogins:exceeded(ip)): o valor devolvido por RateLimit.new() é uma
 -- tabela de closures presas ao nome, igual a arken.cache.bucket(name) --
 -- dois-pontos empurraria a própria tabela como primeiro argumento no
 -- lugar do ip real.
@@ -47,7 +47,7 @@ function MyController:loginAction()
   end
 
   -- senha errada: conta contra o IP; true = avisar a borda
-  if badLogins.count(ip) then
+  if badLogins.exceeded(ip) then
     CloudflareBlock(ip)
   end
 
@@ -61,7 +61,7 @@ function MyController:protectedAction()
 
   -- path que exige sessão, sem sessão: também conta como evento ruim
   local ip = clientIp(self)
-  if badLogins.count(ip) then
+  if badLogins.exceeded(ip) then
     CloudflareBlock(ip)
   end
 
