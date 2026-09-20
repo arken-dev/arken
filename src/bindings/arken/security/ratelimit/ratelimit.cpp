@@ -8,112 +8,107 @@
 
 using arken::security::RateLimit;
 
-/**
- * checkRateLimit
- */
+// RateLimit.new(name, limit, seconds) devolve uma tabela de métodos
+// presos a `name` -- mesmo esquema de cache.bucket(name)
+// (src/bindings/arken/cache/cache.cpp): sem userdata, sem __gc/delete,
+// porque a instância por trás de `name` é um registro estático em C++
+// que vive pelo tempo do processo (RateLimit::get), compartilhado por
+// todas as VMs do pool mvm. Cada chamada resolve `name` de novo via
+// RateLimit::get(); chamadas depois da primeira ignoram limit/seconds.
+//
+// Sintaxe de chamada: ponto, não dois-pontos (bad.count(ip), não
+// bad:count(ip)) -- igual ao cache.bucket(); dois-pontos empurraria a
+// própria tabela como primeiro argumento no lugar do ip/idle real.
 
-RateLimit *
-checkRateLimit( lua_State *L ) {
-  return *static_cast<RateLimit **>(luaL_checkudata(L, 1, "arken.security.RateLimit.metatable"));
-}
-
-/**
- * ClassMethods
- */
-
-static int
-arken_security_RateLimit_new( lua_State *L ) {
-  unsigned limit   = static_cast<unsigned>(luaL_checkinteger(L, 1));
-  unsigned seconds = 60;
-  if( lua_gettop(L) >= 2 ) {
-    seconds = static_cast<unsigned>(luaL_checkinteger(L, 2));
-  }
-  auto ptr = static_cast<RateLimit **>(lua_newuserdata(L, sizeof(RateLimit*)));
-  *ptr = new RateLimit(limit, seconds);
-  luaL_getmetatable(L, "arken.security.RateLimit.metatable");
-  lua_setmetatable(L, -2);
-
-  return 1;
-}
-
-static const luaL_reg arken_security_RateLimit[] = {
-  {"new", arken_security_RateLimit_new},
-  {nullptr, nullptr}
-};
-
-void static
-register_arken_security_RateLimit( lua_State *L ) {
-  luaL_newmetatable(L, "arken.security.RateLimit");
-  luaL_register(L, nullptr, arken_security_RateLimit);
-  lua_pushvalue(L, -1);
-  lua_setfield(L, -1, "__index");
-}
-
-/**
- * InstanceMethods
- */
-
-static int
-arken_security_RateLimit_gc( lua_State *L ) {
-  RateLimit *udata = checkRateLimit( L );
-  delete udata;
-  return 0;
+// nome/limit/seconds são os upvalues 1/2/3 de cada closure devolvida por
+// arken_security_RateLimit_new
+static RateLimit & namedRateLimit( lua_State *L )
+{
+  const char * name    = luaL_checkstring(L, lua_upvalueindex(1));
+  unsigned     limit   = static_cast<unsigned>(lua_tointeger(L, lua_upvalueindex(2)));
+  unsigned     seconds = static_cast<unsigned>(lua_tointeger(L, lua_upvalueindex(3)));
+  return RateLimit::get(name, limit, seconds);
 }
 
 static int
 arken_security_RateLimit_count( lua_State *L ) {
-  RateLimit * udata = checkRateLimit( L );
-  const char * ip   = luaL_checkstring(L, 2);
-  lua_pushboolean(L, udata->count(ip));
+  RateLimit & rl  = namedRateLimit(L);
+  const char * ip = luaL_checkstring(L, 1);
+  lua_pushboolean(L, rl.count(ip));
   return 1;
 }
 
 static int
 arken_security_RateLimit_clear( lua_State *L ) {
-  RateLimit * udata = checkRateLimit( L );
-  const char * ip   = luaL_checkstring(L, 2);
-  udata->clear(ip);
+  RateLimit & rl  = namedRateLimit(L);
+  const char * ip = luaL_checkstring(L, 1);
+  rl.clear(ip);
   return 0;
 }
 
 static int
-arken_security_RateLimit_gcIdle( lua_State *L ) {
-  RateLimit * udata = checkRateLimit( L );
-  unsigned idle     = static_cast<unsigned>(luaL_checkinteger(L, 2));
-  udata->gc(idle);
+arken_security_RateLimit_gc( lua_State *L ) {
+  RateLimit & rl = namedRateLimit(L);
+  unsigned idle  = static_cast<unsigned>(luaL_checkinteger(L, 1));
+  rl.gc(idle);
   return 0;
 }
 
 static int
 arken_security_RateLimit_size( lua_State *L ) {
-  RateLimit * udata = checkRateLimit( L );
-  lua_pushinteger(L, static_cast<lua_Integer>(udata->size()));
+  RateLimit & rl = namedRateLimit(L);
+  lua_pushinteger(L, static_cast<lua_Integer>(rl.size()));
   return 1;
 }
 
-static const
-luaL_reg arken_security_RateLimit_metatable[] = {
-  {"count", arken_security_RateLimit_count},
-  {"clear", arken_security_RateLimit_clear},
-  {"gc",    arken_security_RateLimit_gcIdle},
-  {"size",  arken_security_RateLimit_size},
-  {"__gc",  arken_security_RateLimit_gc},
-  {nullptr, nullptr}
-};
+// empilha uma closure de fn com name/limit/seconds como upvalues 1/2/3, e
+// guarda no campo "field" da tabela no topo da pilha
+static void pushRateLimitMethod( lua_State *L, const char * name,
+                                  unsigned limit, unsigned seconds,
+                                  lua_CFunction fn, const char * field ) {
+  lua_pushstring(L, name);
+  lua_pushinteger(L, limit);
+  lua_pushinteger(L, seconds);
+  lua_pushcclosure(L, fn, 3);
+  lua_setfield(L, -2, field);
+}
 
-void static
-register_arken_security_RateLimit_metatable( lua_State *L ) {
-  luaL_newmetatable(L, "arken.security.RateLimit.metatable");
-  luaL_register(L, nullptr, arken_security_RateLimit_metatable);
-  lua_pushvalue(L, -1);
-  lua_setfield(L, -1, "__index");
+static int
+arken_security_RateLimit_new( lua_State *L ) {
+  const char * name    = luaL_checkstring(L, 1);
+  unsigned     limit   = static_cast<unsigned>(luaL_checkinteger(L, 2));
+  unsigned     seconds = 60;
+  if( lua_gettop(L) >= 3 ) {
+    seconds = static_cast<unsigned>(luaL_checkinteger(L, 3));
+  }
+
+  // registra já aqui, na hora do new() -- não espera o primeiro
+  // count/clear/gc/size. Sem isso, "primeira chamada vence" dependeria de
+  // qual closure é invocada primeiro (não determinístico entre VMs),
+  // e não de qual new(name, ...) rodou primeiro (a intenção real).
+  RateLimit::get(name, limit, seconds);
+
+  lua_newtable(L);
+
+  pushRateLimitMethod(L, name, limit, seconds, arken_security_RateLimit_count, "count");
+  pushRateLimitMethod(L, name, limit, seconds, arken_security_RateLimit_clear, "clear");
+  pushRateLimitMethod(L, name, limit, seconds, arken_security_RateLimit_gc,    "gc");
+  pushRateLimitMethod(L, name, limit, seconds, arken_security_RateLimit_size,  "size");
+
+  return 1;
 }
 
 extern "C" {
   int
   luaopen_arken_security_RateLimit( lua_State *L ) {
-    register_arken_security_RateLimit_metatable(L);
-    register_arken_security_RateLimit(L);
+    static const luaL_reg Map[] = {
+      {"new", arken_security_RateLimit_new},
+      {nullptr, nullptr}
+    };
+    luaL_newmetatable(L, "arken.security.RateLimit");
+    luaL_register(L, nullptr, Map);
+    lua_pushvalue(L, -1);
+    lua_setfield(L, -1, "__index");
     return 1;
   }
 }

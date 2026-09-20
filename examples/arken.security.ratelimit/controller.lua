@@ -1,9 +1,16 @@
 -- arken.security.RateLimit example: integrando num Controller
 --
--- Padrão real de uso: uma única instância de RateLimit por processo
--- (não por request), count() só em evento ruim, clear() no login OK, e o
--- IP lido via env():field('CF-Connecting-IP') -- não existe env():get()
--- na API do Arken (ver lib/arken/net/HttpRequest.lua).
+-- Padrão real de uso: um nome único por processo (não por request), que
+-- referencia o mesmo registro estático em C++ em qualquer VM do pool mvm
+-- que chame RateLimit.new() com esse nome -- count() só em evento ruim,
+-- clear() no login OK, IP lido via env():field('CF-Connecting-IP')
+-- (não existe env():get() na API do Arken, ver lib/arken/net/HttpRequest.lua).
+--
+-- Chamadas em ponto, não dois-pontos (badLogins.count(ip), não
+-- badLogins:count(ip)): o valor devolvido por RateLimit.new() é uma
+-- tabela de closures presas ao nome, igual a arken.cache.bucket(name) --
+-- dois-pontos empurraria a própria tabela como primeiro argumento no
+-- lugar do ip real.
 --
 -- Este exemplo não sobe um HttpServer de verdade: monta um "_env" mockado
 -- do mesmo jeito que tests/lib/arken/Controller/*.lua fazem, e injeta os
@@ -14,8 +21,9 @@ require('arken.Controller') -- registra a classe "Controller" em Class.lookup
 
 local RateLimit = require('arken.security.RateLimit')
 
--- instância única do processo
-local badLogins = RateLimit.new(3, 60) -- 3 eventos ruins / 60 segundos
+-- nome único do processo -- qualquer VM do pool mvm que chamar
+-- RateLimit.new('login-bad-events', ...) enxerga o mesmo contador
+local badLogins = RateLimit.new('login-bad-events', 3, 60) -- 3 eventos ruins / 60 segundos
 
 local blockedIps = {}
 local function CloudflareBlock(ip)
@@ -34,12 +42,12 @@ function MyController:loginAction()
   local ok = self:params().senha == 'senha-correta' -- no app real: pcall(Usuario.login, ...)
 
   if ok then
-    badLogins:clear(ip)
+    badLogins.clear(ip)
     return 200, {}, 'login ok'
   end
 
   -- senha errada: conta contra o IP; true = avisar a borda
-  if badLogins:count(ip) then
+  if badLogins.count(ip) then
     CloudflareBlock(ip)
   end
 
@@ -53,7 +61,7 @@ function MyController:protectedAction()
 
   -- path que exige sessão, sem sessão: também conta como evento ruim
   local ip = clientIp(self)
-  if badLogins:count(ip) then
+  if badLogins.count(ip) then
     CloudflareBlock(ip)
   end
 

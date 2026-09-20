@@ -24,6 +24,18 @@ class RateLimit
   RateLimit(unsigned limit, unsigned seconds = 60);
   ~RateLimit();
 
+  // instância única do processo para `name` -- registro estático em C++,
+  // fora de qualquer lua_State, então é a mesma para todas as VMs do pool
+  // mvm (cada lua_State tem seu próprio require()/package.loaded; sem
+  // isso, cada VM do pool teria seu próprio contador e o rate limit
+  // furaria dependendo de qual VM atende cada request). Criada com
+  // limit/seconds na primeira chamada; chamadas seguintes com o mesmo
+  // nome ignoram limit/seconds e devolvem a instância já existente.
+  // Mesmo esquema de arken::cache::get(name)/cache.bucket(name) -- e,
+  // como consequência, uma instância obtida por aqui nunca é destruída
+  // (vive pelo tempo de vida do processo, como os buckets do cache).
+  static RateLimit & get(const char * name, unsigned limit, unsigned seconds = 60);
+
   // incrementa o IP; true = estourou o limite (avisar a borda)
   bool count(const char * ip);
   void clear(const char * ip);
@@ -42,15 +54,30 @@ class RateLimit
   };
 
   // varre m_map descartando entradas ociosas há mais de `idle`; chamador
-  // precisa já estar segurando m_mutex (usado por gc() e pela faxina
-  // amortizada dentro de count()).
+  // precisa já estar segurando m_mutex (usado por gc() e pela thread de
+  // faxina compartilhada).
   void sweep(std::chrono::seconds idle);
 
   unsigned m_limit;
   std::chrono::seconds m_window;
   std::mutex m_mutex;
   std::unordered_map<std::string, Record> m_map;
-  std::chrono::steady_clock::time_point m_lastSweep{};
+
+  // registro global name -> instância; nunca libera entradas (mesma
+  // premissa do registro de buckets do arken::cache: vive pelo tempo de
+  // vida do processo, por isso é seguro varrer via thread de background).
+  static std::mutex s_registryMutex;
+  static std::unordered_map<std::string, RateLimit *> s_registry;
+
+  // primeira chamada a get() agenda uma única thread compartilhada que
+  // varre todas as instâncias registradas periodicamente, descartando
+  // IPs ociosos há mais de 2x a janela de cada uma -- mesmo esquema de
+  // arken::cache::backgroundGC()/ensureBackgroundGC(). Sem isso, m_map só
+  // cresce: um IP visto uma única vez (comum: milhares de IPs distintos
+  // por dia de tráfego real) nunca seria removido, já que count() só
+  // reseta a janela de um IP que volta a aparecer.
+  static void backgroundGC();
+  static void ensureBackgroundGC();
 };
 
 } // namespace security

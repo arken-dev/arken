@@ -4,11 +4,20 @@
 // license that can be found in the LICENSE file.
 
 #include <arken/security/ratelimit.h>
+#include <thread>
+#include <vector>
 
 namespace arken {
 namespace security {
 
+namespace {
+  const int GC_INTERVAL_SECONDS = 5;
+}
+
 using clock = std::chrono::steady_clock;
+
+std::mutex RateLimit::s_registryMutex;
+std::unordered_map<std::string, RateLimit *> RateLimit::s_registry;
 
 RateLimit::RateLimit(unsigned limit, unsigned seconds)
   : m_limit(limit)
@@ -18,6 +27,54 @@ RateLimit::RateLimit(unsigned limit, unsigned seconds)
 
 RateLimit::~RateLimit() = default;
 
+RateLimit & RateLimit::get(const char * name, unsigned limit, unsigned seconds)
+{
+  std::lock_guard<std::mutex> lock(s_registryMutex);
+
+  auto it = s_registry.find(name);
+  if( it != s_registry.end() ) {
+    return *(it->second);
+  }
+
+  RateLimit * rl = new RateLimit(limit, seconds);
+  s_registry[name] = rl;
+
+  ensureBackgroundGC();
+
+  return *rl;
+}
+
+void RateLimit::backgroundGC()
+{
+  while (true) {
+    std::this_thread::sleep_for(std::chrono::seconds(GC_INTERVAL_SECONDS));
+
+    // copia os ponteiros sob o lock do registro, e varre cada um já fora
+    // dele -- gc() de uma instância não deve segurar o registro (que
+    // outras threads podem precisar pra achar/criar instâncias).
+    std::vector<RateLimit *> snapshot;
+    {
+      std::lock_guard<std::mutex> lock(s_registryMutex);
+      snapshot.reserve(s_registry.size());
+      for (auto & pair : s_registry) {
+        snapshot.push_back(pair.second);
+      }
+    }
+
+    for (RateLimit * rl : snapshot) {
+      rl->gc(static_cast<unsigned>(rl->m_window.count() * 2));
+    }
+  }
+}
+
+void RateLimit::ensureBackgroundGC()
+{
+  static std::once_flag flag;
+  std::call_once(flag, []() {
+    std::thread(RateLimit::backgroundGC).detach();
+  });
+}
+
 bool RateLimit::count(const char * ip)
 {
   if( ip == nullptr || ip[0] == '\0' ) {
@@ -26,19 +83,6 @@ bool RateLimit::count(const char * ip)
 
   const auto now = clock::now();
   std::lock_guard<std::mutex> lock(m_mutex);
-
-  // faxina amortizada: sem isso, m_map só cresce -- um IP que aparece uma
-  // única vez nunca é removido sozinho (count() só reseta a janela de um
-  // IP que volta a aparecer). Peça carona no tráfego normal em vez de
-  // abrir uma thread própria: uma RateLimit é destruída pelo app (__gc do
-  // binding chama delete), e uma thread detached com `this` capturado
-  // ficaria com ponteiro pendurado assim que a instância for liberada.
-  if( m_lastSweep.time_since_epoch().count() == 0 ||
-      now - m_lastSweep >= m_window * 2 ) {
-    sweep(m_window * 2);
-    m_lastSweep = now;
-  }
-
   auto & r = m_map[ip];
 
   if( r.window_start.time_since_epoch().count() == 0 ||
