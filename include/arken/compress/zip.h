@@ -7,7 +7,7 @@
 #define _ARKEN_COMPRESS_ZIP_
 
 #include <zip.h>
-#include <vector>
+#include <deque>
 
 namespace arken {
 namespace compress {
@@ -19,9 +19,12 @@ class Zip
   bool  m_closed;
 
   /**
-   * buffers are stored because they are used until zip_close for calling
+   * buffers are stored because they are used until zip_close for calling.
+   * deque, not vector: growth must never move/free previously stored
+   * elements, since zip_source_buffer() keeps a raw pointer into them
+   * until save() closes the archive.
    */
-  std::vector<string> m_storage;
+  std::deque<string> m_storage;
 
   public:
   static bool extract(const char * namefile, const char * output = nullptr);

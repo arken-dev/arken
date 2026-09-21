@@ -4,6 +4,7 @@
 // license that can be found in the LICENSE file.
 
 
+#include <cctype>
 #include <string>
 #include <lua/lua.hpp>
 #include <arken/os.h>
@@ -251,6 +252,64 @@ static const size_t MAX_HTTP_HEADER_SIZE = 8192;
 bool HttpServer::headerTooLarge(size_t size)
 {
   return size > MAX_HTTP_HEADER_SIZE;
+}
+
+// teto do corpo de uma requisição - o buffer de entrada de cada conexão
+// cresce até a requisição completar, então sem limite um POST com
+// Content-Length gigante derruba o processo por memória. 32MB cobre foto
+// de celular com folga, que é o upload real que passa por aqui.
+static const size_t MAX_HTTP_BODY_SIZE = 32 * 1024 * 1024;
+
+bool HttpServer::bodyTooLarge(size_t size)
+{
+  return size > MAX_HTTP_BODY_SIZE;
+}
+
+// Content-Length dos headers já recebidos - 0 quando o campo não existe
+// (GET, POST sem corpo). Case-insensitive e só no começo de linha, que é
+// o que o HTTP garante sobre o nome do campo.
+static size_t contentLength(const char * data, size_t headerEnd)
+{
+  static const char * name    = "content-length:";
+  static const size_t nameLen = 15;
+
+  for( size_t i = 0; i + nameLen < headerEnd; i++ ) {
+    if( i > 0 && data[i-1] != '\n' ) {
+      continue;
+    }
+
+    size_t j = 0;
+    while( j < nameLen && tolower(data[i+j]) == name[j] ) {
+      j++;
+    }
+
+    if( j < nameLen ) {
+      continue;
+    }
+
+    size_t k = i + nameLen;
+    while( k < headerEnd && (data[k] == ' ' || data[k] == '\t') ) {
+      k++;
+    }
+
+    size_t value = 0;
+    while( k < headerEnd && data[k] >= '0' && data[k] <= '9' ) {
+      value = (value * 10) + static_cast<size_t>(data[k] - '0');
+      k++;
+    }
+
+    return value;
+  }
+
+  return 0;
+}
+
+// quantos bytes essa requisição inteira ocupa (headers + corpo), a partir
+// do Content-Length declarado. headerEnd é a posição do \r\n\r\n que fecha
+// os headers, já achada por quem chamou.
+size_t HttpServer::requestSize(const char * data, size_t headerEnd)
+{
+  return headerEnd + 4 + contentLength(data, headerEnd);
 }
 
 } // namespace net

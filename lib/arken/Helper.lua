@@ -381,6 +381,7 @@ function Helper:formCreate(instance_or_name, name)
 end
 
 function Helper:url(params)
+  local params = params or {}
 
   if type(params) == 'string' then
     return params

@@ -361,7 +361,9 @@ processHttp(struct ev_loop *loop, Connection * connection)
 {
   // espera os headers completos chegarem antes de tentar processar -
   // uma requisição (ou o handshake) pode vir fragmentada em vários recv()
-  if( connection->input.find("\r\n\r\n") == std::string::npos ) {
+  size_t headerEnd = connection->input.find("\r\n\r\n");
+
+  if( headerEnd == std::string::npos ) {
     if( connection->isMaxHttpHeaderSize() ) {
       fprintf(stderr, "arken.net.HttpServer (libev-ws): headers grandes demais (%zu bytes), fechando conexão\n",
         connection->input.size());
@@ -372,6 +374,29 @@ processHttp(struct ev_loop *loop, Connection * connection)
 
       closeConnection(loop, connection);
     }
+    return;
+  }
+
+  // headers completos não significam requisição completa: o corpo de um
+  // POST (upload multipart, por exemplo) chega fragmentado em vários
+  // recv(), e despachar antes do último pedaço entrega ao app um arquivo
+  // truncado - sem erro nenhum, porque o parser multipart só vê o que
+  // sobrou. Espera o Content-Length inteiro antes de chamar o handler.
+  size_t expected = HttpServer::requestSize(connection->input.data(), headerEnd);
+
+  if( HttpServer::bodyTooLarge(expected) ) {
+    fprintf(stderr, "arken.net.HttpServer (libev-ws): corpo grande demais (%zu bytes), fechando conexão\n",
+      expected);
+
+    std::string response(HttpServer::status(413));
+    response.append("\r\nConnection: close\r\nContent-Length: 0\r\n\r\n");
+    queueOutput(connection, response.data(), response.size());
+
+    closeConnection(loop, connection);
+    return;
+  }
+
+  if( connection->input.size() < expected ) {
     return;
   }
 

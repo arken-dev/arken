@@ -42,6 +42,7 @@ add_subdirectory(notify)
 endif()
 
 add_subdirectory(regex)
+add_subdirectory(security)
 add_subdirectory(utf8)
 
 if(ARKEN_XML)

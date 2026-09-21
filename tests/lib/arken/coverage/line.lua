@@ -80,4 +80,43 @@ test.should_default_if_open_and_close_string_block_and_level_one = function()
   assert(lines[47].default == nil, lines[47].default)
 end
 
+test.should_follow_the_line_that_opened_the_parenthesis = function()
+  local result = coverage.analyze("util/coverage/PostgresAdapter.lua")
+  local lines  = result.lines
+
+  assert(lines[23].src:squish() == "ActiveRecord_PostgresAdapter.instanceConnection, errmsg = env:connect(", lines[23].src)
+  assert(lines[23].flag == nil, lines[23].flag)
+
+  assert(lines[24].src:squish() == "self.database, self.user, password, self.host", lines[24].src)
+  assert(lines[24].flag == nil, lines[24].flag)
+  assert(lines[24].comment == 'continues open parenthesis', lines[24].comment)
+
+  assert(lines[25].src:squish() == ")", lines[25].src)
+  assert(lines[25].flag == nil, lines[25].flag)
+  assert(lines[25].comment == 'continues open parenthesis', lines[25].comment)
+end
+
+test.should_repeat_the_flag_of_the_line_that_opened_the_parenthesis = function()
+  coverage.default = nil
+  coverage.braces  = false
+  coverage.level   = 1
+  coverage.parens  = 0
+
+  assert(coverage.line("local texto = string.format(", 4) == 4)
+  assert(coverage.line("  'total de %d horas',", nil) == 4)
+  assert(coverage.line("  horas", nil) == 4)
+  assert(coverage.line(")", nil) == 4)
+  assert(coverage.line("Model.info(texto)", nil) == nil)
+end
+
+test.should_not_repeat_the_flag_on_the_body_of_a_inline_function = function()
+  coverage.default = nil
+  coverage.braces  = false
+  coverage.level   = 1
+  coverage.parens  = 0
+
+  assert(coverage.line("return list:join(',', function(item)", 1) == 1)
+  assert(coverage.line("  return tostring(item.id)", nil) == nil)
+end
+
 return test

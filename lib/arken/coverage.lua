@@ -7,6 +7,9 @@ local odebug   = require 'arken.odebug'
 local coverage = {}
 local result   = {}
 
+coverage.parens = 0
+coverage.opened = nil
+
 coverage.hook = function(val1, val2, fake)
   -- disabling because it is slow
   --[[
@@ -59,7 +62,82 @@ coverage.reset = function()
   result = {}
 end
 
+-------------------------------------------------------------------------------
+-- BALANCE
+-- count open parenthesis, ignoring the ones inside strings and comments
+-------------------------------------------------------------------------------
+
+coverage.balance = function(row)
+  local total = 0
+  local quote = nil
+  local index = 1
+
+  while index <= row:len() do
+    local char = row:sub(index, index)
+    if quote then
+      if char == '\\' then
+        index = index + 1
+      elseif char == quote then
+        quote = nil
+      end
+    elseif char == '"' or char == "'" then
+      quote = char
+    elseif char == '-' and row:sub(index + 1, index + 1) == '-' then
+      break
+    elseif char == '[' and row:sub(index + 1, index + 1) == '[' then
+      local close = row:indexOf(']]', index + 2)
+      if close < 0 then
+        break
+      end
+      index = close + 1
+    elseif char == '(' then
+      total = total + 1
+    elseif char == ')' then
+      total = total - 1
+    end
+    index = index + 1
+  end
+
+  return total
+end
+
+-------------------------------------------------------------------------------
+-- LINE
+-- lines that only continue an open parenthesis are not a statement by
+-- themselves, the vm never reports them, so they follow the line that opened it
+-------------------------------------------------------------------------------
+
 coverage.line = function(row, flag)
+  local continues = coverage.parens > 0
+  local result    = coverage.evaluate(row, flag)
+
+  if coverage.default == nil then
+    coverage.parens = math.max(0, coverage.parens + coverage.balance(row))
+  end
+
+  if continues then
+    if result == -1 then
+      return result
+    end
+    coverage.comment = "continues open parenthesis"
+    if flag == nil then
+      return coverage.opened
+    end
+    return flag
+  end
+
+  if coverage.parens > 0 and row:contains('function') then
+    coverage.parens = 0
+  end
+
+  if coverage.parens > 0 then
+    coverage.opened = result
+  end
+
+  return result
+end
+
+coverage.evaluate = function(row, flag)
   local line = row:trim()
   local result = nil
   coverage.comment = nil
@@ -200,6 +278,8 @@ function coverage.analyze(file_name)
   coverage.default = nil
   coverage.braces  = false
   coverage.level = 0
+  coverage.parens = 0
+  coverage.opened = nil
   for line in io.lines(file_name) do
     i = i + 1
     flag = result[file_name][count]
