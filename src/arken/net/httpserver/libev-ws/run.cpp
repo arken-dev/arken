@@ -108,7 +108,12 @@ struct Connection {
   std::string outputBuffer;
   size_t      outputOffset = 0;
   bool        writeWatcherActive = false;
-  static constexpr size_t MAX_OUTPUT_BUFFER = 8 * 1024 * 1024; // 8 MiB - acima disso é slow consumer, fecha a conexão
+  // 32 MiB - mesmo teto de HttpServer::bodyTooLarge (MAX_HTTP_BODY_SIZE) pro
+  // corpo de requisição; sem essa simetria uma resposta legítima (ex: um
+  // relatório gerado) maior que o antigo teto de 8 MiB era recusada por
+  // queueOutput mesmo vindo de um cliente rápido, sem relação nenhuma com
+  // slow consumer de verdade
+  static constexpr size_t MAX_OUTPUT_BUFFER = 32 * 1024 * 1024;
 
   // só existe depois do handshake (type == WEBSOCKET). Acordado (de
   // QUALQUER thread, via WebSocketRegistry::writeFrame/send) sempre que
@@ -447,7 +452,24 @@ processHttp(struct ev_loop *loop, Connection * connection)
 
   connection->input.clear();
 
-  queueOutput(connection, data.data(), data.size());
+  if( ! queueOutput(connection, data.data(), data.size()) ) {
+    // resposta maior que MAX_OUTPUT_BUFFER - antes disso o retorno era
+    // ignorado: queueOutput recusava em silêncio, o buffer ficava vazio e
+    // a conexão travava esperando uma resposta que nunca seria enfileirada.
+    // Fechar sem avisar deixaria o cliente sem motivo (RST/FIN silencioso);
+    // manda um 500 pequeno primeiro - cabe de sobra no buffer, que ficou
+    // vazio porque o queueOutput acima recusou antes de anexar qualquer coisa
+    fprintf(stderr, "arken.net.HttpServer (libev-ws): resposta grande demais (%zu bytes), fechando conexão\n",
+      data.size());
+
+    std::string response(HttpServer::status(500));
+    response.append("\r\nConnection: close\r\nContent-Length: 0\r\n\r\n");
+    queueOutput(connection, response.data(), response.size());
+
+    closeConnection(loop, connection);
+    return;
+  }
+
   enableWrite(loop, connection);
 
   if( isUpgrade ) {
